@@ -19,6 +19,7 @@ in {
     coreutils-full
     cowsay
     curl
+    delta
     diffutils
     direnv
     dos2unix
