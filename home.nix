@@ -19,7 +19,6 @@ in {
     coreutils-full
     cowsay
     curl
-    delta
     diffutils
     direnv
     dos2unix
@@ -28,6 +27,8 @@ in {
     file
     figlet
     gawk
+    git
+    gitAndTools.delta
     gnugrep
     gnused
     gnutar
@@ -102,6 +103,11 @@ in {
           } "$attr" --command "$@"
         fi
       '')
+    (writeShellScriptBin "hms" ''
+      cd ~/.config/nixpkgs/
+      git pull origin main
+      home-manager switch
+    '')
   ];
 
   programs.starship.enable = true;
