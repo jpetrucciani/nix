@@ -3,8 +3,8 @@
 {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
-  home.username = "jacobipetrucciani";
-  home.homeDirectory = "/Users/jacobipetrucciani";
+  home.username = if pkgs.stdenv.isDarwin then "jacobipetrucciani" else "jacobi";
+  home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/jacobipetrucciani" else "/home/jacobi";
   home.stateVersion = "21.03";
 
   home.packages = with pkgs; [
