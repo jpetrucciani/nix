@@ -1,10 +1,14 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+let
+  inherit (pkgs.stdenv) isDarwin isLinux;
+  promptChar = if pkgs.stdenv.isDarwin then "ᛗ" else "ᛥ";
+in {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
-  home.username =
-    if pkgs.stdenv.isDarwin then "jacobipetrucciani" else "jacobi";
+
+  home.username = if isDarwin then "jacobipetrucciani" else "jacobi";
   home.homeDirectory =
-    if pkgs.stdenv.isDarwin then "/Users/jacobipetrucciani" else "/home/jacobi";
+    if isDarwin then "/Users/jacobipetrucciani" else "/home/jacobi";
   home.stateVersion = "21.03";
 
   home.packages = with pkgs; [
@@ -103,9 +107,9 @@
   programs.starship.settings = {
     add_newline = false;
     character = {
-      symbol = "ᛗ";
-      success_symbol = "[ᛗ](bright-green)";
-      error_symbol = "[ᛗ](bright-red)";
+      symbol = promptChar;
+      success_symbol = "[${promptChar}](bright-green)";
+      error_symbol = "[${promptChar}](bright-red)";
     };
     golang = {
       style = "fg:#00ADD8";
