@@ -2,16 +2,19 @@
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   promptChar = if pkgs.stdenv.isDarwin then "ᛗ" else "ᛥ";
+
+  # name stuff
+  firstName = "jacobi";
+  lastName = "petrucciani";
   personalEmail = "j@cobi.dev";
   workEmail = "jacobi@hackerrank.com";
-  firstName = "jacobi";
 in {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
-  home.username = if isDarwin then "jacobipetrucciani" else firstName;
+  home.username = if isDarwin then "${firstName}${lastName}" else firstName;
   home.homeDirectory =
-    if isDarwin then "/Users/jacobipetrucciani" else "/home/${firstName}";
+    if isDarwin then "/Users/${firstName}${lastName}" else "/home/${firstName}";
   home.stateVersion = "21.03";
 
   home.packages = with pkgs; [
@@ -145,7 +148,7 @@ in {
 
   # gitconfig
   programs.git.enable = true;
-  programs.git.userName = "jacobi petrucciani";
+  programs.git.userName = "${firstName} ${lastName}";
   programs.git.userEmail = if isDarwin then workEmail else personalEmail;
   programs.git.aliases = {
     A = "add -A";
