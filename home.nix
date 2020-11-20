@@ -1,10 +1,10 @@
-{ config, pkgs, ... }:
-
-{
+{ config, pkgs, ... }: {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
-  home.username = if pkgs.stdenv.isDarwin then "jacobipetrucciani" else "jacobi";
-  home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/jacobipetrucciani" else "/home/jacobi";
+  home.username =
+    if pkgs.stdenv.isDarwin then "jacobipetrucciani" else "jacobi";
+  home.homeDirectory =
+    if pkgs.stdenv.isDarwin then "/Users/jacobipetrucciani" else "/home/jacobi";
   home.stateVersion = "21.03";
 
   home.packages = with pkgs; [
@@ -66,6 +66,7 @@
     scc
     sd
     socat
+    starship
     swaks
     time
     unzip
@@ -91,8 +92,40 @@
           attr=$(echo "$packages" | ${fzy}/bin/fzy)
         fi
         if [[ -n $attr ]];then
-          exec ${nixUnstable}/bin/nix --experimental-features 'nix-command = nix-flakes' shell -f ${toString path} "$attr" --command "$@"
+          exec ${nixUnstable}/bin/nix --experimental-features 'nix-command = nix-flakes' shell -f ${
+            toString path
+          } "$attr" --command "$@"
         fi
       '')
   ];
+
+  programs.starship.enable = true;
+  programs.starship.settings = {
+    add_newline = false;
+    character = {
+      symbol = "ᛗ";
+      success_symbol = "[ᛗ](bright-green)";
+      error_symbol = "[ᛗ](bright-red)";
+    };
+    golang = {
+      style = "fg:#00ADD8";
+      symbol = "go ";
+    };
+    directory.style = "fg:#d442f5";
+    nix_shell = {
+      pure_msg = "";
+      impure_msg = "";
+      format = "via [$symbol$state]($style) ";
+    };
+    kubernetes = {
+      disabled = false;
+      style = "fg:#326ce5";
+    };
+
+    # disabled plugins
+    aws.disabled = true;
+    cmd_duration.disabled = true;
+    gcloud.disabled = true;
+    package.disabled = true;
+  };
 }
