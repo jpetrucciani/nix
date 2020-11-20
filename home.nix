@@ -2,13 +2,16 @@
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   promptChar = if pkgs.stdenv.isDarwin then "ᛗ" else "ᛥ";
+  personalEmail = "j@cobi.dev";
+  workEmail = "jacobi@hackerrank.com";
+  firstName = "jacobi";
 in {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
-  home.username = if isDarwin then "jacobipetrucciani" else "jacobi";
+  home.username = if isDarwin then "jacobipetrucciani" else firstName;
   home.homeDirectory =
-    if isDarwin then "/Users/jacobipetrucciani" else "/home/jacobi";
+    if isDarwin then "/Users/jacobipetrucciani" else "/home/${firstName}";
   home.stateVersion = "21.03";
 
   home.packages = with pkgs; [
@@ -109,6 +112,7 @@ in {
     '')
   ];
 
+  # starship config
   programs.starship.enable = true;
   programs.starship.settings = {
     add_newline = false;
@@ -137,5 +141,55 @@ in {
     cmd_duration.disabled = true;
     gcloud.disabled = true;
     package.disabled = true;
+  };
+
+  # gitconfig
+  programs.git.enable = true;
+  programs.git.userName = "jacobi petrucciani";
+  programs.git.userEmail = if isDarwin then workEmail else personalEmail;
+  programs.git.aliases = {
+    A = "add -A";
+    pu = "pull";
+    pur = "pull --rebase";
+    cam = "commit -am";
+    ca = "commit -a";
+    cm = "commit -m";
+    ci = "commit";
+    co = "checkout";
+    st = "status";
+    br = "branch -v";
+    branch-name = "!git rev-parse --abbrev-ref HEAD";
+    # Delete the remote version of the current branch
+    unpublish = "!git push origin :$(git branch-name)";
+    # Push current branch
+    put = "!git push origin $(git branch-name)";
+    # Pull without merging
+    get = "!git pull origin $(git branch-name) --ff-only";
+    # Pull Master without switching branches
+    got =
+      "!f() { CURRENT_BRANCH=$(git branch-name) && git checkout $1 && git pull origin $1 --ff-only && git checkout $CURRENT_BRANCH;  }; f";
+    # Recreate your local branch based on the remote branch
+    recreate = ''
+      !f() { [[ -n $@ ]] && git checkout master && git branch -D "$@" && git pull origin "$@":"$@" && git checkout "$@"; }; f'';
+    reset-submodule = "!git submodule update --init";
+    sl = "!git --no-pager log -n 15 --oneline --decorate";
+    sla = "log --oneline --decorate --graph --all";
+    lol = "log --graph --decorate --pretty=oneline --abbrev-commit";
+    lola = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
+  };
+  programs.git.extraConfig = {
+    color.ui = true;
+    push.default = "simple";
+    pull.ff = "only";
+    core = {
+      editor = if isDarwin then "code --wait" else "nano";
+      pager = "delta --dark";
+    };
+    rebase.instructionFormat = "<%ae >%s";
+  };
+  programs.git.${if isDarwin then "signing" else null} = {
+    key = "03C0CBEA6EAB9258";
+    gpgPath = "gpg";
+    signByDefault = true;
   };
 }
