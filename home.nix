@@ -104,8 +104,7 @@ in {
         fi
       '')
     (writeShellScriptBin "hms" ''
-      cd ~/.config/nixpkgs/
-      git pull origin main
+      git -C ~/.config/nixpkgs/ pull origin main
       home-manager switch
     '')
   ];
