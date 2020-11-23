@@ -28,6 +28,7 @@ in {
     diffutils
     direnv
     dos2unix
+    exa
     ed
     fd
     file
@@ -114,6 +115,19 @@ in {
       home-manager switch
     '')
   ];
+
+  home.file.sqliterc = {
+    target = ".sqliterc";
+    text = ''
+      .output /dev/null
+      .headers on
+      .mode column
+      .prompt "> " ". "
+      .separator ROW "\n"
+      .nullvalue NULL
+      .output stdout
+    '';
+  };
 
   # starship config
   programs.starship.enable = true;

@@ -34,4 +34,7 @@ git clone git@github.com:jpetrucciani/nix.git .
 
 # enable home-manager
 home-manager switch
+
+# install nle
+nix-env --tarball-ttl 0 -f https://github.com/kwbauson/cfg/tarball/main -iA nle
 ```
