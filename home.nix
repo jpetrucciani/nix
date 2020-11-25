@@ -28,6 +28,7 @@ in {
 
   home.packages = with pkgs; [
     atool
+    amazon-ecr-credential-helper
     bc
     bzip2
     cachix
