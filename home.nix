@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
+  inherit (pkgs) fetchFromGitHub;
   promptChar = if pkgs.stdenv.isDarwin then "ᛗ" else "ᛥ";
 
   # name stuff
@@ -8,6 +9,14 @@ let
   lastName = "petrucciani";
   personalEmail = "j@cobi.dev";
   workEmail = "jacobi@hackerrank.com";
+
+  # chief keefs stuff
+  kwbauson-cfg = import (fetchFromGitHub {
+    owner = "kwbauson";
+    repo = "cfg";
+    rev = "6fd85b5cf3bae1500e916ac77c9aeaf2a05247fe";
+    sha256 = "067pq9cai1lmx9rbrk841r66y99l9pcgq5scvy2fasb2xcxzzg7a";
+  });
 in {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
@@ -89,28 +98,8 @@ in {
     which
     xxd
     zip
-    (with pkgs;
-      writeShellScriptBin "," ''
-        cmd=$1
-        db=${path + "/programs.sqlite"}
-        sql="select distinct package from Programs where name = '$cmd'"
-        packages=$(${sqlite}/bin/sqlite3 -init /dev/null "$db" "$sql" 2>/dev/null)
-        if [[ $(echo "$packages" | wc -l) = 1 ]];then
-          if [[ -z $packages ]];then
-            echo "$cmd": command not found
-            exit 127
-          else
-            attr=$packages
-          fi
-        else
-          attr=$(echo "$packages" | ${fzy}/bin/fzy)
-        fi
-        if [[ -n $attr ]];then
-          exec ${nixUnstable}/bin/nix --experimental-features 'nix-command = nix-flakes' shell -f ${
-            toString path
-          } "$attr" --command "$@"
-        fi
-      '')
+    kwbauson-cfg.better-comma
+    kwbauson-cfg.nle
     (writeShellScriptBin "hms" ''
       git -C ~/.config/nixpkgs/ pull origin main
       home-manager switch
