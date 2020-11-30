@@ -29,6 +29,7 @@ in {
   home.packages = with pkgs; [
     atool
     amazon-ecr-credential-helper
+    bash-completion
     bc
     bzip2
     cachix
