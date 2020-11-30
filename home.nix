@@ -14,8 +14,8 @@ let
   kwbauson-cfg = import (fetchFromGitHub {
     owner = "kwbauson";
     repo = "cfg";
-    rev = "6fd85b5cf3bae1500e916ac77c9aeaf2a05247fe";
-    sha256 = "067pq9cai1lmx9rbrk841r66y99l9pcgq5scvy2fasb2xcxzzg7a";
+    rev = "86dc5698c4907ca78cb865b5a713f0bd2ea16686";
+    sha256 = "00dh09h8rk2q90ha9f0rg2z8f9w11p1gfxgzwdq6z432jn4gg9mp";
   });
 in {
   # Let Home Manager install and manage itself.
