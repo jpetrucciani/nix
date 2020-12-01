@@ -102,6 +102,7 @@ in {
     zip
     kwbauson-cfg.better-comma
     kwbauson-cfg.nle
+    kwbauson-cfg.git-trim
     (writeShellScriptBin "hms" ''
       git -C ~/.config/nixpkgs/ pull origin main
       home-manager switch
