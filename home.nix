@@ -190,7 +190,7 @@ in with pkgs.hax; {
     };
     initExtra = ''
       HISTCONTROL=ignoreboth
-      PROMPT_COMMAND='history -a;history -n'
+      set +h
       export PATH="$PATH:$HOME/.bin/"
 
       # asdf and base nix
@@ -214,9 +214,6 @@ in with pkgs.hax; {
       complete -F __start_kubectl k
       source ~/.nix-profile/share/bash-completion/completions/git
       complete -o bashdefault -o default -o nospace -F __git_wrap__git_main g
-
-      # starship
-      eval "$(starship init bash)"
     '';
   };
 
