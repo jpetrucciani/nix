@@ -21,12 +21,6 @@ echo 'max-jobs = auto' >>~/.config/nix/nix.conf
 nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
 nix-channel --update
 nix-shell '<home-manager>' -A install
-echo '. "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"' >>~/.bash_profile
-
-# add starship and direnv to ~/.bashrc
-echo 'eval "$(direnv hook bash)"' >>~/.bashrc
-echo 'eval "$(starship init bash)"' >>~/.bashrc
-echo 'source $HOME/.nix-profile/share/nix-direnv/direnvrc' >>~/.direnvrc
 
 # pull repo into ~/.config/nixpkgs/
 cd ~/.config/nixpkgs
