@@ -198,8 +198,13 @@ in with pkgs.hax; {
       export PATH="$PATH:$HOME/.bin/"
 
       # asdf and base nix
+    '' + (if isDarwin then ''
       source /usr/local/opt/asdf/asdf.sh
       source /usr/local/opt/asdf/etc/bash_completion.d/asdf.bash
+    '' else ''
+      source $HOME/.asdf/asdf.sh
+      source $HOME/.asdf/completions/asdf.bash
+    '') + ''
       source ~/.nix-profile/etc/profile.d/nix.sh
 
       # additional aliases
