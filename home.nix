@@ -1,8 +1,6 @@
 { config, pkgs, ... }:
 let
-  inherit (pkgs.stdenv) isDarwin isLinux;
-  inherit (pkgs) fetchFromGitHub;
-  promptChar = if pkgs.stdenv.isDarwin then "ᛗ" else "ᛥ";
+  inherit (pkgs.hax) isDarwin fetchFromGitHub;
 
   # name stuff
   firstName = "jacobi";
@@ -10,6 +8,7 @@ let
   personalEmail = "j@cobi.dev";
   workEmail = "jacobi@hackerrank.com";
 
+  promptChar = if isDarwin then "ᛗ" else "ᛥ";
   # chief keefs stuff
   kwbauson-cfg = import (fetchFromGitHub {
     owner = "kwbauson";
@@ -17,97 +16,216 @@ let
     rev = "86dc5698c4907ca78cb865b5a713f0bd2ea16686";
     sha256 = "00dh09h8rk2q90ha9f0rg2z8f9w11p1gfxgzwdq6z432jn4gg9mp";
   });
-in {
+in with pkgs.hax; {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
-  home.username = if isDarwin then "${firstName}${lastName}" else firstName;
-  home.homeDirectory =
-    if isDarwin then "/Users/${firstName}${lastName}" else "/home/${firstName}";
-  home.stateVersion = "21.03";
+  home = {
+    username = if isDarwin then "${firstName}${lastName}" else firstName;
+    homeDirectory = if isDarwin then
+      "/Users/${firstName}${lastName}"
+    else
+      "/home/${firstName}";
+    stateVersion = "21.03";
 
-  home.packages = with pkgs; [
-    atool
-    amazon-ecr-credential-helper
-    bash-completion
-    bc
-    bzip2
-    cachix
-    coreutils-full
-    cowsay
-    curl
-    diffutils
-    direnv
-    dos2unix
-    exa
-    ed
-    fd
-    file
-    figlet
-    gawk
-    git
-    gitAndTools.delta
-    gnugrep
-    gnused
-    gnutar
-    gron
-    gzip
-    htop
-    less
-    libarchive
-    libnotify
-    lolcat
-    loop
-    lsof
-    man-pages
-    moreutils
-    nano
-    ncdu
-    netcat-gnu
-    nix-direnv
-    nix-bash-completions
-    nix-index
-    nix-info
-    nix-prefetch-github
-    nix-prefetch-scripts
-    nix-tree
-    nixfmt
-    nmap
-    openssh
-    p7zip
-    patch
-    perl
-    php
-    pigz
-    pssh
-    procps
-    pv
-    ranger
-    re2c
-    ripgrep
-    ripgrep-all
-    rlwrap
-    rsync
-    scc
-    sd
-    socat
-    starship
-    swaks
-    time
-    unzip
-    watch
-    wget
-    which
-    xxd
-    zip
-    kwbauson-cfg.better-comma
-    kwbauson-cfg.nle
-    kwbauson-cfg.git-trim
-    (writeShellScriptBin "hms" ''
-      git -C ~/.config/nixpkgs/ pull origin main
-      home-manager switch
-    '')
-  ];
+    sessionVariables = {
+      EDITOR = "nano";
+      HISTCONTROL = "ignoreboth";
+      PAGER = "less";
+      LESS = "-iR";
+      BASH_SILENCE_DEPRECATION_WARNING = "1";
+    };
+
+    packages = with pkgs; [
+      amazon-ecr-credential-helper
+      atool
+      bash-completion
+      bashInteractive
+      bat
+      bc
+      bzip2
+      cachix
+      coreutils-full
+      cowsay
+      curl
+      diffutils
+      direnv
+      dos2unix
+      ed
+      exa
+      fd
+      figlet
+      file
+      gawk
+      git
+      gitAndTools.delta
+      gnugrep
+      gnused
+      gnutar
+      gron
+      gzip
+      htop
+      jq
+      less
+      libarchive
+      libnotify
+      lolcat
+      loop
+      lsof
+      man-pages
+      mcfly
+      moreutils
+      nano
+      ncdu
+      netcat-gnu
+      nix-bash-completions
+      nix-direnv
+      nix-index
+      nix-info
+      nix-prefetch-github
+      nix-prefetch-scripts
+      nix-tree
+      nixfmt
+      nmap
+      openssh
+      p7zip
+      patch
+      perl
+      php
+      pigz
+      procps
+      pssh
+      pv
+      ranger
+      re2c
+      ripgrep
+      ripgrep-all
+      rlwrap
+      rsync
+      scc
+      sd
+      shellcheck
+      shfmt
+      socat
+      starship
+      swaks
+      time
+      unzip
+      watch
+      watchexec
+      wget
+      which
+      xxd
+      zip
+      kwbauson-cfg.better-comma
+      kwbauson-cfg.nle
+      kwbauson-cfg.git-trim
+      (writeShellScriptBin "hms" ''
+        git -C ~/.config/nixpkgs/ pull origin main
+        home-manager switch
+      '')
+      (writeShellScriptBin "get_cert" ''
+        curl --insecure -I -vvv $1 2>&1 |
+          awk 'BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }'
+      '')
+      (writeShellScriptBin "ecr_login" ''
+        region=''${1:-us-east-1}
+        aws ecr get-login-password --region ''${region} |
+        docker login --username AWS \
+            --password-stdin $(aws sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com
+      '')
+      (writeShellScriptBin "ecr_login_public" ''
+        region=''${1:-us-east-1}
+        aws ecr-public get-login-password --region ''${region} |
+        docker login --username AWS \
+            --password-stdin $(aws sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com
+      '')
+    ];
+  };
+
+  programs.bash = {
+    enable = true;
+    inherit (config.home) sessionVariables;
+    historyFileSize = -1;
+    historySize = -1;
+    shellAliases = {
+      l = "exa -alFT -L 1";
+      ll = "ls -ahlFG";
+      mkdir = "mkdir -pv";
+      ncdu = "ncdu --color dark -ex";
+      hm = "home-manager";
+      wrun =
+        "watchexec --debounce 50 --no-shell --clear --restart --signal SIGTERM -- ";
+
+      # git
+      g = "git";
+      ga = "git add -A .";
+      cm = "git commit -m ";
+
+      # docker
+      d = "docker";
+      da = "docker ps -a";
+      di = "docker images";
+      de = "docker exec -it";
+      dr = "docker run --rm -it";
+      drma = "docker stop $(docker ps -aq) && docker rm -f $(docker ps -aq)";
+      drmi = "di | grep none | awk '{print $3}' | sponge | xargs docker rmi";
+
+      # k8s
+      k = "kubectl";
+      kx = "kubectx";
+      ka = "kubectl get pods";
+      kaw = "kubectl get pods -o wide";
+      knuke = "kubectl delete pods --grace-period=0 --force";
+      klist =
+        "kubectl get pods --all-namespaces -o jsonpath='{..image}' | tr -s '[[:space:]]' '\\n' | sort | uniq -c";
+
+      # aws stuff
+      aws_id = "aws sts get-caller-identity --query Account --output text";
+
+      # misc
+      rot13 = "tr 'A-Za-z' 'N-ZA-Mn-za-m'";
+      space = "du -Sh | sort -rh | head -10";
+      now = "date +%s";
+
+      # work
+      local_ops = "nix-local-env run -d ~/hr/local_ops python dev.py";
+      lo = "local_ops";
+    };
+    initExtra = ''
+      HISTCONTROL=ignoreboth
+      PROMPT_COMMAND='history -a;history -n'
+      export PATH="$PATH:$HOME/.bin/"
+
+      # asdf and base nix
+      source /usr/local/opt/asdf/asdf.sh
+      source /usr/local/opt/asdf/etc/bash_completion.d/asdf.bash
+      source ~/.nix-profile/etc/profile.d/nix.sh
+
+      # additional aliases
+      [[ -e ~/.aliases ]] && source ~/.aliases
+      if [ -r /usr/local/opt/mcfly/mcfly.bash ]; then
+          . /usr/local/opt/mcfly/mcfly.bash
+      fi
+
+      # bash completions
+      export XDG_DATA_DIRS="$HOME/.nix-profile/share:''${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+      source <(kubectl completion bash)
+      source ~/.nix-profile/etc/profile.d/bash_completion.sh
+      source ~/.nix-profile/etc/bash_completion.d/better-comma.sh
+      complete -F __start_kubectl k
+      source ~/.nix-profile/share/bash-completion/completions/git
+      complete -o bashdefault -o default -o nospace -F __git_wrap__git_main g
+
+      # starship
+      eval "$(starship init bash)"
+    '';
+  };
+
+  programs.direnv = {
+    enable = true;
+    enableNixDirenvIntegration = true;
+  };
 
   home.file = {
     sqliterc = {
@@ -194,6 +312,7 @@ in {
       sla = "log --oneline --decorate --graph --all";
       lol = "log --graph --decorate --pretty=oneline --abbrev-commit";
       lola = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
+      shake = "remote prune origin";
     };
     extraConfig = {
       color.ui = true;
@@ -206,7 +325,7 @@ in {
       rebase.instructionFormat = "<%ae >%s";
     };
   };
-  programs.git.${if isDarwin then "signing" else null} = {
+  programs.git.${attrIf isDarwin "signing"} = {
     key = "03C0CBEA6EAB9258";
     gpgPath = "gpg";
     signByDefault = true;
