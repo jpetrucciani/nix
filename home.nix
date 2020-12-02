@@ -49,7 +49,6 @@ in with pkgs.hax; {
       cowsay
       curl
       diffutils
-      direnv
       dos2unix
       ed
       exa
@@ -57,7 +56,6 @@ in with pkgs.hax; {
       figlet
       file
       gawk
-      git
       gitAndTools.delta
       gnugrep
       gnused
@@ -73,7 +71,6 @@ in with pkgs.hax; {
       loop
       lsof
       man-pages
-      mcfly
       moreutils
       nano
       ncdu
@@ -107,7 +104,6 @@ in with pkgs.hax; {
       shellcheck
       shfmt
       socat
-      starship
       swaks
       time
       unzip
@@ -209,9 +205,6 @@ in with pkgs.hax; {
 
       # additional aliases
       [[ -e ~/.aliases ]] && source ~/.aliases
-      if [ -r /usr/local/opt/mcfly/mcfly.bash ]; then
-          . /usr/local/opt/mcfly/mcfly.bash
-      fi
 
       # bash completions
       export XDG_DATA_DIRS="$HOME/.nix-profile/share:''${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
@@ -230,6 +223,11 @@ in with pkgs.hax; {
   programs.direnv = {
     enable = true;
     enableNixDirenvIntegration = true;
+  };
+
+  programs.mcfly = {
+    enable = true;
+    enableBashIntegration = true;
   };
 
   home.file = {
@@ -283,6 +281,7 @@ in with pkgs.hax; {
   # gitconfig
   programs.git = {
     enable = true;
+    package = pkgs.gitAndTools.gitFull;
     userName = "${firstName} ${lastName}";
     userEmail = if isDarwin then workEmail else personalEmail;
     aliases = {
@@ -323,6 +322,7 @@ in with pkgs.hax; {
       color.ui = true;
       push.default = "simple";
       pull.ff = "only";
+      checkout.defaultRemote = "origin";
       core = {
         editor = if isDarwin then "code --wait" else "nano";
         pager = "delta --dark";
