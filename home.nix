@@ -227,6 +227,13 @@ in with pkgs.hax; {
     enableBashIntegration = true;
   };
 
+  programs.fzf = {
+    enable = true;
+    enableBashIntegration = true;
+    defaultCommand = "fd -tf -c always -H --ignore-file ${./ignore} -E .git";
+    defaultOptions = words "--ansi --reverse --multi --filepath-word";
+  };
+
   home.file = {
     sqliterc = {
       target = ".sqliterc";

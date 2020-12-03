@@ -1,0 +1,45 @@
+**/*.log
+**/*.log.*
+**/*logs
+**/*~
+**/.Trash
+**/.cache
+**/.sass-cache
+**/Application Cache
+**/Battle.net
+**/Cache
+**/CacheStorage
+**/CachedData
+**/Caches
+**/Code Cache
+**/Default/*Extension*
+**/File System
+**/GPUCache
+**/IndexedDB
+**/ScriptCache
+**/ShaderCache
+**/Stats
+**/Steam
+**/__pycache__
+**/bak
+**/bower_components
+**/cache
+**/dist
+**/log
+**/node_modules
+**/old
+**/secrets
+**/temp
+**/tmp
+**/vendor/bundle
+.local/share/flatpak
+.local/share/nvim/undo
+.m2
+.var
+.wine
+Library/Containers
+Library/Developer
+Library/Python
+mnt
+src/hr
+src/mimir
