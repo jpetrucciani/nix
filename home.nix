@@ -152,6 +152,7 @@ in with pkgs.hax; {
       hm = "home-manager";
       wrun =
         "watchexec --debounce 50 --no-shell --clear --restart --signal SIGTERM -- ";
+      fzfp = "fzf --preview 'bat --style=numbers --color=always {}'";
 
       # git
       g = "git";
@@ -213,6 +214,7 @@ in with pkgs.hax; {
       source ~/.nix-profile/etc/bash_completion.d/better-comma.sh
       complete -F __start_kubectl k
       source ~/.nix-profile/share/bash-completion/completions/git
+      source ~/.nix-profile/share/bash-completion/completions/ssh
       complete -o bashdefault -o default -o nospace -F __git_wrap__git_main g
     '';
   };
