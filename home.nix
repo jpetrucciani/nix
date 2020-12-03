@@ -231,7 +231,7 @@ in with pkgs.hax; {
 
   programs.fzf = {
     enable = true;
-    enableBashIntegration = true;
+    enableBashIntegration = false;
     defaultCommand = "fd -tf -c always -H --ignore-file ${./ignore} -E .git";
     defaultOptions = words "--ansi --reverse --multi --filepath-word";
   };
