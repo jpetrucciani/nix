@@ -25,7 +25,8 @@ nix-shell '<home-manager>' -A install
 
 # pull repo into ~/.config/nixpkgs/
 cd ~/.config/nixpkgs
-git clone git@github.com:jpetrucciani/nix.git .
+rm home.nix
+git clone https://github.com/jpetrucciani/nix.git .
 
 # enable home-manager
 home-manager switch
