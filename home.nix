@@ -8,6 +8,7 @@ let
   personalEmail = "j@cobi.dev";
   workEmail = "jacobi@hackerrank.com";
 
+  onAws = builtins.getEnv "USER" == "ubuntu";
   promptChar = if isDarwin then "ᛗ" else "ᛥ";
   # chief keefs stuff
   kwbauson-cfg = import (fetchFromGitHub {
@@ -21,11 +22,14 @@ in with pkgs.hax; {
   programs.home-manager.enable = true;
 
   home = {
-    username = if isDarwin then "${firstName}${lastName}" else firstName;
+    username = if isDarwin then
+      "${firstName}${lastName}"
+    else
+      (if onAws then "ubuntu" else firstName);
     homeDirectory = if isDarwin then
       "/Users/${firstName}${lastName}"
     else
-      "/home/${firstName}";
+      (if onAws then "/home/ubuntu" else "/home/${firstName}");
     stateVersion = "21.03";
 
     sessionVariables = {
