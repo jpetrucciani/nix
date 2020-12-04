@@ -8,7 +8,7 @@ _my nixpkgs folder_
 
 ```bash
 # install nix
-curl -L https://nixos.org/nix/install | sh
+sh <(curl -L https://nixos.org/nix/install) --daemon
 
 # switch to nixos-unstable
 nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs

@@ -13,8 +13,8 @@ let
   kwbauson-cfg = import (fetchFromGitHub {
     owner = "kwbauson";
     repo = "cfg";
-    rev = "b6433ba3f495021c21bea627bedf210f6bcc836b";
-    sha256 = "0hkf545790gx8jashl16z9sxrafgl7cjdxr8ndg96758qbw3z80z";
+    rev = "2ebeb911ef861539b5da7563c9f739ed04abd17d";
+    sha256 = "12hddg4pki4dxjc2ayxgqddcpi4k5l158s7k05fghc27ygz2n5sx";
   });
 in with pkgs.hax; {
   # Let Home Manager install and manage itself.
@@ -136,6 +136,10 @@ in with pkgs.hax; {
         docker login --username AWS \
             --password-stdin $(aws sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com
       '')
+      (writeShellScriptBin "u" ''
+        sudo apt update
+        sudo apt upgrade
+      '')
     ];
   };
 
@@ -196,13 +200,13 @@ in with pkgs.hax; {
 
       # asdf and base nix
     '' + (if isDarwin then ''
-      source /usr/local/opt/asdf/asdf.sh
-      source /usr/local/opt/asdf/etc/bash_completion.d/asdf.bash
+      [[ -e /usr/local/opt/asdf/asdf.sh ]] && source /usr/local/opt/asdf/asdf.sh
+      [[ -e /usr/local/opt/asdf/etc/bash_completion.d/asdf.bash ]] && source /usr/local/opt/asdf/etc/bash_completion.d/asdf.bash
     '' else ''
-      source $HOME/.asdf/asdf.sh
-      source $HOME/.asdf/completions/asdf.bash
+      [[ -e $HOME/.asdf/asdf.sh ]] && source $HOME/.asdf/asdf.sh
+      [[ -e $HOME/.asdf/completions/asdf.bash ]] && source $HOME/.asdf/completions/asdf.bash
     '') + ''
-      source ~/.nix-profile/etc/profile.d/nix.sh
+      [[ -e ~/.nix-profile/etc/profile.d/nix.sh ]] && source ~/.nix-profile/etc/profile.d/nix.sh
 
       # additional aliases
       [[ -e ~/.aliases ]] && source ~/.aliases
