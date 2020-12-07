@@ -110,6 +110,7 @@ in with pkgs.hax; {
       socat
       swaks
       time
+      tealdeer
       unzip
       watch
       watchexec
