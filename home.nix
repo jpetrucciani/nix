@@ -117,6 +117,7 @@ in with pkgs.hax; {
       wget
       which
       xxd
+      yq-go
       zip
       kwbauson-cfg.better-comma
       kwbauson-cfg.nle
