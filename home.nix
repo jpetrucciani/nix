@@ -19,7 +19,7 @@ let
   });
 
   coinSound = pkgs.fetchurl {
-    url = "https://themushroomkingdom.net/sounds/wav/smw/smw_coin.wav";
+    url = "https://cobi.dev/sounds/coin.wav";
     sha256 = "18c7dfhkaz9ybp3m52n1is9nmmkq18b1i82g6vgzy7cbr2y07h93";
   };
   guhSound = pkgs.fetchurl {
@@ -35,6 +35,7 @@ in with pkgs.hax; {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
   programs.htop.enable = true;
+  programs.dircolors.enable = true;
 
   home = {
     username = if isDarwin then
@@ -162,6 +163,12 @@ in with pkgs.hax; {
         sudo apt update
         sudo apt upgrade
       '')
+      (writeShellScriptBin "slack_meme" ''
+        word=$1
+        fg=$2
+        bg=$3
+        figlet -f banner "$word" | sed 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | awk '{print ":'"$bg"':" $1}'
+      '')
       (soundScript "coin" coinSound)
       (soundScript "guh" guhSound)
       (soundScript "bruh" bruhSound)
@@ -174,6 +181,7 @@ in with pkgs.hax; {
     historyFileSize = -1;
     historySize = -1;
     shellAliases = {
+      ls = "ls --color=auto";
       l = "exa -alFT -L 1";
       ll = "ls -ahlFG";
       mkdir = "mkdir -pv";
