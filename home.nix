@@ -17,9 +17,24 @@ let
     rev = "4a02142850d9539d79ea418acd9ce0373e9a3729";
     sha256 = "1j6jbfalcbiayczypgkl9xp1j2ba91rdlcfycdpwy0bf8miy5nnc";
   });
+
+  coinSound = pkgs.fetchurl {
+    url = "https://themushroomkingdom.net/sounds/wav/smw/smw_coin.wav";
+    sha256 = "18c7dfhkaz9ybp3m52n1is9nmmkq18b1i82g6vgzy7cbr2y07h93";
+  };
+  guhSound = pkgs.fetchurl {
+    url = "https://cobi.dev/sounds/guh.wav";
+    sha256 = "1chr6fagj6sgwqphrgbg1bpmyfmcd94p39d34imq5n9ik674z9sa";
+  };
+  bruhSound = pkgs.fetchurl {
+    url = "https://cobi.dev/sounds/bruh.mp3";
+    sha256 = "11n1a20a7fj80xgynfwiq3jaq1bhmpsdxyzbnmnvlsqfnsa30vy3";
+  };
+
 in with pkgs.hax; {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+  programs.htop.enable = true;
 
   home = {
     username = if isDarwin then
@@ -108,6 +123,7 @@ in with pkgs.hax; {
       shellcheck
       shfmt
       socat
+      sox
       swaks
       time
       tealdeer
@@ -146,6 +162,9 @@ in with pkgs.hax; {
         sudo apt update
         sudo apt upgrade
       '')
+      (soundScript "coin" coinSound)
+      (soundScript "guh" guhSound)
+      (soundScript "bruh" bruhSound)
     ];
   };
 
@@ -163,6 +182,11 @@ in with pkgs.hax; {
       wrun =
         "watchexec --debounce 50 --no-shell --clear --restart --signal SIGTERM -- ";
       fzfp = "fzf --preview 'bat --style=numbers --color=always {}'";
+
+      # nix
+      nix_hash = "nix-prefetch-url";
+      nix_hash_git = "nix-prefetch-git";
+      nix_hash_kwb = "nix-prefetch-git https://github.com/kwbauson/cfg.git";
 
       # git
       g = "git";
