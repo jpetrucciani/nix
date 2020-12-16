@@ -14,8 +14,8 @@ let
   kwbauson-cfg = import (fetchFromGitHub {
     owner = "kwbauson";
     repo = "cfg";
-    rev = "4a02142850d9539d79ea418acd9ce0373e9a3729";
-    sha256 = "1j6jbfalcbiayczypgkl9xp1j2ba91rdlcfycdpwy0bf8miy5nnc";
+    rev = "779bc8fb6b85b315eb895ffb3227191e94c77551";
+    sha256 = "1wrnh7yibw7ciwg651aas9ilfiaiysvz31dbs0pdd7qzyfs4q61m";
   });
 
   coinSound = pkgs.fetchurl {
@@ -69,6 +69,7 @@ in with pkgs.hax; {
       coreutils-full
       cowsay
       curl
+      dasel
       diffutils
       dos2unix
       ed
