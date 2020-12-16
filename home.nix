@@ -65,6 +65,7 @@ in with pkgs.hax; {
       bc
       bzip2
       cachix
+      cloudquery
       coreutils-full
       cowsay
       curl
@@ -157,7 +158,7 @@ in with pkgs.hax; {
         region=''${1:-us-east-1}
         aws ecr-public get-login-password --region ''${region} |
         docker login --username AWS \
-            --password-stdin $(aws sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com
+            --password-stdin public.ecr.aws
       '')
       (writeShellScriptBin "u" ''
         sudo apt update
