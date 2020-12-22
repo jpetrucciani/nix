@@ -16,7 +16,6 @@ buildGoModule rec {
     homepage = "https://github.com/cloudquery/cloudquery";
     description =
       "cloudquery transforms your cloud infrastructure into queryable SQL tables for easy monitoring, governance and security.";
-    maintainers = with maintainers; [ jpetrucciani ];
     license = licenses.mpl20;
   };
 }
