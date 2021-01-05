@@ -14,8 +14,8 @@ let
   kwbauson-cfg = import (fetchFromGitHub {
     owner = "kwbauson";
     repo = "cfg";
-    rev = "d5ebb6b8df5e79bea2fb1f2d7a5f01e6f5f6e728";
-    sha256 = "05phv637hwawv3ynmbssh9xh37l1y617n8ykgk3f1lbw6kn8y3ax";
+    rev = "a5b4e0c1d18993f19505b07d8401a0b871060637";
+    sha256 = "0xp4ibwxagijs51ad9s0v6clw1b554hrb6qiyhqjzq71ph9w31m0";
   });
 
   coinSound = pkgs.fetchurl {
@@ -230,7 +230,7 @@ in with pkgs.hax; {
       now = "date +%s";
 
       # work
-      local_ops = "nix-local-env run -d ~/hr/local_ops python dev.py";
+      local_ops = "nix-local-env -d ~/hr/local_ops run python dev.py";
       lo = "local_ops";
     };
     initExtra = ''
