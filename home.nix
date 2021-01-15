@@ -14,8 +14,8 @@ let
   kwbauson-cfg = import (fetchFromGitHub {
     owner = "kwbauson";
     repo = "cfg";
-    rev = "a5b4e0c1d18993f19505b07d8401a0b871060637";
-    sha256 = "0xp4ibwxagijs51ad9s0v6clw1b554hrb6qiyhqjzq71ph9w31m0";
+    rev = "31c150dfde6f94384cea0a09e597fc607d0409b3";
+    sha256 = "1w2ghd08z5kqi7qksi7ix0d7n1vzya2fv6814dyzdkgbz2wpaasa";
   });
 
   coinSound = pkgs.fetchurl {
@@ -64,6 +64,7 @@ in with pkgs.hax; {
       bat
       bc
       bzip2
+      cacert
       cachix
       cloudquery
       coreutils-full
@@ -97,6 +98,7 @@ in with pkgs.hax; {
       nano
       ncdu
       netcat-gnu
+      nixUnstable
       nix-bash-completions
       nix-direnv
       nix-index
@@ -183,6 +185,7 @@ in with pkgs.hax; {
     historyFileSize = -1;
     historySize = -1;
     shellAliases = {
+      ",," = "nix run github:kwbauson/cfg#better-comma -- ";
       ls = "ls --color=auto";
       l = "exa -alFT -L 1";
       ll = "ls -ahlFG";
@@ -192,6 +195,9 @@ in with pkgs.hax; {
       wrun =
         "watchexec --debounce 50 --no-shell --clear --restart --signal SIGTERM -- ";
       fzfp = "fzf --preview 'bat --style=numbers --color=always {}'";
+      strip = ''
+        sed -E 's#^\s+|\s+$##g'
+      '';
 
       # nix
       nix_hash = "nix-prefetch-url";
