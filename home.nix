@@ -32,6 +32,7 @@ let
   };
 
 in with pkgs.hax; {
+  nixpkgs.overlays = import ./overlays.nix;
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
   programs.htop.enable = true;
