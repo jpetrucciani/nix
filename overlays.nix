@@ -22,6 +22,11 @@ with builtins; [
         alias = name: x:
           writeShellScriptBin name
           ''exec ${if isDerivation x then exe x else x} "$@"'';
+        overridePackage = pkg:
+          let path = head (splitString ":" pkg.meta.position);
+          in self.callPackage path;
+        nix-direnv =
+          self.overridePackage super.nix-direnv { nix = super.nixUnstable; };
         excludeLines = f: text:
           concatStringsSep "\n" (filter (x: !f x) (splitString "\n" text));
         drvs = x:

@@ -14,8 +14,8 @@ let
   kwbauson-cfg = import (fetchFromGitHub {
     owner = "kwbauson";
     repo = "cfg";
-    rev = "31c150dfde6f94384cea0a09e597fc607d0409b3";
-    sha256 = "1w2ghd08z5kqi7qksi7ix0d7n1vzya2fv6814dyzdkgbz2wpaasa";
+    rev = "52f2bfd4ed529b8ce441751940b436822e6f128a";
+    sha256 = "0mbjsnximhwy77svh1m9ypdc88hv73a359hbahsanzwyjyajkrf1";
   });
 
   coinSound = pkgs.fetchurl {
@@ -117,6 +117,7 @@ in with pkgs.hax; {
       pigz
       procps
       pssh
+      pup
       pv
       ranger
       re2c
