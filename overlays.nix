@@ -57,7 +57,10 @@ with builtins; [
       }))
   (self: super:
     with super;
-    mapAttrs (n: v: hax.fakePlatform v) { inherit gixy; })
+    mapAttrs (n: v: hax.fakePlatform v) {
+      inherit gixy;
+      inherit brave;
+    })
   (self: super:
     with super;
     with hax;
