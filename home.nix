@@ -263,7 +263,6 @@ in with pkgs.hax; {
       export XDG_DATA_DIRS="$HOME/.nix-profile/share:''${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
       source <(kubectl completion bash)
       source ~/.nix-profile/etc/profile.d/bash_completion.sh
-      source ~/.nix-profile/etc/bash_completion.d/better-comma.sh
       complete -F __start_kubectl k
       source ~/.nix-profile/share/bash-completion/completions/git
       source ~/.nix-profile/share/bash-completion/completions/ssh
