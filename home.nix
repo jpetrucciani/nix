@@ -14,8 +14,8 @@ let
   kwbauson-cfg = import (fetchFromGitHub {
     owner = "kwbauson";
     repo = "cfg";
-    rev = "800e21d164d22303a05d76be0605741a1408be2c";
-    sha256 = "193jnqc8d9vm7ma9cp39855yfss72pzxm5dlqjv1c0j4494ippa0";
+    rev = "23e56e9ddc1d9da469f6266cf9c91f85e4fefb83";
+    sha256 = "1pk52y0mmjdkwf2jnl4hzfwgj1spd3al7b7svv5qpdh42h7w8a1k";
   });
 
   coinSound = pkgs.fetchurl {

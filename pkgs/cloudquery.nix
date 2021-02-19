@@ -1,16 +1,16 @@
 { stdenv, buildGoModule, fetchFromGitHub }:
 buildGoModule rec {
-  version = "0.8.11";
+  version = "0.9.6";
   pname = "cloudquery";
 
   src = fetchFromGitHub {
     owner = "cloudquery";
     repo = "cloudquery";
     rev = "v${version}";
-    sha256 = "0khlw5q8b28hf5zaz3w88mxv69ahjcha9chq661yq55yrimbg3dl";
+    sha256 = "06316ji2d887wiw7w1dwnbm4rj3ryy672c43sxf48yq0b65887z0";
   };
 
-  vendorSha256 = "SeMhnpBpotdMYWUO/2ERohZvsWk4ekrMNrL00M618k0=";
+  vendorSha256 = "tpGyE8m5ksvg+N7ICnNBhD0sWjeI4yBcHlLwqbDyBmc=";
 
   meta = with stdenv.lib; {
     homepage = "https://github.com/cloudquery/cloudquery";
