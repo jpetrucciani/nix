@@ -145,34 +145,34 @@ in with pkgs.hax; {
       kwbauson-cfg.better-comma
       kwbauson-cfg.nle
       kwbauson-cfg.git-trim
-      (writeShellScriptBin "hms" ''
+      (writeBashBinChecked "hms" ''
         git -C ~/.config/nixpkgs/ pull origin main
         home-manager switch
       '')
-      (writeShellScriptBin "get_cert" ''
-        curl --insecure -I -vvv $1 2>&1 |
+      (writeBashBinChecked "get_cert" ''
+        curl --insecure -I -vvv "$1" 2>&1 |
           awk 'BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }'
       '')
-      (writeShellScriptBin "ecr_login" ''
-        region=''${1:-us-east-1}
-        aws ecr get-login-password --region ''${region} |
+      (writeBashBinChecked "ecr_login" ''
+        region="''${1:-us-east-1}"
+        aws ecr get-login-password --region "''${region}" |
         docker login --username AWS \
-            --password-stdin $(aws sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com
+            --password-stdin "$(aws sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com"
       '')
-      (writeShellScriptBin "ecr_login_public" ''
-        region=''${1:-us-east-1}
-        aws ecr-public get-login-password --region ''${region} |
+      (writeBashBinChecked "ecr_login_public" ''
+        region="''${1:-us-east-1}"
+        aws ecr-public get-login-password --region "''${region}" |
         docker login --username AWS \
             --password-stdin public.ecr.aws
       '')
-      (writeShellScriptBin "u" ''
+      (writeBashBinChecked "u" ''
         sudo apt update
         sudo apt upgrade
       '')
-      (writeShellScriptBin "slack_meme" ''
-        word=$1
-        fg=$2
-        bg=$3
+      (writeBashBinChecked "slack_meme" ''
+        word="$1"
+        fg="$2"
+        bg="$3"
         figlet -f banner "$word" | sed 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | awk '{print ":'"$bg"':" $1}'
       '')
       (soundScript "coin" coinSound)

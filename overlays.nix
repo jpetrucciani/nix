@@ -38,6 +38,19 @@ with builtins; [
           writeShellScriptBin x ''
             ${sox}/bin/play --no-show-progress ${y}
           '';
+        writeBashBinChecked = name: text:
+          stdenv.mkDerivation {
+            inherit name text;
+            dontUnpack = true;
+            passAsFile = "text";
+            installPhase = ''
+              mkdir -p $out/bin
+              echo '#!/bin/bash' > $out/bin/${name}
+              cat $textPath >> $out/bin/${name}
+              chmod +x $out/bin/${name}
+              ${shellcheck}/bin/shellcheck $out/bin/${name}
+            '';
+          };
         drvsExcept = x: e:
           with { excludeNames = concatMap attrNames (attrValues e); };
           flatten (drvs (filterAttrsRecursive (n: _: !elem n excludeNames) x));
