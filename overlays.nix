@@ -9,9 +9,7 @@ with builtins; [
         mapAttrValues = f: mapAttrs (n: v: f v);
         fakePlatform = x:
           x.overrideAttrs (attrs: {
-            meta = attrs.meta or { } // {
-              platforms = stdenv.lib.platforms.all;
-            };
+            meta = attrs.meta or { } // { platforms = lib.platforms.all; };
           });
         prefixIf = b: x: y: if b then x + y else y;
         mapLines = f: s:
@@ -25,8 +23,7 @@ with builtins; [
         overridePackage = pkg:
           let path = head (splitString ":" pkg.meta.position);
           in self.callPackage path;
-        nix-direnv =
-          self.overridePackage super.nix-direnv { nix = super.nixUnstable; };
+        nix-direnv = super.nix-direnv.override { nix = super.nixUnstable; };
         excludeLines = f: text:
           concatStringsSep "\n" (filter (x: !f x) (splitString "\n" text));
         drvs = x:

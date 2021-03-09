@@ -14,8 +14,8 @@ let
   kwbauson-cfg = import (fetchFromGitHub {
     owner = "kwbauson";
     repo = "cfg";
-    rev = "23e56e9ddc1d9da469f6266cf9c91f85e4fefb83";
-    sha256 = "1pk52y0mmjdkwf2jnl4hzfwgj1spd3al7b7svv5qpdh42h7w8a1k";
+    rev = "2da560982596354d8dca5a9fd1aec699723657b9";
+    sha256 = "1q8m9cy3n8yppvvbzsrgcdjmzs3d5cv2ppl859amh6kffbfqvmhd";
   });
 
   coinSound = pkgs.fetchurl {
@@ -101,7 +101,6 @@ in with pkgs.hax; {
       netcat-gnu
       nixUnstable
       nix-bash-completions
-      nix-direnv
       nix-index
       nix-info
       nix-prefetch-github
