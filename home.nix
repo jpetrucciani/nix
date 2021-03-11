@@ -33,6 +33,7 @@ let
 
 in with pkgs.hax; {
   nixpkgs.overlays = import ./overlays.nix;
+  nixpkgs.config = { allowUnfree = true; };
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
   programs.htop.enable = true;
@@ -57,127 +58,128 @@ in with pkgs.hax; {
       BASH_SILENCE_DEPRECATION_WARNING = "1";
     };
 
-    packages = with pkgs; [
-      amazon-ecr-credential-helper
-      atool
-      bash-completion
-      bashInteractive
-      bat
-      bc
-      bzip2
-      cacert
-      cachix
-      cloudquery
-      coreutils-full
-      cowsay
-      curl
-      dasel
-      diffutils
-      dos2unix
-      ed
-      exa
-      fd
-      figlet
-      file
-      gawk
-      gitAndTools.delta
-      gnugrep
-      gnused
-      gnutar
-      gron
-      gzip
-      htop
-      jq
-      less
-      libarchive
-      libnotify
-      lolcat
-      loop
-      lsof
-      man-pages
-      moreutils
-      nano
-      ncdu
-      netcat-gnu
-      nixUnstable
-      nix-bash-completions
-      nix-index
-      nix-info
-      nix-prefetch-github
-      nix-prefetch-scripts
-      nix-tree
-      nixfmt
-      nmap
-      openssh
-      p7zip
-      patch
-      perl
-      php
-      pigz
-      procps
-      pssh
-      pup
-      pv
-      ranger
-      re2c
-      ripgrep
-      ripgrep-all
-      rlwrap
-      rsync
-      scc
-      sd
-      shellcheck
-      shfmt
-      socat
-      sox
-      swaks
-      time
-      tealdeer
-      unzip
-      watch
-      watchexec
-      wget
-      which
-      xxd
-      yq-go
-      zip
-      kwbauson-cfg.better-comma
-      kwbauson-cfg.nle
-      kwbauson-cfg.git-trim
-      (writeBashBinChecked "hms" ''
-        git -C ~/.config/nixpkgs/ pull origin main
-        home-manager switch
-      '')
-      (writeBashBinChecked "get_cert" ''
-        curl --insecure -I -vvv "$1" 2>&1 |
-          awk 'BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }'
-      '')
-      (writeBashBinChecked "ecr_login" ''
-        region="''${1:-us-east-1}"
-        aws ecr get-login-password --region "''${region}" |
-        docker login --username AWS \
-            --password-stdin "$(aws sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com"
-      '')
-      (writeBashBinChecked "ecr_login_public" ''
-        region="''${1:-us-east-1}"
-        aws ecr-public get-login-password --region "''${region}" |
-        docker login --username AWS \
-            --password-stdin public.ecr.aws
-      '')
-      (writeBashBinChecked "u" ''
-        sudo apt update
-        sudo apt upgrade
-      '')
-      (writeBashBinChecked "slack_meme" ''
-        word="$1"
-        fg="$2"
-        bg="$3"
-        figlet -f banner "$word" | sed 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | awk '{print ":'"$bg"':" $1}'
-      '')
-      (soundScript "coin" coinSound)
-      (soundScript "guh" guhSound)
-      (soundScript "bruh" bruhSound)
-    ];
+    packages = with pkgs;
+      lib.flatten [
+        amazon-ecr-credential-helper
+        atool
+        bash-completion
+        bashInteractive
+        bat
+        bc
+        bzip2
+        cacert
+        cachix
+        cloudquery
+        coreutils-full
+        cowsay
+        curl
+        dasel
+        diffutils
+        dos2unix
+        ed
+        exa
+        fd
+        figlet
+        file
+        gawk
+        gitAndTools.delta
+        gnugrep
+        gnused
+        gnutar
+        gron
+        gzip
+        htop
+        jq
+        less
+        libarchive
+        libnotify
+        lolcat
+        loop
+        lsof
+        man-pages
+        moreutils
+        nano
+        ncdu
+        netcat-gnu
+        nixUnstable
+        nix-bash-completions
+        nix-index
+        nix-info
+        nix-prefetch-github
+        nix-prefetch-scripts
+        nix-tree
+        nixfmt
+        nmap
+        openssh
+        p7zip
+        patch
+        perl
+        php
+        pigz
+        procps
+        pssh
+        pup
+        pv
+        ranger
+        re2c
+        ripgrep
+        ripgrep-all
+        rlwrap
+        rsync
+        scc
+        sd
+        shellcheck
+        shfmt
+        socat
+        sox
+        swaks
+        time
+        tealdeer
+        unzip
+        watch
+        watchexec
+        wget
+        which
+        xxd
+        yq-go
+        zip
+        kwbauson-cfg.better-comma
+        kwbauson-cfg.nle
+        kwbauson-cfg.git-trim
+        (writeBashBinChecked "hms" ''
+          git -C ~/.config/nixpkgs/ pull origin main
+          home-manager switch
+        '')
+        (writeBashBinChecked "get_cert" ''
+          curl --insecure -I -vvv "$1" 2>&1 |
+            awk 'BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }'
+        '')
+        (writeBashBinChecked "ecr_login" ''
+          region="''${1:-us-east-1}"
+          aws ecr get-login-password --region "''${region}" |
+          docker login --username AWS \
+              --password-stdin "$(aws sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com"
+        '')
+        (writeBashBinChecked "ecr_login_public" ''
+          region="''${1:-us-east-1}"
+          aws ecr-public get-login-password --region "''${region}" |
+          docker login --username AWS \
+              --password-stdin public.ecr.aws
+        '')
+        (writeBashBinChecked "u" ''
+          sudo apt update
+          sudo apt upgrade
+        '')
+        (writeBashBinChecked "slack_meme" ''
+          word="$1"
+          fg="$2"
+          bg="$3"
+          figlet -f banner "$word" | sed 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | awk '{print ":'"$bg"':" $1}'
+        '')
+        (soundScript "coin" coinSound)
+        (soundScript "guh" guhSound)
+        (soundScript "bruh" bruhSound)
+      ];
   };
 
   programs.bash = {
