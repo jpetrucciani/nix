@@ -168,6 +168,9 @@ in with pkgs.hax; {
           docker login --username AWS \
               --password-stdin public.ecr.aws
         '')
+        (writeBashBinChecked "jql" ''
+          echo "" | fzf --print-query --preview-window wrap --preview "cat $1 | jq -C {q}"
+        '')
         (writeBashBinChecked "u" ''
           sudo apt update
           sudo apt upgrade
