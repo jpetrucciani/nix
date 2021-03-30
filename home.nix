@@ -90,6 +90,8 @@ in with pkgs.hax; {
         gzip
         htop
         jq
+        just
+        kubectx
         less
         libarchive
         libnotify
@@ -257,17 +259,33 @@ in with pkgs.hax; {
     '') + ''
       [[ -e ~/.nix-profile/etc/profile.d/nix.sh ]] && source ~/.nix-profile/etc/profile.d/nix.sh
 
+      _kube_contexts() {
+        local curr_arg;
+        curr_arg=''${COMP_WORDS[COMP_CWORD]}
+        COMPREPLY=( $(compgen -W "- $(kubectl config get-contexts --output='name')" -- $curr_arg ) );
+      }
+
+      _kube_namespaces() {
+        local curr_arg;
+        curr_arg=''${COMP_WORDS[COMP_CWORD]}
+        COMPREPLY=( $(compgen -W "- $(kubectl get namespaces -o=jsonpath='{range .items[*].metadata.name}{@}{"\n"}{end}')" -- $curr_arg ) );
+      }
+
       # additional aliases
       [[ -e ~/.aliases ]] && source ~/.aliases
 
       # bash completions
       export XDG_DATA_DIRS="$HOME/.nix-profile/share:''${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
       source <(kubectl completion bash)
+      source <(just --completions bash)
       source ~/.nix-profile/etc/profile.d/bash_completion.sh
       complete -F __start_kubectl k
       source ~/.nix-profile/share/bash-completion/completions/git
       source ~/.nix-profile/share/bash-completion/completions/ssh
       complete -o bashdefault -o default -o nospace -F __git_wrap__git_main g
+      complete -F _kube_contexts kubectx kx
+      complete -F _kube_namespaces kubens kns
+
     '';
   };
 
