@@ -14,8 +14,8 @@ let
   kwbauson-cfg = import (fetchFromGitHub {
     owner = "kwbauson";
     repo = "cfg";
-    rev = "2da560982596354d8dca5a9fd1aec699723657b9";
-    sha256 = "1q8m9cy3n8yppvvbzsrgcdjmzs3d5cv2ppl859amh6kffbfqvmhd";
+    rev = "1cd4b9097516358844f1d75551ad514dcf435011";
+    sha256 = "0vp1fwqwkn3x5sr57gcrc3ippjyx6c7a8whfp0dqax7wfmd5nznv";
   });
 
   coinSound = pkgs.fetchurl {
@@ -88,6 +88,7 @@ in with pkgs.hax; {
         gnutar
         gron
         gzip
+        hadolint
         htop
         jq
         just
@@ -243,8 +244,6 @@ in with pkgs.hax; {
       space = "du -Sh | sort -rh | head -10";
       now = "date +%s";
 
-      # work
-      local_ops = "nix-local-env -d ~/hr/local_ops run python dev.py";
       lo = "local_ops";
     };
     initExtra = ''
