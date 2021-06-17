@@ -185,6 +185,10 @@ in with pkgs.hax; {
         (soundScript "coin" coinSound)
         (soundScript "guh" guhSound)
         (soundScript "bruh" bruhSound)
+        (lib.optional isDarwin [
+          (brewCask "insomnia"
+            "0l88zzd3zmz55di44aldhnlncvh87plhcq6q73nvaiq7p2y7fggd")
+        ])
       ];
   };
 

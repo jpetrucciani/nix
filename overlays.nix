@@ -48,6 +48,38 @@ with builtins; [
               ${shellcheck}/bin/shellcheck $out/bin/${name}
             '';
           };
+        getJson = url: sha256:
+          let
+            text = fetchurl {
+              url = url;
+              sha256 = sha256;
+            };
+          in fromJSON (readFile text);
+        brewCask = cask: sha256:
+          let
+            home = getEnv "HOME";
+            data =
+              getJson "https://formulae.brew.sh/api/cask/${cask}.json" sha256;
+            appFile = head (filter isString (lists.flatten data.artifacts));
+          in stdenv.mkDerivation {
+            name = data.token;
+            src = fetchurl {
+              name = "${data.token}.dmg";
+              url = data.url;
+              sha256 = data.sha256;
+            };
+            phases = [ "unpackPhase" "buildPhase" "installPhase" ];
+            buildInputs = [ undmg ];
+            installPhase = ''
+              mkdir -p $out/Applications
+              cp -R ${appFile} "$out/Applications"
+              ln -s "$out/Applications/${appFile}" "${home}/Applications/${
+                head data.name
+              }.app"
+            '';
+            meta = { };
+            sourceRoot = ".";
+          };
         drvsExcept = x: e:
           with { excludeNames = concatMap attrNames (attrValues e); };
           flatten (drvs (filterAttrsRecursive (n: _: !elem n excludeNames) x));

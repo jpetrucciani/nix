@@ -1,4 +1,4 @@
-{ stdenv, buildGoModule, fetchFromGitHub }:
+{ stdenv, lib, buildGoModule, fetchFromGitHub }:
 buildGoModule rec {
   version = "0.12.1";
   pname = "cloudquery";
@@ -13,7 +13,7 @@ buildGoModule rec {
   # vendorSha256 = stdenv.lib.fakeSha256;
   vendorSha256 = "HdFdpSocjfOmzAcXCp31OY/y+z/N9Ze7rekMAmx2Rqo=";
 
-  meta = with stdenv.lib; {
+  meta = with lib; {
     homepage = "https://github.com/cloudquery/cloudquery";
     description =
       "cloudquery transforms your cloud infrastructure into queryable SQL tables for easy monitoring, governance and security.";
