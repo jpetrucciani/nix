@@ -354,6 +354,12 @@ in with pkgs.hax; {
         disabled = false;
         style = "fg:#326ce5";
       };
+      terraform = {
+        disabled = false;
+        format = "via [$symbol $version]($style) ";
+        symbol = "🌴";
+      };
+      nodejs = { symbol = "⬡ "; };
 
       # disabled plugins
       aws.disabled = true;
