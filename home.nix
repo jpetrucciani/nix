@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  inherit (pkgs.hax) isDarwin fetchFromGitHub;
+  inherit (pkgs.hax) isDarwin isLinux fetchFromGitHub;
 
   # name stuff
   firstName = "jacobi";
@@ -69,7 +69,6 @@ in with pkgs.hax; {
         bzip2
         cacert
         cachix
-        cloudquery
         coreutils-full
         cowsay
         curl
@@ -82,9 +81,11 @@ in with pkgs.hax; {
         figlet
         file
         gawk
+        gcc
         gitAndTools.delta
         gnugrep
         gnused
+        gnumake
         gnutar
         gron
         gzip
@@ -188,6 +189,9 @@ in with pkgs.hax; {
         (lib.optional isDarwin [
           (brewCask "insomnia"
             "0l88zzd3zmz55di44aldhnlncvh87plhcq6q73nvaiq7p2y7fggd")
+        ])
+        (lib.optional isLinux [
+          binutils
         ])
       ];
   };
@@ -299,7 +303,7 @@ in with pkgs.hax; {
 
   programs.direnv = {
     enable = true;
-    enableNixDirenvIntegration = true;
+    nix-direnv.enable = true;
   };
 
   programs.mcfly = {
@@ -335,7 +339,6 @@ in with pkgs.hax; {
     settings = {
       add_newline = false;
       character = {
-        symbol = promptChar;
         success_symbol = "[${promptChar}](bright-green)";
         error_symbol = "[${promptChar}](bright-red)";
       };
