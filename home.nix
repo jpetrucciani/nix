@@ -6,7 +6,7 @@ let
   firstName = "jacobi";
   lastName = "petrucciani";
   personalEmail = "j@cobi.dev";
-  workEmail = "jacobi@hackerrank.com";
+  workEmail = "j@cobi.dev";
 
   onAws = builtins.getEnv "USER" == "ubuntu";
   promptChar = if isDarwin then "ᛗ" else "ᛥ";
@@ -31,7 +31,8 @@ let
     sha256 = "11n1a20a7fj80xgynfwiq3jaq1bhmpsdxyzbnmnvlsqfnsa30vy3";
   };
 
-in with pkgs.hax; {
+in
+with pkgs.hax; {
   nixpkgs.overlays = import ./overlays.nix;
   nixpkgs.config = { allowUnfree = true; };
   # Let Home Manager install and manage itself.
@@ -40,15 +41,17 @@ in with pkgs.hax; {
   programs.dircolors.enable = true;
 
   home = {
-    username = if isDarwin then
-      "${firstName}${lastName}"
-    else
-      (if onAws then "ubuntu" else firstName);
-    homeDirectory = if isDarwin then
-      "/Users/${firstName}${lastName}"
-    else
-      (if onAws then "/home/ubuntu" else "/home/${firstName}");
-    stateVersion = "21.03";
+    username =
+      if isDarwin then
+        "${firstName}${lastName}"
+      else
+        (if onAws then "ubuntu" else firstName);
+    homeDirectory =
+      if isDarwin then
+        "/Users/${firstName}${lastName}"
+      else
+        (if onAws then "/home/ubuntu" else "/home/${firstName}");
+    stateVersion = "21.11";
 
     sessionVariables = {
       EDITOR = "nano";
@@ -112,7 +115,7 @@ in with pkgs.hax; {
         nix-prefetch-github
         nix-prefetch-scripts
         nix-tree
-        nixfmt
+        nixpkgs-fmt
         nmap
         openssh
         p7zip
@@ -129,6 +132,7 @@ in with pkgs.hax; {
         ripgrep
         ripgrep-all
         rlwrap
+        rnix-lsp
         rsync
         scc
         sd
@@ -173,15 +177,16 @@ in with pkgs.hax; {
         (writeBashBinChecked "jql" ''
           echo "" | fzf --print-query --preview-window wrap --preview "cat $1 | jq -C {q}"
         '')
-        (writeBashBinChecked "u" ''
-          sudo apt update
-          sudo apt upgrade
-        '')
         (writeBashBinChecked "slack_meme" ''
           word="$1"
           fg="$2"
           bg="$3"
           figlet -f banner "$word" | sed 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | awk '{print ":'"$bg"':" $1}'
+        '')
+        (writeBashBinChecked "ssh_fwd" ''
+          host="$1"
+          port="$2"
+          ssh -L "$port:$host:$port" "$host"
         '')
         (soundScript "coin" coinSound)
         (soundScript "guh" guhSound)
@@ -190,7 +195,13 @@ in with pkgs.hax; {
           (brewCask "insomnia"
             "0l88zzd3zmz55di44aldhnlncvh87plhcq6q73nvaiq7p2y7fggd")
         ])
-        (lib.optional isLinux [ binutils ])
+        (lib.optional isLinux [
+          binutils
+          (writeBashBinChecked "u" ''
+            sudo apt update
+            sudo apt upgrade
+          '')
+        ])
       ];
   };
 
@@ -251,8 +262,6 @@ in with pkgs.hax; {
       rot13 = "tr 'A-Za-z' 'N-ZA-Mn-za-m'";
       space = "du -Sh | sort -rh | head -10";
       now = "date +%s";
-
-      lo = "local_ops";
     };
     initExtra = ''
       HISTCONTROL=ignoreboth
