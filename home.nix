@@ -87,6 +87,7 @@ with pkgs.hax; {
         gcc
         gitAndTools.delta
         gnugrep
+        gnupg
         gnused
         gnumake
         gnutar
@@ -104,6 +105,7 @@ with pkgs.hax; {
         loop
         lsof
         man-pages
+        minikube
         moreutils
         nano
         ncdu
