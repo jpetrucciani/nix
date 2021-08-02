@@ -6,7 +6,7 @@ let
   firstName = "jacobi";
   lastName = "petrucciani";
   personalEmail = "j@cobi.dev";
-  workEmail = "j@cobi.dev";
+  workEmail = "jacobi.petrucciani@medable.com";
 
   onAws = builtins.getEnv "USER" == "ubuntu";
   promptChar = if isDarwin then "ᛗ" else "ᛥ";
@@ -43,7 +43,7 @@ with pkgs.hax; {
   home = {
     username =
       if isDarwin then
-        "${firstName}${lastName}"
+        "${firstName}"
       else
         (if onAws then "ubuntu" else firstName);
     homeDirectory =
