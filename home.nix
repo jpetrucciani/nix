@@ -48,7 +48,7 @@ with pkgs.hax; {
         (if onAws then "ubuntu" else firstName);
     homeDirectory =
       if isDarwin then
-        "/Users/${firstName}${lastName}"
+        "/Users/${firstName}"
       else
         (if onAws then "/home/ubuntu" else "/home/${firstName}");
     stateVersion = "21.11";
@@ -191,10 +191,6 @@ with pkgs.hax; {
         (soundScript "coin" coinSound)
         (soundScript "guh" guhSound)
         (soundScript "bruh" bruhSound)
-        (lib.optional isDarwin [
-          (brewCask "insomnia"
-            "0l88zzd3zmz55di44aldhnlncvh87plhcq6q73nvaiq7p2y7fggd")
-        ])
         (lib.optional isLinux [
           binutils
           (writeBashBinChecked "u" ''
