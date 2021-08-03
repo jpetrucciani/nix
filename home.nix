@@ -212,6 +212,7 @@ in
           (
             lib.optional isLinux [
               binutils
+              (python39.withPackages (pkgs: with pkgs; [ black mypy flake8 bpython ]))
               keybase
               (
                 writeBashBinChecked "u" ''
@@ -357,6 +358,25 @@ in
           .separator ROW "\n"
           .nullvalue NULL
           .output stdout
+        '';
+      };
+      prettierrc = {
+        target = ".prettierrc.js";
+        text = ''
+          const config = {
+            printWidth: 100,
+            arrowParens: 'always',
+            singleQuote: true,
+            tabWidth: 2,
+            useTabs: false,
+            semi: true,
+            bracketSpacing: false,
+            jsxBracketSameLine: false,
+            requirePragma: false,
+            proseWrap: 'preserve',
+            trailingComma: 'all',
+          };
+          module.exports = config;
         '';
       };
       ${attrIf isLinux "gpgconf"} = {
