@@ -93,6 +93,7 @@ in
           gnused
           gnumake
           gnutar
+          google-cloud-sdk
           gron
           gzip
           hadolint
