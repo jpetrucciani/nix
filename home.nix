@@ -288,6 +288,7 @@ in
         HISTCONTROL=ignoreboth
         set +h
         export PATH="$PATH:$HOME/.bin/"
+        export PATH="$PATH:$HOME/.npm/bin/"
 
         # asdf and base nix
       '' + (
@@ -378,6 +379,12 @@ in
             trailingComma: 'all',
           };
           module.exports = config;
+        '';
+      };
+      npmrc = {
+        target = ".npmrc";
+        text = ''
+          prefix=~/.npm
         '';
       };
       ${attrIf isLinux "gpgconf"} = {
