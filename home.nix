@@ -65,6 +65,7 @@ in
 
       packages = with pkgs;
         lib.flatten [
+          awscli2
           amazon-ecr-credential-helper
           atool
           bash-completion
