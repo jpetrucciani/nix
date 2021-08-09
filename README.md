@@ -8,10 +8,12 @@ _my nixpkgs folder_
 
 ```bash
 # install nix
-sh <(curl -L https://nixos.org/nix/install) --daemon
 
-# switch to nixos-unstable
-nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs
+## linux
+curl -L https://nixos.org/nix/install | sh
+
+## mac
+sh <(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume
 
 # configure nix
 mkdir -p ~/.config/nix/
