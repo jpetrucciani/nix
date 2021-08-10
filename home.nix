@@ -125,6 +125,7 @@ in
           nixpkgs-fmt
           nmap
           openssh
+          ossutil
           p7zip
           patch
           perl
