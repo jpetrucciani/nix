@@ -16,7 +16,7 @@ buildGoModule rec {
   meta = with lib; {
     homepage = "https://github.com/zix99/rare/";
     description =
-      "Realtime regex-extraction and aggregation into common formats such as histograms, bar graphs, numerical summaries, tables, and more! ";
+      "Realtime regex-extraction and aggregation into common formats such as histograms, bar graphs, numerical summaries, tables, and more";
     license = licenses.gpl3Only;
   };
 }

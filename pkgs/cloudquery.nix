@@ -16,18 +16,21 @@ buildGoModule rec {
     runHook preCheck
     for pkg in $(getGoDirs test); do
       echo "[---] $pkg"
-      if [ "$pkg" = "./pkg/client" -o "$pkg" = "./pkg/policy"  ]; then
+      case "$pkg" in
+      ./pkg/client|./pkg/policy|./internal/file)
         echo "[---] skipping '$pkg' test which requires postgres"
-      else
+        ;;
+      *)
         buildGoDir test $checkFlags "$pkg"
-      fi
+        ;;
+      esac
     done
     runHook postCheck
   '';
   meta = with lib; {
     homepage = "https://github.com/cloudquery/cloudquery";
     description =
-      "cloudquery transforms your cloud infrastructure into queryable SQL tables for easy monitoring, governance and security.";
+      "Transform your cloud infrastructure into queryable SQL tables for easy monitoring, governance and security";
     license = licenses.mpl20;
   };
 }
