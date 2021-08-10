@@ -75,6 +75,7 @@ in
           bzip2
           cacert
           cachix
+          cloudquery
           coreutils-full
           cowsay
           curl
@@ -134,6 +135,7 @@ in
           pup
           pv
           ranger
+          rare
           re2c
           ripgrep
           ripgrep-all
