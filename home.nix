@@ -123,6 +123,7 @@ in
           nix-prefetch-scripts
           nix-tree
           nixpkgs-fmt
+          nixpkgs-review
           nmap
           openssh
           ossutil
