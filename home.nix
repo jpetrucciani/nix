@@ -112,7 +112,6 @@ in
           man-pages
           minikube
           moreutils
-          mosh
           nano
           ncdu
           netcat-gnu
