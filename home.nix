@@ -228,7 +228,7 @@ in
           (
             lib.optional isLinux [
               binutils
-              (python39.withPackages (pkgs: with pkgs; [ black mypy flake8 bpython bandit ]))
+              (python39.withPackages (pkgs: with pkgs; [ black mypy flake8 bpython bandit pylint ]))
               keybase
               (
                 writeBashBinChecked "u" ''
