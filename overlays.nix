@@ -134,6 +134,16 @@ with builtins; [
   )
   (
     self: super: {
+      nix_hash_unstable = with super; with hax; (
+        writeBashBinChecked "nix_hash_unstable" ''
+          ${nix-prefetch-git}/bin/nix-prefetch-git \
+            --quiet \
+            --no-deepClone \
+            --branch-name nixpkgs-unstable \
+            https://github.com/NixOS/nixpkgs.git | \
+          ${jq}/bin/jq '{ rev: .rev, sha256: .sha256 }'
+        ''
+      );
       home-packages = (import ./home.nix { config = { }; inherit (self) pkgs; }).home.packages;
     }
   )

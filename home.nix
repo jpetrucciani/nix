@@ -213,16 +213,7 @@ in
               ssh -L "$port:$host:$port" "$host"
             ''
           )
-          (
-            writeBashBinChecked "nix_hash_unstable" ''
-              ${nix-prefetch-git}/bin/nix-prefetch-git \
-                --quiet \
-                --no-deepClone \
-                --branch-name nixpkgs-unstable \
-                https://github.com/NixOS/nixpkgs.git | \
-              ${jq}/bin/jq -r '.rev,.sha256'
-            ''
-          )
+          nix_hash_unstable
           (soundScript "coin" coinSound)
           (soundScript "guh" guhSound)
           (soundScript "bruh" bruhSound)
