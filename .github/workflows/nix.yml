@@ -1,8 +1,9 @@
 name: build
 on: { workflow_dispatch, push: { branches: [main] }, pull_request }
 jobs:
-  nix:
+  build:
     strategy:
+      fail-fast: false
       matrix:
         os:
           - ubuntu-20.04
@@ -11,8 +12,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - uses: nixbuild/nix-quick-install-action@v5
-      - uses: cachix/cachix-action@v13
+      - uses: cachix/install-nix-action@v13
+      - uses: cachix/cachix-action@v10
         with:
           name: jacobi
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
