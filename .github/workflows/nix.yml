@@ -1,0 +1,19 @@
+name: build
+on: { workflow_dispatch, push: { branches: [main] }, pull_request }
+jobs:
+  nix:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-20.04
+          - macos-10.15
+    name: nix (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: nixbuild/nix-quick-install-action@v5
+      - uses: cachix/cachix-action@v13
+        with:
+          name: jacobi
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - run: nix build -f . ossutil
