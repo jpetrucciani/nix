@@ -1,5 +1,5 @@
-{ config, pkgs, ... }:
 let
+  pkgs = import ./default.nix {};
   inherit (pkgs.hax) isDarwin isLinux fetchFromGitHub;
 
   # name stuff
@@ -33,6 +33,14 @@ let
     sha256 = "11n1a20a7fj80xgynfwiq3jaq1bhmpsdxyzbnmnvlsqfnsa30vy3";
   };
 
+  sessionVariables = {
+    EDITOR = "nano";
+    HISTCONTROL = "ignoreboth";
+    PAGER = "less";
+    LESS = "-iR";
+    BASH_SILENCE_DEPRECATION_WARNING = "1";
+  };
+
 in
   with pkgs.hax; {
     nixpkgs.overlays = import ./overlays.nix;
@@ -54,14 +62,7 @@ in
         else
           (if onAws then "/home/ubuntu" else "/home/${firstName}");
       stateVersion = "21.11";
-
-      sessionVariables = {
-        EDITOR = "nano";
-        HISTCONTROL = "ignoreboth";
-        PAGER = "less";
-        LESS = "-iR";
-        BASH_SILENCE_DEPRECATION_WARNING = "1";
-      };
+      inherit sessionVariables;
 
       packages = with pkgs;
         lib.flatten [
@@ -219,7 +220,7 @@ in
                 --no-deepClone \
                 --branch-name nixpkgs-unstable \
                 https://github.com/NixOS/nixpkgs.git | \
-              ${jq}/bin/jq -r '.rev,.sha256' 
+              ${jq}/bin/jq -r '.rev,.sha256'
             ''
           )
           (soundScript "coin" coinSound)
