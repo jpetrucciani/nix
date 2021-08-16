@@ -117,7 +117,7 @@ with builtins; [
   )
   (
     self: super:
-      let extraPackages =
+      let extra-packages =
         with super;
         with hax;
         (
@@ -130,6 +130,6 @@ with builtins; [
             value = pkgs.callPackage (./pkgs + ("/" + n)) { };
           }
         );
-      in { inherit extraPackages; } // extraPackages
+      in { inherit extra-packages; } // extra-packages
   )
 ]
