@@ -144,7 +144,7 @@ with builtins; [
           ${jq}/bin/jq '{ rev: .rev, sha256: .sha256 }'
         ''
       );
-      home-packages = (import ./home.nix { config = { }; inherit (self) pkgs; }).home.packages;
+      home-packages = (import ./home.nix).home.packages;
     }
   )
 ]
