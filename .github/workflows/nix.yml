@@ -19,4 +19,4 @@ jobs:
         with:
           name: jacobi
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-      - run: nix build -f . ossutil
+      - run: nix build -f . extraPackages
