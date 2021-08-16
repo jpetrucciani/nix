@@ -132,4 +132,9 @@ with builtins; [
         );
       in { inherit extra-packages; } // extra-packages
   )
+  (
+    self: super: {
+      home-packages = (import ./home.nix { config = { }; inherit (self) pkgs; }).home.packages;
+    }
+  )
 ]
