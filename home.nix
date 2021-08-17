@@ -47,7 +47,7 @@ in
     nixpkgs.config = { allowUnfree = true; };
     # Let Home Manager install and manage itself.
     programs.home-manager.enable = true;
-    programs.home-manager.path = pkgs.home-manager.src;
+    programs.home-manager.path = "${pkgs.home-manager.src}";
     programs.htop.enable = true;
     programs.dircolors.enable = true;
 
@@ -62,7 +62,7 @@ in
           "/Users/${firstName}"
         else
           (if onAws then "/home/ubuntu" else "/home/${firstName}");
-      stateVersion = "21.11";
+      stateVersion = "21.05";
       inherit sessionVariables;
 
       packages = with pkgs;
@@ -236,7 +236,7 @@ in
 
     programs.bash = {
       enable = true;
-      inherit (config.home) sessionVariables;
+      inherit sessionVariables;
       historyFileSize = -1;
       historySize = -1;
       shellAliases = {
