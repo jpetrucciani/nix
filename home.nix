@@ -108,7 +108,6 @@ with pkgs.hax; {
         gron
         gzip
         hadolint
-        htop
         jq
         just
         kubectx
