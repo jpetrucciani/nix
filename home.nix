@@ -15,8 +15,8 @@ let
     fetchFromGitHub {
       owner = "kwbauson";
       repo = "cfg";
-      rev = "2df0d036bcc5e4cfbc4c5815a62cc71519a0c2e7";
-      sha256 = "11dip5mss425yp8zc2yn35v0xjyc2sm7pqgz7pdfvlc7fd48l2ka";
+      rev = "1ba77405e90fe6a897fb21415e876cd26490e5cd";
+      sha256 = "0k59qncqxn73ls1a7ikin9992h4m9rrqjj6sxn3sv4szln9llpmv";
     }
   );
 
