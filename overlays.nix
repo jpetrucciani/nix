@@ -12,7 +12,7 @@ with builtins; [
           fakePlatform = x:
             x.overrideAttrs (
               attrs: {
-                meta = attrs.meta or {} // { platforms = lib.platforms.all; };
+                meta = attrs.meta or { } // { platforms = lib.platforms.all; };
               }
             );
           prefixIf = b: x: y: if b then x + y else y;
@@ -28,7 +28,7 @@ with builtins; [
             let
               path = head (splitString ":" pkg.meta.position);
             in
-              self.callPackage path;
+            self.callPackage path;
           nix-direnv = super.nix-direnv.override { nix = super.nixUnstable; };
           excludeLines = f: text:
             concatStringsSep "\n" (filter (x: !f x) (splitString "\n" text));
@@ -61,7 +61,7 @@ with builtins; [
                 sha256 = sha256;
               };
             in
-              fromJSON (readFile text);
+            fromJSON (readFile text);
           brewCask = cask: sha256:
             let
               home = getEnv "HOME";
@@ -69,25 +69,25 @@ with builtins; [
                 getJson "https://formulae.brew.sh/api/cask/${cask}.json" sha256;
               appFile = head (filter isString (lists.flatten data.artifacts));
             in
-              stdenv.mkDerivation {
-                name = data.token;
-                src = fetchurl {
-                  name = "${data.token}.dmg";
-                  url = data.url;
-                  sha256 = data.sha256;
-                };
-                phases = [ "unpackPhase" "buildPhase" "installPhase" ];
-                buildInputs = [ undmg ];
-                installPhase = ''
+            stdenv.mkDerivation {
+              name = data.token;
+              src = fetchurl {
+                name = "${data.token}.dmg";
+                url = data.url;
+                sha256 = data.sha256;
+              };
+              phases = [ "unpackPhase" "buildPhase" "installPhase" ];
+              buildInputs = [ undmg ];
+              installPhase = ''
                   mkdir -p $out/Applications
                   cp -R ${appFile} "$out/Applications"
                   ln -s "$out/Applications/${appFile}" "${home}/Applications/${
                 head data.name
                 }.app"
-                '';
-                meta = {};
-                sourceRoot = ".";
-              };
+              '';
+              meta = { };
+              sourceRoot = ".";
+            };
           drvsExcept = x: e:
             with { excludeNames = concatMap attrNames (attrValues e); };
             flatten (drvs (filterAttrsRecursive (n: _: !elem n excludeNames) x));
@@ -117,17 +117,34 @@ with builtins; [
   )
   (
     self: super:
-      with super;
-      with hax;
-      (
-        fn:
+      let extra-packages =
+        with super;
+        with hax;
+        (
+          fn:
           optionalAttrs (pathExists ./pkgs)
             (listToAttrs (mapAttrsToList fn (readDir ./pkgs)))
-      ) (
-        n: _: rec {
-          name = removeSuffix ".nix" n;
-          value = pkgs.callPackage (./pkgs + ("/" + n)) {};
-        }
-      )
+        ) (
+          n: _: rec {
+            name = removeSuffix ".nix" n;
+            value = pkgs.callPackage (./pkgs + ("/" + n)) { };
+          }
+        );
+      in { inherit extra-packages; } // extra-packages
+  )
+  (
+    self: super: {
+      nix_hash_unstable = with super; with hax; (
+        writeBashBinChecked "nix_hash_unstable" ''
+          ${nix-prefetch-git}/bin/nix-prefetch-git \
+            --quiet \
+            --no-deepClone \
+            --branch-name nixpkgs-unstable \
+            https://github.com/NixOS/nixpkgs.git | \
+          ${jq}/bin/jq '{ rev: .rev, sha256: .sha256 }'
+        ''
+      );
+      home-packages = (import ./home.nix).home.packages;
+    }
   )
 ]
