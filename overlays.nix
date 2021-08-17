@@ -39,7 +39,7 @@ with builtins; [
               flatten (mapAttrsToList (_: v: drvs v) x);
           soundScript = x: y:
             writeShellScriptBin x ''
-              ${sox}/bin/play --no-show-progress ${y}
+              ${sox}/bin/play --no-show-progress ${y} &
             '';
           writeBashBinChecked = name: text:
             stdenv.mkDerivation {

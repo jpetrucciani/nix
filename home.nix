@@ -8,6 +8,8 @@ let
   personalEmail = "j@cobi.dev";
   workEmail = "jacobi.petrucciani@medable.com";
 
+  soundFolder = "https://hexa.dev/static/sounds";
+
   onAws = builtins.getEnv "USER" == "ubuntu";
   promptChar = if isDarwin then "ᛗ" else "ᛥ";
   # chief keefs stuff
@@ -28,16 +30,20 @@ let
   };
 
   coinSound = pkgs.fetchurl {
-    url = "https://hexa.dev/static/sounds/coin.wav";
+    url = "${soundFolder}/coin.wav";
     sha256 = "18c7dfhkaz9ybp3m52n1is9nmmkq18b1i82g6vgzy7cbr2y07h93";
   };
   guhSound = pkgs.fetchurl {
-    url = "https://hexa.dev/static/sounds/guh.wav";
+    url = "${soundFolder}/guh.wav";
     sha256 = "1chr6fagj6sgwqphrgbg1bpmyfmcd94p39d34imq5n9ik674z9sa";
   };
   bruhSound = pkgs.fetchurl {
-    url = "https://hexa.dev/static/sounds/bruh.mp3";
+    url = "${soundFolder}/bruh.mp3";
     sha256 = "11n1a20a7fj80xgynfwiq3jaq1bhmpsdxyzbnmnvlsqfnsa30vy3";
+  };
+  failSound = pkgs.fetchurl {
+    url = "${soundFolder}/the-price-is-wrong.mp3";
+    sha256 = "1kj0n7qwl6saqqmjn8xlkfjwimi2hyxgaqdkkzn5z1rgnhwwvp91";
   };
 
   sessionVariables = {
@@ -224,6 +230,7 @@ with pkgs.hax; {
         (soundScript "coin" coinSound)
         (soundScript "guh" guhSound)
         (soundScript "bruh" bruhSound)
+        (soundScript "fail" failSound)
         (
           lib.optional isLinux [
             binutils
