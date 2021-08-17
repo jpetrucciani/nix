@@ -47,6 +47,7 @@ in
     nixpkgs.config = { allowUnfree = true; };
     # Let Home Manager install and manage itself.
     programs.home-manager.enable = true;
+    programs.home-manager.path = pkgs.home-manager.src;
     programs.htop.enable = true;
     programs.dircolors.enable = true;
 
