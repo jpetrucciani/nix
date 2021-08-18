@@ -12,13 +12,15 @@ let
 
   onAws = builtins.getEnv "USER" == "ubuntu";
   promptChar = if isDarwin then "ᛗ" else "ᛥ";
+
   # chief keefs stuff
+  kwb = with builtins; fromJSON (readFile ./kwb.json);
   chief_keef = import (
     fetchFromGitHub {
       owner = "kwbauson";
       repo = "cfg";
-      rev = "1ba77405e90fe6a897fb21415e876cd26490e5cd";
-      sha256 = "0k59qncqxn73ls1a7ikin9992h4m9rrqjj6sxn3sv4szln9llpmv";
+      rev = kwb.rev;
+      sha256 = kwb.sha256;
     }
   );
 
@@ -227,6 +229,7 @@ with pkgs.hax; {
           ''
         )
         nix_hash_unstable
+        nix_hash_kwb
         (soundScript "coin" coinSound)
         (soundScript "guh" guhSound)
         (soundScript "bruh" bruhSound)
@@ -270,7 +273,6 @@ with pkgs.hax; {
       # nix
       nix_hash = "nix-prefetch-url";
       nix_hash_git = "nix-prefetch-git";
-      nix_hash_kwb = "nix-prefetch-git https://github.com/kwbauson/cfg.git";
 
       # git
       g = "git";

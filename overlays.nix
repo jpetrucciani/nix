@@ -144,6 +144,16 @@ with builtins; [
           ${jq}/bin/jq '{ rev: .rev, sha256: .sha256 }'
         ''
       );
+      nix_hash_kwb = with super; with hax; (
+        writeBashBinChecked "nix_hash_kwb" ''
+          ${nix-prefetch-git}/bin/nix-prefetch-git \
+            --quiet \
+            --no-deepClone \
+            --branch-name main \
+            https://github.com/kwbauson/cfg.git | \
+          ${jq}/bin/jq '{ rev: .rev, sha256: .sha256 }'
+        ''
+      );
       home-packages = (import ./home.nix).home.packages;
     }
   )

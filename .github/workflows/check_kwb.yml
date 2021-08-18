@@ -1,4 +1,4 @@
-name: Check for updates
+name: check for kwb updates
 on: {workflow_dispatch, schedule: [cron: '0 0 * * *']}
 jobs:
   check-for-updates:
@@ -8,14 +8,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
       - uses: cachix/install-nix-action@v13
-      - run: nix-env -f . -iA niv gh moreutils
-      - run: nix run -f . nix_hash_unstable -c nix_hash_unstable | sponge nixpkgs.json
+      - run: nix-env -f . -iA gh moreutils
+      - run: nix run -f . nix_hash_kwb -c nix_hash_kwb | sponge kwb.json
       - uses: peter-evans/create-pull-request@v3.10.0
         id: cpr
         with:
           delete-branch: true
-          title: Automatic update
-          commit-message: Automatic update
-          branch: automatic-update
+          title: Automatic kwb update
+          commit-message: Automatic kwb update
+          branch: automatic-kwb-update
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - run: gh pr merge --auto --squash ${{ steps.cpr.outputs.pull-request-url }}
