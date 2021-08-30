@@ -404,12 +404,6 @@ with pkgs.hax; {
         module.exports = config;
       '';
     };
-    npmrc = {
-      target = ".npmrc";
-      text = ''
-        prefix=~/.npm
-      '';
-    };
     ${attrIf isLinux "gpgconf"} = {
       target = ".gnupg/gpg.conf";
       text = ''
