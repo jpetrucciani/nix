@@ -14,7 +14,7 @@ let
   promptChar = if isDarwin then "ᛗ" else "ᛥ";
 
   # chief keefs stuff
-  kwb = with builtins; fromJSON (readFile ./kwb.json);
+  kwb = with builtins; fromJSON (readFile ./sources/kwb.json);
   chief_keef = import (
     fetchFromGitHub {
       owner = "kwbauson";
@@ -142,7 +142,6 @@ with pkgs.hax; {
         nixpkgs-review
         nmap
         openssh
-        ossutil
         p7zip
         patch
         perl
@@ -226,6 +225,20 @@ with pkgs.hax; {
             host="$1"
             port="$2"
             ssh -L "$port:$host:$port" "$host"
+          ''
+        )
+        (
+          writeBashBinChecked "scale_x" ''
+            file="$1"
+            px="$2"
+            ${pkgs.ffmpeg}/bin/ffmpeg -i "$file" -vf scale="$px:-1" "''${file%.*}.$px.''${file##*.}"
+          ''
+        )
+        (
+          writeBashBinChecked "scale_y" ''
+            file="$1"
+            px="$2"
+            ${pkgs.ffmpeg}/bin/ffmpeg -i "$file" -vf scale="-1:$px" "''${file%.*}.$px.''${file##*.}"
           ''
         )
         nix_hash_unstable
