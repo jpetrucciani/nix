@@ -86,7 +86,7 @@ with pkgs.hax; {
         amazon-ecr-credential-helper
         atool
         bash-completion
-        bashInteractive
+        bashInteractive_5
         bat
         bc
         bzip2
