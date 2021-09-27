@@ -117,20 +117,22 @@ with builtins; [
   )
   (
     self: super:
-      let extra-packages =
-        with super;
-        with hax;
-        (
-          fn:
-          optionalAttrs (pathExists ./pkgs)
-            (listToAttrs (mapAttrsToList fn (readDir ./pkgs)))
-        ) (
-          n: _: rec {
-            name = removeSuffix ".nix" n;
-            value = pkgs.callPackage (./pkgs + ("/" + n)) { };
-          }
-        );
-      in { inherit extra-packages; } // extra-packages
+      let
+        extra-packages =
+          with super;
+          with hax;
+          (
+            fn:
+            optionalAttrs (pathExists ./pkgs)
+              (listToAttrs (mapAttrsToList fn (readDir ./pkgs)))
+          ) (
+            n: _: rec {
+              name = removeSuffix ".nix" n;
+              value = pkgs.callPackage (./pkgs + ("/" + n)) { };
+            }
+          );
+      in
+      { inherit extra-packages; } // extra-packages
   )
   (
     self: super: {
@@ -153,6 +155,9 @@ with builtins; [
             https://github.com/kwbauson/cfg.git | \
           ${jq}/bin/jq '{ rev: .rev, sha256: .sha256 }'
         ''
+      );
+      git-trim = with super; with hax; (
+        writeBashBinChecked "git-trim" (readFile ./scripts/git-trim.sh)
       );
       home-packages = (import ./home.nix).home.packages;
     }

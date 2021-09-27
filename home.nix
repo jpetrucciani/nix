@@ -177,10 +177,9 @@ with pkgs.hax; {
         yq-go
         zip
         chief_keef.better-comma
-        chief_keef.git-trim
         (
           writeBashBinChecked "hms" ''
-            git -C ~/.config/nixpkgs/ pull origin main
+            ${pkgs.git}/bin/git -C ~/.config/nixpkgs/ pull origin main
             home-manager switch
           ''
         )
@@ -240,6 +239,7 @@ with pkgs.hax; {
             ${pkgs.ffmpeg}/bin/ffmpeg -i "$file" -vf scale="-1:$px" "''${file%.*}.$px.''${file##*.}"
           ''
         )
+        git-trim
         nix_hash_unstable
         nix_hash_kwb
         (soundScript "coin" coinSound)
