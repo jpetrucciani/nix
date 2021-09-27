@@ -177,7 +177,6 @@ with pkgs.hax; {
         yq-go
         zip
         chief_keef.better-comma
-        chief_keef.nle
         chief_keef.git-trim
         (
           writeBashBinChecked "hms" ''
