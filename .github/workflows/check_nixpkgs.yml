@@ -14,8 +14,8 @@ jobs:
         id: cpr
         with:
           delete-branch: true
-          title: Automatic nixpkgs update
-          commit-message: Automatic nixpkgs update
+          title: automatic nixpkgs update
+          commit-message: automatic nixpkgs update
           branch: automatic-nixpkgs-update
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - run: gh pr merge --auto --squash ${{ steps.cpr.outputs.pull-request-url }}

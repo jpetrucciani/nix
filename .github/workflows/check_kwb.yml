@@ -14,8 +14,8 @@ jobs:
         id: cpr
         with:
           delete-branch: true
-          title: Automatic kwb update
-          commit-message: Automatic kwb update
+          title: automatic kwb update
+          commit-message: automatic kwb update
           branch: automatic-kwb-update
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - run: gh pr merge --auto --squash ${{ steps.cpr.outputs.pull-request-url }}
