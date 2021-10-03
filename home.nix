@@ -92,7 +92,6 @@ with pkgs.hax; {
         bzip2
         cacert
         cachix
-        cloudquery
         coreutils-full
         cowsay
         curl
@@ -152,7 +151,6 @@ with pkgs.hax; {
         pup
         pv
         ranger
-        rare
         re2c
         ripgrep
         ripgrep-all
@@ -176,7 +174,11 @@ with pkgs.hax; {
         xxd
         yq-go
         zip
+
+        # keef's stuff
         chief_keef.better-comma
+
+        # checked shell scripts
         (
           writeBashBinChecked "hms" ''
             ${pkgs.git}/bin/git -C ~/.config/nixpkgs/ pull origin main
@@ -239,9 +241,18 @@ with pkgs.hax; {
             ${pkgs.ffmpeg}/bin/ffmpeg -i "$file" -vf scale="-1:$px" "''${file%.*}.$px.''${file##*.}"
           ''
         )
+
+        # my pkgs
+        cloudquery
+        kube-linter
+        rare
+
+        # overlays
         git-trim
         nix_hash_unstable
         nix_hash_kwb
+
+        # sounds
         (soundScript "coin" coinSound)
         (soundScript "guh" guhSound)
         (soundScript "bruh" bruhSound)
