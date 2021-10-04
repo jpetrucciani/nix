@@ -1,17 +1,18 @@
 { stdenv, lib, buildGoModule, fetchFromGitHub }:
 buildGoModule rec {
-  version = "0.14.2";
+  version = "0.15.4";
   pname = "cloudquery";
 
   src = fetchFromGitHub {
     owner = "cloudquery";
     repo = "cloudquery";
     rev = "v${version}";
-    sha256 = "1mf6kb0iq3lfhjvsdfa0rsv4bhwh6xzwjx8xxwzdfyaw82h7wl7i";
+    sha256 = "1wffhl0w5xpgc3w176gh2b1x8rh78h35v83gfwrdmkb7ad2rhbsm";
   };
 
   # vendorSha256 = lib.fakeSha256;
-  vendorSha256 = "92JrlbkWR2QxCkFu/1mJnPQ/9vD3ZMIBRD1kG1/xaP8=";
+  vendorSha256 = "W9yq9aSz0Bn8s+GMX7EoNxiZpWkAWOFVrB2k40kNJtA=";
+
   checkPhase = ''
     runHook preCheck
     for pkg in $(getGoDirs test); do
