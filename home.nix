@@ -460,7 +460,7 @@ with pkgs.hax; {
       nix_shell = {
         pure_msg = "";
         impure_msg = "";
-        format = "via [$symbol$state]($style) ";
+        format = "via [$symbol$state($name)]($style) ";
       };
       kubernetes = {
         disabled = false;
