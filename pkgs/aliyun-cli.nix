@@ -27,5 +27,6 @@ buildGoModule rec {
     description =
       "A tool to manage and use Alibaba Cloud resources through a command line interface";
     license = licenses.asl20;
+    maintainers = with maintainers; [ jpetrucciani ];
   };
 }

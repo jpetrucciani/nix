@@ -18,5 +18,6 @@ buildGoModule rec {
     description =
       "static analysis tool that checks Kubernetes YAML files and Helm charts to ensure the applications represented in them adhere to best practices";
     license = licenses.asl20;
+    maintainers = with maintainers; [ jpetrucciani ];
   };
 }

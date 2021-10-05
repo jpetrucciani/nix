@@ -33,5 +33,6 @@ buildGoModule rec {
     description =
       "Transform your cloud infrastructure into queryable SQL tables for easy monitoring, governance and security";
     license = licenses.mpl20;
+    maintainers = with maintainers; [ jpetrucciani ];
   };
 }

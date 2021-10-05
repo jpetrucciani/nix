@@ -18,5 +18,6 @@ buildGoModule rec {
     description =
       "Realtime regex-extraction and aggregation into common formats such as histograms, bar graphs, numerical summaries, tables, and more";
     license = licenses.gpl3Only;
+    maintainers = with maintainers; [ jpetrucciani ];
   };
 }

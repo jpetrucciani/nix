@@ -246,7 +246,9 @@ with pkgs.hax; {
         aliyun-cli
         cloudquery
         kube-linter
+        pluto
         rare
+        rbac-tool
 
         # overlays
         git-trim
