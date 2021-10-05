@@ -243,6 +243,7 @@ with pkgs.hax; {
         )
 
         # my pkgs
+        aliyun-cli
         cloudquery
         kube-linter
         rare
