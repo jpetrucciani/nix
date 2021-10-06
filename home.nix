@@ -130,7 +130,6 @@ with pkgs.hax; {
         nano
         ncdu
         netcat-gnu
-        nixUnstable
         nix-bash-completions
         nix-index
         nix-info
@@ -139,6 +138,7 @@ with pkgs.hax; {
         nix-tree
         nixpkgs-fmt
         nixpkgs-review
+        nixUnstable
         nmap
         openssh
         p7zip
@@ -384,6 +384,7 @@ with pkgs.hax; {
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
+    nix-direnv.enableFlakes = true;
   };
 
   programs.mcfly = {
