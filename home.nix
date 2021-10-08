@@ -24,11 +24,13 @@ let
     }
   );
 
+  # home-manager pin
+  hm = with builtins; fromJSON (readFile ./sources/home-manager.json);
   home-manager = fetchFromGitHub {
     owner = "nix-community";
     repo = "home-manager";
-    rev = "ad0fc085c7b954d5813a950cf0db7143e6b049e3";
-    sha256 = "1m5fprdnbl38hfvj65m67nqpajjs3ngz92flx9zfzwpkj8nhvcvf";
+    rev = hm.rev;
+    sha256 = hm.sha256;
   };
 
   coinSound = pkgs.fetchurl {
@@ -77,7 +79,7 @@ with pkgs.hax; {
         "/Users/${firstName}"
       else
         (if onAws then "/home/ubuntu" else "/home/${firstName}");
-    stateVersion = "21.05";
+    stateVersion = "21.11";
     inherit sessionVariables;
 
     packages = with pkgs;
@@ -254,6 +256,7 @@ with pkgs.hax; {
         git-trim
         nix_hash_unstable
         nix_hash_kwb
+        nix_hash_hm
 
         # sounds
         (soundScript "coin" coinSound)
@@ -295,10 +298,6 @@ with pkgs.hax; {
       strip = ''
         sed -E 's#^\s+|\s+$##g'
       '';
-
-      # nix
-      nix_hash = "nix-prefetch-url";
-      nix_hash_git = "nix-prefetch-git";
 
       # git
       g = "git";
@@ -377,7 +376,6 @@ with pkgs.hax; {
       complete -o bashdefault -o default -o nospace -F __git_wrap__git_main g
       complete -F _kube_contexts kubectx kx
       complete -F _kube_namespaces kubens kns
-
     '';
   };
 
@@ -397,6 +395,10 @@ with pkgs.hax; {
     enableBashIntegration = false;
     defaultCommand = "fd -tf -c always -H --ignore-file ${./ignore} -E .git";
     defaultOptions = words "--ansi --reverse --multi --filepath-word";
+  };
+
+  programs.nnn = {
+    enable = true;
   };
 
   home.file = {
