@@ -1,5 +1,5 @@
 name: build
-on: { workflow_dispatch, push: { branches: [main] }, pull_request }
+on: {workflow_dispatch, push: {branches: [main]}, pull_request}
 jobs:
   build:
     strategy:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - uses: cachix/install-nix-action@v13
+      - uses: cachix/install-nix-action@v14
       - uses: cachix/cachix-action@v10
         with:
           name: jacobi

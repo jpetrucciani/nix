@@ -136,26 +136,19 @@ with builtins; [
   )
   (
     self: super: {
-      nix_hash_unstable = with super; with hax; (
-        writeBashBinChecked "nix_hash_unstable" ''
+      _nix_hash = with super; with hax; repo: branch: name: (
+        writeBashBinChecked "nix_hash_${name}" ''
           ${nix-prefetch-git}/bin/nix-prefetch-git \
             --quiet \
             --no-deepClone \
-            --branch-name nixpkgs-unstable \
-            https://github.com/NixOS/nixpkgs.git | \
+            --branch-name ${branch} \
+            https://github.com/${repo}.git | \
           ${jq}/bin/jq '{ rev: .rev, sha256: .sha256 }'
         ''
       );
-      nix_hash_kwb = with super; with hax; (
-        writeBashBinChecked "nix_hash_kwb" ''
-          ${nix-prefetch-git}/bin/nix-prefetch-git \
-            --quiet \
-            --no-deepClone \
-            --branch-name main \
-            https://github.com/kwbauson/cfg.git | \
-          ${jq}/bin/jq '{ rev: .rev, sha256: .sha256 }'
-        ''
-      );
+      nix_hash_unstable = self._nix_hash "NixOS/nixpkgs" "nixpkgs-unstable" "unstable";
+      nix_hash_kwb = self._nix_hash "kwbauson/cfg" "main" "kwb";
+      nix_hash_hm = self._nix_hash "nix-community/home-manager" "master" "hm";
       git-trim = with super; with hax; (
         writeBashBinChecked "git-trim" (readFile ./scripts/git-trim.sh)
       );
