@@ -178,7 +178,7 @@ with pkgs.hax; {
         zip
 
         # keef's stuff
-        chief_keef.better-comma
+        # chief_keef.better-comma
 
         # checked shell scripts
         (
