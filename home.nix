@@ -177,9 +177,6 @@ with pkgs.hax; {
         yq-go
         zip
 
-        # keef's stuff
-        # chief_keef.better-comma
-
         # checked shell scripts
         (
           writeBashBinChecked "hms" ''
@@ -268,6 +265,10 @@ with pkgs.hax; {
             binutils
             (python39.withPackages (pkgs: with pkgs; [ black mypy flake8 bpython bandit pylint ]))
             keybase
+
+            # keef's stuff
+            chief_keef.better-comma
+
             (
               writeBashBinChecked "u" ''
                 sudo apt update
