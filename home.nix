@@ -248,6 +248,7 @@ with pkgs.hax; {
         pluto
         rare
         rbac-tool
+        mdctl."@medable/mdctl-cli"
 
         # overlays
         git-trim
