@@ -14,7 +14,7 @@ buildGoModule rec {
   vendorSha256 = "DZ/JLcnU+xmwkZ5U7E7Hw3JPPyuNeMEcZyX8g7sOdVI=";
 
   meta = with lib; {
-    homepage = "https://github.com/${src.owner}/${src.repo}";
+    inherit (src.meta) homepage;
     description =
       "Realtime regex-extraction and aggregation into common formats such as histograms, bar graphs, numerical summaries, tables, and more";
     license = licenses.gpl3Only;

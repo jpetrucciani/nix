@@ -14,7 +14,7 @@ buildGoModule rec {
   vendorSha256 = "641dqcjPXq+iLx8JqqOzk9JsKnmohqIWBeVxT1lUNWU=";
 
   meta = with lib; {
-    homepage = "https://github.com/${src.owner}/${src.repo}";
+    inherit (src.meta) homepage;
     description = "Dump, or continuously backup Kubernetes objects as yaml files in git";
     license = licenses.mit;
     maintainers = with maintainers; [ jpetrucciani ];

@@ -29,7 +29,7 @@ buildGoModule rec {
     runHook postCheck
   '';
   meta = with lib; {
-    homepage = "https://github.com/${src.owner}/${src.repo}";
+    inherit (src.meta) homepage;
     description =
       "Transform your cloud infrastructure into queryable SQL tables for easy monitoring, governance and security";
     license = licenses.mpl20;

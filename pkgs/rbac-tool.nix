@@ -14,7 +14,7 @@ buildGoModule rec {
   vendorSha256 = "o95BHQMv24UbBBadEKOFz/hiUHR35kCcN0wr76pZhTU=";
 
   meta = with lib; {
-    homepage = "https://github.com/${src.owner}/${src.repo}";
+    inherit (src.meta) homepage;
     description = "Visualize, Analyze, Generate & Query RBAC policies in Kubernetes";
     license = licenses.asl20;
     maintainers = with maintainers; [ jpetrucciani ];

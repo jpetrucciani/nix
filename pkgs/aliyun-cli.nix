@@ -23,7 +23,7 @@ buildGoModule rec {
   vendorSha256 = "c7LsCNcxdHwDBEknXJt9AyrmFcem8YtUYy06vNDBdDY=";
 
   meta = with lib; {
-    homepage = "https://github.com/${src.owner}/${src.repo}";
+    inherit (src.meta) homepage;
     description =
       "A tool to manage and use Alibaba Cloud resources through a command line interface";
     license = licenses.asl20;

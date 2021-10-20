@@ -14,7 +14,7 @@ buildGoModule rec {
   vendorSha256 = "TRZsdsaOtoAsoKsOxPbtVqpWZGFuaGmudIkuj0QGj5k=";
 
   meta = with lib; {
-    homepage = "https://github.com/${src.owner}/${src.repo}";
+    inherit (src.meta) homepage;
     description =
       "static analysis tool that checks Kubernetes YAML files and Helm charts to ensure the applications represented in them adhere to best practices";
     license = licenses.asl20;

@@ -14,7 +14,7 @@ buildGoModule rec {
   vendorSha256 = "qU4fkvLurXBEJB24AkiY4MJEeXqmwY3S9qTGGsrtjvA=";
 
   meta = with lib; {
-    homepage = "https://github.com/${src.owner}/${src.repo}";
+    inherit (src.meta) homepage;
     description = "A cli tool to help discover deprecated apiVersions in Kubernetes";
     license = licenses.asl20;
     maintainers = with maintainers; [ jpetrucciani ];
