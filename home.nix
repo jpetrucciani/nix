@@ -245,6 +245,7 @@ with pkgs.hax; {
         # my pkgs
         aliyun-cli
         cloudquery
+        katafygio
         kube-linter
         pluto
         rare
