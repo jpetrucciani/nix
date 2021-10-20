@@ -336,6 +336,10 @@ with pkgs.hax; {
       rot13 = "tr 'A-Za-z' 'N-ZA-Mn-za-m'";
       space = "du -Sh | sort -rh | head -10";
       now = "date +%s";
+      uneek = "awk '!a[$0]++'";
+      sin = ''
+        awk -v cols=$(tput cols) '{c=int(sin(NR/10)*(cols/6)+(cols/6))+1;print(substr($0,1,c-1) "\x1b[41m" substr($0,c,1) "\x1b[0m" substr($0,c+1,length($0)-c+2))}'
+      '';
     };
     initExtra = ''
       HISTCONTROL=ignoreboth
@@ -388,6 +392,23 @@ with pkgs.hax; {
     enable = true;
     nix-direnv.enable = true;
     nix-direnv.enableFlakes = true;
+  };
+
+  programs.readline = {
+    enable = true;
+    variables = {
+      show-all-if-ambiguous = true;
+      skip-completed-text = true;
+      bell-style = false;
+    };
+    bindings = {
+      "\\e[1;5D" = "backward-word";
+      "\\e[1;5C" = "forward-word";
+      "\\e[5D" = "backward-word";
+      "\\e[5C" = "forward-word";
+      "\\e\\e[D" = "backward-word";
+      "\\e\\e[C" = "forward-word";
+    };
   };
 
   programs.mcfly = {
