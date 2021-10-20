@@ -169,6 +169,7 @@ with pkgs.hax; {
         time
         tealdeer
         unzip
+        viu
         watch
         watchexec
         wget
@@ -256,6 +257,9 @@ with pkgs.hax; {
         nix_hash_kwb
         nix_hash_hm
 
+        # keef's stuff
+        chief_keef.better-comma
+
         # sounds
         (soundScript "coin" coinSound)
         (soundScript "guh" guhSound)
@@ -266,10 +270,6 @@ with pkgs.hax; {
             binutils
             (python39.withPackages (pkgs: with pkgs; [ black mypy flake8 bpython bandit pylint ]))
             keybase
-
-            # keef's stuff
-            chief_keef.better-comma
-
             (
               writeBashBinChecked "u" ''
                 sudo apt update
@@ -287,7 +287,6 @@ with pkgs.hax; {
     historyFileSize = -1;
     historySize = -1;
     shellAliases = {
-      ",," = "nix run github:kwbauson/cfg#better-comma -- ";
       ls = "ls --color=auto";
       l = "exa -alFT -L 1";
       ll = "ls -ahlFG";
