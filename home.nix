@@ -329,6 +329,9 @@ with pkgs.hax; {
       # aws stuff
       aws_id = "aws sts get-caller-identity --query Account --output text";
 
+      # nix memes
+      kelby = "echo 'nix-env --tarball-ttl 0 -f https://github.com/jpetrucciani/nix/archive/main.tar.gz'";
+
       # misc
       rot13 = "tr 'A-Za-z' 'N-ZA-Mn-za-m'";
       space = "du -Sh | sort -rh | head -10";
