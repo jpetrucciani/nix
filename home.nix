@@ -255,6 +255,7 @@ with pkgs.hax; {
         # overlays
         git-trim
         nix_hash_unstable
+        nix_hash_jpetrucciani
         nix_hash_kwb
         nix_hash_hm
 
