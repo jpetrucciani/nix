@@ -8,6 +8,17 @@ with builtins; [
         lib // rec {
           inherit (stdenv) isLinux isDarwin;
           inherit (pkgs) fetchFromGitHub;
+
+          kwb = with builtins; fromJSON (readFile ./sources/kwb.json);
+          chief_keef = import (
+            super.pkgs.fetchFromGitHub {
+              owner = "kwbauson";
+              repo = "cfg";
+              rev = kwb.rev;
+              sha256 = kwb.sha256;
+            }
+          );
+
           mapAttrValues = f: mapAttrs (n: v: f v);
           fakePlatform = x:
             x.overrideAttrs (
@@ -37,9 +48,15 @@ with builtins; [
               flatten x
             else
               flatten (mapAttrsToList (_: v: drvs v) x);
-          soundScript = x: y:
-            writeShellScriptBin x ''
-              ${sox}/bin/play --no-show-progress ${y} &
+          soundScript = name: url: hash:
+            let
+              file = pkgs.fetchurl {
+                url = url;
+                sha256 = hash;
+              };
+            in
+            writeShellScriptBin name ''
+              ${sox}/bin/play --no-show-progress ${file} &
             '';
           writeBashBinChecked = name: text:
             stdenv.mkDerivation {
@@ -104,6 +121,114 @@ with builtins; [
               }
             else
               pkg;
+
+          soundFolder = "https://hexa.dev/static/sounds";
+
+          meme_sounds = [
+            (soundScript "coin" "${soundFolder}/coin.wav" "18c7dfhkaz9ybp3m52n1is9nmmkq18b1i82g6vgzy7cbr2y07h93")
+            (soundScript "guh" "${soundFolder}/guh.wav" "1chr6fagj6sgwqphrgbg1bpmyfmcd94p39d34imq5n9ik674z9sa")
+            (soundScript "bruh" "${soundFolder}/bruh.mp3" "11n1a20a7fj80xgynfwiq3jaq1bhmpsdxyzbnmnvlsqfnsa30vy3")
+            (soundScript "fail" "${soundFolder}/the-price-is-wrong.mp3" "1kj0n7qwl6saqqmjn8xlkfjwimi2hyxgaqdkkzn5z1rgnhwwvp91")
+          ];
+
+          aws_bash_scripts = [
+            (
+              writeBashBinChecked "aws_id" ''
+                aws sts get-caller-identity --query Account --output text
+              ''
+            )
+            (
+              writeBashBinChecked "ecr_login" ''
+                region="''${1:-us-east-1}"
+                ${pkgs.awscli2}/bin/aws ecr get-login-password --region "''${region}" |
+                ${pkgs.docker-client}/bin/docker login --username AWS \
+                    --password-stdin "$(${pkgs.awscli2}/bin/aws sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com"
+              ''
+            )
+            (
+              writeBashBinChecked "ecr_login_public" ''
+                region="''${1:-us-east-1}"
+                ${pkgs.awscli2}/bin/aws ecr-public get-login-password --region "''${region}" |
+                ${pkgs.docker-client}/bin/docker login --username AWS \
+                    --password-stdin public.ecr.aws
+              ''
+            )
+          ];
+
+          general_bash_scripts = [
+            (
+              writeBashBinChecked "hms" ''
+                ${pkgs.git}/bin/git -C ~/.config/nixpkgs/ pull origin main
+                home-manager switch
+              ''
+            )
+            (
+              writeBashBinChecked "get_cert" ''
+                ${pkgs.curl}/bin/curl --insecure -I -vvv "$1" 2>&1 |
+                  ${pkgs.gawk}/bin/awk 'BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }'
+              ''
+            )
+            (
+              writeBashBinChecked "jql" ''
+                echo "" | ${pkgs.fzf}/bin/fzf --print-query --preview-window wrap --preview "cat $1 | ${pkgs.jq}/bin/jq -C {q}"
+              ''
+            )
+            (
+              writeBashBinChecked "slack_meme" ''
+                word="$1"
+                fg="$2"
+                bg="$3"
+                ${pkgs.figlet}/bin/figlet -f banner "$word" | sed 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | awk '{print ":'"$bg"':" $1}'
+              ''
+            )
+            (
+              writeBashBinChecked "ssh_fwd" ''
+                host="$1"
+                port="$2"
+                ${pkgs.openssh}/bin/ssh -L "$port:$host:$port" "$host"
+              ''
+            )
+            (
+              writeBashBinChecked "scale_x" ''
+                file="$1"
+                px="$2"
+                ${pkgs.ffmpeg}/bin/ffmpeg -i "$file" -vf scale="$px:-1" "''${file%.*}.$px.''${file##*.}"
+              ''
+            )
+            (
+              writeBashBinChecked "scale_y" ''
+                file="$1"
+                px="$2"
+                ${pkgs.ffmpeg}/bin/ffmpeg -i "$file" -vf scale="-1:$px" "''${file%.*}.$px.''${file##*.}"
+              ''
+            )
+
+          ];
+
+          docker_aliases = {
+            # docker
+            d = "docker";
+            da = "docker ps -a";
+            di = "docker images";
+            de = "docker exec -it";
+            dr = "docker run --rm -it";
+            drma = "docker stop $(docker ps -aq) && docker rm -f $(docker ps -aq)";
+            drmi = "di | grep none | awk '{print $3}' | sponge | xargs docker rmi";
+          };
+
+          kubernetes_aliases = {
+            # k8s
+            k = "kubectl";
+            kx = "kubectx";
+            ka = "kubectl get pods";
+            kaw = "kubectl get pods -o wide";
+            knuke = "kubectl delete pods --grace-period=0 --force";
+            klist =
+              "kubectl get pods --all-namespaces -o jsonpath='{..image}' | tr -s '[[:space:]]' '\\n' | sort | uniq -c";
+            kshell = ''
+              kubectl run "jacobi-''${RANDOM}" -it --image-pull-policy=Always --rm --restart Never --image=alpine:latest'';
+          };
+
         }
       )
   )
@@ -115,6 +240,7 @@ with builtins; [
         inherit brave;
       }
   )
+
   (
     self: super:
       let

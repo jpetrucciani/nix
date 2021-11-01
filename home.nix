@@ -1,6 +1,6 @@
 let
   pkgs = import ./default.nix { };
-  inherit (pkgs.hax) isDarwin isLinux fetchFromGitHub;
+  inherit (pkgs.hax) isDarwin isLinux fetchFromGitHub chief_keef;
 
   # name stuff
   firstName = "jacobi";
@@ -8,21 +8,9 @@ let
   personalEmail = "j@cobi.dev";
   workEmail = "jacobi.petrucciani@medable.com";
 
-  soundFolder = "https://hexa.dev/static/sounds";
 
   onAws = builtins.getEnv "USER" == "ubuntu";
   promptChar = if isDarwin then "ᛗ" else "ᛥ";
-
-  # chief keefs stuff
-  kwb = with builtins; fromJSON (readFile ./sources/kwb.json);
-  chief_keef = import (
-    fetchFromGitHub {
-      owner = "kwbauson";
-      repo = "cfg";
-      rev = kwb.rev;
-      sha256 = kwb.sha256;
-    }
-  );
 
   # home-manager pin
   hm = with builtins; fromJSON (readFile ./sources/home-manager.json);
@@ -31,23 +19,6 @@ let
     repo = "home-manager";
     rev = hm.rev;
     sha256 = hm.sha256;
-  };
-
-  coinSound = pkgs.fetchurl {
-    url = "${soundFolder}/coin.wav";
-    sha256 = "18c7dfhkaz9ybp3m52n1is9nmmkq18b1i82g6vgzy7cbr2y07h93";
-  };
-  guhSound = pkgs.fetchurl {
-    url = "${soundFolder}/guh.wav";
-    sha256 = "1chr6fagj6sgwqphrgbg1bpmyfmcd94p39d34imq5n9ik674z9sa";
-  };
-  bruhSound = pkgs.fetchurl {
-    url = "${soundFolder}/bruh.mp3";
-    sha256 = "11n1a20a7fj80xgynfwiq3jaq1bhmpsdxyzbnmnvlsqfnsa30vy3";
-  };
-  failSound = pkgs.fetchurl {
-    url = "${soundFolder}/the-price-is-wrong.mp3";
-    sha256 = "1kj0n7qwl6saqqmjn8xlkfjwimi2hyxgaqdkkzn5z1rgnhwwvp91";
   };
 
   sessionVariables = {
@@ -178,69 +149,9 @@ with pkgs.hax; {
         yq-go
         zip
 
-        # checked shell scripts
-        (
-          writeBashBinChecked "hms" ''
-            ${pkgs.git}/bin/git -C ~/.config/nixpkgs/ pull origin main
-            home-manager switch
-          ''
-        )
-        (
-          writeBashBinChecked "get_cert" ''
-            curl --insecure -I -vvv "$1" 2>&1 |
-              awk 'BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }'
-          ''
-        )
-        (
-          writeBashBinChecked "ecr_login" ''
-            region="''${1:-us-east-1}"
-            aws ecr get-login-password --region "''${region}" |
-            docker login --username AWS \
-                --password-stdin "$(aws sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com"
-          ''
-        )
-        (
-          writeBashBinChecked "ecr_login_public" ''
-            region="''${1:-us-east-1}"
-            aws ecr-public get-login-password --region "''${region}" |
-            docker login --username AWS \
-                --password-stdin public.ecr.aws
-          ''
-        )
-        (
-          writeBashBinChecked "jql" ''
-            echo "" | fzf --print-query --preview-window wrap --preview "cat $1 | jq -C {q}"
-          ''
-        )
-        (
-          writeBashBinChecked "slack_meme" ''
-            word="$1"
-            fg="$2"
-            bg="$3"
-            figlet -f banner "$word" | sed 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | awk '{print ":'"$bg"':" $1}'
-          ''
-        )
-        (
-          writeBashBinChecked "ssh_fwd" ''
-            host="$1"
-            port="$2"
-            ssh -L "$port:$host:$port" "$host"
-          ''
-        )
-        (
-          writeBashBinChecked "scale_x" ''
-            file="$1"
-            px="$2"
-            ${pkgs.ffmpeg}/bin/ffmpeg -i "$file" -vf scale="$px:-1" "''${file%.*}.$px.''${file##*.}"
-          ''
-        )
-        (
-          writeBashBinChecked "scale_y" ''
-            file="$1"
-            px="$2"
-            ${pkgs.ffmpeg}/bin/ffmpeg -i "$file" -vf scale="-1:$px" "''${file%.*}.$px.''${file##*.}"
-          ''
-        )
+        # load in my custom checked bash scripts
+        aws_bash_scripts
+        general_bash_scripts
 
         # my pkgs
         aliyun-cli
@@ -250,7 +161,6 @@ with pkgs.hax; {
         pluto
         rare
         rbac-tool
-        mdctl."@medable/mdctl-cli"
 
         # overlays
         git-trim
@@ -263,10 +173,9 @@ with pkgs.hax; {
         chief_keef.better-comma
 
         # sounds
-        (soundScript "coin" coinSound)
-        (soundScript "guh" guhSound)
-        (soundScript "bruh" bruhSound)
-        (soundScript "fail" failSound)
+        meme_sounds
+
+        # linux specific
         (
           lib.optional isLinux [
             binutils
@@ -307,29 +216,6 @@ with pkgs.hax; {
       ga = "git add -A .";
       cm = "git commit -m ";
 
-      # docker
-      d = "docker";
-      da = "docker ps -a";
-      di = "docker images";
-      de = "docker exec -it";
-      dr = "docker run --rm -it";
-      drma = "docker stop $(docker ps -aq) && docker rm -f $(docker ps -aq)";
-      drmi = "di | grep none | awk '{print $3}' | sponge | xargs docker rmi";
-
-      # k8s
-      k = "kubectl";
-      kx = "kubectx";
-      ka = "kubectl get pods";
-      kaw = "kubectl get pods -o wide";
-      knuke = "kubectl delete pods --grace-period=0 --force";
-      klist =
-        "kubectl get pods --all-namespaces -o jsonpath='{..image}' | tr -s '[[:space:]]' '\\n' | sort | uniq -c";
-      kshell = ''
-        kubectl run "jacobi-''${RANDOM}" -it --image-pull-policy=Always --rm --restart Never --image=alpine:latest'';
-
-      # aws stuff
-      aws_id = "aws sts get-caller-identity --query Account --output text";
-
       # nix memes
       kelby = "echo 'nix-env --tarball-ttl 0 -f https://github.com/jpetrucciani/nix/archive/main.tar.gz'";
 
@@ -341,7 +227,7 @@ with pkgs.hax; {
       sin = ''
         awk -v cols=$(tput cols) '{c=int(sin(NR/10)*(cols/6)+(cols/6))+1;print(substr($0,1,c-1) "\x1b[41m" substr($0,c,1) "\x1b[0m" substr($0,c+1,length($0)-c+2))}'
       '';
-    };
+    } // docker_aliases // kubernetes_aliases;
     initExtra = ''
       HISTCONTROL=ignoreboth
       set +h
