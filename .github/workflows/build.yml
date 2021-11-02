@@ -17,4 +17,9 @@ jobs:
         with:
           name: jacobi
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-      - run: nix -vL --show-trace build -f . extra-packages home-packages
+      - run: |
+          nix \
+            -vL --show-trace build \
+            --extra-experimental-features nix-command \
+            --extra-experimental-features flakes \
+            -f . extra-packages home-packages
