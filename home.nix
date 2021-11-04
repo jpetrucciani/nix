@@ -175,6 +175,13 @@ with pkgs.hax; {
         # sounds
         meme_sounds
 
+        # mac specific
+        (
+          lib.optional isDarwin [
+            lima
+          ]
+        )
+
         # linux specific
         (
           lib.optional isLinux [
