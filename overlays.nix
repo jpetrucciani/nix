@@ -121,6 +121,11 @@ with builtins; [
               }
             else
               pkg;
+          qlScript = name: command:
+            (writeBashBinChecked name ''
+              ${pkgs.up}/bin/up --unsafe-full-throttle -c '${command}'
+            ''
+            );
 
           soundFolder = "https://hexa.dev/static/sounds";
 

@@ -140,6 +140,7 @@ with pkgs.hax; {
         time
         tealdeer
         unzip
+        up
         viu
         watch
         watchexec
