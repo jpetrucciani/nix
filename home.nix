@@ -70,6 +70,7 @@ with pkgs.hax; {
         curl
         dasel
         diffutils
+        docker-client
         dos2unix
         ed
         exa
@@ -274,10 +275,12 @@ with pkgs.hax; {
       source <(kubectl completion bash)
       source <(just --completions bash)
       source ~/.nix-profile/etc/profile.d/bash_completion.sh
-      complete -F __start_kubectl k
+      source ~/.nix-profile/share/bash-completion/completions/docker
       source ~/.nix-profile/share/bash-completion/completions/git
       source ~/.nix-profile/share/bash-completion/completions/ssh
       complete -o bashdefault -o default -o nospace -F __git_wrap__git_main g
+      complete -F _docker d
+      complete -F __start_kubectl k
       complete -F _kube_contexts kubectx kx
       complete -F _kube_namespaces kubens kns
     '';
