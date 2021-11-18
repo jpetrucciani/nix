@@ -105,7 +105,6 @@ with pkgs.hax; {
         ncdu
         netcat-gnu
         nix-bash-completions
-        nix-index
         nix-info
         nix-prefetch-github
         nix-prefetch-scripts
@@ -144,7 +143,6 @@ with pkgs.hax; {
         up
         viu
         watch
-        watchexec
         wget
         which
         xxd
@@ -172,7 +170,7 @@ with pkgs.hax; {
         nix_hash_hm
 
         # keef's stuff
-        chief_keef.better-comma
+        # chief_keef.better-comma
 
         # sounds
         meme_sounds
@@ -213,8 +211,6 @@ with pkgs.hax; {
       mkdir = "mkdir -pv";
       ncdu = "ncdu --color dark -ex";
       hm = "home-manager";
-      wrun =
-        "watchexec --debounce 50 --no-shell --clear --restart --signal SIGTERM -- ";
       fzfp = "fzf --preview 'bat --style=numbers --color=always {}'";
       strip = ''
         sed -E 's#^\s+|\s+$##g'
@@ -246,8 +242,13 @@ with pkgs.hax; {
       # asdf and base nix
     '' + (
       if isDarwin then ''
-        [[ -e /usr/local/opt/asdf/asdf.sh ]] && source /usr/local/opt/asdf/asdf.sh
-        [[ -e /usr/local/opt/asdf/etc/bash_completion.d/asdf.bash ]] && source /usr/local/opt/asdf/etc/bash_completion.d/asdf.bash
+        # add brew to path
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+
+        # load asdf if its there
+        asdf_dir="$(brew --prefix asdf)"
+        [[ -e "$asdf_dir/asdf.sh" ]] && source "$asdf_dir/asdf.sh"
+        [[ -e "$asdf_dir/etc/bash_completion.d/asdf.bash" ]] && source "$asdf_dir/etc/bash_completion.d/asdf.bash"
       '' else ''
         [[ -e $HOME/.asdf/asdf.sh ]] && source $HOME/.asdf/asdf.sh
         [[ -e $HOME/.asdf/completions/asdf.bash ]] && source $HOME/.asdf/completions/asdf.bash
@@ -289,7 +290,6 @@ with pkgs.hax; {
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
-    nix-direnv.enableFlakes = true;
   };
 
   programs.readline = {
