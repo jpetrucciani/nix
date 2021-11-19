@@ -1,6 +1,6 @@
 let
   pkgs = import ./default.nix { };
-  inherit (pkgs.hax) isDarwin isLinux fetchFromGitHub chief_keef;
+  inherit (pkgs.hax) isDarwin isLinux isM1 fetchFromGitHub chief_keef;
 
   # name stuff
   firstName = "jacobi";
@@ -170,7 +170,7 @@ with pkgs.hax; {
         nix_hash_hm
 
         # keef's stuff
-        # chief_keef.better-comma
+        chief_keef.better-comma
 
         # sounds
         meme_sounds

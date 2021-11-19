@@ -6,8 +6,10 @@ with builtins; [
         with lib;
         with builtins;
         lib // rec {
-          inherit (stdenv) isLinux isDarwin;
+          inherit (stdenv) isLinux isDarwin isAarch64;
           inherit (pkgs) fetchFromGitHub;
+
+          isM1 = isDarwin && isAarch64;
 
           kwb = with builtins; fromJSON (readFile ./sources/kwb.json);
           chief_keef = import (
