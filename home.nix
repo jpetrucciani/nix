@@ -186,6 +186,8 @@ with pkgs.hax; {
         (
           lib.optional isLinux [
             binutils
+            kubectl
+            kubectx
             (python39.withPackages (pkgs: with pkgs; [ black mypy flake8 bpython bandit pylint ]))
             keybase
             (
