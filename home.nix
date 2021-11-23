@@ -242,10 +242,18 @@ with pkgs.hax; {
       export PATH="$PATH:$HOME/.npm/bin/"
 
       # asdf and base nix
-    '' + (
+    '' + (if isM1 then ''
+      export CONFIGURE_OPTS="--build aarch64-apple-darwin20"
+    ''
+    else ""
+    ) + (
       if isDarwin then ''
         # add brew to path
-        eval "$(/opt/homebrew/bin/brew shellenv)"
+        brew_path="/opt/homebrew/bin/brew"
+        if [ -f /usr/local/bin/brew ]; then
+          brew_path="/usr/local/bin/brew"
+        fi
+        eval "$($brew_path shellenv)"
 
         # load asdf if its there
         asdf_dir="$(brew --prefix asdf)"
