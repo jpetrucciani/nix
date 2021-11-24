@@ -165,6 +165,11 @@ with builtins; [
 
           general_bash_scripts = [
             (
+              writeBashBinChecked "batwhich" ''
+                ${pkgs.bat}/bin/bat "$(which "$1")"
+              ''
+            )
+            (
               writeBashBinChecked "hms" ''
                 ${pkgs.git}/bin/git -C ~/.config/nixpkgs/ pull origin main
                 home-manager switch
@@ -197,6 +202,19 @@ with builtins; [
               ''
             )
             (
+              writeBashBinChecked "fif" ''
+                if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+                rg --files-with-matches --no-messages "$1" | \
+                  fzf --preview \
+                    "highlight -O ansi -l {} 2> /dev/null | \
+                      rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || \
+                      rg --ignore-case --pretty --context 10 '$1' {}"
+              ''
+            )
+          ];
+
+          image_bash_scripts = [
+            (
               writeBashBinChecked "scale_x" ''
                 file="$1"
                 px="$2"
@@ -212,13 +230,34 @@ with builtins; [
             )
           ];
 
+          _d = {
+            # binaries
+            d = "${pkgs.docker-client}/bin/docker";
+            sed = "${pkgs.gnused}/bin/sed";
+            awk = "${pkgs.gawk}/bin/awk";
+
+            # partials
+            di = "${_d.d} images | ${_d.sed} '1d'";
+            fzf = ''${pkgs.fzf}/bin/fzf -q "$1" --no-sort'';
+            fzfm = ''${pkgs.fzf}/bin/fzf -q "$1" --no-sort -m'';
+            get_image = "${_d.awk} '{ print $3 }'";
+
+            # full commands
+            drmi = "${_d.di} | ${_d.fzfm} | ${_d.get_image} | xargs -r ${_d.d} rmi";
+          };
+
+          docker_bash_scripts = [
+            (writeBashBinChecked "drmi" _d.drmi)
+            (writeBashBinChecked "drmif" ''${_d.drmi} --force'')
+          ];
+
           k8s_bash_scripts = [
             # deployment stuff
             (
               writeBashBinChecked "_get_deployment_patch" ''
                 echo "spec.template.metadata.labels.date = \"$(date +'%s')\";" | \
                   ${pkgs.gron}/bin/gron -u | \
-                  tr -d '\n' | \
+                  ${pkgs.coreutils}/bin/tr -d '\n' | \
                   ${pkgs.gnused}/bin/sed -E 's#\s+##g'
               ''
             )
@@ -241,7 +280,6 @@ with builtins; [
             de = "docker exec -it";
             dr = "docker run --rm -it";
             drma = "docker stop $(docker ps -aq) && docker rm -f $(docker ps -aq)";
-            drmi = "di | grep none | awk '{print $3}' | sponge | xargs docker rmi";
           };
 
           kubernetes_aliases = {

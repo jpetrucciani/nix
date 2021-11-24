@@ -152,6 +152,7 @@ with pkgs.hax; {
         # load in my custom checked bash scripts
         aws_bash_scripts
         general_bash_scripts
+        docker_bash_scripts
         k8s_bash_scripts
 
         # my pkgs
@@ -209,14 +210,14 @@ with pkgs.hax; {
     historySize = -1;
     shellAliases = {
       ls = "ls --color=auto";
-      l = "exa -alFT -L 1";
+      l = "${pkgs.exa}/bin/exa -alFT -L 1";
       ll = "ls -ahlFG";
       mkdir = "mkdir -pv";
-      ncdu = "ncdu --color dark -ex";
       hm = "home-manager";
-      fzfp = "fzf --preview 'bat --style=numbers --color=always {}'";
+      ncdu = "${pkgs.ncdu}/bin/ncdu --color dark -ex";
+      fzfp = "${pkgs.fzf}/bin/fzf --preview 'bat --style=numbers --color=always {}'";
       strip = ''
-        sed -E 's#^\s+|\s+$##g'
+        ${pkgs.gnused}/bin/sed -E 's#^\s+|\s+$##g'
       '';
 
       # git
