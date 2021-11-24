@@ -152,6 +152,7 @@ with pkgs.hax; {
         # load in my custom checked bash scripts
         aws_bash_scripts
         general_bash_scripts
+        k8s_bash_scripts
 
         # my pkgs
         aliyun-cli
@@ -170,7 +171,7 @@ with pkgs.hax; {
         nix_hash_hm
 
         # keef's stuff
-        chief_keef.better-comma
+        comma
 
         # sounds
         meme_sounds

@@ -20,6 +20,7 @@ with builtins; [
               sha256 = kwb.sha256;
             }
           );
+          comma = chief_keef.better-comma;
 
           mapAttrValues = f: mapAttrs (n: v: f v);
           fakePlatform = x:
@@ -209,7 +210,27 @@ with builtins; [
                 ${pkgs.ffmpeg}/bin/ffmpeg -i "$file" -vf scale="-1:$px" "''${file%.*}.$px.''${file##*.}"
               ''
             )
+          ];
 
+          k8s_bash_scripts = [
+            # deployment stuff
+            (
+              writeBashBinChecked "_get_deployment_patch" ''
+                echo "spec.template.metadata.labels.date = \"$(date +'%s')\";" | \
+                  ${pkgs.gron}/bin/gron -u | \
+                  tr -d '\n' | \
+                  ${pkgs.gnused}/bin/sed -E 's#\s+##g'
+              ''
+            )
+            (
+              writeBashBinChecked "refresh_deployment" ''
+                deployment_id="$1"
+                namespace="''${2:-default}"
+                ${pkgs.kubectl}/bin/kubectl --namespace "$namespace" \
+                  patch deployment "$deployment_id" --patch "''$(_get_deployment_patch)"
+                ${pkgs.kubectl}/bin/kubectl --namespace "$namespace" rollout status deployment/"$deployment_id"
+              ''
+            )
           ];
 
           docker_aliases = {
