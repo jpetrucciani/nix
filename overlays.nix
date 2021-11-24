@@ -191,7 +191,9 @@ with builtins; [
                 word="$1"
                 fg="$2"
                 bg="$3"
-                ${pkgs.figlet}/bin/figlet -f banner "$word" | sed 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | awk '{print ":'"$bg"':" $1}'
+                ${pkgs.figlet}/bin/figlet -f banner "$word" | \
+                  ${pkgs.gnused}/bin/sed 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | \
+                  ${pkgs.gawk}/bin/awk '{print ":'"$bg"':" $1}'
               ''
             )
             (
@@ -203,12 +205,12 @@ with builtins; [
             )
             (
               writeBashBinChecked "fif" ''
-                if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
-                rg --files-with-matches --no-messages "$1" | \
-                  fzf --preview \
+                if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; exit 1; fi
+                ${pkgs.ripgrep}/bin/rg --files-with-matches --no-messages "$1" | \
+                  ${pkgs.fzf}/bin/fzf --preview \
                     "highlight -O ansi -l {} 2> /dev/null | \
-                      rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || \
-                      rg --ignore-case --pretty --context 10 '$1' {}"
+                      ${pkgs.ripgrep}/bin/rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || \
+                      ${pkgs.ripgrep}/bin/rg --ignore-case --pretty --context 10 '$1' {}"
               ''
             )
           ];
