@@ -104,7 +104,6 @@ with pkgs.hax; {
         nano
         ncdu
         netcat-gnu
-        nix-bash-completions
         nix-info
         nix-prefetch-github
         nix-prefetch-scripts
