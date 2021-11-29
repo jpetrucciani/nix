@@ -1,0 +1,41 @@
+name: check updates workflow
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        type: string
+        required: true
+      command:
+        type: string
+        required: true
+      path:
+        type: string
+        required: true
+    secrets:
+      github_token:
+        required: true
+        
+jobs:
+  check-for-updates:
+    runs-on: ubuntu-20.04
+    env:
+      GITHUB_TOKEN: ${{ secrets.github_token }}
+    steps:
+      - uses: actions/checkout@v2.4.0
+      - uses: cachix/install-nix-action@v16
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - run: nix-env -f . -iA gh moreutils
+      - run: nix shell -f . ${{ inputs.command }} -c ${{ inputs.command }} | sponge ${{ inputs.path }}
+      - uses: peter-evans/create-pull-request@v3.11.0
+        id: cpr
+        with:
+          delete-branch: true
+          title: automatic ${{inputs.tag}} update
+          commit-message: automatic ${{inputs.tag}} update
+          branch: automatic-${{inputs.tag}}-update
+          token: ${{ secrets.github_token }}
+      - run: gh pr merge --auto --squash ${{ steps.cpr.outputs.pull-request-url }}
+

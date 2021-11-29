@@ -1,9 +1,0 @@
-{
-    "name": "nix",
-    "version": "1.0.0",
-    "private": true,
-    "dependencies": {
-        "concurrently":"6.0.0",
-        "nginxbeautifier": "1.0.19"
-    }
-}

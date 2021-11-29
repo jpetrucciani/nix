@@ -8,7 +8,9 @@ let
   personalEmail = "j@cobi.dev";
   workEmail = "jacobi.petrucciani@medable.com";
 
+  osRelease = builtins.readFile /etc/os-release;
 
+  isNixOS = (builtins.match ".*ID=nixos.*" osRelease) == [];
   onAws = builtins.getEnv "USER" == "ubuntu";
   promptChar = if isDarwin then "ᛗ" else "ᛥ";
 
@@ -42,7 +44,7 @@ with pkgs.hax; {
   home = {
     username =
       if isDarwin then
-        "${firstName}"
+        firstName
       else
         (if onAws then "ubuntu" else firstName);
     homeDirectory =
@@ -474,7 +476,7 @@ with pkgs.hax; {
       rebase.instructionFormat = "<%ae >%s";
     };
   };
-  programs.git.signing = {
+  programs.git.${attrIf (!isNixOS) "signing"} = {
     key = "03C0CBEA6EAB9258";
     gpgPath = "gpg";
     signByDefault = true;
