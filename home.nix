@@ -8,9 +8,7 @@ let
   personalEmail = "j@cobi.dev";
   workEmail = "jacobi.petrucciani@medable.com";
 
-  osRelease = builtins.readFile /etc/os-release;
-
-  isNixOS = (builtins.match ".*ID=nixos.*" osRelease) == [];
+  isNixOS = isLinux && (builtins.match ".*ID=nixos.*" (builtins.readFile /etc/os-release)) == [ ];
   onAws = builtins.getEnv "USER" == "ubuntu";
   promptChar = if isDarwin then "ᛗ" else "ᛥ";
 
@@ -58,7 +56,6 @@ with pkgs.hax; {
     packages = with pkgs;
       lib.flatten [
         awscli2
-        amazon-ecr-credential-helper
         atool
         bash-completion
         bashInteractive_5
@@ -101,7 +98,6 @@ with pkgs.hax; {
         loop
         lsof
         man-pages
-        minikube
         moreutils
         nano
         ncdu
@@ -117,13 +113,10 @@ with pkgs.hax; {
         openssh
         p7zip
         patch
-        perl
-        php
         pigz
         procps
         pssh
         pup
-        pv
         ranger
         re2c
         ripgrep
