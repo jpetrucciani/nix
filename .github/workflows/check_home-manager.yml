@@ -2,7 +2,7 @@ name: check for home-manager updates
 on: {workflow_dispatch}
 jobs:
   check-for-updates:
-    uses: jpetrucciani/nix/.github/workflows/check_update.yml
+    uses: jpetrucciani/nix/.github/workflows/check_update.yml@main
     with:
       tag: home-manager
       command: nix_hash_hm
