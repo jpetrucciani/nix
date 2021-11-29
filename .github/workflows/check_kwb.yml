@@ -1,24 +1,11 @@
 name: check for kwb updates
 on: {workflow_dispatch, schedule: [cron: '0 2 * * *']}
 jobs:
-  check-for-updates:
-    runs-on: ubuntu-20.04
-    env:
-      GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-    steps:
-      - uses: actions/checkout@v2.3.4
-      - uses: cachix/install-nix-action@v14
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-      - run: nix-env -f . -iA gh moreutils
-      - run: nix shell -f . nix_hash_kwb -c nix_hash_kwb | sponge ./sources/kwb.json
-      - uses: peter-evans/create-pull-request@v3.10.0
-        id: cpr
-        with:
-          delete-branch: true
-          title: automatic kwb update
-          commit-message: automatic kwb update
-          branch: automatic-kwb-update
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - run: gh pr merge --auto --squash ${{ steps.cpr.outputs.pull-request-url }}
+  kwb:
+    uses: jpetrucciani/nix/.github/workflows/check_update.yml@main
+    with:
+      tag: kwb
+      command: nix_hash_kwb
+      path: ./sources/kwb.json
+    secrets:
+      github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
