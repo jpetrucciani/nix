@@ -1,23 +1,17 @@
 { config, pkgs, ... }:
-
 let
-  home-manager = fetchTarball "https://github.com/nix-community/home-manager/archive/release-21.11.tar.gz";
-  jacobi = import /home/jacobi/cfg/home.nix;
+  common = import ../common.nix { inherit config pkgs; };
 in
 {
-#  home-manager.users.jacobi = { pkgs, ... }: {
-#    home.packages = with pkgs; [];
-#    programs.starship.enable = true;
-#  };
-
-  home-manager.users.jacobi = { pkgs, ... }: jacobi;
-
   imports = [
-    "${home-manager}/nixos"
+    "${common.home-manager}/nixos"
     ./hardware-configuration.nix
   ];
 
-  # Use the systemd-boot EFI boot loader.
+  inherit (common) nix zramSwap swapDevices;
+
+  home-manager.users.jacobi = { pkgs, ... }: common.jacobi;
+
   boot = {
     loader = {
       systemd-boot.enable = true;
@@ -28,27 +22,15 @@ in
     };
   };
 
-  nix = {
-    package = pkgs.nixFlakes;
-    extraOptions = ''
-      max-jobs = auto
-      extra-experimental-features = nix-command flakes
-    '';
-  };
-
   environment.variables = {
-    IS_NIXOS = "true";
+    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/hyperion/configuration.nix";
   };
 
-  # Set your time zone.
-  time.timeZone = "America/Indiana/Indianapolis";
+  time.timeZone = common.timeZone;
 
-  # The global useDHCP flag is deprecated, therefore explicitly set to false here.
-  # Per-interface useDHCP will be mandatory in the future, so this generated config
-  # replicates the default behaviour.
+  networking.hostName = "hyperion";
   networking.useDHCP = false;
   networking.interfaces.eth0.useDHCP = true;
-  networking.hostName = "hyperion";
 
   users.mutableUsers = false;
   users.users.jacobi = {
@@ -57,8 +39,8 @@ in
     passwordFile = "/etc/passwordFile-jacobi";
 
     openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO9u9+khlywG0vSsrTsdjZEhKlKBpXx8RnwESGw+zIKI galaxyboss"
-    ];
+      common.pubkeys.galaxyboss
+    ] ++ common.pubkeys.mobile;
   };
 
   # Disable password-based login for root.
@@ -70,28 +52,10 @@ in
       enable = true;
       passwordAuthentication = false;
     };
-    tailscale.enable = true;
-  };
+  } // common.services;
 
   virtualisation.docker.enable = true;
 
   system.stateVersion = "21.11";
-
-  swapDevices = [{ device = "/swapfile"; size = 1024; }];
-
-  security.sudo.extraRules = [
-    {
-      users = [ "jacobi" ];
-      commands = [
-        {
-          command = "ALL";
-          options = [ "NOPASSWD" ];
-        }
-      ];
-    }
-  ];
-  zramSwap = {
-    enable = true;
-    memoryPercent = 100;
-  };
+  security.sudo = common.security.sudo;
 }

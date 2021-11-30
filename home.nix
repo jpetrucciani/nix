@@ -1,14 +1,12 @@
 let
   pkgs = import ./default.nix { };
-  inherit (pkgs.hax) isDarwin isLinux isM1 fetchFromGitHub chief_keef;
+  inherit (pkgs.hax) isDarwin isLinux isM1 isNixOs fetchFromGitHub chief_keef;
 
-  # name stuff
   firstName = "jacobi";
   lastName = "petrucciani";
   personalEmail = "j@cobi.dev";
   workEmail = "jacobi.petrucciani@medable.com";
 
-  isNixOS = isLinux && (builtins.match ".*ID=nixos.*" (builtins.readFile /etc/os-release)) == [ ];
   onAws = builtins.getEnv "USER" == "ubuntu";
   promptChar = if isDarwin then "ᛗ" else "ᛥ";
 
@@ -33,7 +31,7 @@ in
 with pkgs.hax; {
   nixpkgs.overlays = import ./overlays.nix;
   nixpkgs.config = { allowUnfree = true; };
-  # Let Home Manager install and manage itself.
+
   programs.home-manager.enable = true;
   programs.home-manager.path = "${home-manager}";
   programs.htop.enable = true;
@@ -290,7 +288,10 @@ with pkgs.hax; {
       complete -F __start_kubectl k
       complete -F _kube_contexts kubectx kx
       complete -F _kube_namespaces kubens kns
-    '';
+    '' + (if isNixOS then ''
+      ${pkgs.figlet}/bin/figlet "$(hostname)" | ${pkgs.lolcat}/bin/lolcat
+      echo
+    '' else "");
   };
 
   programs.direnv = {
@@ -557,4 +558,11 @@ with pkgs.hax; {
       set-option -g bell-action none
     '';
   };
+
+  # fix vscode
+  imports = [
+    "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/bc28cc2a7d866b32a8358c6ad61bea68a618a3f5"}/modules/vscode-server/home.nix"
+  ];
+
+  services.vscode-server.enable = isNixOS;
 }
