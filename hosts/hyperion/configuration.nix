@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  common = import ../common.nix;
+  common = import ../common.nix { inherit config pkgs; };
 in
 {
   imports = [
@@ -8,11 +8,10 @@ in
     ./hardware-configuration.nix
   ];
 
-  inherit (common) nix zramSwap;
+  inherit (common) nix zramSwap swapDevices;
 
   home-manager.users.jacobi = { pkgs, ... }: common.jacobi;
 
-  # Use the systemd-boot EFI boot loader.
   boot = {
     loader = {
       systemd-boot.enable = true;
@@ -24,11 +23,10 @@ in
   };
 
   environment.variables = {
-    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${networking.hostName}/configuration.nix";
+    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/hyperion/configuration.nix";
   };
 
-  # Set your time zone.
-  time.timeZone = "America/Indiana/Indianapolis";
+  time.timeZone = common.timeZone;
 
   networking.hostName = "hyperion";
   networking.useDHCP = false;
@@ -41,8 +39,8 @@ in
     passwordFile = "/etc/passwordFile-jacobi";
 
     openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO9u9+khlywG0vSsrTsdjZEhKlKBpXx8RnwESGw+zIKI galaxyboss"
-    ];
+      common.pubkeys.galaxyboss
+    ] ++ common.pubkeys.mobile;
   };
 
   # Disable password-based login for root.
@@ -54,24 +52,10 @@ in
       enable = true;
       passwordAuthentication = false;
     };
-    tailscale.enable = true;
-  };
+  } // common.services;
 
   virtualisation.docker.enable = true;
 
   system.stateVersion = "21.11";
-
-  swapDevices = [{ device = "/swapfile"; size = 1024; }];
-
-  security.sudo.extraRules = [
-    {
-      users = [ "jacobi" ];
-      commands = [
-        {
-          command = "ALL";
-          options = [ "NOPASSWD" ];
-        }
-      ];
-    }
-  ];
+  security.sudo = common.security.sudo;
 }

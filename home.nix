@@ -2,7 +2,6 @@ let
   pkgs = import ./default.nix { };
   inherit (pkgs.hax) isDarwin isLinux isM1 isNixOs fetchFromGitHub chief_keef;
 
-  # name stuff
   firstName = "jacobi";
   lastName = "petrucciani";
   personalEmail = "j@cobi.dev";
@@ -32,7 +31,7 @@ in
 with pkgs.hax; {
   nixpkgs.overlays = import ./overlays.nix;
   nixpkgs.config = { allowUnfree = true; };
-  # Let Home Manager install and manage itself.
+
   programs.home-manager.enable = true;
   programs.home-manager.path = "${home-manager}";
   programs.htop.enable = true;
@@ -289,7 +288,10 @@ with pkgs.hax; {
       complete -F __start_kubectl k
       complete -F _kube_contexts kubectx kx
       complete -F _kube_namespaces kubens kns
-    '';
+    '' + (if isNixOS then ''
+      ${pkgs.figlet}/bin/figlet "$(hostname)" | ${pkgs.lolcat}/bin/lolcat
+      echo
+    '' else "");
   };
 
   programs.direnv = {
