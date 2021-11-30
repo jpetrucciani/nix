@@ -1,21 +1,16 @@
 { config, pkgs, ... }:
-
 let
-  home-manager = fetchTarball "https://github.com/nix-community/home-manager/archive/release-21.11.tar.gz";
-  jacobi = import /home/jacobi/cfg/home.nix;
+  common = import ../common.nix;
 in
 {
-#  home-manager.users.jacobi = { pkgs, ... }: {
-#    home.packages = with pkgs; [];
-#    programs.starship.enable = true;
-#  };
-
-  home-manager.users.jacobi = { pkgs, ... }: jacobi;
-
   imports = [
-    "${home-manager}/nixos"
+    "${common.home-manager}/nixos"
     ./hardware-configuration.nix
   ];
+
+  inherit (common) nix zramSwap;
+
+  home-manager.users.jacobi = { pkgs, ... }: common.jacobi;
 
   # Use the systemd-boot EFI boot loader.
   boot = {
@@ -28,27 +23,16 @@ in
     };
   };
 
-  nix = {
-    package = pkgs.nixFlakes;
-    extraOptions = ''
-      max-jobs = auto
-      extra-experimental-features = nix-command flakes
-    '';
-  };
-
   environment.variables = {
-    IS_NIXOS = "true";
+    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${networking.hostName}/configuration.nix";
   };
 
   # Set your time zone.
   time.timeZone = "America/Indiana/Indianapolis";
 
-  # The global useDHCP flag is deprecated, therefore explicitly set to false here.
-  # Per-interface useDHCP will be mandatory in the future, so this generated config
-  # replicates the default behaviour.
+  networking.hostName = "hyperion";
   networking.useDHCP = false;
   networking.interfaces.eth0.useDHCP = true;
-  networking.hostName = "hyperion";
 
   users.mutableUsers = false;
   users.users.jacobi = {
@@ -90,8 +74,4 @@ in
       ];
     }
   ];
-  zramSwap = {
-    enable = true;
-    memoryPercent = 100;
-  };
 }
