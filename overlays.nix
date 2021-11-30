@@ -11,6 +11,8 @@ with builtins; [
 
           isM1 = isDarwin && isAarch64;
 
+          isNixOS = isLinux && (builtins.match ".*ID=nixos.*" (builtins.readFile /etc/os-release)) == [ ];
+
           kwb = with builtins; fromJSON (readFile ./sources/kwb.json);
           chief_keef = import (
             super.pkgs.fetchFromGitHub {
@@ -163,6 +165,20 @@ with builtins; [
             )
           ];
 
+          _hms = {
+            default = ''
+              ${pkgs.git}/bin/git -C ~/.config/nixpkgs/ pull origin main
+              home-manager switch
+            '';
+            nixOS = ''
+              ${pkgs.git}/bin/git -C ~/cfg/ pull origin main
+              sudo nixos-rebuild switch
+            '';
+            switch =
+              if
+                isNixOS then _hms.nixOS else _hms.default;
+          };
+
           general_bash_scripts = [
             (
               writeBashBinChecked "batwhich" ''
@@ -170,10 +186,7 @@ with builtins; [
               ''
             )
             (
-              writeBashBinChecked "hms" ''
-                ${pkgs.git}/bin/git -C ~/.config/nixpkgs/ pull origin main
-                home-manager switch
-              ''
+              writeBashBinChecked "hms" _hms.switch
             )
             (
               writeBashBinChecked "get_cert" ''

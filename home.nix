@@ -1,6 +1,6 @@
 let
   pkgs = import ./default.nix { };
-  inherit (pkgs.hax) isDarwin isLinux isM1 fetchFromGitHub chief_keef;
+  inherit (pkgs.hax) isDarwin isLinux isM1 isNixOs fetchFromGitHub chief_keef;
 
   # name stuff
   firstName = "jacobi";
@@ -8,7 +8,6 @@ let
   personalEmail = "j@cobi.dev";
   workEmail = "jacobi.petrucciani@medable.com";
 
-  isNixOS = isLinux && (builtins.match ".*ID=nixos.*" (builtins.readFile /etc/os-release)) == [ ];
   onAws = builtins.getEnv "USER" == "ubuntu";
   promptChar = if isDarwin then "ᛗ" else "ᛥ";
 
