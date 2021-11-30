@@ -4,13 +4,16 @@ let
   jacobi = import ../home.nix;
 in
 {
-  inherit jacobi home-manager;
+  inherit home-manager jacobi;
 
   nix = {
     package = pkgs.nixFlakes;
     extraOptions = ''
       max-jobs = auto
+      narinfo-cache-negative-ttl = 10
       extra-experimental-features = nix-command flakes
+      extra-substituters = https://jacobi.cachix.org
+      extra-trusted-public-keys = jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=
     '';
   };
 
