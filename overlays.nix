@@ -245,20 +245,27 @@ with builtins; [
             )
           ];
 
-          _d = {
+          _d = rec {
             # binaries
             d = "${pkgs.docker-client}/bin/docker";
+            k = "${pkgs.kubectl}/bin/kubectl";
             sed = "${pkgs.gnused}/bin/sed";
             awk = "${pkgs.gawk}/bin/awk";
 
-            # partials
-            di = "${_d.d} images | ${_d.sed} '1d'";
+            # fzf partials
             fzf = ''${pkgs.fzf}/bin/fzf -q "$1" --no-sort'';
             fzfm = ''${pkgs.fzf}/bin/fzf -q "$1" --no-sort -m'';
-            get_image = "${_d.awk} '{ print $3 }'";
+
+            # docker partials
+            di = "${d} images | ${sed} '1d'";
+            get_image = "${awk} '{ print $3 }'";
+
+            # k8s partials
+            ka = "${k} get pods | ${sed} '1d'";
+            get_id = "${awk} '{ print $1 }'";
 
             # full commands
-            drmi = "${_d.di} | ${_d.fzfm} | ${_d.get_image} | xargs -r ${_d.d} rmi";
+            drmi = "${di} | ${fzfm} | ${get_image} | xargs -r ${d} rmi";
           };
 
           docker_bash_scripts = [
@@ -267,6 +274,28 @@ with builtins; [
           ];
 
           k8s_bash_scripts = [
+            # helpful shorthands
+            (
+              writeBashBinChecked "kexec" ''
+                namespace="''${1:-default}"
+                pod_id=$(${_d.k} --namespace "$namespace" get pods | \
+                  ${_d.sed} '1d' | \
+                  ${_d.fzf} | \
+                  ${_d.get_id})
+                ${_d.k} --namespace "$namespace" exec -it "$pod_id" -- sh -c 'bash || sh; exit'  
+              ''
+            )
+            (
+              writeBashBinChecked "kdel" ''
+                namespace="''${1:-default}"
+                ${_d.k} --namespace "$namespace" get pods | \
+                  ${_d.sed} '1d' | \
+                  ${_d.fzfm} | \
+                  ${_d.get_id} | \
+                  xargs ${_d.k} --namespace "$namespace" delete pods
+              ''
+            )
+
             # deployment stuff
             (
               writeBashBinChecked "_get_deployment_patch" ''
