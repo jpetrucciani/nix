@@ -58,4 +58,5 @@ in
 
   system.stateVersion = "21.11";
   security.sudo = common.security.sudo;
+  programs.command-not-found.enable = false;
 }

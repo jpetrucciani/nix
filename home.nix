@@ -163,6 +163,7 @@ with pkgs.hax; {
         nix_hash_jpetrucciani
         nix_hash_kwb
         nix_hash_hm
+        foo
 
         # keef's stuff
         comma
