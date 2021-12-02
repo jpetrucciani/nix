@@ -150,6 +150,7 @@ with pkgs.hax; {
         # my pkgs
         aliyun-cli
         cloudquery
+        horcrux
         katafygio
         kube-linter
         pluto

@@ -251,6 +251,9 @@ with builtins; [
             k = "${pkgs.kubectl}/bin/kubectl";
             sed = "${pkgs.gnused}/bin/sed";
             awk = "${pkgs.gawk}/bin/awk";
+            gron = "${pkgs.gron}/bin/gron";
+            tr = "${pkgs.coreutils}/bin/tr";
+            xargs = "${pkgs.findutils}/bin/xargs";
 
             # fzf partials
             fzf = ''${pkgs.fzf}/bin/fzf -q "$1" --no-sort'';
@@ -282,48 +285,60 @@ with builtins; [
                   ${_d.sed} '1d' | \
                   ${_d.fzf} | \
                   ${_d.get_id})
-                ${_d.k} --namespace "$namespace" exec -it "$pod_id" -- sh -c 'bash || sh; exit'  
+                ${_d.k} --namespace "$namespace" exec -it "$pod_id" -- sh
               ''
             )
             (
-              writeBashBinChecked "kdel" ''
+              writeBashBinChecked "krm" ''
                 namespace="''${1:-default}"
                 ${_d.k} --namespace "$namespace" get pods | \
                   ${_d.sed} '1d' | \
                   ${_d.fzfm} | \
                   ${_d.get_id} | \
-                  xargs ${_d.k} --namespace "$namespace" delete pods
+                  ${_d.xargs} ${_d.k} --namespace "$namespace" delete pods
+              ''
+            )
+            (
+              writeBashBinChecked "krmf" ''
+                namespace="''${1:-default}"
+                ${_d.k} --namespace "$namespace" get pods | \
+                  ${_d.sed} '1d' | \
+                  ${_d.fzfm} | \
+                  ${_d.get_id} | \
+                  ${_d.xargs} ${_d.k} --namespace "$namespace" delete pods --grace-period=0 --force
               ''
             )
 
             # deployment stuff
             (
               writeBashBinChecked "_get_deployment_patch" ''
-                echo "spec.template.metadata.labels.date = \"$(date +'%s')\";" | \
-                  ${pkgs.gron}/bin/gron -u | \
-                  ${pkgs.coreutils}/bin/tr -d '\n' | \
-                  ${pkgs.gnused}/bin/sed -E 's#\s+##g'
+                echo "spec.template.metadata.labels.date = \"$(${pkgs.coreutils}/bin/date +'%s')\";" | \
+                  ${_d.gron} -u | \
+                  ${_d.tr} -d '\n' | \
+                  ${_d.sed} -E 's#\s+##g'
               ''
             )
             (
               writeBashBinChecked "refresh_deployment" ''
                 deployment_id="$1"
                 namespace="''${2:-default}"
-                ${pkgs.kubectl}/bin/kubectl --namespace "$namespace" \
-                  patch deployment "$deployment_id" --patch "''$(_get_deployment_patch)"
-                ${pkgs.kubectl}/bin/kubectl --namespace "$namespace" rollout status deployment/"$deployment_id"
+                ${_d.k} --namespace "$namespace" \
+                  patch deployment "$deployment_id" \
+                  --patch "''$(_get_deployment_patch)"
+                ${_d.k} --namespace "$namespace" rollout status deployment/"$deployment_id"
               ''
             )
           ];
 
-          docker_aliases = {
+          docker_aliases = rec {
             # docker
             d = "docker";
-            da = "docker ps -a";
-            di = "docker images";
-            de = "docker exec -it";
-            dr = "docker run --rm -it";
-            drma = "docker stop $(docker ps -aq) && docker rm -f $(docker ps -aq)";
+            da = "${d} ps -a";
+            daq = "${d} ps -aq";
+            di = "${d} images";
+            de = "${d} exec -it";
+            dr = "${d} run --rm -it";
+            drma = "${d} stop $(${daq}) && ${d} rm -f $(${daq})";
           };
 
           kubernetes_aliases = {
@@ -336,7 +351,7 @@ with builtins; [
             klist =
               "kubectl get pods --all-namespaces -o jsonpath='{..image}' | tr -s '[[:space:]]' '\\n' | sort | uniq -c";
             kshell = ''
-              kubectl run "jacobi-''${RANDOM}" -it --image-pull-policy=Always --rm --restart Never --image=alpine:latest'';
+              kubectl run "''${user}-''${RANDOM}" -it --image-pull-policy=Always --rm --restart Never --image=alpine:latest'';
           };
 
         }
