@@ -169,7 +169,7 @@ rec {
 
 
   ### DOCKER STUFF
-  _d = rec {
+  _ = rec {
     # binaries
     d = "${pkgs.docker-client}/bin/docker";
     k = "${pkgs.kubectl}/bin/kubectl";
@@ -178,6 +178,7 @@ rec {
     gron = "${pkgs.gron}/bin/gron";
     tr = "${pkgs.coreutils}/bin/tr";
     xargs = "${pkgs.findutils}/bin/xargs";
+    date = "$(${pkgs.coreutils}/bin/date";
 
     # fzf partials
     fzf = ''${pkgs.fzf}/bin/fzf -q "$1" --no-sort'';
@@ -195,8 +196,8 @@ rec {
     drmi = "${di} | ${fzfm} | ${get_image} | xargs -r ${d} rmi";
   };
 
-  drmi = (writeBashBinChecked "drmi" _d.drmi);
-  drmif = (writeBashBinChecked "drmif" ''${_d.drmi} --force'');
+  drmi = (writeBashBinChecked "drmi" _.drmi);
+  drmif = (writeBashBinChecked "drmif" ''${_.drmi} --force'');
   docker_bash_scripts = [
     drmi
     drmif
@@ -207,51 +208,51 @@ rec {
   kex = (
     writeBashBinChecked "kex" ''
       namespace="''${1:-default}"
-      pod_id=$(${_d.k} --namespace "$namespace" get pods | \
-        ${_d.sed} '1d' | \
-        ${_d.fzf} | \
-        ${_d.get_id})
-      ${_d.k} --namespace "$namespace" exec -it "$pod_id" -- sh
+      pod_id=$(${_.k} --namespace "$namespace" get pods | \
+        ${_.sed} '1d' | \
+        ${_.fzf} | \
+        ${_.get_id})
+      ${_.k} --namespace "$namespace" exec -it "$pod_id" -- sh
     ''
   );
   krm = (
     writeBashBinChecked "krm" ''
       namespace="''${1:-default}"
-      ${_d.k} --namespace "$namespace" get pods | \
-        ${_d.sed} '1d' | \
-        ${_d.fzfm} | \
-        ${_d.get_id} | \
-        ${_d.xargs} ${_d.k} --namespace "$namespace" delete pods
+      ${_.k} --namespace "$namespace" get pods | \
+        ${_.sed} '1d' | \
+        ${_.fzfm} | \
+        ${_.get_id} | \
+        ${_.xargs} ${_.k} --namespace "$namespace" delete pods
     ''
   );
   krmf = (
     writeBashBinChecked "krmf" ''
       namespace="''${1:-default}"
-      ${_d.k} --namespace "$namespace" get pods | \
-        ${_d.sed} '1d' | \
-        ${_d.fzfm} | \
-        ${_d.get_id} | \
-        ${_d.xargs} ${_d.k} --namespace "$namespace" delete pods --grace-period=0 --force
+      ${_.k} --namespace "$namespace" get pods | \
+        ${_.sed} '1d' | \
+        ${_.fzfm} | \
+        ${_.get_id} | \
+        ${_.xargs} ${_.k} --namespace "$namespace" delete pods --grace-period=0 --force
     ''
   );
 
   # deployment stuff
   _get_deployment_patch = (
     writeBashBinChecked "_get_deployment_patch" ''
-      echo "spec.template.metadata.labels.date = \"$(${pkgs.coreutils}/bin/date +'%s')\";" | \
-        ${_d.gron} -u | \
-        ${_d.tr} -d '\n' | \
-        ${_d.sed} -E 's#\s+##g'
+      echo "spec.template.metadata.labels.date = \"${_.date} +'%s')\";" | \
+        ${_.gron} -u | \
+        ${_.tr} -d '\n' | \
+        ${_.sed} -E 's#\s+##g'
     ''
   );
   refresh_deployment = (
     writeBashBinChecked "refresh_deployment" ''
       deployment_id="$1"
       namespace="''${2:-default}"
-      ${_d.k} --namespace "$namespace" \
+      ${_.k} --namespace "$namespace" \
         patch deployment "$deployment_id" \
         --patch "''$(_get_deployment_patch)"
-      ${_d.k} --namespace "$namespace" rollout status deployment/"$deployment_id"
+      ${_.k} --namespace "$namespace" rollout status deployment/"$deployment_id"
     ''
   );
   k8s_bash_scripts = [
