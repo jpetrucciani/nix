@@ -12,12 +12,15 @@ on:
       path:
         type: string
         required: true
+    secrets:
+      pat:
+        required: true
 
 jobs:
   check-for-updates:
     runs-on: ubuntu-20.04
     env:
-      GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.pat }}
     steps:
       - uses: actions/checkout@v2.4.0
       - uses: cachix/install-nix-action@v16
@@ -33,5 +36,5 @@ jobs:
           title: automatic ${{inputs.tag}} update
           commit-message: automatic ${{inputs.tag}} update
           branch: automatic-${{inputs.tag}}-update
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          token: ${{ secrets.pat }}
       - run: gh pr merge --auto --squash ${{ steps.cpr.outputs.pull-request-url }}

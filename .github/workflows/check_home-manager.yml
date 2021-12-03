@@ -7,3 +7,5 @@ jobs:
       tag: home-manager
       command: nix_hash_hm
       path: ./sources/home-manager.json
+    secrets:
+      pat: ${{ secrets.PERSONAL_ACCESS_TOKEN }}

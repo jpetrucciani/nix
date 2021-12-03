@@ -7,3 +7,5 @@ jobs:
       tag: nixpkgs
       command: nix_hash_unstable
       path: ./sources/nixpkgs.json
+    secrets:
+      pat: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
