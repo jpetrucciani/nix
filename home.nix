@@ -410,6 +410,9 @@ with pkgs.hax; {
         symbol = "🌴";
       };
       nodejs = { symbol = "⬡ "; };
+      username = {
+        style_user = "bold fg:93";
+      };
 
       # disabled plugins
       aws.disabled = true;
