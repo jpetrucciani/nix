@@ -6,10 +6,6 @@ rec {
   isNixOS = isLinux && (builtins.match ".*ID=nixos.*" (builtins.readFile /etc/os-release)) == [ ];
   isM1 = isDarwin && isAarch64;
 
-  github = "https://raw.githubusercontent.com/jpetrucciani/nix/main";
-
-  foo = prev.writeShellScriptBin "foo" ''echo foo'';
-
   writeBashBinChecked = name: text:
     stdenv.mkDerivation {
       inherit name text;
@@ -20,7 +16,7 @@ rec {
         echo '#!/bin/bash' > $out/bin/${name}
         cat $textPath >> $out/bin/${name}
         chmod +x $out/bin/${name}
-        ${shellcheck}/bin/shellcheck $out/bin/${name}
+        ${_.shellcheck} $out/bin/${name}
       '';
     };
 
@@ -32,7 +28,7 @@ rec {
       };
     in
     writeShellScriptBin name ''
-      ${pkgs.sox}/bin/play --no-show-progress ${file} &
+      ${_.sox} --no-show-progress ${file} &
     '';
 
   soundFolder = "https://hexa.dev/static/sounds";
@@ -51,22 +47,22 @@ rec {
   ### AWS STUFF
   aws_id = (
     writeBashBinChecked "aws_id" ''
-      ${pkgs.awscli2}/bin/aws sts get-caller-identity --query Account --output text
+      ${_.aws} sts get-caller-identity --query Account --output text
     ''
   );
   ecr_login = (
     writeBashBinChecked "ecr_login" ''
       region="''${1:-us-east-1}"
-      ${pkgs.awscli2}/bin/aws ecr get-login-password --region "''${region}" |
-      ${pkgs.docker-client}/bin/docker login --username AWS \
-          --password-stdin "$(${pkgs.awscli2}/bin/aws sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com"
+      ${_.aws} ecr get-login-password --region "''${region}" |
+      ${_.d} login --username AWS \
+          --password-stdin "$(${_.aws} sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com"
     ''
   );
   ecr_login_public = (
     writeBashBinChecked "ecr_login_public" ''
       region="''${1:-us-east-1}"
-      ${pkgs.awscli2}/bin/aws ecr-public get-login-password --region "''${region}" |
-      ${pkgs.docker-client}/bin/docker login --username AWS \
+      ${_.aws} ecr-public get-login-password --region "''${region}" |
+      ${_.d} login --username AWS \
           --password-stdin public.ecr.aws
     ''
   );
@@ -79,11 +75,11 @@ rec {
   ### GENERAL STUFF
   _hms = {
     default = ''
-      ${pkgs.git}/bin/git -C ~/.config/nixpkgs/ pull origin main
+      ${_.git} -C ~/.config/nixpkgs/ pull origin main
       home-manager switch
     '';
     nixOS = ''
-      ${pkgs.git}/bin/git -C ~/cfg/ pull origin main
+      ${_.git} -C ~/cfg/ pull origin main
       sudo nixos-rebuild switch
     '';
     switch =
@@ -93,7 +89,7 @@ rec {
 
   batwhich = (
     writeBashBinChecked "batwhich" ''
-      ${pkgs.bat}/bin/bat "$(which "$1")"
+      ${_.bat} "$(which "$1")"
     ''
   );
   hms = (
@@ -101,13 +97,13 @@ rec {
   );
   get_cert = (
     writeBashBinChecked "get_cert" ''
-      ${pkgs.curl}/bin/curl --insecure -I -vvv "$1" 2>&1 |
-        ${pkgs.gawk}/bin/awk 'BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }'
+      ${_.curl} --insecure -I -vvv "$1" 2>&1 |
+        ${_.awk} 'BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }'
     ''
   );
   jql = (
     writeBashBinChecked "jql" ''
-      echo "" | ${pkgs.fzf}/bin/fzf --print-query --preview-window wrap --preview "cat $1 | ${pkgs.jq}/bin/jq -C {q}"
+      echo "" | ${pkgs.fzf}/bin/fzf --print-query --preview-window wrap --preview "cat $1 | ${_.jq} -C {q}"
     ''
   );
   slack_meme = (
@@ -115,26 +111,26 @@ rec {
       word="$1"
       fg="$2"
       bg="$3"
-      ${pkgs.figlet}/bin/figlet -f banner "$word" | \
-        ${pkgs.gnused}/bin/sed 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | \
-        ${pkgs.gawk}/bin/awk '{print ":'"$bg"':" $1}'
+      ${_.figlet} -f banner "$word" | \
+        ${_.sed} 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | \
+        ${_.awk} '{print ":'"$bg"':" $1}'
     ''
   );
   ssh_fwd = (
     writeBashBinChecked "ssh_fwd" ''
       host="$1"
       port="$2"
-      ${pkgs.openssh}/bin/ssh -L "$port:$host:$port" "$host"
+      ${_.ssh} -L "$port:$host:$port" "$host"
     ''
   );
   fif = (
     writeBashBinChecked "fif" ''
       if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; exit 1; fi
-      ${pkgs.ripgrep}/bin/rg --files-with-matches --no-messages "$1" | \
-        ${pkgs.fzf}/bin/fzf --preview \
+      ${_.rg} --files-with-matches --no-messages "$1" | \
+        ${_.fzfq} --preview \
           "highlight -O ansi -l {} 2> /dev/null | \
-            ${pkgs.ripgrep}/bin/rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || \
-            ${pkgs.ripgrep}/bin/rg --ignore-case --pretty --context 10 '$1' {}"
+            ${_.rg} --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || \
+            ${_.rg} --ignore-case --pretty --context 10 '$1' {}"
     ''
   );
   general_bash_scripts = [
@@ -152,14 +148,14 @@ rec {
     writeBashBinChecked "scale_x" ''
       file="$1"
       px="$2"
-      ${pkgs.ffmpeg}/bin/ffmpeg -i "$file" -vf scale="$px:-1" "''${file%.*}.$px.''${file##*.}"
+      ${_.ffmpeg} -i "$file" -vf scale="$px:-1" "''${file%.*}.$px.''${file##*.}"
     ''
   );
   scale_y = (
     writeBashBinChecked "scale_y" ''
       file="$1"
       px="$2"
-      ${pkgs.ffmpeg}/bin/ffmpeg -i "$file" -vf scale="-1:$px" "''${file%.*}.$px.''${file##*.}"
+      ${_.ffmpeg} -i "$file" -vf scale="-1:$px" "''${file%.*}.$px.''${file##*.}"
     ''
   );
   image_bash_scripts = [
@@ -167,22 +163,41 @@ rec {
     scale_y
   ];
 
-
-  ### DOCKER STUFF
+  ### snippets
   _ = rec {
     # binaries
+    ## text
+    awk = "${pkgs.gawk}/bin/awk";
+    bat = "${pkgs.bat}/bin/bat";
+    curl = "${pkgs.curl}/bin/curl";
+    figlet = "${pkgs.figlet}/bin/figlet";
+    git = "${pkgs.git}/bin/git";
+    gron = "${pkgs.gron}/bin/gron";
+    jq = "${pkgs.jq}/bin/jq";
+    rg = "${pkgs.ripgrep}/bin/rg";
+    sed = "${pkgs.gnused}/bin/sed";
+    shellcheck = "${pkgs.shellcheck}/bin/shellcheck";
+    tr = "${pkgs.coreutils}/bin/tr";
+    yq = "${pkgs.yq-go}/bin/yq";
+
+    ## common
+    date = "${pkgs.coreutils}/bin/date";
+    xargs = "${pkgs.findutils}/bin/xargs";
+    fzf = "${pkgs.fzf}/bin/fzf";
+    sox = "${pkgs.sox}/bin/play";
+    ffmpeg = "${pkgs.ffmpeg}/bin/ffmpeg";
+    ssh = "${pkgs.openssh}/bin/ssh";
+
+    ## containers
     d = "${pkgs.docker-client}/bin/docker";
     k = "${pkgs.kubectl}/bin/kubectl";
-    sed = "${pkgs.gnused}/bin/sed";
-    awk = "${pkgs.gawk}/bin/awk";
-    gron = "${pkgs.gron}/bin/gron";
-    tr = "${pkgs.coreutils}/bin/tr";
-    xargs = "${pkgs.findutils}/bin/xargs";
-    date = "$(${pkgs.coreutils}/bin/date";
+
+    ## clouds
+    aws = "${pkgs.awscli2}/bin/aws";
 
     # fzf partials
-    fzf = ''${pkgs.fzf}/bin/fzf -q "$1" --no-sort'';
-    fzfm = ''${fzf} -m'';
+    fzfq = ''${fzf} -q "$1" --no-sort'';
+    fzfqm = ''${fzfq} -m'';
 
     # docker partials
     di = "${d} images | ${sed} '1d'";
@@ -193,7 +208,7 @@ rec {
     get_id = "${awk} '{ print $1 }'";
 
     # full commands
-    drmi = "${di} | ${fzfm} | ${get_image} | xargs -r ${d} rmi";
+    drmi = "${di} | ${fzfqm} | ${get_image} | xargs -r ${d} rmi";
   };
 
   drmi = (writeBashBinChecked "drmi" _.drmi);
@@ -210,7 +225,7 @@ rec {
       namespace="''${1:-default}"
       pod_id=$(${_.k} --namespace "$namespace" get pods | \
         ${_.sed} '1d' | \
-        ${_.fzf} | \
+        ${_.fzfq} | \
         ${_.get_id})
       ${_.k} --namespace "$namespace" exec -it "$pod_id" -- sh
     ''
@@ -220,7 +235,7 @@ rec {
       namespace="''${1:-default}"
       ${_.k} --namespace "$namespace" get pods | \
         ${_.sed} '1d' | \
-        ${_.fzfm} | \
+        ${_.fzfqm} | \
         ${_.get_id} | \
         ${_.xargs} ${_.k} --namespace "$namespace" delete pods
     ''
@@ -230,7 +245,7 @@ rec {
       namespace="''${1:-default}"
       ${_.k} --namespace "$namespace" get pods | \
         ${_.sed} '1d' | \
-        ${_.fzfm} | \
+        ${_.fzfqm} | \
         ${_.get_id} | \
         ${_.xargs} ${_.k} --namespace "$namespace" delete pods --grace-period=0 --force
     ''
@@ -239,7 +254,7 @@ rec {
   # deployment stuff
   _get_deployment_patch = (
     writeBashBinChecked "_get_deployment_patch" ''
-      echo "spec.template.metadata.labels.date = \"${_.date} +'%s')\";" | \
+      echo "spec.template.metadata.labels.date = \"$(${_.date} +'%s')\";" | \
         ${_.gron} -u | \
         ${_.tr} -d '\n' | \
         ${_.sed} -E 's#\s+##g'
@@ -263,4 +278,7 @@ rec {
     refresh_deployment
   ];
 
+  yank = next.yank.overrideAttrs (attrs: {
+    makeFlags = if isDarwin then [ "YANKCMD=/usr/bin/pbcopy" ] else attrs.makeFlags;
+  });
 }
