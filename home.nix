@@ -96,6 +96,7 @@ with pkgs.hax; {
         loop
         lsof
         man-pages
+        manix
         moreutils
         nano
         ncdu
@@ -106,7 +107,7 @@ with pkgs.hax; {
         nix-tree
         nixpkgs-fmt
         nixpkgs-review
-        nixUnstable
+        nix_2_4
         nmap
         openssh
         p7zip
