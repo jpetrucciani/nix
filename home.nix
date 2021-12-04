@@ -410,6 +410,9 @@ with pkgs.hax; {
         symbol = "🌴";
       };
       nodejs = { symbol = "⬡ "; };
+      hostname = {
+        style = "bold fg:46";
+      };
       username = {
         style_user = "bold fg:93";
       };
