@@ -567,5 +567,5 @@ with pkgs.hax; {
       "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/bc28cc2a7d866b32a8358c6ad61bea68a618a3f5"}/modules/vscode-server/home.nix"
     ] else [ ];
 
-  ${attrIf isLinux "services"}.vscode-server.enable = isNixOS;
+  ${attrIf isNixOS "services"}.vscode-server.enable = isNixOS;
 }
