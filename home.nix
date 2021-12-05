@@ -156,11 +156,22 @@ with pkgs.hax; {
           pylint
 
           # common use case
-          requests
           gamble
+          httpx
+          requests
+
+          # text
+          anybadge
+          tabulate
+          beautifulsoup4
+
+          # api
+          fastapi
+          uvicorn
 
           # type annotations
           types-requests
+          types-tabulate
         ]))
 
         # kubernetes
@@ -189,6 +200,7 @@ with pkgs.hax; {
         nix_hash_jpetrucciani
         nix_hash_kwb
         nix_hash_hm
+        nixup
 
         # keef's stuff
         comma
@@ -243,15 +255,12 @@ with pkgs.hax; {
 
       # nix memes
       kelby = "echo 'nix-env --tarball-ttl 0 -f https://github.com/jpetrucciani/nix/archive/main.tar.gz'";
+      pynix = "nix shell -f https://github.com/cript0nauta/pynixify/archive/main.tar.gz";
 
       # misc
-      rot13 = "tr 'A-Za-z' 'N-ZA-Mn-za-m'";
       space = "du -Sh | sort -rh | head -10";
       now = "date +%s";
       uneek = "awk '!a[$0]++'";
-      sin = ''
-        awk -v cols=$(tput cols) '{c=int(sin(NR/10)*(cols/6)+(cols/6))+1;print(substr($0,1,c-1) "\x1b[41m" substr($0,c,1) "\x1b[0m" substr($0,c+1,length($0)-c+2))}'
-      '';
     } // docker_aliases // kubernetes_aliases;
     initExtra = ''
       HISTCONTROL=ignoreboth

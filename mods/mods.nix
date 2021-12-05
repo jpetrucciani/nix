@@ -133,6 +133,18 @@ rec {
             ${_.rg} --ignore-case --pretty --context 10 '$1' {}"
     ''
   );
+  rot13 = (
+    writeBashBinChecked "rot13" ''
+      ${_.tr} 'A-Za-z' 'N-ZA-Mn-za-m'
+    ''
+  );
+  sin = (
+    writeBashBinChecked "sin" ''
+      # shellcheck disable=SC2046
+      ${_.awk} -v cols=$(tput cols) '{c=int(sin(NR/10)*(cols/6)+(cols/6))+1;print(substr($0,1,c-1) "\x1b[41m" substr($0,c,1) "\x1b[0m" substr($0,c+1,length($0)-c+2))}'
+    ''
+  );
+
   general_bash_scripts = [
     batwhich
     hms
@@ -141,6 +153,51 @@ rec {
     slack_meme
     ssh_fwd
     fif
+    rot13
+    sin
+  ];
+
+
+  nixup = (writeBashBinChecked "nixup" ''
+    directory="$(pwd | ${_.sed} 's#.*/##')"
+    tags=$(${nix-prefetch-git}/bin/nix-prefetch-git \
+        --quiet \
+        --no-deepClone \
+        --branch-name nixpkgs-unstable \
+        https://github.com/nixos/nixpkgs.git | \
+      ${_.jq} '{ rev: .rev, sha256: .sha256 }');
+    rev=$(echo "$tags" | jq -r '.rev')
+    sha=$(echo "$tags" | jq -r '.sha256')
+    cat <<EOF | ${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt
+      with builtins;
+      { pkgs ? import
+          (
+            fetchTarball {
+              name = "nixpkgs-unstable-$(date '+%F')";
+              url = "https://github.com/NixOS/nixpkgs/archive/$rev.tar.gz";
+              sha256 = "$sha";
+            }
+          )
+          {
+            overlays = [];
+          }
+      }:
+      let
+        packages = with pkgs; [
+          just
+        ];
+        env = pkgs.buildEnv {
+          name = "$directory";
+          paths = packages;
+          buildInputs = packages;
+        };
+      in
+      env
+    EOF
+  '');
+
+  nix_bash_scripts = [
+    nixup
   ];
 
   ### IMAGE STUFF
