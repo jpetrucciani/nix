@@ -52,6 +52,8 @@ in
     openssh = {
       enable = true;
       passwordAuthentication = false;
+      permitRootLogin = "no";
+      forwardX11 = true;
     };
   } // common.services;
 

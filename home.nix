@@ -143,6 +143,20 @@ with pkgs.hax; {
         yq-go
         zip
 
+        # python
+        (python39.withPackages (pkgs: with pkgs; [
+          bandit
+          (lib.optional isLinux bpython)
+          black
+          mypy
+          flake8
+          pylint
+        ]))
+
+        # kubernetes
+        kubectl
+        kubectx
+
         # load in my custom checked bash scripts
         aws_bash_scripts
         general_bash_scripts
@@ -183,9 +197,6 @@ with pkgs.hax; {
         (
           lib.optional isLinux [
             binutils
-            kubectl
-            kubectx
-            (python39.withPackages (pkgs: with pkgs; [ black mypy flake8 bpython bandit pylint ]))
             keybase
             (
               writeBashBinChecked "u" ''

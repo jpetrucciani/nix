@@ -98,6 +98,7 @@ in
 
   services = {
     tailscale.enable = true;
+    netdata.enable = true;
   };
 
   timeZone = "America/Indiana/Indianapolis";
