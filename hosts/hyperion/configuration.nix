@@ -40,6 +40,7 @@ in
 
     openssh.authorizedKeys.keys = [
       common.pubkeys.galaxyboss
+      common.pubkeys.pluto
     ] ++ common.pubkeys.mobile;
   };
 
