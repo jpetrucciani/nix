@@ -145,12 +145,22 @@ with pkgs.hax; {
 
         # python
         (python39.withPackages (pkgs: with pkgs; [
-          bandit
+          # interactive
           (lib.optional isLinux bpython)
+
+          # linting
+          bandit
           black
           mypy
           flake8
           pylint
+
+          # common use case
+          requests
+          gamble
+
+          # type annotations
+          types-requests
         ]))
 
         # kubernetes
