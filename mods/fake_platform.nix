@@ -4,4 +4,3 @@ builtins.mapAttrs (n: v: hax.fakePlatform v) {
   inherit gixy;
   inherit brave;
 }
-  
