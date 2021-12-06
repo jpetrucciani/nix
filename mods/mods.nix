@@ -474,23 +474,6 @@ rec {
             printf '%b\n' "''${_//%/\\x}"
           }
         '';
-        all = ''
-          ### strings
-          ${trim_string}
-          ${trim_all}
-          ${regex}
-          ${split}
-          ${lower}
-          ${upper}
-          ${reverse_case}
-          ${trim_quotes}
-          ${strip_all}
-          ${strip}
-          ${lstrip}
-          ${rstrip}
-          ${urlencode}
-          ${urldecode}
-        '';
       };
       arrays = rec {
         reverse_array = ''
@@ -525,13 +508,6 @@ rec {
             printf '%s ' "''${arr[''${i:=0}]}"
             ((i=i>=''${#arr[@]}-1?0:++i))
           }
-        '';
-        all = ''
-          ### arrays
-          ${reverse_array}
-          ${remove_array_dups}
-          ${random_array_element}
-          ${cycle}
         '';
       };
       files = rec {
@@ -575,14 +551,6 @@ rec {
             done < "$1"
           }
         '';
-        all = ''
-          ### files
-          ${head}
-          ${tail}
-          ${lines}
-          ${count}
-          ${extract}
-        '';
       };
       paths = rec {
         dirname = ''
@@ -620,11 +588,6 @@ rec {
             printf '%s\n' "''${tmp:-/}"
           }
         '';
-        all = ''
-          ### paths
-          ${dirname}
-          ${basename}
-        '';
       };
       terminal = rec {
         get_term_size = ''
@@ -653,12 +616,6 @@ rec {
             printf '%s\n' "$x $y"
           }
         '';
-        all = ''
-          ### terminal
-          ${get_term_size}
-          ${get_window_size}
-          ${get_cursor_pos}
-        '';
       };
       conversion = rec {
         hex_to_rgb = ''
@@ -675,11 +632,6 @@ rec {
             # Usage: rgb_to_hex "r" "g" "b"
             printf '#%02x%02x%02x\n' "$1" "$2" "$3"
           }
-        '';
-        all = ''
-          ### conversion
-          ${hex_to_rgb}
-          ${rgb_to_hex}
         '';
       };
       other = rec {
@@ -748,27 +700,26 @@ rec {
             (nohup "$@" &>/dev/null &)
           }
         '';
-        all = ''
-          ### other
-          ${read_sleep}
-          ${date}
-          ${uuid}
-          ${bar}
-          ${get_functions}
-          ${bkr}
-        '';
       };
     };
 
-    bible = ''
-      ## bash bible functions
-      ${functions.strings.all}
-      ${functions.arrays.all}
-      ${functions.files.all}
-      ${functions.paths.all}
-      ${functions.terminal.all}
-      ${functions.conversion.all}
-      ${functions.other.all}
+    bible = with lib; ''
+      ## bash bible
+      ### strings
+      ${concatStrings (attrValues functions.strings)}
+      ### arrays
+      ${concatStrings (attrValues functions.arrays)}
+      ### files
+      ${concatStrings (attrValues functions.files)}
+      ### paths
+      ${concatStrings (attrValues functions.paths)}
+      ### terminal
+      ${concatStrings (attrValues functions.terminal)}
+      ### conversion
+      ${concatStrings (attrValues functions.conversion)}
+      ### other
+      ${concatStrings (attrValues functions.other)}
+      ## end bash bible
     '';
   };
 }
