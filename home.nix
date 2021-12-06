@@ -201,6 +201,7 @@ with pkgs.hax; {
         nix_hash_kwb
         nix_hash_hm
         nixup
+        foo
 
         # keef's stuff
         comma
