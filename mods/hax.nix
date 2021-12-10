@@ -14,16 +14,15 @@ prev: next:
     kwb = with builtins; fromJSON (readFile ../sources/kwb.json);
     chief_keef = import (
       next.pkgs.fetchFromGitHub {
+        inherit (kwb) rev sha256;
         owner = "kwbauson";
         repo = "cfg";
-        rev = kwb.rev;
-        sha256 = kwb.sha256;
       }
     );
 
-    comma = (writeShellScriptBin "," ''
+    comma = writeShellScriptBin "," ''
       exec ${chief_keef.better-comma}/bin/, --overlay ${./mods.nix} "$@"
-    '');
+    '';
     vanilla_comma = chief_keef.better-comma;
 
     mapAttrValues = f: mapAttrs (n: v: f v);
@@ -71,8 +70,7 @@ prev: next:
     getJson = url: sha256:
       let
         text = fetchurl {
-          url = url;
-          sha256 = sha256;
+          inherit url sha256;
         };
       in
       fromJSON (readFile text);
@@ -86,9 +84,8 @@ prev: next:
       stdenv.mkDerivation {
         name = data.token;
         src = fetchurl {
+          inherit url sha256;
           name = "${data.token}.dmg";
-          url = data.url;
-          sha256 = data.sha256;
         };
         phases = [ "unpackPhase" "buildPhase" "installPhase" ];
         buildInputs = [ undmg ];
@@ -121,10 +118,9 @@ prev: next:
     qlScript = name: command:
       (writeBashBinChecked name ''
         ${pkgs.up}/bin/up --unsafe-full-throttle -c '${command}'
-      ''
-      );
+      '');
 
-    git-trim = (writeBashBinChecked "git-trim" (readFile ../scripts/git-trim.sh));
+    git-trim = writeBashBinChecked "git-trim" (readFile ../scripts/git-trim.sh);
 
     docker_aliases = rec {
       # docker

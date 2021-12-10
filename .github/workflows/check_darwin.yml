@@ -1,0 +1,11 @@
+name: check for nix-darwin updates
+on: {workflow_dispatch}
+jobs:
+  darwin:
+    uses: jpetrucciani/nix/.github/workflows/check_update.yml@main
+    with:
+      tag: darwin
+      command: nix_hash_darwin
+      path: ./sources/darwin.json
+    secrets:
+      pat: ${{ secrets.PERSONAL_ACCESS_TOKEN }}

@@ -3,8 +3,16 @@ with next;
 rec {
   inherit (stdenv) isLinux isDarwin isAarch64;
 
+  nd = with builtins; fromJSON (readFile ../sources/darwin.json);
+  nix-darwin = fetchFromGitHub {
+    inherit (nd) rev sha256;
+    owner = "LnL7";
+    repo = "nix-darwin";
+  };
+
   isNixOS = isLinux && (builtins.match ".*ID=nixos.*" (builtins.readFile /etc/os-release)) == [ ];
   isM1 = isDarwin && isAarch64;
+  isNixDarwin = builtins.getEnv "NIXDARWIN_CONFIG" != "";
 
   writeBashBinChecked = name: text:
     stdenv.mkDerivation {
@@ -41,11 +49,10 @@ rec {
     get_functions
   '';
 
-  soundScript = name: url: hash:
+  soundScript = name: url: sha256:
     let
       file = pkgs.fetchurl {
-        url = url;
-        sha256 = hash;
+        inherit url sha256;
       };
     in
     writeShellScriptBin name ''
@@ -54,10 +61,10 @@ rec {
 
   soundFolder = "https://hexa.dev/static/sounds";
 
-  coin = (soundScript "coin" "${soundFolder}/coin.wav" "18c7dfhkaz9ybp3m52n1is9nmmkq18b1i82g6vgzy7cbr2y07h93");
-  guh = (soundScript "guh" "${soundFolder}/guh.wav" "1chr6fagj6sgwqphrgbg1bpmyfmcd94p39d34imq5n9ik674z9sa");
-  bruh = (soundScript "bruh" "${soundFolder}/bruh.mp3" "11n1a20a7fj80xgynfwiq3jaq1bhmpsdxyzbnmnvlsqfnsa30vy3");
-  fail = (soundScript "fail" "${soundFolder}/the-price-is-wrong.mp3" "1kj0n7qwl6saqqmjn8xlkfjwimi2hyxgaqdkkzn5z1rgnhwwvp91");
+  coin = soundScript "coin" "${soundFolder}/coin.wav" "18c7dfhkaz9ybp3m52n1is9nmmkq18b1i82g6vgzy7cbr2y07h93";
+  guh = soundScript "guh" "${soundFolder}/guh.wav" "1chr6fagj6sgwqphrgbg1bpmyfmcd94p39d34imq5n9ik674z9sa";
+  bruh = soundScript "bruh" "${soundFolder}/bruh.mp3" "11n1a20a7fj80xgynfwiq3jaq1bhmpsdxyzbnmnvlsqfnsa30vy3";
+  fail = soundScript "fail" "${soundFolder}/the-price-is-wrong.mp3" "1kj0n7qwl6saqqmjn8xlkfjwimi2hyxgaqdkkzn5z1rgnhwwvp91";
   meme_sounds = [
     coin
     guh
@@ -66,27 +73,21 @@ rec {
   ];
 
   ### AWS STUFF
-  aws_id = (
-    writeBashBinChecked "aws_id" ''
-      ${_.aws} sts get-caller-identity --query Account --output text
-    ''
-  );
-  ecr_login = (
-    writeBashBinChecked "ecr_login" ''
-      region="''${1:-us-east-1}"
-      ${_.aws} ecr get-login-password --region "''${region}" |
-      ${_.d} login --username AWS \
-          --password-stdin "$(${_.aws} sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com"
-    ''
-  );
-  ecr_login_public = (
-    writeBashBinChecked "ecr_login_public" ''
-      region="''${1:-us-east-1}"
-      ${_.aws} ecr-public get-login-password --region "''${region}" |
-      ${_.d} login --username AWS \
-          --password-stdin public.ecr.aws
-    ''
-  );
+  aws_id = writeBashBinChecked "aws_id" ''
+    ${_.aws} sts get-caller-identity --query Account --output text
+  '';
+  ecr_login = writeBashBinChecked "ecr_login" ''
+    region="''${1:-us-east-1}"
+    ${_.aws} ecr get-login-password --region "''${region}" |
+    ${_.d} login --username AWS \
+        --password-stdin "$(${_.aws} sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com"
+  '';
+  ecr_login_public = writeBashBinChecked "ecr_login_public" ''
+    region="''${1:-us-east-1}"
+    ${_.aws} ecr-public get-login-password --region "''${region}" |
+    ${_.d} login --username AWS \
+        --password-stdin public.ecr.aws
+  '';
   aws_bash_scripts = [
     aws_id
     ecr_login
@@ -103,68 +104,56 @@ rec {
       ${_.git} -C ~/cfg/ pull origin main
       sudo nixos-rebuild switch
     '';
+    darwin = ''
+      ${_.git} -C ~/.config/nixpkgs/ pull origin main
+      darwin-rebuild switch -I darwin=${nix-darwin} -I darwin-config="$HOME/.config/nixpkgs/hosts/pluto/configuration.nix"
+    '';
     switch =
       if
-        isNixOS then _hms.nixOS else _hms.default;
+        isNixOS then _hms.nixOS else (if isNixDarwin then _hms.darwin else _hms.default);
   };
 
-  batwhich = (
-    writeBashBinChecked "batwhich" ''
-      ${_.bat} "$(which "$1")"
-    ''
-  );
-  hms = (
-    writeBashBinChecked "hms" _hms.switch
-  );
-  get_cert = (
-    writeBashBinChecked "get_cert" ''
-      ${_.curl} --insecure -I -vvv "$1" 2>&1 |
-        ${_.awk} 'BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }'
-    ''
-  );
-  jql = (
-    writeBashBinChecked "jql" ''
-      echo "" | ${pkgs.fzf}/bin/fzf --print-query --preview-window wrap --preview "cat $1 | ${_.jq} -C {q}"
-    ''
-  );
-  slack_meme = (
-    writeBashBinChecked "slack_meme" ''
-      word="$1"
-      fg="$2"
-      bg="$3"
-      ${_.figlet} -f banner "$word" | \
-        ${_.sed} 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | \
-        ${_.awk} '{print ":'"$bg"':" $1}'
-    ''
-  );
-  ssh_fwd = (
-    writeBashBinChecked "ssh_fwd" ''
-      host="$1"
-      port="$2"
-      ${_.ssh} -L "$port:$host:$port" "$host"
-    ''
-  );
-  fif = (
-    writeBashBinChecked "fif" ''
-      if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; exit 1; fi
-      ${_.rg} --files-with-matches --no-messages "$1" | \
-        ${_.fzfq} --preview \
-          "highlight -O ansi -l {} 2> /dev/null | \
-            ${_.rg} --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || \
-            ${_.rg} --ignore-case --pretty --context 10 '$1' {}"
-    ''
-  );
-  rot13 = (
-    writeBashBinChecked "rot13" ''
-      ${_.tr} 'A-Za-z' 'N-ZA-Mn-za-m'
-    ''
-  );
-  sin = (
-    writeBashBinChecked "sin" ''
-      # shellcheck disable=SC2046
-      ${_.awk} -v cols=$(tput cols) '{c=int(sin(NR/10)*(cols/6)+(cols/6))+1;print(substr($0,1,c-1) "\x1b[41m" substr($0,c,1) "\x1b[0m" substr($0,c+1,length($0)-c+2))}'
-    ''
-  );
+  batwhich = writeBashBinChecked "batwhich" ''
+    ${_.bat} "$(which "$1")"
+  '';
+  hms = writeBashBinChecked "hms" _hms.switch;
+  get_cert = writeBashBinChecked "get_cert" ''
+    ${_.curl} --insecure -I -vvv "$1" 2>&1 |
+      ${_.awk} 'BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }'
+  '';
+  jql = writeBashBinChecked "jql" ''
+    echo "" | ${pkgs.fzf}/bin/fzf --print-query --preview-window wrap --preview "cat $1 | ${_.jq} -C {q}"
+  '';
+  slack_meme = writeBashBinChecked "slack_meme" ''
+    word="$1"
+    fg="$2"
+    bg="$3"
+    ${_.figlet} -f banner "$word" | \
+      ${_.sed} 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | \
+      ${_.awk} '{print ":'"$bg"':" $1}'
+  ''
+  ;
+  ssh_fwd = writeBashBinChecked "ssh_fwd" ''
+    host="$1"
+    port="$2"
+    ${_.ssh} -L "$port:$host:$port" "$host"
+  ''
+  ;
+  fif = writeBashBinChecked "fif" ''
+    if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; exit 1; fi
+    ${_.rg} --files-with-matches --no-messages "$1" | \
+      ${_.fzfq} --preview \
+        "highlight -O ansi -l {} 2> /dev/null | \
+          ${_.rg} --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || \
+          ${_.rg} --ignore-case --pretty --context 10 '$1' {}"
+  '';
+  rot13 = writeBashBinChecked "rot13" ''
+    ${_.tr} 'A-Za-z' 'N-ZA-Mn-za-m'
+  '';
+  sin = writeBashBinChecked "sin" ''
+    # shellcheck disable=SC2046
+    ${_.awk} -v cols=$(tput cols) '{c=int(sin(NR/10)*(cols/6)+(cols/6))+1;print(substr($0,1,c-1) "\x1b[41m" substr($0,c,1) "\x1b[0m" substr($0,c+1,length($0)-c+2))}'
+  '';
 
   general_bash_scripts = [
     batwhich
@@ -179,7 +168,7 @@ rec {
   ];
 
 
-  nixup = (writeBashBinChecked "nixup" ''
+  nixup = writeBashBinChecked "nixup" ''
     directory="$(pwd | ${_.sed} 's#.*/##')"
     tags=$(${nix-prefetch-git}/bin/nix-prefetch-git \
         --quiet \
@@ -215,27 +204,23 @@ rec {
       in
       env
     EOF
-  '');
+  '';
 
   nix_bash_scripts = [
     nixup
   ];
 
   ### IMAGE STUFF
-  scale_x = (
-    writeBashBinChecked "scale_x" ''
-      file="$1"
-      px="$2"
-      ${_.ffmpeg} -i "$file" -vf scale="$px:-1" "''${file%.*}.$px.''${file##*.}"
-    ''
-  );
-  scale_y = (
-    writeBashBinChecked "scale_y" ''
-      file="$1"
-      px="$2"
-      ${_.ffmpeg} -i "$file" -vf scale="-1:$px" "''${file%.*}.$px.''${file##*.}"
-    ''
-  );
+  scale_x = writeBashBinChecked "scale_x" ''
+    file="$1"
+    px="$2"
+    ${_.ffmpeg} -i "$file" -vf scale="$px:-1" "''${file%.*}.$px.''${file##*.}"
+  '';
+  scale_y = writeBashBinChecked "scale_y" ''
+    file="$1"
+    px="$2"
+    ${_.ffmpeg} -i "$file" -vf scale="-1:$px" "''${file%.*}.$px.''${file##*.}"
+  '';
   image_bash_scripts = [
     scale_x
     scale_y
@@ -289,8 +274,8 @@ rec {
     drmi = "${di} | ${fzfqm} | ${get_image} | xargs -r ${d} rmi";
   };
 
-  drmi = (writeBashBinChecked "drmi" _.drmi);
-  drmif = (writeBashBinChecked "drmif" ''${_.drmi} --force'');
+  drmi = writeBashBinChecked "drmi" _.drmi;
+  drmif = writeBashBinChecked "drmif" ''${_.drmi} --force'';
   docker_bash_scripts = [
     drmi
     drmif
@@ -298,56 +283,46 @@ rec {
 
   # K8S STUFF
   # helpful shorthands
-  kex = (
-    writeBashBinChecked "kex" ''
-      namespace="''${1:-default}"
-      pod_id=$(${_.k} --namespace "$namespace" get pods | \
-        ${_.sed} '1d' | \
-        ${_.fzfq} | \
-        ${_.get_id})
-      ${_.k} --namespace "$namespace" exec -it "$pod_id" -- sh
-    ''
-  );
-  krm = (
-    writeBashBinChecked "krm" ''
-      namespace="''${1:-default}"
-      ${_.k} --namespace "$namespace" get pods | \
-        ${_.sed} '1d' | \
-        ${_.fzfqm} | \
-        ${_.get_id} | \
-        ${_.xargs} ${_.k} --namespace "$namespace" delete pods
-    ''
-  );
-  krmf = (
-    writeBashBinChecked "krmf" ''
-      namespace="''${1:-default}"
-      ${_.k} --namespace "$namespace" get pods | \
-        ${_.sed} '1d' | \
-        ${_.fzfqm} | \
-        ${_.get_id} | \
-        ${_.xargs} ${_.k} --namespace "$namespace" delete pods --grace-period=0 --force
-    ''
-  );
+  kex = writeBashBinChecked "kex" ''
+    namespace="''${1:-default}"
+    pod_id=$(${_.k} --namespace "$namespace" get pods | \
+      ${_.sed} '1d' | \
+      ${_.fzfq} | \
+      ${_.get_id})
+    ${_.k} --namespace "$namespace" exec -it "$pod_id" -- sh
+  '';
+  krm = writeBashBinChecked "krm" ''
+    namespace="''${1:-default}"
+    ${_.k} --namespace "$namespace" get pods | \
+      ${_.sed} '1d' | \
+      ${_.fzfqm} | \
+      ${_.get_id} | \
+      ${_.xargs} ${_.k} --namespace "$namespace" delete pods
+  '';
+  krmf = writeBashBinChecked "krmf" ''
+    namespace="''${1:-default}"
+    ${_.k} --namespace "$namespace" get pods | \
+      ${_.sed} '1d' | \
+      ${_.fzfqm} | \
+      ${_.get_id} | \
+      ${_.xargs} ${_.k} --namespace "$namespace" delete pods --grace-period=0 --force
+  '';
 
   # deployment stuff
-  _get_deployment_patch = (
-    writeBashBinChecked "_get_deployment_patch" ''
-      echo "spec.template.metadata.labels.date = \"$(${_.date} +'%s')\";" | \
-        ${_.gron} -u | \
-        ${_.tr} -d '\n' | \
-        ${_.sed} -E 's#\s+##g'
-    ''
-  );
-  refresh_deployment = (
-    writeBashBinChecked "refresh_deployment" ''
-      deployment_id="$1"
-      namespace="''${2:-default}"
-      ${_.k} --namespace "$namespace" \
-        patch deployment "$deployment_id" \
-        --patch "''$(_get_deployment_patch)"
-      ${_.k} --namespace "$namespace" rollout status deployment/"$deployment_id"
-    ''
-  );
+  _get_deployment_patch = writeBashBinChecked "_get_deployment_patch" ''
+    echo "spec.template.metadata.labels.date = \"$(${_.date} +'%s')\";" | \
+      ${_.gron} -u | \
+      ${_.tr} -d '\n' | \
+      ${_.sed} -E 's#\s+##g'
+  '';
+  refresh_deployment = writeBashBinChecked "refresh_deployment" ''
+    deployment_id="$1"
+    namespace="''${2:-default}"
+    ${_.k} --namespace "$namespace" \
+      patch deployment "$deployment_id" \
+      --patch "''$(_get_deployment_patch)"
+    ${_.k} --namespace "$namespace" rollout status deployment/"$deployment_id"
+  '';
   k8s_bash_scripts = [
     kex
     krm

@@ -13,10 +13,17 @@ let
   # home-manager pin
   hm = with builtins; fromJSON (readFile ./sources/home-manager.json);
   home-manager = fetchFromGitHub {
+    inherit (hm) rev sha256;
     owner = "nix-community";
     repo = "home-manager";
-    rev = hm.rev;
-    sha256 = hm.sha256;
+  };
+
+  # nix-darwin pin
+  nd = with builtins; fromJSON (readFile ./sources/darwin.json);
+  nix-darwin = fetchFromGitHub {
+    inherit (nd) rev sha256;
+    owner = "LnL7";
+    repo = "nix-darwin";
   };
 
   sessionVariables = {
@@ -100,6 +107,7 @@ with pkgs.hax; {
         moreutils
         nano
         ncdu
+        neofetch
         netcat-gnu
         nix-info
         nix-prefetch-github
@@ -129,6 +137,7 @@ with pkgs.hax; {
         shfmt
         socat
         sox
+        statix
         swaks
         time
         tealdeer
@@ -169,6 +178,11 @@ with pkgs.hax; {
           fastapi
           uvicorn
 
+          # data
+          numpy
+          pandas
+          scipy
+
           # type annotations
           types-requests
           types-tabulate
@@ -200,6 +214,7 @@ with pkgs.hax; {
         nix_hash_jpetrucciani
         nix_hash_kwb
         nix_hash_hm
+        nix_hash_darwin
         nixup
         foo
 

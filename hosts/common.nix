@@ -1,10 +1,19 @@
 { config, pkgs, ... }:
 let
-  home-manager = fetchTarball "https://github.com/nix-community/home-manager/archive/release-21.11.tar.gz";
+  hm = with builtins; fromJSON (readFile ../sources/home-manager.json);
+  home-manager = fetchTarball {
+    inherit (hm) sha256;
+    url = "https://github.com/nix-community/home-manager/archive/${hm.rev}.tar.gz";
+  };
+  nd = with builtins; fromJSON (readFile ../sources/darwin.json);
+  nix-darwin = fetchTarball {
+    inherit (nd) sha256;
+    url = "https://github.com/LnL7/nix-darwin/archive/${nd.rev}.tar.gz";
+  };
   jacobi = import ../home.nix;
 in
 {
-  inherit home-manager jacobi;
+  inherit home-manager jacobi nix-darwin;
 
   nix = {
     package = pkgs.nixFlakes;
@@ -95,6 +104,7 @@ in
     ];
     extraConfig = ''
       Defaults env_keep+=NIXOS_CONFIG
+      Defaults env_keep+=NIXDARWIN_CONFIG
     '';
     wheelNeedsPassword = false;
   };
