@@ -10,6 +10,8 @@ in
   ];
 
   home-manager.users.jacobi = { pkgs, ... }: common.jacobi;
+  _module.args.pkgs = common.pinned;
+
   time.timeZone = common.timeZone;
   environment.variables = {
     NIXDARWIN_CONFIG = configPath;
