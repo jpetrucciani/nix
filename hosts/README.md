@@ -8,6 +8,10 @@ This directory contains my NixOS configurations for each of my NixOS machines, a
 
 This is an experimental NixOS install inside a VM.
 
+## [pluto/](./pluto)
+
+This is my personal M1 Pro Macbook, running MacOS and using nix-darwin and home-manager to manage things.
+
 ## [tethys/](./tethys)
 
 This is an experimental NixOS install inside a VM.
