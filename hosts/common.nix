@@ -110,7 +110,10 @@ in
   };
 
   services = {
-    tailscale.enable = true;
+    tailscale = {
+      enable = true;
+      package = pkgs.tailscale;
+    };
     netdata.enable = true;
   };
 
