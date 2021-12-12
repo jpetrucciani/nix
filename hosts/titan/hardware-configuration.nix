@@ -13,17 +13,18 @@
 
   fileSystems."/" =
     {
-      device = "/dev/disk/by-uuid/b7f28d21-0d21-4c9e-9aa5-4c8248a0fa09";
+      device = "/dev/disk/by-uuid/ef98de17-56d3-4a24-bb30-8f506c748f6c";
       fsType = "ext4";
     };
 
   fileSystems."/boot" =
     {
-      device = "/dev/disk/by-uuid/494B-A937";
+      device = "/dev/disk/by-uuid/3697-1BA3";
       fsType = "vfat";
     };
 
   swapDevices = [ ];
 
+  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
   virtualisation.hypervGuest.enable = true;
 }
