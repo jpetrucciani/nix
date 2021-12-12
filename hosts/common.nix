@@ -1,5 +1,7 @@
 { config, pkgs, ... }:
 let
+  pinned = import ../default.nix { };
+
   hm = with builtins; fromJSON (readFile ../sources/home-manager.json);
   home-manager = fetchTarball {
     inherit (hm) sha256;
@@ -13,7 +15,7 @@ let
   jacobi = import ../home.nix;
 in
 {
-  inherit home-manager jacobi nix-darwin;
+  inherit home-manager jacobi nix-darwin pinned;
 
   nix = {
     package = pkgs.nixFlakes;
@@ -110,11 +112,14 @@ in
   };
 
   services = {
-    tailscale = {
-      enable = true;
-      package = pkgs.tailscale;
-    };
+    tailscale.enable = true;
     netdata.enable = true;
+    openssh = {
+      enable = true;
+      passwordAuthentication = false;
+      permitRootLogin = "no";
+      forwardX11 = true;
+    };
   };
 
   timeZone = "America/Indiana/Indianapolis";

@@ -11,6 +11,7 @@ in
   inherit (common) nix zramSwap swapDevices;
 
   home-manager.users.jacobi = { pkgs, ... }: common.jacobi;
+  nixpkgs.pkgs = common.pinned;
 
   boot = {
     loader = {
@@ -49,14 +50,7 @@ in
   users.users.root.hashedPassword = "!";
 
   # List services that you want to enable:
-  services = {
-    openssh = {
-      enable = true;
-      passwordAuthentication = false;
-      permitRootLogin = "no";
-      forwardX11 = true;
-    };
-  } // common.services;
+  services = { } // common.services;
 
   virtualisation.docker.enable = true;
 
