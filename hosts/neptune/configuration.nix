@@ -8,7 +8,7 @@ in
     ./hardware-configuration.nix
   ];
 
-  inherit (common) nix zramSwap swapDevices;
+  inherit (common) nix zramSwap;
 
   home-manager.users.jacobi = { pkgs, ... }: common.jacobi;
   nixpkgs.pkgs = common.pinned;
