@@ -70,7 +70,6 @@ in
   nix = common.nix // {
     useDaemon = true;
     nixPath = [ "darwin=${common.nix-darwin}" "darwin-config=${configPath}" ];
-    trustedUsers = [ "root" username ];
   };
 
   programs.bash.enable = true;

@@ -33,6 +33,7 @@ in
   networking.hostName = "neptune";
   networking.useDHCP = false;
   networking.interfaces.enp9s0.useDHCP = true;
+  networking.firewall.enable = false;
 
   users.mutableUsers = false;
   users.users.root.hashedPassword = "!";
@@ -41,16 +42,21 @@ in
     extraGroups = [ "wheel" "networkmanager" "docker" ];
     passwordFile = "/etc/passwordFile-jacobi";
 
-    openssh.authorizedKeys.keys = [
-      common.pubkeys.galaxyboss
-      common.pubkeys.pluto
-      common.pubkeys.hms
+    openssh.authorizedKeys.keys = with common.pubkeys; [
+      galaxyboss
+      pluto
+      hms
     ] ++ common.pubkeys.mobile;
   };
 
-  services = { } // common.services;
+  environment.systemPackages = [ pkgs.k3s ];
+  services = {
+    k3s = {
+      enable = true;
+      role = "server";
+    };
+  } // common.services;
   virtualisation.docker.enable = true;
-
   system.stateVersion = "22.05";
   security.sudo = common.security.sudo;
   programs.command-not-found.enable = false;
