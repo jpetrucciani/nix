@@ -35,6 +35,7 @@ in
   networking.interfaces.enp9s0.useDHCP = true;
 
   users.mutableUsers = false;
+  users.users.root.hashedPassword = "!";
   users.users.jacobi = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "docker" ];
@@ -47,12 +48,7 @@ in
     ] ++ common.pubkeys.mobile;
   };
 
-  # Disable password-based login for root.
-  users.users.root.hashedPassword = "!";
-
-  # List services that you want to enable:
   services = { } // common.services;
-
   virtualisation.docker.enable = true;
 
   system.stateVersion = "22.05";
