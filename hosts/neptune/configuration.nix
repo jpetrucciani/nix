@@ -25,7 +25,7 @@ in
   };
 
   environment.variables = {
-    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/hyperion/configuration.nix";
+    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/neptune/configuration.nix";
   };
 
   time.timeZone = common.timeZone;
