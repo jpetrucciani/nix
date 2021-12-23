@@ -20,6 +20,8 @@ darwin-rebuild switch -I darwin=/nix/store/3y5bvzx51dkrrsbdk2dhs9c6z4vlmjfa-nix-
 
 ## manual tweaks
 
+### touch id sudo
+
 We probably want to be able to use touch id for sudo on iterm:
 
 ```bash
@@ -27,6 +29,12 @@ sudo nano /etc/pam.d/sudo
 
 # place the following line at the top of this file
 auth       sufficient     pam_tid.so
+```
+
+### install rosetta2
+
+```bash
+/usr/sbin/softwareupdate --install-rosetta --agree-to-license
 ```
 
 ---

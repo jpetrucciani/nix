@@ -26,7 +26,7 @@ in
       extra-substituters = https://jacobi.cachix.org
       extra-trusted-public-keys = jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=
     '';
-    trustedUsers = [ "root" "jacobi" ];
+    trustedUsers = [ "root" ];
   };
 
   pubkeys = rec {

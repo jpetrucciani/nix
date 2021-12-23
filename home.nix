@@ -308,8 +308,6 @@ with pkgs.hax; {
         [[ -e $HOME/.asdf/completions/asdf.bash ]] && source $HOME/.asdf/completions/asdf.bash
       ''
     ) + ''
-      [[ -e ~/.nix-profile/etc/profile.d/nix.sh ]] && source ~/.nix-profile/etc/profile.d/nix.sh
-
       _kube_contexts() {
         local curr_arg;
         curr_arg=''${COMP_WORDS[COMP_CWORD]}

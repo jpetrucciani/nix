@@ -106,7 +106,7 @@ rec {
     '';
     darwin = ''
       ${_.git} -C ~/.config/nixpkgs/ pull origin main
-      darwin-rebuild switch -I darwin=${nix-darwin} -I darwin-config="$HOME/.config/nixpkgs/hosts/pluto/configuration.nix"
+      darwin-rebuild switch -I darwin=${nix-darwin} -I darwin-config="$NIXDARWIN_CONFIG"
     '';
     switch =
       if
@@ -166,7 +166,6 @@ rec {
     rot13
     sin
   ];
-
 
   nixup = writeBashBinChecked "nixup" ''
     directory="$(pwd | ${_.sed} 's#.*/##')"

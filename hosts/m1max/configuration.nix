@@ -91,18 +91,18 @@ in
       "homebrew/services"
     ];
 
-    brews = [ ];
+    brews = [
+      "readline"
+    ];
 
     casks = [
       # tools
       "insomnia"
       "bitwarden"
-      "keybase"
-
-      # social
+      "1password"
+      "dropbox"
+      "slack"
       "discord"
-      "spotify"
-      "notion"
 
       # utils
       "alfred"
