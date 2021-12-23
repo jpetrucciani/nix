@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 let
   common = import ../common.nix { inherit config pkgs; };
-  configPath = "/Users/jacobi/.config/nixpkgs/hosts/pluto/configuration.nix";
+  configPath = "/Users/jacobi/.config/nixpkgs/hosts/m1max/configuration.nix";
   username = "jacobi";
 in
 {
