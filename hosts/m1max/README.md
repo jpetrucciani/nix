@@ -8,7 +8,7 @@ This is my work M1 Max Macbook, running MacOS and using nix-darwin and home-mana
 # ensure nix is installed, repo is cloned to ~/.config/nixpkgs
 
 # export NIX_PATH, load into a shell
-export NIX_PATH="darwin-config=/Users/jacobi/.config/nixpkgs/hosts/m1max/configuration.nix:$NIX_PATH"
+export NIX_PATH="darwin-config=/Users/jacobi/.config/nixpkgs/hosts/m1max/configuration.nix::nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixpkgs:$NIX_PATH"
 nix shell -f https://github.com/LnL7/nix-darwin/archive/master.tar.gz
 
 # run initial install
