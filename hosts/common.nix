@@ -54,6 +54,7 @@ in
     # laptop
     pluto = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEgmAVUZdA5QrsCQFYhL0bf+NbXowV9M12PPiwoWRMJK jacobi@pluto";
     work = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIlB0yckw0Q9WV3/C/teeOn+McN5vJRsuCqKH4b9zm4W Jacobi Petrucciani (gitlab.medable.com)";
+    m1max = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJnJ2nh4yutW5Xq11Cp4wdJUU+dJxeNZn9SZsHAj9TRg jacobi@m1max";
 
     # hms deploy
     hms = ''command="bash -lc '/home/jacobi/.nix-profile/bin/hms'" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBJffkD9CKA/sfuBnT4BOb3XZvW0XuLDiyJ+cjdIctq1 jacobi@hms'';
@@ -88,6 +89,7 @@ in
     laptop = [
       pluto
       work
+      m1max
     ];
 
     all = desktop ++ server ++ mobile ++ laptop;
