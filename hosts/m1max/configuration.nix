@@ -78,42 +78,12 @@ in
     enable = true;
     autoUpdate = true;
     cleanup = "zap";
-
     # fix brew on m1. see: https://github.com/LnL7/nix-darwin/pull/304/files
     brewPrefix = "/opt/homebrew/bin";
-
-    taps = [
-      "homebrew/cask"
-      "homebrew/cask-drivers"
-      "homebrew/cask-fonts"
-      "homebrew/cask-versions"
-      "homebrew/core"
-      "homebrew/services"
-    ];
-
-    brews = [
-      "readline"
-    ];
-
-    casks = [
-      # tools
-      "insomnia"
-      "bitwarden"
-      "1password"
-      "dropbox"
-      "slack"
-      "discord"
-
-      # utils
-      "alfred"
-      "rectangle"
-      "karabiner-elements"
-    ];
-
-    masApps = {
-      # Tailscale = 1470499037; # doesn't work on m1?
-    };
-
+    taps = common.mac.taps;
+    brews = common.mac.brews;
+    casks = common.mac.casks.all_work;
+    masApps = common.mac.apps;
     extraConfig = "";
   };
 }
