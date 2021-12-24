@@ -148,9 +148,7 @@ in
     ];
     casks = rec {
       fun = [
-        "battle-net"
         "epic-games"
-        "league-of-legends"
         "spotify"
         "steam"
       ];

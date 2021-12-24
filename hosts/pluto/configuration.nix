@@ -64,7 +64,6 @@ in
       enableKeyMapping = true;
       remapCapsLockToControl = true;
     };
-
   };
   system.stateVersion = 4;
   nix = common.nix // {
