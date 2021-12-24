@@ -51,7 +51,7 @@ in
     # ios
     ipad = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAQhTANgPfe2Xyw14LjxUyhBmVi/7MJwONf99JvmZrIy jacobi-ipad";
 
-    # laptop
+    # laptops
     pluto = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEgmAVUZdA5QrsCQFYhL0bf+NbXowV9M12PPiwoWRMJK jacobi@pluto";
     work = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIlB0yckw0Q9WV3/C/teeOn+McN5vJRsuCqKH4b9zm4W Jacobi Petrucciani (gitlab.medable.com)";
     m1max = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJnJ2nh4yutW5Xq11Cp4wdJUU+dJxeNZn9SZsHAj9TRg jacobi@m1max";
@@ -124,6 +124,55 @@ in
       passwordAuthentication = false;
       permitRootLogin = "no";
       forwardX11 = true;
+    };
+  };
+
+  mac = {
+    apps = {
+      Bitwarden = 1352778147;
+      Tailscale = 1475387142;
+      Wireguard = 1451685025;
+
+      Poolside = 1514817810;
+    };
+    taps = [
+      "homebrew/cask"
+      "homebrew/cask-drivers"
+      "homebrew/cask-fonts"
+      "homebrew/cask-versions"
+      "homebrew/core"
+      "homebrew/services"
+    ];
+    brews = [
+      "readline"
+    ];
+    casks = rec {
+      fun = [
+        "battle-net"
+        "epic-games"
+        "league-of-legends"
+        "spotify"
+        "steam"
+      ];
+      work = [
+        "1password"
+        "dropbox"
+        "slack"
+      ];
+      comms = [
+        "discord"
+      ];
+      util = [
+        "alfred"
+        "docker"
+        "insomnia"
+        "karabiner-elements"
+        "keybase"
+        "rectangle"
+      ];
+      all = fun ++ work ++ comms ++ util;
+      all_personal = pkgs.lib.lists.subtractLists work all;
+      all_work = pkgs.lib.lists.subtractLists fun all;
     };
   };
 
