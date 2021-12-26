@@ -15,11 +15,9 @@ curl -L https://nixos.org/nix/install | sh
 mkdir -p ~/.config/nix/
 echo -e 'max-jobs = auto\ntarball-ttl = 0\nexperimental-features = nix-command flakes' >>~/.config/nix/nix.conf
 
-# if multi-user install, add current user as trusted
-echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.conf && sudo pkill nix-daemon
-
 # cachix (optional)
 nix-env -iA nixpkgs.cachix
+# on multi-user, this may require sudo!
 cachix use jacobi
 
 # install home manager (if using it)
