@@ -83,6 +83,7 @@ with pkgs.hax; {
         fd
         figlet
         file
+        fq
         gawk
         gcc
         gitAndTools.delta
