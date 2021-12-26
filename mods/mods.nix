@@ -11,6 +11,7 @@ rec {
   };
 
   isNixOS = isLinux && (builtins.match ".*ID=nixos.*" (builtins.readFile /etc/os-release)) == [ ];
+  isUbuntu = isLinux && (builtins.match ".*ID=ubuntu.*" (builtins.readFile /etc/os-release)) == [ ];
   isM1 = isDarwin && isAarch64;
   isNixDarwin = builtins.getEnv "NIXDARWIN_CONFIG" != "";
 

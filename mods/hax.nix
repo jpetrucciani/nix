@@ -10,6 +10,7 @@ prev: next:
     isM1 = isDarwin && isAarch64;
 
     isNixOS = isLinux && (builtins.match ".*ID=nixos.*" (builtins.readFile /etc/os-release)) == [ ];
+    isUbuntu = isLinux && (builtins.match ".*ID=ubuntu.*" (builtins.readFile /etc/os-release)) == [ ];
 
     kwb = with builtins; fromJSON (readFile ../sources/kwb.json);
     chief_keef = import (

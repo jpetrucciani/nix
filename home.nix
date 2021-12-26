@@ -1,6 +1,6 @@
 let
   pkgs = import ./default.nix { };
-  inherit (pkgs.hax) isDarwin isLinux isM1 isNixOs fetchFromGitHub chief_keef;
+  inherit (pkgs.hax) isDarwin isLinux isM1 isNixOs isUbuntu fetchFromGitHub chief_keef;
 
   firstName = "jacobi";
   lastName = "petrucciani";
@@ -117,7 +117,7 @@ with pkgs.hax; {
         nix-tree
         nixpkgs-fmt
         nixpkgs-review
-        nix_2_4
+        nix_2_5
         nmap
         openssh
         p7zip
@@ -237,6 +237,12 @@ with pkgs.hax; {
           lib.optional isLinux [
             binutils
             keybase
+          ]
+        )
+
+        # ubuntu specific
+        (
+          lib.optional isUbuntu [
             (
               writeBashBinChecked "u" ''
                 sudo apt update
