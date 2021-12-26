@@ -31,6 +31,16 @@ sudo nano /etc/pam.d/sudo
 auth       sufficient     pam_tid.so
 ```
 
+### disable annoying message for brew installs
+
+```bash
+# before first switch
+sudo spctl --master-disable
+
+# after switch
+sudo spctl --master-enable
+```
+
 ### install rosetta2
 
 ```bash
