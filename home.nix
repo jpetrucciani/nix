@@ -1,6 +1,6 @@
 let
   pkgs = import ./default.nix { };
-  inherit (pkgs.hax) isDarwin isLinux isM1 isNixOs isUbuntu fetchFromGitHub chief_keef;
+  inherit (pkgs.hax) isDarwin isLinux isM1 isNixOs isUbuntu isAndroid fetchFromGitHub chief_keef;
 
   firstName = "jacobi";
   lastName = "petrucciani";
@@ -251,6 +251,14 @@ with pkgs.hax; {
             )
           ]
         )
+
+        # android specific
+        (
+          lib.optional isAndroid [
+            starship
+          ]
+        )
+
       ];
   };
 
@@ -342,7 +350,9 @@ with pkgs.hax; {
       complete -F __start_kubectl k
       complete -F _kube_contexts kubectx kx
       complete -F _kube_namespaces kubens kns
-    '' + (if isNixOS then ''
+    '' + (if isAndroid then ''
+      eval "$(starship init bash)"
+    '' else "") + (if isNixOS then ''
       ${pkgs.figlet}/bin/figlet "$(hostname)" | ${pkgs.lolcat}/bin/lolcat
       echo
     '' else "");
@@ -435,7 +445,7 @@ with pkgs.hax; {
 
   # starship config
   programs.starship = {
-    enable = true;
+    enable = !isAndroid;
     settings = {
       add_newline = false;
       character = {

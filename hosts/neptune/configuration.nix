@@ -45,6 +45,7 @@ in
     openssh.authorizedKeys.keys = with common.pubkeys; [
       galaxyboss
       pluto
+      m1max
       hms
     ] ++ common.pubkeys.mobile;
   };
