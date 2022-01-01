@@ -22,6 +22,7 @@ in
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "1048576";
     };
+    tmpOnTmpfs = true;
   };
 
   environment.variables = {
@@ -33,21 +34,23 @@ in
   networking.hostName = "neptune";
   networking.useDHCP = false;
   networking.interfaces.enp9s0.useDHCP = true;
-  networking.firewall.enable = false;
+  networking.firewall = {
+    enable = true;
+    trustedInterfaces = [ "tailscale0" ];
+    allowedTCPPorts = [ ] ++ common.ports.common;
+    allowedUDPPorts = [ ];
+  };
 
   users.mutableUsers = false;
   users.users.root.hashedPassword = "!";
   users.users.jacobi = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "docker" ];
+    extraGroups = common.extraGroups;
     passwordFile = "/etc/passwordFile-jacobi";
 
     openssh.authorizedKeys.keys = with common.pubkeys; [
-      galaxyboss
-      pluto
       m1max
-      hms
-    ] ++ common.pubkeys.mobile;
+    ] ++ common.pubkeys.common;
   };
 
   environment.systemPackages = [ pkgs.k3s ];
@@ -56,9 +59,41 @@ in
       enable = true;
       role = "server";
     };
+    caddy = {
+      enable = true;
+      email = common.emails.personal;
+      virtualHosts = {
+        "home.cobi.dev" = {
+          extraConfig = ''
+            reverse_proxy /* {
+              to home:${toString common.ports.home-assistant}
+            }
+          '';
+        };
+        "netdata.cobi.dev" = {
+          extraConfig = ''
+            reverse_proxy /* {
+              to localhost:${toString common.ports.netdata}
+            }
+          '';
+        };
+        "flix.cobi.dev" = {
+          extraConfig = ''
+            reverse_proxy /* {
+              to jupiter:${toString common.ports.plex}
+            }
+          '';
+        };
+      };
+    };
   } // common.services;
   virtualisation.docker.enable = true;
+
   system.stateVersion = "22.05";
   security.sudo = common.security.sudo;
+  security.acme = {
+    acceptTerms = true;
+    email = common.emails.personal;
+  };
   programs.command-not-found.enable = false;
 }

@@ -29,6 +29,13 @@ in
     trustedUsers = [ "root" ];
   };
 
+  extraGroups = [ "wheel" "networkmanager" "docker" ];
+
+  emails = {
+    personal = "j@cobi.dev";
+    work = "jacobi.petrucciani@medable.com";
+  };
+
   pubkeys = rec {
     # physical
     galaxyboss = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO9u9+khlywG0vSsrTsdjZEhKlKBpXx8RnwESGw+zIKI galaxyboss";
@@ -53,7 +60,6 @@ in
 
     # laptops
     pluto = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEgmAVUZdA5QrsCQFYhL0bf+NbXowV9M12PPiwoWRMJK jacobi@pluto";
-    work = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIlB0yckw0Q9WV3/C/teeOn+McN5vJRsuCqKH4b9zm4W Jacobi Petrucciani (gitlab.medable.com)";
     m1max = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJnJ2nh4yutW5Xq11Cp4wdJUU+dJxeNZn9SZsHAj9TRg jacobi@m1max";
 
     # hms deploy
@@ -88,10 +94,14 @@ in
 
     laptop = [
       pluto
-      work
       m1max
     ];
 
+    common = [
+      galaxyboss
+      pluto
+      hms
+    ] ++ mobile;
     all = desktop ++ server ++ mobile ++ laptop;
   };
 
@@ -132,7 +142,6 @@ in
       Bitwarden = 1352778147;
       Tailscale = 1475387142;
       Wireguard = 1451685025;
-
       Poolside = 1514817810;
     };
     taps = [
@@ -179,5 +188,19 @@ in
   zramSwap = {
     enable = true;
     memoryPercent = 100;
+  };
+
+  ports = rec {
+    common = [
+      ssh
+      http
+      https
+    ];
+    ssh = 22;
+    http = 80;
+    https = 443;
+    home-assistant = 8123;
+    netdata = 19999;
+    plex = 32400;
   };
 }

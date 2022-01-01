@@ -21,6 +21,7 @@ in
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "1048576";
     };
+    tmpOnTmpfs = true;
   };
 
   environment.variables = {
@@ -33,27 +34,20 @@ in
   networking.useDHCP = false;
   networking.interfaces.eth0.useDHCP = true;
 
+  users.users.root.hashedPassword = "!";
   users.mutableUsers = false;
   users.users.jacobi = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "docker" ];
+    extraGroups = common.extraGroups;
     passwordFile = "/etc/passwordFile-jacobi";
 
-    openssh.authorizedKeys.keys = [
-      common.pubkeys.galaxyboss
-      common.pubkeys.pluto
-      common.pubkeys.hms
-    ] ++ common.pubkeys.mobile;
+    openssh.authorizedKeys.keys = [ ] ++ common.pubkeys.common;
   };
 
-  # Disable password-based login for root.
-  users.users.root.hashedPassword = "!";
-
   services = { } // common.services;
-
   virtualisation.docker.enable = true;
 
-  system.stateVersion = "21.11";
+  system.stateVersion = "22.05";
   security.sudo = common.security.sudo;
   programs.command-not-found.enable = false;
 }
