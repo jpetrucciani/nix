@@ -7,6 +7,7 @@ in
 {
   imports = [
     "${common.home-manager}/nix-darwin"
+    ../modules/pam.nix
   ];
 
   home-manager.users.jacobi = { pkgs, ... }: common.jacobi;
@@ -66,6 +67,8 @@ in
     };
 
   };
+
+  security.pam.enableSudoTouchIdAuth = true;
   system.stateVersion = 4;
   nix = common.nix // {
     useDaemon = true;
