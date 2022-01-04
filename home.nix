@@ -76,6 +76,7 @@ with pkgs.hax; {
         curl
         dasel
         diffutils
+        docker-client
         dos2unix
         ed
         exa
@@ -237,7 +238,6 @@ with pkgs.hax; {
           lib.optional isLinux [
             binutils
             keybase
-            docker-client
           ]
         )
 
