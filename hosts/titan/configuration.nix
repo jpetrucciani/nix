@@ -41,7 +41,7 @@ in
     extraGroups = common.extraGroups;
     passwordFile = "/etc/passwordFile-jacobi";
 
-    openssh.authorizedKeys.keys = [ ] ++ common.pubkeys.common;
+    openssh.authorizedKeys.keys = [ common.pubkeys.m1max ] ++ common.pubkeys.common;
   };
 
   services = { } // common.services;
