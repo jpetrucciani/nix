@@ -9,7 +9,8 @@ prev: next: {
       ${jq}/bin/jq '{ rev: .rev, sha256: .sha256 }'
     ''
   );
-  nix_hash_unstable = prev._nix_hash "NixOS/nixpkgs" "nixos-unstable" "unstable";
+  nix_hash_nixos_unstable = prev._nix_hash "NixOS/nixpkgs" "nixos-unstable" "nixos_unstable";
+  nix_hash_unstable = prev._nix_hash "NixOS/nixpkgs" "nixpkgs-unstable" "unstable";
   nix_hash_jpetrucciani = prev._nix_hash "jpetrucciani/nix" "main" "jpetrucciani";
   nix_hash_kwb = prev._nix_hash "kwbauson/cfg" "main" "kwb";
   nix_hash_hm = prev._nix_hash "nix-community/home-manager" "master" "hm";

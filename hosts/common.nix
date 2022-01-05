@@ -154,6 +154,7 @@ in
     ];
     brews = [
       "readline"
+      "qemu"
     ];
     casks = rec {
       fun = [
@@ -176,6 +177,7 @@ in
         "karabiner-elements"
         "keybase"
         "rectangle"
+        "utm"
       ];
       all = fun ++ work ++ comms ++ util;
       all_personal = pkgs.lib.lists.subtractLists work all;
