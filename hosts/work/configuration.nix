@@ -32,7 +32,7 @@ in
 
   networking.hostName = "work";
   networking.useDHCP = false;
-  networking.interfaces.enp0s8.useDHCP = true;
+  networking.interfaces.enp0s7.useDHCP = true;
 
   users.users.root.hashedPassword = "!";
   users.mutableUsers = false;
