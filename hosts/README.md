@@ -34,6 +34,10 @@ This is an experimental NixOS install inside a VM.
 
 This is an experimental NixOS install inside a VM.
 
+### [work/](./work)
+
+This is a NixOS install inside a VM for work.
+
 ### [common.nix](./common.nix)
 
 This file serves as a nice way to reduce duplication across NixOS configurations. It contains all my common env setup and services.
