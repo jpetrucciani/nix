@@ -9,24 +9,23 @@
       (modulesPath + "/profiles/qemu-guest.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "ehci_pci" "uhci_hcd" "nvme" "ahci" "sr_mod" ];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "uhci_hcd" "nvme" "usbhid" "usb_storage" "sr_mod" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-amd" ];
+  boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
     {
-      device = "/dev/disk/by-uuid/09648075-df8c-41dc-807e-1073390ba1ad";
+      device = "/dev/disk/by-uuid/53754fc9-936c-4a41-878e-ae1382f00149";
       fsType = "ext4";
     };
 
   fileSystems."/boot" =
     {
-      device = "/dev/disk/by-uuid/39DC-E34D";
+      device = "/dev/disk/by-uuid/1537-BBD9";
       fsType = "vfat";
     };
 
   swapDevices = [ ];
 
-  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

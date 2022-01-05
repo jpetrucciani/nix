@@ -36,7 +36,7 @@ This is an experimental NixOS install inside a VM.
 
 ### [work/](./work)
 
-This is a NixOS install inside a VM for work.
+This is an arm NixOS install inside a VM for work.
 
 ### [common.nix](./common.nix)
 

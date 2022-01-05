@@ -1,6 +1,6 @@
 # work
 
-This is a NixOS install inside a VM for work.
+This is an arm64 NixOS install inside a VM for work.
 
 ---
 
