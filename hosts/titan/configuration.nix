@@ -24,6 +24,7 @@ in
     tmpOnTmpfs = true;
   };
 
+  environment.etc."nixpkgs-path".source = common.pinned.path;
   environment.variables = {
     NIXOS_CONFIG = "/home/jacobi/cfg/hosts/titan/configuration.nix";
   };
