@@ -550,7 +550,7 @@ with pkgs.hax; {
 
   programs.tmux = {
     enable = true;
-    tmuxp.enable = true;
+    tmuxp.enable = false;
     historyLimit = 500000;
     extraConfig = ''
       set -g base-index 1
