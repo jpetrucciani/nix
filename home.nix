@@ -139,6 +139,7 @@ with pkgs.hax; {
         shellcheck
         shfmt
         sox
+        sshuttle
         statix
         swaks
         time
