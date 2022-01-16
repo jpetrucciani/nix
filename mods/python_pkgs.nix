@@ -99,6 +99,80 @@ let
         homepage = "https://github.com/python/typeshed";
       };
     };
+    types-freezegun = buildPythonPackage rec {
+      pname = "types-freezegun";
+      version = "1.1.6";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "0kxiv0yjbbvp1zx694ir149b26kjzvb6600fh397v32b8jvs8w2w";
+      };
+
+      meta = with lib; {
+        description = "Typing stubs for freezegun";
+        homepage = "https://github.com/python/typeshed";
+      };
+    };
+    types-paramiko = buildPythonPackage rec {
+      pname = "types-paramiko";
+      version = "2.8.10";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "1l3pgb5i7wadihn33q90ykq1ks22c0mk8i7m11x32zhwsv0ybdr5";
+      };
+
+      propagatedBuildInputs = [ types-cryptography ];
+
+      meta = with lib; {
+        description = "Typing stubs for paramiko";
+        homepage = "https://github.com/python/typeshed";
+      };
+    };
+    types-cryptography = buildPythonPackage rec {
+      pname = "types-cryptography";
+      version = "3.3.13";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "0fadhk4hl7wbaqqs1ap5ax0kx2a8f21472y98j965phxmvhn207a";
+      };
+
+      propagatedBuildInputs = [ types-enum34 types-ipaddress ];
+
+      meta = with lib; {
+        description = "Typing stubs for cryptography";
+        homepage = "https://github.com/python/typeshed";
+      };
+    };
+    types-enum34 = buildPythonPackage rec {
+      pname = "types-enum34";
+      version = "1.1.2";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "0akkzwswj6giqhbjkh8lcbyjmqdb81linckhnyr726wsz2n8x812";
+      };
+
+      meta = with lib; {
+        description = "Typing stubs for enum34";
+        homepage = "https://github.com/python/typeshed";
+      };
+    };
+    types-ipaddress = buildPythonPackage rec {
+      pname = "types-ipaddress";
+      version = "1.0.2";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "0k8365554r68f9y0k5bjslqzflbjn19lnrbm1k09xaxb3mg9mwmk";
+      };
+
+      meta = with lib; {
+        description = "Typing stubs for ipaddress";
+        homepage = "https://github.com/python/typeshed";
+      };
+    };
   };
 in
 pynixifyOverlay

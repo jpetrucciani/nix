@@ -188,6 +188,8 @@ with pkgs.hax; {
           scipy
 
           # type annotations
+          types-freezegun
+          types-paramiko
           types-requests
           types-tabulate
         ]))
