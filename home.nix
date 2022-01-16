@@ -109,6 +109,7 @@ with pkgs.hax; {
         manix
         moreutils
         nano
+        nanorc
         ncdu
         neofetch
         netcat-gnu
@@ -400,6 +401,12 @@ with pkgs.hax; {
   };
 
   home.file = {
+    curlrc = {
+      target = ".curlrc";
+      text = ''
+        --netrc-optional
+      '';
+    };
     sqliterc = {
       target = ".sqliterc";
       text = ''
