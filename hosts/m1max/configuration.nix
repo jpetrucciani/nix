@@ -1,7 +1,8 @@
 { config, pkgs, ... }:
 let
+  hostname = "m1max";
   common = import ../common.nix { inherit config pkgs; };
-  configPath = "/Users/jacobi/.config/nixpkgs/hosts/m1max/configuration.nix";
+  configPath = "/Users/jacobi/.config/nixpkgs/hosts/${hostname}/configuration.nix";
   username = "jacobi";
 in
 {
@@ -15,6 +16,7 @@ in
 
   time.timeZone = common.timeZone;
   environment.variables = {
+    NIX_HOST = hostname;
     NIXDARWIN_CONFIG = configPath;
   };
   environment.darwinConfig = configPath;
@@ -72,7 +74,10 @@ in
   system.stateVersion = 4;
   nix = common.nix // {
     useDaemon = true;
-    nixPath = [ "darwin=${common.nix-darwin}" "darwin-config=${configPath}" ];
+    nixPath = [
+      "darwin=${common.nix-darwin}"
+      "darwin-config=${configPath}"
+    ];
   };
 
   programs.bash.enable = true;

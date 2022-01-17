@@ -1,5 +1,6 @@
 { config, pkgs, ... }:
 let
+  hostname = "neptune";
   common = import ../common.nix { inherit config pkgs; };
 in
 {
@@ -8,7 +9,15 @@ in
     ./hardware-configuration.nix
   ];
 
-  inherit (common) nix zramSwap;
+  inherit (common) zramSwap;
+
+  nix = common.nix // {
+    nixPath = [
+      "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
+      "nixos-config=/home/jacobi/cfg/hosts/${hostname}/configuration.nix"
+      "/nix/var/nix/profiles/per-user/root/channels"
+    ];
+  };
 
   home-manager.users.jacobi = { pkgs, ... }: common.jacobi;
   nixpkgs.pkgs = common.pinned;
@@ -26,18 +35,19 @@ in
   };
 
   environment.variables = {
-    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/neptune/configuration.nix";
+    NIX_HOST = hostname;
+    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
   };
 
   time.timeZone = common.timeZone;
 
-  networking.hostName = "neptune";
+  networking.hostName = hostname;
   networking.useDHCP = false;
   networking.interfaces.enp9s0.useDHCP = true;
   networking.firewall = {
     enable = true;
     trustedInterfaces = [ "tailscale0" ];
-    allowedTCPPorts = [ ] ++ common.ports.common;
+    allowedTCPPorts = with common.ports; [ ] ++ usual;
     allowedUDPPorts = [ ];
   };
 
@@ -50,7 +60,7 @@ in
 
     openssh.authorizedKeys.keys = with common.pubkeys; [
       m1max
-    ] ++ common.pubkeys.common;
+    ] ++ usual;
   };
 
   environment.systemPackages = [ pkgs.k3s ];

@@ -96,7 +96,7 @@ in
       m1max
     ];
 
-    common = [
+    usual = [
       galaxyboss
       pluto
       hms
@@ -119,6 +119,7 @@ in
       }
     ];
     extraConfig = ''
+      Defaults env_keep+=NIX_HOST
       Defaults env_keep+=NIXOS_CONFIG
       Defaults env_keep+=NIXDARWIN_CONFIG
     '';
@@ -209,7 +210,7 @@ in
   };
 
   ports = rec {
-    common = [
+    usual = [
       ssh
       http
       https

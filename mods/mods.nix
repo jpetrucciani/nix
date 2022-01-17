@@ -97,6 +97,11 @@ rec {
   ];
 
   ### GENERAL STUFF
+  # hosts = {
+  #   titan = nixos ../hosts/titan/configuration.nix;
+  # };
+  # path=$(${nix}/bin/nix build -f ~/cfg hosts.titan)
+  # echo "built at $path"
   _hms = {
     default = ''
       ${_.git} -C ~/.config/nixpkgs/ pull origin main
@@ -133,14 +138,12 @@ rec {
     ${_.figlet} -f banner "$word" | \
       ${_.sed} 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | \
       ${_.awk} '{print ":'"$bg"':" $1}'
-  ''
-  ;
+  '';
   ssh_fwd = writeBashBinChecked "ssh_fwd" ''
     host="$1"
     port="$2"
     ${_.ssh} -L "$port:$host:$port" "$host"
-  ''
-  ;
+  '';
   fif = writeBashBinChecked "fif" ''
     if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; exit 1; fi
     ${_.rg} --files-with-matches --no-messages "$1" | \
@@ -177,8 +180,8 @@ rec {
         --branch-name nixpkgs-unstable \
         https://github.com/nixos/nixpkgs.git | \
       ${_.jq} '{ rev: .rev, sha256: .sha256 }');
-    rev=$(echo "$tags" | jq -r '.rev')
-    sha=$(echo "$tags" | jq -r '.sha256')
+    rev=$(echo "$tags" | ${_.jq} -r '.rev')
+    sha=$(echo "$tags" | ${_.jq} -r '.sha256')
     cat <<EOF | ${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt
       with builtins;
       { pkgs ? import
@@ -190,6 +193,9 @@ rec {
             }
           )
           {
+            config = {
+              allowUnfree = true;
+            };
             overlays = [];
           }
       }:
@@ -206,9 +212,15 @@ rec {
       env
     EOF
   '';
+  nixpy = writeBashBinChecked "nixpy" ''
+    package="$1"
+    version="$2"
+    ${nix-prefetch}/bin/nix-prefetch python.pkgs.fetchPypi --pname "$package" --version "$version"
+  '';
 
   nix_bash_scripts = [
     nixup
+    nixpy
   ];
 
   ### IMAGE STUFF

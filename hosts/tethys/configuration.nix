@@ -1,5 +1,6 @@
 { config, pkgs, ... }:
 let
+  hostname = "tethys";
   common = import ../common.nix { inherit config pkgs; };
 in
 {
@@ -8,7 +9,15 @@ in
     ./hardware-configuration.nix
   ];
 
-  inherit (common) nix zramSwap swapDevices;
+  inherit (common) zramSwap swapDevices;
+
+  nix = common.nix // {
+    nixPath = [
+      "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
+      "nixos-config=/home/jacobi/cfg/hosts/${hostname}/configuration.nix"
+      "/nix/var/nix/profiles/per-user/root/channels"
+    ];
+  };
 
   home-manager.users.jacobi = { pkgs, ... }: common.jacobi;
   nixpkgs.pkgs = common.pinned;
@@ -25,12 +34,13 @@ in
   };
 
   environment.variables = {
-    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/tethys/configuration.nix";
+    NIX_HOST = hostname;
+    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
   };
 
   time.timeZone = common.timeZone;
 
-  networking.hostName = "tethys";
+  networking.hostName = hostname;
   networking.useDHCP = false;
   networking.interfaces.eth0.useDHCP = true;
 
@@ -41,7 +51,7 @@ in
     extraGroups = common.extraGroups;
     passwordFile = "/etc/passwordFile-jacobi";
 
-    openssh.authorizedKeys.keys = [ ] ++ common.pubkeys.common;
+    openssh.authorizedKeys.keys = with common.pubkeys; [ ] ++ usual;
   };
 
   services = { } // common.services;
