@@ -228,7 +228,7 @@ with pkgs.hax; {
         foo
 
         # keef's stuff
-        comma
+        hax.comma
 
         # sounds
         meme_sounds
