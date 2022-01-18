@@ -84,6 +84,7 @@ with pkgs.hax; {
         figlet
         file
         fq
+        htmlq
         gawk
         gcc
         gitAndTools.delta
