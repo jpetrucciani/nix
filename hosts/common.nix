@@ -174,6 +174,11 @@ in
       "qemu"
     ];
     casks = rec {
+      fonts = [
+        "font-caskaydia-cove-nerd-font"
+        "font-fira-code-nerd-font"
+        "font-hasklug-nerd-font"
+      ];
       fun = [
         "epic-games"
         "spotify"
@@ -182,6 +187,7 @@ in
       work = [
         "1password"
         "dropbox"
+        "robo-3t"
         "slack"
       ];
       comms = [
@@ -196,7 +202,7 @@ in
         "rectangle"
         "utm"
       ];
-      all = fun ++ work ++ comms ++ util;
+      all = fonts ++ fun ++ work ++ comms ++ util;
       all_personal = pkgs.lib.lists.subtractLists work all;
       all_work = pkgs.lib.lists.subtractLists fun all;
     };
