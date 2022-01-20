@@ -77,6 +77,7 @@ with pkgs.hax; {
         dasel
         diffutils
         docker-client
+        dogdns
         dos2unix
         ed
         exa
