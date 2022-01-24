@@ -85,34 +85,6 @@ let
     };
 
     # type annotations
-    types-tabulate = buildPythonPackage rec {
-      pname = "types-tabulate";
-      version = "0.8.3";
-
-      src = fetchPypi {
-        inherit pname version;
-        sha256 = "118x3n6maz38l2a94k8pafrnfgjb7svw1p9cvkpysgpi6lxwla3w";
-      };
-
-      meta = with lib; {
-        description = "Typing stubs for tabulate";
-        homepage = "https://github.com/python/typeshed";
-      };
-    };
-    types-freezegun = buildPythonPackage rec {
-      pname = "types-freezegun";
-      version = "1.1.6";
-
-      src = fetchPypi {
-        inherit pname version;
-        sha256 = "0kxiv0yjbbvp1zx694ir149b26kjzvb6600fh397v32b8jvs8w2w";
-      };
-
-      meta = with lib; {
-        description = "Typing stubs for freezegun";
-        homepage = "https://github.com/python/typeshed";
-      };
-    };
     types-paramiko = buildPythonPackage rec {
       pname = "types-paramiko";
       version = "2.8.10";
