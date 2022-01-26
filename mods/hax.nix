@@ -22,9 +22,9 @@ prev: next:
       }
     );
 
-    comma = writeShellScriptBin "," ''
+    comma = (writeShellScriptBin "," ''
       exec ${chief_keef.better-comma}/bin/, --overlay ${./mods.nix} "$@"
-    '';
+    '').overrideAttrs (x: { name = "better-comma"; });
     vanilla_comma = chief_keef.better-comma;
 
     mapAttrValues = f: mapAttrs (n: v: f v);
