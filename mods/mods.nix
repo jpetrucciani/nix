@@ -102,6 +102,15 @@ rec {
   # };
   # path=$(${nix}/bin/nix build -f ~/cfg hosts.titan)
   # echo "built at $path"
+  _nixos-switch = { host }: writeBashBinChecked "switch" ''
+    set -eo pipefail
+    toplevel=$(nix-build --expr 'with import ~/cfg {}; (nixos ./hosts/${host}/configuration.nix).toplevel')
+    if [[ $(realpath /run/current-system) != "$toplevel" ]];then
+      ${nvd}/bin/nvd diff /run/current-system "$toplevel"
+      sudo nix-env -p /nix/var/nix/profiles/system --set "$toplevel"
+      sudo "$toplevel"/bin/switch-to-configuration switch
+    fi
+  '';
   _hms = {
     default = ''
       ${_.git} -C ~/.config/nixpkgs/ pull origin main
@@ -109,7 +118,7 @@ rec {
     '';
     nixOS = ''
       ${_.git} -C ~/cfg/ pull origin main
-      sudo nixos-rebuild switch
+      "$(nix-build --expr "with import ~/cfg {}; _nixos-switch --argstr host $HOSTNAME")"/bin/switch
     '';
     darwin = ''
       ${_.git} -C ~/.config/nixpkgs/ pull origin main
