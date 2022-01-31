@@ -5,4 +5,4 @@ with builtins;
     url = "https://github.com/NixOS/nixpkgs/archive/${nixpkgs-json.rev}.tar.gz";
   }
 }:
-import nixpkgs { overlays = import ./overlays.nix; }
+import nixpkgs { overlays = import ./overlays.nix; config = { }; }

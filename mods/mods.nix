@@ -104,7 +104,7 @@ rec {
   # echo "built at $path"
   _nixos-switch = { host }: writeBashBinChecked "switch" ''
     set -eo pipefail
-    toplevel=$(nix-build --expr 'with import ~/cfg {}; (nixos ./hosts/${host}/configuration.nix).toplevel')
+    toplevel=$(nix-build --expr 'with import ~/cfg {}; (nixos ~/cfg/hosts/${host}/configuration.nix).toplevel')
     if [[ $(realpath /run/current-system) != "$toplevel" ]];then
       ${nvd}/bin/nvd diff /run/current-system "$toplevel"
       sudo nix-env -p /nix/var/nix/profiles/system --set "$toplevel"
@@ -118,7 +118,7 @@ rec {
     '';
     nixOS = ''
       ${_.git} -C ~/cfg/ pull origin main
-      "$(nix-build --expr "with import ~/cfg {}; _nixos-switch --argstr host $HOSTNAME")"/bin/switch
+      "$(nix-build --expr 'with import ~/cfg {}; _nixos-switch' --argstr host "$HOSTNAME")"/bin/switch
     '';
     darwin = ''
       ${_.git} -C ~/.config/nixpkgs/ pull origin main
