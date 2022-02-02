@@ -193,6 +193,7 @@ in
         "dropbox"
         "robo-3t"
         "slack"
+        "xca"
       ];
       comms = [
         "discord"
