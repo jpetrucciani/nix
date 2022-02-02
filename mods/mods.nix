@@ -97,11 +97,6 @@ rec {
   ];
 
   ### GENERAL STUFF
-  # hosts = {
-  #   titan = nixos ../hosts/titan/configuration.nix;
-  # };
-  # path=$(${nix}/bin/nix build -f ~/cfg hosts.titan)
-  # echo "built at $path"
   _nixos-switch = { host }: writeBashBinChecked "switch" ''
     set -eo pipefail
     toplevel=$(nix-build --expr 'with import ~/cfg {}; (nixos ~/cfg/hosts/${host}/configuration.nix).toplevel')
@@ -168,6 +163,12 @@ rec {
     # shellcheck disable=SC2046
     ${_.awk} -v cols=$(tput cols) '{c=int(sin(NR/10)*(cols/6)+(cols/6))+1;print(substr($0,1,c-1) "\x1b[41m" substr($0,c,1) "\x1b[0m" substr($0,c+1,length($0)-c+2))}'
   '';
+  y2n = writeBashBinChecked "y2n" ''
+    yaml="$1"
+    json=$(${pkgs.remarshal}/bin/yaml2json "$yaml") \
+      nix eval --raw --impure --expr \
+      'with import ${pkgs.path} {}; lib.generators.toPretty {} (builtins.fromJSON (builtins.getEnv "json"))'
+  '';
 
   general_bash_scripts = [
     batwhich
@@ -179,6 +180,7 @@ rec {
     fif
     rot13
     sin
+    y2n
   ];
 
   nixup = writeBashBinChecked "nixup" ''
