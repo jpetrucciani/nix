@@ -1,7 +1,7 @@
-{ pkgs ? import <nixpkgs> { } }:
+{ pkgs ? import <nixpkgs> { }, nodejs ? pkgs.nodejs-12_x }:
 with pkgs; with lib; with builtins;
 let
-  osSpecific = with pkgs.darwin.apple_sdk.frameworks; if pkgs.stdenv.isDarwin then [ Security AppKit ] else [ ];
+  osSpecific = with pkgs.darwin.apple_sdk.frameworks; if pkgs.stdenv.isDarwin then [ Security AppKit xcbuild ] else [ ];
   json = fromJSON (readFile ./package.json);
   pname = replaceChars [ "@" "/" ] [ "" "-" ] (head (attrNames json.dependencies));
   version = head (attrValues json.dependencies);
@@ -10,8 +10,8 @@ let
     mv node-* $out
   '';
   modules = yarn2nix-moretea.mkYarnModules {
-    pname = "${pname}-modules";
     inherit version;
+    pname = "${pname}-modules";
     packageJSON = ./package.json;
     yarnLock = ./yarn.lock;
     pkgConfig.mdctl.buildInputs = [
