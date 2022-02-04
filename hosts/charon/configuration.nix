@@ -69,7 +69,6 @@ in
 
   };
 
-  security.pam.enableSudoTouchIdAuth = true;
   system.stateVersion = 4;
   nix = common.nix // {
     useDaemon = true;
