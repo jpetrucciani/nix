@@ -14,9 +14,11 @@ nix shell -f https://github.com/LnL7/nix-darwin/archive/master.tar.gz
 # run initial install
 darwin-installer
 
-# rebuild
+# rebuild and grab
+ls -alF /nix/store/ | grep nix-darwin/
+
 ## grab this nix store path from above
-darwin-rebuild switch -I darwin=/nix/store/3y5bvzx51dkrrsbdk2dhs9c6z4vlmjfa-nix-darwin -I darwin-config=/Users/$USER/.config/nixpkgs/hosts/charon/configuration.nix
+darwin-rebuild switch -I darwin=/nix/store/0zvb9p81gk91q42sid21rym45zwj9xcw-nix-darwin -I darwin-config=/Users/$USER/.config/nixpkgs/hosts/charon/configuration.nix
 ```
 
 ## manual tweaks
