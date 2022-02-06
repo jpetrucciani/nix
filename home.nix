@@ -121,7 +121,7 @@ with pkgs.hax; {
         nix-tree
         nixpkgs-fmt
         nixpkgs-review
-        nix_2_5
+        nix_2_6
         nmap
         openssh
         p7zip

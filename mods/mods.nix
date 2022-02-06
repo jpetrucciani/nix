@@ -169,6 +169,10 @@ rec {
       nix eval --raw --impure --expr \
       'with import ${pkgs.path} {}; lib.generators.toPretty {} (builtins.fromJSON (builtins.getEnv "json"))'
   '';
+  cache = writeBashBinChecked "cache" ''
+    cache_name="''${1:-medable}"
+    ${pkgs.nix}/bin/nix-build | ${pkgs.cachix}/bin/cachix push "$cache_name"
+  '';
 
   general_bash_scripts = [
     batwhich
@@ -181,6 +185,7 @@ rec {
     rot13
     sin
     y2n
+    cache
   ];
 
   nixup = writeBashBinChecked "nixup" ''
