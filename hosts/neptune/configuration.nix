@@ -103,7 +103,7 @@ in
   security.sudo = common.security.sudo;
   security.acme = {
     acceptTerms = true;
-    email = common.emails.personal;
+    defaults.email = common.emails.personal;
   };
   programs.command-not-found.enable = false;
 }
