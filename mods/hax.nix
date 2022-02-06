@@ -175,7 +175,6 @@ prev: next:
       kshell = ''
         kubectl run "''${user}-''${RANDOM}" -it --image-pull-policy=Always --rm --restart Never --image=alpine:latest'';
     };
-
   }
 )
   

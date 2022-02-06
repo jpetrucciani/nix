@@ -1,5 +1,6 @@
 { config, pkgs, ... }:
 let
+  hostname = "work";
   common = import ../common.nix { inherit config pkgs; };
 in
 {
@@ -25,12 +26,12 @@ in
   };
 
   environment.variables = {
-    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/work/configuration.nix";
+    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
   };
 
   time.timeZone = common.timeZone;
 
-  networking.hostName = "work";
+  networking.hostName = hostname;
   networking.useDHCP = false;
   networking.interfaces.enp0s7.useDHCP = true;
 

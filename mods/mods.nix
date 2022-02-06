@@ -173,11 +173,6 @@ rec {
     cache_name="''${1:-medable}"
     ${pkgs.nix}/bin/nix-build | ${pkgs.cachix}/bin/cachix push "$cache_name"
   '';
-  # genkey = writeBashBinChecked "genkey" ''
-  #   comment="$1"
-  #   if [ -z "$comment" ]; then comment="jacobi@$(hostname)"; fi 
-  #   ssh-keygen -o -a 100 -t ed25519 -C "$comment"
-  # '';
 
   general_bash_scripts = [
     batwhich
@@ -195,12 +190,7 @@ rec {
 
   nixup = writeBashBinChecked "nixup" ''
     directory="$(pwd | ${_.sed} 's#.*/##')"
-    tags=$(${nix-prefetch-git}/bin/nix-prefetch-git \
-        --quiet \
-        --no-deepClone \
-        --branch-name nixpkgs-unstable \
-        https://github.com/nixos/nixpkgs.git | \
-      ${_.jq} '{ rev: .rev, sha256: .sha256 }');
+    tags=$(${_.curl} -fsSL https://raw.githubusercontent.com/jpetrucciani/nix/main/sources/nixpkgs.json);
     rev=$(echo "$tags" | ${_.jq} -r '.rev')
     sha=$(echo "$tags" | ${_.jq} -r '.sha256')
     cat <<EOF | ${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt
