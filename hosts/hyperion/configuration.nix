@@ -51,7 +51,7 @@ in
     extraGroups = common.extraGroups;
     passwordFile = "/etc/passwordFile-jacobi";
 
-    openssh.authorizedKeys.keys = with common.pubkeys; [ ] ++ usual;
+    openssh.authorizedKeys.keys = with common.pubkeys; [ charon ] ++ usual;
   };
 
   services = { } // common.services;
