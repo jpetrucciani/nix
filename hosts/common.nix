@@ -17,7 +17,7 @@ in
 {
   inherit home-manager jacobi nix-darwin pinned;
 
-  nix = {
+  nix = with pkgs.hax; {
     extraOptions = ''
       max-jobs = auto
       narinfo-cache-negative-ttl = 10
@@ -25,7 +25,8 @@ in
       extra-substituters = https://jacobi.cachix.org
       extra-trusted-public-keys = jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=
     '';
-    settings = {
+    ${attrIf isDarwin "trustedUsers"} = [ "root" ];
+    ${attrIf isNixOS "settings"} = {
       trusted-users = [ "root" ];
     };
   };
