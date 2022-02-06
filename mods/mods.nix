@@ -173,6 +173,11 @@ rec {
     cache_name="''${1:-medable}"
     ${pkgs.nix}/bin/nix-build | ${pkgs.cachix}/bin/cachix push "$cache_name"
   '';
+  # genkey = writeBashBinChecked "genkey" ''
+  #   comment="$1"
+  #   if [ -z "$comment" ]; then comment="jacobi@$(hostname)"; fi 
+  #   ssh-keygen -o -a 100 -t ed25519 -C "$comment"
+  # '';
 
   general_bash_scripts = [
     batwhich

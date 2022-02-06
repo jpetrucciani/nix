@@ -406,6 +406,14 @@ with pkgs.hax; {
   };
 
   home.file = {
+    ssh_config = {
+      target = ".ssh/config";
+      text = pkgs.hax.ssh.config;
+    };
+    ssh_config_github = {
+      target = ".ssh/config.d/github";
+      text = pkgs.hax.ssh.github;
+    };
     curlrc = {
       target = ".curlrc";
       text = ''
