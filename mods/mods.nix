@@ -721,4 +721,47 @@ rec {
       ## end bash bible
     '';
   };
+
+  wordle = pkgs.callPackage
+    ({ pkgs
+     , lib
+     , fetchFromGitHub
+     , rustPlatform
+     }:
+      let src = fetchFromGitHub {
+        owner = "mozilla";
+        repo = "nixpkgs-mozilla";
+        rev = "f233fdc4ff6ba2ffeb1e3e3cd6d63bb1297d6996";
+        sha256 = "1rzz03h0b38l5sg61rmfvzpbmbd5fn2jsi1ccvq22rb76s1nbh8i";
+      };
+      in
+      with import "${src.out}/rust-overlay.nix" pkgs pkgs;
+      rustPlatform.buildRustPackage rec {
+        pname = "wordle";
+        version = "0.1.7";
+
+        nativeBuildInputs = [
+          (rustChannelOf {
+            date = "2022-02-07";
+            channel = "nightly";
+            sha256 = "sha256-JhZoPsscpTcw2T/gpeXCMhT/y4nx7EJZ/+1U+Ea5c88=";
+          }).rust
+        ];
+
+        src = fetchFromGitHub {
+          owner = "conradludgate";
+          repo = pname;
+          rev = "208c80bb3f15f4adf9c740611a612ef65df988ac";
+          sha256 = "sha256-2iAtx8C5YJxwacl6JoITS46+zV1oyWnOqbdh72/Cmgs=";
+        };
+
+        cargoSha256 = "sha256-ioj2m1DjTnwWVaqVqKP9NBLg82SX763ypEBNBfG3rRg=";
+        doCheck = false;
+
+        meta = with lib; {
+          description = "Wordle TUI in Rust";
+        };
+      }
+    )
+    { };
 }
