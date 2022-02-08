@@ -173,7 +173,7 @@ prev: next:
       klist =
         "kubectl get pods --all-namespaces -o jsonpath='{..image}' | tr -s '[[:space:]]' '\\n' | sort | uniq -c";
       kshell = ''
-        kubectl run "''${user}-''${RANDOM}" -it --image-pull-policy=Always --rm --restart Never --image=alpine:latest'';
+        kubectl run "''${USER}-''${RANDOM}" -it --image-pull-policy=Always --rm --restart Never --image=alpine:latest'';
     };
   }
 )
