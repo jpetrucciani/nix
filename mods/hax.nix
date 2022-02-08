@@ -51,7 +51,7 @@ prev: next:
     };
 
     comma = (writeShellScriptBin "," ''
-      exec ${chief_keef.better-comma}/bin/, --overlay ${./mods.nix} "$@"
+      exec ${chief_keef.better-comma}/bin/, --overlay ${./mods.nix} --overlay ${./pkgs.nix} "$@"
     '').overrideAttrs (x: { name = "better-comma"; });
     vanilla_comma = chief_keef.better-comma;
 

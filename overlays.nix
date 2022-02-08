@@ -5,4 +5,5 @@
   (import ./mods/python_pkgs.nix)
   (import ./mods/hashers.nix)
   (import ./mods/mods.nix)
+  (import ./mods/pkgs.nix)
 ]

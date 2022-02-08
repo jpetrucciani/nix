@@ -7,25 +7,6 @@ let
 
   packageOverrides = self: super: with self; {
     # my packages
-    gamble = buildPythonPackage rec {
-      pname = "gamble";
-      version = "0.10";
-
-      src = fetchPypi {
-        inherit pname version;
-        sha256 = "1lb5x076blnnz2hj7k92pyq0drbjwsls6pmnabpvyvs4ddhz5w9w";
-      };
-
-      checkInputs = [
-        pytestCheckHook
-      ];
-
-      meta = with lib; {
-        description = "a collection of gambling classes/tools";
-        homepage = "https://github.com/jpetrucciani/gamble.git";
-      };
-    };
-
     archives = buildPythonPackage rec {
       pname = "archives";
       version = "0.12";
