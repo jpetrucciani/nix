@@ -1,6 +1,6 @@
 prev: next:
 with next;
-rec {
+with builtins; rec {
   inherit (stdenv) isLinux isDarwin isAarch64;
 
   nd = with builtins; fromJSON (readFile ../sources/darwin.json);
@@ -11,10 +11,10 @@ rec {
   };
 
   isM1 = isDarwin && isAarch64;
-  isNixOS = isLinux && (builtins.match ".*ID=nixos.*" (builtins.readFile /etc/os-release)) == [ ];
+  isNixOS = isLinux && (match ".*ID=nixos.*" (readFile /etc/os-release)) == [ ];
   isAndroid = isAarch64 && !isDarwin && !isNixOS;
-  isUbuntu = isLinux && (builtins.match ".*ID=ubuntu.*" (builtins.readFile /etc/os-release)) == [ ];
-  isNixDarwin = builtins.getEnv "NIXDARWIN_CONFIG" != "";
+  isUbuntu = isLinux && (match ".*ID=ubuntu.*" (readFile /etc/os-release)) == [ ];
+  isNixDarwin = getEnv "NIXDARWIN_CONFIG" != "";
 
   writeBashBinChecked = name: text:
     stdenv.mkDerivation {
@@ -29,6 +29,70 @@ rec {
         ${_.shellcheck} $out/bin/${name}
       '';
     };
+
+  writeBashBinCheckedWithFlags = { name, script, flags ? [ ], parsedFlags ? map flag flags }: writeBashBinChecked name ''
+    set -o errexit -o pipefail -o noclobber
+
+    OPTIONS="${concatStringsSep "," (map (x: x.shortOpt) parsedFlags)}"
+    LONGOPTS="${concatStringsSep "," (map (x: x.longOpt) parsedFlags)}"
+
+    # shellcheck disable=SC2251
+    ! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
+    if [[ ''${PIPESTATUS[0]} -ne 0 ]]; then
+        exit 2
+    fi
+    eval set -- "$PARSED"
+
+    # defaults
+    ${concatStringsSep "\n" (map (x: x.flagDefault) parsedFlags)}
+
+    while true; do
+      case "$1" in
+    ${flagIndent (concatStringsSep "\n" (map (x: x.definition) parsedFlags))}
+        --)
+            shift
+            break
+            ;;
+        *)
+            echo "unknown flag passed"
+            exit 3
+            ;;
+      esac
+    done
+    
+    # script
+    ${script}
+  '';
+  flagIndent = text: concatStringsSep "\n" (map (x: "    ${x}") (filter isString (split "\n" text)));
+  flag = { name, short ? substring 0 1 name, default ? "", bool ? false, marker ? if bool then "" else ":" }: {
+    inherit name short default bool;
+    shortOpt = "${short}${marker}";
+    longOpt = "${name}${marker}";
+    flagDefault = ''${name}="${default}"'';
+
+    definition = ''
+      -${short}|--${name})
+          ${name}=${if bool then "1" else "$2"}
+          shift ${if bool then "" else "2"}
+          ;;'';
+  };
+
+  kshell = writeBashBinCheckedWithFlags {
+    name = "kshell2";
+    flags = [
+      {
+        name = "namespace";
+        default = "default";
+      }
+      {
+        name = "meme";
+        bool = true;
+      }
+    ];
+    script = ''
+      echo "kshell [meme:$meme] in namespace: $namespace"
+    '';
+  };
 
   writeBashBibleBinChecked = name: text:
     writeBashBinChecked name ''
@@ -78,18 +142,28 @@ rec {
   aws_id = writeBashBinChecked "aws_id" ''
     ${_.aws} sts get-caller-identity --query Account --output text
   '';
-  ecr_login = writeBashBinChecked "ecr_login" ''
-    region="''${1:-us-east-1}"
-    ${_.aws} ecr get-login-password --region "''${region}" |
-    ${_.d} login --username AWS \
-        --password-stdin "$(${_.aws} sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com"
-  '';
-  ecr_login_public = writeBashBinChecked "ecr_login_public" ''
-    region="''${1:-us-east-1}"
-    ${_.aws} ecr-public get-login-password --region "''${region}" |
-    ${_.d} login --username AWS \
-        --password-stdin public.ecr.aws
-  '';
+  ecr_login = writeBashBinCheckedWithFlags {
+    name = "ecr_login";
+    flags = [
+      _.flags.aws.region
+    ];
+    script = ''
+      ${_.aws} ecr get-login-password --region "''${region}" |
+      ${_.d} login --username AWS \
+          --password-stdin "$(${_.aws} sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com"
+    '';
+  };
+  ecr_login_public = writeBashBinCheckedWithFlags {
+    name = "ecr_login_public";
+    flags = [
+      _.flags.aws.region
+    ];
+    script = ''
+      ${_.aws} ecr-public get-login-password --region "''${region}" |
+      ${_.d} login --username AWS \
+          --password-stdin public.ecr.aws
+    '';
+  };
   aws_bash_scripts = [
     aws_id
     ecr_login
@@ -143,11 +217,6 @@ rec {
       ${_.sed} 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | \
       ${_.awk} '{print ":'"$bg"':" $1}'
   '';
-  ssh_fwd = writeBashBinChecked "ssh_fwd" ''
-    host="$1"
-    port="$2"
-    ${_.ssh} -L "$port:$host:$port" "$host"
-  '';
   fif = writeBashBinChecked "fif" ''
     if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; exit 1; fi
     ${_.rg} --files-with-matches --no-messages "$1" | \
@@ -165,14 +234,22 @@ rec {
   '';
   y2n = writeBashBinChecked "y2n" ''
     yaml="$1"
-    json=$(${pkgs.remarshal}/bin/yaml2json "$yaml") \
+    json=$(${_.y2j} "$yaml") \
       nix eval --raw --impure --expr \
       'with import ${pkgs.path} {}; lib.generators.toPretty {} (builtins.fromJSON (builtins.getEnv "json"))'
   '';
-  cache = writeBashBinChecked "cache" ''
-    cache_name="''${1:-medable}"
-    ${pkgs.nix}/bin/nix-build | ${pkgs.cachix}/bin/cachix push "$cache_name"
-  '';
+  cache = writeBashBinCheckedWithFlags {
+    name = "cache";
+    flags = [
+      {
+        name = "cache_name";
+        default = "medable";
+      }
+    ];
+    script = ''
+      ${pkgs.nix}/bin/nix-build | ${_.cachix} push "$cache_name"
+    '';
+  };
 
   general_bash_scripts = [
     batwhich
@@ -180,7 +257,6 @@ rec {
     get_cert
     jql
     slack_meme
-    ssh_fwd
     fif
     rot13
     sin
@@ -188,41 +264,48 @@ rec {
     cache
   ];
 
-  nixup = writeBashBinChecked "nixup" ''
-    directory="$(pwd | ${_.sed} 's#.*/##')"
-    tags=$(${_.curl} -fsSL https://raw.githubusercontent.com/jpetrucciani/nix/main/sources/nixpkgs.json);
-    rev=$(echo "$tags" | ${_.jq} -r '.rev')
-    sha=$(echo "$tags" | ${_.jq} -r '.sha256')
-    cat <<EOF | ${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt
-      with builtins;
-      { pkgs ? import
-          (
-            fetchTarball {
-              name = "nixpkgs-unstable-$(date '+%F')";
-              url = "https://github.com/NixOS/nixpkgs/archive/$rev.tar.gz";
-              sha256 = "$sha";
+  nixup = writeBashBinCheckedWithFlags {
+    name = "nixup";
+    flags = [ _.flags.nix.with_python ];
+    script = ''
+      directory="$(pwd | ${_.sed} 's#.*/##')"
+      tags=$(${_.curl} -fsSL https://raw.githubusercontent.com/jpetrucciani/nix/main/sources/nixpkgs.json);
+      rev=$(echo "$tags" | ${_.jq} -r '.rev')
+      sha=$(echo "$tags" | ${_.jq} -r '.sha256')
+      py=""
+      [ "$with_python" = "1" ] && py="(python39.withPackages ( p: with p; lib.flatten [requests]))"
+      cat <<EOF | ${_.nixpkgs-fmt}
+        with builtins;
+        { pkgs ? import
+            (
+              fetchTarball {
+                name = "nixpkgs-unstable-$(date '+%F')";
+                url = "https://github.com/NixOS/nixpkgs/archive/$rev.tar.gz";
+                sha256 = "$sha";
+              }
+            )
+            {
+              config = {
+                allowUnfree = true;
+              };
+              overlays = [];
             }
-          )
-          {
-            config = {
-              allowUnfree = true;
-            };
-            overlays = [];
-          }
-      }:
-      let
-        packages = with pkgs; [
-          just
-        ];
-        env = pkgs.buildEnv {
-          name = "$directory";
-          paths = packages;
-          buildInputs = packages;
-        };
-      in
-      env
-    EOF
-  '';
+        }:
+        let
+          packages = with pkgs; [
+            just
+            ''${py}
+          ];
+          env = pkgs.buildEnv {
+            name = "$directory";
+            paths = packages;
+            buildInputs = packages;
+          };
+        in
+        env
+      EOF
+    '';
+  };
   nixpy = writeBashBinChecked "nixpy" ''
     package="$1"
     version="$2"
@@ -266,6 +349,11 @@ rec {
     shellcheck = "${pkgs.shellcheck}/bin/shellcheck";
     tr = "${pkgs.coreutils}/bin/tr";
     yq = "${pkgs.yq-go}/bin/yq";
+    y2j = "${pkgs.remarshal}/bin/yaml2json";
+
+    ## nix
+    cachix = "${pkgs.cachix}/bin/cachix";
+    nixpkgs-fmt = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
 
     ## common
     date = "${pkgs.coreutils}/bin/date";
@@ -294,43 +382,91 @@ rec {
     ka = "${k} get pods | ${sed} '1d'";
     get_id = "${awk} '{ print $1 }'";
 
-    # full commands
-    drmi = "${di} | ${fzfqm} | ${get_image} | xargs -r ${d} rmi";
+    # flags to reuse
+    flags = {
+      aws = {
+        region = {
+          name = "region";
+          default = "us-east-1";
+        };
+      };
+      gcp = { };
+      k8s = {
+        ns = {
+          name = "namespace";
+          default = "default";
+        };
+      };
+      docker = { };
+      common = {
+        force = {
+          name = "force";
+          bool = true;
+        };
+      };
+      nix = {
+        with_python = {
+          name = "with_python";
+          bool = true;
+        };
+        with_node = {
+          name = "with_node";
+          bool = true;
+        };
+      };
+      python = {
+        package = {
+          name = "package";
+        };
+        version = {
+          name = "version";
+        };
+      };
+    };
   };
 
-  drmi = writeBashBinChecked "drmi" _.drmi;
-  drmif = writeBashBinChecked "drmif" ''${_.drmi} --force'';
+  drmi = writeBashBinCheckedWithFlags {
+    name = "drmi";
+    flags = [
+      _.flags.common.force
+    ];
+    script = ''
+      ${_.di} | ${_.fzfqm} | ${_.get_image} | xargs -r ${_.d} rmi ''${force:+--force}
+    '';
+  };
   docker_bash_scripts = [
     drmi
-    drmif
   ];
 
   # K8S STUFF
   # helpful shorthands
-  kex = writeBashBinChecked "kex" ''
-    namespace="''${1:-default}"
-    pod_id=$(${_.k} --namespace "$namespace" get pods | \
-      ${_.sed} '1d' | \
-      ${_.fzfq} | \
-      ${_.get_id})
-    ${_.k} --namespace "$namespace" exec -it "$pod_id" -- sh
-  '';
-  krm = writeBashBinChecked "krm" ''
-    namespace="''${1:-default}"
-    ${_.k} --namespace "$namespace" get pods | \
-      ${_.sed} '1d' | \
-      ${_.fzfqm} | \
-      ${_.get_id} | \
-      ${_.xargs} ${_.k} --namespace "$namespace" delete pods
-  '';
-  krmf = writeBashBinChecked "krmf" ''
-    namespace="''${1:-default}"
-    ${_.k} --namespace "$namespace" get pods | \
-      ${_.sed} '1d' | \
-      ${_.fzfqm} | \
-      ${_.get_id} | \
-      ${_.xargs} ${_.k} --namespace "$namespace" delete pods --grace-period=0 --force
-  '';
+  kex = writeBashBinCheckedWithFlags {
+    name = "kex";
+    flags = [
+      _.flags.k8s.ns
+    ];
+    script = ''
+      pod_id=$(${_.k} --namespace "$namespace" get pods | \
+        ${_.sed} '1d' | \
+        ${_.fzfq} | \
+        ${_.get_id})
+      ${_.k} --namespace "$namespace" exec -it "$pod_id" -- sh
+    '';
+  };
+  krm = writeBashBinCheckedWithFlags {
+    name = "krm";
+    flags = [
+      _.flags.k8s.ns
+      _.flags.common.force
+    ];
+    script = ''
+      ${_.k} --namespace "$namespace" get pods | \
+        ${_.sed} '1d' | \
+        ${_.fzfqm} | \
+        ${_.get_id} | \
+        ${_.xargs} ${_.k} --namespace "$namespace" delete pods ''${force:+--grace-period=0 --force}
+    '';
+  };
 
   # deployment stuff
   _get_deployment_patch = writeBashBinChecked "_get_deployment_patch" ''
@@ -339,20 +475,25 @@ rec {
       ${_.tr} -d '\n' | \
       ${_.sed} -E 's#\s+##g'
   '';
-  refresh_deployment = writeBashBinChecked "refresh_deployment" ''
-    deployment_id="$1"
-    namespace="''${2:-default}"
-    ${_.k} --namespace "$namespace" \
-      patch deployment "$deployment_id" \
-      --patch "''$(_get_deployment_patch)"
-    ${_.k} --namespace "$namespace" rollout status deployment/"$deployment_id"
-  '';
+  refresh_deployment = writeBashBinCheckedWithFlags {
+    name = "refresh_deployment";
+    flags = [
+      _.flags.k8s.ns
+    ];
+    script = ''
+      deployment_id="$1"
+      ${_.k} --namespace "$namespace" \
+        patch deployment "$deployment_id" \
+        --patch "''$(_get_deployment_patch)"
+      ${_.k} --namespace "$namespace" rollout status deployment/"$deployment_id"
+    '';
+  };
   k8s_bash_scripts = [
     kex
     krm
-    krmf
     _get_deployment_patch
     refresh_deployment
+    kshell
   ];
 
   yank = next.yank.overrideAttrs (attrs: {
