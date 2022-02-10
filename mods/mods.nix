@@ -88,7 +88,7 @@ with builtins; rec {
       ${script}
     '';
 
-  reverse = x: concatStringsSep "" (lib.lists.reverseList (lib.strings.splitString "" x));
+  reverse = x: concatStringsSep "" (lib.lists.reverseList (lib.stringToCharacters x));
   rightPad = num: text: reverse (lib.strings.fixedWidthString num " " (reverse text));
 
   flagIndent = text: concatStringsSep "\n" (map (x: "  ${x}") (filter isString (split "\n" text)));
