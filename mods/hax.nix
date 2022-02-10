@@ -169,11 +169,6 @@ prev: next:
       kx = "kubectx";
       ka = "kubectl get pods";
       kaw = "kubectl get pods -o wide";
-      knuke = "kubectl delete pods --grace-period=0 --force";
-      klist =
-        "kubectl get pods --all-namespaces -o jsonpath='{..image}' | tr -s '[[:space:]]' '\\n' | sort | uniq -c";
-      kshell = ''
-        kubectl run "''${USER}-''${RANDOM}" -it --image-pull-policy=Always --rm --restart Never --image=alpine:latest'';
     };
   }
 )

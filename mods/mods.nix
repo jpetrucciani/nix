@@ -30,90 +30,108 @@ with builtins; rec {
       '';
     };
 
-  writeBashBinCheckedWithFlags = { name, script, flags ? [ ], parsedFlags ? map flag flags }: writeBashBinChecked name ''
-    set -o errexit -o pipefail -o noclobber
+  writeBashBinCheckedWithFlags =
+    { name
+    , script
+    , description ? "a helpful script with flags, created through nix!"
+    , flags ? [ ]
+    , parsedFlags ? map flag flags
+    , bashBible ? false
+    }: writeBashBinChecked name ''
+      set -o errexit -o pipefail -o noclobber
 
-    OPTIONS="${concatStringsSep "," (map (x: x.shortOpt) parsedFlags)}"
-    LONGOPTS="${concatStringsSep "," (map (x: x.longOpt) parsedFlags)}"
+      help() {
+        cat <<EOF
+        Usage: ${name} [-h|--help] ${concatStringsSep " " (map (x: x.ex) parsedFlags)}
 
-    # shellcheck disable=SC2251
-    ! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
-    if [[ ''${PIPESTATUS[0]} -ne 0 ]]; then
-        exit 2
-    fi
-    eval set -- "$PARSED"
+        ${description}
 
-    # defaults
-    ${concatStringsSep "\n" (map (x: x.flagDefault) parsedFlags)}
+        Available flags:
 
-    while true; do
-      case "$1" in
-    ${flagIndent (concatStringsSep "\n" (map (x: x.definition) parsedFlags))}
-        --)
-            shift
-            break
-            ;;
-        *)
-            echo "unknown flag passed"
-            exit 3
-            ;;
-      esac
-    done
-    
-    # script
-    ${script}
-  '';
-  flagIndent = text: concatStringsSep "\n" (map (x: "    ${x}") (filter isString (split "\n" text)));
-  flag = { name, short ? substring 0 1 name, default ? "", bool ? false, marker ? if bool then "" else ":" }: {
-    inherit name short default bool;
-    shortOpt = "${short}${marker}";
-    longOpt = "${name}${marker}";
-    flagDefault = ''${name}="${default}"'';
-
-    definition = ''
-      -${short}|--${name})
-          ${name}=${if bool then "1" else "$2"}
-          shift ${if bool then "" else "2"}
-          ;;'';
-  };
-
-  kshell = writeBashBinCheckedWithFlags {
-    name = "kshell2";
-    flags = [
-      {
-        name = "namespace";
-        default = "default";
+        ${rightPad 20 "-h, --help"}${"\t"}Print this help and exit
+      ${flagIndent (concatStringsSep "\n" (map (x: x.helpDoc) parsedFlags))}
+      EOF
+        exit 0
       }
-      {
-        name = "meme";
-        bool = true;
-      }
-    ];
+
+      OPTIONS="h,${concatStringsSep "," (map (x: x.shortOpt) parsedFlags)}"
+      LONGOPTS="help,${concatStringsSep "," (map (x: x.longOpt) parsedFlags)}"
+
+      # shellcheck disable=SC2251
+      ! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
+      if [[ ''${PIPESTATUS[0]} -ne 0 ]]; then
+          exit 2
+      fi
+      eval set -- "$PARSED"
+
+      # defaults
+      ${concatStringsSep "\n" (map (x: x.flagDefault) parsedFlags)}
+
+      while true; do
+        case "$1" in
+      ${flagIndent (flagIndent (concatStringsSep "\n" (map (x: x.definition) parsedFlags)))}
+          -h|--help)
+              help
+              ;;
+          --)
+              shift
+              break
+              ;;
+          *)
+              echo "unknown flag passed"
+              exit 3
+              ;;
+        esac
+      done
+      ${if bashBible then bashbible.bible else ""}
+      # script
+      ${script}
+    '';
+
+  reverse = x: concatStringsSep "" (lib.lists.reverseList (lib.strings.splitString "" x));
+  rightPad = num: text: reverse (lib.strings.fixedWidthString num " " (reverse text));
+
+  flagIndent = text: concatStringsSep "\n" (map (x: "  ${x}") (filter isString (split "\n" text)));
+  flag =
+    { name
+    , short ? substring 0 1 name
+    , default ? ""
+    , bool ? false
+    , marker ? if bool then "" else ":"
+    , description ? "a flag"
+    }: {
+      inherit name short default bool marker description;
+      shortOpt = "${short}${marker}";
+      longOpt = "${name}${marker}";
+      flagDefault = ''${name}="${default}"'';
+      ex = "[-${short}|--${name}${if bool then "" else " VAR"}]";
+      helpDoc = (rightPad 20 "-${short}, --${name}") + "\t${description}${if bool then " [bool]" else ""}";
+      definition = ''
+        -${short}|--${name})
+            ${name}=${if bool then "1" else "$2"}
+            shift ${if bool then "" else "2"}
+            ;;'';
+    };
+
+  foo = writeBashBinCheckedWithFlags {
+    name = "foo";
+    description = "a tester script for my classic bash bible memes";
+    bashBible = true;
     script = ''
-      echo "kshell [meme:$meme] in namespace: $namespace"
+      trim_string "     foo       "
+      upper 'foo'
+      lower 'FOO'
+      lstrip "The Quick Brown Fox" "The "
+      urlencode "https://github.com/dylanaraps/pure-bash-bible"
+      remove_array_dups 1 1 2 2 3 3 3 3 3 4 4 4 4 4 5 5 5 5 5 5
+      hex_to_rgb "#FFFFFF"
+      rgb_to_hex "255" "255" "255"
+      date "%a %d %b  - %l:%M %p"
+      uuid
+      bar 1 10
+      get_functions
     '';
   };
-
-  writeBashBibleBinChecked = name: text:
-    writeBashBinChecked name ''
-      ${bashbible.bible}
-      ${text}
-    '';
-
-  foo = writeBashBibleBinChecked "foo" ''
-    trim_string "     foo       "
-    upper 'foo'
-    lower 'FOO'
-    lstrip "The Quick Brown Fox" "The "
-    urlencode "https://github.com/dylanaraps/pure-bash-bible"
-    remove_array_dups 1 1 2 2 3 3 3 3 3 4 4 4 4 4 5 5 5 5 5 5
-    hex_to_rgb "#FFFFFF"
-    rgb_to_hex "255" "255" "255"
-    date "%a %d %b  - %l:%M %p"
-    uuid
-    bar 1 10
-    get_functions
-  '';
 
   soundScript = name: url: sha256:
     let
@@ -144,6 +162,7 @@ with builtins; rec {
   '';
   ecr_login = writeBashBinCheckedWithFlags {
     name = "ecr_login";
+    description = "a quick helper script to facilitate login to AWS ECR";
     flags = [
       _.flags.aws.region
     ];
@@ -155,6 +174,7 @@ with builtins; rec {
   };
   ecr_login_public = writeBashBinCheckedWithFlags {
     name = "ecr_login_public";
+    description = "a quick helper script to facilitate login to AWS public ECR";
     flags = [
       _.flags.aws.region
     ];
@@ -266,6 +286,7 @@ with builtins; rec {
 
   nixup = writeBashBinCheckedWithFlags {
     name = "nixup";
+    description = "a quick tool to create a base nix environment!";
     flags = [ _.flags.nix.with_python ];
     script = ''
       directory="$(pwd | ${_.sed} 's#.*/##')"
@@ -306,11 +327,18 @@ with builtins; rec {
       EOF
     '';
   };
-  nixpy = writeBashBinChecked "nixpy" ''
-    package="$1"
-    version="$2"
-    ${nix-prefetch}/bin/nix-prefetch python.pkgs.fetchPypi --pname "$package" --version "$version"
-  '';
+  nixpy = writeBashBinCheckedWithFlags {
+    name = "nixpy";
+    flags = [
+      _.flags.python.package
+      _.flags.python.version
+    ];
+    script = ''
+      [ -z "$package" ] && echo "please pass a package!"; exit 1;
+      [ -z "$version" ] && echo "please pass a version!"; exit 1;
+      ${nix-prefetch}/bin/nix-prefetch python.pkgs.fetchPypi --pname "$package" --version "$version"
+    '';
+  };
 
   nix_bash_scripts = [
     nixup
@@ -347,7 +375,9 @@ with builtins; rec {
     rg = "${pkgs.ripgrep}/bin/rg";
     sed = "${pkgs.gnused}/bin/sed";
     shellcheck = "${pkgs.shellcheck}/bin/shellcheck";
+    sort = "${pkgs.coreutils}/bin/sort";
     tr = "${pkgs.coreutils}/bin/tr";
+    uniq = "${pkgs.coreutils}/bin/uniq";
     yq = "${pkgs.yq-go}/bin/yq";
     y2j = "${pkgs.remarshal}/bin/yaml2json";
 
@@ -388,6 +418,7 @@ with builtins; rec {
         region = {
           name = "region";
           default = "us-east-1";
+          description = "the AWS region in which to do this operation";
         };
       };
       gcp = { };
@@ -395,6 +426,7 @@ with builtins; rec {
         ns = {
           name = "namespace";
           default = "default";
+          description = "the namespace in which to do this operation";
         };
       };
       docker = { };
@@ -402,12 +434,14 @@ with builtins; rec {
         force = {
           name = "force";
           bool = true;
+          description = "forcefully do this thing";
         };
       };
       nix = {
         with_python = {
           name = "with_python";
           bool = true;
+          description = "whether or not to include a python with packages";
         };
         with_node = {
           name = "with_node";
@@ -427,6 +461,7 @@ with builtins; rec {
 
   drmi = writeBashBinCheckedWithFlags {
     name = "drmi";
+    description = "quickly remove images from your docker daemon";
     flags = [
       _.flags.common.force
     ];
@@ -442,6 +477,7 @@ with builtins; rec {
   # helpful shorthands
   kex = writeBashBinCheckedWithFlags {
     name = "kex";
+    description = "a quick and easy way to exec into a k8s pod";
     flags = [
       _.flags.k8s.ns
     ];
@@ -455,6 +491,7 @@ with builtins; rec {
   };
   krm = writeBashBinCheckedWithFlags {
     name = "krm";
+    description = "a quick and easy way to delete one or more pods on k8s";
     flags = [
       _.flags.k8s.ns
       _.flags.common.force
@@ -465,6 +502,65 @@ with builtins; rec {
         ${_.fzfqm} | \
         ${_.get_id} | \
         ${_.xargs} ${_.k} --namespace "$namespace" delete pods ''${force:+--grace-period=0 --force}
+    '';
+  };
+  klist = writeBashBinCheckedWithFlags {
+    name = "klist";
+    description = "list out all the images in use on this k8s cluster";
+    script = ''
+      ${_.k} get pods --all-namespaces -o jsonpath='{..image}' | \
+        ${_.tr} -s '[[:space:]]' '\\n' | \
+        ${_.sort} | \
+        ${_.uniq} -c
+    '';
+  };
+  _kshellImages = [
+    "alpine:latest"
+    "alpine:3.15"
+    "jpetrucciani/nix:2.6"
+    "nicolaka/netshoot:latest"
+    "ubuntu:22.04"
+    "ubuntu:20.04"
+  ];
+  kshell = writeBashBinCheckedWithFlags {
+    name = "kshell";
+    description = "a quick and easy way to pop a shell on k8s";
+    flags = [
+      _.flags.k8s.ns
+      {
+        name = "image";
+        description = "the image to use for this shell";
+      }
+    ];
+    script = ''
+      [ -z "''${image}" ] && image=$(echo -e '${concatStringsSep "\\n" _kshellImages}' | ${_.fzfq})
+      ${_.k} run \
+        -it \
+        --rm \
+        --restart Never \
+        --namespace "$namespace" \
+        --image-pull-policy=Always \
+        --image="$image" \
+        "''${USER}-''${RANDOM}"
+    '';
+  };
+
+  kroll = writeBashBinCheckedWithFlags {
+    name = "kroll";
+    description = "a quick and easy way to roll a deployment's pods";
+    flags = [
+      _.flags.k8s.ns
+      {
+        name = "deployment";
+        description = "the deployment to roll. if not passed in, a dialog will pop up to select from";
+      }
+    ];
+    script = ''
+      [ -z "''${deployment}" ] && deployment=$(${_.k} --namespace "$namespace" get deployment -o wide | ${_.sed} '1d' | ${_.fzfq} | ${_.get_id})
+      ${_.k} --namespace "$namespace" \
+        patch deployment "$deployment" \
+        --patch "''$(_get_deployment_patch)"
+      ${_.k} --namespace "$namespace" rollout status deployment/"$deployment"
     '';
   };
 
@@ -491,9 +587,10 @@ with builtins; rec {
   k8s_bash_scripts = [
     kex
     krm
+    kroll
+    kshell
     _get_deployment_patch
     refresh_deployment
-    kshell
   ];
 
   yank = next.yank.overrideAttrs (attrs: {
