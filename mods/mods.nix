@@ -111,7 +111,7 @@ with builtins; rec {
       LONGOPTS="help,raw,verbose,${concatStringsSep "," (map (x: x.longOpt) parsedFlags)}"
 
       # shellcheck disable=SC2251
-      ! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
+      ! PARSED=$(${_.getopt} --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
       if [[ ''${PIPESTATUS[0]} -ne 0 ]]; then
           exit 2
       fi
@@ -362,11 +362,17 @@ with builtins; rec {
     flags = [
       {
         name = "cache_name";
+        description = "the cachix to push to. defaults to 'medable'";
         default = "medable";
+      }
+      {
+        name = "oldmac";
+        description = "optionally build for x86_64-darwin (mac only)";
+        bool = true;
       }
     ];
     script = ''
-      ${pkgs.nix}/bin/nix-build | ${_.cachix} push "$cache_name"
+      ${pkgs.nix}/bin/nix-build ''${oldmac:+--system x86_64-darwin} | ${_.cachix} push "$cache_name"
     '';
   };
 
@@ -487,6 +493,7 @@ with builtins; rec {
     ## common
     date = "${pkgs.coreutils}/bin/date";
     xargs = "${pkgs.findutils}/bin/xargs";
+    getopt = "${pkgs.getopt}/bin/getopt";
     fzf = "${pkgs.fzf}/bin/fzf";
     sox = "${pkgs.sox}/bin/play";
     ffmpeg = "${pkgs.ffmpeg}/bin/ffmpeg";
