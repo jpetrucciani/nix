@@ -85,7 +85,7 @@ with builtins; rec {
 
       help() {
         cat <<EOF
-        Usage: ${name} [-h|--help] [-v|--verbose] [-r|--raw] ${concatStringsSep " " (map (x: x.ex) parsedFlags)}
+        Usage: ${name} [-h|--help] [-v|--verbose] [--no-color] ${concatStringsSep " " (map (x: x.ex) parsedFlags)}
 
         ${description}
 
@@ -93,7 +93,7 @@ with builtins; rec {
 
         ${rightPad 20 "-h, --help"}${"\t"}Print this help and exit
         ${rightPad 20 "-v, --verbose"}${"\t"}Enable verbose logging and info
-        ${rightPad 20 "--raw"}${"\t"}Disable color and other formatting
+        ${rightPad 20 "--no-color"}${"\t"}Disable color and other formatting
       ${ind (concatStringsSep "\n" (map (x: x.helpDoc) parsedFlags))}
       EOF
         exit 0
@@ -130,7 +130,7 @@ with builtins; rec {
               VERBOSE=1
               shift
               ;;
-          --raw)
+          --no-color)
               NO_COLOR=1
               shift
               ;;
@@ -351,30 +351,6 @@ with builtins; rec {
     # shellcheck disable=SC2046
     ${_.awk} -v cols=$(tput cols) '{c=int(sin(NR/10)*(cols/6)+(cols/6))+1;print(substr($0,1,c-1) "\x1b[41m" substr($0,c,1) "\x1b[0m" substr($0,c+1,length($0)-c+2))}'
   '';
-  y2n = writeBashBinChecked "y2n" ''
-    yaml="$1"
-    json=$(${_.y2j} "$yaml") \
-      nix eval --raw --impure --expr \
-      'with import ${pkgs.path} {}; lib.generators.toPretty {} (builtins.fromJSON (builtins.getEnv "json"))'
-  '';
-  cache = writeBashBinCheckedWithFlags {
-    name = "cache";
-    flags = [
-      {
-        name = "cache_name";
-        description = "the cachix to push to. defaults to 'medable'";
-        default = "medable";
-      }
-      {
-        name = "oldmac";
-        description = "optionally build for x86_64-darwin (mac only)";
-        bool = true;
-      }
-    ];
-    script = ''
-      ${pkgs.nix}/bin/nix-build ''${oldmac:+--system x86_64-darwin} | ${_.cachix} push "$cache_name"
-    '';
-  };
 
   general_bash_scripts = [
     batwhich
@@ -385,8 +361,6 @@ with builtins; rec {
     fif
     rot13
     sin
-    y2n
-    cache
   ];
 
   nixup = writeBashBinCheckedWithFlags {
@@ -444,10 +418,71 @@ with builtins; rec {
       ${nix-prefetch}/bin/nix-prefetch python.pkgs.fetchPypi --pname "$package" --version "$version"
     '';
   };
+  y2n = writeBashBinChecked "y2n" ''
+    yaml="$1"
+    json=$(${_.y2j} "$yaml") \
+      nix eval --raw --impure --expr \
+      'with import ${pkgs.path} {}; lib.generators.toPretty {} (builtins.fromJSON (builtins.getEnv "json"))'
+  '';
+  cache = writeBashBinCheckedWithFlags {
+    name = "cache";
+    flags = [
+      {
+        name = "cache_name";
+        description = "the cachix to push to. defaults to 'medable'";
+        default = "medable";
+      }
+      {
+        name = "oldmac";
+        description = "optionally build for x86_64-darwin (mac only)";
+        bool = true;
+      }
+    ];
+    script = ''
+      ${pkgs.nix}/bin/nix-build ''${oldmac:+--system x86_64-darwin} | ${_.cachix} push "$cache_name"
+    '';
+  };
+  j2y.py = writeTextFile {
+    name = "j2y.py";
+    text = ''
+      import json
+      import sys
+      import yaml
+
+      if __name__ == "__main__":
+          data = sys.stdin.read()
+          json_docs = data.split("---")
+          docs = [json.loads(x) for x in json_docs if x]
+          rendered = "\n---\n".join([yaml.dump(x) for x in docs])
+          print(f"---\n{rendered}")
+    '';
+  };
+  nixrender = writeBashBinCheckedWithFlags {
+    name = "nixrender";
+    flags = [
+      {
+        name = "raw";
+        description = "don't apply the python post-processing";
+        bool = true;
+      }
+    ];
+    script = ''
+      template="$1"
+      rendered="$(${pkgs.nix_2_6}/bin/nix eval --raw -f "$template")"
+      if [ -z "''${raw}" ]; then
+        echo "$rendered" | ${pkgs.python39}/bin/python ${j2y.py}
+      else
+        echo "$rendered"
+      fi
+    '';
+  };
 
   nix_bash_scripts = [
     nixup
     nixpy
+    y2n
+    cache
+    nixrender
   ];
 
   ### IMAGE STUFF
@@ -611,6 +646,7 @@ with builtins; rec {
     ];
     script = ''
       [ -z "''${image}" ] && image=$(echo -e '${concatStringsSep "\\n" _.images}' | ${_.fzfq})
+      [ -z "''${image}" ] && die "you must specify an image to run in docker!" 2
       debug "''${GREEN}running image '$image' docker!''${RESET}"
       ${_.d} run \
         -it \
@@ -679,6 +715,7 @@ with builtins; rec {
     ];
     script = ''
       [ -z "''${image}" ] && image=$(echo -e '${concatStringsSep "\\n" _.images}' | ${_.fzfq})
+      [ -z "''${image}" ] && die "you must specify an image to run!" 2
       debug "''${GREEN}running image '$image' on the '$namespace' namespace!''${RESET}"
       ${_.k} run \
         -it \
@@ -703,6 +740,7 @@ with builtins; rec {
     ];
     script = ''
       [ -z "''${deployment}" ] && deployment=$(${_.k} --namespace "$namespace" get deployment -o wide | ${_.sed} '1d' | ${_.fzfq} | ${_.get_id})
+      [ -z "''${deployment}" ] && die "you must specify a deployment to roll!" 2
       ${_.k} --namespace "$namespace" \
         patch deployment "$deployment" \
         --patch "''$(_get_deployment_patch)"
