@@ -557,6 +557,21 @@ with builtins; rec {
         };
       };
     };
+    # docker images to use in various spots
+    images = [
+      "alpine:latest"
+      "alpine:3.15"
+      "jpetrucciani/nix:2.6"
+      "nicolaka/netshoot:latest"
+      "node:16"
+      "node:14"
+      "node:12"
+      "python:3.11-rc"
+      "python:3.10"
+      "python:3.9"
+      "ubuntu:22.04"
+      "ubuntu:20.04"
+    ];
   };
 
   drmi = writeBashBinCheckedWithFlags {
@@ -569,8 +584,39 @@ with builtins; rec {
       ${_.di} | ${_.fzfqm} | ${_.get_image} | xargs -r ${_.d} rmi ''${force:+--force}
     '';
   };
+  dshell = writeBashBinCheckedWithFlags {
+    name = "dshell";
+    description = "a quick and easy way to pop a shell on docker!";
+    flags = [
+      {
+        name = "image";
+        description = "the image to use for this shell";
+      }
+      {
+        name = "port";
+        description = "a port to expose to the host";
+      }
+      {
+        name = "command";
+        description = "the command to run within this shell";
+        default = "bash";
+      }
+    ];
+    script = ''
+      [ -z "''${image}" ] && image=$(echo -e '${concatStringsSep "\\n" _.images}' | ${_.fzfq})
+      debug "''${GREEN}running image '$image' docker!''${RESET}"
+      ${_.d} run \
+        -it \
+        --rm \
+        ''${port:+--publish $port:$port}\
+        --name "''${USER}-dshell-''${RANDOM}" \
+        "$image" "$command"
+    '';
+  };
+
   docker_bash_scripts = [
     drmi
+    dshell
   ];
 
   # K8S STUFF
@@ -614,14 +660,6 @@ with builtins; rec {
         ${_.uniq} -c
     '';
   };
-  _kshellImages = [
-    "alpine:latest"
-    "alpine:3.15"
-    "jpetrucciani/nix:2.6"
-    "nicolaka/netshoot:latest"
-    "ubuntu:22.04"
-    "ubuntu:20.04"
-  ];
   kshell = writeBashBinCheckedWithFlags {
     name = "kshell";
     description = "a quick and easy way to pop a shell on k8s!";
@@ -633,7 +671,7 @@ with builtins; rec {
       }
     ];
     script = ''
-      [ -z "''${image}" ] && image=$(echo -e '${concatStringsSep "\\n" _kshellImages}' | ${_.fzfq})
+      [ -z "''${image}" ] && image=$(echo -e '${concatStringsSep "\\n" _.images}' | ${_.fzfq})
       debug "''${GREEN}running image '$image' on the '$namespace' namespace!''${RESET}"
       ${_.k} run \
         -it \
@@ -642,7 +680,7 @@ with builtins; rec {
         --namespace "$namespace" \
         --image-pull-policy=Always \
         --image="$image" \
-        "''${USER}-''${RANDOM}"
+        "''${USER}-kshell-''${RANDOM}"
     '';
   };
 
