@@ -426,6 +426,7 @@ with builtins; rec {
   '';
   cache = writeBashBinCheckedWithFlags {
     name = "cache";
+    description = "an easy tool to build nix configs and cache them to cachix!";
     flags = [
       {
         name = "cache_name";
@@ -459,6 +460,7 @@ with builtins; rec {
   };
   nixrender = writeBashBinCheckedWithFlags {
     name = "nixrender";
+    description = "a quick and easy way to use nix to render various other config files!";
     flags = [
       {
         name = "raw";
