@@ -74,6 +74,7 @@ with builtins; rec {
     , script
     , description ? "a helpful script with flags, created through nix!"
     , flags ? [ ]
+    , arguments ? [ ]
     , parsedFlags ? map flag flags
     , bashBible ? false
     , beforeExit ? ""
@@ -85,7 +86,7 @@ with builtins; rec {
 
       help() {
         cat <<EOF
-        Usage: ${name} [-h|--help] [-v|--verbose] [--no-color] ${concatStringsSep " " (map (x: x.ex) parsedFlags)}
+        Usage: ${name} [-h|--help] [-v|--verbose] [--no-color] ${concatStringsSep " " (map (x: x.ex) parsedFlags)} ${concatStringsSep " " (map (x: upper x.name) arguments)}
 
         ${description}
 
@@ -107,8 +108,8 @@ with builtins; rec {
         fi
       }
 
-      OPTIONS="h,r,v,${concatStringsSep "," (map (x: x.shortOpt) parsedFlags)}"
-      LONGOPTS="help,raw,verbose,${concatStringsSep "," (map (x: x.longOpt) parsedFlags)}"
+      OPTIONS="h,v,${concatStringsSep "," (map (x: x.shortOpt) parsedFlags)}"
+      LONGOPTS="help,no-color,verbose,${concatStringsSep "," (map (x: x.longOpt) parsedFlags)}"
 
       # shellcheck disable=SC2251
       ! PARSED=$(${_.getopt} --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
@@ -467,6 +468,9 @@ with builtins; rec {
         description = "don't apply the python post-processing";
         bool = true;
       }
+    ];
+    arguments = [
+      { name = "nix_file"; }
     ];
     script = ''
       template="$1"
