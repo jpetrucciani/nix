@@ -30,6 +30,45 @@ with builtins; rec {
       '';
     };
 
+  bashColors = [
+    {
+      name = "reset";
+      code = ''\033[0m'';
+    }
+    {
+      name = "black";
+      code = ''\033[0;30m'';
+    }
+    {
+      name = "red";
+      code = ''\033[0;31m'';
+    }
+    {
+      name = "green";
+      code = ''\033[0;32m'';
+    }
+    {
+      name = "yellow";
+      code = ''\033[1;33m'';
+    }
+    {
+      name = "blue";
+      code = ''\033[0;34m'';
+    }
+    {
+      name = "purple";
+      code = ''\033[0;35m'';
+    }
+    {
+      name = "cyan";
+      code = ''\033[0;36m'';
+    }
+    {
+      name = "grey";
+      code = ''\033[0;90m'';
+    }
+  ];
+
   writeBashBinCheckedWithFlags =
     { name
     , script
@@ -37,25 +76,39 @@ with builtins; rec {
     , flags ? [ ]
     , parsedFlags ? map flag flags
     , bashBible ? false
+    , beforeExit ? ""
+    , strict ? false
     }: writeBashBinChecked name ''
-      set -o errexit -o pipefail -o noclobber
+      ${if strict then "set -o errexit -o pipefail -o noclobber" else ""}
+      VERBOSE=""
+      NO_COLOR=""
 
       help() {
         cat <<EOF
-        Usage: ${name} [-h|--help] ${concatStringsSep " " (map (x: x.ex) parsedFlags)}
+        Usage: ${name} [-h|--help] [-v|--verbose] [-r|--raw] ${concatStringsSep " " (map (x: x.ex) parsedFlags)}
 
         ${description}
 
         Available flags:
 
         ${rightPad 20 "-h, --help"}${"\t"}Print this help and exit
-      ${flagIndent (concatStringsSep "\n" (map (x: x.helpDoc) parsedFlags))}
+        ${rightPad 20 "-v, --verbose"}${"\t"}Enable verbose logging and info
+        ${rightPad 20 "--raw"}${"\t"}Disable color and other formatting
+      ${indent (concatStringsSep "\n" (map (x: x.helpDoc) parsedFlags))}
       EOF
         exit 0
       }
+      
+      setup_colors() {
+        if [[ -t 2 ]] && [[ -z "''$NO_COLOR" ]] && [[ "''$TERM" != "dumb" ]]; then
+          ${concatStringsSep " " (map (x: ''${upper x.name}="${x.code}"'') bashColors)}
+        else
+          ${concatStringsSep " " (map (x: ''${upper x.name}=""'') bashColors)}
+        fi
+      }
 
-      OPTIONS="h,${concatStringsSep "," (map (x: x.shortOpt) parsedFlags)}"
-      LONGOPTS="help,${concatStringsSep "," (map (x: x.longOpt) parsedFlags)}"
+      OPTIONS="h,r,v,${concatStringsSep "," (map (x: x.shortOpt) parsedFlags)}"
+      LONGOPTS="help,raw,verbose,${concatStringsSep "," (map (x: x.longOpt) parsedFlags)}"
 
       # shellcheck disable=SC2251
       ! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
@@ -69,9 +122,17 @@ with builtins; rec {
 
       while true; do
         case "$1" in
-      ${flagIndent (flagIndent (concatStringsSep "\n" (map (x: x.definition) parsedFlags)))}
+      ${indent (indent (concatStringsSep "\n" (map (x: x.definition) parsedFlags)))}
           -h|--help)
               help
+              ;;
+          -v|--verbose)
+              VERBOSE=1
+              shift
+              ;;
+          --raw)
+              NO_COLOR=1
+              shift
               ;;
           --)
               shift
@@ -83,15 +144,40 @@ with builtins; rec {
               ;;
         esac
       done
+      debug() {
+        if [ -n "$VERBOSE" ]; then
+          echo -e "$1"
+        fi
+      }
+      cleanup() {
+        trap - SIGINT SIGTERM ERR EXIT
+      ${indent beforeExit}
+      }
+      trap cleanup SIGINT SIGTERM ERR EXIT
+
+      ${concatStringsSep "\n" (map (x: ''
+        ${x.name}(){
+          echo -e "''${${upper x.name}}$1''${RESET}"
+        }
+      '') bashColors)}
+
+      die() {
+        local msg=$1
+        local code=''${2-1}
+        echo >&2 -e "''${RED}$msg''${RESET}"
+        exit "$code"
+      }
+      setup_colors
       ${if bashBible then bashbible.bible else ""}
       # script
       ${script}
     '';
 
+  upper = lib.strings.toUpper;
   reverse = x: concatStringsSep "" (lib.lists.reverseList (lib.stringToCharacters x));
   rightPad = num: text: reverse (lib.strings.fixedWidthString num " " (reverse text));
 
-  flagIndent = text: concatStringsSep "\n" (map (x: "  ${x}") (filter isString (split "\n" text)));
+  indent = text: concatStringsSep "\n" (map (x: "  ${x}") (filter isString (split "\n" text)));
   flag =
     { name
     , short ? substring 0 1 name
@@ -115,8 +201,11 @@ with builtins; rec {
 
   foo = writeBashBinCheckedWithFlags {
     name = "foo";
-    description = "a tester script for my classic bash bible memes";
+    description = "a tester script for my classic bash bin + flag + bashbible memes";
     bashBible = true;
+    beforeExit = ''
+      green "this is beforeExit - foo test complete!"
+    '';
     script = ''
       trim_string "     foo       "
       upper 'foo'
@@ -130,6 +219,16 @@ with builtins; rec {
       uuid
       bar 1 10
       get_functions
+      debug "''${GREEN}this is a debug message, only visible when passing -v!''${RESET}"
+      black "this text is 'black'"
+      red "this text 'is' red"
+      green "this text is 'green'"
+      yellow "this text is 'yellow'"
+      blue "this text is 'blue'"
+      purple "this text is 'purple'"
+      cyan "this text is 'cyan'"
+      grey "this text is 'grey'"
+      die "this is a die" 0
     '';
   };
 
@@ -454,6 +553,7 @@ with builtins; rec {
         };
         version = {
           name = "version";
+          short = "r";
         };
       };
     };
@@ -461,7 +561,7 @@ with builtins; rec {
 
   drmi = writeBashBinCheckedWithFlags {
     name = "drmi";
-    description = "quickly remove images from your docker daemon";
+    description = "quickly remove images from your docker daemon!";
     flags = [
       _.flags.common.force
     ];
@@ -477,7 +577,7 @@ with builtins; rec {
   # helpful shorthands
   kex = writeBashBinCheckedWithFlags {
     name = "kex";
-    description = "a quick and easy way to exec into a k8s pod";
+    description = "a quick and easy way to exec into a k8s pod!";
     flags = [
       _.flags.k8s.ns
     ];
@@ -491,7 +591,7 @@ with builtins; rec {
   };
   krm = writeBashBinCheckedWithFlags {
     name = "krm";
-    description = "a quick and easy way to delete one or more pods on k8s";
+    description = "a quick and easy way to delete one or more pods on k8s!";
     flags = [
       _.flags.k8s.ns
       _.flags.common.force
@@ -506,7 +606,7 @@ with builtins; rec {
   };
   klist = writeBashBinCheckedWithFlags {
     name = "klist";
-    description = "list out all the images in use on this k8s cluster";
+    description = "list out all the images in use on this k8s cluster!";
     script = ''
       ${_.k} get pods --all-namespaces -o jsonpath='{..image}' | \
         ${_.tr} -s '[[:space:]]' '\\n' | \
@@ -524,7 +624,7 @@ with builtins; rec {
   ];
   kshell = writeBashBinCheckedWithFlags {
     name = "kshell";
-    description = "a quick and easy way to pop a shell on k8s";
+    description = "a quick and easy way to pop a shell on k8s!";
     flags = [
       _.flags.k8s.ns
       {
@@ -534,6 +634,7 @@ with builtins; rec {
     ];
     script = ''
       [ -z "''${image}" ] && image=$(echo -e '${concatStringsSep "\\n" _kshellImages}' | ${_.fzfq})
+      debug "''${GREEN}running image '$image' on the '$namespace' namespace!''${RESET}"
       ${_.k} run \
         -it \
         --rm \
@@ -547,7 +648,7 @@ with builtins; rec {
 
   kroll = writeBashBinCheckedWithFlags {
     name = "kroll";
-    description = "a quick and easy way to roll a deployment's pods";
+    description = "a quick and easy way to roll a deployment's pods!";
     flags = [
       _.flags.k8s.ns
       {
