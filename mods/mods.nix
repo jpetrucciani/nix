@@ -94,7 +94,7 @@ with builtins; rec {
         ${rightPad 20 "-h, --help"}${"\t"}Print this help and exit
         ${rightPad 20 "-v, --verbose"}${"\t"}Enable verbose logging and info
         ${rightPad 20 "--raw"}${"\t"}Disable color and other formatting
-      ${indent (concatStringsSep "\n" (map (x: x.helpDoc) parsedFlags))}
+      ${ind (concatStringsSep "\n" (map (x: x.helpDoc) parsedFlags))}
       EOF
         exit 0
       }
@@ -122,7 +122,7 @@ with builtins; rec {
 
       while true; do
         case "$1" in
-      ${indent (indent (concatStringsSep "\n" (map (x: x.definition) parsedFlags)))}
+      ${ind (ind (concatStringsSep "\n" (map (x: x.definition) parsedFlags)))}
           -h|--help)
               help
               ;;
@@ -151,7 +151,7 @@ with builtins; rec {
       }
       cleanup() {
         trap - SIGINT SIGTERM ERR EXIT
-      ${indent beforeExit}
+      ${ind beforeExit}
       }
       trap cleanup SIGINT SIGTERM ERR EXIT
 
@@ -177,7 +177,7 @@ with builtins; rec {
   reverse = x: concatStringsSep "" (lib.lists.reverseList (lib.stringToCharacters x));
   rightPad = num: text: reverse (lib.strings.fixedWidthString num " " (reverse text));
 
-  indent = text: concatStringsSep "\n" (map (x: "  ${x}") (filter isString (split "\n" text)));
+  ind = text: concatStringsSep "\n" (map (x: "  ${x}") (filter isString (split "\n" text)));
   flag =
     { name
     , short ? substring 0 1 name
