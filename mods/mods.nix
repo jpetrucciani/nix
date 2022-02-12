@@ -74,8 +74,8 @@ with builtins; rec {
     , script
     , description ? "a helpful script with flags, created through nix!"
     , flags ? [ ]
-    , arguments ? [ ]
     , parsedFlags ? map flag flags
+    , arguments ? [ ]
     , bashBible ? false
     , beforeExit ? ""
     , strict ? false
@@ -90,12 +90,11 @@ with builtins; rec {
 
         ${description}
 
-        Available flags:
-
-        ${rightPad 20 "-h, --help"}${"\t"}Print this help and exit
-        ${rightPad 20 "-v, --verbose"}${"\t"}Enable verbose logging and info
-        ${rightPad 20 "--no-color"}${"\t"}Disable color and other formatting
+        Flags:
       ${ind (concatStringsSep "\n" (map (x: x.helpDoc) parsedFlags))}
+        ${rightPad 20 "-h, --help"}${"\t"}print this help and exit
+        ${rightPad 20 "-v, --verbose"}${"\t"}enable verbose logging and info
+        ${rightPad 20 "--no-color"}${"\t"}disable color and other formatting
       EOF
         exit 0
       }
@@ -123,7 +122,6 @@ with builtins; rec {
 
       while true; do
         case "$1" in
-      ${ind (ind (concatStringsSep "\n" (map (x: x.definition) parsedFlags)))}
           -h|--help)
               help
               ;;
@@ -135,6 +133,7 @@ with builtins; rec {
               NO_COLOR=1
               shift
               ;;
+      ${ind (ind (concatStringsSep "\n" (map (x: x.definition) parsedFlags)))}
           --)
               shift
               break
