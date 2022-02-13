@@ -202,6 +202,7 @@ with pkgs.hax; {
 
         # load in my custom checked bash scripts
         aws_bash_scripts
+        gcp_bash_scripts
         general_bash_scripts
         docker_bash_scripts
         k8s_bash_scripts

@@ -289,6 +289,18 @@ with builtins; rec {
     ecr_login_public
   ];
 
+  ### GCP STUFF
+  glist = writeBashBinCheckedWithFlags {
+    name = "glist";
+    description = "list out the gcloud projects that we can see!";
+    script = ''
+      ${_.gcloud} projects list
+    '';
+  };
+  gcp_bash_scripts = [
+    glist
+  ];
+
   ### GENERAL STUFF
   _nixos-switch = { host }: writeBashBinChecked "switch" ''
     set -eo pipefail
@@ -545,6 +557,7 @@ with builtins; rec {
 
     ## clouds
     aws = "${pkgs.awscli2}/bin/aws";
+    gcloud = "${pkgs.google-cloud-sdk}/bin/gcloud";
 
     # fzf partials
     fzfq = ''${fzf} -q "$1" --no-sort'';
@@ -567,7 +580,12 @@ with builtins; rec {
           description = "the AWS region in which to do this operation";
         };
       };
-      gcp = { };
+      gcp = {
+        project = {
+          name = "project";
+          description = "the GCP project in which to do this operation";
+        };
+      };
       k8s = {
         ns = {
           name = "namespace";
@@ -693,6 +711,7 @@ with builtins; rec {
       ${_.k} --namespace "$namespace" exec -it "$pod_id" -- sh
     '';
   };
+
   krm = writeBashBinCheckedWithFlags {
     name = "krm";
     description = "a quick and easy way to delete one or more pods on k8s!";
@@ -708,6 +727,7 @@ with builtins; rec {
         ${_.xargs} ${_.k} --namespace "$namespace" delete pods ''${force:+--grace-period=0 --force}
     '';
   };
+
   klist = writeBashBinCheckedWithFlags {
     name = "klist";
     description = "list out all the images in use on this k8s cluster!";
@@ -718,6 +738,7 @@ with builtins; rec {
         ${_.uniq} -c
     '';
   };
+
   kshell = writeBashBinCheckedWithFlags {
     name = "kshell";
     description = "a quick and easy way to pop a shell on k8s!";
