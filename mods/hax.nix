@@ -50,9 +50,34 @@ prev: next:
       '';
     };
 
-    comma = (writeShellScriptBin "," ''
-      exec ${chief_keef.better-comma}/bin/, --overlay ${./mods.nix} --overlay ${./pkgs.nix} "$@"
-    '').overrideAttrs (x: { name = "better-comma"; });
+    comma = (prev.writeBashBinCheckedWithFlags {
+      name = ",";
+      description = "a quick and easy way to run software that you don't have!";
+      flags = [
+        {
+          name = "package";
+          description = "a specific package to use for this binary";
+        }
+        {
+          name = "unset";
+          description = "unset the saved package selection for this invocation";
+        }
+        {
+          name = "overlay";
+          description = "an additional overlay to include in comma";
+        }
+      ];
+      arguments = [
+        { name = "binary"; }
+      ];
+      script = ''
+        exec ${chief_keef.better-comma}/bin/, --overlay ${./mods.nix} --overlay ${./pkgs.nix} \
+          ''${overlay:+--overlay $overlay} \
+          ''${unset:+-u} \
+          ''${package:+-p $package} \
+          "$@"
+      '';
+    }).overrideAttrs (x: { name = "better-comma"; });
     vanilla_comma = chief_keef.better-comma;
 
     mapAttrValues = f: mapAttrs (n: v: f v);
@@ -104,31 +129,6 @@ prev: next:
         };
       in
       fromJSON (readFile text);
-    brewCask = cask: sha256:
-      let
-        home = getEnv "HOME";
-        data =
-          getJson "https://formulae.brew.sh/api/cask/${cask}.json" sha256;
-        appFile = head (filter isString (lists.flatten data.artifacts));
-      in
-      stdenv.mkDerivation {
-        name = data.token;
-        src = fetchurl {
-          inherit url sha256;
-          name = "${data.token}.dmg";
-        };
-        phases = [ "unpackPhase" "buildPhase" "installPhase" ];
-        buildInputs = [ undmg ];
-        installPhase = ''
-            mkdir -p $out/Applications
-            cp -R ${appFile} "$out/Applications"
-            ln -s "$out/Applications/${appFile}" "${home}/Applications/${
-          head data.name
-          }.app"
-        '';
-        meta = { };
-        sourceRoot = ".";
-      };
     drvsExcept = x: e:
       with { excludeNames = concatMap attrNames (attrValues e); };
       flatten (drvs (filterAttrsRecursive (n: _: !elem n excludeNames) x));
@@ -168,7 +168,6 @@ prev: next:
       k = "kubectl";
       kx = "kubectx";
       ka = "kubectl get pods";
-      kaw = "kubectl get pods -o wide";
     };
   }
 )

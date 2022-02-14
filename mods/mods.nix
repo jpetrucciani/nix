@@ -404,6 +404,9 @@ with builtins; rec {
             }
         }:
         let
+          inherit (pkgs.stdenv) isLinux isDarwin isAarch64;
+          isM1 = isDarwin && isAarch64;
+          
           packages = with pkgs; [
             just
             ''${py}
@@ -659,6 +662,21 @@ with builtins; rec {
       ${_.di} | ${_.fzfqm} | ${_.get_image} | xargs -r ${_.d} rmi ''${force:+--force}
     '';
   };
+  _dex = writeBashBinCheckedWithFlags {
+    name = "dex";
+    description = "a quick and easy way to exec into a k8s pod!";
+    flags = [
+      {
+        name = "container";
+        description = "the container to exec into";
+      }
+    ];
+    script = ''
+      [ -z "''${container}" ] && container=$(${_.d} ps -a | ${_.fzfq} --header-lines=1 | ${_.get_id})
+      [ -z "''${container}" ] && die "you must specify a container to exec into!" 2
+      ${_.d} exec --interactive --tty "$container" bash
+    '';
+  };
   dshell = writeBashBinCheckedWithFlags {
     name = "dshell";
     description = "a quick and easy way to pop a shell on docker!";
@@ -682,7 +700,8 @@ with builtins; rec {
       [ -z "''${image}" ] && die "you must specify an image to run in docker!" 2
       debug "''${GREEN}running image '$image' docker!''${RESET}"
       ${_.d} run \
-        -it \
+        --interactive \
+        --tty \
         --rm \
         ''${port:+--publish $port:$port}\
         --name "''${USER}-dshell-''${RANDOM}" \
@@ -693,6 +712,7 @@ with builtins; rec {
   docker_bash_scripts = [
     drmi
     dshell
+    _dex
   ];
 
   # K8S STUFF
@@ -705,8 +725,7 @@ with builtins; rec {
     ];
     script = ''
       pod_id=$(${_.k} --namespace "$namespace" get pods | \
-        ${_.sed} '1d' | \
-        ${_.fzfq} | \
+        ${_.fzfq} --header-lines=1 | \
         ${_.get_id})
       ${_.k} --namespace "$namespace" exec -it "$pod_id" -- sh
     '';
@@ -721,10 +740,9 @@ with builtins; rec {
     ];
     script = ''
       ${_.k} --namespace "$namespace" get pods | \
-        ${_.sed} '1d' | \
-        ${_.fzfqm} | \
+        ${_.fzfqm} --header-lines=1 --header-first | \
         ${_.get_id} | \
-        ${_.xargs} ${_.k} --namespace "$namespace" delete pods ''${force:+--grace-period=0 --force}
+        ${_.xargs} --no-run-if-empty ${_.k} --namespace "$namespace" delete pods ''${force:+--grace-period=0 --force}
     '';
   };
 
@@ -750,7 +768,7 @@ with builtins; rec {
       }
     ];
     script = ''
-      [ -z "''${image}" ] && image=$(echo -e '${concatStringsSep "\\n" _.images}' | ${_.fzfq})
+      [ -z "''${image}" ] && image=$(echo -e '${concatStringsSep "\\n" _.images}' | ${_.fzfq} --header "IMAGE")
       [ -z "''${image}" ] && die "you must specify an image to run!" 2
       debug "''${GREEN}running image '$image' on the '$namespace' namespace!''${RESET}"
       ${_.k} run \
@@ -775,7 +793,7 @@ with builtins; rec {
       }
     ];
     script = ''
-      [ -z "''${deployment}" ] && deployment=$(${_.k} --namespace "$namespace" get deployment -o wide | ${_.sed} '1d' | ${_.fzfq} | ${_.get_id})
+      [ -z "''${deployment}" ] && deployment=$(${_.k} --namespace "$namespace" get deployment -o wide | ${_.fzfq} --header-lines=1 | ${_.get_id})
       [ -z "''${deployment}" ] && die "you must specify a deployment to roll!" 2
       ${_.k} --namespace "$namespace" \
         patch deployment "$deployment" \
