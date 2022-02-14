@@ -674,6 +674,7 @@ with builtins; rec {
     script = ''
       [ -z "''${container}" ] && container=$(${_.d} ps -a | ${_.fzfq} --header-lines=1 | ${_.get_id})
       [ -z "''${container}" ] && die "you must specify a container to exec into!" 2
+      debug "''${GREEN}exec'ing into '$container'!''${RESET}"
       ${_.d} exec --interactive --tty "$container" bash
     '';
   };
@@ -802,6 +803,24 @@ with builtins; rec {
     '';
   };
 
+  kdesc = writeBashBinCheckedWithFlags {
+    name = "kdesc";
+    description = "a quick and easy way to describe k8s objects!";
+    flags = [
+      _.flags.k8s.ns
+      {
+        name = "object";
+        description = "the object to describe";
+      }
+    ];
+    script = ''
+      [ -z "''${object}" ] && object=$(${_.k} --namespace "$namespace" get all | ${_.fzfq} | ${_.get_id})
+      [ -z "''${object}" ] && die "you must specify an object to describe!" 2
+      debug "''${GREEN}describing object '$object' in the '$namespace' namespace!''${RESET}"
+      ${_.k} --namespace "$namespace" describe "$object"
+    '';
+  };
+
   # deployment stuff
   _get_deployment_patch = writeBashBinChecked "_get_deployment_patch" ''
     echo "spec.template.metadata.labels.date = \"$(${_.date} +'%s')\";" | \
@@ -823,6 +842,7 @@ with builtins; rec {
     '';
   };
   k8s_bash_scripts = [
+    kdesc
     kex
     krm
     kroll
