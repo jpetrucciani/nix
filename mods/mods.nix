@@ -659,7 +659,7 @@ with builtins; rec {
       _.flags.common.force
     ];
     script = ''
-      ${_.di} | ${_.fzfqm} | ${_.get_image} | xargs -r ${_.d} rmi ''${force:+--force}
+      ${_.di} | ${_.fzfqm} | ${_.get_image} | ${_.xargs} -r ${_.d} rmi ''${force:+--force}
     '';
   };
   _dex = writeBashBinCheckedWithFlags {
