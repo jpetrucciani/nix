@@ -6,7 +6,7 @@ prev: next: {
         --no-deepClone \
         --branch-name ${branch} \
         https://github.com/${repo}.git | \
-      ${jq}/bin/jq '{ rev: .rev, sha256: .sha256 }'
+      ${jq}/bin/jq '{ date: (now|strflocaltime("%Y-%m-%d")), rev: .rev, sha256: .sha256 }'
     ''
   );
   nix_hash_nixos_unstable = prev._nix_hash "NixOS/nixpkgs" "nixos-unstable" "nixos_unstable";
