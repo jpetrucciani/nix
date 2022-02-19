@@ -764,7 +764,7 @@ with builtins; rec {
     sort = "${pkgs.coreutils}/bin/sort";
     tr = "${pkgs.coreutils}/bin/tr";
     uniq = "${pkgs.coreutils}/bin/uniq";
-    uuid = "${pkgs.libossp_uuid}/bin/uuidgen";
+    uuid = "${pkgs.libossp_uuid}/bin/uuid";
     yq = "${pkgs.yq-go}/bin/yq";
     y2j = "${pkgs.remarshal}/bin/yaml2json";
 
