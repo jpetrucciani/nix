@@ -158,8 +158,6 @@ prev: next:
       da = "${d} ps -a";
       daq = "${d} ps -aq";
       di = "${d} images";
-      de = "${d} exec -it";
-      dr = "${d} run --rm -it";
       drma = "${d} stop $(${daq}) && ${d} rm -f $(${daq})";
     };
 

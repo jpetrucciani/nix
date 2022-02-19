@@ -30,149 +30,270 @@ with builtins; rec {
       '';
     };
 
+  bashEsc = ''\033'';
   bashColors = [
     {
       name = "reset";
-      code = ''\033[0m'';
+      code = ''${bashEsc}[0m'';
+    }
+    # styles
+    {
+      name = "bold";
+      code = ''${bashEsc}[1m'';
     }
     {
+      name = "dim";
+      code = ''${bashEsc}[2m'';
+    }
+    {
+      name = "italic";
+      code = ''${bashEsc}[3m'';
+    }
+    {
+      name = "underlined";
+      code = ''${bashEsc}[4m'';
+    }
+    {
+      # note: this probably doesn't work in the majority of terminal emulators
+      name = "blink";
+      code = ''${bashEsc}[5m'';
+    }
+    {
+      name = "invert";
+      code = ''${bashEsc}[7m'';
+    }
+    {
+      name = "hidden";
+      code = ''${bashEsc}[8m'';
+    }
+    # foregrounds
+    {
       name = "black";
-      code = ''\033[0;30m'';
+      code = ''${bashEsc}[1;30m'';
     }
     {
       name = "red";
-      code = ''\033[0;31m'';
+      code = ''${bashEsc}[1;31m'';
     }
     {
       name = "green";
-      code = ''\033[0;32m'';
+      code = ''${bashEsc}[1;32m'';
     }
     {
       name = "yellow";
-      code = ''\033[1;33m'';
+      code = ''${bashEsc}[1;33m'';
     }
     {
       name = "blue";
-      code = ''\033[0;34m'';
+      code = ''${bashEsc}[1;34m'';
     }
     {
       name = "purple";
-      code = ''\033[0;35m'';
+      code = ''${bashEsc}[1;35m'';
     }
     {
       name = "cyan";
-      code = ''\033[0;36m'';
+      code = ''${bashEsc}[1;36m'';
     }
     {
       name = "grey";
-      code = ''\033[0;90m'';
+      code = ''${bashEsc}[1;90m'';
+    }
+    # backgrounds
+    {
+      name = "red_bg";
+      code = ''${bashEsc}[41m'';
+    }
+    {
+      name = "green_bg";
+      code = ''${bashEsc}[42m'';
+    }
+    {
+      name = "yellow_bg";
+      code = ''${bashEsc}[43m'';
+    }
+    {
+      name = "blue_bg";
+      code = ''${bashEsc}[44m'';
+    }
+    {
+      name = "purple_bg";
+      code = ''${bashEsc}[45m'';
+    }
+    {
+      name = "cyan_bg";
+      code = ''${bashEsc}[46m'';
+    }
+    {
+      name = "grey_bg";
+      code = ''${bashEsc}[100m'';
     }
   ];
+  bashColorsList = concatStringsSep " " (map (x: x.name) (filter (x: x.name != "reset") bashColors));
 
-  writeBashBinCheckedWithFlags =
+  writeBashBinCheckedWithFlags = pog;
+  pog =
     { name
     , script
-    , description ? "a helpful script with flags, created through nix!"
+    , description ? "a helpful script with flags, created through nix + pog!"
     , flags ? [ ]
     , parsedFlags ? map flag flags
     , arguments ? [ ]
+    , argumentCompletion ? "files"
     , bashBible ? false
     , beforeExit ? ""
     , strict ? false
-    }: writeBashBinChecked name ''
-      ${if strict then "set -o errexit -o pipefail -o noclobber" else ""}
-      VERBOSE=""
-      NO_COLOR=""
+    , flagPadding ? 20
+    }: stdenv.mkDerivation {
+      inherit name;
+      dontUnpack = true;
+      nativeBuildInputs = [ installShellFiles ];
+      passAsFile = [
+        "text"
+        "completion"
+      ];
+      text = ''
+        ${if strict then "set -o errexit -o pipefail -o noclobber" else ""}
+        VERBOSE="''${POG_VERBOSE-}"
+        NO_COLOR="''${POG_NO_COLOR-}"
 
-      help() {
-        cat <<EOF
-        Usage: ${name} [-h|--help] [-v|--verbose] [--no-color] ${concatStringsSep " " (map (x: x.ex) parsedFlags)} ${concatStringsSep " " (map (x: upper x.name) arguments)}
+        help() {
+          cat <<EOF
+          Usage: ${name} [-h|--help] [-v|--verbose] [--no-color] ${concatStringsSep " " (map (x: x.ex) parsedFlags)} ${concatStringsSep " " (map (x: upper x.name) arguments)}
 
-        ${description}
+          ${description}
 
-        Flags:
-      ${ind (concatStringsSep "\n" (map (x: x.helpDoc) parsedFlags))}
-        ${rightPad 20 "-h, --help"}${"\t"}print this help and exit
-        ${rightPad 20 "-v, --verbose"}${"\t"}enable verbose logging and info
-        ${rightPad 20 "--no-color"}${"\t"}disable color and other formatting
-      EOF
-        exit 0
-      }
-      
-      setup_colors() {
-        if [[ -t 2 ]] && [[ -z "''$NO_COLOR" ]] && [[ "''$TERM" != "dumb" ]]; then
-          ${concatStringsSep " " (map (x: ''${upper x.name}="${x.code}"'') bashColors)}
-        else
-          ${concatStringsSep " " (map (x: ''${upper x.name}=""'') bashColors)}
-        fi
-      }
-
-      OPTIONS="h,v,${concatStringsSep "," (map (x: x.shortOpt) parsedFlags)}"
-      LONGOPTS="help,no-color,verbose,${concatStringsSep "," (map (x: x.longOpt) parsedFlags)}"
-
-      # shellcheck disable=SC2251
-      ! PARSED=$(${_.getopt} --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
-      if [[ ''${PIPESTATUS[0]} -ne 0 ]]; then
-          exit 2
-      fi
-      eval set -- "$PARSED"
-
-      # defaults
-      ${concatStringsSep "\n" (map (x: x.flagDefault) parsedFlags)}
-
-      while true; do
-        case "$1" in
-          -h|--help)
-              help
-              ;;
-          -v|--verbose)
-              VERBOSE=1
-              shift
-              ;;
-          --no-color)
-              NO_COLOR=1
-              shift
-              ;;
-      ${ind (ind (concatStringsSep "\n" (map (x: x.definition) parsedFlags)))}
-          --)
-              shift
-              break
-              ;;
-          *)
-              echo "unknown flag passed"
-              exit 3
-              ;;
-        esac
-      done
-      debug() {
-        if [ -n "$VERBOSE" ]; then
-          echo -e "$1"
-        fi
-      }
-      cleanup() {
-        trap - SIGINT SIGTERM ERR EXIT
-      ${ind beforeExit}
-      }
-      trap cleanup SIGINT SIGTERM ERR EXIT
-
-      ${concatStringsSep "\n" (map (x: ''
-        ${x.name}(){
-          echo -e "''${${upper x.name}}$1''${RESET}"
+          Flags:
+        ${ind (concatStringsSep "\n" (map (x: x.helpDoc) parsedFlags))}
+          ${rightPad flagPadding "-h, --help"}${"\t"}print this help and exit
+          ${rightPad flagPadding "-v, --verbose"}${"\t"}enable verbose logging and info
+          ${rightPad flagPadding "--no-color"}${"\t"}disable color and other formatting
+        EOF
+          exit 0
         }
-      '') bashColors)}
+      
+        setup_colors() {
+          if [[ -t 2 ]] && [[ -z "''$NO_COLOR" ]] && [[ "''$TERM" != "dumb" ]]; then
+            ${concatStringsSep " " (map (x: ''${upper x.name}="${x.code}"'') bashColors)}
+          else
+            ${concatStringsSep " " (map (x: ''${upper x.name}=""'') bashColors)}
+          fi
+        }
 
-      die() {
-        local msg=$1
-        local code=''${2-1}
-        echo >&2 -e "''${RED}$msg''${RESET}"
-        exit "$code"
-      }
-      setup_colors
-      ${if bashBible then bashbible.bible else ""}
-      ${concatStringsSep "\n" (map (x: x.flagPrompt) parsedFlags)}
-      # script
-      ${script}
-    '';
+        OPTIONS="h,v,${concatStringsSep "," (map (x: x.shortOpt) parsedFlags)}"
+        LONGOPTS="help,no-color,verbose,${concatStringsSep "," (map (x: x.longOpt) parsedFlags)}"
+
+        # shellcheck disable=SC2251
+        ! PARSED=$(${_.getopt} --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
+        if [[ ''${PIPESTATUS[0]} -ne 0 ]]; then
+            exit 2
+        fi
+        eval set -- "$PARSED"
+
+        # defaults
+        ${concatStringsSep "\n" (map (x: x.flagDefault) parsedFlags)}
+
+        while true; do
+          case "$1" in
+            -h|--help)
+                help
+                ;;
+            -v|--verbose)
+                VERBOSE=1
+                shift
+                ;;
+            --no-color)
+                NO_COLOR=1
+                shift
+                ;;
+        ${ind (ind (concatStringsSep "\n" (map (x: x.definition) parsedFlags)))}
+            --)
+                shift
+                break
+                ;;
+            *)
+                echo "unknown flag passed"
+                exit 3
+                ;;
+          esac
+        done
+        debug() {
+          if [ -n "$VERBOSE" ]; then
+            echo -e "$1"
+          fi
+        }
+        cleanup() {
+          trap - SIGINT SIGTERM ERR EXIT
+        ${ind beforeExit}
+        }
+        trap cleanup SIGINT SIGTERM ERR EXIT
+
+        ${concatStringsSep "\n" (map (x: ''
+          ${x.name}(){
+            echo -e "''${${upper x.name}}$1''${RESET}"
+          }
+        '') bashColors)}
+
+        die() {
+          local msg=$1
+          local code=''${2-1}
+          echo >&2 -e "''${RED}$msg''${RESET}"
+          exit "$code"
+        }
+        setup_colors
+        ${if bashBible then bashbible.bible else ""}
+        ${concatStringsSep "\n" (map (x: x.flagPrompt) parsedFlags)}
+        # script
+        ${script}
+      '';
+      completion = ''
+        _${name}()
+        {
+          local current previous completions
+          compopt +o default
+
+          flags(){
+            echo "\
+              -h -v ${concatStringsSep " " (map (x: "-${x.short}") parsedFlags)} \
+              --help --verbose --no-color ${concatStringsSep " " (map (x: "--${x.name}") parsedFlags)}"
+          }
+          files(){
+            ${_.ls} $1
+          }
+          executables(){
+            echo -n "$PATH" | \
+              ${_.xargs} -d: -I{} -r -- find -L {} -maxdepth 1 -mindepth 1 -type f -executable -printf '%P\n' 2>/dev/null | \
+              ${_.sort} -u
+          }
+
+          COMPREPLY=()
+          current="''${COMP_WORDS[COMP_CWORD]}"
+          previous="''${COMP_WORDS[COMP_CWORD-1]}"
+
+          if [[ $current = -* ]]; then
+            completions=$(flags)
+            COMPREPLY=( $(compgen -W "$completions" -- "$current") )
+          ${concatStringsSep "\n" (map (x: x.completionBlock) parsedFlags)}
+          elif [[ $COMP_CWORD = 1 ]] || [[ $previous = -* && $COMP_CWORD = 2 ]]; then
+            completions=$(${argumentCompletion} $current)
+            COMPREPLY=( $(compgen -W "$completions" -- "$current") )
+          else
+            compopt -o default
+            COMPREPLY=()
+          fi
+          return 0
+        }
+        complete -F _${name} ${name}
+      '';
+      installPhase = ''
+        mkdir -p $out/bin
+        echo '#!/bin/bash' > $out/bin/${name}
+        cat $textPath >> $out/bin/${name}
+        chmod +x $out/bin/${name}
+        ${_.shellcheck} $out/bin/${name}
+        installShellCompletion --bash --name ${name} $completionPath
+      '';
+    };
 
   upper = lib.strings.toUpper;
   reverse = x: concatStringsSep "" (lib.lists.reverseList (lib.stringToCharacters x));
@@ -186,11 +307,15 @@ with builtins; rec {
     , bool ? false
     , marker ? if bool then "" else ":"
     , description ? "a flag"
-    , envVar ? "POG_" + (upper name)
+    , argument ? "VAR"
+    , envVar ? "POG_" + (replaceStrings [ "-" ] [ "_" ] (upper name))
     , prompt ? ""
     , promptError ? "you must specify a value for '${name}'!"
     , promptErrorExitCode ? 3
     , hasPrompt ? (stringLength prompt) > 0
+    , completion ? ""
+    , hasCompletion ? (stringLength completion) > 0
+    , flagPadding ? 20
     }: {
       inherit name short default bool marker description;
       shortOpt = "${short}${marker}";
@@ -201,9 +326,9 @@ with builtins; rec {
           [ -z "''${${name}}" ] && ${name}="$(${prompt})"
           [ -z "''${${name}}" ] && die "${promptError}" ${toString promptErrorExitCode}
         '' else "";
-      ex = "[-${short}|--${name}${if bool then "" else " VAR"}]";
+      ex = "[-${short}|--${name}${if bool then "" else " ${argument}"}]";
       helpDoc = (
-        (rightPad 20 "-${short}, --${name}") +
+        (rightPad flagPadding "-${short}, --${name}") +
         "\t${description}" +
         "${if hasPrompt then " [will prompt if not passed in]" else ""}" +
         "${if bool then " [bool]" else ""}"
@@ -213,16 +338,31 @@ with builtins; rec {
             ${name}=${if bool then "1" else "$2"}
             shift ${if bool then "" else "2"}
             ;;'';
+      completionBlock =
+        if hasCompletion then ''
+          elif [[ $previous = -${short} ]] || [[ $previous = --${name} ]]; then
+            completions=$(${completion})
+            COMPREPLY=( $(compgen -W "$completions" -- "$current") )
+        '' else "";
     };
 
-  foo = writeBashBinCheckedWithFlags {
+  foo = pog {
     name = "foo";
-    description = "a tester script for my classic bash bin + flag + bashbible memes";
+    description = "a tester script for pog, my classic bash bin + flag + bashbible meme";
     bashBible = true;
     beforeExit = ''
       green "this is beforeExit - foo test complete!"
     '';
+    flags = [
+      _.flags.common.color
+      {
+        name = "functions";
+        description = "list all functions! (this is a lot of text)";
+        bool = true;
+      }
+    ];
     script = ''
+      color="''${color^^}"
       trim_string "     foo       "
       upper 'foo'
       lower 'FOO'
@@ -234,8 +374,8 @@ with builtins; rec {
       date "%a %d %b  - %l:%M %p"
       uuid
       bar 1 10
-      get_functions
-      debug "''${GREEN}this is a debug message, only visible when passing -v!''${RESET}"
+      ''${functions:+get_functions}
+      debug "''${GREEN}this is a debug message, only visible when passing -v (or setting POG_VERBOSE)!''${RESET}"
       black "this text is 'black'"
       red "this text 'is' red"
       green "this text is 'green'"
@@ -244,6 +384,18 @@ with builtins; rec {
       purple "this text is 'purple'"
       cyan "this text is 'cyan'"
       grey "this text is 'grey'"
+      green_bg "this text has a green background"
+      purple_bg "this text has a purple background"
+      yellow_bg "this text has a yellow background"
+      bold "this text should be bold!"
+      dim "this text should be dim!"
+      italic "this text should be italic!"
+      underlined "this text should be underlined!"
+      blink "this text might blink on certain terminal emulators!"
+      invert "this text should be inverted!"
+      hidden "this text should be hidden!"
+      echo -e "''${GREEN_BG}''${RED}this text is red on a green background and looks awful''${RESET}"
+      echo -e "''${!color}this text has its color set by a flag '--color' or env var 'POG_COLOR' (default green)''${RESET}"
       die "this is a die" 0
     '';
   };
@@ -254,9 +406,19 @@ with builtins; rec {
         inherit url sha256;
       };
     in
-    writeShellScriptBin name ''
-      ${_.sox} --no-show-progress ${file} &
-    '';
+    pog {
+      inherit name;
+      flags = [
+        {
+          name = "wait";
+          description = "wait until done playing";
+          bool = true;
+        }
+      ];
+      script = ''
+        ${_.sox} --no-show-progress ${file} ''${wait:+&}
+      '';
+    };
 
   soundFolder = "https://hexa.dev/static/sounds";
 
@@ -272,10 +434,17 @@ with builtins; rec {
   ];
 
   ### AWS STUFF
-  aws_id = writeBashBinChecked "aws_id" ''
-    ${_.aws} sts get-caller-identity --query Account --output text
-  '';
-  ecr_login = writeBashBinCheckedWithFlags {
+  aws_id = pog {
+    name = "aws_id";
+    description = "a quick and easy way to get your AWS account ID";
+    flags = [
+      _.flags.aws.region
+    ];
+    script = ''
+      ${_.aws} sts get-caller-identity --query Account --output text --region "$region"
+    '';
+  };
+  ecr_login = pog {
     name = "ecr_login";
     description = "a quick helper script to facilitate login to AWS ECR";
     flags = [
@@ -287,7 +456,7 @@ with builtins; rec {
           --password-stdin "$(${_.aws} sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com"
     '';
   };
-  ecr_login_public = writeBashBinCheckedWithFlags {
+  ecr_login_public = pog {
     name = "ecr_login_public";
     description = "a quick helper script to facilitate login to AWS public ECR";
     flags = [
@@ -306,7 +475,7 @@ with builtins; rec {
   ];
 
   ### GCP STUFF
-  glist = writeBashBinCheckedWithFlags {
+  glist = pog {
     name = "glist";
     description = "list out the gcloud projects that we can see!";
     script = ''
@@ -345,40 +514,81 @@ with builtins; rec {
         isNixOS then _hms.nixOS else (if isNixDarwin then _hms.darwin else _hms.default);
   };
 
-  batwhich = writeBashBinChecked "batwhich" ''
-    ${_.bat} "$(which "$1")"
-  '';
+  batwhich = pog {
+    name = "batwhich";
+    argumentCompletion = "executables";
+    script = ''
+      ${_.bat} "$(which "$1")"
+    '';
+  };
   hms = writeBashBinChecked "hms" _hms.switch;
-  get_cert = writeBashBinChecked "get_cert" ''
-    ${_.curl} --insecure -I -vvv "$1" 2>&1 |
-      ${_.awk} 'BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }'
-  '';
-  jql = writeBashBinChecked "jql" ''
-    echo "" | ${pkgs.fzf}/bin/fzf --print-query --preview-window wrap --preview "cat $1 | ${_.jq} -C {q}"
-  '';
-  slack_meme = writeBashBinChecked "slack_meme" ''
-    word="$1"
-    fg="$2"
-    bg="$3"
-    ${_.figlet} -f banner "$word" | \
-      ${_.sed} 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | \
-      ${_.awk} '{print ":'"$bg"':" $1}'
-  '';
-  fif = writeBashBinChecked "fif" ''
-    if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; exit 1; fi
-    ${_.rg} --files-with-matches --no-messages "$1" | \
-      ${_.fzfq} --preview \
-        "highlight -O ansi -l {} 2> /dev/null | \
-          ${_.rg} --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || \
-          ${_.rg} --ignore-case --pretty --context 10 '$1' {}"
-  '';
+  get_cert = pog {
+    name = "get_cert";
+    script = ''
+      ${_.curl} --insecure -I -vvv "$1" 2>&1 |
+        ${_.awk} 'BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }'
+    '';
+  };
+  jql = pog {
+    name = "jql";
+    description = "a nice way to interactively query json";
+    script = ''
+      echo "" | ${pkgs.fzf}/bin/fzf --print-query --preview-window wrap --preview "cat $1 | ${_.jq} -C {q}"
+    '';
+  };
+  slack_meme = pog {
+    name = "slack_meme";
+    description = "a quick and easy way to do emoji word art for slack/discord!";
+    flags = [
+      {
+        name = "fg";
+        description = "the foreground emoji";
+        default = "cooldoge";
+      }
+      {
+        name = "bg";
+        description = "the background emoji";
+        default = "sharkdab";
+      }
+    ];
+    arguments = [
+      { name = "word"; }
+    ];
+    script = ''
+      word="$1"
+      ${_.figlet} -f banner "$word" | \
+        ${_.sed} 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | \
+        ${_.awk} '{print ":'"$bg"':" $1}'
+    '';
+  };
+  fif = pog {
+    name = "fif";
+    description = "search for all instances of the given text within your files!";
+    script = ''
+      if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; exit 1; fi
+      ${_.rg} --files-with-matches --no-messages "$1" | \
+        ${_.fzfq} --preview \
+          "highlight -O ansi -l {} 2> /dev/null | \
+            ${_.rg} --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || \
+            ${_.rg} --ignore-case --pretty --context 10 '$1' {}"
+    '';
+  };
   rot13 = writeBashBinChecked "rot13" ''
     ${_.tr} 'A-Za-z' 'N-ZA-Mn-za-m'
   '';
-  sin = writeBashBinChecked "sin" ''
-    # shellcheck disable=SC2046
-    ${_.awk} -v cols=$(tput cols) '{c=int(sin(NR/10)*(cols/6)+(cols/6))+1;print(substr($0,1,c-1) "\x1b[41m" substr($0,c,1) "\x1b[0m" substr($0,c+1,length($0)-c+2))}'
-  '';
+  sin = pog {
+    name = "sin";
+    flags = [
+      _.flags.common.color
+    ];
+    script = ''
+      color="''${color^^}"
+      # shellcheck disable=SC2046
+      debug "using color $color"
+      ${_.awk} -v cols="$(tput cols)" \
+        '{c=int(sin(NR/10)*(cols/6)+(cols/6))+1;print(substr($0,1,c-1) "'"''${!color}"'" substr($0,c,1) "'"$RESET"'" substr($0,c+1,length($0)-c+2))}'
+    '';
+  };
 
   general_bash_scripts = [
     batwhich
@@ -554,6 +764,7 @@ with builtins; rec {
     sort = "${pkgs.coreutils}/bin/sort";
     tr = "${pkgs.coreutils}/bin/tr";
     uniq = "${pkgs.coreutils}/bin/uniq";
+    uuid = "${pkgs.libuuid}/bin/uuidgen";
     yq = "${pkgs.yq-go}/bin/yq";
     y2j = "${pkgs.remarshal}/bin/yaml2json";
 
@@ -562,6 +773,7 @@ with builtins; rec {
     nixpkgs-fmt = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
 
     ## common
+    ls = "${pkgs.coreutils}/bin/ls";
     date = "${pkgs.coreutils}/bin/date";
     xargs = "${pkgs.findutils}/bin/xargs";
     getopt = "${pkgs.getopt}/bin/getopt";
@@ -597,27 +809,49 @@ with builtins; rec {
           name = "region";
           default = "us-east-1";
           description = "the AWS region in which to do this operation";
+          argument = "REGION";
+          completion = ''echo -e '${concatStringsSep "\\n" _.globals.aws.regions}' '';
         };
       };
       gcp = {
         project = {
           name = "project";
           description = "the GCP project in which to do this operation";
+          argument = "PROJECT_ID";
+          completion = ''${_.gcloud} projects list | ${_.sed} '1d' | ${_.awk} '{print $1}' '';
         };
       };
       k8s = {
-        ns = {
+        namespace = {
           name = "namespace";
           default = "default";
           description = "the namespace in which to do this operation";
+          argument = "NAMESPACE";
+          completion = ''${_.k} get ns | ${_.sed} '1d' | ${_.awk} '{print $1}' '';
         };
       };
-      docker = { };
+      docker = {
+        image = {
+          name = "image";
+          description = "the docker image to use";
+          argument = "IMAGE";
+          prompt = ''echo -e '${concatStringsSep "\\n" _.globals.images}' | ${_.fzfq} --header "IMAGE"'';
+          promptError = "you must specify a docker image!";
+          completion = ''echo -e '${concatStringsSep "\\n" _.globals.images}' '';
+        };
+      };
       common = {
         force = {
           name = "force";
           bool = true;
           description = "forcefully do this thing";
+        };
+        color = {
+          name = "color";
+          description = "the bash color/style to use [${bashColorsList}]";
+          argument = "COLOR";
+          default = "green";
+          completion = ''echo "${bashColorsList} ${upper bashColorsList}"'';
         };
       };
       nix = {
@@ -641,31 +875,86 @@ with builtins; rec {
         };
       };
     };
-    # docker images to use in various spots
-    images = [
-      "alpine:latest"
-      "alpine:3.15"
-      "jpetrucciani/nix:2.6"
-      "mongo:5.0"
-      "mongo:4.4.12"
-      "mysql:8.0"
-      "mysql:5.7"
-      "nicolaka/netshoot:latest"
-      "node:16"
-      "node:14"
-      "node:12"
-      "postgres:14.2"
-      "postgres:13.6"
-      "postgres:12.10"
-      "postgres:11.15"
-      "postgres:10.20"
-      "postgres:9.6"
-      "python:3.11-rc"
-      "python:3.10"
-      "python:3.9"
-      "ubuntu:22.04"
-      "ubuntu:20.04"
-    ];
+    globals = {
+      # docker images to use in various spots
+      images = [
+        "alpine:latest"
+        "alpine:3.15"
+        "jpetrucciani/nix:2.6"
+        "mongo:5.0"
+        "mongo:4.4.12"
+        "mysql:8.0"
+        "mysql:5.7"
+        "nicolaka/netshoot:latest"
+        "node:16"
+        "node:14"
+        "node:12"
+        "postgres:14.2"
+        "postgres:13.6"
+        "postgres:12.10"
+        "postgres:11.15"
+        "postgres:10.20"
+        "postgres:9.6"
+        "python:3.11-rc"
+        "python:3.10"
+        "python:3.9"
+        "ubuntu:22.04"
+        "ubuntu:20.04"
+      ];
+      aws = {
+        regions = [
+          "us-east-1"
+          "us-east-2"
+          "us-west-1"
+          "us-west-2"
+          "us-gov-west-1"
+          "ca-central-1"
+          "eu-west-1"
+          "eu-west-2"
+          "eu-central-1"
+          "ap-southeast-1"
+          "ap-southeast-2"
+          "ap-south-1"
+          "ap-northeast-1"
+          "ap-northeast-2"
+          "sa-east-1"
+          "cn-north-1"
+        ];
+      };
+      gcp = {
+        regions = [
+          "asia-east1"
+          "asia-east2"
+          "asia-northeast1"
+          "asia-northeast2"
+          "asia-northeast3"
+          "asia-south1"
+          "asia-south2"
+          "asia-southeast1"
+          "asia-southeast2"
+          "australia-southeast1"
+          "australia-southeast2"
+          "europe-central2"
+          "europe-north1"
+          "europe-west1"
+          "europe-west2"
+          "europe-west3"
+          "europe-west4"
+          "europe-west6"
+          "northamerica-northeast1"
+          "northamerica-northeast2"
+          "southamerica-east1"
+          "southamerica-west1"
+          "us-central1"
+          "us-east1"
+          "us-east4"
+          "us-west1"
+          "us-west2"
+          "us-west3"
+          "us-west4"
+        ];
+      };
+    };
   };
 
   drmi = writeBashBinCheckedWithFlags {
@@ -700,12 +989,7 @@ with builtins; rec {
     name = "dshell";
     description = "a quick and easy way to pop a shell on docker!";
     flags = [
-      {
-        name = "image";
-        description = "the image to use for this shell";
-        prompt = ''echo -e '${concatStringsSep "\\n" _.images}' | ${_.fzfq}'';
-        promptError = "you must specify an image to run in docker!";
-      }
+      _.flags.docker.image
       {
         name = "port";
         description = "a port to expose to the host";
@@ -723,7 +1007,7 @@ with builtins; rec {
         --tty \
         --rm \
         ''${port:+--publish $port:$port}\
-        --name "''${USER}-dshell-''${RANDOM}" \
+        --name "''${USER}-dshell-''$(${_.uuid})" \
         "$image" "$command"
     '';
   };
@@ -736,11 +1020,11 @@ with builtins; rec {
 
   # K8S STUFF
   # helpful shorthands
-  kex = writeBashBinCheckedWithFlags {
+  kex = pog {
     name = "kex";
     description = "a quick and easy way to exec into a k8s pod!";
     flags = [
-      _.flags.k8s.ns
+      _.flags.k8s.namespace
       {
         name = "pod";
         description = "the id of the pod to exec into";
@@ -757,11 +1041,11 @@ with builtins; rec {
     '';
   };
 
-  krm = writeBashBinCheckedWithFlags {
+  krm = pog {
     name = "krm";
     description = "a quick and easy way to delete one or more pods on k8s!";
     flags = [
-      _.flags.k8s.ns
+      _.flags.k8s.namespace
       _.flags.common.force
     ];
     script = ''
@@ -772,7 +1056,7 @@ with builtins; rec {
     '';
   };
 
-  klist = writeBashBinCheckedWithFlags {
+  klist = pog {
     name = "klist";
     description = "list out all the images in use on this k8s cluster!";
     script = ''
@@ -783,17 +1067,12 @@ with builtins; rec {
     '';
   };
 
-  kshell = writeBashBinCheckedWithFlags {
+  kshell = pog {
     name = "kshell";
     description = "a quick and easy way to pop a shell on k8s!";
     flags = [
-      _.flags.k8s.ns
-      {
-        name = "image";
-        description = "the image to use for this shell";
-        prompt = ''echo -e '${concatStringsSep "\\n" _.images}' | ${_.fzfq} --header "IMAGE"'';
-        promptError = "you must specify an image to run!";
-      }
+      _.flags.k8s.namespace
+      _.flags.docker.image
     ];
     script = ''
       debug "''${GREEN}running image '$image' on the '$namespace' namespace!''${RESET}"
@@ -804,20 +1083,21 @@ with builtins; rec {
         --namespace "$namespace" \
         --image-pull-policy=Always \
         --image="$image" \
-        "''${USER}-kshell-''${RANDOM}"
+        "''${USER}-kshell-''$(${_.uuid})"
     '';
   };
 
-  kroll = writeBashBinCheckedWithFlags {
+  kroll = pog {
     name = "kroll";
     description = "a quick and easy way to roll a deployment's pods!";
     flags = [
-      _.flags.k8s.ns
+      _.flags.k8s.namespace
       {
         name = "deployment";
         description = "the deployment to roll. if not passed in, a dialog will pop up to select from";
         prompt = ''${_.k} --namespace "$namespace" get deployment -o wide | ${_.fzfq} --header-lines=1 | ${_.get_id}'';
         promptError = "you must specify a deployment to roll!";
+        completion = ''${_.k} get deployment | ${_.sed} '1d' | ${_.awk} '{print $1}' '';
       }
     ];
     script = ''
@@ -828,11 +1108,11 @@ with builtins; rec {
     '';
   };
 
-  kdesc = writeBashBinCheckedWithFlags {
+  kdesc = pog {
     name = "kdesc";
     description = "a quick and easy way to describe k8s objects!";
     flags = [
-      _.flags.k8s.ns
+      _.flags.k8s.namespace
       {
         name = "object";
         description = "the object to describe";
@@ -853,10 +1133,10 @@ with builtins; rec {
       ${_.tr} -d '\n' | \
       ${_.sed} -E 's#\s+##g'
   '';
-  refresh_deployment = writeBashBinCheckedWithFlags {
+  refresh_deployment = pog {
     name = "refresh_deployment";
     flags = [
-      _.flags.k8s.ns
+      _.flags.k8s.namespace
     ];
     script = ''
       deployment_id="$1"
