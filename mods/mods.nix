@@ -169,6 +169,7 @@ with builtins; rec {
       }
       setup_colors
       ${if bashBible then bashbible.bible else ""}
+      ${concatStringsSep "\n" (map (x: x.flagPrompt) parsedFlags)}
       # script
       ${script}
     '';
@@ -186,14 +187,27 @@ with builtins; rec {
     , marker ? if bool then "" else ":"
     , description ? "a flag"
     , envVar ? "POG_" + (upper name)
-      # , prompt ? 
+    , prompt ? ""
+    , promptError ? "you must specify a value for '${name}'!"
+    , promptErrorExitCode ? 3
+    , hasPrompt ? (stringLength prompt) > 0
     }: {
       inherit name short default bool marker description;
       shortOpt = "${short}${marker}";
       longOpt = "${name}${marker}";
       flagDefault = ''${name}="''${${envVar}-${default}}"'';
+      flagPrompt =
+        if hasPrompt then ''
+          [ -z "''${${name}}" ] && ${name}="$(${prompt})"
+          [ -z "''${${name}}" ] && die "${promptError}" ${toString promptErrorExitCode}
+        '' else "";
       ex = "[-${short}|--${name}${if bool then "" else " VAR"}]";
-      helpDoc = (rightPad 20 "-${short}, --${name}") + "\t${description}${if bool then " [bool]" else ""}";
+      helpDoc = (
+        (rightPad 20 "-${short}, --${name}") +
+        "\t${description}" +
+        "${if hasPrompt then " [will prompt if not passed in]" else ""}" +
+        "${if bool then " [bool]" else ""}"
+      );
       definition = ''
         -${short}|--${name})
             ${name}=${if bool then "1" else "$2"}
@@ -671,11 +685,13 @@ with builtins; rec {
       {
         name = "container";
         description = "the container to exec into";
+        prompt = ''
+          ${_.d} ps -a | ${_.fzfq} --header-lines=1 | ${_.get_id}
+        '';
+        promptError = "you must specify a container to exec into!";
       }
     ];
     script = ''
-      [ -z "''${container}" ] && container=$(${_.d} ps -a | ${_.fzfq} --header-lines=1 | ${_.get_id})
-      [ -z "''${container}" ] && die "you must specify a container to exec into!" 2
       debug "''${GREEN}exec'ing into '$container'!''${RESET}"
       ${_.d} exec --interactive --tty "$container" bash
     '';
@@ -687,6 +703,8 @@ with builtins; rec {
       {
         name = "image";
         description = "the image to use for this shell";
+        prompt = ''echo -e '${concatStringsSep "\\n" _.images}' | ${_.fzfq}'';
+        promptError = "you must specify an image to run in docker!";
       }
       {
         name = "port";
@@ -695,12 +713,10 @@ with builtins; rec {
       {
         name = "command";
         description = "the command to run within this shell";
-        default = "bash";
+        default = "sh";
       }
     ];
     script = ''
-      [ -z "''${image}" ] && image=$(echo -e '${concatStringsSep "\\n" _.images}' | ${_.fzfq})
-      [ -z "''${image}" ] && die "you must specify an image to run in docker!" 2
       debug "''${GREEN}running image '$image' docker!''${RESET}"
       ${_.d} run \
         --interactive \
@@ -725,12 +741,19 @@ with builtins; rec {
     description = "a quick and easy way to exec into a k8s pod!";
     flags = [
       _.flags.k8s.ns
+      {
+        name = "pod";
+        description = "the id of the pod to exec into";
+        prompt = ''
+          ${_.k} --namespace "$namespace" get pods | \
+          ${_.fzfq} --header-lines=1 | \
+          ${_.get_id}
+        '';
+        promptError = "you must specify a pod id!";
+      }
     ];
     script = ''
-      pod_id=$(${_.k} --namespace "$namespace" get pods | \
-        ${_.fzfq} --header-lines=1 | \
-        ${_.get_id})
-      ${_.k} --namespace "$namespace" exec -it "$pod_id" -- sh
+      ${_.k} --namespace "$namespace" exec -it "$pod" -- sh
     '';
   };
 
@@ -768,11 +791,11 @@ with builtins; rec {
       {
         name = "image";
         description = "the image to use for this shell";
+        prompt = ''echo -e '${concatStringsSep "\\n" _.images}' | ${_.fzfq} --header "IMAGE"'';
+        promptError = "you must specify an image to run!";
       }
     ];
     script = ''
-      [ -z "''${image}" ] && image=$(echo -e '${concatStringsSep "\\n" _.images}' | ${_.fzfq} --header "IMAGE")
-      [ -z "''${image}" ] && die "you must specify an image to run!" 2
       debug "''${GREEN}running image '$image' on the '$namespace' namespace!''${RESET}"
       ${_.k} run \
         -it \
@@ -793,11 +816,11 @@ with builtins; rec {
       {
         name = "deployment";
         description = "the deployment to roll. if not passed in, a dialog will pop up to select from";
+        prompt = ''${_.k} --namespace "$namespace" get deployment -o wide | ${_.fzfq} --header-lines=1 | ${_.get_id}'';
+        promptError = "you must specify a deployment to roll!";
       }
     ];
     script = ''
-      [ -z "''${deployment}" ] && deployment=$(${_.k} --namespace "$namespace" get deployment -o wide | ${_.fzfq} --header-lines=1 | ${_.get_id})
-      [ -z "''${deployment}" ] && die "you must specify a deployment to roll!" 2
       ${_.k} --namespace "$namespace" \
         patch deployment "$deployment" \
         --patch "''$(_get_deployment_patch)"
@@ -813,11 +836,11 @@ with builtins; rec {
       {
         name = "object";
         description = "the object to describe";
+        prompt = ''${_.k} --namespace "$namespace" get all | ${_.fzfq} | ${_.get_id}'';
+        promptError = "you must specify an object to describe!";
       }
     ];
     script = ''
-      [ -z "''${object}" ] && object=$(${_.k} --namespace "$namespace" get all | ${_.fzfq} | ${_.get_id})
-      [ -z "''${object}" ] && die "you must specify an object to describe!" 2
       debug "''${GREEN}describing object '$object' in the '$namespace' namespace!''${RESET}"
       ${_.k} --namespace "$namespace" describe "$object"
     '';
