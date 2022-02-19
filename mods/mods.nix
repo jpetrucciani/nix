@@ -185,11 +185,13 @@ with builtins; rec {
     , bool ? false
     , marker ? if bool then "" else ":"
     , description ? "a flag"
+    , envVar ? "POG_" + (upper name)
+      # , prompt ? 
     }: {
       inherit name short default bool marker description;
       shortOpt = "${short}${marker}";
       longOpt = "${name}${marker}";
-      flagDefault = ''${name}="${default}"'';
+      flagDefault = ''${name}="''${${envVar}-${default}}"'';
       ex = "[-${short}|--${name}${if bool then "" else " VAR"}]";
       helpDoc = (rightPad 20 "-${short}, --${name}") + "\t${description}${if bool then " [bool]" else ""}";
       definition = ''
@@ -563,7 +565,7 @@ with builtins; rec {
     gcloud = "${pkgs.google-cloud-sdk}/bin/gcloud";
 
     # fzf partials
-    fzfq = ''${fzf} -q "$1" --no-sort'';
+    fzfq = ''${fzf} -q "$1" --no-sort --header-first --reverse'';
     fzfqm = ''${fzfq} -m'';
 
     # docker partials
@@ -659,7 +661,7 @@ with builtins; rec {
       _.flags.common.force
     ];
     script = ''
-      ${_.di} | ${_.fzfqm} --header-lines=1 --header-first | ${_.get_image} | ${_.xargs} -r ${_.d} rmi ''${force:+--force}
+      ${_.di} | ${_.fzfqm} --header-lines=1 | ${_.get_image} | ${_.xargs} -r ${_.d} rmi ''${force:+--force}
     '';
   };
   _dex = writeBashBinCheckedWithFlags {
@@ -741,7 +743,7 @@ with builtins; rec {
     ];
     script = ''
       ${_.k} --namespace "$namespace" get pods | \
-        ${_.fzfqm} --header-lines=1 --header-first | \
+        ${_.fzfqm} --header-lines=1 | \
         ${_.get_id} | \
         ${_.xargs} --no-run-if-empty ${_.k} --namespace "$namespace" delete pods ''${force:+--grace-period=0 --force}
     '';
