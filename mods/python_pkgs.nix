@@ -5,7 +5,7 @@ let
       python310 = super.python310.override { inherit packageOverrides; };
     };
 
-  packageOverrides = self: super: with self; {
+  packageOverrides = self: _: with self; {
     # my packages
     archives = buildPythonPackage rec {
       pname = "archives";

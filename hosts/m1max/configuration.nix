@@ -11,7 +11,7 @@ in
     ../modules/pam.nix
   ];
 
-  home-manager.users.jacobi = { pkgs, ... }: common.jacobi;
+  home-manager.users.jacobi = common.jacobi;
   _module.args.pkgs = common.pinned;
 
   time.timeZone = common.timeZone;
@@ -83,13 +83,12 @@ in
   programs.bash.enable = true;
 
   homebrew = {
+    inherit (common.mac) taps brews;
     enable = true;
     autoUpdate = true;
     cleanup = "zap";
     # fix brew on m1. see: https://github.com/LnL7/nix-darwin/pull/304/files
     brewPrefix = "/opt/homebrew/bin";
-    taps = common.mac.taps;
-    brews = common.mac.brews;
     casks = common.mac.casks.all_work;
     masApps = common.mac.apps;
     extraConfig = "";

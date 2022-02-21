@@ -1,5 +1,5 @@
 # from https://github.com/shaunsingh/nix-darwin-dotfiles/blob/main/modules/pam.nix
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 with lib;
 

@@ -1,6 +1,6 @@
 let
   pkgs = import ./default.nix { };
-  inherit (pkgs.hax) isDarwin isLinux isM1 isNixOs isUbuntu isAndroid fetchFromGitHub chief_keef;
+  inherit (pkgs.hax) isDarwin fetchFromGitHub;
 
   firstName = "jacobi";
   lastName = "petrucciani";
@@ -16,14 +16,6 @@ let
     inherit (hm) rev sha256;
     owner = "nix-community";
     repo = "home-manager";
-  };
-
-  # nix-darwin pin
-  nd = with builtins; fromJSON (readFile ./sources/darwin.json);
-  nix-darwin = fetchFromGitHub {
-    inherit (nd) rev sha256;
-    owner = "LnL7";
-    repo = "nix-darwin";
   };
 
   sessionVariables = {
@@ -75,6 +67,7 @@ with pkgs.hax; {
         cowsay
         curl
         dasel
+        deadnix
         diffutils
         docker-client
         dogdns

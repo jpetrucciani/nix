@@ -77,10 +77,10 @@ prev: next:
           ''${package:+-p $package} \
           "$@"
       '';
-    }).overrideAttrs (x: { name = "better-comma"; });
+    }).overrideAttrs (_: { name = "better-comma"; });
     vanilla_comma = chief_keef.better-comma;
 
-    mapAttrValues = f: mapAttrs (n: v: f v);
+    mapAttrValues = f: mapAttrs (_: f);
     fakePlatform = x:
       x.overrideAttrs (
         attrs: {
@@ -108,7 +108,7 @@ prev: next:
       if isDerivation x || isList x then
         flatten x
       else
-        flatten (mapAttrsToList (_: v: drvs v) x);
+        flatten (mapAttrsToList (_: drvs) x);
     writeBashBinChecked = name: text:
       stdenv.mkDerivation {
         inherit name text;

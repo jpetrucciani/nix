@@ -1,6 +1,6 @@
 prev: next: {
   _nix_hash = with next; with hax; repo: branch: name: (
-    prev.writeBashBinCheckedWithFlags {
+    prev.pog {
       name = "nix_hash_${name}";
       description = "grab the latest rev/sha256 from the '${branch}' branch of '${repo}'";
       flags = [

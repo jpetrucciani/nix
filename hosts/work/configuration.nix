@@ -11,7 +11,7 @@ in
 
   inherit (common) nix zramSwap swapDevices;
 
-  home-manager.users.jacobi = { pkgs, ... }: common.jacobi;
+  home-manager.users.jacobi = common.jacobi;
   nixpkgs.pkgs = common.pinned;
 
   boot = {
@@ -38,8 +38,8 @@ in
   users.users.root.hashedPassword = "!";
   users.mutableUsers = false;
   users.users.jacobi = {
+    inherit (common) extraGroups;
     isNormalUser = true;
-    extraGroups = common.extraGroups;
     passwordFile = "/etc/passwordFile-jacobi";
 
     openssh.authorizedKeys.keys = with common.pubkeys; [ m1max ];

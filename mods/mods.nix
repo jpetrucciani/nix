@@ -135,7 +135,7 @@ with builtins; rec {
   pog =
     { name
     , script
-    , description ? "a helpful script with flags, created through nix + pog!"
+    , description ? "a helpful bash script with flags, created through nix + pog!"
     , flags ? [ ]
     , parsedFlags ? map flag flags
     , arguments ? [ ]
@@ -287,8 +287,8 @@ with builtins; rec {
       '';
       installPhase = ''
         mkdir -p $out/bin
-        echo '#!/bin/bash' > $out/bin/${name}
-        cat $textPath >> $out/bin/${name}
+        echo '#!/bin/bash' >$out/bin/${name}
+        cat $textPath >>$out/bin/${name}
         chmod +x $out/bin/${name}
         ${_.shellcheck} $out/bin/${name}
         installShellCompletion --bash --name ${name} $completionPath
@@ -304,6 +304,7 @@ with builtins; rec {
     { name
     , short ? substring 0 1 name
     , default ? ""
+    , hasDefault ? (stringLength default) > 0
     , bool ? false
     , marker ? if bool then "" else ":"
     , description ? "a flag"
@@ -327,12 +328,13 @@ with builtins; rec {
           [ -z "''${${name}}" ] && die "${promptError}" ${toString promptErrorExitCode}
         '' else "";
       ex = "[-${short}|--${name}${if bool then "" else " ${argument}"}]";
-      helpDoc = (
+      helpDoc =
         (rightPad flagPadding "-${short}, --${name}") +
         "\t${description}" +
+        "${if hasDefault then " [default: '${default}']" else ""}" +
         "${if hasPrompt then " [will prompt if not passed in]" else ""}" +
         "${if bool then " [bool]" else ""}"
-      );
+      ;
       definition = ''
         -${short}|--${name})
             ${name}=${if bool then "1" else "$2"}
@@ -518,10 +520,12 @@ with builtins; rec {
     name = "batwhich";
     argumentCompletion = "executables";
     script = ''
-      ${_.bat} "$(which "$1")"
+      ${_.bat} "$(${_.which} "$1")"
     '';
   };
+
   hms = writeBashBinChecked "hms" _hms.switch;
+
   get_cert = pog {
     name = "get_cert";
     script = ''
@@ -529,6 +533,7 @@ with builtins; rec {
         ${_.awk} 'BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }'
     '';
   };
+
   jql = pog {
     name = "jql";
     description = "a nice way to interactively query json";
@@ -536,6 +541,7 @@ with builtins; rec {
       echo "" | ${pkgs.fzf}/bin/fzf --print-query --preview-window wrap --preview "cat $1 | ${_.jq} -C {q}"
     '';
   };
+
   slack_meme = pog {
     name = "slack_meme";
     description = "a quick and easy way to do emoji word art for slack/discord!";
@@ -561,6 +567,7 @@ with builtins; rec {
         ${_.awk} '{print ":'"$bg"':" $1}'
     '';
   };
+
   fif = pog {
     name = "fif";
     description = "search for all instances of the given text within your files!";
@@ -573,9 +580,11 @@ with builtins; rec {
             ${_.rg} --ignore-case --pretty --context 10 '$1' {}"
     '';
   };
+
   rot13 = writeBashBinChecked "rot13" ''
     ${_.tr} 'A-Za-z' 'N-ZA-Mn-za-m'
   '';
+
   sin = pog {
     name = "sin";
     flags = [
@@ -590,6 +599,36 @@ with builtins; rec {
     '';
   };
 
+  srv = pog {
+    name = "srv";
+    description = "a quick and easy way to serve a directory on a given port";
+    flags = [
+      {
+        name = "port";
+        description = "the port to serve on";
+        default = "7777";
+      }
+      {
+        name = "directory";
+        description = "the directory to serve";
+        default = ".";
+      }
+      {
+        name = "cgi";
+        description = "run in cgi mode";
+        bool = true;
+      }
+      {
+        name = "bind";
+        description = "the host to bind to";
+        default = "0.0.0.0";
+      }
+    ];
+    script = ''
+      ${pkgs.python39}/bin/python -m http.server ''${cgi:+--cgi} --bind "$bind" --directory "$directory" "$port"
+    '';
+  };
+
   general_bash_scripts = [
     batwhich
     hms
@@ -599,6 +638,7 @@ with builtins; rec {
     fif
     rot13
     sin
+    srv
   ];
 
   nixup = writeBashBinCheckedWithFlags {
@@ -671,7 +711,7 @@ with builtins; rec {
     flags = [
       {
         name = "cache_name";
-        description = "the cachix to push to. defaults to 'medable'";
+        description = "the cachix to push to";
         default = "medable";
       }
       {
@@ -761,6 +801,7 @@ with builtins; rec {
     rg = "${pkgs.ripgrep}/bin/rg";
     sed = "${pkgs.gnused}/bin/sed";
     shellcheck = "${pkgs.shellcheck}/bin/shellcheck";
+    shfmt = "${pkgs.shfmt}/bin/shfmt";
     sort = "${pkgs.coreutils}/bin/sort";
     tr = "${pkgs.coreutils}/bin/tr";
     uniq = "${pkgs.coreutils}/bin/uniq";
@@ -781,6 +822,7 @@ with builtins; rec {
     sox = "${pkgs.sox}/bin/play";
     ffmpeg = "${pkgs.ffmpeg}/bin/ffmpeg";
     ssh = "${pkgs.openssh}/bin/ssh";
+    which = "${pkgs.which}/bin/which";
 
     ## containers
     d = "${pkgs.docker-client}/bin/docker";
