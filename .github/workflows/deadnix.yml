@@ -1,7 +1,7 @@
 name: deadnix
 on: {workflow_dispatch, push: {branches: [main]}, pull_request}
 jobs:
-  check-for-updates:
+  deadnix:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2.4.0
