@@ -54,24 +54,20 @@ with pkgs.hax; {
 
     packages = with pkgs;
       lib.flatten [
-        awscli2
-        atool
         bash-completion
         bashInteractive_5
         bat
-        bc
         bzip2
         cacert
         cachix
         coreutils-full
         cowsay
         curl
-        dasel
-        deadnix
         diffutils
         docker-client
         dogdns
         dos2unix
+        dyff
         ed
         exa
         fd
@@ -93,7 +89,6 @@ with pkgs.hax; {
         hadolint
         jq
         just
-        kubectx
         less
         libarchive
         libnotify
@@ -106,7 +101,6 @@ with pkgs.hax; {
         nano
         nanorc
         ncdu
-        neofetch
         netcat-gnu
         nix-info
         nix-prefetch-github
@@ -115,38 +109,26 @@ with pkgs.hax; {
         nixpkgs-fmt
         nixpkgs-review
         nix_2_6
-        nmap
         openssh
         p7zip
         patch
         pigz
         procps
         pssh
-        pup
-        ranger
         re2c
         ripgrep
         ripgrep-all
         rlwrap
         rnix-lsp
-        rsync
         scc
-        sd
         shellcheck
         shfmt
-        sox
-        sshuttle
         statix
-        swaks
         time
-        tealdeer
         unzip
-        up
-        viu
         watch
         wget
         which
-        xxd
         yank
         yq-go
         zip

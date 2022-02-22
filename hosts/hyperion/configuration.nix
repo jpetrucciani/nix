@@ -55,7 +55,10 @@ in
   };
 
   services = { } // common.services;
-  virtualisation.docker.enable = true;
+  virtualisation.podman = {
+    enable = true;
+    dockerSocket.enable = true;
+  };
 
   system.stateVersion = "22.05";
   security.sudo = common.security.sudo;

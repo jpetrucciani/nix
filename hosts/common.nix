@@ -31,7 +31,7 @@ in
     };
   };
 
-  extraGroups = [ "wheel" "networkmanager" "docker" ];
+  extraGroups = [ "wheel" "networkmanager" "docker" "podman" ];
 
   emails = {
     personal = "j@cobi.dev";
