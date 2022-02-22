@@ -197,6 +197,7 @@ with pkgs.hax; {
         aws_bash_scripts
         gcp_bash_scripts
         general_bash_scripts
+        image_bash_scripts
         docker_bash_scripts
         k8s_bash_scripts
         nix_bash_scripts

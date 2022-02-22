@@ -247,6 +247,7 @@ with builtins; rec {
         ${script}
       '';
       completion = ''
+        #!/bin/bash
         _${name}()
         {
           local current previous completions
@@ -258,7 +259,7 @@ with builtins; rec {
               --help --verbose --no-color ${concatStringsSep " " (map (x: "--${x.name}") parsedFlags)}"
           }
           files(){
-            ${_.ls} $1
+            ${_.ls}
           }
           executables(){
             echo -n "$PATH" | \
@@ -272,10 +273,12 @@ with builtins; rec {
 
           if [[ $current = -* ]]; then
             completions=$(flags)
+            # shellcheck disable=SC2207
             COMPREPLY=( $(compgen -W "$completions" -- "$current") )
           ${concatStringsSep "\n" (map (x: x.completionBlock) parsedFlags)}
           elif [[ $COMP_CWORD = 1 ]] || [[ $previous = -* && $COMP_CWORD = 2 ]]; then
-            completions=$(${argumentCompletion} $current)
+            completions=$(${argumentCompletion} "$current")
+            # shellcheck disable=SC2207
             COMPREPLY=( $(compgen -W "$completions" -- "$current") )
           else
             compopt -o default
@@ -291,6 +294,7 @@ with builtins; rec {
         cat $textPath >>$out/bin/${name}
         chmod +x $out/bin/${name}
         ${_.shellcheck} $out/bin/${name}
+        ${_.shellcheck} $completionPath
         installShellCompletion --bash --name ${name} $completionPath
       '';
     };
@@ -343,7 +347,9 @@ with builtins; rec {
       completionBlock =
         if hasCompletion then ''
           elif [[ $previous = -${short} ]] || [[ $previous = --${name} ]]; then
+            # shellcheck disable=SC2116
             completions=$(${completion})
+            # shellcheck disable=SC2207
             COMPREPLY=( $(compgen -W "$completions" -- "$current") )
         '' else "";
     };
@@ -772,19 +778,80 @@ with builtins; rec {
   ];
 
   ### IMAGE STUFF
-  scale_x = writeBashBinChecked "scale_x" ''
-    file="$1"
-    px="$2"
-    ${_.ffmpeg} -i "$file" -vf scale="$px:-1" "''${file%.*}.$px.''${file##*.}"
-  '';
-  scale_y = writeBashBinChecked "scale_y" ''
-    file="$1"
-    px="$2"
-    ${_.ffmpeg} -i "$file" -vf scale="-1:$px" "''${file%.*}.$px.''${file##*.}"
-  '';
+  scale = pog {
+    name = "scale";
+    description = "a quick and easy way to scale an image/video!";
+    arguments = [
+      { name = "source"; }
+    ];
+    flags = [
+      {
+        name = "horizontal";
+        short = "x";
+        description = "the number of pixels wide the image should scale to";
+      }
+      {
+        name = "vertical";
+        short = "y";
+        description = "the number of pixels high the image should scale to";
+      }
+      {
+        name = "output";
+        description = "the filename to output to [defaults to the current name with a tag]";
+      }
+    ];
+    script = ''
+      file="$1"
+      name=""
+      scale=""
+      [ -n "$horizontal" ] && [ -n "$vertical" ] && die "you can only scale in 1 dimension!" 1
+      if [ -n "$horizontal" ]; then
+        name="''${horizontal}x"
+        scale="$horizontal:-1"
+      else
+        name="''${vertical}y"
+        scale="-1:$vertical"
+      fi
+      [ -z "''${output}" ] && output="''${file%.*}.$name.''${file##*.}"
+      ${_.ffmpeg} -i "$file" -vf scale="$scale" "$output"
+    '';
+  };
+  flip = pog {
+    name = "flip";
+    description = "a quick and easy way to flip an image/video!";
+    arguments = [
+      { name = "source"; }
+    ];
+    flags = [
+      {
+        name = "horizontal";
+        short = "x";
+        description = "flip the source horizontally";
+        bool = true;
+      }
+      {
+        name = "vertical";
+        short = "y";
+        description = "flip the source vertically";
+        bool = true;
+      }
+      {
+        name = "output";
+        description = "the filename to output to [defaults to the current name with a tag]";
+      }
+    ];
+    script = ''
+      file="$1"
+      sep=""
+      [ -z "$horizontal" ] && [ -z "$vertical" ] && die "you must specify at least one way to flip!" 1
+      [ -z "''${output}" ] && output="''${file%.*}.flip.''${file##*.}"
+      [ -n "$horizontal" ] && [ -n "$vertical" ] && sep=","
+      ${_.ffmpeg} -i "$file" -filter:v "''${vertical:+vflip}''${sep}''${horizontal:+hflip}" -c:a copy "$output"
+    '';
+  };
   image_bash_scripts = [
-    scale_x
-    scale_y
+    scale
+    flip
   ];
 
   ### snippets
