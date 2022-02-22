@@ -16,6 +16,10 @@ on:
       pat:
         required: true
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   check-for-updates:
     runs-on: ubuntu-20.04
