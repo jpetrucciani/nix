@@ -385,7 +385,7 @@ with builtins; rec {
       ''${functions:+get_functions}
       debug "''${GREEN}this is a debug message, only visible when passing -v (or setting POG_VERBOSE)!''${RESET}"
       black "this text is 'black'"
-      red "this text 'is' red"
+      red "this text is 'red'"
       green "this text is 'green'"
       yellow "this text is 'yellow'"
       blue "this text is 'blue'"
@@ -424,7 +424,11 @@ with builtins; rec {
         }
       ];
       script = ''
-        ${_.sox} --no-show-progress ${file} ''${wait:+&}
+        if [ -z "$wait" ]; then
+          ${_.sox} --no-show-progress ${file}
+        else
+          ${_.sox} --no-show-progress ${file} &
+        fi
       '';
     };
 
@@ -869,6 +873,7 @@ with builtins; rec {
     sed = "${pkgs.gnused}/bin/sed";
     shellcheck = "${pkgs.shellcheck}/bin/shellcheck";
     shfmt = "${pkgs.shfmt}/bin/shfmt";
+    head = "${pkgs.coreutils}/bin/head";
     sort = "${pkgs.coreutils}/bin/sort";
     tr = "${pkgs.coreutils}/bin/tr";
     uniq = "${pkgs.coreutils}/bin/uniq";
@@ -1111,12 +1116,13 @@ with builtins; rec {
     ];
     script = ''
       debug "''${GREEN}running image '$image' docker!''${RESET}"
+      pod_name="$(echo "''${USER}-dshell-''$(${_.uuid} | ${_.head} -c 8)" | tr -cd '[:alnum:]-')"
       ${_.d} run \
         --interactive \
         --tty \
         --rm \
         ''${port:+--publish $port:$port}\
-        --name "''${USER}-dshell-''$(${_.uuid})" \
+        --name "$pod_name" \
         "$image" "$command"
     '';
   };
@@ -1185,6 +1191,7 @@ with builtins; rec {
     ];
     script = ''
       debug "''${GREEN}running image '$image' on the '$namespace' namespace!''${RESET}"
+      pod_name="$(echo "''${USER}-kshell-''$(${_.uuid} | ${_.head} -c 8)" | tr -cd '[:alnum:]-')"
       ${_.k} run \
         -it \
         --rm \
@@ -1192,7 +1199,7 @@ with builtins; rec {
         --namespace "$namespace" \
         --image-pull-policy=Always \
         --image="$image" \
-        "''${USER}-kshell-''$(${_.uuid})"
+        "$pod_name"
     '';
   };
 
