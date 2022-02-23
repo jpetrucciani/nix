@@ -134,6 +134,7 @@ with builtins; rec {
   writeBashBinCheckedWithFlags = pog;
   pog =
     { name
+    , version ? "0.0.0"
     , script
     , description ? "a helpful bash script with flags, created through nix + pog!"
     , flags ? [ ]
@@ -145,7 +146,7 @@ with builtins; rec {
     , strict ? false
     , flagPadding ? 20
     }: stdenv.mkDerivation {
-      inherit name;
+      inherit name version;
       dontUnpack = true;
       nativeBuildInputs = [ installShellFiles ];
       passAsFile = [
