@@ -71,6 +71,7 @@ in
     };
     caddy = {
       enable = true;
+      package = pkgs.xcaddy;
       email = common.emails.personal;
       virtualHosts = {
         "home.cobi.dev" = {
