@@ -164,11 +164,17 @@ with pkgs.hax; {
           pandas
           scipy
 
-          # type annotations
-          types-freezegun
-          types-paramiko
+          # type annotations (from nixpkgs)
           types-requests
           types-tabulate
+
+          # my types (for nixpkgs)
+          types-paramiko
+          types-cryptography
+          types-enum34
+          types-ipaddress
+          boto3-stubs
+          botocore-stubs
         ]))
 
         # kubernetes
