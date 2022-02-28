@@ -26,6 +26,11 @@ let
     BASH_SILENCE_DEPRECATION_WARNING = "1";
   };
 
+  # fix starship for m1
+  starship = pkgs.callPackage ./pkgs/starship.nix {
+    inherit (pkgs.darwin.apple_sdk.frameworks) Security;
+  };
+
 in
 with pkgs.hax; {
   nixpkgs.overlays = import ./overlays.nix;
@@ -450,6 +455,7 @@ with pkgs.hax; {
 
   # starship config
   programs.starship = {
+    package = starship;
     enable = !isAndroid;
     settings = {
       add_newline = false;

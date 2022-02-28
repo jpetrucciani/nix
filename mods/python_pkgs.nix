@@ -5,7 +5,20 @@ let
       python310 = super.python310.override { inherit packageOverrides; };
     };
 
-  packageOverrides = self: _: with self; {
+  packageOverrides = self: super: with self; {
+    # fixes for mac
+    dnspython =
+      super.dnspython.overrideAttrs
+        (_: {
+          # doCheck = false;
+          disabledTestPaths =
+            if super.stdenv.isDarwin then [
+              "tests/test_async.py"
+              "tests/test_query.py"
+              "tests/test_resolver.py"
+            ] else [ ];
+        });
+
     # my packages
     archives = buildPythonPackage rec {
       pname = "archives";
