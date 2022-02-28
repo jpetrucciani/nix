@@ -33,7 +33,6 @@ with pkgs.hax; {
 
   programs.home-manager.enable = true;
   programs.home-manager.path = "${home-manager}";
-  _module.args.pkgs = pkgs;
 
   programs.htop.enable = true;
   programs.dircolors.enable = true;
