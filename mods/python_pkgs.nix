@@ -10,13 +10,21 @@ let
     dnspython =
       super.dnspython.overrideAttrs
         (_: {
-          # doCheck = false;
           disabledTestPaths =
             if super.stdenv.isDarwin then [
               "tests/test_async.py"
               "tests/test_query.py"
               "tests/test_resolver.py"
               "tests/test_resolver_override.py"
+            ] else [ ];
+        });
+    httplib2 =
+      super.httplib2.overrideAttrs
+        (_: {
+          disabledTests =
+            if super.stdenv.isDarwin then [
+              "test_connection_close"
+              "test_timeout_subsequent"
             ] else [ ];
         });
 
