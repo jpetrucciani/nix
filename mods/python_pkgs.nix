@@ -7,11 +7,12 @@ let
 
 
   packageOverrides = self: super: with self; {
-    isM1 = with super.stdenv; isDarwin && isAarch64;
-    isOldMac = with super.stdenv; isDarwin && !isAarch64;
+    inherit (super.stdenv) isDarwin isAarch64 isNixOS;
+    isM1 = isDarwin && isAarch64;
+    isOldMac = isDarwin && !isAarch64;
     # fixes for mac
     dnspython =
-      if self.isOldMac then
+      if self.isDarwin then
         super.dnspython.overrideAttrs
           (_: {
             disabledTestPaths =
