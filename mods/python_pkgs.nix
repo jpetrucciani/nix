@@ -8,26 +8,37 @@ let
   packageOverrides = self: super: with self; {
     # fixes for mac
     dnspython =
-      super.dnspython.overrideAttrs
-        (_: {
-          disabledTestPaths =
-            if super.stdenv.isDarwin then [
-              "tests/test_async.py"
-              "tests/test_query.py"
-              "tests/test_resolver.py"
-              "tests/test_resolver_override.py"
-            ] else [ ];
-        });
+      if super.stdenv.isDarwin then
+        super.dnspython.overrideAttrs
+          (_: {
+            disabledTestPaths =
+              [
+                "tests/test_async.py"
+                "tests/test_query.py"
+                "tests/test_resolver.py"
+                "tests/test_resolver_override.py"
+              ];
+          }) else super.dnspython;
     httplib2 =
-      super.httplib2.overrideAttrs
-        (_: {
-          disabledTests =
-            if super.stdenv.isDarwin then [
-              "test_connection_close"
-              "test_timeout_subsequent"
-              "test_client_cert_password_verified"
-            ] else [ "test_client_cert_password_verified" ];
-        });
+      if super.stdenv.isDarwin then
+        super.httplib2.overrideAttrs
+          (_: {
+            disabledTests =
+              [
+                "test_connection_close"
+                "test_timeout_subsequent"
+                "test_client_cert_password_verified"
+              ];
+          }) else super.httplib2;
+    passlib =
+      if super.stdenv.isDarwin then
+        super.passlib.overrideAttrs
+          (_: {
+            disabledTests =
+              [
+                "test_dummy_verify"
+              ];
+          }) else super.passlib;
 
     # my packages
     archives = buildPythonPackage rec {
