@@ -17,7 +17,6 @@ let
               "tests/test_query.py"
               "tests/test_resolver.py"
               "tests/test_resolver_override.py"
-              "tests/test_other.py"
             ] else [ ];
         });
 
