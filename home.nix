@@ -466,6 +466,9 @@ with pkgs.hax; {
         symbol = "go ";
       };
       directory.style = "fg:#d442f5";
+      # localip = {
+      #   disabled = true;
+      # };
       nix_shell = {
         pure_msg = "";
         impure_msg = "";

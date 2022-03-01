@@ -16,6 +16,7 @@ let
               "tests/test_async.py"
               "tests/test_query.py"
               "tests/test_resolver.py"
+              "tests/test_resolver_override.py"
             ] else [ ];
         });
 
