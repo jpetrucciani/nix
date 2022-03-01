@@ -95,6 +95,20 @@ in
             }
           '';
         };
+        "cobi.dev" = {
+          extraConfig = ''
+            route /static/* {
+              s3proxy {
+                bucket "jacobi-static"
+                root "static/"
+                force_path_style
+              }
+            }
+            route / {
+              redir https://github.com/jpetrucciani/
+            }
+          '';
+        };
       };
     };
   } // common.services;
