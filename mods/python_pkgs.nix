@@ -25,7 +25,8 @@ let
             if super.stdenv.isDarwin then [
               "test_connection_close"
               "test_timeout_subsequent"
-            ] else [ ];
+              "test_client_cert_password_verified"
+            ] else [ "test_client_cert_password_verified" ];
         });
 
     # my packages
