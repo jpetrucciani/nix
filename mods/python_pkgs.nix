@@ -5,10 +5,13 @@ let
       python310 = super.python310.override { inherit packageOverrides; };
     };
 
+
   packageOverrides = self: super: with self; {
+    isM1 = with super.stdenv; isDarwin && isAarch64;
+    isOldMac = with super.stdenv; isDarwin && !isAarch64;
     # fixes for mac
     dnspython =
-      if super.stdenv.isDarwin then
+      if self.isOldMac then
         super.dnspython.overrideAttrs
           (_: {
             disabledTestPaths =
@@ -20,7 +23,7 @@ let
               ];
           }) else super.dnspython;
     httplib2 =
-      if super.stdenv.isDarwin then
+      if self.isOldMac then
         super.httplib2.overrideAttrs
           (_: {
             disabledTests =
@@ -31,7 +34,7 @@ let
               ];
           }) else super.httplib2;
     passlib =
-      if super.stdenv.isDarwin then
+      if self.isOldMac then
         super.passlib.overrideAttrs
           (_: {
             disabledTestPaths =

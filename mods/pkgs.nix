@@ -100,6 +100,7 @@ rec {
 
   _caddy_plugins = [
     { name = "github.com/greenpau/caddy-security"; version = "v1.0.16"; }
+    { name = "github.com/lindenlab/caddy-s3-proxy"; version = "v0.5.6"; }
   ];
   _caddy_patch_main = prev.lib.strings.concatMapStringsSep "\n"
     ({ name, version }: ''
@@ -114,7 +115,7 @@ rec {
 
   xcaddy = caddy.override {
     buildGoModule = args: buildGoModule (args // {
-      vendorSha256 = "sha256-FBGDq0zZdLpqQr0UT9fxW/XtmB4tkMxkD6vYW8cyChQ=";
+      vendorSha256 = "sha256-QYbVQfvmWQtaakNoa5B7e4XdyQfPaCrZyEUt6kYPKXs=";
       overrideModAttrs = _: {
         preBuild = ''
           ${_caddy_patch_main}
