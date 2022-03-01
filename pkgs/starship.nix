@@ -1,4 +1,5 @@
-{ lib
+{ pkgs
+, lib
 , stdenv
 , fetchFromGitHub
 , rustPlatform
@@ -7,7 +8,6 @@
 , installShellFiles
 , libiconv
 , nixosTests
-, Security
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -22,9 +22,9 @@ rustPlatform.buildRustPackage rec {
   };
 
   nativeBuildInputs = [ installShellFiles ] ++ lib.optionals stdenv.isLinux [ pkg-config ];
+  osSpecific = with pkgs.darwin.apple_sdk.frameworks; if pkgs.stdenv.isDarwin then [ Security libiconv ] else [ ];
 
-  buildInputs = lib.optionals stdenv.isLinux [ openssl ]
-    ++ lib.optionals stdenv.isDarwin [ libiconv Security ];
+  buildInputs = lib.optionals stdenv.isLinux [ openssl ] ++ osSpecific;
 
   buildFeatures = lib.optional (!stdenv.isDarwin) "notify-rust";
 

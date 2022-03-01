@@ -27,9 +27,7 @@ let
   };
 
   # fix starship for m1
-  starship = pkgs.callPackage ./pkgs/starship.nix {
-    inherit (pkgs.darwin.apple_sdk.frameworks) Security;
-  };
+  starship = pkgs.callPackage ./pkgs/starship.nix { };
 
 in
 with pkgs.hax; {
