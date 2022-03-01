@@ -34,9 +34,9 @@ let
       if super.stdenv.isDarwin then
         super.passlib.overrideAttrs
           (_: {
-            disabledTests =
+            disabledTestPaths =
               [
-                "test_dummy_verify"
+                "tests/test_context.py"
               ];
           }) else super.passlib;
 
