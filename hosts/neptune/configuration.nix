@@ -104,6 +104,7 @@ in
             route /static/* {
               s3proxy {
                 bucket "jacobi-static"
+                region "us-east-2"
                 force_path_style
               }
             }
