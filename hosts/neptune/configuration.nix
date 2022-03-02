@@ -64,6 +64,10 @@ in
   };
 
   environment.systemPackages = [ pkgs.k3s ];
+
+  # this is a meme
+  systemd.services.caddy.unitConfig.EnvironmentFile = "/etc/default/caddy";
+
   services = {
     k3s = {
       enable = true;
@@ -73,7 +77,6 @@ in
       enable = true;
       package = pkgs.xcaddy;
       email = common.emails.personal;
-      unitConfig.EnvironmentFile = "/etc/default/caddy";
       virtualHosts = {
         "home.cobi.dev" = {
           extraConfig = ''
