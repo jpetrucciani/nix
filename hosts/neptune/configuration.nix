@@ -73,6 +73,7 @@ in
       enable = true;
       package = pkgs.xcaddy;
       email = common.emails.personal;
+      unitConfig.EnvironmentFile = "/etc/default/caddy";
       virtualHosts = {
         "home.cobi.dev" = {
           extraConfig = ''
@@ -100,7 +101,6 @@ in
             route /static/* {
               s3proxy {
                 bucket "jacobi-static"
-                region "us-east-2"
                 force_path_style
               }
             }
