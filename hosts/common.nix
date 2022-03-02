@@ -1,5 +1,7 @@
 { pkgs, ... }:
 let
+  inherit (pkgs.stdenv) isDarwin isAarch64 isNixOS;
+
   pinned = import ../default.nix { };
 
   hm = with builtins; fromJSON (readFile ../sources/home-manager.json);
@@ -18,8 +20,6 @@ let
 in
 {
   inherit home-manager jacobi nix-darwin pinned;
-  inherit (pkgs.stdenv) isDarwin isAarch64 isNixOS;
-
 
   nix = {
     extraOptions = ''
