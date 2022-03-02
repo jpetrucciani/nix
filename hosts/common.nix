@@ -13,12 +13,13 @@ let
     url = "https://github.com/LnL7/nix-darwin/archive/${nd.rev}.tar.gz";
   };
   jacobi = import ../home.nix;
+
+  attrIf = check: name: if check then name else null;
 in
 {
   inherit home-manager jacobi nix-darwin pinned;
   inherit (pkgs.stdenv) isDarwin isAarch64 isNixOS;
 
-  attrIf = check: name: if check then name else null;
 
   nix = {
     extraOptions = ''
