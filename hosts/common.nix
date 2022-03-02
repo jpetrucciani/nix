@@ -1,6 +1,12 @@
 { pkgs, ... }:
 let
-  inherit (pkgs.stdenv) isDarwin isAarch64 isNixOS;
+  inherit (pkgs.stdenv) isDarwin isLinux isAarch64;
+  isM1 = isDarwin && isAarch64;
+  isOldMac = isDarwin && !isAarch64;
+  isNixOS = isLinux && (builtins.match ".*ID=nixos.*" (builtins.readFile /etc/os-release)) == [ ];
+  isAndroid = isAarch64 && !isDarwin && !isNixOS;
+  isUbuntu = isLinux && (builtins.match ".*ID=ubuntu.*" (builtins.readFile /etc/os-release)) == [ ];
+  isNixDarwin = pkgs.getEnv "NIXDARWIN_CONFIG" != "";
 
   pinned = import ../default.nix { };
 
