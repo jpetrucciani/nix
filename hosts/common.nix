@@ -16,8 +16,9 @@ let
 in
 {
   inherit home-manager jacobi nix-darwin pinned;
+  inherit (pkgs.stdenv) isDarwin isAarch64 isNixOS;
 
-  nix = with pkgs.hax; {
+  nix = {
     extraOptions = ''
       max-jobs = auto
       narinfo-cache-negative-ttl = 10
