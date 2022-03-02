@@ -66,7 +66,7 @@ in
   environment.systemPackages = [ pkgs.k3s ];
 
   # this is a meme
-  systemd.services.caddy.unitConfig.EnvironmentFile = "/etc/default/caddy";
+  systemd.services.caddy.serviceConfig.EnvironmentFile = "/etc/default/caddy";
 
   services = {
     k3s = {
@@ -104,7 +104,6 @@ in
             route /static/* {
               s3proxy {
                 bucket "jacobi-static"
-                region "us-east-2"
                 force_path_style
               }
             }
