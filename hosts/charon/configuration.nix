@@ -11,6 +11,7 @@ in
   ];
 
   home-manager.users.jacobi = common.jacobi;
+  _module.args.pkgs = common.pinned;
 
   time.timeZone = common.timeZone;
   environment.variables = {
