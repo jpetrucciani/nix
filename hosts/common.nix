@@ -18,6 +18,8 @@ in
   inherit home-manager jacobi nix-darwin pinned;
   inherit (pkgs.stdenv) isDarwin isAarch64 isNixOS;
 
+  attrIf = check: name: if check then name else null;
+
   nix = {
     extraOptions = ''
       max-jobs = auto
