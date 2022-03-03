@@ -1073,7 +1073,7 @@ with builtins; rec {
     };
   };
 
-  drmi = writeBashBinCheckedWithFlags {
+  drmi = pog {
     name = "drmi";
     description = "quickly remove images from your docker daemon!";
     flags = [
@@ -1083,7 +1083,7 @@ with builtins; rec {
       ${_.di} | ${_.fzfqm} --header-lines=1 | ${_.get_image} | ${_.xargs} -r ${_.d} rmi ''${force:+--force}
     '';
   };
-  _dex = writeBashBinCheckedWithFlags {
+  _dex = pog {
     name = "dex";
     description = "a quick and easy way to exec into a k8s pod!";
     flags = [
@@ -1101,7 +1101,7 @@ with builtins; rec {
       ${_.d} exec --interactive --tty "$container" bash
     '';
   };
-  dshell = writeBashBinCheckedWithFlags {
+  dshell = pog {
     name = "dshell";
     description = "a quick and easy way to pop a shell on docker!";
     flags = [
@@ -1128,10 +1128,30 @@ with builtins; rec {
         "$image" "$command"
     '';
   };
+  dlint = pog {
+    name = "dlint";
+    description = "a prescriptive hadolint dockerfile linter config";
+    flags = [
+      {
+        name = "file";
+        description = "the dockerfile to analyze";
+        default = "./Dockerfile";
+      }
+    ];
+    script = ''
+      ${pkgs.hadolint}/bin/hadolint \
+        --ignore DL3008 \
+        --ignore DL3009 \
+        --ignore DL3028 \
+        --ignore DL3015 \
+        "$file"
+    '';
+  };
 
   docker_bash_scripts = [
     drmi
     dshell
+    dlint
     _dex
   ];
 
