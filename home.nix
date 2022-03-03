@@ -179,7 +179,7 @@ with pkgs.hax; {
           botocore-stubs
 
           # my packages
-          # njsscan
+          njsscan
         ]))
 
         # kubernetes
@@ -204,7 +204,7 @@ with pkgs.hax; {
         pluto
         rare
         rbac-tool
-        # semgrep
+        semgrep-core
 
         # overlays
         git-trim

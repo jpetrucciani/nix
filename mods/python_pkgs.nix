@@ -5,7 +5,6 @@ let
       python310 = super.python310.override { inherit packageOverrides; };
     };
 
-
   packageOverrides = self: super: with self; {
     inherit (super.stdenv) isDarwin isAarch64 isNixOS;
     isM1 = isDarwin && isAarch64;
@@ -148,111 +147,138 @@ let
 
 
     # njsscan
-    # njsscan = buildPythonPackage rec {
-    #   pname = "njsscan";
-    #   version = "0.3.1";
+    njsscan = buildPythonPackage rec {
+      pname = "njsscan";
+      version = "0.3.1";
 
-    #   src = fetchPypi {
-    #     inherit pname version;
-    #     sha256 = "0slvk3h4flk3y95yh19p629xly37yqh42rfw1vqv598srj6x7j93";
-    #   };
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "0slvk3h4flk3y95yh19p629xly37yqh42rfw1vqv598srj6x7j93";
+      };
 
-    #   propagatedBuildInputs =
-    #     [ colorama libsast sarif-om jschema-to-python tabulate ];
+      propagatedBuildInputs = [
+        colorama
+        libsast
+        sarif-om
+        jschema-to-python
+        tabulate
+      ];
 
-    #   # TODO FIXME
-    #   doCheck = false;
-    #   pythonImportsCheck = [
-    #     "njsscan"
-    #   ];
+      pythonImportsCheck = [
+        "njsscan"
+      ];
 
-    #   meta = with lib; {
-    #     description =
-    #       "njsscan is a SAST tool that can find insecure code patterns in your Node.js applications.";
-    #     homepage = "https://github.com/ajinabraham/njsscan";
-    #   };
-    # };
-    # libsast = buildPythonPackage rec {
-    #   pname = "libsast";
-    #   version = "1.5.0";
+      meta = with lib; {
+        description =
+          "njsscan is a SAST tool that can find insecure code patterns in your Node.js applications.";
+        homepage = "https://github.com/ajinabraham/njsscan";
+      };
+    };
+    libsast = buildPythonPackage rec {
+      pname = "libsast";
+      version = "1.5.0";
 
-    #   src = fetchPypi {
-    #     inherit pname version;
-    #     sha256 = "0nwms1jjb22w3f6rsyh9w4mpr54kab7a10hr02c0wlw7n1ai5k9d";
-    #   };
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "0nwms1jjb22w3f6rsyh9w4mpr54kab7a10hr02c0wlw7n1ai5k9d";
+      };
 
-    #   propagatedBuildInputs = [ requests pyyaml semgrep ];
+      propagatedBuildInputs = [
+        requests
+        pyyaml
+        semgrep
+      ];
 
-    #   # TODO FIXME
-    #   doCheck = false;
-    #   pythonImportsCheck = [
-    #     "libsast"
-    #   ];
+      pythonImportsCheck = [
+        "libsast"
+      ];
 
-    #   meta = with lib; {
-    #     description = "A generic SAST core built on top of semgrep and regex";
-    #     homepage = "https://github.com/ajinabraham/libsast";
-    #   };
-    # };
-    # sarif-om = buildPythonPackage rec {
-    #   pname = "sarif-om";
-    #   version = "1.0.4";
+      meta = with lib; {
+        description = "A generic SAST core built on top of semgrep and regex";
+        homepage = "https://github.com/ajinabraham/libsast";
+      };
+    };
+    sarif-om = buildPythonPackage rec {
+      pname = "sarif-om";
+      version = "1.0.4";
 
-    #   src = fetchPypi {
-    #     inherit version;
-    #     pname = "sarif_om";
-    #     sha256 = "167gb8xjm0310km3w1s12bqldbv7zyklkr4j5900vq4361ml2pyd";
-    #   };
+      src = fetchPypi {
+        inherit version;
+        pname = "sarif_om";
+        sha256 = "167gb8xjm0310km3w1s12bqldbv7zyklkr4j5900vq4361ml2pyd";
+      };
 
-    #   buildInputs = [ pbr ];
-    #   propagatedBuildInputs = [ attrs pbr ];
+      buildInputs = [ pbr ];
+      propagatedBuildInputs = [
+        attrs
+        pbr
+      ];
 
-    #   # TODO FIXME
-    #   doCheck = false;
-    #   pythonImportsCheck = [
-    #     "sarif_om"
-    #   ];
+      # doCheck = false;
+      pythonImportsCheck = [
+        "sarif_om"
+      ];
 
-    #   meta = with lib; { };
-    # };
-    # jschema-to-python = buildPythonPackage rec {
-    #   pname = "jschema-to-python";
-    #   version = "1.2.3";
+      meta = with lib; { };
+    };
+    jschema-to-python = buildPythonPackage rec {
+      pname = "jschema-to-python";
+      version = "1.2.3";
 
-    #   src = fetchPypi {
-    #     inherit version;
-    #     pname = "jschema_to_python";
-    #     sha256 = "14cvaiwm56g0v6p7zviikaa5i9ln3yqy910jmp60hirhbpz19zvn";
-    #   };
+      src = fetchPypi {
+        inherit version;
+        pname = "jschema_to_python";
+        sha256 = "14cvaiwm56g0v6p7zviikaa5i9ln3yqy910jmp60hirhbpz19zvn";
+      };
 
-    #   buildInputs = [ pbr ];
-    #   propagatedBuildInputs = [ attrs jsonpickle pbr ];
+      checkInputs = [
+        pytestCheckHook
+      ];
 
-    #   # TODO FIXME
-    #   doCheck = false;
-    #   pythonImportsCheck = [
-    #     "jschema_to_python"
-    #   ];
+      buildInputs = [ pbr ];
+      propagatedBuildInputs = [
+        attrs
+        jsonpickle
+        pbr
+      ];
 
-    #   meta = with lib; { };
-    # };
-    # semgrep = buildPythonPackage rec {
-    #   pname = "semgrep";
-    #   version = "0.80.0";
+      pythonImportsCheck = [
+        "jschema_to_python"
+      ];
 
-    #   src = fetchPypi {
-    #     inherit pname version;
-    #     sha256 = "0k27wmqw3b4xar9svc31hg2dxdxck6rgrki9r0vi4nw4mjb6q5mm";
-    #   };
+      meta = with lib; { };
+    };
+    semgrep = buildPythonPackage rec {
+      pname = "semgrep";
+      version = "0.80.0";
 
-    #   # TODO FIXME
-    #   doCheck = false;
-    #   pythonImportsCheck = [
-    #     "semgrep"
-    #   ];
+      SEMGREP_CORE_BIN = "${pkgs.semgrep-core}/bin/semgrep-core";
 
-    #   meta = with lib; { };
-    # };
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "0k27wmqw3b4xar9svc31hg2dxdxck6rgrki9r0vi4nw4mjb6q5mm";
+      };
+
+      propagatedBuildInputs = [
+        attrs
+        colorama
+        click-option-group
+        jsonschema
+        packaging
+        peewee
+        requests
+        ruamel-yaml
+        tqdm
+        wcmatch
+      ];
+
+      doCheck = false;
+      pythonImportsCheck = [
+        "semgrep"
+      ];
+
+      meta = with lib; { };
+    };
 
   };
 in

@@ -65,9 +65,6 @@ in
 
   environment.systemPackages = [ pkgs.k3s ];
 
-  # this is a meme
-  systemd.services.caddy.serviceConfig.EnvironmentFile = "/etc/default/caddy";
-
   services = {
     k3s = {
       enable = true;

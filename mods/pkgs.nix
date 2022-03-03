@@ -112,7 +112,6 @@ rec {
       go get ${name}@${version}
     '')
     _caddy_plugins;
-
   xcaddy = caddy.override {
     buildGoModule = args: buildGoModule (args // {
       vendorSha256 = "sha256-QYbVQfvmWQtaakNoa5B7e4XdyQfPaCrZyEUt6kYPKXs=";
@@ -123,8 +122,43 @@ rec {
         '';
         postInstall = "cp go.mod go.sum $out/";
       };
+      postInstall = ''
+        ${args.postInstall}
+        sed -i -E '/Group=caddy/aEnvironmentFile=/etc/default/caddy' $out/lib/systemd/system/caddy.service
+      '';
       postPatch = _caddy_patch_main;
       preBuild = "cp vendor/go.mod vendor/go.sum .";
     });
   };
+
+  semgrep-core = pkgs.callPackage
+    ({ lib, fetchzip, stdenvNoCC, isDarwin }:
+      stdenvNoCC.mkDerivation rec {
+        pname = "semgrep";
+        version = "0.83.0";
+
+        _arch = if isDarwin then "osx.zip" else "ubuntu-16.04.tgz";
+        _sha256 = if isDarwin then "sha256-6l5cqbyXSU2GECeMScNuJi8v2uFCNoApCyd71ANokBU=" else "sha256-HTCvxliuCvRuv4OnyKSvfGiNARv1v4l26aR9KAAsGAA=";
+
+        src = fetchzip {
+          url = "https://github.com/returntocorp/semgrep/releases/download/v${version}/semgrep-v${version}-${_arch}";
+          sha256 = _sha256;
+        };
+
+        installPhase = ''
+          runHook preInstall
+          mkdir -p $out/bin
+          cp * $out/bin
+          runHook postInstall
+        '';
+
+        meta = with lib; {
+          description = "Lightweight static analysis for many languages";
+          homepage = "https://semgrep.dev";
+          license = licenses.lgpl21Only;
+          mainProgram = "semgrep-core";
+        };
+      }
+    )
+    { };
 }
