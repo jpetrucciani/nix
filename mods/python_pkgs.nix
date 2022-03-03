@@ -102,86 +102,6 @@ let
     };
 
     # type annotations
-    types-paramiko = buildPythonPackage rec {
-      pname = "types-paramiko";
-      version = "2.8.13";
-
-      src = fetchPypi {
-        inherit pname version;
-        sha256 = "0xk5xqhfl3xmzrnzb17c5hj5zbh7fpyfyj35zjma32iivfkqd8lp";
-      };
-
-      pythonImportsCheck = [
-        "paramiko-stubs"
-      ];
-
-      propagatedBuildInputs = [ types-cryptography ];
-
-      meta = with lib; {
-        description = "Typing stubs for paramiko";
-        homepage = "https://github.com/python/typeshed";
-      };
-    };
-
-    types-cryptography = buildPythonPackage rec {
-      pname = "types-cryptography";
-      version = "3.3.15";
-
-      src = fetchPypi {
-        inherit pname version;
-        sha256 = "0fr70phvg3zc4h41mv48g04x3f20y478y01ji3w1i2mqlxskm657";
-      };
-
-      pythonImportsCheck = [
-        "cryptography-stubs"
-      ];
-
-      propagatedBuildInputs = [ types-enum34 types-ipaddress ];
-
-      meta = with lib; {
-        description = "Typing stubs for cryptography";
-        homepage = "https://github.com/python/typeshed";
-      };
-    };
-
-    types-enum34 = buildPythonPackage rec {
-      pname = "types-enum34";
-      version = "1.1.8";
-
-      src = fetchPypi {
-        inherit pname version;
-        sha256 = "0421lr89vv3fpg77kkj5nmzd7z3nmhw4vh8ibsjp6vfh86b7d73g";
-      };
-
-      pythonImportsCheck = [
-        "enum-python2-stubs"
-      ];
-
-      meta = with lib; {
-        description = "Typing stubs for enum34";
-        homepage = "https://github.com/python/typeshed";
-      };
-    };
-
-    types-ipaddress = buildPythonPackage rec {
-      pname = "types-ipaddress";
-      version = "1.0.8";
-
-      src = fetchPypi {
-        inherit pname version;
-        sha256 = "0h9q9pjvw1ap5k70ygp750d096jkzymxlhx87yh0pr9mb6zg6gd0";
-      };
-
-      pythonImportsCheck = [
-        "ipaddress-python2-stubs"
-      ];
-
-      meta = with lib; {
-        description = "Typing stubs for ipaddress";
-        homepage = "https://github.com/python/typeshed";
-      };
-    };
-
     boto3-stubs = buildPythonPackage rec {
       pname = "boto3-stubs";
       version = "1.20.35";
@@ -225,6 +145,114 @@ let
         homepage = "https://github.com/vemel/mypy_boto3_builder";
       };
     };
+
+
+    # njsscan
+    # njsscan = buildPythonPackage rec {
+    #   pname = "njsscan";
+    #   version = "0.3.1";
+
+    #   src = fetchPypi {
+    #     inherit pname version;
+    #     sha256 = "0slvk3h4flk3y95yh19p629xly37yqh42rfw1vqv598srj6x7j93";
+    #   };
+
+    #   propagatedBuildInputs =
+    #     [ colorama libsast sarif-om jschema-to-python tabulate ];
+
+    #   # TODO FIXME
+    #   doCheck = false;
+    #   pythonImportsCheck = [
+    #     "njsscan"
+    #   ];
+
+    #   meta = with lib; {
+    #     description =
+    #       "njsscan is a SAST tool that can find insecure code patterns in your Node.js applications.";
+    #     homepage = "https://github.com/ajinabraham/njsscan";
+    #   };
+    # };
+    # libsast = buildPythonPackage rec {
+    #   pname = "libsast";
+    #   version = "1.5.0";
+
+    #   src = fetchPypi {
+    #     inherit pname version;
+    #     sha256 = "0nwms1jjb22w3f6rsyh9w4mpr54kab7a10hr02c0wlw7n1ai5k9d";
+    #   };
+
+    #   propagatedBuildInputs = [ requests pyyaml semgrep ];
+
+    #   # TODO FIXME
+    #   doCheck = false;
+    #   pythonImportsCheck = [
+    #     "libsast"
+    #   ];
+
+    #   meta = with lib; {
+    #     description = "A generic SAST core built on top of semgrep and regex";
+    #     homepage = "https://github.com/ajinabraham/libsast";
+    #   };
+    # };
+    # sarif-om = buildPythonPackage rec {
+    #   pname = "sarif-om";
+    #   version = "1.0.4";
+
+    #   src = fetchPypi {
+    #     inherit version;
+    #     pname = "sarif_om";
+    #     sha256 = "167gb8xjm0310km3w1s12bqldbv7zyklkr4j5900vq4361ml2pyd";
+    #   };
+
+    #   buildInputs = [ pbr ];
+    #   propagatedBuildInputs = [ attrs pbr ];
+
+    #   # TODO FIXME
+    #   doCheck = false;
+    #   pythonImportsCheck = [
+    #     "sarif_om"
+    #   ];
+
+    #   meta = with lib; { };
+    # };
+    # jschema-to-python = buildPythonPackage rec {
+    #   pname = "jschema-to-python";
+    #   version = "1.2.3";
+
+    #   src = fetchPypi {
+    #     inherit version;
+    #     pname = "jschema_to_python";
+    #     sha256 = "14cvaiwm56g0v6p7zviikaa5i9ln3yqy910jmp60hirhbpz19zvn";
+    #   };
+
+    #   buildInputs = [ pbr ];
+    #   propagatedBuildInputs = [ attrs jsonpickle pbr ];
+
+    #   # TODO FIXME
+    #   doCheck = false;
+    #   pythonImportsCheck = [
+    #     "jschema_to_python"
+    #   ];
+
+    #   meta = with lib; { };
+    # };
+    # semgrep = buildPythonPackage rec {
+    #   pname = "semgrep";
+    #   version = "0.80.0";
+
+    #   src = fetchPypi {
+    #     inherit pname version;
+    #     sha256 = "0k27wmqw3b4xar9svc31hg2dxdxck6rgrki9r0vi4nw4mjb6q5mm";
+    #   };
+
+    #   # TODO FIXME
+    #   doCheck = false;
+    #   pythonImportsCheck = [
+    #     "semgrep"
+    #   ];
+
+    #   meta = with lib; { };
+    # };
 
   };
 in

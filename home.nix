@@ -169,14 +169,17 @@ with pkgs.hax; {
           # type annotations (from nixpkgs)
           types-requests
           types-tabulate
-
-          # my types (for nixpkgs)
           types-paramiko
           types-cryptography
           types-enum34
           types-ipaddress
+
+          # my types (for nixpkgs)
           boto3-stubs
           botocore-stubs
+
+          # my packages
+          njsscan
         ]))
 
         # kubernetes
@@ -201,6 +204,7 @@ with pkgs.hax; {
         pluto
         rare
         rbac-tool
+        # semgrep
 
         # overlays
         git-trim
