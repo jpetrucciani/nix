@@ -179,7 +179,7 @@ with pkgs.hax; {
           botocore-stubs
 
           # my packages
-          njsscan
+          # njsscan
         ]))
 
         # kubernetes
