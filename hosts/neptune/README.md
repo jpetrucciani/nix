@@ -7,7 +7,7 @@ This is a bare-metal server running nixos.
 ```bash
 # load nixos iso
 # nixos-up
-sudo nix-shell https://github.com/samuela/nixos-up/archive/main.tar.gz
+sudo nix-shell https://cobi.dev/nixos-up
 
 # generate ssh key, add to github
 ssh-keygen -o -a 100 -t ed25519 -C "jacobi@neptune"
