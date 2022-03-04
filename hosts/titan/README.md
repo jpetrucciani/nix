@@ -19,7 +19,7 @@ cd ~/cfg
 
 # initial switch
 export HOSTNAME='titan'
-nix build -f .
+nix build -f . hms
 ./result/bin/hms
 ```
 

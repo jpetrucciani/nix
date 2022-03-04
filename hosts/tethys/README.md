@@ -19,7 +19,7 @@ cd ~/cfg
 
 # initial switch
 export HOSTNAME='tethys'
-nix build -f .
+nix build -f . hms
 ./result/bin/hms
 ```
 
