@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  hostname = "work";
+  hostname = "andromeda";
   common = import ../common.nix { inherit config pkgs; };
 in
 {
@@ -33,7 +33,7 @@ in
 
   networking.hostName = hostname;
   networking.useDHCP = false;
-  networking.interfaces.enp0s7.useDHCP = true;
+  networking.interfaces.enp0s10.useDHCP = true;
 
   users.users.root.hashedPassword = "!";
   users.mutableUsers = false;
@@ -45,7 +45,22 @@ in
     openssh.authorizedKeys.keys = with common.pubkeys; [ m1max ];
   };
 
+  # Enable the X11 windowing system.
+  services.xserver.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
+
+  # Enable CUPS to print documents.
+  services.printing.enable = true;
+
+  # Enable sound.
+  sound.enable = true;
+  hardware.pulseaudio.enable = true;
+
+  # Enable touchpad support (enabled default in most desktopManager).
+  services.xserver.libinput.enable = true;
+
   services = { } // common.services;
+  services.openssh.ports = [ 23 ];
   virtualisation.docker.enable = true;
 
   system.stateVersion = "22.05";

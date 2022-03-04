@@ -1,4 +1,4 @@
-# work
+# andromeda
 
 This is an arm64 NixOS install inside a VM for work.
 
