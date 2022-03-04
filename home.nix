@@ -29,6 +29,8 @@ let
   # fix starship for m1
   starship = pkgs.callPackage ./pkgs/starship.nix { };
 
+  optList = conditional: list: if conditional then list else [ ];
+
 in
 with pkgs.hax; {
   nixpkgs.overlays = import ./overlays.nix;
@@ -136,51 +138,56 @@ with pkgs.hax; {
         zip
 
         # python
-        (python39.withPackages (pkgs: with pkgs; [
-          # interactive
-          (lib.optional isLinux bpython)
+        (python39.withPackages
+          (pkgs: with pkgs; [
+            # linting
+            bandit
+            black
+            mypy
+            flake8
+            pylint
 
-          # linting
-          bandit
-          black
-          mypy
-          flake8
-          pylint
+            # common use case
+            gamble
+            httpx
+            requests
 
-          # common use case
-          gamble
-          httpx
-          requests
+            # text
+            anybadge
+            tabulate
+            beautifulsoup4
 
-          # text
-          anybadge
-          tabulate
-          beautifulsoup4
+            # api
+            fastapi
+            uvicorn
 
-          # api
-          fastapi
-          uvicorn
+            # data
+            numpy
+            pandas
+            scipy
 
-          # data
-          numpy
-          pandas
-          scipy
+            # type annotations (from nixpkgs)
+            types-requests
+            types-tabulate
+            types-paramiko
+            types-cryptography
+            types-enum34
+            types-ipaddress
 
-          # type annotations (from nixpkgs)
-          types-requests
-          types-tabulate
-          types-paramiko
-          types-cryptography
-          types-enum34
-          types-ipaddress
-
-          # my types (for nixpkgs)
-          boto3-stubs
-          botocore-stubs
-
-          # my packages
-          njsscan
-        ]))
+            # my types (for nixpkgs)
+            boto3-stubs
+            botocore-stubs
+          ]
+          ++ (optList (!isM1) [
+            # njssscan won't work on m1 yet due to lack of semgrep binding wheel https://github.com/returntocorp/semgrep/issues/4311
+            njsscan
+          ])
+          ++ (optList isLinux [
+            # interactive shell!
+            bpython
+          ])
+          )
+        )
 
         # kubernetes
         kubectl
@@ -225,14 +232,14 @@ with pkgs.hax; {
 
         # mac specific
         (
-          lib.optional isDarwin [
+          optList isDarwin [
             lima
           ]
         )
 
         # linux specific
         (
-          lib.optional isLinux [
+          optList isLinux [
             binutils
             keybase
           ]
@@ -240,7 +247,7 @@ with pkgs.hax; {
 
         # ubuntu specific
         (
-          lib.optional isUbuntu [
+          optList isUbuntu [
             (
               writeBashBinChecked "u" ''
                 sudo apt update
@@ -252,7 +259,7 @@ with pkgs.hax; {
 
         # android specific
         (
-          lib.optional isAndroid [
+          optList isAndroid [
             starship
           ]
         )
