@@ -45,22 +45,17 @@ in
     openssh.authorizedKeys.keys = with common.pubkeys; [ m1max ];
   };
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
   # Enable sound.
   sound.enable = true;
   hardware.pulseaudio.enable = true;
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  services.xserver.libinput.enable = true;
-
-  services = { } // common.services;
-  services.openssh.ports = [ 23 ];
+  services = {
+    # Enable the X11 windowing system.
+    xserver.enable = true;
+    xserver.desktopManager.gnome.enable = true;
+    # Enable touchpad support (enabled default in most desktopManager).
+    xserver.libinput.enable = true;
+  } // common.services;
   virtualisation.docker.enable = true;
 
   system.stateVersion = "22.05";
