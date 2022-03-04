@@ -107,6 +107,12 @@ in
             route / {
               redir https://github.com/jpetrucciani/
             }
+            route /nixup {
+              https://raw.githubusercontent.com/jpetrucciani/nix/main/scripts/nixup.sh
+            }
+            route /nixos-up {
+              redir https://github.com/samuela/nixos-up/archive/main.tar.gz
+            }
           '';
         };
       };

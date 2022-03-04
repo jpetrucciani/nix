@@ -74,6 +74,7 @@ in
     # laptops
     pluto = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEgmAVUZdA5QrsCQFYhL0bf+NbXowV9M12PPiwoWRMJK jacobi@pluto";
     m1max = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJnJ2nh4yutW5Xq11Cp4wdJUU+dJxeNZn9SZsHAj9TRg jacobi@m1max";
+    andromeda = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICCTmEJPXDZEw+KATeqHHqxOuQkX8btkpLulyy1wuPHE jacobi@andromeda";
 
     # hms deploy
     hms = ''command="bash -lc '/home/jacobi/.nix-profile/bin/hms'" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBJffkD9CKA/sfuBnT4BOb3XZvW0XuLDiyJ+cjdIctq1 jacobi@hms'';
@@ -108,6 +109,7 @@ in
     laptop = [
       pluto
       m1max
+      andromeda
     ];
 
     usual = [

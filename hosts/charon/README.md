@@ -42,3 +42,5 @@ sudo spctl --master-enable
 ---
 
 ## [configuration.nix](./configuration.nix)
+
+This file defines the OS configuration for the `charon` machine.
