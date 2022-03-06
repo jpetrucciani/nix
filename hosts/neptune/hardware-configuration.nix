@@ -1,4 +1,4 @@
-{ config, lib, modulesPath, ... }:
+{ config, lib, pkgs, modulesPath, ... }:
 
 {
   imports =
@@ -19,11 +19,14 @@
 
   fileSystems."/boot" =
     {
-      device = "/dev/disk/by-uuid/7a4aa9d1-9f7b-4534-9560-82498a030f47";
+      device = "/dev/disk/by-uuid/aadbe86d-0045-4122-915a-bbd33ef2aec3";
       fsType = "ext2";
     };
 
   swapDevices = [ ];
+
+  networking.useDHCP = lib.mkDefault false;
+  networking.interfaces.enp9s0.useDHCP = lib.mkDefault true;
 
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
