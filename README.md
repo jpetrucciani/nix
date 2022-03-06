@@ -9,19 +9,8 @@ _my nixpkgs setup and overlays_
 ```bash
 # install nix
 ## linux and mac
-curl -L https://nixos.org/nix/install | sh
+curl -L https://nix.cobi.dev/up | sh
 
-# configure nix
-mkdir -p ~/.config/nix/
-echo -e 'max-jobs = auto\ntarball-ttl = 0\nexperimental-features = nix-command flakes' >>~/.config/nix/nix.conf
-
-# cachix (optional)
-nix-env -iA nixpkgs.cachix
-# on multi-user, this may require sudo!
-cachix use jacobi
-
-# install home manager (if using it)
-echo "export NIX_PATH=/nix/var/nix/profiles/per-user/$USER/channels:nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixpkgs:/nix/var/nix/profiles/per-user/root/channels" | sudo tee -a /etc/profile
 nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
 nix-channel --update
 nix-shell '<home-manager>' -A install

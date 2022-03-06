@@ -107,10 +107,17 @@ in
             route / {
               redir https://github.com/jpetrucciani/
             }
-            route /nixup {
+          '';
+        };
+        "nix.cobi.dev" = {
+          extraConfig = ''
+            route / {
+              redir https://github.com/jpetrucciani/nix
+            }
+            route /up {
               redir https://raw.githubusercontent.com/jpetrucciani/nix/main/scripts/nixup.sh
             }
-            route /nixos-up {
+            route /os-up {
               redir https://github.com/samuela/nixos-up/archive/main.tar.gz
             }
           '';
