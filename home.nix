@@ -204,7 +204,7 @@ with pkgs.hax; {
 
         # my pkgs
         aliyun-cli
-        cloudquery
+        # cloudquery
         horcrux
         katafygio
         kube-linter
