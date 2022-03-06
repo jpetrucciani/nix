@@ -8,9 +8,9 @@ prev: next:
     inherit (pkgs) fetchFromGitHub;
 
     isM1 = isDarwin && isAarch64;
-    isNixOS = isLinux && (builtins.match ".*ID=nixos.*" (builtins.readFile /etc/os-release)) == [ ];
+    isNixOS = isLinux && (builtins.match ''.*ID="?nixos.*'' (builtins.readFile /etc/os-release)) == [ ];
     isAndroid = isAarch64 && !isDarwin && !isNixOS;
-    isUbuntu = isLinux && (builtins.match ".*ID=ubuntu.*" (builtins.readFile /etc/os-release)) == [ ];
+    isUbuntu = isLinux && (builtins.match ''.*ID="?ubuntu.*'' (builtins.readFile /etc/os-release)) == [ ];
     isNixDarwin = builtins.getEnv "NIXDARWIN_CONFIG" != "";
 
     kwb = with builtins; fromJSON (readFile ../sources/kwb.json);
