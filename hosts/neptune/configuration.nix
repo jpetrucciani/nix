@@ -96,6 +96,13 @@ in
             }
           '';
         };
+        "flix2.cobi.dev" = {
+          extraConfig = ''
+            reverse_proxy /* {
+              to jupiter:${toString common.ports.jellyfin}
+            }
+          '';
+        };
         "cobi.dev" = {
           extraConfig = ''
             route /static/* {

@@ -245,6 +245,7 @@ in
     ssh = 22;
     http = 80;
     https = 443;
+    jellyfin = 8096;
     home-assistant = 8123;
     netdata = 19999;
     plex = 32400;
