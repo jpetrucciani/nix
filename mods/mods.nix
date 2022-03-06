@@ -12,9 +12,9 @@ with builtins; rec {
 
   isM1 = isDarwin && isAarch64;
   isOldMac = isDarwin && !isAarch64;
-  isNixOS = isLinux && (match ".*ID=nixos.*" (readFile /etc/os-release)) == [ ];
+  isNixOS = isLinux && (match ''.*ID="?nixos.*'' (readFile /etc/os-release)) == [ ];
   isAndroid = isAarch64 && !isDarwin && !isNixOS;
-  isUbuntu = isLinux && (match ".*ID=ubuntu.*" (readFile /etc/os-release)) == [ ];
+  isUbuntu = isLinux && (match ''.*ID="?ubuntu.*'' (readFile /etc/os-release)) == [ ];
   isNixDarwin = getEnv "NIXDARWIN_CONFIG" != "";
 
   writeBashBinChecked = name: text:
