@@ -209,7 +209,7 @@ with pkgs.hax; {
         katafygio
         kube-linter
         pluto
-        rare
+        # rare
         rbac-tool
         semgrep-core
 
