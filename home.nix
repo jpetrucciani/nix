@@ -246,6 +246,7 @@ with pkgs.hax; {
           optList isLinux [
             binutils
             keybase
+            vtm
           ]
         )
 
@@ -334,13 +335,13 @@ with pkgs.hax; {
       _kube_contexts() {
         local curr_arg;
         curr_arg=''${COMP_WORDS[COMP_CWORD]}
-        COMPREPLY=( $(compgen -W "- $(kubectl config get-contexts --output='name')" -- $curr_arg ) );
+        COMPREPLY=( $(compgen -W "- $(${pkgs.kubectl}/bin/kubectl config get-contexts --output='name')" -- $curr_arg ) );
       }
 
       _kube_namespaces() {
         local curr_arg;
         curr_arg=''${COMP_WORDS[COMP_CWORD]}
-        COMPREPLY=( $(compgen -W "- $(kubectl get namespaces -o=jsonpath='{range .items[*].metadata.name}{@}{"\n"}{end}')" -- $curr_arg ) );
+        COMPREPLY=( $(compgen -W "- $(${pkgs.kubectl}/bin/kubectl get namespaces -o=jsonpath='{range .items[*].metadata.name}{@}{"\n"}{end}')" -- $curr_arg ) );
       }
 
       # additional aliases
@@ -348,8 +349,7 @@ with pkgs.hax; {
 
       # bash completions
       export XDG_DATA_DIRS="$HOME/.nix-profile/share:''${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
-      source <(kubectl completion bash)
-      source <(just --completions bash)
+      source <(${pkgs.kubectl}/bin/kubectl completion bash)
       source ~/.nix-profile/etc/profile.d/bash_completion.sh
       source ~/.nix-profile/share/bash-completion/completions/docker
       source ~/.nix-profile/share/bash-completion/completions/git
@@ -370,6 +370,11 @@ with pkgs.hax; {
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
+  };
+
+  programs.just = {
+    enable = true;
+    enableBashIntegration = true;
   };
 
   programs.readline = {

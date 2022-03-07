@@ -61,19 +61,28 @@ prev: next:
         {
           name = "unset";
           description = "unset the saved package selection for this invocation";
+          bool = true;
         }
         {
           name = "overlay";
           description = "an additional overlay to include in comma";
+        }
+        {
+          name = "description";
+          description = "print out the description of the package";
+          bool = true;
         }
       ];
       arguments = [
         { name = "binary"; }
       ];
       script = ''
-        exec ${chief_keef.better-comma}/bin/, --overlay ${./mods.nix} --overlay ${./pkgs.nix} \
+        exec ${chief_keef.better-comma}/bin/, \
+          --overlay ${./mods.nix} \
+          --overlay ${./pkgs.nix} \
           ''${overlay:+--overlay $overlay} \
           ''${unset:+-u} \
+          ''${description:+-d} \
           ''${package:+-p $package} \
           "$@"
       '';

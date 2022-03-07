@@ -264,8 +264,8 @@ with builtins; rec {
             ${_.ls}
           }
           executables(){
-            echo -n "$PATH" | \
-              ${_.xargs} -d: -I{} -r -- find -L {} -maxdepth 1 -mindepth 1 -type f -executable -printf '%P\n' 2>/dev/null | \
+            echo -n "$PATH" |
+              ${_.xargs} -d: -I{} -r -- find -L {} -maxdepth 1 -mindepth 1 -type f -executable -printf '%P\n' 2>/dev/null |
               ${_.sort} -u
           }
 
@@ -327,7 +327,7 @@ with builtins; rec {
       inherit name short default bool marker description;
       shortOpt = "${short}${marker}";
       longOpt = "${name}${marker}";
-      flagDefault = ''${name}="''${${envVar}-${default}}"'';
+      flagDefault = ''${name}="''${${envVar}:-${default}}"'';
       flagPrompt =
         if hasPrompt then ''
           [ -z "''${${name}}" ] && ${name}="$(${prompt})"
@@ -574,8 +574,8 @@ with builtins; rec {
     ];
     script = ''
       word="$1"
-      ${_.figlet} -f banner "$word" | \
-        ${_.sed} 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' | \
+      ${_.figlet} -f banner "$word" |
+        ${_.sed} 's/#/:'"$fg"':/g;s/ /:'"$bg"':/g' |
         ${_.awk} '{print ":'"$bg"':" $1}'
     '';
   };
@@ -585,10 +585,10 @@ with builtins; rec {
     description = "search for all instances of the given text within your files!";
     script = ''
       if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; exit 1; fi
-      ${_.rg} --files-with-matches --no-messages "$1" | \
+      ${_.rg} --files-with-matches --no-messages "$1" |
         ${_.fzfq} --preview \
-          "highlight -O ansi -l {} 2> /dev/null | \
-            ${_.rg} --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || \
+          "highlight -O ansi -l {} 2> /dev/null |
+            ${_.rg} --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' ||
             ${_.rg} --ignore-case --pretty --context 10 '$1' {}"
     '';
   };
@@ -873,6 +873,7 @@ with builtins; rec {
     jq = "${pkgs.jq}/bin/jq";
     rg = "${pkgs.ripgrep}/bin/rg";
     sed = "${pkgs.gnused}/bin/sed";
+    grep = "${pkgs.gnugrep}/bin/grep";
     shellcheck = "${pkgs.shellcheck}/bin/shellcheck";
     shfmt = "${pkgs.shfmt}/bin/shfmt";
     head = "${pkgs.coreutils}/bin/head";
@@ -951,9 +952,15 @@ with builtins; rec {
           name = "image";
           description = "the docker image to use";
           argument = "IMAGE";
-          prompt = ''echo -e '${concatStringsSep "\\n" _.globals.images}' | ${_.fzfq} --header "IMAGE"'';
+          prompt = ''
+            echo -e "${globals.hacks.docker.default_images}\n$(${globals.hacks.docker.get_local_images})" |
+              ${_.sort} -u |
+              ${_.fzfq} --header "IMAGE"'';
           promptError = "you must specify a docker image!";
-          completion = ''echo -e '${concatStringsSep "\\n" _.globals.images}' '';
+          completion = ''
+            echo -e "${globals.hacks.docker.default_images}\n$(${globals.hacks.docker.get_local_images})" |
+              ${_.sort} -u
+          '';
         };
       };
       common = {
@@ -991,7 +998,19 @@ with builtins; rec {
         };
       };
     };
-    globals = {
+    globals = rec {
+      hacks = {
+        bash_or_sh = "if command -v bash >/dev/null 2>/dev/null; then exec bash; else exec sh; fi";
+        docker = {
+          default_images = concatStringsSep "\\n" _.globals.images;
+          get_local_images = ''
+            docker image ls --format "{{.Repository}}:{{.Tag}}" 2>/dev/null |
+              ${_.grep} -v '<none>' |
+              ${_.sort} -u
+          '';
+        };
+      };
+
       # docker images to use in various spots
       images = [
         "alpine:latest"
@@ -1113,19 +1132,27 @@ with builtins; rec {
       {
         name = "command";
         description = "the command to run within this shell";
-        default = "sh";
+        default = _.globals.hacks.bash_or_sh;
+      }
+      {
+        name = "nix";
+        description = "mount the /nix store as readonly in the container";
+        bool = true;
       }
     ];
     script = ''
       debug "''${GREEN}running image '$image' docker!''${RESET}"
-      pod_name="$(echo "''${USER}-dshell-''$(${_.uuid} | ${_.head} -c 8)" | tr -cd '[:alnum:]-')"
+      pod_name="$(echo "''${USER:-user}-dshell-''$(${_.uuid} | ${_.head} -c 8)" | tr -cd '[:alnum:]-')"
+      # shellcheck disable=SC2086
       ${_.d} run \
         --interactive \
         --tty \
         --rm \
-        ''${port:+--publish $port:$port}\
+        ''${port:+--publish $port:$port} \
+        ''${nix:+--volume /nix:/nix:ro} \
         --name "$pod_name" \
-        "$image" "$command"
+        "$image" \
+        sh -c "$command"
     '';
   };
   dlint = pog {
@@ -1167,15 +1194,15 @@ with builtins; rec {
         name = "pod";
         description = "the id of the pod to exec into";
         prompt = ''
-          ${_.k} --namespace "$namespace" get pods | \
-          ${_.fzfq} --header-lines=1 | \
+          ${_.k} --namespace "$namespace" get pods |
+          ${_.fzfq} --header-lines=1 |
           ${_.get_id}
         '';
         promptError = "you must specify a pod id!";
       }
     ];
     script = ''
-      ${_.k} --namespace "$namespace" exec -it "$pod" -- sh
+      ${_.k} --namespace "$namespace" exec -it "$pod" -- sh -c "${_.globals.hacks.bash_or_sh}"
     '';
   };
 
@@ -1187,9 +1214,9 @@ with builtins; rec {
       _.flags.common.force
     ];
     script = ''
-      ${_.k} --namespace "$namespace" get pods | \
-        ${_.fzfqm} --header-lines=1 | \
-        ${_.get_id} | \
+      ${_.k} --namespace "$namespace" get pods |
+        ${_.fzfqm} --header-lines=1 |
+        ${_.get_id} |
         ${_.xargs} --no-run-if-empty ${_.k} --namespace "$namespace" delete pods ''${force:+--grace-period=0 --force}
     '';
   };
@@ -1198,9 +1225,9 @@ with builtins; rec {
     name = "klist";
     description = "list out all the images in use on this k8s cluster!";
     script = ''
-      ${_.k} get pods --all-namespaces -o jsonpath='{..image}' | \
-        ${_.tr} -s '[[:space:]]' '\\n' | \
-        ${_.sort} | \
+      ${_.k} get pods --all-namespaces -o jsonpath='{..image}' |
+        ${_.tr} -s '[[:space:]]' '\\n' |
+        ${_.sort} |
         ${_.uniq} -c
     '';
   };
@@ -1214,15 +1241,18 @@ with builtins; rec {
     ];
     script = ''
       debug "''${GREEN}running image '$image' on the '$namespace' namespace!''${RESET}"
-      pod_name="$(echo "''${USER}-kshell-''$(${_.uuid} | ${_.head} -c 8)" | tr -cd '[:alnum:]-')"
+      pod_name="$(echo "''${USER:-user}-kshell-''$(${_.uuid} | ${_.head} -c 8)" | tr -cd '[:alnum:]-')"
       ${_.k} run \
-        -it \
+        --stdin \
+        --tty \
         --rm \
         --restart Never \
         --namespace "$namespace" \
         --image-pull-policy=Always \
         --image="$image" \
-        "$pod_name"
+        "$pod_name" \
+        -- \
+        sh -c "${_.globals.hacks.bash_or_sh}"
     '';
   };
 
@@ -1267,9 +1297,9 @@ with builtins; rec {
 
   # deployment stuff
   _get_deployment_patch = writeBashBinChecked "_get_deployment_patch" ''
-    echo "spec.template.metadata.labels.date = \"$(${_.date} +'%s')\";" | \
-      ${_.gron} -u | \
-      ${_.tr} -d '\n' | \
+    echo "spec.template.metadata.labels.date = \"$(${_.date} +'%s')\";" |
+      ${_.gron} -u |
+      ${_.tr} -d '\n' |
       ${_.sed} -E 's#\s+##g'
   '';
   refresh_deployment = pog {
