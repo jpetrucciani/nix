@@ -19,7 +19,6 @@ buildGoModule rec {
     mv $out/bin/main $out/bin/aliyun
   '';
 
-  # vendorSha256 = lib.fakeSha256;
   vendorSha256 = "c7LsCNcxdHwDBEknXJt9AyrmFcem8YtUYy06vNDBdDY=";
 
   meta = with lib; {

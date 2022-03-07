@@ -10,8 +10,7 @@ buildGoModule rec {
     sha256 = "1v2f31rcn5h7daqvg2rdqcjvgw19afd4whpnc9xpskjcyrr9lisp";
   };
 
-  # vendorSha256 = lib.fakeSha256;
-  vendorSha256 = "DZ/JLcnU+xmwkZ5U7E7Hw3JPPyuNeMEcZyX8g7sOdVI=";
+  vendorSha256 = "sha256-mswPEdhuHLjsLFXMczdHiK30Gn4whDrigees4pqUDC4=";
 
   meta = with lib; {
     inherit (src.meta) homepage;

@@ -10,6 +10,17 @@ let
   onAws = builtins.getEnv "USER" == "ubuntu";
   promptChar = if isDarwin then "ᛗ" else "ᛥ";
 
+  username =
+    if isDarwin then
+      firstName
+    else
+      (if onAws then "ubuntu" else firstName);
+  homeDirectory =
+    if isDarwin then
+      "/Users/${firstName}"
+    else
+      (if onAws then "/home/ubuntu" else "/home/${firstName}");
+
   # home-manager pin
   hm = with builtins; fromJSON (readFile ./sources/home-manager.json);
   home-manager = fetchFromGitHub {
@@ -43,18 +54,9 @@ with pkgs.hax; {
   programs.dircolors.enable = true;
 
   home = {
-    username =
-      if isDarwin then
-        firstName
-      else
-        (if onAws then "ubuntu" else firstName);
-    homeDirectory =
-      if isDarwin then
-        "/Users/${firstName}"
-      else
-        (if onAws then "/home/ubuntu" else "/home/${firstName}");
+    inherit username homeDirectory sessionVariables;
+
     stateVersion = "21.11";
-    inherit sessionVariables;
 
     packages = with pkgs;
       lib.flatten [
@@ -110,6 +112,7 @@ with pkgs.hax; {
         nix-prefetch-github
         nix-prefetch-scripts
         nix-tree
+        nix-update
         nixpkgs-fmt
         nixpkgs-review
         nix_2_6
@@ -128,6 +131,7 @@ with pkgs.hax; {
         shellcheck
         shfmt
         statix
+        terraform-ls
         time
         unzip
         watch
@@ -204,12 +208,12 @@ with pkgs.hax; {
 
         # my pkgs
         aliyun-cli
-        # cloudquery
+        cloudquery
         horcrux
         katafygio
         kube-linter
         pluto
-        # rare
+        rare
         rbac-tool
         semgrep-core
 
@@ -459,6 +463,67 @@ with pkgs.hax; {
       text = ''
         allow-loopback-pinentry
       '';
+    };
+    ${attrIf isNixOS "vscodeserver"} = {
+      target = ".vscode-server/data/Machine/settings.json";
+      text =
+        let
+          # options
+          formatOnSave = "editor.formatOnSave";
+          formatter = "editor.defaultFormatter";
+          tabSize = "editor.tabSize";
+
+          # vscode extensions
+          extensions = {
+            nix-ide = "jnoortheen.nix-ide";
+            prettier = "esbenp.prettier-vscode";
+            python = "ms-python.python";
+            shell-format = "foxundermoon.shell-format";
+            terraform = "hashicorp.terraform";
+          };
+          nix-bin = "${homeDirectory}/.nix-profile/bin";
+        in
+        ''
+          {
+            "${formatOnSave}": true,
+            "${formatter}": "${extensions.prettier}",
+            "python.formatting.blackPath": "${nix-bin}/black",
+            "python.linting.mypyPath": "${nix-bin}/mypy",
+            "python.linting.flake8Path": "${nix-bin}/flake8",
+            "python.linting.mypyEnabled": true,
+            "python.linting.flake8Enabled": true,
+            "python.linting.banditEnabled": true,
+            "python.linting.banditArgs": ["-s", "B101", "B311"],
+            "python.languageServer": "Pylance",
+            "python.analysis.diagnosticSeverityOverrides": {"reportMissingImports": "none"},
+            "python.formatting.provider": "black",
+            "prettier.configPath": "${homeDirectory}/.prettierrc.js",
+            "nix.enableLanguageServer": true,
+            "[nix]": {
+              "${formatter}": "${extensions.nix-ide}",
+              "${tabSize}": 2
+            },
+            "[terraform]": {
+              "${formatter}": "${extensions.terraform}",
+              "${formatOnSave}": true,
+              "${tabSize}": 2
+            },
+            "terraform.languageServer": {
+              "external": true,
+              "pathToBinary": "${nix-bin}/terraform-ls",
+              "args": ["serve"],
+              "maxNumberOfProblems": 100,
+              "trace.server": "off"
+            },
+            "[dockerfile]": { "${formatter}": "${extensions.prettier}" },
+            "[properties]": { "${formatter}": "${extensions.shell-format}" },
+            "[shellscript]": { "${formatter}": "${extensions.shell-format}" },
+            "[python]": {"${formatter}": "${extensions.python}"},
+            "[typescript]": {"${formatter}": "${extensions.prettier}"},
+            "[typescriptreact]": {"${formatter}": "${extensions.prettier}"},
+            "[ignore]": { "${formatter}": "${extensions.shell-format}" }
+          }
+        '';
     };
   };
 
