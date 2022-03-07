@@ -1144,6 +1144,7 @@ with builtins; rec {
         --ignore DL3009 \
         --ignore DL3028 \
         --ignore DL3015 \
+        --ignore DL4006 \
         "$file"
     '';
   };
