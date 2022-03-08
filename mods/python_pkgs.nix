@@ -174,6 +174,7 @@ let
         homepage = "https://github.com/ajinabraham/njsscan";
       };
     };
+
     libsast = buildPythonPackage rec {
       pname = "libsast";
       version = "1.5.0";
@@ -198,6 +199,7 @@ let
         homepage = "https://github.com/ajinabraham/libsast";
       };
     };
+
     sarif-om = buildPythonPackage rec {
       pname = "sarif-om";
       version = "1.0.4";
@@ -221,6 +223,7 @@ let
 
       meta = with lib; { };
     };
+
     jschema-to-python = buildPythonPackage rec {
       pname = "jschema-to-python";
       version = "1.2.3";
@@ -248,6 +251,7 @@ let
 
       meta = with lib; { };
     };
+
     semgrep = buildPythonPackage rec {
       pname = "semgrep";
       version = "0.80.0";
@@ -278,6 +282,131 @@ let
       ];
 
       meta = with lib; { };
+    };
+
+
+    # prospector
+    prospector = buildPythonPackage rec {
+      pname = "prospector";
+      version = "1.7.6";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "0m26pzbk7fhklqdk5j66y8qh7ac8x5q76hq6br1q6jnin5vh252r";
+      };
+
+      propagatedBuildInputs = [
+        pyyaml
+        dodgy
+        mccabe
+        pep8-naming
+        pycodestyle
+        pydocstyle
+        pyflakes
+        pylint-celery
+        pylint-django
+        pylint-flask
+        pylint-plugin-utils
+        pylint
+        requirements-detector
+        setoptconf-tmp
+        setuptools
+        toml
+      ];
+
+      doCheck = false;
+
+      meta = with lib; { homepage = "http://prospector.readthedocs.io"; };
+    };
+    pep8-naming = buildPythonPackage rec {
+      pname = "pep8-naming";
+      version = "0.10.0";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "0fmzccbmr0jn9ynamdb9ly2ai8qs5qfk8alfgnzr3fbjvpwsbd7k";
+      };
+
+      propagatedBuildInputs = [ flake8-polyfill ];
+
+      pythonImportsCheck = [
+        "pep8ext_naming"
+      ];
+
+      meta = with lib; {
+        description = "Check PEP-8 naming conventions, plugin for flake8";
+        homepage = "https://github.com/PyCQA/pep8-naming";
+      };
+    };
+    pylint-django = buildPythonPackage rec {
+      pname = "pylint-django";
+      version = "2.5.2";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "0z6rhxarc3sv4kb04yhx0pyvwrnqszgimydf28xqllwj98mxhcqr";
+      };
+
+      checkInputs = [
+        pytestCheckHook
+      ];
+
+      propagatedBuildInputs = [ pylint-plugin-utils pylint ];
+
+      pythonImportsCheck = [
+        "pylint_django"
+      ];
+
+      doCheck = false;
+
+      meta = with lib; {
+        description =
+          "A Pylint plugin to help Pylint understand the Django web framework";
+        homepage = "https://github.com/PyCQA/pylint-django";
+      };
+    };
+    pylint-plugin-utils = buildPythonPackage rec {
+      pname = "pylint-plugin-utils";
+      version = "0.7";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "1p84l2azmbc64fgj9aj81zz1h6v0zq6r8b3mbkfib55f2q2vqj6f";
+      };
+
+      propagatedBuildInputs = [ pylint ];
+
+      pythonImportsCheck = [
+        "pylint_plugin_utils"
+      ];
+      doCheck = false;
+
+      meta = with lib; {
+        description = "Utilities and helpers for writing Pylint plugins";
+        homepage = "https://github.com/PyCQA/pylint-plugin-utils";
+      };
+    };
+    setoptconf-tmp = buildPythonPackage rec {
+      pname = "setoptconf-tmp";
+      version = "0.3.1";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "0y2pgpraa36wzlzkxigvmz80mqd3mzcc9wv2yx9bliqks7fhlj70";
+      };
+
+      propagatedBuildInputs = [ pyyaml ];
+
+      pythonImportsCheck = [
+        "setoptconf"
+      ];
+
+
+      meta = with lib; {
+        description =
+          "A module for retrieving program settings from various sources in a consistant method.";
+        homepage = "https://github.com/carlio/setoptconf-tmp";
+      };
     };
 
   };

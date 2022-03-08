@@ -161,4 +161,6 @@ rec {
       }
     )
     { };
+
+  prospector-176 = prev.python310Packages.prospector;
 }

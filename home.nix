@@ -216,6 +216,7 @@ with pkgs.hax; {
         rare
         rbac-tool
         semgrep-core
+        prospector-176
 
         # overlays
         git-trim
