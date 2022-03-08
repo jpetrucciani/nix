@@ -312,11 +312,61 @@ let
         setoptconf-tmp
         setuptools
         toml
+
+        # with_everything
+        bandit
+        frosted
+        mypy
+        pyroma
+        vulture
       ];
 
       doCheck = false;
 
       meta = with lib; { homepage = "http://prospector.readthedocs.io"; };
+    };
+    frosted = buildPythonPackage rec {
+      pname = "frosted";
+      version = "1.4.1";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "0l9bwcahjymc62j9qlcgxmms7naz8akqdadri7136jq67asd5rfi";
+      };
+
+      propagatedBuildInputs = [ pies ];
+
+      doCheck = false;
+
+      pythonImportsCheck = [
+        "frosted"
+      ];
+
+      meta = with lib; {
+        description = "A passive Python syntax checker";
+        homepage = "https://github.com/timothycrosley/frosted";
+      };
+    };
+    pies = buildPythonPackage rec {
+      pname = "pies";
+      version = "2.6.7";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "1sg4fmdq3qd02cqgwgl07mfsc51897z866ch819603qfrqink9z8";
+      };
+
+      doCheck = false;
+
+      pythonImportsCheck = [
+        "pies"
+      ];
+
+      meta = with lib; {
+        description =
+          "The simplest way to write one program that runs on both Python 2 and Python 3.";
+        homepage = "https://github.com/timothycrosley/pies";
+      };
     };
     pep8-naming = buildPythonPackage rec {
       pname = "pep8-naming";
