@@ -22,12 +22,13 @@ with builtins; rec {
       inherit name text;
       dontUnpack = true;
       passAsFile = "text";
+      nativeBuildInputs = [ pkgs.shellcheck ];
       installPhase = ''
         mkdir -p $out/bin
         echo '#!/bin/bash' > $out/bin/${name}
         cat $textPath >> $out/bin/${name}
         chmod +x $out/bin/${name}
-        ${_.shellcheck} $out/bin/${name}
+        shellcheck $out/bin/${name}
       '';
     };
 
@@ -149,7 +150,7 @@ with builtins; rec {
     }: stdenv.mkDerivation {
       inherit name version;
       dontUnpack = true;
-      nativeBuildInputs = [ installShellFiles ];
+      nativeBuildInputs = [ installShellFiles pkgs.shellcheck ];
       passAsFile = [
         "text"
         "completion"
@@ -295,8 +296,8 @@ with builtins; rec {
         echo '#!/bin/bash' >$out/bin/${name}
         cat $textPath >>$out/bin/${name}
         chmod +x $out/bin/${name}
-        ${_.shellcheck} $out/bin/${name}
-        ${_.shellcheck} $completionPath
+        shellcheck $out/bin/${name}
+        shellcheck $completionPath
         installShellCompletion --bash --name ${name} $completionPath
       '';
     };
@@ -874,7 +875,6 @@ with builtins; rec {
     rg = "${pkgs.ripgrep}/bin/rg";
     sed = "${pkgs.gnused}/bin/sed";
     grep = "${pkgs.gnugrep}/bin/grep";
-    shellcheck = "${pkgs.shellcheck}/bin/shellcheck";
     shfmt = "${pkgs.shfmt}/bin/shfmt";
     head = "${pkgs.coreutils}/bin/head";
     sort = "${pkgs.coreutils}/bin/sort";
