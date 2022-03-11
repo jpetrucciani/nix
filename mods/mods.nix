@@ -1036,7 +1036,7 @@ with builtins; rec {
         "ubuntu:22.04"
         "ubuntu:20.04"
       ];
-      aws = {
+      aws = rec {
         regions = [
           "us-east-1"
           "us-east-2"
@@ -1056,7 +1056,7 @@ with builtins; rec {
           "cn-north-1"
         ];
       };
-      gcp = {
+      gcp = rec {
         regions = [
           "asia-east1"
           "asia-east2"
@@ -1087,6 +1087,29 @@ with builtins; rec {
           "us-west2"
           "us-west3"
           "us-west4"
+        ];
+      };
+      tencent = rec {
+        regions = [
+          "ap-guangzhou"
+          "ap-shanghai"
+          "ap-nanjing"
+          "ap-beijing"
+          "ap-chengdu"
+          "ap-chongqing"
+          "ap-hongkong"
+          "ap-singapore"
+          "ap-jakarta"
+          "ap-seoul"
+          "ap-tokyo"
+          "ap-mumbai"
+          "ap-bangkok"
+          "na-toronto"
+          "sa-saopaulo"
+          "na-siliconvalley"
+          "na-ashburn"
+          "eu-frankfurt"
+          "eu-moscow"
         ];
       };
     };
