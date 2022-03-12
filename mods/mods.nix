@@ -919,6 +919,14 @@ with builtins; rec {
     ka = "${k} get pods | ${sed} '1d'";
     get_id = "${awk} '{ print $1 }'";
 
+    # json partials
+    refresh_patch = ''
+      echo "spec.template.metadata.labels.date = \"$(${_.date} +'%s')\";" |
+       ${_.gron} -u |
+       ${_.tr} -d '\n' |
+       ${_.sed} -E 's#\s+##g'
+    '';
+
     # flags to reuse
     flags = {
       aws = {
@@ -1295,7 +1303,7 @@ with builtins; rec {
     script = ''
       ${_.k} --namespace "$namespace" \
         patch deployment "$deployment" \
-        --patch "''$(_get_deployment_patch)"
+        --patch "''$(${_.refresh_patch})"
       ${_.k} --namespace "$namespace" rollout status deployment/"$deployment"
     '';
   };
@@ -1319,12 +1327,6 @@ with builtins; rec {
   };
 
   # deployment stuff
-  _get_deployment_patch = writeBashBinChecked "_get_deployment_patch" ''
-    echo "spec.template.metadata.labels.date = \"$(${_.date} +'%s')\";" |
-      ${_.gron} -u |
-      ${_.tr} -d '\n' |
-      ${_.sed} -E 's#\s+##g'
-  '';
   refresh_deployment = pog {
     name = "refresh_deployment";
     flags = [
@@ -1334,7 +1336,7 @@ with builtins; rec {
       deployment_id="$1"
       ${_.k} --namespace "$namespace" \
         patch deployment "$deployment_id" \
-        --patch "''$(_get_deployment_patch)"
+        --patch "''$(${_.refresh_patch})"
       ${_.k} --namespace "$namespace" rollout status deployment/"$deployment_id"
     '';
   };
@@ -1344,7 +1346,6 @@ with builtins; rec {
     krm
     kroll
     kshell
-    _get_deployment_patch
     refresh_deployment
   ];
 
