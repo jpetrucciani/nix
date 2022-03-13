@@ -129,6 +129,13 @@ in
             }
           '';
         };
+        "home.petro.casa" = {
+          extraConfig = ''
+            reverse_proxy /* {
+              to petro.casa:${toString common.ports.home-assistant}
+            }
+          '';
+        };
       };
     };
   } // common.services;
