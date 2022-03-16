@@ -12,6 +12,8 @@ echo -e 'max-jobs = auto\nexperimental-features = nix-command flakes' >>~/.confi
 nix-env -i direnv nix-direnv cachix
 echo "source $HOME/.nix-profile/share/nix-direnv/direnvrc" >~/.direnvrc
 
+echo ". $HOME/.nix-profile/etc/profile.d/nix.sh" >>~/.bashrc
 echo 'eval "$(direnv hook bash)"' >>~/.bashrc
+echo ". $HOME/.nix-profile/etc/profile.d/nix.sh" >>~/.zshrc
 echo 'eval "$(direnv hook zsh)"' >>~/.zshrc
 } # End of wrapping
