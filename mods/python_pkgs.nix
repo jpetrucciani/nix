@@ -34,7 +34,7 @@ let
               ];
           }) else super.httplib2;
     passlib =
-      if self.isOldMac then
+      if self.isDarwin then
         super.passlib.overrideAttrs
           (_: {
             disabledTestPaths =
