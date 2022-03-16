@@ -10,6 +10,7 @@ echo -e 'max-jobs = auto\nexperimental-features = nix-command flakes' >>~/.confi
 . $HOME/.nix-profile/etc/profile.d/nix.sh
 # install direnv, nix-direnv, and cachix
 nix-env -i direnv nix-direnv cachix
+echo "source $HOME/.nix-profile/share/nix-direnv/direnvrc" >~/.direnvrc
 
 echo 'eval "$(direnv hook bash)"' >>~/.bashrc
 echo 'eval "$(direnv hook zsh)"' >>~/.zshrc
