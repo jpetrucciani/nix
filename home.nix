@@ -304,6 +304,10 @@ with pkgs.hax; {
       now = "date +%s";
       uneek = "awk '!a[$0]++'";
     } // docker_aliases // kubernetes_aliases;
+    bashrcExtra =
+      if isDarwin then ''
+        export PATH="$PATH:${homeDirectory}/.nix-profile/bin"
+      '' else "";
     initExtra = ''
       HISTCONTROL=ignoreboth
       set +h
@@ -496,10 +500,10 @@ with pkgs.hax; {
             "python.formatting.blackPath": "${nix-bin}/black",
             "python.linting.mypyPath": "${nix-bin}/mypy",
             "python.linting.flake8Path": "${nix-bin}/flake8",
-            "python.linting.mypyEnabled": true,
-            "python.linting.flake8Enabled": true,
             "python.linting.banditEnabled": true,
             "python.linting.banditArgs": ["-s", "B101", "B311"],
+            "python.linting.mypyEnabled": true,
+            "python.linting.flake8Enabled": true,
             "python.languageServer": "Pylance",
             "python.analysis.diagnosticSeverityOverrides": {"reportMissingImports": "none"},
             "python.formatting.provider": "black",
