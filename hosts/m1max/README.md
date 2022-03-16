@@ -21,6 +21,15 @@ darwin-rebuild switch -I darwin=/nix/store/3y5bvzx51dkrrsbdk2dhs9c6z4vlmjfa-nix-
 
 ## manual tweaks
 
+### max open files
+
+```bash
+curl https://raw.githubusercontent.com/jpetrucciani/nix/main/scripts/files/com.startup.sysctl.plist |
+    sudo tee /Library/LaunchDaemons/com.startup.sysctl.plist
+chown root:wheel /Library/LaunchDaemons/com.startup.sysctl.plist
+launchctl load /Library/LaunchDaemons/com.startup.sysctl.plist
+```
+
 ### touch id sudo
 
 We probably want to be able to use touch id for sudo on iterm. There is now a [module here](../modules/pam.nix) which can help nix-darwin configure this for us.
