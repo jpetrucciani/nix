@@ -145,10 +145,10 @@ in
   services = {
     tailscale.enable = true;
     netdata.enable = true;
-    dictd = {
-      enable = true;
-      DBs = with pkgs.dictdDBs; [ wiktionary wordnet ];
-    };
+    # dictd = {
+    #   enable = true;
+    #   DBs = with pkgs.dictdDBs; [ wiktionary wordnet ];
+    # };
     openssh = {
       enable = true;
       passwordAuthentication = false;

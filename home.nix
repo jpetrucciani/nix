@@ -115,7 +115,7 @@ with pkgs.hax; {
         nix-update
         nixpkgs-fmt
         nixpkgs-review
-        nix_2_6
+        nix
         openssh
         p7zip
         patch

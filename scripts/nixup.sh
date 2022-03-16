@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 { # Prevent execution if this script was only partially downloaded
 curl -L https://nixos.org/nix/install | sh
@@ -7,11 +7,9 @@ curl -L https://nixos.org/nix/install | sh
 mkdir -p ~/.config/nix/
 echo -e 'max-jobs = auto\nexperimental-features = nix-command flakes' >>~/.config/nix/nix.conf
 
+. $HOME/.nix-profile/etc/profile.d/nix.sh
 # install direnv, nix-direnv, and cachix
 nix-env -i direnv nix-direnv cachix
-nix-env --set-flag priority 10 direnv
-nix-env --set-flag priority 10 nix-direnv
-nix-env --set-flag priority 10 cachix
 
 echo 'eval "$(direnv hook bash)"' >>~/.bashrc
 echo 'eval "$(direnv hook zsh)"' >>~/.zshrc
