@@ -26,8 +26,8 @@ darwin-rebuild switch -I darwin=/nix/store/3y5bvzx51dkrrsbdk2dhs9c6z4vlmjfa-nix-
 ```bash
 curl https://raw.githubusercontent.com/jpetrucciani/nix/main/scripts/files/com.startup.sysctl.plist |
     sudo tee /Library/LaunchDaemons/com.startup.sysctl.plist
-chown root:wheel /Library/LaunchDaemons/com.startup.sysctl.plist
-launchctl load /Library/LaunchDaemons/com.startup.sysctl.plist
+sudo chown root:wheel /Library/LaunchDaemons/com.startup.sysctl.plist
+sudo launchctl load /Library/LaunchDaemons/com.startup.sysctl.plist
 ```
 
 ### touch id sudo

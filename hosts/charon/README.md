@@ -28,8 +28,8 @@ darwin-rebuild switch -I darwin=/nix/store/0zvb9p81gk91q42sid21rym45zwj9xcw-nix-
 ```bash
 curl https://raw.githubusercontent.com/jpetrucciani/nix/main/scripts/files/com.startup.sysctl.plist |
     sudo tee /Library/LaunchDaemons/com.startup.sysctl.plist
-chown root:wheel /Library/LaunchDaemons/com.startup.sysctl.plist
-launchctl load /Library/LaunchDaemons/com.startup.sysctl.plist
+sudo chown root:wheel /Library/LaunchDaemons/com.startup.sysctl.plist
+sudo launchctl load /Library/LaunchDaemons/com.startup.sysctl.plist
 ```
 
 ### disable annoying message for brew installs
