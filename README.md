@@ -9,7 +9,7 @@ _my nixpkgs setup and overlays_
 ```bash
 # install nix
 ## linux and mac
-curl -L https://nix.cobi.dev/up | sh
+curl -L https://nix.cobi.dev/up | bash
 
 nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
 nix-channel --update

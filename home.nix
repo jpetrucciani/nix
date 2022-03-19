@@ -205,6 +205,7 @@ with pkgs.hax; {
         docker_bash_scripts
         k8s_bash_scripts
         nix_bash_scripts
+        github_bash_scripts
 
         # my pkgs
         aliyun-cli

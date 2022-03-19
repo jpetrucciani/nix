@@ -317,8 +317,9 @@ with builtins; rec {
     , description ? "a flag"
     , argument ? "VAR"
     , envVar ? "POG_" + (replaceStrings [ "-" ] [ "_" ] (upper name))
-    , prompt ? ""
-    , promptError ? "you must specify a value for '${name}'!"
+    , required ? false
+    , prompt ? if required then "true" else ""
+    , promptError ? "you must specify a value for '--${name}'!"
     , promptErrorExitCode ? 3
     , hasPrompt ? (stringLength prompt) > 0
     , completion ? ""
@@ -954,6 +955,18 @@ with builtins; rec {
           argument = "NAMESPACE";
           completion = ''${_.k} get ns | ${_.sed} '1d' | ${_.awk} '{print $1}' '';
         };
+        nodes = {
+          name = "nodes";
+          description = "the node(s) on which to perform this operation";
+          argument = "NODES";
+          completion = ''${_.k} get nodes -o wide | ${_.sed} '1d' | ${_.awk} '{print $1}' '';
+          prompt = ''
+            ${_.k} get nodes -o wide |
+              ${_.fzfqm} --header-lines=1 |
+              ${_.get_id}
+          '';
+          promptError = "you must specify one or more nodes!";
+        };
       };
       docker = {
         image = {
@@ -1326,6 +1339,21 @@ with builtins; rec {
     '';
   };
 
+  kdrain = pog {
+    name = "kdrain";
+    description = "a quick and easy way to drain one or more nodes on k8s!";
+    flags = [
+      _.flags.common.force
+      _.flags.k8s.nodes
+    ];
+    script = ''
+      for node in $nodes; do
+        green "draining node '$node'"
+        ${_.k} drain ''${force:+--delete-emptydir-data --ignore-daemonsets} "$node"
+      done
+    '';
+  };
+
   # deployment stuff
   refresh_deployment = pog {
     name = "refresh_deployment";
@@ -1346,7 +1374,44 @@ with builtins; rec {
     krm
     kroll
     kshell
+    kdrain
     refresh_deployment
+  ];
+
+
+  github_tags = pog {
+    name = "github_tags";
+    description = "a nice wrapper for getting github tags for a repo!";
+    flags = [
+      {
+        name = "latest";
+        description = "fetch only the latest tag";
+        bool = true;
+      }
+      {
+        name = "owner";
+        description = "the github user or organization that owns the repo";
+        required = true;
+      }
+      {
+        name = "repo";
+        description = "the github repo to pull tags from";
+        required = true;
+      }
+    ];
+    script = ''
+      tags="$(${_.curl} -Ls "https://api.github.com/repos/''${owner}/''${repo}/tags" |
+        ${_.jq} -r '.[].name')"
+      if [ -n "''${latest}" ]; then
+        echo "$tags" | ${_.head} -n 1
+      else
+        echo "$tags"
+      fi
+    '';
+  };
+
+  github_bash_scripts = [
+    github_tags
   ];
 
   yank = next.yank.overrideAttrs (attrs: {
