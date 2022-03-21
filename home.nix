@@ -197,15 +197,15 @@ with pkgs.hax; {
         kubectl
         kubectx
 
-        # load in my custom checked bash scripts
-        aws_bash_scripts
-        gcp_bash_scripts
-        general_bash_scripts
-        image_bash_scripts
-        docker_bash_scripts
-        k8s_bash_scripts
-        nix_bash_scripts
-        github_bash_scripts
+        # load in my custom checked pog scripts
+        aws_pog_scripts
+        gcp_pog_scripts
+        general_pog_scripts
+        ffmpeg_pog_scripts
+        docker_pog_scripts
+        k8s_pog_scripts
+        nix_pog_scripts
+        github_pog_scripts
 
         # my pkgs
         aliyun-cli

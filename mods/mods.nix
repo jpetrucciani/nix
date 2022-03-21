@@ -147,7 +147,25 @@ with builtins; rec {
     , beforeExit ? ""
     , strict ? false
     , flagPadding ? 20
-    }: stdenv.mkDerivation {
+    }:
+    let
+      helpers = {
+        fn = {
+          add = "${_.awk} '{print $1 + $2}'";
+          sub = "${_.awk} '{print $1 - $2}'";
+          ts_to_seconds = "${_.awk} -F\: '{ for(k=NF;k>0;k--) sum+=($k*(60^(NF-k))); print sum }'";
+        };
+        var = {
+          empty = name: ''[ -z "''${${name}}" ]'';
+          notEmpty = name: ''[ -n "''${${name}}" ]'';
+        };
+        file = {
+          exists = name: ''[ -f "''${${name}}" ]'';
+          notExists = name: ''[ ! -f "''${${name}}" ]'';
+        };
+      };
+    in
+    stdenv.mkDerivation {
       inherit name version;
       dontUnpack = true;
       nativeBuildInputs = [ installShellFiles pkgs.shellcheck ];
@@ -247,7 +265,7 @@ with builtins; rec {
         ${if bashBible then bashbible.bible else ""}
         ${concatStringsSep "\n" (map (x: x.flagPrompt) parsedFlags)}
         # script
-        ${script}
+        ${if builtins.isFunction script then script helpers else script}
       '';
       completion = ''
         #!/bin/bash
@@ -469,7 +487,7 @@ with builtins; rec {
     script = ''
       ${_.aws} ecr get-login-password --region "''${region}" |
       ${_.d} login --username AWS \
-          --password-stdin "$(${_.aws} sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com"
+        --password-stdin "$(${_.aws} sts get-caller-identity --query Account --output text).dkr.ecr.''${region}.amazonaws.com"
     '';
   };
   ecr_login_public = pog {
@@ -484,7 +502,7 @@ with builtins; rec {
           --password-stdin public.ecr.aws
     '';
   };
-  aws_bash_scripts = [
+  aws_pog_scripts = [
     aws_id
     ecr_login
     ecr_login_public
@@ -498,7 +516,7 @@ with builtins; rec {
       ${_.gcloud} projects list
     '';
   };
-  gcp_bash_scripts = [
+  gcp_pog_scripts = [
     glist
   ];
 
@@ -643,7 +661,7 @@ with builtins; rec {
     '';
   };
 
-  general_bash_scripts = [
+  general_pog_scripts = [
     batwhich
     hms
     get_cert
@@ -777,7 +795,7 @@ with builtins; rec {
     '';
   };
 
-  nix_bash_scripts = [
+  nix_pog_scripts = [
     nixup
     nixpy
     y2n
@@ -808,19 +826,20 @@ with builtins; rec {
         description = "the filename to output to [defaults to the current name with a tag]";
       }
     ];
-    script = ''
+    script = helpers: ''
       file="$1"
       name=""
       scale=""
-      [ -n "$horizontal" ] && [ -n "$vertical" ] && die "you can only scale in 1 dimension!" 1
-      if [ -n "$horizontal" ]; then
+      ${helpers.var.empty "file"} && die "you must specify a source file!" 1
+      ${helpers.var.notEmpty "horizontal"} && ${helpers.var.notEmpty "vertical"} && die "you can only scale in 1 dimension!" 1
+      if ${helpers.var.notEmpty "horizontal"}; then
         name="''${horizontal}x"
         scale="$horizontal:-1"
       else
         name="''${vertical}y"
         scale="-1:$vertical"
       fi
-      [ -z "''${output}" ] && output="''${file%.*}.$name.''${file##*.}"
+      ${helpers.var.empty "output"} && output="''${file%.*}.$name.''${file##*.}"
       ${_.ffmpeg} -i "$file" -vf scale="$scale" "$output"
     '';
   };
@@ -848,18 +867,62 @@ with builtins; rec {
         description = "the filename to output to [defaults to the current name with a tag]";
       }
     ];
-    script = ''
+    script = helpers: ''
       file="$1"
       sep=""
-      [ -z "$horizontal" ] && [ -z "$vertical" ] && die "you must specify at least one way to flip!" 1
-      [ -z "''${output}" ] && output="''${file%.*}.flip.''${file##*.}"
-      [ -n "$horizontal" ] && [ -n "$vertical" ] && sep=","
+      ${helpers.var.empty "file"} && die "you must specify a source file!" 1
+      ${helpers.var.empty "horizontal"} && ${helpers.var.empty "vertical"} && die "you must specify at least one way to flip!" 1
+      ${helpers.var.empty "output"} && output="''${file%.*}.flip.''${file##*.}"
+      ${helpers.var.notEmpty "horizontal"} && ${helpers.var.notEmpty "vertical"} && sep=","
       ${_.ffmpeg} -i "$file" -filter:v "''${vertical:+vflip}''${sep}''${horizontal:+hflip}" -c:a copy "$output"
     '';
   };
-  image_bash_scripts = [
+  cut_video = pog {
+    name = "cut_video";
+    description = "a quick and easy way to cut a video with ffmpeg!";
+    arguments = [
+      { name = "source"; }
+    ];
+    flags = [
+      {
+        name = "start";
+        description = "the start timestamp to cut from";
+        default = "0.0";
+      }
+      {
+        name = "end";
+        description = "the end timestamp to cut to";
+      }
+      {
+        name = "duration";
+        description = "the length of time to cut out. will override --end if passed";
+      }
+      {
+        name = "output";
+        description = "the filename to output to [defaults to the current name with a tag]";
+      }
+    ];
+    script = helpers: ''
+      file="$1"
+      ${helpers.var.empty "file"} && die "you must specify a source file!" 1
+      ${helpers.file.notExists "file"} && die "the file '$file' does not exist!" 2
+      ${helpers.var.empty "end"} && ${helpers.var.empty "duration"} && die "you must specify an end (-e|--end) or duration (-d|--duration)!" 3
+      ${helpers.var.empty "output"} && output="''${file%.*}.cut.''${file##*.}"
+        
+      start_sec="$(echo "$start" | ${helpers.fn.ts_to_seconds})"
+      if ${helpers.var.notEmpty "duration"}; then
+        end_sec="$(echo "$start_sec" "$duration" | ${helpers.fn.add})"
+      else
+        end_sec="$(echo "$end" | ${helpers.fn.ts_to_seconds})"
+      fi
+
+      ${_.ffmpeg} -i "$file" -ss "$start_sec" -to "$end_sec" -c:v copy -c:a copy "$output"
+    '';
+  };
+  ffmpeg_pog_scripts = [
     scale
     flip
+    cut_video
   ];
 
   ### snippets
@@ -1220,7 +1283,7 @@ with builtins; rec {
     '';
   };
 
-  docker_bash_scripts = [
+  docker_pog_scripts = [
     drmi
     dshell
     dlint
@@ -1368,7 +1431,7 @@ with builtins; rec {
       ${_.k} --namespace "$namespace" rollout status deployment/"$deployment_id"
     '';
   };
-  k8s_bash_scripts = [
+  k8s_pog_scripts = [
     kdesc
     kex
     krm
@@ -1410,7 +1473,7 @@ with builtins; rec {
     '';
   };
 
-  github_bash_scripts = [
+  github_pog_scripts = [
     github_tags
   ];
 
