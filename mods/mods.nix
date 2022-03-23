@@ -1064,12 +1064,21 @@ with builtins; rec {
       nix = {
         with_python = {
           name = "with_python";
+          short = "p";
           bool = true;
           description = "whether or not to include a python with packages";
         };
         with_node = {
           name = "with_node";
+          short = "n";
           bool = true;
+          description = "whether or not to include node";
+        };
+        with_terraform = {
+          name = "with_terraform";
+          short = "t";
+          bool = true;
+          description = "whether or not to include terraform";
         };
       };
       python = {
