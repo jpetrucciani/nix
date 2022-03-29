@@ -38,7 +38,7 @@ let
   };
 
   # fix starship for m1
-  starship = pkgs.callPackage ./pkgs/starship.nix { };
+  # starship = pkgs.callPackage ./pkgs/starship.nix { };
 
   optList = conditional: list: if conditional then list else [ ];
 
@@ -540,7 +540,7 @@ with pkgs.hax; {
 
   # starship config
   programs.starship = {
-    package = starship;
+    # package = starship;
     enable = !isAndroid;
     settings = {
       add_newline = false;

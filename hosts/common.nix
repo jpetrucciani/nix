@@ -220,6 +220,7 @@ in
         "insomnia"
         "karabiner-elements"
         "keybase"
+        "notion"
         "rectangle"
         "utm"
       ];
