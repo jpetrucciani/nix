@@ -160,6 +160,7 @@ with pkgs.hax; {
             anybadge
             tabulate
             beautifulsoup4
+            praw
 
             # api
             fastapi
@@ -181,6 +182,9 @@ with pkgs.hax; {
             # my types (for nixpkgs)
             boto3-stubs
             botocore-stubs
+
+            # my packages (for nixpkgs)
+            notion-client
           ]
           ++ (optList (!isM1) [
             # njssscan won't work on m1 yet due to lack of semgrep binding wheel https://github.com/returntocorp/semgrep/issues/4311

@@ -456,6 +456,30 @@ let
       };
     };
 
+
+    notion-client = buildPythonPackage rec {
+      pname = "notion-client";
+      version = "0.9.0";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "004vx0fv7v12r18m1np1hjx9qnxgdk6aajsjhchvz0fyl2588f3l";
+      };
+
+      propagatedBuildInputs = [ httpx ];
+
+      doCheck = false;
+
+      pythonImportsCheck = [
+        "notion_client"
+      ];
+
+      meta = with lib; {
+        description = "Python client for the official Notion API";
+        homepage = "https://github.com/ramnes/notion-sdk-py";
+      };
+    };
+
   };
 in
 pynixifyOverlay
