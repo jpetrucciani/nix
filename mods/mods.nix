@@ -163,6 +163,20 @@ with builtins; rec {
           exists = name: ''[ -f "''${${name}}" ]'';
           notExists = name: ''[ ! -f "''${${name}}" ]'';
         };
+        yesno = { prompt ? "Would you like to continue?" }: ''
+          while true; do
+            read -p "${prompt} " yn
+            case $yn in
+              [Yy]* ) break;;
+              [Nn]* ) exit;;
+              * ) echo "Please answer y/yes or n/no!";;
+            esac
+          done
+        '';
+        timer = {
+          start = name: ''_pog_start_${name}="$(${pkgs.coreutils}/bin/date +%s.%N)"'';
+          stop = name: ''"$(echo "$(${pkgs.coreutils}/bin/date +%s.%N) - $_pog_start_${name}" | ${pkgs.bc}/bin/bc -l)"'';
+        };
       };
     in
     stdenv.mkDerivation {
