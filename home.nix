@@ -222,6 +222,7 @@ with pkgs.hax; {
         rbac-tool
         semgrep-core
         prospector-176
+        mdctl
 
         # overlays
         git-trim
