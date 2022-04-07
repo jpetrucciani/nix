@@ -531,6 +531,16 @@ with pkgs.hax; {
               "maxNumberOfProblems": 100,
               "trace.server": "off"
             },
+            "[json]": {
+              "${formatter}": "${extensions.prettier}",
+              "${formatOnSave}": true,
+              "${tabSize}": 2
+            },
+            "[jsonc]": {
+              "${formatter}": "${extensions.prettier}",
+              "${formatOnSave}": true,
+              "${tabSize}": 2
+            },
             "[dockerfile]": { "${formatter}": "${extensions.prettier}" },
             "[properties]": { "${formatter}": "${extensions.shell-format}" },
             "[shellscript]": { "${formatter}": "${extensions.shell-format}" },
@@ -736,7 +746,7 @@ with pkgs.hax; {
   # fix vscode
   imports =
     if isNixOS then [
-      "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/bc28cc2a7d866b32a8358c6ad61bea68a618a3f5"}/modules/vscode-server/home.nix"
+      "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/d2343b5eb47b811856085f3eff4d899a32b2c136"}/modules/vscode-server/home.nix"
     ] else [ ];
 
   ${attrIf isNixOS "services"}.vscode-server.enable = isNixOS;
