@@ -171,6 +171,11 @@ with pkgs.hax; {
             pandas
             scipy
 
+            # interactive
+            (bpython.override {
+              curtsies = curtsies.overridePythonAttrs (_: { doCheck = false; });
+            })
+
             # type annotations (from nixpkgs)
             types-requests
             types-tabulate
@@ -190,10 +195,7 @@ with pkgs.hax; {
             # njssscan won't work on m1 yet due to lack of semgrep binding wheel https://github.com/returntocorp/semgrep/issues/4311
             njsscan
           ])
-          ++ (optList isLinux [
-            # interactive shell!
-            bpython
-          ])
+          ++ (optList isLinux [ ])
           )
         )
 

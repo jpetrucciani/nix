@@ -165,7 +165,7 @@ with builtins; rec {
         };
         yesno = { prompt ? "Would you like to continue?" }: ''
           while true; do
-            read -p "${prompt} " yn
+            read -r -p "${prompt} " yn
             case $yn in
               [Yy]* ) break;;
               [Nn]* ) exit;;
