@@ -223,6 +223,7 @@ with pkgs.hax; {
         semgrep-core
         prospector-176
         mdctl
+        s3-edit
 
         # overlays
         git-trim

@@ -98,6 +98,31 @@ rec {
     )
     { };
 
+  s3-edit = pkgs.callPackage
+    ({ stdenv, lib, buildGoModule, fetchFromGitHub }:
+      buildGoModule rec {
+        version = "0.0.15";
+        pname = "s3-edit";
+
+        src = fetchFromGitHub {
+          owner = "tsub";
+          repo = "s3-edit";
+          rev = "v${version}";
+          sha256 = "0zhnr0j3a465xd1ck88bhjp7akks821gbln34zyadfik68r8h9wi";
+        };
+
+        vendorSha256 = "sha256-zTGti5yUGhD9K/PO3D8mtVqxoeZCR7JdVZjo+UoQRhk=";
+
+        meta = with lib; {
+          inherit (src.meta) homepage;
+          description = " Edit directly a file on Amazon S3 in CLI";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
   _caddy_plugins = [
     { name = "github.com/greenpau/caddy-security"; version = "v1.0.16"; }
     { name = "github.com/lindenlab/caddy-s3-proxy"; version = "v0.5.6"; }
