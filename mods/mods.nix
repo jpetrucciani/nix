@@ -162,6 +162,8 @@ with builtins; rec {
         file = {
           exists = name: ''[ -f "''${${name}}" ]'';
           notExists = name: ''[ ! -f "''${${name}}" ]'';
+          empty = name: ''[ ! -s "''${${name}}" ]'';
+          notEmpty = name: ''[ -s "''${${name}}" ]'';
         };
         yesno = { prompt ? "Would you like to continue?" }: ''
           while true; do
