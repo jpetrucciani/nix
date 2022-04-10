@@ -44,6 +44,7 @@ in
   networking.hostName = hostname;
   networking.useDHCP = false;
   networking.interfaces.eth0.useDHCP = true;
+  networking.firewall.enable = false;
 
   users.users.root.hashedPassword = "!";
   users.mutableUsers = false;
