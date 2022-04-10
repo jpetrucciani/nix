@@ -7,6 +7,7 @@ in
   imports = [
     "${common.home-manager}/nixos"
     ./hardware-configuration.nix
+    ./api.nix
   ];
 
   inherit (common) zramSwap;
@@ -70,11 +71,31 @@ in
       enable = true;
       role = "server";
     };
+    # keycloak = {
+    #   enable = true;
+    #   httpPort = "8001";
+    #   httpsPort = "8002";
+    #   frontendUrl = "auth.cobi.dev/auth/";
+    #   database = {
+    #     host = "yuga.db.cobi.dev";
+    #     port = 5433;
+    #     passwordFile = "/etc/default/keycloak/pass";
+    #     useSSL = false;
+    #     # caCert = /etc/default/keycloak/cert;
+    #   };
+    # };
     caddy = {
       enable = true;
       package = pkgs.xcaddy;
       email = common.emails.personal;
       virtualHosts = {
+        # "auth.cobi.dev" = {
+        #   extraConfig = ''
+        #     reverse_proxy /* {
+        #       to localhost:8001
+        #     }
+        #   '';
+        # };
         "home.cobi.dev" = {
           extraConfig = ''
             reverse_proxy /* {
@@ -113,6 +134,13 @@ in
             }
             route / {
               redir https://github.com/jpetrucciani/
+            }
+          '';
+        };
+        "api.cobi.dev" = {
+          extraConfig = ''
+            reverse_proxy /* {
+              to localhost:10000
             }
           '';
         };
