@@ -820,28 +820,114 @@ with builtins; rec {
           print(f"---\n{rendered}")
     '';
   };
-  nixrender = writeBashBinCheckedWithFlags {
-    name = "nixrender";
-    description = "a quick and easy way to use nix to render various other config files!";
+  nixrender =
+    let
+      python = pkgs.python310.withPackages (p: with p; [ pyaml ]);
+    in
+    pog {
+      name = "nixrender";
+      description = "a quick and easy way to use nix to render various other config files!";
+      flags = [
+        {
+          name = "raw";
+          description = "don't apply the python post-processing";
+          bool = true;
+        }
+      ];
+      arguments = [
+        { name = "nix_file"; }
+      ];
+      script = ''
+        template="$1"
+        rendered="$(${pkgs.nix}/bin/nix eval --raw -f "$template")"
+        if [ -z "''${raw}" ]; then
+          echo "$rendered" | ${python}/bin/python ${j2y.py}
+        else
+          echo "$rendered"
+        fi
+      '';
+    };
+
+  specs = pog {
+    name = "specs";
+    description = "a quick and easy way to render full kubespecs from nix files";
     flags = [
       {
-        name = "raw";
-        description = "don't apply the python post-processing";
+        name = "target";
+        description = "the file to render specs from";
+        default = "./specs.nix";
+      }
+      {
+        name = "charts";
+        description = "a flag to render helm charts into specs";
+        bool = true;
+      }
+      {
+        name = "dryrun";
+        description = "just run the diff, don't prompt to apply";
+        bool = true;
+      }
+      {
+        name = "render";
+        description = "only render and patch, do not diff or apply";
         bool = true;
       }
     ];
-    arguments = [
-      { name = "nix_file"; }
-    ];
-    script = ''
-      template="$1"
-      rendered="$(${pkgs.nix_2_6}/bin/nix eval --raw -f "$template")"
-      if [ -z "''${raw}" ]; then
-        echo "$rendered" | ${pkgs.python39}/bin/python ${j2y.py}
-      else
-        echo "$rendered"
-      fi
-    '';
+    script =
+      let
+        steps = {
+          render = "render";
+          patch = "patch";
+          diff = "diff";
+          apply = "apply";
+        };
+      in
+      helpers: ''
+        ${helpers.var.notEmpty "charts"} && [ "$target" = "./specs.nix" ] && target="./charts.nix"
+        ${helpers.file.notExists "target"} && die "the file to render ('$target') does not exist!"
+        rendered=$(${_.mktemp})
+        diffed=$(${_.mktemp})
+        debug "''${GREEN}render charts=$charts to '$rendered'"
+        ${helpers.timer.start steps.render}
+        ${nixrender}/bin/nixrender ''${charts:+--raw} "$target" >"$rendered"
+        render_exit_code=$?
+        render_runtime=${helpers.timer.stop steps.render}
+        debug "''${GREEN}rendered to '$rendered' in $render_runtime''${RESET}"
+        if [ $render_exit_code -ne 0 ]; then
+          die "nixrender failed!" 2
+        fi
+        if ${helpers.var.notEmpty "render"}; then
+          blue "rendered specs to '$rendered'"
+          exit 0
+        fi
+        ${helpers.timer.start steps.diff}
+        ${pkgs.kubectl}/bin/kubectl diff -f "$rendered" >"$diffed"
+        diff_exit_code=$?
+        diff_runtime=${helpers.timer.stop steps.diff}
+        debug "''${GREEN}diffed '$rendered' to '$diffed' in $diff_runtime [exit code $diff_exit_code]''${RESET}"
+        if [ $diff_exit_code -ne 0 ] && [ $diff_exit_code -ne 1 ]; then
+          die "diff of specs failed!" 3
+        fi
+        if [ -s "$diffed" ]; then
+          debug "''${GREEN}changes detected!''${RESET}"
+        else
+          blue "no changes in specs detected!"
+          exit 0
+        fi
+        ${pkgs.delta}/bin/delta <"$diffed"
+        ${helpers.var.notEmpty "dryrun"} && exit 0
+        echo
+        echo "---"
+        echo
+        ${helpers.yesno {prompt="Would you like to apply these changes?";}}
+        echo
+        echo "---"
+        echo
+        ${helpers.timer.start steps.apply}
+        ${pkgs.kubectl}/bin/kubectl apply -f "$rendered"
+        apply_runtime=${helpers.timer.stop steps.apply}
+        debug "''${GREEN}applied '$rendered' in $apply_runtime''${RESET}"
+      '';
   };
 
   nix_pog_scripts = [
@@ -850,6 +936,7 @@ with builtins; rec {
     y2n
     cache
     nixrender
+    specs
   ];
 
   ### IMAGE STUFF
@@ -990,6 +1077,7 @@ with builtins; rec {
     grep = "${pkgs.gnugrep}/bin/grep";
     shfmt = "${pkgs.shfmt}/bin/shfmt";
     head = "${pkgs.coreutils}/bin/head";
+    mktemp = "${pkgs.coreutils}/bin/mktemp";
     sort = "${pkgs.coreutils}/bin/sort";
     tr = "${pkgs.coreutils}/bin/tr";
     uniq = "${pkgs.coreutils}/bin/uniq";
