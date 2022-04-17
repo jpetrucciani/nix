@@ -725,15 +725,40 @@ with builtins; rec {
   nixup = writeBashBinCheckedWithFlags {
     name = "nixup";
     description = "a quick tool to create a base nix environment!";
-    flags = [ _.flags.nix.with_python ];
+    flags = [
+      {
+        name = "mkderivation";
+        description = "use 'stdenv.mkDerivation' instead of 'buildEnv'";
+        bool = true;
+      }
+      _.flags.nix.with_python
+      _.flags.nix.with_vlang
+      _.flags.nix.with_golang
+      _.flags.nix.with_rust
+      _.flags.nix.with_node
+      _.flags.nix.with_terraform
+    ];
     script = ''
       directory="$(pwd | ${_.sed} 's#.*/##')"
       tags=$(${_.curl} -fsSL https://raw.githubusercontent.com/jpetrucciani/nix/main/sources/nixpkgs.json);
       rev=$(echo "$tags" | ${_.jq} -r '.rev')
       sha=$(echo "$tags" | ${_.jq} -r '.sha256')
       py=""
-      [ "$with_python" = "1" ] && py="(python39.withPackages ( p: with p; lib.flatten [requests]))"
-      cat <<EOF | ${_.nixpkgs-fmt}
+      [ "$with_python" = "1" ] && py="python = [(python39.withPackages ( p: with p; lib.flatten [requests]))];"
+      vlang=""
+      [ "$with_vlang" = "1" ] && vlang="vlang = [vlang openssl];"
+      node=""
+      [ "$with_node" = "1" ] && node="node = [nodejs-16_x nodePackages.prettier];"
+      golang=""
+      [ "$with_golang" = "1" ] && golang="go = [go_1_17];"
+      rust=""
+      [ "$with_rust" = "1" ] && rust="rust = [rustc rustfmt];"
+      terraform=""
+      [ "$with_terraform" = "1" ] && terraform="terraform = [terraform terraform-ls terrascan tfsec];"
+      envtype="buildEnv"
+      envpaths="paths = packages;"
+      [ "$mkderivation" = "1" ] && envtype="stdenv.mkDerivation"; envpaths="";
+      cat -s <<EOF | ${_.nixpkgs-fmt}
         with builtins;
         { pkgs ? import
             (
@@ -749,19 +774,38 @@ with builtins; rec {
               };
               overlays = [];
             }
+            , jacobi ? import
+            (
+              fetchTarball {
+                name = "jpetrucciani-2022-04-17";
+                url = "https://github.com/jpetrucciani/nix/archive/667702205214852e7439cc005dbf661a6b401469.tar.gz";
+                sha256 = "1458v92m69s92lr4xkxf4x08ba48vkybgz9wprqwjlnqm8jjzwn6";
+              }
+            )
+            { nixpkgs = pkgs.path; }
         }:
         let
           inherit (pkgs.stdenv) isLinux isDarwin isAarch64;
           isM1 = isDarwin && isAarch64;
           
-          packages = with pkgs; [
-            just
-            ''${py}
+          tools = with pkgs; {
+            cli = [
+              jq
+              just
+              yq-go
+            ];
+            jacobi = with jacobi; [comma nixup];
+            nix = [nixpkgs-fmt];
+            ''${golang} ''${node} ''${py} ''${rust} ''${terraform} ''${vlang}
+          };
+
+          packages = with pkgs; lib.flatten [
+            (pkgs.lib.flatten (attrValues tools))
           ];
-          env = pkgs.buildEnv {
+
+          env = pkgs.''${envtype} {
             name = "$directory";
-            paths = packages;
-            buildInputs = packages;
+            buildInputs = packages; ''${envpaths}
           };
         in
         env
@@ -1205,17 +1249,35 @@ with builtins; rec {
           bool = true;
           description = "whether or not to include a python with packages";
         };
+        with_golang = {
+          name = "with_golang";
+          short = "g";
+          bool = true;
+          description = "whether or not to include golang";
+        };
         with_node = {
           name = "with_node";
           short = "n";
           bool = true;
           description = "whether or not to include node";
         };
+        with_rust = {
+          name = "with_rust";
+          short = "r";
+          bool = true;
+          description = "whether or not to include rust";
+        };
         with_terraform = {
           name = "with_terraform";
           short = "t";
           bool = true;
           description = "whether or not to include terraform";
+        };
+        with_vlang = {
+          name = "with_vlang";
+          short = "w";
+          bool = true;
+          description = "whether or not to include a vlang with dependencies";
         };
       };
       python = {
