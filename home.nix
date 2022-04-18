@@ -227,6 +227,7 @@ with pkgs.hax; {
         prospector-176
         mdctl
         s3-edit
+        q
 
         # overlays
         git-trim

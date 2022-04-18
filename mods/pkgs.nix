@@ -115,8 +115,47 @@ rec {
 
         meta = with lib; {
           inherit (src.meta) homepage;
-          description = " Edit directly a file on Amazon S3 in CLI";
+          description = "Edit directly a file on Amazon S3 in CLI";
           license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
+  q = pkgs.callPackage
+    ({ stdenv, lib, buildGoModule, fetchFromGitHub }:
+      let
+        version = "0.5.7";
+        commit = "dac93ed3b58341fbff3464d5a570d0fec0ad3432";
+        date = "2022-04-17";
+      in
+      buildGoModule rec {
+        inherit version;
+        pname = "q";
+
+        src = fetchFromGitHub {
+          owner = "natesales";
+          repo = "q";
+          rev = "v${version}";
+          sha256 = "06vax2cl1kj8myml0vc6rlibirshh1f3sjxwnlcnqsg9bii68k27";
+        };
+
+        ldflags = [
+          "-s"
+          "-w"
+          "-X main.version=${version}"
+          "-X main.commit=${commit}"
+          "-X main.date=${date}"
+        ];
+
+        vendorSha256 = "sha256-onggtOs2ri4VxCPDSehkfiAf6xMjKZHKh8qeNN4tf4A=";
+        doCheck = false;
+
+        meta = with lib; {
+          inherit (src.meta) homepage;
+          description = "A tiny command line DNS client with support for UDP, TCP, DoT, DoH, DoQ and ODoH";
+          license = licenses.gpl3Only;
           maintainers = with maintainers; [ jpetrucciani ];
         };
       }
