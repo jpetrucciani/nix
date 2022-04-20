@@ -1,16 +1,16 @@
 { stdenv, lib, buildGoModule, fetchFromGitHub }:
 buildGoModule rec {
-  version = "5.5.2";
+  version = "5.7.0";
   pname = "pluto";
 
   src = fetchFromGitHub {
     owner = "FairwindsOps";
     repo = pname;
     rev = "v${version}";
-    sha256 = "0qplh8khp0kvavcvqna05hpyz3lyiz7hffgd6fa7qqrrbcs18flp";
+    sha256 = "1mn8v6c20cqa3gzpkzjabgljyqr0d660945ym5x8z5paj313yzzw";
   };
 
-  vendorSha256 = "sha256-qU4fkvLurXBEJB24AkiY4MJEeXqmwY3S9qTGGsrtjvA=";
+  vendorSha256 = "sha256-jPVlHyKZ1ygF08OypXOMzHBfb2z5mhg5B8zJmAcQbLk=";
 
   meta = with lib; {
     inherit (src.meta) homepage;

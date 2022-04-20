@@ -1,16 +1,16 @@
 { stdenv, lib, buildGoModule, fetchFromGitHub }:
 buildGoModule rec {
-  version = "0.2.5";
+  version = "0.2.6";
   pname = "kube-linter";
 
   src = fetchFromGitHub {
     owner = "stackrox";
     repo = "kube-linter";
     rev = version;
-    sha256 = "0yq0ydcdilifbsm1h0hb29lgm7wfyfffmf6gj4l4i5w2kikvlx13";
+    sha256 = "1k9vlxsi3vz9q8xzb1hcjc05wz8x56665lfzix49r091gq0py4cw";
   };
 
-  vendorSha256 = "sha256-TRZsdsaOtoAsoKsOxPbtVqpWZGFuaGmudIkuj0QGj5k=";
+  vendorSha256 = "sha256-HJW28BZ9qFLtdH1qdW8/K4TzHA2ptekXaMF0XnMKbOY=";
 
   meta = with lib; {
     inherit (src.meta) homepage;

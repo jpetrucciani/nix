@@ -7,10 +7,10 @@ buildGoModule rec {
     owner = "alcideio";
     repo = pname;
     rev = "v${version}";
-    sha256 = "1w77w3r0inygfbbwraiif0hx845ghq5h81h455p4jk9spv1np3fn";
+    sha256 = "1baaiczs06kg15bkmgkrlwi6wlg6jygv1bavvgh019njs44pvir6";
   };
 
-  vendorSha256 = "sha256-o95BHQMv24UbBBadEKOFz/hiUHR35kCcN0wr76pZhTU=";
+  vendorSha256 = "sha256-kIsKRWXOJzb33T0fM9dZCXlzDdu3SUIGyxNgSH7G4xY=";
 
   meta = with lib; {
     inherit (src.meta) homepage;
