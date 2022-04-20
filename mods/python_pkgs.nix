@@ -285,11 +285,11 @@ let
     # prospector
     prospector = buildPythonPackage rec {
       pname = "prospector";
-      version = "1.7.6";
+      version = "1.7.7";
 
       src = fetchPypi {
         inherit pname version;
-        sha256 = "0m26pzbk7fhklqdk5j66y8qh7ac8x5q76hq6br1q6jnin5vh252r";
+        sha256 = "0q3k0fagsy4klib2ybz4y1s2hbp0zcmddzj2lzwmqlkw7rcksjy0";
       };
 
       propagatedBuildInputs = [

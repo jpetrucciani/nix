@@ -127,6 +127,7 @@ with pkgs.hax; {
         ripgrep-all
         rlwrap
         rnix-lsp
+        sampler
         scc
         shellcheck
         shfmt
