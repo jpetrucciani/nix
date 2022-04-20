@@ -127,7 +127,6 @@ with pkgs.hax; {
         ripgrep-all
         rlwrap
         rnix-lsp
-        sampler
         scc
         shellcheck
         shfmt
@@ -259,6 +258,7 @@ with pkgs.hax; {
           optList isLinux [
             binutils
             keybase
+            sampler
             vtm
           ]
         )
