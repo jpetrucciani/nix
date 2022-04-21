@@ -757,7 +757,7 @@ with builtins; rec {
       [ "$with_terraform" = "1" ] && terraform="terraform = [terraform terraform-ls terrascan tfsec];"
       envtype="buildEnv"
       envpaths="paths = packages;"
-      [ "$mkderivation" = "1" ] && envtype="stdenv.mkDerivation"; envpaths="";
+      [ "$mkderivation" = "1" ] && envtype="stdenv.mkDerivation" && envpaths="";
       cat -s <<EOF | ${_.nixpkgs-fmt}
         with builtins;
         { pkgs ? import
