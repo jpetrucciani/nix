@@ -226,5 +226,13 @@ rec {
     )
     { };
 
-  prospector-176 = prev.python39Packages.prospector;
+  prospector-177 = (import
+    (fetchFromGitHub {
+      name = "frozen-prospector";
+      owner = "jpetrucciani";
+      repo = "nix";
+      rev = "58e698a20ba4cc8b58a9e08e359cc413e2868a6b";
+      sha256 = "02z5hmbh0zag6smzsyd1pxgzzw84vnrdiqww3jyk3iwk6abkzjh6";
+    })
+    { }).prospector-176;
 }
