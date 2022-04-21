@@ -573,7 +573,7 @@ with builtins; rec {
   _nixos-switch = { host }: writeBashBinChecked "switch" ''
     set -eo pipefail
     toplevel=$(nix-build --expr 'with import ~/cfg {}; (nixos ~/cfg/hosts/${host}/configuration.nix).toplevel')
-    if [[ $(realpath /run/current-system) != "$toplevel" ]];then
+    if [[ $(realpath /run/current-system) != "$toplevel" || "$POG_FORCE" == "1" ]];then
       ${nvd}/bin/nvd diff /run/current-system "$toplevel"
       sudo nix-env -p /nix/var/nix/profiles/system --set "$toplevel"
       sudo "$toplevel"/bin/switch-to-configuration switch
