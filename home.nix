@@ -224,7 +224,7 @@ with pkgs.hax; {
         rare
         rbac-tool
         semgrep-core
-        prospector-176
+        # prospector-176
         mdctl
         s3-edit
         q
