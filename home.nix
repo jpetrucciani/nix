@@ -384,6 +384,11 @@ with pkgs.hax; {
     '' else "");
   };
 
+  programs.zoxide = {
+    enable = true;
+    enableBashIntegration = true;
+  };
+
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
