@@ -69,35 +69,15 @@ in
   environment.systemPackages = [ pkgs.k3s ];
 
   services = {
-    k3s = {
-      enable = false;
-      role = "server";
-    };
-    # keycloak = {
+    # k3s = {
     #   enable = true;
-    #   httpPort = "8001";
-    #   httpsPort = "8002";
-    #   frontendUrl = "auth.cobi.dev/auth/";
-    #   database = {
-    #     host = "yuga.db.cobi.dev";
-    #     port = 5433;
-    #     passwordFile = "/etc/default/keycloak/pass";
-    #     useSSL = false;
-    #     # caCert = /etc/default/keycloak/cert;
-    #   };
+    #   role = "server";
     # };
     caddy = {
       enable = true;
       package = pkgs.xcaddy;
       email = common.emails.personal;
       virtualHosts = {
-        # "auth.cobi.dev" = {
-        #   extraConfig = ''
-        #     reverse_proxy /* {
-        #       to localhost:8001
-        #     }
-        #   '';
-        # };
         "home.cobi.dev" = {
           extraConfig = ''
             reverse_proxy /* {
