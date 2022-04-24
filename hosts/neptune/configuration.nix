@@ -50,7 +50,10 @@ in
   networking.firewall = {
     enable = true;
     trustedInterfaces = [ "tailscale0" ];
-    allowedTCPPorts = with common.ports; [ ] ++ usual;
+    allowedTCPPorts = with common.ports; [
+      # k3s?
+      6443
+    ] ++ usual;
     allowedUDPPorts = [ ];
   };
 
@@ -69,15 +72,22 @@ in
   environment.systemPackages = [ pkgs.k3s ];
 
   services = {
-    # k3s = {
-    #   enable = true;
-    #   role = "server";
-    # };
+    k3s = {
+      enable = true;
+      role = "server";
+    };
     caddy = {
       enable = true;
       package = pkgs.xcaddy;
       email = common.emails.personal;
       virtualHosts = {
+        "auth.cobi.dev" = {
+          extraConfig = ''
+            reverse_proxy /* {
+              to localhost:8080
+            }
+          '';
+        };
         "home.cobi.dev" = {
           extraConfig = ''
             reverse_proxy /* {
