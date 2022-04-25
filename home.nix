@@ -470,7 +470,7 @@ with pkgs.hax; {
           useTabs: false,
           semi: true,
           bracketSpacing: false,
-          jsxBracketSameLine: false,
+          bracketSameLine: false,
           requirePragma: false,
           proseWrap: 'preserve',
           trailingComma: 'all',
