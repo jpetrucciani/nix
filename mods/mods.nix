@@ -664,7 +664,7 @@ with builtins; rec {
     ];
     script = helpers: ''
       debug "getting cluster config for '$cluster' in '$region'"
-      region="$(${_.gcloud} container clusters list --project "$project" 2>/dev/null | grep "$cluster " | ${_.awk} '{print $2}')"
+      region="$(${_.gcloud} container clusters list --project "$project" 2>/dev/null | grep -E "^$cluster " | ${_.awk} '{print $2}')"
 
       ${_.gcloud} \
         container clusters get-credentials \
