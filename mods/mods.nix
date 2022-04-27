@@ -819,6 +819,19 @@ with builtins; rec {
     '';
   };
 
+  sqlfmt = pog {
+    name = "sqlfmt";
+    description = "a quick and easy way to do some sql formatting";
+    flags = [ ];
+    arguments = [
+      { name = "sql_file"; }
+    ];
+    script = helpers: ''
+      ${pkgs.python310Packages.sqlparse}/bin/sqlformat -k upper -r "$1"
+      echo
+    '';
+  };
+
   general_pog_scripts = [
     batwhich
     hms
@@ -829,6 +842,7 @@ with builtins; rec {
     rot13
     sin
     srv
+    sqlfmt
   ];
 
   nixup = writeBashBinCheckedWithFlags {
