@@ -13,5 +13,5 @@ This script allows us to trim the git branches in an easy way.
 This script is a shorthand to load up nix (on non-nixos linux, windows with WSL2, or mac) and configure some basic things. You can run this by doing:
 
 ```bash
-curl https://cobi.dev/nixup | sh
+curl -L https://cobi.dev/nixup | bash
 ```

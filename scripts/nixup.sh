@@ -1,7 +1,7 @@
 #!/bin/bash
 
 { # Prevent execution if this script was only partially downloaded
-curl -L https://nixos.org/nix/install | sh
+sh <(curl -L https://nixos.org/nix/install) --daemon
 
 # configure nix, adding higher concurrency and some features that speed things up
 mkdir -p ~/.config/nix/
