@@ -142,7 +142,7 @@ with pkgs.hax; {
         zip
 
         # python
-        (python39.withPackages
+        (python310.withPackages
           (pkgs: with pkgs; [
             # linting
             bandit
@@ -188,15 +188,15 @@ with pkgs.hax; {
 
             # my packages (for nixpkgs)
             notion-client
+
+            # interactive shell!
+            bpython
           ]
           ++ (optList (!isM1) [
             # njssscan won't work on m1 yet due to lack of semgrep binding wheel https://github.com/returntocorp/semgrep/issues/4311
             njsscan
           ])
-          ++ (optList isLinux [
-            # interactive shell!
-            bpython
-          ])
+          ++ (optList isLinux [ ])
           )
         )
 
