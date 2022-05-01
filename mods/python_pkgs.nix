@@ -309,7 +309,7 @@ let
 
 
     # bypython off of master
-    bpython = super.bpython.overrideAttrs
+    bpython = (super.bpython.overrideAttrs
       (old: {
         version = "master-2022-05-01";
         src = builtins.fetchTarball {
@@ -317,7 +317,7 @@ let
           sha256 = "0gwv8rg0pg5j46jjk8d193s1c8a9gcm04m6minhwrnq04wrikbnp";
         };
         propagatedBuildInputs = [
-          (curtsies.overridePythonAttrs (_: { doCheck = false; }))
+          curtsies
           cwcwidth
           greenlet
           jedi
@@ -328,7 +328,9 @@ let
           typing-extensions
           urwid
         ];
-      });
+      })).override {
+      curtsies = curtsies.overridePythonAttrs (_: { doCheck = false; });
+    };
   };
 in
 pynixifyOverlay
