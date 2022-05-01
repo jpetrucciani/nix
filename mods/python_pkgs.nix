@@ -317,7 +317,7 @@ let
           sha256 = "0gwv8rg0pg5j46jjk8d193s1c8a9gcm04m6minhwrnq04wrikbnp";
         };
         propagatedBuildInputs = [
-          curtsies
+          (curtsies.overridePythonAttrs (_: { doCheck = false; }))
           cwcwidth
           greenlet
           jedi
