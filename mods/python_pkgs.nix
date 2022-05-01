@@ -307,14 +307,16 @@ let
 
 
     # bypython off of master
-    bpython = super.bpython.overrideAttrs
+    bpython = (super.bpython.overrideAttrs
       (_: {
         version = "master-2022-05-01";
         src = builtins.fetchTarball {
           url = "https://github.com/bpython/bpython/archive/af5e90ab270956d45b9c9399fc2929ab996d22b6.tar.gz";
           sha256 = "0gwv8rg0pg5j46jjk8d193s1c8a9gcm04m6minhwrnq04wrikbnp";
         };
-      });
+      })).override {
+      curtsies = curtsies.overridePythonAttrs (_: { doCheck = false; });
+    };
 
   };
 in
