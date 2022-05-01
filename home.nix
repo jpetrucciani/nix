@@ -69,7 +69,6 @@ with pkgs.hax; {
         coreutils-full
         cowsay
         curl
-        difftastic
         diffutils
         docker-client
         dogdns
