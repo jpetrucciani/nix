@@ -789,35 +789,39 @@ with builtins; rec {
     '';
   };
 
-  srv = pog {
-    name = "srv";
-    description = "a quick and easy way to serve a directory on a given port";
-    flags = [
-      {
-        name = "port";
-        description = "the port to serve on";
-        default = "7777";
-      }
-      {
-        name = "directory";
-        description = "the directory to serve";
-        default = ".";
-      }
-      {
-        name = "cgi";
-        description = "run in cgi mode";
-        bool = true;
-      }
-      {
-        name = "bind";
-        description = "the host to bind to";
-        default = "0.0.0.0";
-      }
-    ];
-    script = ''
-      ${pkgs.python39}/bin/python -m http.server ''${cgi:+--cgi} --bind "$bind" --directory "$directory" "$port"
-    '';
-  };
+  srv =
+    let
+      python = pkgs.python311.withPackages (p: with p; [ ]);
+    in
+    pog {
+      name = "srv";
+      description = "a quick and easy way to serve a directory on a given port";
+      flags = [
+        {
+          name = "port";
+          description = "the port to serve on";
+          default = "7777";
+        }
+        {
+          name = "directory";
+          description = "the directory to serve";
+          default = ".";
+        }
+        {
+          name = "cgi";
+          description = "run in cgi mode";
+          bool = true;
+        }
+        {
+          name = "bind";
+          description = "the host to bind to";
+          default = "0.0.0.0";
+        }
+      ];
+      script = ''
+        ${python}/bin/python -m http.server ''${cgi:+--cgi} --bind "$bind" --directory "$directory" "$port"
+      '';
+    };
 
   sqlfmt = pog {
     name = "sqlfmt";
@@ -867,7 +871,7 @@ with builtins; rec {
       rev=$(echo "$tags" | ${_.jq} -r '.rev')
       sha=$(echo "$tags" | ${_.jq} -r '.sha256')
       py=""
-      [ "$with_python" = "1" ] && py="python = [(python39.withPackages ( p: with p; lib.flatten [requests]))];"
+      [ "$with_python" = "1" ] && py="python = [(python310.withPackages ( p: with p; lib.flatten [requests]))];"
       vlang=""
       [ "$with_vlang" = "1" ] && vlang="vlang = [vlang openssl];"
       node=""
@@ -900,9 +904,9 @@ with builtins; rec {
             , jacobi ? import
             (
               fetchTarball {
-                name = "jpetrucciani-2022-04-17";
-                url = "https://github.com/jpetrucciani/nix/archive/667702205214852e7439cc005dbf661a6b401469.tar.gz";
-                sha256 = "1458v92m69s92lr4xkxf4x08ba48vkybgz9wprqwjlnqm8jjzwn6";
+                name = "jpetrucciani-2022-05-01";
+                url = "https://github.com/jpetrucciani/nix/archive/769253cb8ca70d1cdc89ae78f0e3aadc39b84876.tar.gz";
+                sha256 = "0qg3k9lrgiqp1760hl9k9r3xrs0isxfzxic5prjpcd3zwqazbjgm";
               }
             )
             { nixpkgs = pkgs.path; }
