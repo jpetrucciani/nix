@@ -223,6 +223,7 @@ in
         "karabiner-elements"
         "keybase"
         "notion"
+        "parsec"
         "rectangle"
         "utm"
       ];
