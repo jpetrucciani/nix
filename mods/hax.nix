@@ -110,7 +110,7 @@ prev: next:
         path = head (splitString ":" pkg.meta.position);
       in
       prev.callPackage path;
-    nix-direnv = next.nix-direnv.override { nix = next.nix; };
+    nix-direnv = next.nix-direnv.override { inherit (next) nix; };
     excludeLines = f: text:
       concatStringsSep "\n" (filter (x: !f x) (splitString "\n" text));
     drvs = x:
