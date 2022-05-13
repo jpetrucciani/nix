@@ -12,36 +12,6 @@ let
     inherit (super.stdenv) isDarwin isAarch64 isNixOS;
     isM1 = isDarwin && isAarch64;
     isOldMac = isDarwin && !isAarch64;
-    # fixes for mac
-    dnspython =
-      if isDarwin then
-        super.dnspython.overrideAttrs
-          (_: {
-            disabledTestPaths =
-              [
-                "tests/test_async.py"
-                "tests/test_query.py"
-                "tests/test_resolver.py"
-                "tests/test_resolver_override.py"
-              ];
-          }) else super.dnspython;
-    httplib2 =
-      if isOldMac then
-        super.httplib2.overrideAttrs
-          (_: {
-            disabledTests =
-              [
-                "test_connection_close"
-                "test_timeout_subsequent"
-                "test_client_cert_password_verified"
-              ];
-          }) else super.httplib2;
-    passlib =
-      if isDarwin then
-        super.passlib.overrideAttrs
-          (_: {
-            doCheck = false;
-          }) else super.passlib;
 
     # my packages
     archives = buildPythonPackage rec {
