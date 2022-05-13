@@ -307,6 +307,7 @@ let
       };
     };
 
+    pyopenssl = if isM1 then super.pyopenssl.overrideAttrs (_: { meta.broken = false; }) else super.pyopenssl;
 
     # bypython off of master
     bpython = (super.bpython.overrideAttrs

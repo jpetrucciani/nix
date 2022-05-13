@@ -237,6 +237,7 @@ with pkgs.hax; {
         nix_hash_kwb
         nix_hash_hm
         nix_hash_darwin
+        nix_hash_medable
         nixup
         foo
 

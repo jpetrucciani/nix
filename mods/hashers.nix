@@ -26,5 +26,6 @@ prev: next: {
   nix_hash_kwb = prev._nix_hash "kwbauson/cfg" "main" "kwb";
   nix_hash_hm = prev._nix_hash "nix-community/home-manager" "master" "hm";
   nix_hash_darwin = prev._nix_hash "LnL7/nix-darwin" "master" "darwin";
+  nix_hash_medable = prev._nix_hash "Medable/nix" "main" "medable";
   home-packages = (import ../home.nix).home.packages;
 }
