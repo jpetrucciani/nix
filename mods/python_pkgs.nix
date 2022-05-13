@@ -14,7 +14,7 @@ let
     isOldMac = isDarwin && !isAarch64;
     # fixes for mac
     dnspython =
-      if self.isDarwin then
+      if isDarwin then
         super.dnspython.overrideAttrs
           (_: {
             disabledTestPaths =
@@ -26,7 +26,7 @@ let
               ];
           }) else super.dnspython;
     httplib2 =
-      if self.isOldMac then
+      if isOldMac then
         super.httplib2.overrideAttrs
           (_: {
             disabledTests =
@@ -37,7 +37,7 @@ let
               ];
           }) else super.httplib2;
     passlib =
-      if self.isDarwin then
+      if isDarwin then
         super.passlib.overrideAttrs
           (_: {
             doCheck = false;

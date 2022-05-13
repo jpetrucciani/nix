@@ -128,6 +128,7 @@ with pkgs.hax; {
         rlwrap
         rnix-lsp
         scc
+        scrypt
         shellcheck
         shfmt
         statix
