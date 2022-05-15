@@ -245,10 +245,6 @@ rec {
       url = "https://www.haproxy.org/download/${lib.versions.majorMinor version}/src/${attrs.pname}-${version}.tar.gz";
     };
   });
-  haproxy-2-2-9 = haproxy-pin {
-    version = "2.2.9";
-    sha256 = "sha256-IWgEWbCLm6IcjMn129DubhhC9Xo6Z/hxeYceHBPr1OM=";
-  };
   haproxy-2-2-23 = haproxy-pin {
     version = "2.2.23";
     sha256 = "sha256-3lc7eGtm7izLmnmiN7DpHTwnokchR0+VadWHjo651Po=";

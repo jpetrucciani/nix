@@ -836,6 +836,31 @@ with builtins; rec {
     '';
   };
 
+  mitm2openapi = pog {
+    name = "mitm2openapi";
+    description = "convert mitmproxy flows into openapi specs!";
+    flags = [
+      {
+        name = "flows";
+        description = "the exported flows output from mitmproxy";
+        default = "./flows";
+      }
+      {
+        name = "spec";
+        description = "the OpenAPI spec file to use";
+        default = "./schema.yaml";
+      }
+      {
+        name = "baseurl";
+        description = "the base url for the api to generate for";
+      }
+    ];
+    script = helpers: ''
+      ${pkgs.python310Packages.mitmproxy2swagger}/bin/mitmproxy2swagger -i "$flows" -o "$spec" -p "$baseurl"
+      ${pkgs.yq-go}/bin/yq -i e 'del(.paths.[].options)' "$spec"
+    '';
+  };
+
   general_pog_scripts = [
     batwhich
     hms
@@ -847,6 +872,7 @@ with builtins; rec {
     sin
     srv
     sqlfmt
+    mitm2openapi
   ];
 
   nixup = writeBashBinCheckedWithFlags {
@@ -976,46 +1002,18 @@ with builtins; rec {
       ${pkgs.nix}/bin/nix-build ''${oldmac:+--system x86_64-darwin} | ${_.cachix} push "$cache_name"
     '';
   };
-  j2y.py = writeTextFile {
-    name = "j2y.py";
-    text = ''
-      import json
-      import sys
-      import yaml
-
-      if __name__ == "__main__":
-          data = sys.stdin.read()
-          json_docs = data.split("---")
-          docs = [json.loads(x) for x in json_docs if x]
-          rendered = "\n---\n".join([yaml.dump(x) for x in docs])
-          print(f"---\n{rendered}")
-    '';
-  };
   nixrender =
-    let
-      python = pkgs.python310.withPackages (p: with p; [ pyaml ]);
-    in
     pog {
       name = "nixrender";
       description = "a quick and easy way to use nix to render various other config files!";
-      flags = [
-        {
-          name = "raw";
-          description = "don't apply the python post-processing";
-          bool = true;
-        }
-      ];
+      flags = [ ];
       arguments = [
         { name = "nix_file"; }
       ];
       script = ''
         template="$1"
         rendered="$(${pkgs.nix}/bin/nix eval --raw -f "$template")"
-        if [ -z "''${raw}" ]; then
-          echo "$rendered" | ${python}/bin/python ${j2y.py}
-        else
-          echo "$rendered"
-        fi
+        echo "$rendered"
       '';
     };
 
@@ -1027,11 +1025,6 @@ with builtins; rec {
         name = "target";
         description = "the file to render specs from";
         default = "./specs.nix";
-      }
-      {
-        name = "charts";
-        description = "a flag to render helm charts into specs";
-        bool = true;
       }
       {
         name = "dryrun";
@@ -1054,13 +1047,12 @@ with builtins; rec {
         };
       in
       helpers: ''
-        ${helpers.var.notEmpty "charts"} && [ "$target" = "./specs.nix" ] && target="./charts.nix"
         ${helpers.file.notExists "target"} && die "the file to render ('$target') does not exist!"
         rendered=$(${_.mktemp})
         diffed=$(${_.mktemp})
-        debug "''${GREEN}render charts=$charts to '$rendered'"
+        debug "''${GREEN}render to '$rendered'"
         ${helpers.timer.start steps.render}
-        ${nixrender}/bin/nixrender ''${charts:+--raw} "$target" >"$rendered"
+        ${nixrender}/bin/nixrender "$target" >"$rendered"
         render_exit_code=$?
         render_runtime=${helpers.timer.stop steps.render}
         debug "''${GREEN}rendered to '$rendered' in $render_runtime''${RESET}"
