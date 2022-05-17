@@ -872,8 +872,7 @@ with builtins; rec {
     sin
     srv
     sqlfmt
-    mitm2openapi
-  ];
+  ] ++ (if isLinux then [ mitm2openapi ] else [ ]);
 
   nixup = writeBashBinCheckedWithFlags {
     name = "nixup";
