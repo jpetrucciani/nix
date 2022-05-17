@@ -732,6 +732,29 @@ with builtins; rec {
     '';
   };
 
+  jqf = pog {
+    name = "jqf";
+    description = "a nice way to tail -f and process each line with jq";
+    arguments = [{ name = "file"; }];
+    flags = [{
+      name = "eval";
+      description = "eval";
+      default = ".";
+    }];
+    script = helpers: ''
+      file="''${1:-/dev/stdin}"
+      process_line() {
+        read -r
+        while true
+        do
+          echo "$REPLY" | ${_.jq} ''${NO_COLOR:+--monochrome-output} "$eval"
+          read -r
+        done
+      }
+      ${_.tail} -f "$file" | process_line
+    '';
+  };
+
   slack_meme = pog {
     name = "slack_meme";
     description = "a quick and easy way to do emoji word art for slack/discord!";
@@ -866,6 +889,7 @@ with builtins; rec {
     hms
     get_cert
     jql
+    jqf
     slack_meme
     fif
     rot13
@@ -1241,6 +1265,7 @@ with builtins; rec {
     head = "${pkgs.coreutils}/bin/head";
     mktemp = "${pkgs.coreutils}/bin/mktemp";
     sort = "${pkgs.coreutils}/bin/sort";
+    tail = "${pkgs.coreutils}/bin/tail";
     tr = "${pkgs.coreutils}/bin/tr";
     uniq = "${pkgs.coreutils}/bin/uniq";
     uuid = "${pkgs.libossp_uuid}/bin/uuid";

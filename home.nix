@@ -514,6 +514,7 @@ with pkgs.hax; {
         in
         ''
           {
+            "telemetry.telemetryLevel": "off",
             "${formatOnSave}": true,
             "${formatter}": "${extensions.prettier}",
             "python.formatting.blackPath": "${nix-bin}/black",
