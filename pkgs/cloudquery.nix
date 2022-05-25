@@ -1,26 +1,26 @@
 { stdenv, lib, buildGoModule, fetchFromGitHub }:
 buildGoModule rec {
-  version = "0.21.1";
+  version = "0.24.0";
   pname = "cloudquery";
 
   src = fetchFromGitHub {
     owner = "cloudquery";
     repo = "cloudquery";
     rev = "v${version}";
-    sha256 = "06ihnvxy255gsmky6pw9xsbxjd1vslnm9vyilj1wy4zjl222hgf3";
+    sha256 = "sha256-ZCRcvAnujZXY5ZUdED05z3RhwpjxWrMd3igl6hwL2LQ=";
   };
 
-  vendorSha256 = "sha256-Y5ZnHV2/U1XzZxcwckrUtOF7kBQrPZdUAuocu72kKvk=";
+  vendorSha256 = "sha256-VVnxjeWOIK6aQ3ou4hhN6PpPdPenlxKtSlFPCwsi6kk=";
 
   checkPhase = ''
     runHook preCheck
     for pkg in $(getGoDirs test); do
       echo "[---] $pkg"
       case "$pkg" in
-      ./pkg/client|./pkg/policy|./internal/file)
+      ./pkg/client|./pkg/policy|./internal/file|./pkg/core/database/postgres)
         echo "[---] skipping '$pkg' test which requires postgres"
         ;;
-      ./pkg/ui/console|./internal/getter)
+      ./pkg/ui/console|./internal/getter|./pkg/core|./pkg/core/state|./pkg/plugin/registry)
         echo "[---] skipping '$pkg' test which requires internet"
         ;;
       *)

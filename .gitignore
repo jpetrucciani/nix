@@ -4,3 +4,5 @@ secrets
 result
 .old/
 node_modules/
+.cq/
+cloudquery.log

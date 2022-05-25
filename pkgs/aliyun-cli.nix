@@ -1,13 +1,13 @@
 { stdenv, lib, buildGoModule, fetchFromGitHub }:
 buildGoModule rec {
-  version = "3.0.94";
+  version = "3.0.121";
   pname = "aliyun-cli";
 
   src = fetchFromGitHub {
     owner = "aliyun";
     repo = "aliyun-cli";
     rev = "v${version}";
-    sha256 = "Q5ppEkX7055makcqw8/tB6j+ERJH3ULuZrH3mW77OdE=";
+    sha256 = "sha256-1D1JZZ/KMC4oZRaYvWpUazTk7llvX5WHPBxWEGCiKrI=";
     fetchSubmodules = true;
   };
 
@@ -19,7 +19,7 @@ buildGoModule rec {
     mv $out/bin/main $out/bin/aliyun
   '';
 
-  vendorSha256 = "c7LsCNcxdHwDBEknXJt9AyrmFcem8YtUYy06vNDBdDY=";
+  vendorSha256 = "sha256-f3GXkAvTe8rPFWCR5TM4mDK/VOQWt2lrZrfJ/Wvw8Uc=";
 
   meta = with lib; {
     inherit (src.meta) homepage;

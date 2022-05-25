@@ -37,9 +37,6 @@ let
     BASH_SILENCE_DEPRECATION_WARNING = "1";
   };
 
-  # fix starship for m1
-  # starship = pkgs.callPackage ./pkgs/starship.nix { };
-
   optList = conditional: list: if conditional then list else [ ];
 
 in
@@ -542,7 +539,6 @@ with pkgs.hax; {
               "external": true,
               "pathToBinary": "${nix-bin}/terraform-ls",
               "args": ["serve"],
-              "maxNumberOfProblems": 100,
               "trace.server": "off"
             },
             "[json]": {
