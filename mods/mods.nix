@@ -1040,8 +1040,8 @@ with builtins; rec {
       '';
     };
 
-  specs = pog {
-    name = "specs";
+  hex = pog {
+    name = "hex";
     description = "a quick and easy way to render full kubespecs from nix files";
     flags = [
       {
@@ -1068,6 +1068,12 @@ with builtins; rec {
           diff = "diff";
           apply = "apply";
         };
+        _ = {
+          k = "${pkgs.kubectl}/bin/kubectl";
+          nr = "${nixrender}/bin/nixrender";
+          delta = "${pkgs.delta}/bin/delta";
+          mktemp = "${pkgs.coreutils}/bin/mktemp";
+        };
       in
       helpers: ''
         ${helpers.file.notExists "target"} && die "the file to render ('$target') does not exist!"
@@ -1075,7 +1081,7 @@ with builtins; rec {
         diffed=$(${_.mktemp})
         debug "''${GREEN}render to '$rendered'"
         ${helpers.timer.start steps.render}
-        ${nixrender}/bin/nixrender "$target" >"$rendered"
+        ${_.nr} "$target" >"$rendered"
         render_exit_code=$?
         render_runtime=${helpers.timer.stop steps.render}
         debug "''${GREEN}rendered to '$rendered' in $render_runtime''${RESET}"
@@ -1083,34 +1089,30 @@ with builtins; rec {
           die "nixrender failed!" 2
         fi
         if ${helpers.var.notEmpty "render"}; then
-          blue "rendered specs to '$rendered'"
+          blue "rendered hex to '$rendered'"
           exit 0
         fi
         ${helpers.timer.start steps.diff}
-        ${pkgs.kubectl}/bin/kubectl diff -f "$rendered" >"$diffed"
+        ${_.k} diff -f "$rendered" >"$diffed"
         diff_exit_code=$?
         diff_runtime=${helpers.timer.stop steps.diff}
         debug "''${GREEN}diffed '$rendered' to '$diffed' in $diff_runtime [exit code $diff_exit_code]''${RESET}"
         if [ $diff_exit_code -ne 0 ] && [ $diff_exit_code -ne 1 ]; then
-          die "diff of specs failed!" 3
+          die "diff of hex failed!" 3
         fi
         if [ -s "$diffed" ]; then
           debug "''${GREEN}changes detected!''${RESET}"
         else
-          blue "no changes in specs detected!"
+          blue "no changes in hex detected!"
           exit 0
         fi
-        ${pkgs.delta}/bin/delta <"$diffed"
+        ${_.delta} <"$diffed"
         ${helpers.var.notEmpty "dryrun"} && exit 0
-        echo
         echo "---"
-        echo
         ${helpers.yesno {prompt="Would you like to apply these changes?";}}
-        echo
         echo "---"
-        echo
         ${helpers.timer.start steps.apply}
-        ${pkgs.kubectl}/bin/kubectl apply -f "$rendered"
+        ${_.k} apply -f "$rendered"
         apply_runtime=${helpers.timer.stop steps.apply}
         debug "''${GREEN}applied '$rendered' in $apply_runtime''${RESET}"
       '';
@@ -1122,7 +1124,7 @@ with builtins; rec {
     y2n
     cache
     nixrender
-    specs
+    hex
   ];
 
   ### IMAGE STUFF
