@@ -755,6 +755,15 @@ with builtins; rec {
     '';
   };
 
+  jwtdecode = pog {
+    name = "jwtdecode";
+    description = "decode a jwt on the command line!";
+    script = ''
+      token="$1"
+      echo "$token" | ${_.jq} -R 'gsub("-";"+") | gsub("_";"/") | split(".") | .[1] | @base64d | fromjson'
+    '';
+  };
+
   slack_meme = pog {
     name = "slack_meme";
     description = "a quick and easy way to do emoji word art for slack/discord!";
@@ -890,6 +899,7 @@ with builtins; rec {
     get_cert
     jql
     jqf
+    jwtdecode
     slack_meme
     fif
     rot13
