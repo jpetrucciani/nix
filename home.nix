@@ -215,9 +215,11 @@ with pkgs.hax; {
         aliyun-cli
         cloudquery
         horcrux
+        goldilocks
         katafygio
         kube-linter
         pluto
+        polaris
         rare
         rbac-tool
         semgrep-core
@@ -307,7 +309,7 @@ with pkgs.hax; {
 
       # nix memes
       kelby = "echo 'nix-env --tarball-ttl 0 -f https://github.com/jpetrucciani/nix/archive/main.tar.gz'";
-      pynix = "nix shell -f https://github.com/cript0nauta/pynixify/archive/main.tar.gz";
+      pynix = "nix shell -f https://github.com/cript0nauta/pynixify/archive/main.tar.gz --argstr python python310";
 
       # misc
       space = "du -Sh | sort -rh | head -10";

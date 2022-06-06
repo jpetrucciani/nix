@@ -222,6 +222,25 @@ let
       meta = with lib; { };
     };
 
+    wcmatch-old = buildPythonPackage rec {
+      pname = "wcmatch";
+      version = "8.3";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "1nv5r6mn0sjmh96cadnbsgngmih1i3hhk1p7wk8n3bwq4f8p441p";
+      };
+
+      propagatedBuildInputs = [ bracex ];
+
+      doCheck = false;
+
+      meta = with lib; {
+        description = "Wildcard/glob file name matcher.";
+        homepage = "https://github.com/facelessuser/wcmatch";
+      };
+    };
+
     semgrep = buildPythonPackage rec {
       pname = "semgrep";
       version = "0.80.0";
@@ -243,7 +262,7 @@ let
         requests
         ruamel-yaml
         tqdm
-        wcmatch
+        wcmatch-old
       ];
 
       doCheck = false;
