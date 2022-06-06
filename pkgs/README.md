@@ -16,6 +16,12 @@ This package provides the [Alibaba Cloud CLI](https://github.com/aliyun/aliyun-c
 
 This package provides [Cloudquery](https://github.com/cloudquery/cloudquery) in nixpkgs. It is a tool that extracts, transforms, and loads your cloud assets into normalized PostgreSQL tables. Written in Go.
 
+## [goldilocks.nix](./goldilocks.nix)
+
+[![built in go](https://img.shields.io/badge/built%20in-go-%2301ADD8)](https://go.dev/)
+
+[Goldilocks](https://github.com/FairwindsOps/goldilocks) is a utility that can help you identify a starting point for resource requests and limits.
+
 ## [horcrux.nix](./horcrux.nix)
 
 [![built in go](https://img.shields.io/badge/built%20in-go-%2301ADD8)](https://go.dev/)
@@ -39,6 +45,12 @@ This package provides [kube-linter](https://github.com/stackrox/kube-linter) in 
 [![built in go](https://img.shields.io/badge/built%20in-go-%2301ADD8)](https://go.dev/)
 
 This package provides [pluto](https://github.com/FairwindsOps/Pluto) in nixpkgs. It is a cli tool to help discover deprecated apiVersions in Kubernetes.
+
+## [polaris.nix](./polaris.nix)
+
+[![built in go](https://img.shields.io/badge/built%20in-go-%2301ADD8)](https://go.dev/)
+
+[Polaris](https://github.com/FairwindsOps/polaris/) keeps your clusters sailing smoothly. It runs a variety of checks to ensure that Kubernetes pods and controllers are configured using best practices, helping you avoid problems in the future.
 
 ## [rare.nix](./rare.nix)
 

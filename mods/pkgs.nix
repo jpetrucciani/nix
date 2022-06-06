@@ -85,7 +85,6 @@ rec {
           sha256 = "1r1gwzg6hlfdagbzqgbxdj4b7nbid9b6pdxyrgzy4mla65vcdk0p";
         };
 
-        # vendorSha256 = lib.fakeSha256;
         vendorSha256 = "pQpattmS9VmO3ZIQUFn66az8GSmB4IvYhTTCFn6SUmo=";
 
         meta = with lib; {
@@ -126,9 +125,9 @@ rec {
   q = pkgs.callPackage
     ({ stdenv, lib, buildGoModule, fetchFromGitHub }:
       let
-        version = "0.5.7";
-        commit = "dac93ed3b58341fbff3464d5a570d0fec0ad3432";
-        date = "2022-04-17";
+        version = "0.8.0";
+        commit = "";
+        date = "2022-06-06";
       in
       buildGoModule rec {
         inherit version;
@@ -138,7 +137,7 @@ rec {
           owner = "natesales";
           repo = "q";
           rev = "v${version}";
-          sha256 = "06vax2cl1kj8myml0vc6rlibirshh1f3sjxwnlcnqsg9bii68k27";
+          sha256 = "sha256-Fh91SeyXFTXQS1E0w0Lb98mm5gas3xjpo3rSzUGKK1E=";
         };
 
         ldflags = [
@@ -149,7 +148,7 @@ rec {
           "-X main.date=${date}"
         ];
 
-        vendorSha256 = "sha256-onggtOs2ri4VxCPDSehkfiAf6xMjKZHKh8qeNN4tf4A=";
+        vendorSha256 = "sha256-jBPCZ2vnI6gnRdnKkWzrh8mYwxp3Xfvyd28ZveAYZdc=";
         doCheck = false;
 
         meta = with lib; {
@@ -163,7 +162,7 @@ rec {
     { };
 
   _caddy_plugins = [
-    { name = "github.com/greenpau/caddy-security"; version = "v1.1.8"; }
+    { name = "github.com/greenpau/caddy-security"; version = "v1.1.12"; }
     { name = "github.com/lindenlab/caddy-s3-proxy"; version = "v0.5.6"; }
   ];
   _caddy_patch_main = prev.lib.strings.concatMapStringsSep "\n"
@@ -178,7 +177,7 @@ rec {
     _caddy_plugins;
   xcaddy = caddy.override {
     buildGoModule = args: buildGoModule (args // {
-      vendorSha256 = "sha256-fxDtmSlHjOrN08pFOBJzSBDhPsSnv24BMU2wRL8Psp0=";
+      vendorSha256 = "sha256-Exv3ThXdo53oUFWYBRl01VXA0V1I5FpS+QCvL8bklTQ=";
       overrideModAttrs = _: {
         preBuild = ''
           ${_caddy_patch_main}
