@@ -53,7 +53,7 @@ with pkgs.hax; {
   home = {
     inherit username homeDirectory sessionVariables;
 
-    stateVersion = "21.11";
+    stateVersion = "22.05";
 
     packages = with pkgs;
       lib.flatten [
@@ -153,6 +153,7 @@ with pkgs.hax; {
             gamble
             httpx
             requests
+            cryptography
 
             # text
             anybadge
@@ -175,8 +176,6 @@ with pkgs.hax; {
             # type annotations (from nixpkgs)
             types-requests
             types-tabulate
-            types-paramiko
-            types-cryptography
             types-enum34
             types-ipaddress
 
