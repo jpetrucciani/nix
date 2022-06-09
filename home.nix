@@ -295,12 +295,9 @@ with pkgs.hax; {
       l = "${pkgs.exa}/bin/exa -alFT -L 1";
       ll = "ls -ahlFG";
       mkdir = "mkdir -pv";
-      hm = "home-manager";
       ncdu = "${pkgs.ncdu}/bin/ncdu --color dark -ex";
       fzfp = "${pkgs.fzf}/bin/fzf --preview 'bat --style=numbers --color=always {}'";
-      strip = ''
-        ${pkgs.gnused}/bin/sed -E 's#^\s+|\s+$##g'
-      '';
+      strip = ''${pkgs.gnused}/bin/sed -E 's#^\s+|\s+$##g' '';
 
       # git
       g = "git";

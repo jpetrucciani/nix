@@ -1304,7 +1304,7 @@ with builtins; rec {
     k = "${pkgs.kubectl}/bin/kubectl";
 
     ## clouds
-    aws = "${pkgs.awscli2}/bin/aws";
+    aws = if isM1 then "${pkgs.awscli}/bin/aws" else "${pkgs.awscli2}/bin/aws";
     gcloud = "${pkgs.google-cloud-sdk}/bin/gcloud";
 
     # fzf partials
@@ -1461,13 +1461,16 @@ with builtins; rec {
       # docker images to use in various spots
       images = [
         "alpine:latest"
+        "alpine:3.16"
         "alpine:3.15"
+        "jpetrucciani/nix:2.9"
         "jpetrucciani/nix:2.6"
         "mongo:5.0"
         "mongo:4.4.12"
         "mysql:8.0"
         "mysql:5.7"
         "nicolaka/netshoot:latest"
+        "node:18"
         "node:16"
         "node:14"
         "node:12"
