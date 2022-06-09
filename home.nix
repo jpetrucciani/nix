@@ -53,7 +53,7 @@ with pkgs.hax; {
   home = {
     inherit username homeDirectory sessionVariables;
 
-    stateVersion = "22.05";
+    stateVersion = "22.11";
 
     packages = with pkgs;
       lib.flatten [
