@@ -1304,7 +1304,7 @@ with builtins; rec {
     k = "${pkgs.kubectl}/bin/kubectl";
 
     ## clouds
-    aws = if isM1 then "${pkgs.awscli}/bin/aws" else "${pkgs.awscli2}/bin/aws";
+    aws = "${pkgs.awscli2}/bin/aws";
     gcloud = "${pkgs.google-cloud-sdk}/bin/gcloud";
 
     # fzf partials
