@@ -2,6 +2,7 @@ prev: next:
 with next;
 rec {
   inherit (stdenv) isLinux isDarwin isAarch64;
+  isM1 = isDarwin && isAarch64;
 
   wordle = pkgs.callPackage
     ({ pkgs
@@ -248,4 +249,13 @@ rec {
     version = "2.2.23";
     sha256 = "sha256-3lc7eGtm7izLmnmiN7DpHTwnokchR0+VadWHjo651Po=";
   };
+
+  # temp fix for m1 macs
+  awscli2 =
+    if isM1 then (import
+      (builtins.fetchTarball {
+        url = "https://github.com/NixOS/nixpkgs/archive/d1c3fea7ecbed758168787fe4e4a3157e52bc808.tar.gz";
+        sha256 = "0ykm15a690v8lcqf2j899za3j6hak1rm3xixdxsx33nz7n3swsyy";
+      })
+      { }).awscli2 else prev.awscli2;
 }
