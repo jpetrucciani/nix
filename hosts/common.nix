@@ -223,6 +223,7 @@ in
         "keybase"
         "notion"
         "parsec"
+        "qlvideo"
         "rectangle"
         "utm"
       ];

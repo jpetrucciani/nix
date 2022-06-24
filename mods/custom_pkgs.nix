@@ -1,8 +1,8 @@
-prev: next:
+final: prev:
 with builtins;
 let
   extra-packages =
-    with next;
+    with prev;
     (
       fn:
       lib.optionalAttrs (pathExists ../pkgs)

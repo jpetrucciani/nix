@@ -1,6 +1,6 @@
-prev: next: {
-  _nix_hash = with next; with hax; repo: branch: name: (
-    prev.pog {
+final: prev: {
+  _nix_hash = with prev; with hax; repo: branch: name: (
+    final.pog {
       name = "nix_hash_${name}";
       description = "grab the latest rev/sha256 from the '${branch}' branch of '${repo}'";
       flags = [
@@ -20,12 +20,12 @@ prev: next: {
       '';
     }
   );
-  nix_hash_nixos_unstable = prev._nix_hash "NixOS/nixpkgs" "nixos-unstable" "nixos_unstable";
-  nix_hash_unstable = prev._nix_hash "NixOS/nixpkgs" "nixpkgs-unstable" "unstable";
-  nix_hash_jpetrucciani = prev._nix_hash "jpetrucciani/nix" "main" "jpetrucciani";
-  nix_hash_kwb = prev._nix_hash "kwbauson/cfg" "main" "kwb";
-  nix_hash_hm = prev._nix_hash "nix-community/home-manager" "master" "hm";
-  nix_hash_darwin = prev._nix_hash "LnL7/nix-darwin" "master" "darwin";
-  nix_hash_medable = prev._nix_hash "Medable/nix" "main" "medable";
+  nix_hash_nixos_unstable = final._nix_hash "NixOS/nixpkgs" "nixos-unstable" "nixos_unstable";
+  nix_hash_unstable = final._nix_hash "NixOS/nixpkgs" "nixpkgs-unstable" "unstable";
+  nix_hash_jpetrucciani = final._nix_hash "jpetrucciani/nix" "main" "jpetrucciani";
+  nix_hash_kwb = final._nix_hash "kwbauson/cfg" "main" "kwb";
+  nix_hash_hm = final._nix_hash "nix-community/home-manager" "master" "hm";
+  nix_hash_darwin = final._nix_hash "LnL7/nix-darwin" "master" "darwin";
+  nix_hash_medable = final._nix_hash "Medable/nix" "main" "medable";
   home-packages = (import ../home.nix).home.packages;
 }

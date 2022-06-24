@@ -1,17 +1,19 @@
 let
   pynixifyOverlay =
-    self: super: {
-      python39 = super.python39.override { inherit packageOverrides; };
-      python310 = super.python310.override { inherit packageOverrides; };
-      python311 = super.python311.override { inherit packageOverrides; };
+    final: prev: {
+      python39 = prev.python39.override { inherit packageOverrides; };
+      python310 = prev.python310.override { inherit packageOverrides; };
+      python311 = prev.python311.override { inherit packageOverrides; };
     };
 
   remove = e: builtins.filter (x: x != e);
 
-  packageOverrides = self: super: with self; {
-    inherit (super.stdenv) isDarwin isAarch64 isNixOS;
+  packageOverrides = final: prev: with final; {
+    inherit (prev.stdenv) isDarwin isAarch64 isNixOS;
     isM1 = isDarwin && isAarch64;
     isOldMac = isDarwin && !isAarch64;
+
+    twisted = if isM1 then prev.twisted.overrideAttrs (_: { doInstallCheck = false; }) else prev.twisted;
 
     # my packages
     archives = buildPythonPackage rec {
@@ -296,10 +298,10 @@ let
       };
     };
 
-    pyopenssl = if isM1 then super.pyopenssl.overrideAttrs (_: { meta.broken = false; }) else super.pyopenssl;
+    pyopenssl = if isM1 then prev.pyopenssl.overrideAttrs (_: { meta.broken = false; }) else prev.pyopenssl;
 
     # bypython off of master
-    bpython = (super.bpython.overrideAttrs
+    bpython = (prev.bpython.overrideAttrs
       (old: {
         version = "master-2022-05-01";
         src = builtins.fetchTarball {

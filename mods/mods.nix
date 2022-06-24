@@ -1,5 +1,5 @@
-prev: next:
-with next;
+final: prev:
+with prev;
 with builtins; rec {
   inherit (stdenv) isLinux isDarwin isAarch64;
 
@@ -1828,7 +1828,7 @@ with builtins; rec {
     github_tags
   ];
 
-  yank = next.yank.overrideAttrs (attrs: {
+  yank = prev.yank.overrideAttrs (attrs: {
     makeFlags = if isDarwin then [ "YANKCMD=/usr/bin/pbcopy" ] else attrs.makeFlags;
   });
 

@@ -1,6 +1,6 @@
-prev: next:
+final: prev:
 (x: { hax = x; }) (
-  with next;
+  with prev;
   with lib;
   with builtins;
   lib // rec {
@@ -15,7 +15,7 @@ prev: next:
 
     kwb = with builtins; fromJSON (readFile ../sources/kwb.json);
     chief_keef = import (
-      next.pkgs.fetchFromGitHub {
+      prev.pkgs.fetchFromGitHub {
         inherit (kwb) rev sha256;
         owner = "kwbauson";
         repo = "cfg";
@@ -50,7 +50,7 @@ prev: next:
       '';
     };
 
-    comma = (prev.writeBashBinCheckedWithFlags {
+    comma = (final.writeBashBinCheckedWithFlags {
       name = ",";
       description = "a quick and easy way to run software that you don't have!";
       flags = [
@@ -109,8 +109,8 @@ prev: next:
       let
         path = head (splitString ":" pkg.meta.position);
       in
-      prev.callPackage path;
-    nix-direnv = next.nix-direnv.override { inherit (next) nix; };
+      final.callPackage path;
+    nix-direnv = prev.nix-direnv.override { inherit (prev) nix; };
     excludeLines = f: text:
       concatStringsSep "\n" (filter (x: !f x) (splitString "\n" text));
     drvs = x:
