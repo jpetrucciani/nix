@@ -163,7 +163,7 @@ rec {
     { };
 
   _caddy_plugins = [
-    { name = "github.com/greenpau/caddy-security"; version = "v1.1.12"; }
+    { name = "github.com/greenpau/caddy-security"; version = "v1.1.14"; }
     { name = "github.com/lindenlab/caddy-s3-proxy"; version = "v0.5.6"; }
   ];
   _caddy_patch_main = prev.lib.strings.concatMapStringsSep "\n"
@@ -178,7 +178,7 @@ rec {
     _caddy_plugins;
   xcaddy = caddy.override {
     buildGoModule = args: buildGoModule (args // {
-      vendorSha256 = "sha256-Exv3ThXdo53oUFWYBRl01VXA0V1I5FpS+QCvL8bklTQ=";
+      vendorSha256 = "sha256-Et4DGfhpWXA05PEMxYaWCpulkicjuqaFKUS2JLrS3JM=";
       overrideModAttrs = _: {
         preBuild = ''
           ${_caddy_patch_main}
@@ -248,6 +248,20 @@ rec {
   haproxy-2-2-23 = haproxy-pin {
     version = "2.2.23";
     sha256 = "sha256-3lc7eGtm7izLmnmiN7DpHTwnokchR0+VadWHjo651Po=";
+  };
+
+  awscli2 = next.awscli2.override {
+    python3 = next.awscli2.python // {
+      override = args: next.awscli2.python.override (args // {
+        packageOverrides = self: super: args.packageOverrides self super // (
+          if stdenv.isDarwin
+          then {
+            twisted = super.twisted.overrideAttrs (_: { doInstallCheck = false; });
+          }
+          else { }
+        );
+      });
+    };
   };
 
 }
