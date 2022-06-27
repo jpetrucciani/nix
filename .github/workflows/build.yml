@@ -11,8 +11,8 @@ jobs:
     name: nix (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: cachix/install-nix-action@v16
+      - uses: actions/checkout@v3.0.2
+      - uses: cachix/install-nix-action@v17
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes

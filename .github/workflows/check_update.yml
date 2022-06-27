@@ -22,14 +22,14 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.pat }}
     steps:
-      - uses: actions/checkout@v2.4.0
-      - uses: cachix/install-nix-action@v16
+      - uses: actions/checkout@v3.0.2
+      - uses: cachix/install-nix-action@v17
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
       - run: nix-env -f . -iA gh moreutils
       - run: nix shell -f . ${{ inputs.command }} -c ${{ inputs.command }} | sponge ${{ inputs.path }}
-      - uses: peter-evans/create-pull-request@v3.11.0
+      - uses: peter-evans/create-pull-request@v4.0.4
         id: cpr
         with:
           delete-branch: true
