@@ -27,5 +27,6 @@ final: prev: {
   nix_hash_hm = final._nix_hash "nix-community/home-manager" "master" "hm";
   nix_hash_darwin = final._nix_hash "LnL7/nix-darwin" "master" "darwin";
   nix_hash_medable = final._nix_hash "Medable/nix" "main" "medable";
+  nix_hash_nix-security-box = final._nix_hash "fabaff/nix-security-box" "main" "nix-security-box";
   home-packages = (import ../home.nix).home.packages;
 }

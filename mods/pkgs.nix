@@ -1,51 +1,8 @@
-prev: next:
-with next;
+final: prev:
+with prev;
 rec {
   inherit (stdenv) isLinux isDarwin isAarch64;
   isM1 = isDarwin && isAarch64;
-
-  wordle = pkgs.callPackage
-    ({ pkgs
-     , lib
-     , fetchFromGitHub
-     , rustPlatform
-     }:
-      let src = fetchFromGitHub {
-        owner = "mozilla";
-        repo = "nixpkgs-mozilla";
-        rev = "f233fdc4ff6ba2ffeb1e3e3cd6d63bb1297d6996";
-        sha256 = "1rzz03h0b38l5sg61rmfvzpbmbd5fn2jsi1ccvq22rb76s1nbh8i";
-      };
-      in
-      with import "${src.out}/rust-overlay.nix" pkgs pkgs;
-      rustPlatform.buildRustPackage rec {
-        pname = "wordle";
-        version = "0.1.7";
-
-        nativeBuildInputs = [
-          (rustChannelOf {
-            date = "2022-02-07";
-            channel = "nightly";
-            sha256 = "sha256-JhZoPsscpTcw2T/gpeXCMhT/y4nx7EJZ/+1U+Ea5c88=";
-          }).rust
-        ];
-
-        src = fetchFromGitHub {
-          owner = "conradludgate";
-          repo = pname;
-          rev = "208c80bb3f15f4adf9c740611a612ef65df988ac";
-          sha256 = "sha256-2iAtx8C5YJxwacl6JoITS46+zV1oyWnOqbdh72/Cmgs=";
-        };
-
-        cargoSha256 = "sha256-ioj2m1DjTnwWVaqVqKP9NBLg82SX763ypEBNBfG3rRg=";
-        doCheck = false;
-
-        meta = with lib; {
-          description = "Wordle TUI in Rust";
-        };
-      }
-    )
-    { };
 
   katafygio = pkgs.callPackage
     ({ stdenv, lib, buildGoModule, fetchFromGitHub }:
@@ -166,12 +123,12 @@ rec {
     { name = "github.com/greenpau/caddy-security"; version = "v1.1.14"; }
     { name = "github.com/lindenlab/caddy-s3-proxy"; version = "v0.5.6"; }
   ];
-  _caddy_patch_main = prev.lib.strings.concatMapStringsSep "\n"
+  _caddy_patch_main = final.lib.strings.concatMapStringsSep "\n"
     ({ name, version }: ''
       sed -i '/plug in Caddy modules here/a\\t_ "${name}"' cmd/caddy/main.go
     '')
     _caddy_plugins;
-  _caddy_patch_goget = prev.lib.strings.concatMapStringsSep "\n"
+  _caddy_patch_goget = final.lib.strings.concatMapStringsSep "\n"
     ({ name, version }: ''
       go get ${name}@${version}
     '')
@@ -245,14 +202,14 @@ rec {
       url = "https://www.haproxy.org/download/${lib.versions.majorMinor version}/src/${attrs.pname}-${version}.tar.gz";
     };
   });
-  haproxy-2-2-23 = haproxy-pin {
-    version = "2.2.23";
-    sha256 = "sha256-3lc7eGtm7izLmnmiN7DpHTwnokchR0+VadWHjo651Po=";
+  haproxy-2-2-24 = haproxy-pin {
+    version = "2.2.24";
+    sha256 = "sha256-DoBzENzjpSk9JFTZwbceuNFkcjBbZvB2s4S1CFix5/k=";
   };
 
-  awscli2 = next.awscli2.override {
-    python3 = next.awscli2.python // {
-      override = args: next.awscli2.python.override (args // {
+  awscli2 = prev.awscli2.override {
+    python3 = prev.awscli2.python // {
+      override = args: prev.awscli2.python.override (args // {
         packageOverrides = self: super: args.packageOverrides self super // (
           if stdenv.isDarwin
           then {
@@ -263,5 +220,30 @@ rec {
       });
     };
   };
+
+  overflow = pkgs.callPackage
+    ({ stdenv, lib, buildGoModule, fetchFromGitHub }:
+      buildGoModule rec {
+        version = "2.1.0";
+        pname = "overflow";
+
+        src = fetchFromGitHub {
+          owner = "sradley";
+          repo = "overflow";
+          rev = "v${version}";
+          sha256 = "sha256-7grkSLpLpf9WKMXfXjj8F82L6qdlZsfASSXBslQVZeI=";
+        };
+
+        vendorSha256 = "sha256-CLJijtBf8iSBpLV2shkb5u5kHSfFXUGKagkwrsT9FJM=";
+
+        meta = with lib; {
+          inherit (src.meta) homepage;
+          description = "command-line tool for exploiting stack-based buffer overflow vulnerabilities";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
 
 }

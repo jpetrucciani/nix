@@ -4,6 +4,10 @@ This directory contains rev/sha256 combos for any of the other repos that I trac
 
 ---
 
+## [darwin.json](./darwin.json)
+
+This json file tracks my pinned version of [nix-darwin]().
+
 ## [home-manager.json](./home-manager.json)
 
 This json file tracks my pinned version of [home-manager](https://github.com/nix-community/home-manager).
@@ -11,6 +15,10 @@ This json file tracks my pinned version of [home-manager](https://github.com/nix
 ## [kwb.json](./kwb.json)
 
 This json file tracks my pinned version of [Chief Keef's nix repo](https://github.com/kwbauson/cfg).
+
+## [nix-security-box.json](./nix-security-box.json)
+
+This json file tracks my pinned version of [nix-security-box](https://github.com/fabaff/nix-security-box).
 
 ## [nixpkgs.json](./nixpkgs.json)
 

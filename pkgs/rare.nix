@@ -1,13 +1,13 @@
 { stdenv, lib, buildGoModule, fetchFromGitHub }:
 buildGoModule rec {
-  version = "0.2.1";
+  version = "0.2.2";
   pname = "rare";
 
   src = fetchFromGitHub {
     owner = "zix99";
     repo = "rare";
     rev = version;
-    sha256 = "1v2f31rcn5h7daqvg2rdqcjvgw19afd4whpnc9xpskjcyrr9lisp";
+    sha256 = "sha256-5MSAbFtPgMhE7x/p/9smEU25RCokXQffAhOKCI1zxCM=";
   };
 
   vendorSha256 = "sha256-mswPEdhuHLjsLFXMczdHiK30Gn4whDrigees4pqUDC4=";

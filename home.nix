@@ -119,6 +119,7 @@ with pkgs.hax; {
         pigz
         procps
         pssh
+        ranger
         re2c
         ripgrep
         ripgrep-all
@@ -227,6 +228,7 @@ with pkgs.hax; {
         mdctl
         s3-edit
         q
+        overflow
 
         # overlays
         git-trim
@@ -237,6 +239,7 @@ with pkgs.hax; {
         nix_hash_hm
         nix_hash_darwin
         nix_hash_medable
+        nix_hash_nix-security-box
         nixup
         foo
 
@@ -749,6 +752,14 @@ with pkgs.hax; {
       setw -g monitor-activity on
       set-option -g bell-action none
     '';
+  };
+
+  programs.pistol = {
+    enable = true;
+    config = {
+      "text/*" = "bat --paging=never --color=always %pistol-filename%";
+      "inode/directory" = "ls -l --color %pistol-filename%";
+    };
   };
 
   # fix vscode

@@ -22,18 +22,6 @@ This package provides [Cloudquery](https://github.com/cloudquery/cloudquery) in 
 
 [Goldilocks](https://github.com/FairwindsOps/goldilocks) is a utility that can help you identify a starting point for resource requests and limits.
 
-## [horcrux.nix](./horcrux.nix)
-
-[![built in go](https://img.shields.io/badge/built%20in-go-%2301ADD8)](https://go.dev/)
-
-This package provides [Horcrux](https://github.com/jesseduffield/horcrux) in nixpks. It is a tool for an interesting style of encryption based on [Shamir's Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing). Written in Go.
-
-## [katafygio.nix](./katafygio.nix)
-
-[![built in go](https://img.shields.io/badge/built%20in-go-%2301ADD8)](https://go.dev/)
-
-This package provides [katafygio](https://github.com/bpineau/katafygio) in nixpkgs. It is a tool that can dump, or continuously backup Kubernetes objets as yaml files in git. Written in Go.
-
 ## [kube-linter.nix](./kube-linter.nix)
 
 [![built in go](https://img.shields.io/badge/built%20in-go-%2301ADD8)](https://go.dev/)
