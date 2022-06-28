@@ -118,6 +118,22 @@ let
       };
     };
 
+    passlib =
+      if isDarwin then
+        prev.passlib.overrideAttrs
+          (_: {
+            disabledTestPaths =
+              [
+                "passlib/tests/test_context.py"
+              ];
+          }) else prev.passlib;
+    curio =
+      if isDarwin then
+        prev.curio.overrideAttrs
+          (_: {
+            doCheck = false;
+            doInstallCheck = false;
+          }) else prev.curio;
 
     # njsscan
     njsscan = buildPythonPackage rec {
