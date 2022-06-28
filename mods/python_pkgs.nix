@@ -14,6 +14,7 @@ let
     isOldMac = isDarwin && !isAarch64;
 
     twisted = if isM1 then prev.twisted.overrideAttrs (_: { doInstallCheck = false; }) else prev.twisted;
+    pyopenssl = if isM1 then prev.pyopenssl.overrideAttrs (_: { meta.broken = false; }) else prev.pyopenssl;
 
     # my packages
     archives = buildPythonPackage rec {

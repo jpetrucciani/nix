@@ -214,6 +214,7 @@ rec {
           if stdenv.isDarwin
           then {
             twisted = super.twisted.overrideAttrs (_: { doInstallCheck = false; });
+            pyopenssl = super.pyopenssl.overrideAttrs (_: { meta.broken = false; });
           }
           else { }
         );
