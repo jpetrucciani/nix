@@ -1250,7 +1250,7 @@ with builtins; rec {
         end_sec="$(echo "$end" | ${helpers.fn.ts_to_seconds})"
       fi
 
-      ${_.ffmpeg} -i "$file" -ss "$start_sec" -to "$end_sec" -c:v copy -c:a copy "$output"
+      ${_.ffmpeg} -ss "$start_sec" -i "$file" -to "$end_sec" -c:v copy -c:a copy "$output"
     '';
   };
   ffmpeg_pog_scripts = [
