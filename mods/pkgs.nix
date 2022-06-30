@@ -119,37 +119,54 @@ rec {
     )
     { };
 
-  _caddy_plugins = [
-    { name = "github.com/greenpau/caddy-security"; version = "v1.1.14"; }
-    { name = "github.com/lindenlab/caddy-s3-proxy"; version = "v0.5.6"; }
-  ];
-  _caddy_patch_main = final.lib.strings.concatMapStringsSep "\n"
-    ({ name, version }: ''
-      sed -i '/plug in Caddy modules here/a\\t_ "${name}"' cmd/caddy/main.go
-    '')
-    _caddy_plugins;
-  _caddy_patch_goget = final.lib.strings.concatMapStringsSep "\n"
-    ({ name, version }: ''
-      go get ${name}@${version}
-    '')
-    _caddy_plugins;
-  xcaddy = caddy.override {
-    buildGoModule = args: buildGoModule (args // {
-      vendorSha256 = "sha256-Et4DGfhpWXA05PEMxYaWCpulkicjuqaFKUS2JLrS3JM=";
-      overrideModAttrs = _: {
-        preBuild = ''
-          ${_caddy_patch_main}
-          ${_caddy_patch_goget}
-        '';
-        postInstall = "cp go.mod go.sum $out/";
+  _xcaddy =
+    { plugins ? [ ]
+    , defaultPlugins ? [
+        { name = "github.com/greenpau/caddy-security"; version = "v1.1.14"; }
+        { name = "github.com/lindenlab/caddy-s3-proxy"; version = "v0.5.6"; }
+      ]
+    , allPlugins ? plugins ++ defaultPlugins
+    , vendorSha256 ? "sha256-Et4DGfhpWXA05PEMxYaWCpulkicjuqaFKUS2JLrS3JM="
+    }:
+    let
+      caddyPatchMain = final.lib.strings.concatMapStringsSep "\n"
+        ({ name, version }: ''
+          sed -i '/plug in Caddy modules here/a\\t_ "${name}"' cmd/caddy/main.go
+        '')
+        allPlugins;
+      caddyPatchGoGet = final.lib.strings.concatMapStringsSep "\n"
+        ({ name, version }: ''
+          go get ${name}@${version}
+        '')
+        allPlugins;
+      xcaddy = prev.caddy.override {
+        buildGoModule = args: buildGoModule (args // {
+          inherit vendorSha256;
+          overrideModAttrs = _: {
+            preBuild = ''
+              ${caddyPatchMain}
+              ${caddyPatchGoGet}
+            '';
+            postInstall = "cp go.mod go.sum $out/";
+          };
+          postInstall = ''
+            ${args.postInstall}
+            sed -i -E '/Group=caddy/aEnvironmentFile=/etc/default/caddy' $out/lib/systemd/system/caddy.service
+          '';
+          postPatch = caddyPatchMain;
+          preBuild = "cp vendor/go.mod vendor/go.sum .";
+        });
       };
-      postInstall = ''
-        ${args.postInstall}
-        sed -i -E '/Group=caddy/aEnvironmentFile=/etc/default/caddy' $out/lib/systemd/system/caddy.service
-      '';
-      postPatch = _caddy_patch_main;
-      preBuild = "cp vendor/go.mod vendor/go.sum .";
-    });
+    in
+    xcaddy;
+
+  # my preferred caddy install
+  xcaddy = _xcaddy { };
+  xcaddy-browser = _xcaddy {
+    plugins = [
+      { name = "github.com/techknowlogick/caddy-s3browser"; version = "81830de0e8d78d414488f1e621082ee732e7c3de"; }
+    ];
+    vendorSha256 = "sha256-aKnOah0mu5rM2WfAx9NSg8i2M3OzYXjZARWJs+ETxeI=";
   };
 
   semgrep-core = pkgs.callPackage
