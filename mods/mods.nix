@@ -963,9 +963,9 @@ with builtins; rec {
             , jacobi ? import
             (
               fetchTarball {
-                name = "jpetrucciani-2022-05-01";
-                url = "https://github.com/jpetrucciani/nix/archive/769253cb8ca70d1cdc89ae78f0e3aadc39b84876.tar.gz";
-                sha256 = "0qg3k9lrgiqp1760hl9k9r3xrs0isxfzxic5prjpcd3zwqazbjgm";
+                name = "jpetrucciani-2022-06-28";
+                url = "https://github.com/jpetrucciani/nix/archive/2a01bb30c4c48ebfa670168a07383915c2bd3a9f.tar.gz";
+                sha256 = "0l45rk3mcqmky8y658ndjfm86j32s0d03k888l0drsdxsal0gdh8";
               }
             )
             { nixpkgs = pkgs.path; }
@@ -1295,7 +1295,7 @@ with builtins; rec {
     getopt = "${pkgs.getopt}/bin/getopt";
     fzf = "${pkgs.fzf}/bin/fzf";
     sox = "${pkgs.sox}/bin/play";
-    ffmpeg = "${pkgs.ffmpeg}/bin/ffmpeg";
+    ffmpeg = "${pkgs.ffmpeg_5-full}/bin/ffmpeg";
     ssh = "${pkgs.openssh}/bin/ssh";
     which = "${pkgs.which}/bin/which";
 
