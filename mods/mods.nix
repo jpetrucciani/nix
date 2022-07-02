@@ -889,7 +889,16 @@ with builtins; rec {
     ];
     script = helpers: ''
       ${pkgs.python310Packages.mitmproxy2swagger}/bin/mitmproxy2swagger -i "$flows" -o "$spec" -p "$baseurl"
-      ${pkgs.yq-go}/bin/yq -i e 'del(.paths.[].options)' "$spec"
+      ${_.yq} -i e 'del(.paths.[].options)' "$spec"
+    '';
+  };
+
+  whereami = pog {
+    name = "whereami";
+    description = "a quick and easy way to try a geoip lookup (requires an api key)";
+    flags = [ ];
+    script = helpers: ''
+      ${_.curl} -s --netrc-optional "https://api.cobi.dev/geoip/$(${_.curl} -s ifconfig.io)" | ${_.jq}
     '';
   };
 
@@ -906,6 +915,7 @@ with builtins; rec {
     sin
     srv
     sqlfmt
+    whereami
   ] ++ (if isLinux then [ mitm2openapi ] else [ ]);
 
   nixup = writeBashBinCheckedWithFlags {
