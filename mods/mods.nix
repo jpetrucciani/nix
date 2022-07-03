@@ -974,7 +974,7 @@ with builtins; rec {
       terraform=""
       [ "$with_terraform" = "1" ] && terraform="terraform = [terraform${"\n"}terraform-ls terrascan tfsec];"
       envtype=""
-      [ "$mkderivation" = "1" ] && envtype="mkDerivation = true;";
+      [ "$mkderivation" = "1" ] && envtype="${"\n"}mkDerivation = true;";
       cat -s <<EOF | ${_.nixpkgs-fmt}
         { jacobi ? import
             (
