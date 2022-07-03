@@ -32,6 +32,25 @@ with builtins; rec {
       '';
     };
 
+  # ~magic~ for creating local envs
+  enviro =
+    { name
+    , tools
+    , packages ? prev.lib.flatten [ (lib.flatten (builtins.attrValues tools)) ]
+    , mkDerivation ? false
+    }:
+    if mkDerivation then
+      prev.stdenv.mkDerivation
+        {
+          inherit name;
+          buildInputs = packages;
+        } else
+      prev.buildEnv {
+        inherit name;
+        buildInputs = packages;
+        paths = packages;
+      };
+
   bashEsc = ''\033'';
   bashColors = [
     {
@@ -929,6 +948,7 @@ with builtins; rec {
       }
       _.flags.nix.with_python
       _.flags.nix.with_vlang
+      _.flags.nix.with_nim
       _.flags.nix.with_golang
       _.flags.nix.with_rust
       _.flags.nix.with_node
@@ -936,72 +956,50 @@ with builtins; rec {
     ];
     script = ''
       directory="$(pwd | ${_.sed} 's#.*/##')"
-      tags=$(${_.curl} -fsSL https://raw.githubusercontent.com/jpetrucciani/nix/main/sources/nixpkgs.json);
-      rev=$(echo "$tags" | ${_.jq} -r '.rev')
-      sha=$(echo "$tags" | ${_.jq} -r '.sha256')
+      jacobi=$(${nix_hash_jpetrucciani}/bin/nix_hash_jpetrucciani);
+      rev=$(echo "$jacobi" | ${_.jq} -r '.rev')
+      sha=$(echo "$jacobi" | ${_.jq} -r '.sha256')
       py=""
       [ "$with_python" = "1" ] && py="python = [(python310.withPackages ( p: with p; lib.flatten [requests]))];"
       vlang=""
-      [ "$with_vlang" = "1" ] && vlang="vlang = [vlang openssl];"
+      [ "$with_vlang" = "1" ] && vlang="vlang = [vlang.withPackages (p: with p; [])];" && mkderivation=1;
+      nim=""
+      [ "$with_nim" = "1" ] && nim="nim = [nim.withPackages (p: with p; [])];"
       node=""
-      [ "$with_node" = "1" ] && node="node = [nodejs-16_x nodePackages.prettier];"
+      [ "$with_node" = "1" ] && node="node = [nodejs-18_x${"\n"}nodePackages.prettier];" && mkderivation=1;
       golang=""
-      [ "$with_golang" = "1" ] && golang="go = [go_1_17];"
+      [ "$with_golang" = "1" ] && golang="go = [go_1_18];"
       rust=""
-      [ "$with_rust" = "1" ] && rust="rust = [rustc rustfmt];"
+      [ "$with_rust" = "1" ] && rust="rust = [rustc${"\n"}rustfmt];"
       terraform=""
-      [ "$with_terraform" = "1" ] && terraform="terraform = [terraform terraform-ls terrascan tfsec];"
-      envtype="buildEnv"
-      envpaths="paths = packages;"
-      [ "$mkderivation" = "1" ] && envtype="stdenv.mkDerivation" && envpaths="";
+      [ "$with_terraform" = "1" ] && terraform="terraform = [terraform${"\n"}terraform-ls terrascan tfsec];"
+      envtype=""
+      [ "$mkderivation" = "1" ] && envtype="mkDerivation = true;";
       cat -s <<EOF | ${_.nixpkgs-fmt}
-        with builtins;
-        { pkgs ? import
+        { jacobi ? import
             (
               fetchTarball {
-                name = "nixpkgs-unstable-$(date '+%F')";
-                url = "https://github.com/NixOS/nixpkgs/archive/$rev.tar.gz";
+                name = "jpetrucciani-$(date '+%F')";
+                url = "https://github.com/jpetrucciani/nix/archive/$rev.tar.gz";
                 sha256 = "$sha";
               }
             )
-            {
-              config = {
-                allowUnfree = true;
-              };
-              overlays = [];
-            }
-            , jacobi ? import
-            (
-              fetchTarball {
-                name = "jpetrucciani-2022-06-28";
-                url = "https://github.com/jpetrucciani/nix/archive/2a01bb30c4c48ebfa670168a07383915c2bd3a9f.tar.gz";
-                sha256 = "0l45rk3mcqmky8y658ndjfm86j32s0d03k888l0drsdxsal0gdh8";
-              }
-            )
-            { nixpkgs = pkgs.path; }
+            {}
         }:
         let
-          inherit (pkgs.stdenv) isLinux isDarwin isAarch64;
-          isM1 = isDarwin && isAarch64;
-          
-          tools = with pkgs; {
+          name = "$directory";
+          tools = with jacobi; {
             cli = [
+              comma
               jq
-              just
               yq-go
             ];
-            jacobi = with jacobi; [comma nixup];
             nix = [nixpkgs-fmt];
-            ''${golang} ''${node} ''${py} ''${rust} ''${terraform} ''${vlang}
+            ''${golang} ''${node} ''${py} ''${rust} ''${terraform} ''${vlang} ''${nim}
           };
 
-          packages = with pkgs; lib.flatten [
-            (pkgs.lib.flatten (attrValues tools))
-          ];
-
-          env = pkgs.''${envtype} {
-            name = "$directory";
-            buildInputs = packages; ''${envpaths}
+          env = jacobi.enviro {
+            inherit name tools; $envtype
           };
         in
         env
@@ -1443,6 +1441,12 @@ with builtins; rec {
           short = "w";
           bool = true;
           description = "whether or not to include a vlang with dependencies";
+        };
+        with_nim = {
+          name = "with_nim";
+          short = "i";
+          bool = true;
+          description = "whether or not to include a nim with dependencies";
         };
       };
       python = {

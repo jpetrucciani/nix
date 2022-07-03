@@ -35,6 +35,10 @@ home-manager switch
 
 This directory contains my GitHub actions, which are used to automatically check for updates to various sources, and rebuild and cache my nix setups for multiple platforms.
 
+### [examples/](./examples/)
+
+This directory contains examples of use of my repo as a source for other tools/environments!
+
 ### [hosts/](./hosts/)
 
 This directory contains my NixOS configurations for each of my NixOS machines, as well as a `common.nix` file that contains shared configurations for all of my NixOS machines.

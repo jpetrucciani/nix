@@ -5,5 +5,6 @@
   (import ./mods/python_pkgs.nix)
   (import ./mods/pkgs.nix)
   (import ./mods/custom_pkgs.nix)
+  (import ./mods/lang.nix)
   (import ./mods/mods.nix)
 ]

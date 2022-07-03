@@ -663,6 +663,7 @@ with pkgs.hax; {
         pager = "delta --dark";
       };
       rebase.instructionFormat = "<%ae >%s";
+      init.defaultBranch = "main";
     };
   };
   programs.git.${attrIf (!isNixOS) "signing"} = {
