@@ -11,12 +11,9 @@ final: prev: {
         }
       ];
       script = ''
-        ${nix-prefetch-git}/bin/nix-prefetch-git \
-          --quiet \
-          --no-deepClone \
-          --branch-name "$branch" \
-          https://github.com/${repo}.git | \
-        ${jq}/bin/jq '{ date: (now|strflocaltime("%Y-%m-%d")), rev: .rev, sha256: .sha256 }'
+        rev=$(${curl}/bin/curl -s "https://api.github.com/repos/${repo}/commits/$branch" | ${jq}/bin/jq -r '.sha')
+        sha=$(${nix}/bin/nix-prefetch-url --unpack "https://github.com/${repo}/archive/$rev.tar.gz")
+        echo "{ \"date\": \"$(${coreutils}/bin/date +%Y-%m-%d)\", \"rev\": \"$rev\", \"sha256\": \"$sha\" }" | ${jq}/bin/jq 
       '';
     }
   );

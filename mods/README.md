@@ -24,7 +24,7 @@ This overlay provides the `hax` library, which contains a number of useful funct
 
 This overlay provides many more packages and scripts for use in my setup. This is also used in my repo's modified comma, exposing the binaries and scripts in this overlay directly through comma.
 
-## [pkgs].nix](./pkgs].nix)
+## [pkgs.nix](./pkgs.nix)
 
 This overlay provides a few more custom packages that can be included in my version of better-comma.
 
