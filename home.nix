@@ -229,6 +229,7 @@ with pkgs.hax; {
         s3-edit
         q
         overflow
+        memzoom
 
         # overlays
         git-trim

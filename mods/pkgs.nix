@@ -119,6 +119,33 @@ rec {
     )
     { };
 
+  memzoom = pkgs.callPackage
+    ({ stdenv, lib, fetchFromGithub }: stdenv.mkDerivation rec {
+      pname = "memzoom";
+      version = "1.0";
+      src = fetchFromGitHub {
+        owner = "jart";
+        repo = "cosmopolitan";
+        rev = version;
+        sha256 = "sha256-7oGtqz6YTJJqBoE4Ql/+qh+5VJ94RwfroCj5Zy8VdIo=";
+      };
+      buildPhase = ''
+        make -j8 o//tool/viz/memzoom.com
+      '';
+      installPhase = ''
+        mkdir -p $out/bin
+        cp ./o//tool/viz/memzoom.com $out/bin/memzoom
+        $out/bin/memzoom -h
+      '';
+      meta = with lib; {
+        inherit (src.meta) homepage;
+        description = "like the less command except designed for binary data with live updates";
+        license = licenses.isc;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    })
+    { };
+
   _xcaddy =
     { plugins ? [ ]
     , defaultPlugins ? [
