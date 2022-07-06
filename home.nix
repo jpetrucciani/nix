@@ -138,6 +138,7 @@ with pkgs.hax; {
         which
         yank
         yq-go
+        you-get
         zip
 
         # python
@@ -261,7 +262,7 @@ with pkgs.hax; {
           optList isLinux [
             binutils
             keybase
-            memzoom
+            # memzoom
             sampler
             vtm
           ]

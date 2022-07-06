@@ -17,7 +17,6 @@ rec {
           sha256 = "1kpfgzplz1r04y6sdp2njvjy5ylrpybz780vcp7dxywi0y8y2j6i";
         };
 
-        # vendorSha256 = lib.fakeSha256;
         vendorSha256 = "641dqcjPXq+iLx8JqqOzk9JsKnmohqIWBeVxT1lUNWU=";
 
         meta = with lib; {
@@ -138,7 +137,6 @@ rec {
         $out/bin/memzoom -h
       '';
       meta = with lib; {
-        inherit (src.meta) homepage;
         description = "like the less command except designed for binary data with live updates";
         license = licenses.isc;
         maintainers = with maintainers; [ jpetrucciani ];
@@ -282,7 +280,6 @@ rec {
         vendorSha256 = "sha256-CLJijtBf8iSBpLV2shkb5u5kHSfFXUGKagkwrsT9FJM=";
 
         meta = with lib; {
-          inherit (src.meta) homepage;
           description = "command-line tool for exploiting stack-based buffer overflow vulnerabilities";
           license = licenses.mit;
           maintainers = with maintainers; [ jpetrucciani ];
@@ -290,5 +287,91 @@ rec {
       }
     )
     { };
+
+  sherlock = pkgs.callPackage
+    ({ stdenv, lib, fetchFromGitHub, python3 ? python310 }:
+      let
+        py = python3.withPackages (p: with p; [
+          certifi
+          colorama
+          openpyxl
+          pandas
+          pysocks
+          requests
+          requests-futures
+          stem
+          torrequest
+        ]);
+      in
+      stdenv.mkDerivation rec {
+        pname = "sherlock";
+        version = "a4c0fb05aa1873d06c3740b7f19df82c90a814d4";
+        src = fetchFromGitHub {
+          owner = "sherlock-project";
+          repo = pname;
+          rev = version;
+          sha256 = "sha256-MLPtfV+ep/02Y9fG1F9YkaikpkhMoeb4bGpRMaQ6x/I=";
+        };
+        passAsFile = "script";
+        script = ''
+          ${py}/bin/python ${src}/sherlock $@
+        '';
+        installPhase = ''
+          mkdir -p $out/bin
+          echo '#!/bin/bash' >$out/bin/${pname}
+          cat $scriptPath >>$out/bin/${pname}
+          chmod +x $out/bin/${pname}
+        '';
+      })
+    { };
+
+  # bun = pkgs.callPackage
+  #   ({ stdenv, lib, fetchFromGithub, zig }: stdenv.mkDerivation rec {
+  #     pname = "bun";
+  #     version = "0.1.1";
+  #     src = fetchFromGitHub {
+  #       owner = "Jarred-Sumner";
+  #       repo = pname;
+  #       rev = "v${version}";
+  #       sha256 = "sha256-5aay8g/R9Q8cUyabWVaBBgeSsoVFaSRZBWZXKOv2tTk=";
+  #       fetchSubmodules = true;
+  #     };
+
+  #     nativeBuildInputs = [
+  #       zig
+  #       # bash
+  #       # coreutils-full
+  #       # gnused
+  #       # gnumake
+  #       # libarchive
+  #       # libiconv
+  #       # libtool
+  #       # openssl
+  #       # pkg-config
+  #       # which
+  #     ];
+  #     buildInputs = [
+  #       # clang_13
+  #       libiconv
+  #     ];
+
+  #     buildPhase = ''
+  #       make
+  #     '';
+
+  #     installPhase = ''
+  #       runHook preInstall
+  #       mkdir -p $out/bin
+  #       ls -alF
+  #       # cp 
+  #       runHook postInstall
+  #     '';
+
+  #     meta = with lib; {
+  #       description = "Incredibly fast JavaScript runtime, bundler, transpiler and package manager – all in one";
+  #       maintainers = with maintainers; [ jpetrucciani ];
+  #     };
+  #   })
+  #   { };
 
 }
