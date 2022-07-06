@@ -229,7 +229,6 @@ with pkgs.hax; {
         s3-edit
         q
         overflow
-        memzoom
 
         # overlays
         git-trim
@@ -262,6 +261,7 @@ with pkgs.hax; {
           optList isLinux [
             binutils
             keybase
+            memzoom
             sampler
             vtm
           ]
