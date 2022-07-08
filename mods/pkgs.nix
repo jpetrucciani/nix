@@ -265,8 +265,8 @@ rec {
   };
 
   overflow = pkgs.callPackage
-    ({ stdenv, lib, buildGoModule, fetchFromGitHub }:
-      buildGoModule rec {
+    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
+      buildGo118Module rec {
         version = "2.1.0";
         pname = "overflow";
 
@@ -281,6 +281,44 @@ rec {
 
         meta = with lib; {
           description = "command-line tool for exploiting stack-based buffer overflow vulnerabilities";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
+  pocketbase = pkgs.callPackage
+    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
+      buildGo118Module rec {
+        version = "0.1.0";
+        pname = "pocketbase";
+
+        src = fetchFromGitHub {
+          owner = "pocketbase";
+          repo = "pocketbase";
+          rev = "3d07f0211dc74710affd9154f61728d77cfb6f4c";
+          sha256 = "sha256-jsZ07brePIr39mi37ZX3uUIjlWmViPwqU7g/jBqAkaw=";
+        };
+
+        doCheck = false;
+
+        ldflags = [
+          "-s"
+          "-w"
+        ];
+
+        postBuild = ''
+          go build ./examples/base/main.go
+        '';
+        postInstall = ''
+          mkdir -p $out/bin
+          mv ./main $out/bin/pocketbase
+        '';
+        vendorSha256 = "sha256-8IiY/gjK8m2ntOXyG84HMiyT4GK3CgDTRG1DB+v0jAs=";
+
+        meta = with lib; {
+          description = "open source realtime backend in 1 file";
           license = licenses.mit;
           maintainers = with maintainers; [ jpetrucciani ];
         };
@@ -325,53 +363,30 @@ rec {
       })
     { };
 
-  # bun = pkgs.callPackage
-  #   ({ stdenv, lib, fetchFromGithub, zig }: stdenv.mkDerivation rec {
-  #     pname = "bun";
-  #     version = "0.1.1";
-  #     src = fetchFromGitHub {
-  #       owner = "Jarred-Sumner";
-  #       repo = pname;
-  #       rev = "v${version}";
-  #       sha256 = "sha256-5aay8g/R9Q8cUyabWVaBBgeSsoVFaSRZBWZXKOv2tTk=";
-  #       fetchSubmodules = true;
-  #     };
-
-  #     nativeBuildInputs = [
-  #       zig
-  #       # bash
-  #       # coreutils-full
-  #       # gnused
-  #       # gnumake
-  #       # libarchive
-  #       # libiconv
-  #       # libtool
-  #       # openssl
-  #       # pkg-config
-  #       # which
-  #     ];
-  #     buildInputs = [
-  #       # clang_13
-  #       libiconv
-  #     ];
-
-  #     buildPhase = ''
-  #       make
-  #     '';
-
-  #     installPhase = ''
-  #       runHook preInstall
-  #       mkdir -p $out/bin
-  #       ls -alF
-  #       # cp 
-  #       runHook postInstall
-  #     '';
-
-  #     meta = with lib; {
-  #       description = "Incredibly fast JavaScript runtime, bundler, transpiler and package manager – all in one";
-  #       maintainers = with maintainers; [ jpetrucciani ];
-  #     };
-  #   })
-  #   { };
-
+  bun = pkgs.callPackage
+    ({ stdenv, lib, autoPatchelfHook }:
+      let
+        pname = "bun";
+        version = "0.1.2";
+        arch = if isM1 then "darwin-aarch64" else if isDarwin then "darwin-x64" else "linux-x64";
+        url = "https://github.com/Jarred-Sumner/bun/releases/download/${pname}-v${version}/${pname}-${arch}.zip";
+        sha256 =
+          if isM1 then "1sj9k648kk5sx10fkzqfzi8srb780v2ld07zhmgry0mrh55xm7vi"
+          else if isDarwin then "0fqccr42qhz85kmbpzihmpnsggm175gfc58xq7ilgv43wrdw02c3"
+          else "1wwr08gmc5kj7l9iriznqz2kk8qc28z5yp2vj8gw171mn0b37s9d";
+      in
+      stdenv.mkDerivation rec {
+        inherit pname version;
+        src = builtins.fetchTarball {
+          inherit url sha256;
+        };
+        nativeBuildInputs = [
+          autoPatchelfHook
+        ];
+        installPhase = ''
+          mkdir -p $out/bin
+          mv ./bun $out/bin/bun
+        '';
+      })
+    { };
 }
