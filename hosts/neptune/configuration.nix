@@ -93,7 +93,7 @@ in
         email = common.emails.personal;
 
         # countries from here http://www.geonames.org/countries/
-        globalConfig = ''
+        extraConfig = ''
           (GEOBLOCK) {
             @geoblock {
               not maxmind_geolocation {
