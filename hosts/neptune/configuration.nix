@@ -97,7 +97,7 @@ in
           (GEOBLOCK) {
             @geoblock {
               not maxmind_geolocation {
-                db_path "{env.GEOIP_DB}"
+                db_path "/var/lib/geoip-databases/GeoLite2-City.mmdb"
                 allow_countries US CA GM
               }
               not remote_ip 127.0.0.1
