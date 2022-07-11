@@ -78,15 +78,6 @@ in
     };
     caddy =
       let
-        # countries from here http://www.geonames.org/countries/
-        geoblock = ''
-          @geoblock {
-            maxmind_geolocation {
-              db_path "{env.GEOIP_DB}"
-              allow_countries US CA GM IT JA
-            }
-          }
-        '';
         reverse_proxy = location: {
           extraConfig = ''
             import GEOBLOCK
@@ -100,12 +91,14 @@ in
         enable = true;
         package = pkgs.xcaddy;
         email = common.emails.personal;
+
+        # countries from here http://www.geonames.org/countries/
         globalConfig = ''
           (GEOBLOCK) {
             @geoblock {
               not maxmind_geolocation {
                 db_path "{env.GEOIP_DB}"
-                allow_countries US CA GM IT JA
+                allow_countries US CA GM
               }
               not remote_ip 127.0.0.1
             }
