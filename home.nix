@@ -221,7 +221,6 @@ with pkgs.hax; {
         polaris
         rare
         rbac-tool
-        semgrep-core
         prospector-177
         mdctl
         s3-edit

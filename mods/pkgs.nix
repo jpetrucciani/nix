@@ -134,7 +134,9 @@ rec {
       installPhase = ''
         mkdir -p $out/bin
         cp ./o//tool/viz/memzoom.com $out/bin/memzoom
+        cp ./o//tool/viz/memzoom.com.dbg $out/bin/memzoom.com.dbg
         $out/bin/memzoom -h
+        $out/bin/memzoom.com.dbg -h
       '';
       meta = with lib; {
         description = "like the less command except designed for binary data with live updates";
@@ -142,87 +144,6 @@ rec {
         maintainers = with maintainers; [ jpetrucciani ];
       };
     })
-    { };
-
-  _xcaddy =
-    { plugins ? [ ]
-    , defaultPlugins ? [
-        { name = "github.com/greenpau/caddy-security"; version = "v1.1.14"; }
-        { name = "github.com/lindenlab/caddy-s3-proxy"; version = "v0.5.6"; }
-      ]
-    , allPlugins ? plugins ++ defaultPlugins
-    , vendorSha256 ? "sha256-Et4DGfhpWXA05PEMxYaWCpulkicjuqaFKUS2JLrS3JM="
-    }:
-    let
-      caddyPatchMain = final.lib.strings.concatMapStringsSep "\n"
-        ({ name, version }: ''
-          sed -i '/plug in Caddy modules here/a\\t_ "${name}"' cmd/caddy/main.go
-        '')
-        allPlugins;
-      caddyPatchGoGet = final.lib.strings.concatMapStringsSep "\n"
-        ({ name, version }: ''
-          go get ${name}@${version}
-        '')
-        allPlugins;
-      xcaddy = prev.caddy.override {
-        buildGoModule = args: buildGoModule (args // {
-          inherit vendorSha256;
-          overrideModAttrs = _: {
-            preBuild = ''
-              ${caddyPatchMain}
-              ${caddyPatchGoGet}
-            '';
-            postInstall = "cp go.mod go.sum $out/";
-          };
-          postInstall = ''
-            ${args.postInstall}
-            sed -i -E '/Group=caddy/aEnvironmentFile=/etc/default/caddy' $out/lib/systemd/system/caddy.service
-          '';
-          postPatch = caddyPatchMain;
-          preBuild = "cp vendor/go.mod vendor/go.sum .";
-        });
-      };
-    in
-    xcaddy;
-
-  # my preferred caddy install
-  xcaddy = _xcaddy { };
-  xcaddy-browser = _xcaddy {
-    plugins = [
-      { name = "github.com/techknowlogick/caddy-s3browser"; version = "81830de0e8d78d414488f1e621082ee732e7c3de"; }
-    ];
-    vendorSha256 = "sha256-aKnOah0mu5rM2WfAx9NSg8i2M3OzYXjZARWJs+ETxeI=";
-  };
-
-  semgrep-core = pkgs.callPackage
-    ({ lib, fetchzip, stdenvNoCC, isDarwin }:
-      stdenvNoCC.mkDerivation rec {
-        pname = "semgrep";
-        version = "0.83.0";
-
-        _arch = if isDarwin then "osx.zip" else "ubuntu-16.04.tgz";
-        _sha256 = if isDarwin then "sha256-6l5cqbyXSU2GECeMScNuJi8v2uFCNoApCyd71ANokBU=" else "sha256-HTCvxliuCvRuv4OnyKSvfGiNARv1v4l26aR9KAAsGAA=";
-
-        src = fetchzip {
-          url = "https://github.com/returntocorp/semgrep/releases/download/v${version}/semgrep-v${version}-${_arch}";
-          sha256 = _sha256;
-        };
-
-        installPhase = ''
-          runHook preInstall
-          mkdir -p $out/bin
-          cp * $out/bin
-          runHook postInstall
-        '';
-
-        meta = with lib; {
-          description = "Lightweight static analysis for many languages";
-          homepage = "https://semgrep.dev";
-          license = licenses.lgpl21Only;
-          mainProgram = "semgrep-core";
-        };
-      }
-    )
     { };
 
   prospector-177 = (import

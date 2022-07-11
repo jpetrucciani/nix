@@ -7,4 +7,5 @@
   (import ./mods/custom_pkgs.nix)
   (import ./mods/lang.nix)
   (import ./mods/mods.nix)
+  (import ./mods/caddy.nix)
 ]
