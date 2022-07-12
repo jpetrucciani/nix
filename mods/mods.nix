@@ -1077,6 +1077,21 @@ with builtins; rec {
         description = "only render and patch, do not diff or apply";
         bool = true;
       }
+      {
+        name = "check";
+        description = "whether to check the hex for deprecations";
+        bool = true;
+      }
+      {
+        name = "prettify";
+        description = "whether to run prettier on the hex output yaml";
+        bool = true;
+      }
+      {
+        name = "force";
+        description = "force apply the resulting hex without a diff (WARNING - BE CAREFUL)";
+        bool = true;
+      }
     ];
     script =
       let
@@ -1090,6 +1105,7 @@ with builtins; rec {
           k = "${pkgs.kubectl}/bin/kubectl";
           nr = "${nixrender}/bin/nixrender";
           delta = "${pkgs.delta}/bin/delta";
+          pluto = "${pluto}/bin/pluto";
           mktemp = "${pkgs.coreutils}/bin/mktemp";
         };
       in
@@ -1106,8 +1122,17 @@ with builtins; rec {
         if [ $render_exit_code -ne 0 ]; then
           die "nixrender failed!" 2
         fi
+        ${helpers.var.notEmpty "check"} && ${_.pluto} detect "$rendered"
+        ${helpers.var.notEmpty "prettify"} && ${pkgs.nodePackages.prettier}/bin/prettier --write --config ${../.prettierrc.js} --parser yaml "$rendered" >/dev/null
         if ${helpers.var.notEmpty "render"}; then
           blue "rendered hex to '$rendered'"
+          exit 0
+        fi
+        if ${helpers.var.notEmpty "force"}; then
+          ${helpers.timer.start steps.apply}
+          ${pkgs.kubectl}/bin/kubectl apply -f "$rendered"
+          apply_runtime=${helpers.timer.stop steps.apply}
+          debug "''${GREEN}force applied '$rendered' in $apply_runtime''${RESET}"
           exit 0
         fi
         ${helpers.timer.start steps.diff}
