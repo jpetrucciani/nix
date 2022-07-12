@@ -107,7 +107,7 @@ in
         '';
         virtualHosts = {
           "api.cobi.dev" = reverse_proxy "localhost:10000";
-          "auth.cobi.dev" = reverse_proxy "localhost:80";
+          "auth.cobi.dev" = reverse_proxy "localhost:8088";
           "home.cobi.dev" = reverse_proxy "home:${toString common.ports.home-assistant}";
           "netdata.cobi.dev" = reverse_proxy "localhost:${toString common.ports.netdata}";
           "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
