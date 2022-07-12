@@ -31,7 +31,7 @@ rec {
         caddy-json-parse = { name = "github.com/abiosoft/caddy-json-parse"; version = "c57039f26567f4b4120e35b4dc1a9bbd20a4f37f"; };
         caddy-ratelimit = { name = "github.com/mholt/caddy-ratelimit"; version = "9c011f665e5ddff32fe00cab338ace7f360114ff"; };
         caddy-trace = { name = "github.com/greenpau/caddy-trace"; version = "v1.1.10"; };
-        geolocation = { name = "github.com/jpetrucciani/caddy-maxmind-geolocation"; version = "aacfeb55604dba2d2fdd73570e023b1798092447"; };
+        geolocation = { name = "github.com/jpetrucciani/caddy-maxmind-geolocation"; version = "65f8416054495107983d1c5fe128658f35b5e60a"; };
         replace_response = { name = "github.com/caddyserver/replace-response"; version = "d32dc3ffff0c07a3c935ef33092803f90c55ba19"; };
         user_agent_parse = { name = "github.com/neodyme-labs/user_agent_parse"; version = "450380e8b6d048d71937014932ba6d4d56dd611d"; };
       };
@@ -80,7 +80,7 @@ rec {
       s3-proxy
       geolocation
     ];
-    vendorSha256 = "sha256-oazBIYiRYH4k80xArxg71gAduDqiB82tOWbq1NhDT6I=";
+    vendorSha256 = "sha256-d2Fn7bB+4M739OTBhaVYniYaqdfWjHB7/6KBh6eUaFc=";
   };
 
   # caddy with s3-browser plugin
