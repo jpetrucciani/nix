@@ -8,6 +8,7 @@ final: prev:
     inherit (pkgs) fetchFromGitHub;
 
     isM1 = isDarwin && isAarch64;
+    isArmLinux = isAarch64 && isLinux;
     isNixOS = isLinux && (builtins.match ''.*ID="?nixos.*'' (builtins.readFile /etc/os-release)) == [ ];
     isAndroid = isAarch64 && !isDarwin && !isNixOS;
     isUbuntu = isLinux && (builtins.match ''.*ID="?ubuntu.*'' (builtins.readFile /etc/os-release)) == [ ];
@@ -89,6 +90,17 @@ final: prev:
     }).overrideAttrs (_: { name = "better-comma"; });
     vanilla_comma = chief_keef.better-comma;
 
+    attrIf = check: name: if check then name else null;
+    # attrIf helpers
+    ifIsLinux = attrIf isLinux;
+    ifIsArmLinux = attrIf isArmLinux;
+    ifIsNixOS = attrIf isNixOS;
+    ifIsUbuntu = attrIf isUbuntu;
+    ifIsNixDarwin = attrIf isNixDarwin;
+    ifIsAndroid = attrIf isAndroid;
+    ifIsDarwin = attrIf isDarwin;
+    ifIsM1 = attrIf isM1;
+
     mapAttrValues = f: mapAttrs (_: f);
     fakePlatform = x:
       x.overrideAttrs (
@@ -101,7 +113,6 @@ final: prev:
       concatMapStringsSep "\n" (l: if l != "" then f l else l)
         (splitString "\n" s);
     words = splitString " ";
-    attrIf = check: name: if check then name else null;
     alias = name: x:
       writeShellScriptBin name
         ''exec ${if isDerivation x then exe x else x} "$@"'';

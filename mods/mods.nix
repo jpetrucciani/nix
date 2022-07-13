@@ -947,6 +947,7 @@ with builtins; rec {
         bool = true;
       }
       _.flags.nix.with_python
+      _.flags.nix.with_elixir
       _.flags.nix.with_vlang
       _.flags.nix.with_nim
       _.flags.nix.with_golang
@@ -973,6 +974,8 @@ with builtins; rec {
       [ "$with_rust" = "1" ] && rust="rust = [rustc${"\n"}rustfmt];"
       terraform=""
       [ "$with_terraform" = "1" ] && terraform="terraform = [terraform${"\n"}terraform-ls terrascan tfsec];"
+      elixir=""
+      [ "$with_elixir" = "1" ] && elixir="elixir = [elixir${"\n"}(ifIsLinux [inotify-tools]) (ifIsDarwin [ terminal-notifier (with darwin.apple_sdk.frameworks; [ CoreFoundation CoreServices ])])];"
       envtype=""
       [ "$mkderivation" = "1" ] && envtype="${"\n"}mkDerivation = true;";
       cat -s <<EOF | ${_.nixpkgs-fmt}
@@ -987,15 +990,15 @@ with builtins; rec {
             {}
         }:
         let
+          inherit (jacobi.hax) ifIsLinux ifIsDarwin;
+        
           name = "$directory";
           tools = with jacobi; {
             cli = [
-              comma
               jq
-              yq-go
             ];
             nix = [nixpkgs-fmt];
-            ''${golang} ''${node} ''${py} ''${rust} ''${terraform} ''${vlang} ''${nim}
+            ''${golang} ''${node} ''${py} ''${rust} ''${terraform} ''${vlang} ''${nim} ''${elixir}
           };
 
           env = jacobi.enviro {
@@ -1472,6 +1475,12 @@ with builtins; rec {
           short = "i";
           bool = true;
           description = "whether or not to include a nim with dependencies";
+        };
+        with_elixir = {
+          name = "with_elixir";
+          short = "e";
+          bool = true;
+          description = "whether or not to include elixir with dependencies";
         };
       };
       python = {
