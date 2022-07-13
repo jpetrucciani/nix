@@ -288,13 +288,13 @@ rec {
     ({ stdenv, lib, autoPatchelfHook }:
       let
         pname = "bun";
-        version = "0.1.2";
+        version = "0.1.4";
         arch = if isM1 then "darwin-aarch64" else if isDarwin then "darwin-x64" else "linux-x64";
         url = "https://github.com/Jarred-Sumner/bun/releases/download/${pname}-v${version}/${pname}-${arch}.zip";
         sha256 =
-          if isM1 then "1sj9k648kk5sx10fkzqfzi8srb780v2ld07zhmgry0mrh55xm7vi"
-          else if isDarwin then "0fqccr42qhz85kmbpzihmpnsggm175gfc58xq7ilgv43wrdw02c3"
-          else "1wwr08gmc5kj7l9iriznqz2kk8qc28z5yp2vj8gw171mn0b37s9d";
+          if isM1 then "1wi7g07idr3h7kksxvwizw1zj3pq73w2kkr39934rhjx0bji2pas"
+          else if isDarwin then "170ggr1sl2ip13xcrf5w4y4a82ms8vn4kzii7lj2h31wn79wh6ml"
+          else "0sapwpfqm7br00g36md2fqi9faa9vl58a3bqb9m06hrnahzqwj49";
       in
       stdenv.mkDerivation rec {
         inherit pname version;
