@@ -14,6 +14,17 @@ final: prev:
     isUbuntu = isLinux && (builtins.match ''.*ID="?ubuntu.*'' (builtins.readFile /etc/os-release)) == [ ];
     isNixDarwin = builtins.getEnv "NIXDARWIN_CONFIG" != "";
 
+    attrIf = check: name: if check then name else null;
+    # attrIf helpers
+    ifIsLinux = attrIf isLinux;
+    ifIsArmLinux = attrIf isArmLinux;
+    ifIsNixOS = attrIf isNixOS;
+    ifIsUbuntu = attrIf isUbuntu;
+    ifIsNixDarwin = attrIf isNixDarwin;
+    ifIsAndroid = attrIf isAndroid;
+    ifIsDarwin = attrIf isDarwin;
+    ifIsM1 = attrIf isM1;
+
     kwb = with builtins; fromJSON (readFile ../sources/kwb.json);
     chief_keef = import (
       prev.pkgs.fetchFromGitHub {
@@ -89,17 +100,6 @@ final: prev:
       '';
     }).overrideAttrs (_: { name = "better-comma"; });
     vanilla_comma = chief_keef.better-comma;
-
-    attrIf = check: name: if check then name else null;
-    # attrIf helpers
-    ifIsLinux = attrIf isLinux;
-    ifIsArmLinux = attrIf isArmLinux;
-    ifIsNixOS = attrIf isNixOS;
-    ifIsUbuntu = attrIf isUbuntu;
-    ifIsNixDarwin = attrIf isNixDarwin;
-    ifIsAndroid = attrIf isAndroid;
-    ifIsDarwin = attrIf isDarwin;
-    ifIsM1 = attrIf isM1;
 
     mapAttrValues = f: mapAttrs (_: f);
     fakePlatform = x:

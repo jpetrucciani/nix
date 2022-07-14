@@ -1,8 +1,7 @@
 final: prev:
 with prev;
 rec {
-  inherit (stdenv) isLinux isDarwin isAarch64;
-  isM1 = isDarwin && isAarch64;
+  inherit (prev.hax) isLinux isDarwin isM1;
 
   katafygio = pkgs.callPackage
     ({ stdenv, lib, buildGoModule, fetchFromGitHub }:

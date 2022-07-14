@@ -1,7 +1,7 @@
 final: prev:
 with prev;
 with builtins; rec {
-  inherit (stdenv) isLinux isDarwin isAarch64;
+  inherit (prev.hax) isM1 isOldMac isNixOS isAndroid isUbuntu isNixDarwin;
 
   nd = with builtins; fromJSON (readFile ../sources/darwin.json);
   nix-darwin = fetchFromGitHub {
@@ -9,13 +9,6 @@ with builtins; rec {
     owner = "LnL7";
     repo = "nix-darwin";
   };
-
-  isM1 = isDarwin && isAarch64;
-  isOldMac = isDarwin && !isAarch64;
-  isNixOS = isLinux && (match ''.*ID="?nixos.*'' (readFile /etc/os-release)) == [ ];
-  isAndroid = isAarch64 && !isDarwin && !isNixOS;
-  isUbuntu = isLinux && (match ''.*ID="?ubuntu.*'' (readFile /etc/os-release)) == [ ];
-  isNixDarwin = getEnv "NIXDARWIN_CONFIG" != "";
 
   writeBashBinChecked = name: text:
     stdenv.mkDerivation {
@@ -166,6 +159,7 @@ with builtins; rec {
     , beforeExit ? ""
     , strict ? false
     , flagPadding ? 20
+    , showDefaultFlags ? false
     }:
     let
       helpers = {
@@ -195,10 +189,11 @@ with builtins; rec {
           done
         '';
         timer = {
-          start = name: ''_pog_start_${name}="$(${pkgs.coreutils}/bin/date +%s.%N)"'';
-          stop = name: ''"$(echo "$(${pkgs.coreutils}/bin/date +%s.%N) - $_pog_start_${name}" | ${pkgs.bc}/bin/bc -l)"'';
+          start = name: ''_pog_start_${name}="$(${_.date} +%s.%N)"'';
+          stop = name: ''"$(echo "$(${_.date} +%s.%N) - $_pog_start_${name}" | ${pkgs.bc}/bin/bc -l)"'';
         };
       };
+      defaultFlagHelp = if showDefaultFlags then "[-h|--help] [-v|--verbose] [--no-color] " else "";
     in
     stdenv.mkDerivation {
       inherit name version;
@@ -215,7 +210,7 @@ with builtins; rec {
 
         help() {
           cat <<EOF
-          Usage: ${name} [-h|--help] [-v|--verbose] [--no-color] ${concatStringsSep " " (map (x: x.ex) parsedFlags)} ${concatStringsSep " " (map (x: upper x.name) arguments)}
+          Usage: ${name} ${defaultFlagHelp}${concatStringsSep " " (map (x: x.ex) parsedFlags)} ${concatStringsSep " " (map (x: upper x.name) arguments)}
 
           ${description}
 
@@ -298,7 +293,7 @@ with builtins; rec {
         }
         setup_colors
         ${if bashBible then bashbible.bible else ""}
-        ${concatStringsSep "\n" (map (x: x.flagPrompt) parsedFlags)}
+        ${concatStringsSep "\n" (filter (x: x != "") (map (x: x.flagPrompt) parsedFlags))}
         # script
         ${if builtins.isFunction script then script helpers else script}
       '';
@@ -475,17 +470,18 @@ with builtins; rec {
       inherit name;
       flags = [
         {
-          name = "wait";
-          description = "wait until done playing";
-          bool = true;
+          name = "speed";
+          description = "the speed at which to play the sound";
+          default = "1.0";
+        }
+        {
+          name = "tempo";
+          description = "the tempo at which to play the sound";
+          default = "1.0";
         }
       ];
       script = ''
-        if [ -z "$wait" ]; then
-          ${_.sox} --no-show-progress ${file}
-        else
-          ${_.sox} --no-show-progress ${file} &
-        fi
+        ${_.sox} --no-show-progress ${file} speed "$speed" tempo "$tempo"
       '';
     };
 
@@ -975,7 +971,7 @@ with builtins; rec {
       terraform=""
       [ "$with_terraform" = "1" ] && terraform="terraform = [terraform${"\n"}terraform-ls terrascan tfsec];"
       elixir=""
-      [ "$with_elixir" = "1" ] && elixir="elixir = [elixir${"\n"}(ifIsLinux [inotify-tools]) (ifIsDarwin [ terminal-notifier (with darwin.apple_sdk.frameworks; [ CoreFoundation CoreServices ])])];"
+      [ "$with_elixir" = "1" ] && elixir="elixir = [elixir${"\n"}(with beamPackages; [${"\n"}hex])(ifIsLinux [inotify-tools]) (ifIsDarwin [ terminal-notifier (with darwin.apple_sdk.frameworks; [ CoreFoundation CoreServices ])])];"
       envtype=""
       [ "$mkderivation" = "1" ] && envtype="${"\n"}mkDerivation = true;";
       cat -s <<EOF | ${_.nixpkgs-fmt}
@@ -996,8 +992,8 @@ with builtins; rec {
           tools = with jacobi; {
             cli = [
               jq
+              nixpkgs-fmt
             ];
-            nix = [nixpkgs-fmt];
             ''${golang} ''${node} ''${py} ''${rust} ''${terraform} ''${vlang} ''${nim} ''${elixir}
           };
 
@@ -1110,6 +1106,7 @@ with builtins; rec {
           delta = "${pkgs.delta}/bin/delta";
           pluto = "${pluto}/bin/pluto";
           mktemp = "${pkgs.coreutils}/bin/mktemp";
+          prettier = "${pkgs.nodePackages.prettier}/bin/prettier --write --config ${../.prettierrc.js}";
         };
       in
       helpers: ''
@@ -1126,7 +1123,7 @@ with builtins; rec {
           die "nixrender failed!" 2
         fi
         ${helpers.var.notEmpty "check"} && ${_.pluto} detect "$rendered"
-        ${helpers.var.notEmpty "prettify"} && ${pkgs.nodePackages.prettier}/bin/prettier --write --config ${../.prettierrc.js} --parser yaml "$rendered" >/dev/null
+        ${helpers.var.notEmpty "prettify"} && ${_.prettier} --parser yaml "$rendered" >/dev/null
         if ${helpers.var.notEmpty "render"}; then
           blue "rendered hex to '$rendered'"
           exit 0
@@ -1173,7 +1170,7 @@ with builtins; rec {
     hex
   ];
 
-  ### IMAGE STUFF
+  ### FFMPEG STUFF
   scale = pog {
     name = "scale";
     description = "a quick and easy way to scale an image/video!";
@@ -1196,20 +1193,20 @@ with builtins; rec {
         description = "the filename to output to [defaults to the current name with a tag]";
       }
     ];
-    script = helpers: ''
+    script = helpers: with helpers; ''
       file="$1"
       name=""
       scale=""
-      ${helpers.var.empty "file"} && die "you must specify a source file!" 1
-      ${helpers.var.notEmpty "horizontal"} && ${helpers.var.notEmpty "vertical"} && die "you can only scale in 1 dimension!" 1
-      if ${helpers.var.notEmpty "horizontal"}; then
+      ${var.empty "file"} && die "you must specify a source file!" 1
+      ${var.notEmpty "horizontal"} && ${var.notEmpty "vertical"} && die "you can only scale in 1 dimension!" 1
+      if ${var.notEmpty "horizontal"}; then
         name="''${horizontal}x"
         scale="$horizontal:-1"
       else
         name="''${vertical}y"
         scale="-1:$vertical"
       fi
-      ${helpers.var.empty "output"} && output="''${file%.*}.$name.''${file##*.}"
+      ${var.empty "output"} && output="''${file%.*}.$name.''${file##*.}"
       ${_.ffmpeg} -i "$file" -vf scale="$scale" "$output"
     '';
   };
@@ -1237,13 +1234,13 @@ with builtins; rec {
         description = "the filename to output to [defaults to the current name with a tag]";
       }
     ];
-    script = helpers: ''
+    script = helpers: with helpers; ''
       file="$1"
       sep=""
-      ${helpers.var.empty "file"} && die "you must specify a source file!" 1
-      ${helpers.var.empty "horizontal"} && ${helpers.var.empty "vertical"} && die "you must specify at least one way to flip!" 1
-      ${helpers.var.empty "output"} && output="''${file%.*}.flip.''${file##*.}"
-      ${helpers.var.notEmpty "horizontal"} && ${helpers.var.notEmpty "vertical"} && sep=","
+      ${var.empty "file"} && die "you must specify a source file!" 1
+      ${var.empty "horizontal"} && ${var.empty "vertical"} && die "you must specify at least one way to flip!" 1
+      ${var.empty "output"} && output="''${file%.*}.flip.''${file##*.}"
+      ${var.notEmpty "horizontal"} && ${var.notEmpty "vertical"} && sep=","
       ${_.ffmpeg} -i "$file" -filter:v "''${vertical:+vflip}''${sep}''${horizontal:+hflip}" -c:a copy "$output"
     '';
   };
@@ -1272,27 +1269,53 @@ with builtins; rec {
         description = "the filename to output to [defaults to the current name with a tag]";
       }
     ];
-    script = helpers: ''
+    script = helpers: with helpers; ''
       file="$1"
-      ${helpers.var.empty "file"} && die "you must specify a source file!" 1
-      ${helpers.file.notExists "file"} && die "the file '$file' does not exist!" 2
-      ${helpers.var.empty "end"} && ${helpers.var.empty "duration"} && die "you must specify an end (-e|--end) or duration (-d|--duration)!" 3
-      ${helpers.var.empty "output"} && output="''${file%.*}.cut.''${file##*.}"
+      ${var.empty "file"} && die "you must specify a source file!" 1
+      ${file.notExists "file"} && die "the file '$file' does not exist!" 2
+      ${var.empty "end"} && ${var.empty "duration"} && die "you must specify an end (-e|--end) or duration (-d|--duration)!" 3
+      ${var.empty "output"} && output="''${file%.*}.cut.''${file##*.}"
         
-      start_sec="$(echo "$start" | ${helpers.fn.ts_to_seconds})"
-      if ${helpers.var.notEmpty "duration"}; then
-        end_sec="$(echo "$start_sec" "$duration" | ${helpers.fn.add})"
+      start_sec="$(echo "$start" | ${fn.ts_to_seconds})"
+      if ${var.notEmpty "duration"}; then
+        end_sec="$(echo "$start_sec" "$duration" | ${fn.add})"
       else
-        end_sec="$(echo "$end" | ${helpers.fn.ts_to_seconds})"
+        end_sec="$(echo "$end" | ${fn.ts_to_seconds})"
       fi
 
       ${_.ffmpeg} -ss "$start_sec" -i "$file" -to "$end_sec" -c:v copy -c:a copy "$output"
+    '';
+  };
+  to_mp3 = pog {
+    name = "to_mp3";
+    description = "a quick and easy way to convert an audio file to mp3!";
+    arguments = [
+      { name = "source"; }
+    ];
+    flags = [
+      {
+        name = "output";
+        description = "the filename to output to [defaults to the current name with a tag]";
+      }
+      {
+        name = "quality";
+        description = "quality, 0 to 9 (lower is higher quality)";
+        default = "4";
+      }
+    ];
+    script = helpers: with helpers; ''
+      # https://trac.ffmpeg.org/wiki/Encode/MP3
+      file="$1"
+      ${var.empty "file"} && die "you must specify a source file!" 1
+      ${var.empty "output"} && output="''${file%.*}.mp3"
+      ${_.ffmpeg} -i "$file" -c:v copy -c:a libmp3lame -q:a "$quality" "$output"
     '';
   };
   ffmpeg_pog_scripts = [
     scale
     flip
     cut_video
+    to_mp3
   ];
 
   ### snippets
