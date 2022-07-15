@@ -246,50 +246,13 @@ rec {
     )
     { };
 
-  sherlock = pkgs.callPackage
-    ({ stdenv, lib, fetchFromGitHub, python3 ? python310 }:
-      let
-        py = python3.withPackages (p: with p; [
-          certifi
-          colorama
-          openpyxl
-          pandas
-          pysocks
-          requests
-          requests-futures
-          stem
-          torrequest
-        ]);
-      in
-      stdenv.mkDerivation rec {
-        pname = "sherlock";
-        version = "a4c0fb05aa1873d06c3740b7f19df82c90a814d4";
-        src = fetchFromGitHub {
-          owner = "sherlock-project";
-          repo = pname;
-          rev = version;
-          sha256 = "sha256-MLPtfV+ep/02Y9fG1F9YkaikpkhMoeb4bGpRMaQ6x/I=";
-        };
-        passAsFile = "script";
-        script = ''
-          ${py}/bin/python ${src}/sherlock $@
-        '';
-        installPhase = ''
-          mkdir -p $out/bin
-          echo '#!/bin/bash' >$out/bin/${pname}
-          cat $scriptPath >>$out/bin/${pname}
-          chmod +x $out/bin/${pname}
-        '';
-      })
-    { };
-
   bun = pkgs.callPackage
     ({ stdenv, lib, autoPatchelfHook }:
       let
         pname = "bun";
         version = "0.1.4";
         arch = if isM1 then "darwin-aarch64" else if isDarwin then "darwin-x64" else "linux-x64";
-        url = "https://github.com/Jarred-Sumner/bun/releases/download/${pname}-v${version}/${pname}-${arch}.zip";
+        url = "https://github.com/oven-sh/bun/releases/download/${pname}-v${version}/${pname}-${arch}.zip";
         sha256 =
           if isM1 then "1wi7g07idr3h7kksxvwizw1zj3pq73w2kkr39934rhjx0bji2pas"
           else if isDarwin then "170ggr1sl2ip13xcrf5w4y4a82ms8vn4kzii7lj2h31wn79wh6ml"
@@ -307,6 +270,32 @@ rec {
           mkdir -p $out/bin
           mv ./bun $out/bin/bun
         '';
+      })
+    { };
+
+  hunt = pkgs.callPackage
+    ({ lib, stdenv, fetchFromGitHub, rustPlatform }:
+      let
+        pname = "hunt";
+        version = "1.7.5";
+      in
+      rustPlatform.buildRustPackage rec {
+        inherit pname version;
+
+        src = fetchFromGitHub {
+          owner = "LyonSyonII";
+          repo = "hunt-rs";
+          rev = "v${version}";
+          sha256 = "sha256-SIAJpJSRMLxmITE/5X0e+sOm17vnki1C7nPRXCpquic=";
+        };
+
+        cargoSha256 = "sha256-HU3gbsYm0dVZfwrXie8QCs5+a925/YildFVO41+YSaI=";
+
+        meta = with lib; {
+          description = "simplified find command made with rust";
+          # license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
       })
     { };
 }

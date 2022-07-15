@@ -226,6 +226,7 @@ with pkgs.hax; {
         s3-edit
         q
         overflow
+        hunt
 
         # overlays
         git-trim
