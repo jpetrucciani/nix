@@ -160,6 +160,7 @@ with builtins; rec {
     , strict ? false
     , flagPadding ? 20
     , showDefaultFlags ? false
+    , shortDefaultFlags ? true
     }:
     let
       helpers = {
@@ -193,7 +194,11 @@ with builtins; rec {
           stop = name: ''"$(echo "$(${_.date} +%s.%N) - $_pog_start_${name}" | ${pkgs.bc}/bin/bc -l)"'';
         };
       };
-      defaultFlagHelp = if showDefaultFlags then "[-h|--help] [-v|--verbose] [--no-color] " else "";
+      shortHelp = if shortDefaultFlags then "-h|" else "";
+      shortVerbose = if shortDefaultFlags then "-v|" else "";
+      shortHelpDoc = if shortDefaultFlags then "-h, " else "";
+      shortVerboseDoc = if shortDefaultFlags then "-v, " else "";
+      defaultFlagHelp = if showDefaultFlags then "[${shortHelp}--help] [${shortVerbose}--verbose] [--no-color] " else "";
     in
     stdenv.mkDerivation {
       inherit name version;
@@ -216,8 +221,8 @@ with builtins; rec {
 
           Flags:
         ${ind (concatStringsSep "\n" (map (x: x.helpDoc) parsedFlags))}
-          ${rightPad flagPadding "-h, --help"}${"\t"}print this help and exit
-          ${rightPad flagPadding "-v, --verbose"}${"\t"}enable verbose logging and info
+          ${rightPad flagPadding "${shortHelpDoc}--help"}${"\t"}print this help and exit
+          ${rightPad flagPadding "${shortVerboseDoc}--verbose"}${"\t"}enable verbose logging and info
           ${rightPad flagPadding "--no-color"}${"\t"}disable color and other formatting
         EOF
           exit 0
@@ -246,10 +251,10 @@ with builtins; rec {
 
         while true; do
           case "$1" in
-            -h|--help)
+            ${shortHelp}--help)
                 help
                 ;;
-            -v|--verbose)
+            ${shortVerbose}--verbose)
                 VERBOSE=1
                 shift
                 ;;
@@ -1309,6 +1314,49 @@ with builtins; rec {
       ${_.ffmpeg} -ss "$start_sec" -i "$file" -to "$end_sec" -c:v copy -c:a copy "$output"
     '';
   };
+  crop_video = pog {
+    name = "crop_video";
+    description = "a quick and easy way to crop a video with ffmpeg!";
+    arguments = [
+      { name = "source"; }
+    ];
+    shortDefaultFlags = false;
+    flags = [
+      {
+        name = "x";
+        short = "x";
+        description = "the x value to start the crop box at";
+        default = "0";
+      }
+      {
+        name = "y";
+        short = "y";
+        description = "the y value to start the crop box at";
+        default = "0";
+      }
+      {
+        name = "width";
+        description = "the width of the crop box";
+        default = "in_w";
+      }
+      {
+        name = "height";
+        description = "the height of the crop box";
+        default = "in_h";
+      }
+      {
+        name = "output";
+        description = "the filename to output to [defaults to the current name with a tag]";
+      }
+    ];
+    script = helpers: with helpers; ''
+      file="$1"
+      ${var.empty "file"} && die "you must specify a source file!" 1
+      ${file.notExists "file"} && die "the file '$file' does not exist!" 2
+      ${var.empty "output"} && output="''${file%.*}.crop.''${file##*.}"
+      ${_.ffmpeg} -i "$file" -filter:v "crop=$width:$height:$x:$y" "$output"
+    '';
+  };
   to_mp3 = pog {
     name = "to_mp3";
     description = "a quick and easy way to convert an audio file to mp3!";
@@ -1338,6 +1386,7 @@ with builtins; rec {
     scale
     flip
     cut_video
+    crop_video
     to_mp3
   ];
 
