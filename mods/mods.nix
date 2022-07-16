@@ -473,6 +473,7 @@ with builtins; rec {
     in
     pog {
       inherit name;
+      description = "a quick and easy way to play a sound meme!";
       flags = [
         {
           name = "speed";
@@ -481,7 +482,7 @@ with builtins; rec {
         }
         {
           name = "pitch";
-          description = "the pitch modifier for the sound [-100 to 100]";
+          description = "the pitch modifier for the sound [-1000 to 1000]";
           default = "0.0";
         }
         {
