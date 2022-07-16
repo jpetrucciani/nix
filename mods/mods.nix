@@ -475,27 +475,50 @@ with builtins; rec {
           default = "1.0";
         }
         {
+          name = "pitch";
+          description = "the pitch modifier for the sound [-100 to 100]";
+          default = "0.0";
+        }
+        {
           name = "tempo";
           description = "the tempo at which to play the sound";
           default = "1.0";
         }
+        {
+          name = "reverse";
+          description = "play the sound in reverse!";
+          bool = true;
+        }
       ];
       script = ''
-        ${_.sox} --no-show-progress ${file} speed "$speed" tempo "$tempo"
+        # shellcheck disable=SC2068
+        ${_.sox} --no-show-progress ${file} speed "$speed" tempo "$tempo" pitch "$pitch" ''${reverse:+reverse} $@
       '';
     };
 
-  soundFolder = "https://hexa.dev/static/sounds";
+  soundFolder = "https://cobi.dev/static/sound";
 
-  coin = soundScript "coin" "${soundFolder}/coin.wav" "18c7dfhkaz9ybp3m52n1is9nmmkq18b1i82g6vgzy7cbr2y07h93";
-  guh = soundScript "guh" "${soundFolder}/guh.wav" "1chr6fagj6sgwqphrgbg1bpmyfmcd94p39d34imq5n9ik674z9sa";
-  bruh = soundScript "bruh" "${soundFolder}/bruh.mp3" "11n1a20a7fj80xgynfwiq3jaq1bhmpsdxyzbnmnvlsqfnsa30vy3";
-  fail = soundScript "fail" "${soundFolder}/the-price-is-wrong.mp3" "1kj0n7qwl6saqqmjn8xlkfjwimi2hyxgaqdkkzn5z1rgnhwwvp91";
+  bruh = soundScript "bruh" "${soundFolder}/bruh.mp3" "sha256-w28wlLYOa7pttev73vStcAWs5MCRO+tfB0i6o4BQwYY=";
+  coin = soundScript "coin" "${soundFolder}/coin.wav" "sha256-I8EDvMiLHf/fNk+gGBYKeNZqk47BilLHXT59NaFrh6E=";
+  dababy = soundScript "dababy" "${soundFolder}/dababy.mp3" "sha256-Vg/7/WrMgi2Fz27reG1iAdxFpvdyLWAhk9+8GACL0rg=";
+  do_it = soundScript "do_it" "${soundFolder}/do_it.mp3" "sha256-98bR48sTooZqqb+gqPNiBymBoii6mQAJZA7yc2m0uXo=";
+  error = soundScript "error" "${soundFolder}/xp_error.mp3" "sha256-OpvwYGEbDVhaU3pGs5EWSMQKPnKLHF778UfzPfmRWp4=";
+  fail = soundScript "fail" "${soundFolder}/the_price_is_wrong.mp3" "sha256-Id3NObQvh1/sn7Nh9bqHItbIpZu0IysrxkobyvGxQM4=";
+  fart = soundScript "fart" "${soundFolder}/reverb_fart.mp3" "sha256-ooEfsfXtIy4ZpWUoxcTBx67Rjfzvxpy9tdyio/fzJic=";
+  guh = soundScript "guh" "${soundFolder}/guh.wav" "sha256-SqdPjpkx2YJrJKOlcUlqrDpf7wpvvQwv5k8b+ZQzGbI=";
+  hello_mario = soundScript "hello_mario" "${soundFolder}/hello_mario.mp3" "sha256-hRKpRcM3o+LNdCzm5VkXkXbLkBby8fzNlDb0dd5+u20=";
+  waluigi = soundScript "waluigi" "${soundFolder}/waluigi.mp3" "sha256-uT9BDNDaeuQPoE/WafS0Wo6FlrCvOmDJwG7rsFVf6Zw=";
   meme_sounds = [
-    coin
-    guh
     bruh
+    coin
+    dababy
+    do_it
+    error
     fail
+    fart
+    guh
+    hello_mario
+    waluigi
   ];
 
   ### AWS STUFF
