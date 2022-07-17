@@ -80,7 +80,7 @@ rec {
       s3-proxy
       geolocation
     ];
-    vendorSha256 = "sha256-d2Fn7bB+4M739OTBhaVYniYaqdfWjHB7/6KBh6eUaFc=";
+    vendorSha256 = "sha256-7F+PG1uFGvp3krjiGgF+0WG/RfOoq9x7nExb5/Uu7H0=";
   };
 
   # caddy with s3-browser plugin
@@ -90,6 +90,6 @@ rec {
       s3-proxy
       s3-browser
     ];
-    vendorSha256 = "sha256-aKnOah0mu5rM2WfAx9NSg8i2M3OzYXjZARWJs+ETxeI=";
+    vendorSha256 = "sha256-uoZsela6cq41x4qoUJavg5f0r584nAZBJRnyJwpQXgY=";
   };
 }

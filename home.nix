@@ -220,7 +220,6 @@ with pkgs.hax; {
         pluto
         polaris
         rare
-        rbac-tool
         prospector-177
         mdctl
         s3-edit
@@ -260,6 +259,7 @@ with pkgs.hax; {
             binutils
             bun
             keybase
+            rbac-tool
             sampler
             vtm
           ]
