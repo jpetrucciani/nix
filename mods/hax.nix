@@ -91,7 +91,10 @@ final: prev:
       script = ''
         exec ${chief_keef.better-comma}/bin/, \
           --overlay ${./mods.nix} \
-          --overlay ${./pkgs.nix} \
+          --overlay ${./pkgs/cli.nix} \
+          --overlay ${./pkgs/cloud.nix} \
+          --overlay ${./pkgs/k8s.nix} \
+          --overlay ${./pkgs/server.nix} \
           ''${overlay:+--overlay $overlay} \
           ''${unset:+-u} \
           ''${description:+-d} \

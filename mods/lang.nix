@@ -5,7 +5,7 @@ with builtins; rec {
     packages:
     let
       addPath = { src, name, sub ? "", meta ? { }, ... }: ''--add-flags "--path:${src}${sub}"'';
-      additionalPaths = map addPath (packages (prev.callPackage ./pkgs/nim-packages.nix { }));
+      additionalPaths = map addPath (packages (prev.callPackage ./lang/nim-packages.nix { }));
     in
     prev.nim.overrideAttrs (old: {
       wrapperArgs = old.wrapperArgs ++ additionalPaths;
@@ -19,7 +19,7 @@ with builtins; rec {
       setVCache = "--set VCACHE /tmp/test";
 
       lnPackage = { src, name, sub ? "", ... }: "ln -s ${src}${sub} $out/.vmod/${name}";
-      lnPackages = concatStringsSep "\n" (map lnPackage (packages (prev.callPackage ./pkgs/v-packages.nix { })));
+      lnPackages = concatStringsSep "\n" (map lnPackage (packages (prev.callPackage ./lang/v-packages.nix { })));
     in
     prev.stdenv.mkDerivation {
       inherit (prev.vlang) pname version;
