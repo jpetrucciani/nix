@@ -72,6 +72,12 @@ rec {
 
         vendorSha256 = "sha256-kyGnwx9bi3a+2oxGtBMI3EOgc/QmZ/k7ynydkLjUBjg=";
 
+        ldflags = [
+          "-w"
+          "-s"
+          "-X main.version=v${version}"
+        ];
+
         meta = with lib; {
           inherit (src.meta) homepage;
           description = "A cli tool to help discover deprecated apiVersions in Kubernetes";
