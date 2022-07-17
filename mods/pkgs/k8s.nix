@@ -14,11 +14,12 @@ rec {
         src = fetchFromGitHub {
           owner = "bpineau";
           repo = "katafygio";
-          rev = "v${version}";
-          sha256 = "sha256-0UjhkQeR+97OZRug85e/mfri5ZZW3KaNJyCHT+9/7s4=";
+          # rev = "v${version}";
+          rev = "a30062ccd24a28ded1a70f3a667c1b0e5d6594aa";
+          sha256 = "sha256-fRMXRKr620l7Y6uaYur3LbCGgLeSJ27zEGK0Zq7LZEY=";
         };
 
-        vendorSha256 = "sha256-641dqcjPXq+iLx8JqqOzk9JsKnmohqIWBeVxT1lUNWU=";
+        vendorSha256 = "sha256-4hf6OueNHkReXdn9RuO4G4Zrpghp45YkuEwmci4wjz8=";
 
         meta = with lib; {
           inherit (src.meta) homepage;
