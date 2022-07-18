@@ -213,19 +213,20 @@ with pkgs.hax; {
         # my pkgs
         aliyun-cli
         cloudquery
-        horcrux
+        cyclonus
         goldilocks
+        horcrux
+        hunt
         katafygio
         kube-linter
-        pluto
-        polaris
-        rare
-        prospector-177
         mdctl
-        s3-edit
-        q
         overflow
-        hunt
+        pluto
+        # polaris
+        prospector-177
+        q
+        rare
+        s3-edit
 
         # overlays
         git-trim
@@ -259,6 +260,7 @@ with pkgs.hax; {
             binutils
             bun
             keybase
+            polaris
             rbac-tool
             sampler
             vtm
