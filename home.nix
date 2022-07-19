@@ -621,11 +621,14 @@ with pkgs.hax; {
   programs.git =
     let
       gs = text:
-        let script = pkgs.writers.writeBash "git-script" ''
-          set -eo pipefail
-          cd -- ''${GIT_PREFIX:-.}
-          ${text}
-        ''; in "! ${script}";
+        let
+          script = pkgs.writers.writeBash "git-script" ''
+            set -eo pipefail
+            cd -- ''${GIT_PREFIX:-.}
+            ${text}
+          '';
+        in
+        "! ${script}";
     in
     {
       enable = true;
