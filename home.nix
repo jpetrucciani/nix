@@ -217,11 +217,11 @@ with pkgs.hax; {
         goldilocks
         horcrux
         hunt
-        katafygio
-        kube-linter
+        # katafygio
+        # kube-linter
         mdctl
         overflow
-        pluto
+        # pluto
         # polaris
         prospector-177
         q
@@ -260,10 +260,14 @@ with pkgs.hax; {
             binutils
             bun
             keybase
-            polaris
-            rbac-tool
             sampler
             vtm
+
+            katafygio
+            kube-linter
+            pluto
+            polaris
+            rbac-tool
           ]
         )
 
@@ -614,64 +618,87 @@ with pkgs.hax; {
   };
 
   # gitconfig
-  programs.git = {
-    enable = true;
-    package = pkgs.gitAndTools.gitFull;
-    userName = "${firstName} ${lastName}";
-    userEmail = if isDarwin then workEmail else personalEmail;
-    aliases = {
-      A = "add -A";
-      pu = "pull";
-      pur = "pull --rebase";
-      cam = "commit -am";
-      ca = "commit -a";
-      cm = "commit -m";
-      ci = "commit";
-      co = "checkout";
-      st = "status";
-      br = "branch -v";
-      f = "fetch";
-      hide = "update-index --skip-worktree";
-      unhide = "update-index --no-skip-worktree";
-      hidden = "! git ls-files -v | grep '^S' | cut -c3-";
-      branch-name = "!git rev-parse --abbrev-ref HEAD";
-      # Delete the remote version of the current branch
-      unpublish = "!git push origin :$(git branch-name)";
-      # Push current branch
-      put = "!git push origin $(git branch-name)";
-      # Pull without merging
-      get = "!git pull origin $(git branch-name) --ff-only";
-      # Pull Master without switching branches
-      got =
-        "!f() { CURRENT_BRANCH=$(git branch-name) && git checkout $1 && git pull origin $1 --ff-only && git checkout $CURRENT_BRANCH;  }; f";
-      # Recreate your local branch based on the remote branch
-      recreate = ''
-        !f() { [[ -n $@ ]] && git checkout master && git branch -D "$@" && git pull origin "$@":"$@" && git checkout "$@"; }; f'';
-      reset-submodule = "!git submodule update --init";
-      sl = "!git --no-pager log -n 15 --oneline --decorate";
-      sla = "log --oneline --decorate --graph --all";
-      lol = "log --graph --decorate --pretty=oneline --abbrev-commit";
-      lola = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
-      shake = "remote prune origin";
-    };
-    extraConfig = {
-      color.ui = true;
-      push.default = "simple";
-      pull.ff = "only";
-      checkout.defaultRemote = "origin";
-      core = {
-        editor = if isDarwin then "code --wait" else "nano";
-        pager = "delta --dark";
+  programs.git =
+    let
+      gs = text:
+        let script = pkgs.writers.writeBash "git-script" ''
+          set -eo pipefail
+          cd -- ''${GIT_PREFIX:-.}
+          ${text}
+        ''; in "! ${script}";
+    in
+    {
+      enable = true;
+      package = pkgs.gitAndTools.gitFull;
+      userName = "${firstName} ${lastName}";
+      userEmail = if isDarwin then workEmail else personalEmail;
+      aliases = {
+        A = "add -A";
+        pu = "pull";
+        pur = "pull --rebase";
+        cam = "commit -am";
+        ca = "commit -a";
+        cm = "commit -m";
+        ci = "commit";
+        co = "checkout";
+        st = "status";
+        br = gs ''
+          esc=$'\e'
+          reset=$esc[0m
+          red=$esc[31m
+          yellow=$esc[33m
+          green=$esc[32m
+          git -c color.ui=always branch -vv "$@" | ${pkgs.gnused}/bin/sed -E \
+            -e "s/: (gone)]/: $red\1$reset]/" \
+            -e "s/[:,] (ahead [0-9]*)([],])/: $green\1$reset\2/g" \
+            -e "s/[:,] (behind [0-9]*)([],])/: $yellow\1$reset\2/g"
+          git --no-pager stash list
+        '';
+        brf = gs "git f --quiet && git br";
+        f = "fetch --all";
+        hide = "update-index --skip-worktree";
+        unhide = "update-index --no-skip-worktree";
+        hidden = "! git ls-files -v | grep '^S' | cut -c3-";
+        branch-name = "!git rev-parse --abbrev-ref HEAD";
+        # Delete the remote version of the current branch
+        unpublish = "!git push origin :$(git branch-name)";
+        # Push current branch
+        put = gs ''git push --set-upstream origin $(git branch-name) "$@"'';
+        # Pull without merging
+        get = "!git pull origin $(git branch-name) --ff-only";
+        # Pull Master without switching branches
+        got =
+          "!f() { CURRENT_BRANCH=$(git branch-name) && git checkout $1 && git pull origin $1 --ff-only && git checkout $CURRENT_BRANCH;  }; f";
+        gone = gs ''git branch -vv | ${pkgs.gnused}/bin/sed -En "/: gone]/s/^..([^[:space:]]*)\s.*/\1/p"'';
+        # Recreate your local branch based on the remote branch
+        recreate = ''
+          !f() { [[ -n $@ ]] && git checkout master && git branch -D "$@" && git pull origin "$@":"$@" && git checkout "$@"; }; f'';
+        reset-submodule = "!git submodule update --init";
+        s = gs "git br && git -c color.status=always status | grep -E --color=never '^\\s\\S|:$' || true";
+        sl = "!git --no-pager log -n 15 --oneline --decorate";
+        sla = "log --oneline --decorate --graph --all";
+        lol = "log --graph --decorate --pretty=oneline --abbrev-commit";
+        lola = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
+        shake = "remote prune origin";
       };
-      rebase.instructionFormat = "<%ae >%s";
-      init.defaultBranch = "main";
+      extraConfig = {
+        color.ui = true;
+        push.default = "simple";
+        pull.ff = "only";
+        checkout.defaultRemote = "origin";
+        core = {
+          editor = if isDarwin then "code --wait" else "nano";
+          pager = "delta --dark";
+        };
+        rebase.instructionFormat = "<%ae >%s";
+        init.defaultBranch = "main";
+      };
+      ${attrIf (!isNixOS) "signing"} = {
+        key = "03C0CBEA6EAB9258";
+        gpgPath = "gpg";
+        signByDefault = true;
+      };
     };
-  };
-  programs.git.${attrIf (!isNixOS) "signing"} = {
-    key = "03C0CBEA6EAB9258";
-    gpgPath = "gpg";
-    signByDefault = true;
-  };
 
   programs.tmux = {
     enable = true;
