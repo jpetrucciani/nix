@@ -78,6 +78,8 @@ rec {
           "-X main.version=v${version}"
         ];
 
+        doCheck = false;
+
         meta = with lib; {
           inherit (src.meta) homepage;
           description = "A cli tool to help discover deprecated apiVersions in Kubernetes";
