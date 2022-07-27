@@ -470,6 +470,8 @@ with builtins; rec {
       file = pkgs.fetchurl {
         inherit url sha256;
       };
+      echo = "echos 0.8 0.7 700 0.25 900 0.3";
+      chorus = "chorus 0.5 0.9 50 0.4 0.25 2 -t 60 0.32 0.4 2.3 -t 40 0.3 0.3 1.3 -s";
     in
     pog {
       inherit name;
@@ -495,10 +497,27 @@ with builtins; rec {
           description = "play the sound in reverse!";
           bool = true;
         }
+        {
+          name = "echo";
+          description = "apply an echo-y effect";
+          bool = true;
+        }
+        {
+          name = "chorus";
+          description = "apply a chorus-y effect";
+          bool = true;
+        }
       ];
       script = ''
         # shellcheck disable=SC2068
-        ${_.sox} --no-show-progress ${file} speed "$speed" tempo "$tempo" pitch "$pitch" ''${reverse:+reverse} $@
+        ${_.sox} --no-show-progress -V2 --clobber ${file} \
+          speed "$speed" \
+          tempo "$tempo" \
+          pitch "$pitch" \
+          ''${chorus:+${chorus}} \
+          ''${echo:+${echo}} \
+          ''${reverse:+reverse} \
+          "$@"
       '';
     };
 

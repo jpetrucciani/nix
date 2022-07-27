@@ -55,6 +55,7 @@ in
       6443
     ] ++ usual;
     allowedUDPPorts = [ ];
+    checkReversePath = "loose";
   };
 
   users.mutableUsers = false;
