@@ -60,6 +60,7 @@ with pkgs.hax; {
         bash-completion
         bashInteractive_5
         bat
+        bun
         bzip2
         cacert
         cachix
@@ -129,6 +130,7 @@ with pkgs.hax; {
         scrypt
         shellcheck
         shfmt
+        skate
         statix
         terraform-ls
         time
@@ -224,6 +226,7 @@ with pkgs.hax; {
         # pluto
         # polaris
         prospector-177
+        gum
         q
         rare
         s3-edit
@@ -258,7 +261,6 @@ with pkgs.hax; {
         (
           optList isLinux [
             binutils
-            bun
             keybase
             sampler
             vtm

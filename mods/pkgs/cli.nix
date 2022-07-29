@@ -5,34 +5,109 @@ let
   isM1 = isDarwin && isAarch64;
 in
 rec {
-  bun = prev.callPackage
-    ({ stdenv, lib, autoPatchelfHook }:
+  gum = prev.callPackage
+    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
       let
-        pname = "bun";
-        version = "0.1.4";
-        arch = if isM1 then "darwin-aarch64" else if isDarwin then "darwin-x64" else "linux-x64";
-        url = "https://github.com/oven-sh/bun/releases/download/${pname}-v${version}/${pname}-${arch}.zip";
-        sha256 =
-          if isM1 then "1wi7g07idr3h7kksxvwizw1zj3pq73w2kkr39934rhjx0bji2pas"
-          else if isDarwin then "170ggr1sl2ip13xcrf5w4y4a82ms8vn4kzii7lj2h31wn79wh6ml"
-          else "0sapwpfqm7br00g36md2fqi9faa9vl58a3bqb9m06hrnahzqwj49";
+        version = "0.1.0";
+        commit = "e0beb050fdc3c1c5073cf7cf2c918980a9a31774";
+        date = "2022-07-28";
       in
-      stdenv.mkDerivation rec {
-        inherit pname version;
+      buildGo118Module rec {
+        inherit version;
+        pname = "gum";
 
-        src = builtins.fetchTarball {
-          inherit url sha256;
+        src = fetchFromGitHub {
+          owner = "charmbracelet";
+          repo = pname;
+          rev = "v${version}";
+          sha256 = "sha256-od0jJPfvczlru9hhO8ravGou6yYP91L2k37NYm2hD+k=";
         };
 
-        nativeBuildInputs = [
-          autoPatchelfHook
+        ldflags = [
+          "-s"
+          "-w"
         ];
 
-        installPhase = ''
-          mkdir -p $out/bin
-          mv ./bun $out/bin/bun
-        '';
-      })
+        vendorSha256 = "sha256-uX0CQRqrM0/fj14owcUUpYph2j5ZwJITG53na31N6kg=";
+
+        meta = with lib; {
+          inherit (src.meta) homepage;
+          description = "A tool for glamorous shell scripts";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
+  charm = prev.callPackage
+    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
+      let
+        version = "0.12.1";
+        commit = "24b4bbdd7ee0a98f2b68973999f47f79799bd368";
+        date = "2021-05-06";
+      in
+      buildGo118Module rec {
+        inherit version;
+        pname = "charm";
+
+        src = fetchFromGitHub {
+          owner = "charmbracelet";
+          repo = pname;
+          rev = "v${version}";
+          sha256 = "sha256-vNy2ai1s7TKCymYznvT0Wo6lg9qEyDzz8l3SYzScz8g=";
+        };
+
+        ldflags = [
+          "-s"
+          "-w"
+        ];
+
+        vendorSha256 = "sha256-6PGdM7aa1BGNZc3M35PJpmrlPUqkykxfTELdgeKcJD4=";
+
+        meta = with lib; {
+          inherit (src.meta) homepage;
+          description = "The Charm Tool and Library";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
+  glow = prev.callPackage
+    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
+      let
+        version = "1.4.1";
+        commit = "4863f57cea794c62b6667b9d6aec478e9a49080c";
+        date = "2021-04-08";
+      in
+      buildGo118Module rec {
+        inherit version;
+        pname = "glow";
+
+        src = fetchFromGitHub {
+          owner = "charmbracelet";
+          repo = pname;
+          rev = "v${version}";
+          sha256 = "sha256-qJtZbNvmfN8/YUDUpR81cuHIdxtQe5QalC/hY1wfx1Q=";
+        };
+
+        ldflags = [
+          "-s"
+          "-w"
+        ];
+
+        vendorSha256 = "sha256-BANKOeleIz4OHSAKQ0HIEfzOxv+dugdQherHGpnT6lk=";
+
+        meta = with lib; {
+          inherit (src.meta) homepage;
+          description = "Render markdown on the CLI, with pizzazz!";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
     { };
 
   s3-edit = prev.callPackage
