@@ -26,6 +26,8 @@ rec {
         ldflags = [
           "-s"
           "-w"
+          "-X main.Version=${version}"
+          "-X main.CommitSHA=${commit}"
         ];
 
         vendorSha256 = "sha256-uX0CQRqrM0/fj14owcUUpYph2j5ZwJITG53na31N6kg=";
@@ -61,6 +63,8 @@ rec {
         ldflags = [
           "-s"
           "-w"
+          "-X main.Version=${version}"
+          "-X main.CommitSHA=${commit}"
         ];
 
         vendorSha256 = "sha256-6PGdM7aa1BGNZc3M35PJpmrlPUqkykxfTELdgeKcJD4=";
@@ -96,6 +100,8 @@ rec {
         ldflags = [
           "-s"
           "-w"
+          "-X main.Version=${version}"
+          "-X main.CommitSHA=${commit}"
         ];
 
         vendorSha256 = "sha256-BANKOeleIz4OHSAKQ0HIEfzOxv+dugdQherHGpnT6lk=";

@@ -43,6 +43,11 @@ in
 
   extraGroups = [ "wheel" "networkmanager" "docker" "podman" ];
 
+  env = {
+    CHARM_HOST = "charm.cobi.dev";
+    CHARM_HTTP_PORT = "443";
+  };
+
   emails = {
     personal = "j@cobi.dev";
     work = "jacobi.petrucciani@medable.com";

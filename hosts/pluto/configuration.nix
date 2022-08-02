@@ -18,7 +18,7 @@ in
   environment.variables = {
     NIX_HOST = hostname;
     NIXDARWIN_CONFIG = configPath;
-  };
+  } // common.env;
   environment.darwinConfig = configPath;
 
   users.users.jacobi = {
