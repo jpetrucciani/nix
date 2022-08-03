@@ -63,7 +63,7 @@ rec {
           };
           postInstall = ''
             ${args.postInstall}
-            sed -i -E '/Group=caddy/aEnvironmentFile=/etc/default/caddy' $out/lib/systemd/system/caddy.service
+            sed -i -E '/Group=caddy/aEnvironmentFile=/etc/default/caddy\nTimeoutSec=180' $out/lib/systemd/system/caddy.service
           '';
           postPatch = caddyPatchMain;
           preBuild = "cp vendor/go.mod vendor/go.sum .";
