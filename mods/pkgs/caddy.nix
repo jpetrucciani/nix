@@ -24,7 +24,7 @@ rec {
 
         # s3 stuff
         s3-proxy = { name = "github.com/lindenlab/caddy-s3-proxy"; version = "v0.5.6"; };
-        s3-browser = { name = "github.com/jpetrucciani/caddy-s3browser"; version = "5a18a204cad1329651155a73b77a373ab67b97c6"; };
+        s3-browser = { name = "github.com/jpetrucciani/caddy-s3browser"; version = "b553c40251fd727217b3e49eb5c69d18c4460e08"; };
 
         # utils
         caddy-git = { name = "github.com/greenpau/caddy-git"; version = "v1.0.7"; };
