@@ -24,7 +24,7 @@ rec {
 
         # s3 stuff
         s3-proxy = { name = "github.com/lindenlab/caddy-s3-proxy"; version = "v0.5.6"; };
-        s3-browser = { name = "github.com/techknowlogick/caddy-s3browser"; version = "81830de0e8d78d414488f1e621082ee732e7c3de"; };
+        s3-browser = { name = "github.com/jpetrucciani/caddy-s3browser"; version = "5a18a204cad1329651155a73b77a373ab67b97c6"; };
 
         # utils
         caddy-git = { name = "github.com/greenpau/caddy-git"; version = "v1.0.7"; };
@@ -80,7 +80,7 @@ rec {
       s3-proxy
       geolocation
     ];
-    vendorSha256 = "sha256-7F+PG1uFGvp3krjiGgF+0WG/RfOoq9x7nExb5/Uu7H0=";
+    vendorSha256 = "sha256-wPAMN7FNPrZTq++vO4/Uvl414umS2w2ud1bw6DRyuF0=";
   };
 
   # caddy with s3-browser plugin
@@ -90,6 +90,6 @@ rec {
       s3-proxy
       s3-browser
     ];
-    vendorSha256 = "sha256-uoZsela6cq41x4qoUJavg5f0r584nAZBJRnyJwpQXgY=";
+    vendorSha256 = "sha256-9Ll4m0N92cEUFy5dlGtrv4JioSI+OdrtHxXDQZw1l/A=";
   };
 }
