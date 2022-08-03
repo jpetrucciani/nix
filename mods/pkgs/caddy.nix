@@ -90,6 +90,6 @@ rec {
       s3-proxy
       s3-browser
     ];
-    vendorSha256 = "sha256-9Ll4m0N92cEUFy5dlGtrv4JioSI+OdrtHxXDQZw1l/A=";
+    vendorSha256 = "sha256-Nxek+W70Cm6Ku68VVO2sW0/LR0JHueBwMkLOOb2woP0=";
   };
 }
