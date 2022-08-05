@@ -170,13 +170,13 @@ rec {
     ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
       buildGo118Module rec {
         pname = "rbac-tool";
-        version = "1.8.0";
+        version = "1.9.0";
 
         src = fetchFromGitHub {
           owner = "alcideio";
           repo = pname;
           rev = "v${version}";
-          sha256 = "sha256-QbGIoU3tVH726t+Vn59KM+jbnPQ/u0aujvjrzE+94rk=";
+          sha256 = "sha256-EujU0Ljr+VhGQ3VMhpdP/mikHFKVARR2vRl94/tZ7As=";
         };
 
         vendorSha256 = "sha256-nADcFaVdC3UrZxqrwqjcNho/80n856Co2KG0AknflWM=";
