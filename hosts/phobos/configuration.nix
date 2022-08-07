@@ -57,8 +57,18 @@ in
     openssh.authorizedKeys.keys = with common.pubkeys; [ charon mars ] ++ usual;
   };
 
-  services = { } // common.services;
+  services = {
+    k3s = {
+      enable = true;
+      role = "server";
+      extraFlags = "--no-deploy traefik";
+    };
+  } // common.services;
   virtualisation.docker.enable = true;
+
+  # https://github.com/NixOS/nixpkgs/issues/103158
+  systemd.services.k3s.after = [ "network-online.service" "firewall.service" ];
+  systemd.services.k3s.serviceConfig.KillMode = pkgs.lib.mkForce "control-group";
 
   system.stateVersion = "22.11";
   security.sudo = common.security.sudo;

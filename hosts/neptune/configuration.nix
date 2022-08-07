@@ -153,7 +153,7 @@ in
   } // common.services;
 
   # https://github.com/NixOS/nixpkgs/issues/103158
-  systemd.services.k3s.after = [ "network-online.service" "firewall.service" ];
+  systemd.services.k3s.after = [ "network-online.service" ];
   systemd.services.k3s.serviceConfig.KillMode = pkgs.lib.mkForce "control-group";
 
   # https://github.com/NixOS/nixpkgs/issues/98766
