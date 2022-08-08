@@ -230,6 +230,7 @@ with pkgs.hax; {
         q
         rare
         s3-edit
+        spacectl
 
         # overlays
         git-trim

@@ -377,4 +377,30 @@ rec {
       }
     )
     { };
+
+  spacectl = prev.callPackage
+    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
+      buildGo118Module rec {
+        pname = "spacectl";
+        version = "0.10.0";
+
+        src = fetchFromGitHub {
+          owner = "spacelift-io";
+          repo = "spacectl";
+          rev = "v${version}";
+          sha256 = "sha256-Mba8So8VJAxZ2VSH9T6iI2wUV1eRlGnP1V5COfjN/NE=";
+        };
+
+        vendorSha256 = "sha256-87uMH7w8XA4WB485nnkEQ6sJDXy8NRECPEUGv80dAhg=";
+
+        meta = with lib; {
+          inherit (src.meta) homepage;
+          description = "Spacelift client and CLI";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
 }
