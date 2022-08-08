@@ -710,13 +710,10 @@ with pkgs.hax; {
     enable = true;
     tmuxp.enable = false;
     historyLimit = 500000;
+    shortcut = "s";
     extraConfig = ''
       set -g base-index 1
       set -g pane-base-index 1
-      # Setting the prefix from `C-b` to `C-a`.
-      # By remapping the `CapsLock` key to `Ctrl`,
-      # you can make triggering commands more comfottable!
-      set -g prefix C-a
 
       set -g status-keys vi
       setw -g mode-keys vi
@@ -744,7 +741,6 @@ with pkgs.hax; {
       # Log output to a text file on demand.
       bind P pipe-pane -o "cat >>~/#W.log" \; display "Toggled logging to ~/#W.log"
 
-
       # -- display -------------------------------------------------------------------
       # tabs
       set -g window-status-current-format "#[fg=black]#[bg=red] #I #[bg=brightblack]#[fg=brightwhite] #W#[fg=brightblack]#[bg=black]"
@@ -767,7 +763,6 @@ with pkgs.hax; {
       unbind r
       bind r source-file ~/.tmux.conf \; display "Finished sourcing ~/.tmux.conf ."
 
-
       # Use Alt-arrow keys without prefix key to switch panes
       bind -n M-Left select-pane -L
       bind -n M-Right select-pane -R
@@ -777,7 +772,6 @@ with pkgs.hax; {
       # Shift arrow to switch windows
       bind -n S-Left  previous-window
       bind -n S-Right next-window
-
 
       # allow fn+left/right
       bind-key -n Home send Escape "OH"
