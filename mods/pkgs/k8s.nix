@@ -57,39 +57,6 @@ rec {
     )
     { };
 
-  pluto = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
-      buildGo118Module rec {
-        pname = "pluto";
-        version = "5.10.2";
-
-        src = fetchFromGitHub {
-          owner = "FairwindsOps";
-          repo = pname;
-          rev = "v${version}";
-          sha256 = "sha256-Ef67lcUj26pDk+Xfg21iJC2oiOSszAX9HztO55I6J2U=";
-        };
-
-        vendorSha256 = "sha256-kyGnwx9bi3a+2oxGtBMI3EOgc/QmZ/k7ynydkLjUBjg=";
-
-        ldflags = [
-          "-w"
-          "-s"
-          "-X main.version=v${version}"
-        ];
-
-        doCheck = false;
-
-        meta = with lib; {
-          inherit (src.meta) homepage;
-          description = "A cli tool to help discover deprecated apiVersions in Kubernetes";
-          license = licenses.asl20;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      }
-    )
-    { };
-
   goldilocks = prev.callPackage
     ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
       buildGo118Module rec {

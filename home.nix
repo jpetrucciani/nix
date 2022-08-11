@@ -89,6 +89,7 @@ with pkgs.hax; {
         gnutar
         google-cloud-sdk
         gron
+        gum
         gzip
         hadolint
         jq
@@ -219,16 +220,12 @@ with pkgs.hax; {
         goldilocks
         horcrux
         hunt
-        # katafygio
-        # kube-linter
         mdctl
         overflow
-        # pluto
-        # polaris
         prospector-177
-        gum
         q
         rare
+        regula
         s3-edit
         spacectl
 
