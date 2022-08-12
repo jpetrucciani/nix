@@ -13,22 +13,26 @@ rec {
       url = "https://www.haproxy.org/download/${lib.versions.majorMinor version}/src/${attrs.pname}-${version}.tar.gz";
     };
   });
-  haproxy-2-2-24 = haproxy-pin {
-    version = "2.2.24";
-    sha256 = "sha256-DoBzENzjpSk9JFTZwbceuNFkcjBbZvB2s4S1CFix5/k=";
+  haproxy-2-2-25 = haproxy-pin {
+    version = "2.2.25";
+    sha256 = "sha256-vrQH6wiyxpfRFaGMANagI/eg+yy5m/+cNMnf2dLFLys=";
+  };
+  haproxy-2-6-2 = haproxy-pin {
+    version = "2.6.2";
+    sha256 = "sha256-+bfcBuAusTtdlNxm4IZKcUruKvnfqxD6NT/58fUsggI=";
   };
 
   pocketbase = prev.callPackage
     ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
       buildGo118Module rec {
         pname = "pocketbase";
-        version = "0.2.8";
+        version = "0.4.2";
 
         src = fetchFromGitHub {
           owner = "pocketbase";
           repo = pname;
           rev = "v${version}";
-          sha256 = "sha256-cWyffX90F7B7TsShDvaErw0P9vllnbtDf/Kszy196Lk=";
+          sha256 = "sha256-uDseJmuK6SI3e2ICqr8SJ0iKOVCXONueZUJ6J8MKwYE=";
         };
 
         doCheck = false;

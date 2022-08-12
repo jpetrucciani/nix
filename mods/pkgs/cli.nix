@@ -33,9 +33,9 @@ rec {
   q = prev.callPackage
     ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
       let
-        version = "0.8.0";
-        commit = "9b19bfd77a2db9e9e8e7f99780cc36a00c70a3ef";
-        date = "2022-06-06";
+        version = "0.8.2";
+        commit = "72fa909c3d5da33ba4ffc96920988a9b5873427f";
+        date = "2022-08-02";
       in
       buildGo118Module rec {
         inherit version;
@@ -45,7 +45,7 @@ rec {
           owner = "natesales";
           repo = "q";
           rev = "v${version}";
-          sha256 = "sha256-Fh91SeyXFTXQS1E0w0Lb98mm5gas3xjpo3rSzUGKK1E=";
+          sha256 = "sha256-Esg2i8UNT+SuW9+jsnVEOt1ot822CamZ3JoR8ReY0+4=";
         };
 
         ldflags = [
@@ -56,7 +56,7 @@ rec {
           "-X main.date=${date}"
         ];
 
-        vendorSha256 = "sha256-jBPCZ2vnI6gnRdnKkWzrh8mYwxp3Xfvyd28ZveAYZdc=";
+        vendorSha256 = "sha256-oarXbxROTd7knHr9GKlrPnnS6ehkps2ZYYsUS9cn6ek=";
         doCheck = false;
 
         meta = with lib; {

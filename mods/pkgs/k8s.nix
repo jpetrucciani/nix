@@ -31,32 +31,6 @@ rec {
     )
     { };
 
-  kube-linter = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
-      buildGo118Module rec {
-        pname = "kube-linter";
-        version = "0.4.0";
-
-        src = fetchFromGitHub {
-          owner = "stackrox";
-          repo = "kube-linter";
-          rev = version;
-          sha256 = "sha256-XAsPbl9fqYk2nhDxRg5wyPwciwSpfigoBZ4hzdWAVgw=";
-        };
-
-        vendorSha256 = "sha256-0bjAIHSjw0kHrh9CzJHv1UAaBJDn6381055eOHufvCw=";
-
-        meta = with lib; {
-          inherit (src.meta) homepage;
-          description =
-            "static analysis tool that checks Kubernetes YAML files and Helm charts to ensure the applications represented in them adhere to best practices";
-          license = licenses.asl20;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      }
-    )
-    { };
-
   goldilocks = prev.callPackage
     ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
       buildGo118Module rec {

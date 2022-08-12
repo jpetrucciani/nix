@@ -9,20 +9,20 @@ rec {
     ({ stdenv, lib, buildGo118Module, fetchFromGitHub, disableTelemetry ? true }:
       buildGo118Module rec {
         pname = "cloudquery";
-        version = "0.31.8";
+        version = "0.32.1";
 
         # additional compile-time data
-        commit = "200d203146dee0db2f5ed3852f20fd6a2585554d";
-        date = "2022-07-14";
+        commit = "d324b37050836c6533a7d208d8e54960fb04e386";
+        date = "2022-07-27";
 
         src = fetchFromGitHub {
           owner = "cloudquery";
           repo = "cloudquery";
           rev = "v${version}";
-          sha256 = "sha256-6lS0rS6+EbuXJjvSki5U6WHybsdheDqJrNk1TsPB11k=";
+          sha256 = "sha256-DUaM0x3zzsDU9lAKIpCTP7zF4t1O7J4Lz7oqbmoWKDU=";
         };
 
-        vendorSha256 = "sha256-MWG1LLsZLUphwr+juPxDhVOkLIxf+2HHDNiAzx7IHR8=";
+        vendorSha256 = "sha256-lBhjCywwAfQRttLLoS4Xsa6KC4abVkeV7J+vbPz9dK0=";
 
         ldflags = [
           "-s"
@@ -81,41 +81,6 @@ rec {
       });
     };
   };
-
-  aliyun-cli = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
-      buildGo118Module rec {
-        pname = "aliyun-cli";
-        version = "3.0.123";
-
-        src = fetchFromGitHub {
-          owner = "aliyun";
-          repo = "aliyun-cli";
-          rev = "v${version}";
-          sha256 = "sha256-68u31s7SsRRT9OQpTqlhAs5Dx+ggbTTSeKYBByiqn6g=";
-          fetchSubmodules = true;
-        };
-
-        # don't run check as it deletes directories relative to this dir
-        doCheck = false;
-
-        # move the output 'main' to the name of the executable
-        postInstall = ''
-          mv $out/bin/main $out/bin/aliyun
-        '';
-
-        vendorSha256 = "sha256-X5r89aI7UdVlzEJi8zaOzwTETwb+XH8dKO6rVe//FNs=";
-
-        meta = with lib; {
-          inherit (src.meta) homepage;
-          description =
-            "A tool to manage and use Alibaba Cloud resources through a command line interface";
-          license = licenses.asl20;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      }
-    )
-    { };
 
   regula = prev.callPackage
     ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
