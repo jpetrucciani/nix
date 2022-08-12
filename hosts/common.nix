@@ -187,7 +187,6 @@ in
 
   mac = {
     apps = {
-      Bitwarden = 1352778147;
       Wireguard = 1451685025;
       Poolside = 1514817810;
     };
