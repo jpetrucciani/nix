@@ -11,10 +11,12 @@ let
   pinned = import ../default.nix { };
 
   hm = with builtins; fromJSON (readFile ../sources/home-manager.json);
-  home-manager = fetchTarball {
-    inherit (hm) sha256;
-    url = "https://github.com/nix-community/home-manager/archive/${hm.rev}.tar.gz";
-  };
+  home-manager = import
+    (fetchTarball {
+      inherit (hm) sha256;
+      url = "https://github.com/nix-community/home-manager/archive/${hm.rev}.tar.gz";
+    })
+    { pkgs = pinned; };
   nd = with builtins; fromJSON (readFile ../sources/darwin.json);
   nix-darwin = fetchTarball {
     inherit (nd) sha256;

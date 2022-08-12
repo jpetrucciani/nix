@@ -7,11 +7,10 @@ let
 in
 {
   imports = [
-    "${common.home-manager}/nix-darwin"
+    "${common.home-manager.path}/nix-darwin"
   ];
 
   home-manager.users.jacobi = common.jacobi;
-  _module.args.pkgs = common.pinned;
 
   time.timeZone = common.timeZone;
   environment.variables = {

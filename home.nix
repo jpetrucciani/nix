@@ -64,6 +64,7 @@ with pkgs.hax; {
         bzip2
         cacert
         cachix
+        charm
         coreutils-full
         cowsay
         curl
