@@ -94,7 +94,6 @@ with pkgs.hax; {
         gzip
         hadolint
         jq
-        just
         less
         libarchive
         libnotify
@@ -403,6 +402,7 @@ with pkgs.hax; {
   programs.just = {
     enable = true;
     enableBashIntegration = true;
+    package = pkgs.just;
   };
 
   programs.readline = {
