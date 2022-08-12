@@ -781,13 +781,13 @@ with pkgs.hax; {
     '';
   };
 
-  # programs.pistol = {
-  #   enable = true;
-  #   config = {
-  #     "text/*" = "bat --paging=never --color=always %pistol-filename%";
-  #     "inode/directory" = "ls -l --color %pistol-filename%";
-  #   };
-  # };
+  programs.pistol = {
+    enable = true;
+    config = {
+      "text/*" = "bat --paging=never --color=always %pistol-filename%";
+      "inode/directory" = "ls -l --color %pistol-filename%";
+    };
+  };
 
   # fix vscode
   imports =
