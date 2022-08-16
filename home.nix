@@ -230,7 +230,6 @@ with pkgs.hax; {
         regula
         s3-edit
         spacectl
-        trivy
 
         # overlays
         git-trim
