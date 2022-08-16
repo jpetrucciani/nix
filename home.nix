@@ -94,7 +94,6 @@ with pkgs.hax; {
         gzip
         hadolint
         jq
-        less
         libarchive
         libnotify
         lolcat
@@ -294,6 +293,9 @@ with pkgs.hax; {
 
       ];
   };
+
+  programs.less.enable = true;
+  programs.lesspipe.enable = true;
 
   programs.bash = {
     enable = true;
