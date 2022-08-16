@@ -231,7 +231,7 @@ in
         "karabiner-elements"
         "keybase"
         "notion"
-        "osxfuse"
+        "macfuse"
         "parsec"
         "qlvideo"
         "rectangle"
