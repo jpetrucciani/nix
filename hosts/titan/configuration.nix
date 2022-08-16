@@ -56,7 +56,15 @@ in
     openssh.authorizedKeys.keys = with common.pubkeys; [ m1max ] ++ usual;
   };
 
-  services = { } // common.services;
+  services = {
+    # step-ca = {
+    #   enable = false;
+    #   address = "127.0.0.1";
+    #   port = 9443;
+    #   intermediatePasswordFile = "/etc/default/step-ca/pass";
+    #   settings = fromJSON "";
+    # };
+  } // common.services;
   virtualisation.docker.enable = true;
 
   system.stateVersion = "22.11";

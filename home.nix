@@ -133,6 +133,7 @@ with pkgs.hax; {
         shfmt
         skate
         statix
+        step-cli
         terraform-ls
         time
         unzip
@@ -204,17 +205,18 @@ with pkgs.hax; {
         kubectx
 
         # load in my custom checked pog scripts
+        hms
         aws_pog_scripts
+        docker_pog_scripts
+        ffmpeg_pog_scripts
         gcp_pog_scripts
         general_pog_scripts
-        ffmpeg_pog_scripts
-        docker_pog_scripts
+        github_pog_scripts
+        hax_pog_scripts
         k8s_pog_scripts
         nix_pog_scripts
-        github_pog_scripts
 
         # my pkgs
-        aliyun-cli
         cloudquery
         cyclonus
         goldilocks
@@ -228,6 +230,7 @@ with pkgs.hax; {
         regula
         s3-edit
         spacectl
+        trivy
 
         # overlays
         git-trim

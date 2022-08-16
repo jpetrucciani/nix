@@ -200,6 +200,7 @@ in
     ];
     brews = [
       "readline"
+      "sshfs"
       "qemu"
     ];
     casks = rec {
@@ -230,6 +231,7 @@ in
         "karabiner-elements"
         "keybase"
         "notion"
+        "osxfuse"
         "parsec"
         "qlvideo"
         "rectangle"

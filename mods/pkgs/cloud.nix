@@ -6,30 +6,31 @@ let
 in
 rec {
   cloudquery = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub, disableTelemetry ? true }:
-      buildGo118Module rec {
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub, disableTelemetry ? true }:
+      buildGo119Module rec {
         pname = "cloudquery";
-        version = "0.32.1";
+        version = "0.32.7";
 
         # additional compile-time data
-        commit = "d324b37050836c6533a7d208d8e54960fb04e386";
-        date = "2022-07-27";
+        commit = "9bf0e274118569a54f91695266ca3e743fe2e88e";
+        date = "2022-08-15";
 
-        src = fetchFromGitHub {
-          owner = "cloudquery";
-          repo = "cloudquery";
-          rev = "v${version}";
-          sha256 = "sha256-DUaM0x3zzsDU9lAKIpCTP7zF4t1O7J4Lz7oqbmoWKDU=";
-        };
+        src = fetchFromGitHub
+          {
+            owner = "cloudquery";
+            repo = "cloudquery";
+            rev = "cli/v${version}";
+            sha256 = "sha256-eKnNGPewWcr1A9wGpLjpI8nuLJaPZhhthAGv/aFirhs=";
+          } + "/cli";
 
-        vendorSha256 = "sha256-lBhjCywwAfQRttLLoS4Xsa6KC4abVkeV7J+vbPz9dK0=";
+        vendorSha256 = "sha256-Q3FsNQ3dUSKzH2Zd5Nba0pcv/H39BpICDJcJyMulPbs=";
 
         ldflags = [
           "-s"
           "-w"
-          "-X github.com/cloudquery/cloudquery/pkg/core.version=v${version}"
-          "-X github.com/cloudquery/cloudquery/cmd.Commit=${commit}"
-          "-X github.com/cloudquery/cloudquery/cmd.Date=${date}"
+          "-X github.com/cloudquery/cloudquery/cli/pkg/core.Version=${version}"
+          "-X github.com/cloudquery/cloudquery/cli/cmd.Commit=${commit}"
+          "-X github.com/cloudquery/cloudquery/cli/cmd.Date=${date}"
         ];
 
         preBuild =
@@ -58,6 +59,10 @@ rec {
           runHook postCheck
         '';
 
+        postInstall = ''
+          mv $out/bin/cli $out/bin/cloudquery
+        '';
+
         meta = with lib; {
           inherit (src.meta) homepage;
           description = "the open-source cloud asset inventory powered by SQL";
@@ -83,10 +88,11 @@ rec {
   };
 
   regula = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
-      buildGo118Module rec {
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
         pname = "regula";
         version = "2.9.0";
+        commit = "5193f8781c63e5f79dc8981f7ee9dfa35585dd9e";
 
         src = fetchFromGitHub {
           owner = "fugue";
@@ -96,6 +102,15 @@ rec {
         };
 
         vendorSha256 = "sha256-nbEp+U2E00olWZI24U0fsWkdnUtw5Yiz1hysF7ASYh4=";
+
+        ldflags = [
+          "-s"
+          "-w"
+          "-X github.com/fugue/regula/v2/pkg/version.Version=${version}"
+          "-X github.com/fugue/regula/v2/pkg/version.GitCommit=${commit}"
+        ];
+
+
         checkPhase = ''
           runHook preCheck
           for pkg in $(getGoDirs test); do
@@ -117,6 +132,57 @@ rec {
           description = "checks infrastructure as code templates (Terraform, CloudFormation, k8s manifests) for AWS, Azure, Google Cloud, and Kubernetes security and compliance using Open Policy Agent/Rego";
           license = licenses.asl20;
           maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
+  trivy = prev.callPackage
+    ({ lib, stdenv, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
+        pname = "trivy";
+        version = "0.31.0";
+
+        src = fetchFromGitHub {
+          owner = "aquasecurity";
+          repo = pname;
+          rev = "v${version}";
+          sha256 = "sha256-ggYJVi5miBAHMVb+c750HYCUfOcOsE/9g8LzdCcku5o=";
+        };
+        vendorSha256 = "sha256-cvDDtWfoc23xHbQRCUu2RuXIA/7rw/jda1p+FSIZwHo=";
+
+        excludedPackages = "misc";
+
+        ldflags = [
+          "-s"
+          "-w"
+          "-X main.version=v${version}"
+        ];
+
+        # Tests require network access
+        doCheck = false;
+        doInstallCheck = true;
+
+        installCheckPhase = ''
+          runHook preInstallCheck
+          $out/bin/trivy --help
+          $out/bin/trivy --version | grep "v${version}"
+          runHook postInstallCheck
+        '';
+
+        meta = with lib; {
+          homepage = "https://github.com/aquasecurity/trivy";
+          changelog = "https://github.com/aquasecurity/trivy/releases/tag/v${version}";
+          description = "A simple and comprehensive vulnerability scanner for containers, suitable for CI";
+          longDescription = ''
+            Trivy is a simple and comprehensive vulnerability scanner for containers
+            and other artifacts. A software vulnerability is a glitch, flaw, or
+            weakness present in the software or in an Operating System. Trivy detects
+            vulnerabilities of OS packages (Alpine, RHEL, CentOS, etc.) and
+            application dependencies (Bundler, Composer, npm, yarn, etc.).
+          '';
+          license = licenses.asl20;
+          maintainers = with maintainers; [ jk ];
         };
       }
     )
