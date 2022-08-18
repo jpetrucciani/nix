@@ -40,6 +40,7 @@ rec {
       ${_.ffmpeg} -i "$file" -vf scale="$scale" "$output"
     '';
   };
+
   flip = pog {
     name = "flip";
     description = "a quick and easy way to flip an image/video!";
@@ -74,6 +75,7 @@ rec {
       ${_.ffmpeg} -i "$file" -filter:v "''${vertical:+vflip}''${sep}''${horizontal:+hflip}" -c:a copy "$output"
     '';
   };
+
   cut_video = pog {
     name = "cut_video";
     description = "a quick and easy way to cut a video with ffmpeg!";
@@ -116,6 +118,7 @@ rec {
       ${_.ffmpeg} -ss "$start_sec" -i "$file" -to "$end_sec" -c:v copy -c:a copy "$output"
     '';
   };
+
   crop_video = pog {
     name = "crop_video";
     description = "a quick and easy way to crop a video with ffmpeg!";
@@ -159,6 +162,7 @@ rec {
       ${_.ffmpeg} -i "$file" -filter:v "crop=$width:$height:$x:$y" "$output"
     '';
   };
+
   to_mp3 = pog {
     name = "to_mp3";
     description = "a quick and easy way to convert an audio file to mp3!";
@@ -184,6 +188,7 @@ rec {
       ${_.ffmpeg} -i "$file" -c:v copy -c:a libmp3lame -q:a "$quality" "$output"
     '';
   };
+
   ffmpeg_pog_scripts = [
     scale
     flip

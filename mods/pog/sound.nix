@@ -1,5 +1,8 @@
 final: prev:
 with prev;
+let
+  soundFolder = "https://cobi.dev/static/sound";
+in
 rec {
   soundScript = name: url: sha256:
     let
@@ -56,8 +59,6 @@ rec {
           "$@"
       '';
     };
-
-  soundFolder = "https://cobi.dev/static/sound";
 
   bruh = soundScript "bruh" "${soundFolder}/bruh.mp3" "sha256-w28wlLYOa7pttev73vStcAWs5MCRO+tfB0i6o4BQwYY=";
   coin = soundScript "coin" "${soundFolder}/coin.wav" "sha256-I8EDvMiLHf/fNk+gGBYKeNZqk47BilLHXT59NaFrh6E=";

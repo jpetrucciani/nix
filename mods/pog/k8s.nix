@@ -12,7 +12,7 @@ rec {
         prompt = ''
           ${_.k} --namespace "$namespace" get pods |
           ${_.fzfq} --header-lines=1 |
-          ${_.get_id}
+          ${_.k8s.get_id}
         '';
         promptError = "you must specify a pod id!";
       }
@@ -32,7 +32,7 @@ rec {
     script = ''
       ${_.k} --namespace "$namespace" get pods |
         ${_.fzfqm} --header-lines=1 |
-        ${_.get_id} |
+        ${_.k8s.get_id} |
         ${_.xargs} --no-run-if-empty ${_.k} --namespace "$namespace" delete pods ''${force:+--grace-period=0 --force}
     '';
   };
@@ -80,7 +80,7 @@ rec {
       {
         name = "deployment";
         description = "the deployment to roll. if not passed in, a dialog will pop up to select from";
-        prompt = ''${_.k} --namespace "$namespace" get deployment -o wide | ${_.fzfq} --header-lines=1 | ${_.get_id}'';
+        prompt = ''${_.k} --namespace "$namespace" get deployment -o wide | ${_.fzfq} --header-lines=1 | ${_.k8s.get_id}'';
         promptError = "you must specify a deployment to roll!";
         completion = ''${_.k} get deployment | ${_.sed} '1d' | ${_.awk} '{print $1}' '';
       }
@@ -101,7 +101,7 @@ rec {
       {
         name = "object";
         description = "the object to describe";
-        prompt = ''${_.k} --namespace "$namespace" get all | ${_.fzfq} | ${_.get_id}'';
+        prompt = ''${_.k} --namespace "$namespace" get all | ${_.fzfq} | ${_.k8s.get_id}'';
         promptError = "you must specify an object to describe!";
       }
     ];
@@ -126,12 +126,35 @@ rec {
     '';
   };
 
+  klog = pog {
+    name = "klog";
+    description = "a quick and easy way to log one or more pods!";
+    flags = [
+      _.flags.k8s.all_namespaces
+      _.flags.k8s.namespace
+      {
+        name = "containers";
+        description = "one or more containers to tail";
+        prompt = ''${_.k} get pods --namespace "$namespace" ''${all_namespaces:+-A} ${_.k8s.fmt.pod} | ${_.fzfqm} --header-lines=1 | ${_.k8s.get_id}'';
+        promptError = "you must specify one or more pods to get logs from!";
+        completion = ''${_.k} get pods | ${_.sed} '1d' | ${_.awk} '{print $1}' '';
+      }
+    ];
+    script = helpers: ''
+      container_regex="($(echo "$containers" | tr '\n' '|' | ${_.sed} 's#.$##'))"
+      debug "stern ''${all_namespaces:+-A} --namespace $namespace --timestamps $container_regex"
+      # shellcheck disable=SC2046
+      ${prev.stern}/bin/stern ''${all_namespaces:+-A} --namespace "$namespace" --timestamps "$container_regex"
+    '';
+  };
+
   k8s_pog_scripts = [
     kdesc
+    kdrain
     kex
+    klog
     krm
     kroll
     kshell
-    kdrain
   ];
 }

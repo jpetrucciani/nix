@@ -8,6 +8,7 @@ rec {
       ${_.gcloud} projects list
     '';
   };
+
   gke_config = pog {
     name = "gke_config";
     description = "fetch a kubeconfig for the given cluster";
@@ -40,6 +41,7 @@ rec {
         --region "$region"
     '';
   };
+
   gcp_pog_scripts = [
     glist
     gke_config

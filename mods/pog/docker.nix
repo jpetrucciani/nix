@@ -1,6 +1,16 @@
 final: prev:
 with prev;
 rec {
+  drm = pog {
+    name = "drm";
+    description = "quickly remove containers from your docker daemon!";
+    flags = [
+      _.flags.common.force
+    ];
+    script = ''
+      ${_.docker.da} | ${_.fzfqm} --header-lines=1 | ${_.docker.get_container} | ${_.xargs} -r ${_.d} rm ''${force:+--force}
+    '';
+  };
   drmi = pog {
     name = "drmi";
     description = "quickly remove images from your docker daemon!";
@@ -8,18 +18,18 @@ rec {
       _.flags.common.force
     ];
     script = ''
-      ${_.di} | ${_.fzfqm} --header-lines=1 | ${_.get_image} | ${_.xargs} -r ${_.d} rmi ''${force:+--force}
+      ${_.docker.di} | ${_.fzfqm} --header-lines=1 | ${_.docker.get_image} | ${_.xargs} -r ${_.d} rmi ''${force:+--force}
     '';
   };
   _dex = pog {
     name = "dex";
-    description = "a quick and easy way to exec into a k8s pod!";
+    description = "a quick and easy way to exec into a docker pod!";
     flags = [
       {
         name = "container";
         description = "the container to exec into";
         prompt = ''
-          ${_.d} ps -a | ${_.fzfq} --header-lines=1 | ${_.get_id}
+          ${_.d} ps -a | ${_.fzfq} --header-lines=1 | ${_.k8s.get_id}
         '';
         promptError = "you must specify a container to exec into!";
       }
@@ -86,6 +96,7 @@ rec {
   };
 
   docker_pog_scripts = [
+    drm
     drmi
     dshell
     dlint

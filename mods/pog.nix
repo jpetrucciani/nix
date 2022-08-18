@@ -53,12 +53,45 @@ with builtins; rec {
     fzfqm = ''${fzfq} -m'';
 
     # docker partials
-    di = "${d} images";
-    get_image = "${awk} '{ print $3 }'";
+    docker = {
+      di = "${d} images";
+      da = "${d} ps -a";
+      get_image = "${awk} '{ print $3 }'";
+      get_container = "${awk} '{ print $1 }'";
+    };
 
     # k8s partials
-    ka = "${k} get pods | ${sed} '1d'";
-    get_id = "${awk} '{ print $1 }'";
+    k8s = {
+      ka = "${k} get pods | ${sed} '1d'";
+      get_id = "${awk} '{ print $1 }'";
+      fmt = rec {
+        _fmt =
+          let
+            parseCol = col: "${col.k}:${col.v}";
+          in
+          columns: "-o custom-columns='${concatStringsSep "," (map parseCol columns)}'";
+        _cols = {
+          name = { k = "NAME"; v = ".metadata.name"; };
+          namespace = { k = "NAMESPACE"; v = ".metadata.namespace"; };
+          ready = { k = "READY"; v = ''status.conditions[?(@.type=="Ready")].status''; };
+          status = { k = "STATUS"; v = ".status.phase"; };
+          ip = { k = "IP"; v = ".status.podIP"; };
+          node = { k = "NODE"; v = ".spec.nodeName"; };
+          image = { k = "IMAGE"; v = ".spec.containers[*].image"; };
+          host_ip = { k = "HOST_IP"; v = ".status.hostIP"; };
+          start_time = { k = "START_TIME"; v = ".status.startTime"; };
+        };
+        pod = _fmt (with _cols; [
+          name
+          namespace
+          ready
+          status
+          ip
+          node
+          image
+        ]);
+      };
+    };
 
     # json partials
     refresh_patch = ''
@@ -88,6 +121,12 @@ with builtins; rec {
         };
       };
       k8s = {
+        all_namespaces = {
+          name = "all_namespaces";
+          short = "A";
+          description = "operate across all namespaces";
+          bool = true;
+        };
         namespace = {
           name = "namespace";
           default = "default";
@@ -103,7 +142,7 @@ with builtins; rec {
           prompt = ''
             ${_.k} get nodes -o wide |
               ${_.fzfqm} --header-lines=1 |
-              ${_.get_id}
+              ${_.k8s.get_id}
           '';
           promptError = "you must specify one or more nodes!";
         };
@@ -681,6 +720,7 @@ with builtins; rec {
   ind = text: concatStringsSep "\n" (map (x: "  ${x}") (filter isString (split "\n" text)));
   flag =
     { name
+    , _name ? (replaceStrings [ "-" ] [ "_" ] name)
     , short ? substring 0 1 name
     , default ? ""
     , hasDefault ? (stringLength default) > 0
@@ -698,31 +738,32 @@ with builtins; rec {
     , hasCompletion ? (stringLength completion) > 0
     , flagPadding ? 20
     }: {
-      inherit name short default bool marker description;
+      inherit short default bool marker description;
+      name = _name;
       shortOpt = "${short}${marker}";
-      longOpt = "${name}${marker}";
-      flagDefault = ''${name}="''${${envVar}:-${default}}"'';
+      longOpt = "${_name}${marker}";
+      flagDefault = ''${_name}="''${${envVar}:-${default}}"'';
       flagPrompt =
         if hasPrompt then ''
-          [ -z "''${${name}}" ] && ${name}="$(${prompt})"
-          [ -z "''${${name}}" ] && die "${promptError}" ${toString promptErrorExitCode}
+          [ -z "''${${_name}}" ] && ${_name}="$(${prompt})"
+          [ -z "''${${_name}}" ] && die "${promptError}" ${toString promptErrorExitCode}
         '' else "";
-      ex = "[-${short}|--${name}${if bool then "" else " ${argument}"}]";
+      ex = "[-${short}|--${_name}${if bool then "" else " ${argument}"}]";
       helpDoc =
-        (rightPad flagPadding "-${short}, --${name}") +
+        (rightPad flagPadding "-${short}, --${_name}") +
         "\t${description}" +
         "${if hasDefault then " [default: '${default}']" else ""}" +
         "${if hasPrompt then " [will prompt if not passed in]" else ""}" +
         "${if bool then " [bool]" else ""}"
       ;
       definition = ''
-        -${short}|--${name})
-            ${name}=${if bool then "1" else "$2"}
+        -${short}|--${_name})
+            ${_name}=${if bool then "1" else "$2"}
             shift ${if bool then "" else "2"}
             ;;'';
       completionBlock =
         if hasCompletion then ''
-          elif [[ $previous = -${short} ]] || [[ $previous = --${name} ]]; then
+          elif [[ $previous = -${short} ]] || [[ $previous = --${_name} ]]; then
             # shellcheck disable=SC2116
             completions=$(${completion})
             # shellcheck disable=SC2207
