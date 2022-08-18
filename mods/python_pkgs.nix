@@ -229,6 +229,28 @@ let
 
       doCheck = false;
     };
+
+    bucketstore = buildPythonPackage rec {
+      pname = "bucketstore";
+      version = "0.2.2";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "00xl1wjpv7417pnsxml22ibkjxakqv96x7gpq2jya3fv7viwp1sd";
+      };
+
+      doCheck = false;
+      propagatedBuildInputs = [ boto3 ];
+      pythonImportsCheck = [
+        "bucketstore"
+      ];
+
+      meta = with lib; {
+        description = "A simple library for interacting with Amazon S3.";
+        homepage = "https://github.com/jpetrucciani/bucketstore.git";
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
   };
 in
 pynixifyOverlay
