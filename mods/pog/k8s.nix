@@ -139,12 +139,17 @@ rec {
         promptError = "you must specify one or more pods to get logs from!";
         completion = ''${_.k} get pods | ${_.sed} '1d' | ${_.awk} '{print $1}' '';
       }
+      {
+        name = "since";
+        description = "Return logs newer than a relative duration like 52, 2m, or 3h";
+        default = "10m";
+      }
     ];
     script = helpers: ''
       container_regex="($(echo "$containers" | tr '\n' '|' | ${_.sed} 's#.$##'))"
       debug "stern ''${all_namespaces:+-A} --namespace $namespace --timestamps $container_regex"
       # shellcheck disable=SC2046
-      ${prev.stern}/bin/stern ''${all_namespaces:+-A} --namespace "$namespace" --timestamps "$container_regex"
+      ${prev.stern}/bin/stern ''${all_namespaces:+-A} --namespace "$namespace" --since "$since" --timestamps "$container_regex"
     '';
   };
 
