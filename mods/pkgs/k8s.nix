@@ -6,8 +6,8 @@ let
 in
 rec {
   katafygio = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
-      buildGo118Module rec {
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
         pname = "katafygio";
         version = "0.8.3";
 
@@ -37,8 +37,8 @@ rec {
     { };
 
   goldilocks = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
-      buildGo118Module rec {
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
         pname = "goldilocks";
         version = "4.3.3";
 
@@ -62,8 +62,8 @@ rec {
     { };
 
   polaris = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
-      buildGo118Module rec {
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
         pname = "polaris";
         version = "6.0.0";
 
@@ -88,8 +88,8 @@ rec {
     { };
 
   cyclonus = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
-      buildGo118Module rec {
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
         pname = "cyclonus";
         version = "0.5.0";
 
@@ -113,8 +113,8 @@ rec {
     { };
 
   rbac-tool = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
-      buildGo118Module rec {
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
         pname = "rbac-tool";
         version = "1.9.0";
 

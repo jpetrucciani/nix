@@ -6,8 +6,8 @@ let
 in
 rec {
   s3-edit = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
-      buildGo118Module rec {
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
         pname = "s3-edit";
         version = "0.0.15";
 
@@ -31,13 +31,13 @@ rec {
     { };
 
   q = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
       let
         version = "0.8.2";
         commit = "72fa909c3d5da33ba4ffc96920988a9b5873427f";
         date = "2022-08-02";
       in
-      buildGo118Module rec {
+      buildGo119Module rec {
         inherit version;
         pname = "q";
 
@@ -70,8 +70,8 @@ rec {
     { };
 
   overflow = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
-      buildGo118Module rec {
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
         pname = "overflow";
         version = "2.1.0";
 
@@ -136,8 +136,8 @@ rec {
     { };
 
   horcrux = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
-      buildGo118Module rec {
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
         pname = "horcrux";
         version = "0.3";
 
@@ -213,8 +213,8 @@ rec {
     { };
 
   rare = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
-      buildGo118Module rec {
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
         pname = "rare";
         version = "0.2.2";
 
@@ -239,8 +239,8 @@ rec {
     { };
 
   comcast = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
-      buildGo118Module rec {
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
         pname = "comcast";
         version = "1.0.1";
 
@@ -268,8 +268,8 @@ rec {
     { };
 
   spacectl = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
-      buildGo118Module rec {
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
         pname = "spacectl";
         version = "0.10.0";
 

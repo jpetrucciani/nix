@@ -6,7 +6,7 @@ rec {
       builtins = {
         caddy-cgi = { name = "github.com/aksdb/caddy-cgi"; version = "7cf2523251ffeef310868d8ed03e17a929236f2e"; };
         caddy-exec = { name = "github.com/abiosoft/caddy-exec"; version = "06d4f7218eb886ab9664e63c3f56010992e93fb9"; };
-        caddy-security = { name = "github.com/greenpau/caddy-security"; version = "v1.1.14"; };
+        caddy-security = { name = "github.com/greenpau/caddy-security"; version = "v1.1.15"; };
         caddy-webhook = { name = "github.com/WingLim/caddy-webhook"; version = "v1.0.8"; };
         certmagic-storage-dynamodb = { name = "github.com/silinternational/certmagic-storage-dynamodb"; version = "3.0.0"; };
 
@@ -52,7 +52,7 @@ rec {
         '')
         allPlugins;
       xcaddy = prev.caddy.override {
-        buildGoModule = args: buildGoModule (args // {
+        buildGoModule = args: buildGo119Module (args // {
           inherit vendorSha256;
           overrideModAttrs = _: {
             preBuild = ''
@@ -80,7 +80,7 @@ rec {
       s3-proxy
       geolocation
     ];
-    vendorSha256 = "sha256-wPAMN7FNPrZTq++vO4/Uvl414umS2w2ud1bw6DRyuF0=";
+    vendorSha256 = "sha256-4AHR+TmDOU15x5pZ+ga2LyP9k/poI2Pp8BfxfbySVi8=";
   };
 
   # caddy with s3-browser plugin
@@ -90,6 +90,6 @@ rec {
       s3-proxy
       s3-browser
     ];
-    vendorSha256 = "sha256-Nxek+W70Cm6Ku68VVO2sW0/LR0JHueBwMkLOOb2woP0=";
+    vendorSha256 = "sha256-aiWTAqUHGI/yrY473NwO+NY9Ptw0EoHT4j0YzfH8GF0=";
   };
 }

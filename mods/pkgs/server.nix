@@ -24,20 +24,21 @@ rec {
   };
 
   pocketbase = prev.callPackage
-    ({ stdenv, lib, buildGo118Module, fetchFromGitHub }:
-      buildGo118Module rec {
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
         pname = "pocketbase";
-        version = "0.4.2";
+        version = "0.5.0";
 
         src = fetchFromGitHub {
           owner = "pocketbase";
           repo = pname;
           rev = "v${version}";
-          sha256 = "sha256-uDseJmuK6SI3e2ICqr8SJ0iKOVCXONueZUJ6J8MKwYE=";
+          sha256 = "sha256-olU6462v67y4PIhOjUgYqAmqu7qiJr6q3G/j/hS9LEg=";
         };
 
         doCheck = false;
 
+        CGO_ENABLED = 0;
         ldflags = [
           "-s"
           "-w"
@@ -51,12 +52,74 @@ rec {
           mkdir -p $out/bin
           mv ./main $out/bin/pocketbase
         '';
-        vendorSha256 = "sha256-8IiY/gjK8m2ntOXyG84HMiyT4GK3CgDTRG1DB+v0jAs=";
+        vendorSha256 = "sha256-OGbfcKvPTSM9DGJ+u2fXBmHq0Sv/n8oMbHNoPZy854Q=";
 
         meta = with lib; {
           description = "open source realtime backend in 1 file";
           license = licenses.mit;
           maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
+  zinc = prev.callPackage
+    ({ stdenvNoCC, callPackage, fetchurl, autoPatchelfHook, unzip, openssl, lib }:
+      let
+        dists = {
+          aarch64-darwin = {
+            arch = "arm64";
+            short = "Darwin";
+            sha256 = "1lf0rdcskm2mgjfb1mzgcg4g706n1cl1kchsxdx2limxxss6y2af";
+          };
+
+          aarch64-linux = {
+            arch = "arm64";
+            short = "Linux";
+            sha256 = "1z97nbgghjabp4ywrgfz0xff3chk7gkmjry1l12l692926pjhn3n";
+          };
+
+          x86_64-darwin = {
+            arch = "x86_64";
+            short = "Darwin";
+            sha256 = "05p9qcm3zbnkqm6fdj5w81pz8cf9a52587f74vvxalsn21bibqx1";
+          };
+
+          x86_64-linux = {
+            arch = "x86_64";
+            short = "Linux";
+            sha256 = "196wxcbmkwzrq4rg0d5pzljjyxxj17b47dsl10x7xfl0yn8mbwkq";
+          };
+        };
+        dist = dists.${stdenvNoCC.hostPlatform.system} or (throw "Unsupported system: ${stdenvNoCC.hostPlatform.system}");
+        pname = "zinc";
+        owner = "zinclabs";
+        version = "0.2.9";
+      in
+      stdenvNoCC.mkDerivation rec {
+        inherit pname version;
+
+        src = fetchurl {
+          inherit (dist) sha256;
+          url = "https://github.com/${owner}/${pname}/releases/download/v${version}/${pname}_${version}_${dist.short}_${dist.arch}.tar.gz";
+        };
+
+        strictDeps = true;
+        nativeBuildInputs = lib.optionals stdenvNoCC.isLinux [ autoPatchelfHook ];
+
+        dontConfigure = true;
+        dontBuild = true;
+
+        unpackPhase = ''
+          ${gnutar}/bin/tar xzvf ${src}
+        '';
+        installPhase = ''
+          mkdir -p $out/bin
+          mv ./zinc $out/bin/zinc
+        '';
+
+        meta = with lib; {
+          license = licenses.mit;
         };
       }
     )

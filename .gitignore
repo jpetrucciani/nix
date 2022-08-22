@@ -7,3 +7,4 @@ node_modules/
 .cq/
 cloudquery.log
 pb_data/
+data/
