@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> { }, nodejs ? pkgs.nodejs-12_x }:
+{ pkgs ? import <nixpkgs> { }, nodejs ? pkgs.nodejs-14_x }:
 with pkgs; with lib; with builtins;
 let
   osSpecific = with pkgs.darwin.apple_sdk.frameworks; if pkgs.stdenv.isDarwin then [ Security AppKit xcbuild ] else [ ];

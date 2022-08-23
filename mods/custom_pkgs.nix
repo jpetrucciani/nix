@@ -10,7 +10,10 @@ let
     ) (
       n: _: rec {
         name = lib.removeSuffix ".nix" n;
-        value = pkgs.callPackage (../pkgs + ("/" + n)) { };
+        value = pkgs.callPackage (../pkgs + ("/" + n))
+          {
+            nodejs = pkgs.nodejs-14_x;
+          };
       }
     );
 in
