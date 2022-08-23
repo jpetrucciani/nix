@@ -230,27 +230,44 @@ let
       doCheck = false;
     };
 
-    bucketstore = buildPythonPackage rec {
-      pname = "bucketstore";
-      version = "0.2.2";
+    uncompyle6 = buildPythonPackage rec {
+      pname = "uncompyle6";
+      version = "3.8.0";
 
       src = fetchPypi {
         inherit pname version;
-        sha256 = "00xl1wjpv7417pnsxml22ibkjxakqv96x7gpq2jya3fv7viwp1sd";
+        sha256 = "053hh6mmllzwl7ndlf8fkiizr3yp6h4j4zhqg0z1zz3dixhk61k2";
+      };
+
+      propagatedBuildInputs = [ spark_parser xdis ];
+
+      doCheck = false;
+      pythonImportsCheck = [ "uncompyle6" ];
+
+      meta = with lib; {
+        description = "Python cross-version byte-code decompiler";
+        homepage = "https://github.com/rocky/python-uncompyle6/";
+      };
+    };
+
+    pyrasite = buildPythonPackage rec {
+      pname = "pyrasite";
+      version = "2.0";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "1kvc3xqdxn5y1jk554kaa83wi9xvkf70mil8csj0179p0ima7xz5";
       };
 
       doCheck = false;
-      propagatedBuildInputs = [ boto3 ];
-      pythonImportsCheck = [
-        "bucketstore"
-      ];
+      pythonImportsCheck = [ "pyrasite" ];
 
       meta = with lib; {
-        description = "A simple library for interacting with Amazon S3.";
-        homepage = "https://github.com/jpetrucciani/bucketstore.git";
-        maintainers = with maintainers; [ jpetrucciani ];
+        description = "Inject code into a running Python process";
+        homepage = "http://pyrasite.com";
       };
     };
+
   };
 in
 pynixifyOverlay

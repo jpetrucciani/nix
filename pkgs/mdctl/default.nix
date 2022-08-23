@@ -1,6 +1,7 @@
 { pkgs ? import <nixpkgs> { }, nodejs ? pkgs.nodejs-14_x }:
 with pkgs; with lib; with builtins;
 let
+  yarn2nix = yarn2nix-moretea.override { inherit nodejs; };
   osSpecific = with pkgs.darwin.apple_sdk.frameworks; if pkgs.stdenv.isDarwin then [ Security AppKit xcbuild ] else [ ];
   json = fromJSON (readFile ./package.json);
   pname = replaceChars [ "@" "/" ] [ "" "-" ] (head (attrNames json.dependencies));
@@ -9,7 +10,7 @@ let
     tar xvf ${nodejs.src}
     mv node-* $out
   '';
-  modules = yarn2nix-moretea.mkYarnModules {
+  modules = yarn2nix.mkYarnModules {
     inherit version;
     pname = "${pname}-modules";
     packageJSON = ./package.json;
@@ -19,8 +20,8 @@ let
       glib
       gnumake
       libsecret
-      nodePackages.node-gyp
-      nodePackages.node-pre-gyp
+      nodejs.pkgs.node-gyp
+      nodejs.pkgs.node-pre-gyp
       pkg-config
       python3
       (lib.flatten osSpecific)
