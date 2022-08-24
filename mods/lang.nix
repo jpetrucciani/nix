@@ -39,4 +39,15 @@ with builtins; rec {
     };
   vlang = prev.vlang.overrideAttrs (_: { passthru.withPackages = vWithPackages; });
 
+  pycdc = stdenv.mkDerivation {
+    name = "pycdc";
+    src = fetchFromGitHub {
+      owner = "jpetrucciani";
+      repo = "pycdc";
+      rev = "da523cf1909563f34a9b9465d18b4a011c463bea";
+      sha256 = "sha256-pyS0PF8AQ7U5Gmt8rt7HymnQ+XenRI6Nv4/PVHZtqus=";
+    };
+    propagatedBuildInputs = [ cmake python310 ];
+  };
+
 }

@@ -1,0 +1,25 @@
+deployment:
+  replicas: 3
+
+providers:
+  kubernetesCRD:
+    allowCrossNamespace: true
+    ingressClass: traefik-internal
+
+service:
+  annotations:
+    cloud.google.com/load-balancer-type: 'Internal'
+
+globalArguments: []
+
+additionalArguments:
+  - '--log.level=DEBUG'
+  - '--entrypoints.websecure.http.tls'
+  - '--ping'
+  - '--metrics.prometheus'
+  - '--entrypoints.web.http.redirections.entryPoint.to=websecure'
+  - '--entrypoints.web.http.redirections.entryPoint.scheme=https'
+  - '--entrypoints.web.http.redirections.entrypoint.permanent=true'
+  - '--entrypoints.web.http.redirections.entryPoint.to=:443'
+  - '--entrypoints.web.forwardedHeaders.insecure'
+  - '--serversTransport.insecureSkipVerify=true'

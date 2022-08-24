@@ -1,6 +1,6 @@
-{ hex }:
+{ hex, ... }:
 let
-  inherit (hex) attrIf attrIfNotNull toYAML;
+  inherit (hex) ifNotNull toYAML;
 
   cron = rec {
     build =
@@ -38,12 +38,12 @@ let
                       {
                         inherit name image;
                         env = { HEX = true; } // env;
-                        ${attrIfNotNull command "command"} = [ command ];
-                        ${attrIfNotNull args "args"} = args;
+                        ${ifNotNull command "command"} = [ command ];
+                        ${ifNotNull args "args"} = args;
                         resources = {
                           ${if (memoryLimit != null || cpuLimit != null) then "limits" else null} = {
-                            ${attrIfNotNull memoryLimit "memory"} = memoryLimit;
-                            ${attrIfNotNull cpuLimit "cpu"} = cpuLimit;
+                            ${ifNotNull memoryLimit "memory"} = memoryLimit;
+                            ${ifNotNull cpuLimit "cpu"} = cpuLimit;
                           };
                           requests = {
                             cpu = cpuRequest;

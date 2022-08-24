@@ -76,6 +76,7 @@ rec {
       EOF
     '';
   };
+
   nixpy = writeBashBinCheckedWithFlags {
     name = "nixpy";
     flags = [
@@ -94,6 +95,7 @@ rec {
       nix eval --raw --impure --expr \
       'with import ${pkgs.path} {}; lib.generators.toPretty {} (builtins.fromJSON (builtins.getEnv "json"))'
   '';
+
   cache = writeBashBinCheckedWithFlags {
     name = "cache";
     description = "an easy tool to build nix configs and cache them to cachix!";
@@ -113,6 +115,7 @@ rec {
       ${pkgs.nix}/bin/nix-build ''${oldmac:+--system x86_64-darwin} | ${_.cachix} push "$cache_name"
     '';
   };
+
   nixrender =
     pog {
       name = "nixrender";
@@ -146,23 +149,11 @@ rec {
       ];
       script = helpers: ''
         spell="$1"
-        spell_template="$(${_.mktemp})"
         spell_render="$(${_.mktemp})"
         fullpath="$(${_.realpath} "$spell")"
-        cat <<EOF >"$spell_template"
-        with builtins;
-        let
-          k8s = {
-            cron = import ${./hex/cron.nix} {inherit hex;};
-          };
-          hex = (import ${./hex/hex.nix}) // {inherit k8s;};
-          spell = import $fullpath;
-          output = if isFunction spell then spell {inherit hex;} else spell;
-        in
-        output
-        EOF
-        debug "spell to $spell_template"
-        ${_.nix} eval --raw -f "$spell_template" >"$spell_render"
+        debug "casting $fullpath - hex files at ${./hex}"
+        ${_.nix} eval --raw --impure --expr "import ${./hex}/spell.nix \"$fullpath\"" >"$spell_render"
+        debug "formatting $fullpath"
         ${_.prettier} --parser yaml "$spell_render" &>/dev/null
         cat "$spell_render"
       '';
@@ -213,7 +204,7 @@ rec {
         };
         _ = {
           k = "${pkgs.kubectl}/bin/kubectl";
-          nr = "${nixrender}/bin/nixrender";
+          hr = "${hexrender}/bin/hexrender";
           delta = "${pkgs.delta}/bin/delta";
           pluto = "${pluto}/bin/pluto";
           mktemp = "${pkgs.coreutils}/bin/mktemp";
@@ -226,7 +217,7 @@ rec {
         diffed=$(${_.mktemp})
         debug "''${GREEN}render to '$rendered'"
         ${helpers.timer.start steps.render}
-        ${_.nr} "$target" >"$rendered"
+        ${_.hr} "$target" >"$rendered"
         render_exit_code=$?
         render_runtime=${helpers.timer.stop steps.render}
         debug "''${GREEN}rendered to '$rendered' in $render_runtime''${RESET}"

@@ -1,6 +1,7 @@
 let
   pynixifyOverlay =
     final: prev: {
+      python38 = prev.python38.override { inherit packageOverrides; };
       python39 = prev.python39.override { inherit packageOverrides; };
       python310 = prev.python310.override { inherit packageOverrides; };
       python311 = prev.python311.override { inherit packageOverrides; };
@@ -250,6 +251,25 @@ let
       };
     };
 
+    decompyle3 = buildPythonPackage rec {
+      pname = "decompyle3";
+      version = "3.9.0";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "0c55zm1d7bi1lpvw1z0vvdvfkaqhfkcf40494khd2kcv23wcnji2";
+      };
+
+      propagatedBuildInputs = [ click spark_parser xdis ];
+
+      doCheck = false;
+
+      meta = with lib; {
+        description = "Python cross-version byte-code decompiler";
+        homepage = "https://github.com/rocky/python-decompile3/";
+      };
+    };
+
     pyrasite = buildPythonPackage rec {
       pname = "pyrasite";
       version = "2.0";
@@ -266,6 +286,54 @@ let
         description = "Inject code into a running Python process";
         homepage = "http://pyrasite.com";
       };
+    };
+
+    pyinstaller = buildPythonPackage rec {
+      pname = "pyinstaller";
+      version = "5.3";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "1dypgw9qax9bs8rfsybysp2fk3rfgq3wqxxl4d5xbr06k1kd8wfy";
+      };
+      propagatedBuildInputs = [
+        (buildPythonPackage rec {
+          pname = "altgraph";
+          version = "0.17.2";
+
+          src = fetchPypi {
+            inherit pname version;
+            sha256 = "0n4ihdwzp42gfnqzwlbwq43wdjz4yqwn8scfp2rrfzdlc69jdwpb";
+          };
+
+          doCheck = false;
+
+          meta = with lib; {
+            description = "Python graph (network) package";
+            homepage = "https://altgraph.readthedocs.io";
+          };
+        })
+        (buildPythonPackage rec {
+          pname = "pyinstaller-hooks-contrib";
+          version = "2022.8";
+
+          src = fetchPypi {
+            inherit pname version;
+            sha256 = "0mns2cicr6p1zplkp3jhj0imj1clmszy11g432lwdjc20b2hy8f4";
+          };
+
+          buildInputs = [ setuptools ];
+
+          doCheck = false;
+
+          meta = with lib; { };
+        })
+        setuptools
+        pkgs.zlib
+      ];
+      doCheck = false;
+
+      meta = with lib; { };
     };
 
   };

@@ -633,7 +633,7 @@ with builtins; rec {
         done
         debug() {
           if [ -n "$VERBOSE" ]; then
-            echo -e "$1"
+            echo -e "''${PURPLE}$1''${RESET}" >&2
           fi
         }
         cleanup() {
@@ -800,7 +800,7 @@ with builtins; rec {
       uuid
       bar 1 10
       ''${functions:+get_functions}
-      debug "''${GREEN}this is a debug message, only visible when passing -v (or setting POG_VERBOSE)!''${RESET}"
+      debug "''${GREEN}this is a debug message, only visible when passing -v (or setting POG_VERBOSE)!"
       black "this text is 'black'"
       red "this text is 'red'"
       green "this text is 'green'"
