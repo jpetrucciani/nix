@@ -227,7 +227,7 @@ rec {
         ${helpers.var.notEmpty "check"} && ${_.pluto} detect "$rendered"
         ${helpers.var.notEmpty "prettify"} && ${_.prettier} --parser yaml "$rendered" >/dev/null
         if ${helpers.var.notEmpty "render"}; then
-          blue "rendered hex to '$rendered'"
+          cat "$rendered"
           exit 0
         fi
         if ${helpers.var.notEmpty "force"}; then
