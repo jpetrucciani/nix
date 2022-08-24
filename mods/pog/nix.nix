@@ -128,6 +128,46 @@ rec {
       '';
     };
 
+  hexrender =
+    let
+      _ = {
+        prettier = "${pkgs.nodePackages.prettier}/bin/prettier --write --config ${../../.prettierrc.js}";
+        mktemp = "${pkgs.coreutils}/bin/mktemp --suffix=.yaml";
+        realpath = "${pkgs.coreutils}/bin/realpath";
+        nix = "${pkgs.nix}/bin/nix";
+      };
+    in
+    pog {
+      name = "hexrender";
+      description = "a quick and easy way to use nix to render various other config files!";
+      flags = [ ];
+      arguments = [
+        { name = "nix_file"; }
+      ];
+      script = helpers: ''
+        spell="$1"
+        spell_template="$(${_.mktemp})"
+        spell_render="$(${_.mktemp})"
+        fullpath="$(${_.realpath} "$spell")"
+        cat <<EOF >"$spell_template"
+        with builtins;
+        let
+          k8s = {
+            cron = import ${./hex/cron.nix} {inherit hex;};
+          };
+          hex = (import ${./hex/hex.nix}) // {inherit k8s;};
+          spell = import $fullpath;
+          output = if isFunction spell then spell {inherit hex;} else spell;
+        in
+        output
+        EOF
+        debug "spell to $spell_template"
+        ${_.nix} eval --raw -f "$spell_template" >"$spell_render"
+        ${_.prettier} --parser yaml "$spell_render" &>/dev/null
+        cat "$spell_render"
+      '';
+    };
+
   hex = pog {
     name = "hex";
     description = "a quick and easy way to render full kubespecs from nix files";
@@ -239,5 +279,6 @@ rec {
     cache
     nixrender
     hex
+    hexrender
   ];
 }

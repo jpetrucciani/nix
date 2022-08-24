@@ -12,7 +12,7 @@ let
         name = lib.removeSuffix ".nix" n;
         value = pkgs.callPackage (../pkgs + ("/" + n))
           {
-            pkgs = prev.pkgs;
+            inherit pkgs;
             nodejs = pkgs.nodejs-14_x;
           };
       }
