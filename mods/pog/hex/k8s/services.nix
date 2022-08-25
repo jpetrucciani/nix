@@ -110,6 +110,7 @@ let
       , extraServiceAnnotations ? { }
       , extraIngressAnnotations ? { }
       , imagePullSecrets ? [ ]
+      , ingressTLSSecret ? ""
       }:
       let
         sa = components.service-account { inherit name namespace china saSuffix imagePullSecrets; };
@@ -129,7 +130,7 @@ let
           if loadBalancer then
             components.lb-service { inherit name namespace labels port altPort ip serviceSuffix extraServiceAnnotations; } else
             components.service { inherit name namespace labels port altPort serviceSuffix extraServiceAnnotations; };
-        ing = components.ingress { inherit name namespace port ingressSuffix serviceSuffix pre1_18 host extraIngressAnnotations; };
+        ing = components.ingress { inherit name namespace port ingressSuffix serviceSuffix pre1_18 host extraIngressAnnotations; tls = ingressTLSSecret; };
       in
       ''
         ${if serviceAccount then "---\n${toYAML sa}" else ""}
