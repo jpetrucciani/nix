@@ -12,6 +12,7 @@ let
   k8s = {
     cron = import ./k8s/cron.nix { inherit hex pkgs; };
     helm = import ./k8s/helm.nix { inherit hex pkgs; };
+    nginx-ingress = import ./k8s/nginx-ingress.nix { inherit hex pkgs; };
     services = import ./k8s/services.nix { inherit hex pkgs; };
     traefik = import ./k8s/traefik.nix { inherit hex pkgs; };
   };
