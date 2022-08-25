@@ -37,7 +37,7 @@ let
                     containers = [
                       {
                         inherit name image;
-                        env = [{ name = "HEX"; value = true; }] ++ env;
+                        env = [{ name = "HEX"; value = "true"; }] ++ env;
                         ${ifNotNull command "command"} = [ command ];
                         ${ifNotNull args "args"} = args;
                         resources = {
