@@ -15,7 +15,7 @@ let
       , cpuLimit ? null
       , memoryRequest ? "100Mi"
       , memoryLimit ? null
-      , env ? { }
+      , env ? [ ]
       , command ? null
       , args ? null
       , restartPolicy ? "Never"
@@ -37,7 +37,7 @@ let
                     containers = [
                       {
                         inherit name image;
-                        env = { HEX = true; } // env;
+                        env = [{ name = "HEX"; value = true; }] ++ env;
                         ${ifNotNull command "command"} = [ command ];
                         ${ifNotNull args "args"} = args;
                         resources = {
