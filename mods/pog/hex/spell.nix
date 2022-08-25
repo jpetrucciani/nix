@@ -10,14 +10,15 @@ let
       })
     { };
   k8s = {
-    cron = import ./k8s/cron.nix { inherit hex pkgs; };
-    helm = import ./k8s/helm.nix { inherit hex pkgs; };
-    nginx-ingress = import ./k8s/nginx-ingress.nix { inherit hex pkgs; };
-    services = import ./k8s/services.nix { inherit hex pkgs; };
-    traefik = import ./k8s/traefik.nix { inherit hex pkgs; };
+    cron = import ./k8s/cron.nix params;
+    helm = import ./k8s/helm.nix params;
+    nginx-ingress = import ./k8s/nginx-ingress.nix params;
+    services = import ./k8s/services.nix params;
+    traefik = import ./k8s/traefik.nix params;
   };
   hex = (import ./hex.nix pkgs) // { inherit k8s; };
+  params = { inherit hex pkgs; };
   spell = import SPELL;
-  output = if isFunction spell then spell { inherit hex pkgs; } else spell;
+  output = if isFunction spell then spell (intersectAttrs (functionArgs spell) params) else spell;
 in
 output
