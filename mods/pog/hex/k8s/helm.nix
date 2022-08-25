@@ -44,7 +44,7 @@ let
       { name
       , url
       , sha256
-      , namespace ? constants.namespaces.default
+      , namespace ? "default"
       , values ? [ ]
       , sets ? [ ]
       , version ? "0.0.0"
