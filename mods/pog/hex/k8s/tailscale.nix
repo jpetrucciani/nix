@@ -166,19 +166,19 @@ let
                     image = tailscale_image;
                     env = [
                       {
-                        name = "KUBE_SECRET";
+                        name = "TS_KUBE_SECRET";
                         value = name;
                       }
                       {
-                        name = "USERSPACE";
+                        name = "TS_USERSPACE";
                         value = boolToString userspace;
                       }
                       {
-                        name = "EXTRA_ARGS";
+                        name = "TS_EXTRA_ARGS";
                         value = "${advertise_tags_flag}${exit_node_flag}";
                       }
                       {
-                        name = "DEST_IP";
+                        name = "TS_DEST_IP";
                         value = destination_ip;
                       }
                     ];
@@ -299,15 +299,15 @@ let
                     image = tailscale_image;
                     env = [
                       {
-                        name = "KUBE_SECRET";
+                        name = "TS_KUBE_SECRET";
                         value = name;
                       }
                       {
-                        name = "USERSPACE";
+                        name = "TS_USERSPACE";
                         value = boolToString userspace;
                       }
                       {
-                        name = "EXTRA_ARGS";
+                        name = "TS_EXTRA_ARGS";
                         value = "${advertise_tags_flag}${exit_node_flag}";
                       }
                     ];
