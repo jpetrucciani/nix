@@ -34,6 +34,7 @@ rec {
   concatStrings = builtins.concatStringsSep "";
   concatMapStrings = f: list: concatStrings (map f list);
   boolToString = b: if b then "true" else "false";
+  hasPrefix = pref: str: substring 0 (stringLength pref) str == pref;
   removePrefix = prefix: str:
     let
       preLen = stringLength prefix;
