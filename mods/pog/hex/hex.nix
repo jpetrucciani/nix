@@ -5,8 +5,8 @@ rec {
     if isList x
     then concatMap flatten x
     else [ x ];
+  flat = x: join (map (y: if isFunction y then y { } else y) (flatten x));
   join = x: concatStringsSep "\n" (flatten x);
-  flattenCharts = x: join (map (y: if isFunction y then y { } else y) (flatten x));
   unlines = indent: values: "\n" + concatStringsSep "\n" (map (v: "${indent}${v}") values) + "\n";
   toYAML = _toYAML "";
   _toYAML = indent: value:
@@ -33,6 +33,7 @@ rec {
   optionalString = cond: string: if cond then string else "";
   concatStrings = builtins.concatStringsSep "";
   concatMapStrings = f: list: concatStrings (map f list);
+  boolToString = b: if b then "true" else "false";
 
   _ = rec {
     sed = "${pkgs.gnused}/bin/sed";

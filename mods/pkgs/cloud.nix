@@ -9,21 +9,21 @@ rec {
     ({ stdenv, lib, buildGo119Module, fetchFromGitHub, disableTelemetry ? true }:
       buildGo119Module rec {
         pname = "cloudquery";
-        version = "0.32.7";
+        version = "0.32.8";
 
         # additional compile-time data
-        commit = "9bf0e274118569a54f91695266ca3e743fe2e88e";
-        date = "2022-08-15";
+        commit = "145cb0fcf0838824a1f63b4e45af1af701a045f4";
+        date = "2022-08-21";
 
         src = fetchFromGitHub
           {
             owner = "cloudquery";
             repo = "cloudquery";
             rev = "cli/v${version}";
-            sha256 = "sha256-eKnNGPewWcr1A9wGpLjpI8nuLJaPZhhthAGv/aFirhs=";
+            sha256 = "sha256-lVRxoO9fsI3oQjZrwumLW3iNZfQ3ocH9erLVzJSMXpc=";
           } + "/cli";
 
-        vendorSha256 = "sha256-Q3FsNQ3dUSKzH2Zd5Nba0pcv/H39BpICDJcJyMulPbs=";
+        vendorSha256 = "sha256-2i9EMKcrinoYcMyChD9KT+KmcPkZK9TaYAeax4cSXio=";
 
         ldflags = [
           "-s"
@@ -109,7 +109,6 @@ rec {
           "-X github.com/fugue/regula/v2/pkg/version.Version=${version}"
           "-X github.com/fugue/regula/v2/pkg/version.GitCommit=${commit}"
         ];
-
 
         checkPhase = ''
           runHook preCheck

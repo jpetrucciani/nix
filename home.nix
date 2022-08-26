@@ -698,6 +698,13 @@ with pkgs.hax; {
           editor = if isDarwin then "code --wait" else "nano";
           pager = "delta --dark";
         };
+        delta = {
+          navigate = true;
+          line-numbers = true;
+          side-by-side = true;
+          line-numbers-left-format = "";
+          line-numbers-right-format = "│ ";
+        };
         rebase.instructionFormat = "<%ae >%s";
         init.defaultBranch = "main";
       };

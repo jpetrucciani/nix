@@ -11,9 +11,11 @@ let
     { };
   k8s = {
     cron = import ./k8s/cron.nix params;
+    external-secrets = import ./k8s/external-secrets.nix params;
     helm = import ./k8s/helm.nix params;
     nginx-ingress = import ./k8s/nginx-ingress.nix params;
     services = import ./k8s/services.nix params;
+    tailscale = import ./k8s/tailscale.nix params;
     traefik = import ./k8s/traefik.nix params;
   };
   hex = (import ./hex.nix pkgs) // { inherit k8s; };

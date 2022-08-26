@@ -27,13 +27,13 @@ rec {
     ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
       buildGo119Module rec {
         pname = "pocketbase";
-        version = "0.5.0";
+        version = "0.5.1";
 
         src = fetchFromGitHub {
           owner = "pocketbase";
           repo = pname;
           rev = "v${version}";
-          sha256 = "sha256-olU6462v67y4PIhOjUgYqAmqu7qiJr6q3G/j/hS9LEg=";
+          sha256 = "sha256-Wcj2pAKuRT3gWzczoNd0mJktM2dUL3z+2JUsM5SYRVM=";
         };
 
         doCheck = false;
@@ -48,10 +48,12 @@ rec {
         postBuild = ''
           go build ./examples/base/main.go
         '';
+
         postInstall = ''
           mkdir -p $out/bin
           mv ./main $out/bin/pocketbase
         '';
+
         vendorSha256 = "sha256-OGbfcKvPTSM9DGJ+u2fXBmHq0Sv/n8oMbHNoPZy854Q=";
 
         meta = with lib; {
