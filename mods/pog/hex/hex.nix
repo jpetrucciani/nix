@@ -34,6 +34,15 @@ rec {
   concatStrings = builtins.concatStringsSep "";
   concatMapStrings = f: list: concatStrings (map f list);
   boolToString = b: if b then "true" else "false";
+  removePrefix = prefix: str:
+    let
+      preLen = stringLength prefix;
+      sLen = stringLength str;
+    in
+    if hasPrefix prefix str then
+      substring preLen (sLen - preLen) str
+    else
+      str;
 
   _ = rec {
     sed = "${pkgs.gnused}/bin/sed";

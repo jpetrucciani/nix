@@ -1,6 +1,6 @@
 { hex, pkgs }:
 let
-  inherit (hex) toYAML boolToString concatMapStrings;
+  inherit (hex) toYAML boolToString concatMapStrings removePrefix;
 
   imagePullPolicy = "Always";
   joinTags = concatMapStrings (x: ",tag:${x}");
@@ -129,7 +129,8 @@ let
         }:
         let
           exit_node_flag = if exit_node then " ${exitNode}" else "";
-          advertise_tags_flag = if builtins.length all_tags != 0 then "--advertise-tags=${joinTags all_tags}" else "";
+          _tags = removePrefix "," (joinTags all_tags);
+          advertise_tags_flag = if builtins.length all_tags != 0 then "--advertise-tags=${_tags}" else "";
         in
         {
           apiVersion = "apps/v1";
@@ -253,7 +254,8 @@ let
         }:
         let
           exit_node_flag = if exit_node then " ${exitNode}" else "";
-          advertise_tags_flag = if builtins.length all_tags != 0 then "--advertise-tags=${joinTags all_tags}" else "";
+          _tags = removePrefix "," (joinTags all_tags);
+          advertise_tags_flag = if builtins.length all_tags != 0 then "--advertise-tags=${_tags}" else "";
         in
         {
           apiVersion = "apps/v1";
