@@ -136,4 +136,30 @@ rec {
       }
     )
     { };
+
+  kubediff = prev.callPackage
+    ({ lib, stdenv, fetchFromGitHub, rustPlatform }:
+      let
+        pname = "kubediff";
+        version = "0.1.0";
+      in
+      rustPlatform.buildRustPackage rec {
+        inherit pname version;
+
+        src = fetchFromGitHub {
+          owner = "Ramilito";
+          repo = "kubediff";
+          rev = version;
+          sha256 = "sha256-Tjm9UrxvaQk/q6UgWz5OFnwm9XJaTEDe390G5kwN6WM=";
+        };
+
+        cargoSha256 = "sha256-91RoYfOdAegrsVPbCmWwwzLouNhn7oSklDhYh4ojgmY=";
+
+        meta = with lib; {
+          description = "a way to diff k8s specs without managed fields";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      })
+    { };
 }

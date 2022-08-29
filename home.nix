@@ -512,6 +512,7 @@ with pkgs.hax; {
 
           # vscode extensions
           extensions = {
+            elixir-ls = "animus-coop.vscode-elixir-mix-formatter";
             nix-ide = "jnoortheen.nix-ide";
             prettier = "esbenp.prettier-vscode";
             python = "ms-python.python";
@@ -546,12 +547,6 @@ with pkgs.hax; {
               "${formatOnSave}": true,
               "${tabSize}": 2
             },
-            "terraform.languageServer": {
-              "external": true,
-              "pathToBinary": "${nix-bin}/terraform-ls",
-              "args": ["serve"],
-              "trace.server": "off"
-            },
             "[json]": {
               "${formatter}": "${extensions.prettier}",
               "${formatOnSave}": true,
@@ -563,12 +558,17 @@ with pkgs.hax; {
               "${tabSize}": 2
             },
             "[dockerfile]": { "${formatter}": "${extensions.prettier}" },
+            "[elixir]": {"${formatter}": "${extensions.elixir-ls}"},
             "[properties]": { "${formatter}": "${extensions.shell-format}" },
             "[shellscript]": { "${formatter}": "${extensions.shell-format}" },
             "[python]": {"${formatter}": "${extensions.python}"},
             "[typescript]": {"${formatter}": "${extensions.prettier}"},
             "[typescriptreact]": {"${formatter}": "${extensions.prettier}"},
-            "[ignore]": { "${formatter}": "${extensions.shell-format}" }
+            "[ignore]": { "${formatter}": "${extensions.shell-format}" },
+            "terraform.languageServer.enable": true,
+            "terraform.languageServer.pathToBinary": "${nix-bin}/terraform-ls",
+            "terraform.languageServer.args": [ "serve" ],
+            "terraform.languageServer.ignoreSingleFileWarning": false
           }
         '';
     };
