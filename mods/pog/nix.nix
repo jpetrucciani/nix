@@ -212,6 +212,7 @@ rec {
         };
       in
       helpers: ''
+        export USE_GKE_GCLOUD_AUTH_PLUGIN=True
         ${helpers.file.notExists "target"} && die "the file to render ('$target') does not exist!"
         rendered=$(${_.mktemp})
         diffed=$(${_.mktemp})

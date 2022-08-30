@@ -202,6 +202,7 @@ with pkgs.hax; {
         # kubernetes
         kubectl
         kubectx
+        gke-gcloud-auth-plugin
 
         # load in my custom checked pog scripts
         hms
