@@ -64,7 +64,7 @@ let
         , string_data ? { }
         }: ''
           ---
-          ${toYAML (secret {inherit name filename env store store_kind refresh_interval secret_ref namespace extra_data labels string_data;})}
+          ${toYAML (secret {inherit name filename env store store_kind refresh_interval secret_ref namespace extract extra_data labels string_data;})}
         '';
 
       secret =
