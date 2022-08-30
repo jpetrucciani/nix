@@ -253,6 +253,7 @@ with pkgs.hax; {
         (
           optList isDarwin [
             lima
+            pinentry-curses
           ]
         )
 
@@ -501,6 +502,12 @@ with pkgs.hax; {
         allow-loopback-pinentry
       '';
     };
+    ${attrIf isDarwin "gpgagentconf"} = {
+      target = ".gnupg/gpg-agent.conf";
+      text = ''
+        pinentry-program ${homeDirectory}/.nix-profile/bin/pinentry-curses
+      '';
+    };
     ${attrIf isNixOS "vscodeserver"} = {
       target = ".vscode-server/data/Machine/settings.json";
       text =
@@ -576,7 +583,6 @@ with pkgs.hax; {
 
   # starship config
   programs.starship = {
-    # package = starship;
     enable = !isAndroid;
     settings = {
       add_newline = false;
@@ -589,9 +595,9 @@ with pkgs.hax; {
         symbol = "go ";
       };
       directory.style = "fg:#d442f5";
-      # localip = {
-      #   disabled = true;
-      # };
+      localip = {
+        disabled = true;
+      };
       nix_shell = {
         pure_msg = "";
         impure_msg = "";

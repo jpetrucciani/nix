@@ -142,6 +142,7 @@ rec {
       let
         pname = "kubediff";
         version = "0.1.0";
+        osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Security ] else [ ];
       in
       rustPlatform.buildRustPackage rec {
         inherit pname version;
@@ -152,6 +153,8 @@ rec {
           rev = version;
           sha256 = "sha256-Tjm9UrxvaQk/q6UgWz5OFnwm9XJaTEDe390G5kwN6WM=";
         };
+
+        buildInputs = osSpecific;
 
         cargoSha256 = "sha256-91RoYfOdAegrsVPbCmWwwzLouNhn7oSklDhYh4ojgmY=";
 
