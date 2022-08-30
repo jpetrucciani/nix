@@ -54,9 +54,11 @@ let
         , filename
         , env ? ""
         , store ? defaults.store_name
+        , store_kind ? "ClusterSecretStore"
         , refresh_interval ? "30m"
         , secret_ref ? ""
         , namespace ? "default"
+        , extract ? false
         , extra_data ? [ ]
         , labels ? { }
         , string_data ? { }
@@ -70,9 +72,11 @@ let
         , filename
         , env
         , store
+        , store_kind
         , refresh_interval
         , secret_ref
         , namespace
+        , extract
         , extra_data
         , labels
         , string_data
@@ -92,7 +96,7 @@ let
           spec = {
             refreshInterval = refresh_interval;
             secretStoreRef = {
-              kind = "ClusterSecretStore";
+              kind = store_kind;
               name = store;
             };
             target = {
@@ -106,7 +110,12 @@ let
                 };
               };
             };
-            data = [
+            ${attrIf extract "dataFrom"} = [
+              {
+                extract.key = if secret_ref == "" then "${env}${name}" else secret_ref;
+              }
+            ];
+            ${attrIf (!extract) "data"} = [
               {
                 secretKey = filename;
                 remoteRef = {
