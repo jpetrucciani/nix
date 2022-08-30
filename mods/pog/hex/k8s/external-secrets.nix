@@ -1,6 +1,6 @@
 { hex, pkgs }:
 let
-  inherit (hex) ifNotEmptyAttr toYAML;
+  inherit (hex) attrIf ifNotEmptyAttr toYAML;
 
   secrets = rec {
     defaults = {
