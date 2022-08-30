@@ -165,4 +165,17 @@ rec {
         };
       })
     { };
+
+  kubectl = prev.kubectl.override {
+    kubernetes = (prev.kubernetes.override { buildGoModule = buildGo119Module; }).overrideAttrs (old: rec {
+      version = "1.25.0";
+
+      src = fetchFromGitHub {
+        owner = "kubernetes";
+        repo = "kubernetes";
+        rev = "v${version}";
+        sha256 = "sha256-TECqNF/NOE6kl94nV7X/QVde0XGyTdKcUk3KhdDzcws=";
+      };
+    });
+  };
 }
