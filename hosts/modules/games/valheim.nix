@@ -3,6 +3,7 @@
     # Valheim puts save data in the home directory.
     home = "/var/lib/valheim";
     group = "valheim";
+    createHome = true;
     isSystemUser = true;
   };
   users.groups.valheim = { };
@@ -17,6 +18,10 @@
           +login anonymous \
           +app_update 896660 \
           +quit
+
+          # Fix a missplaced library
+          mkdir -p ~/.steam/sdk64
+          ln ${cfg.dataDir}/linux64/steamclient.so ~/.steam/sdk64
       '';
       ExecStart = ''
         ${pkgs.glibc}/lib/ld-linux-x86-64.so.2 ./valheim_server.x86_64 \
@@ -35,6 +40,12 @@
     environment = {
       # linux64 directory is required by Valheim.
       LD_LIBRARY_PATH = "linux64:${pkgs.glibc}/lib";
+    };
+
+    # Open the firewall
+    networking.firewall = lib.mkIf cfg.openFirewall {
+      allowedUDPPorts = [ 2456 2457 ];
+      allowedTCPPorts = [ 2456 2457 ];
     };
   };
 }
