@@ -7,6 +7,7 @@ in
   imports = [
     "${common.home-manager.path}/nixos"
     ./hardware-configuration.nix
+    ../modules/games/valheim.nix
   ];
 
   inherit (common) zramSwap swapDevices;
