@@ -1,7 +1,11 @@
-{ config, pkgs, lib, ... }: {
+{ config, pkgs, lib, ... }:
+let
+  base_dir = "/var/lib/valheim";
+in
+{
   users.users.valheim = {
     # Valheim puts save data in the home directory.
-    home = "/var/lib/valheim";
+    home = base_dir;
     group = "valheim";
     createHome = true;
     isSystemUser = true;
@@ -21,7 +25,7 @@
 
           # Fix a missplaced library
           mkdir -p ~/.steam/sdk64
-          ln ${cfg.dataDir}/linux64/steamclient.so ~/.steam/sdk64
+          ln ${base_dir}/linux64/steamclient.so ~/.steam/sdk64
       '';
       ExecStart = ''
         ${pkgs.glibc}/lib/ld-linux-x86-64.so.2 ./valheim_server.x86_64 \
@@ -35,7 +39,7 @@
       Restart = "always";
       StateDirectory = "valheim";
       User = "valheim";
-      WorkingDirectory = "/var/lib/valheim";
+      WorkingDirectory = base_dir;
     };
     environment = {
       # linux64 directory is required by Valheim.
