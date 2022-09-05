@@ -13,8 +13,8 @@
       EnvironmentFile = "/etc/default/valheim";
       ExecStartPre = ''
         ${pkgs.steamcmd}/bin/steamcmd \
-          +login anonymous \
           +force_install_dir $STATE_DIRECTORY \
+          +login anonymous \
           +app_update 896660 \
           +quit
       '';
