@@ -45,11 +45,5 @@ in
       # linux64 directory is required by Valheim.
       LD_LIBRARY_PATH = "linux64:${pkgs.glibc}/lib";
     };
-
-    # Open the firewall
-    networking.firewall = lib.mkIf cfg.openFirewall {
-      allowedUDPPorts = [ 2456 2457 ];
-      allowedTCPPorts = [ 2456 2457 ];
-    };
   };
 }
