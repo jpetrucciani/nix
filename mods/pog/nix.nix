@@ -36,7 +36,7 @@ rec {
       golang=""
       [ "$with_golang" = "1" ] && golang="go = [go_1_19];"
       rust=""
-      [ "$with_rust" = "1" ] && rust="rust = [rustc${"\n"}rustfmt];"
+      [ "$with_rust" = "1" ] && rust="rust = [cargo${"\n"}rust-analyzer rustc rustfmt];"
       ruby=""
       [ "$with_ruby" = "1" ] && ruby="ruby = [(ruby_3_1.withPackages ( p: with p; []))${"\n"}sqlite];"
       terraform=""

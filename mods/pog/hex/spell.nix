@@ -17,6 +17,7 @@ let
     services = import ./k8s/services.nix params;
     tailscale = import ./k8s/tailscale.nix params;
     traefik = import ./k8s/traefik.nix params;
+    woodpecker = import ./k8s/woodpecker.nix params;
   };
   hex = (import ./hex.nix pkgs) // { inherit k8s; };
   params = { inherit hex pkgs; };
