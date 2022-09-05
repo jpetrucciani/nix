@@ -2,7 +2,10 @@
   users.users.valheim = {
     # Valheim puts save data in the home directory.
     home = "/var/lib/valheim";
+    group = "valheim";
+    isSystemUser = true;
   };
+  users.groups.valheim = { };
 
   systemd.services.valheim = {
     wantedBy = [ "multi-user.target" ];
