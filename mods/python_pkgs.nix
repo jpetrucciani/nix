@@ -336,6 +336,29 @@ let
       meta = with lib; { };
     };
 
+    # ruff = buildPythonPackage rec {
+    #   pname = "ruff";
+    #   version = "0.0.21";
+
+    #   format = "pyproject";
+
+    #   nativeBuildInputs = with pkgs.rustPlatform; [
+    #     cargoSetupHook
+    #     maturinBuildHook
+    #   ];
+
+    #   src = pkgs.fetchFromGitHub {
+    #     owner = "charliermarsh";
+    #     repo = pname;
+    #     rev = "556ae000788032cbf8db7ca4d7246c52fe98052a";
+    #     sha256 = "sha256-V4xZ2ZH3ywtQdmfJZsErbHVn5LyWBD37r/7LfejdsT8=";
+    #   };
+
+    #   doCheck = false;
+
+    #   meta = with lib; { };
+    # };
+
   };
 in
 pynixifyOverlay

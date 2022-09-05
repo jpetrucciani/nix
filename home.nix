@@ -35,6 +35,9 @@ let
     PAGER = "less";
     LESS = "-iR";
     BASH_SILENCE_DEPRECATION_WARNING = "1";
+
+    # thanks google
+    USE_GKE_GCLOUD_AUTH_PLUGIN = "True";
   };
 
   optList = conditional: list: if conditional then list else [ ];
@@ -202,6 +205,7 @@ with pkgs.hax; {
         # kubernetes
         kubectl
         kubectx
+        ## thanks google
         gke-gcloud-auth-plugin
 
         # load in my custom checked pog scripts
@@ -428,6 +432,10 @@ with pkgs.hax; {
     };
   };
 
+  programs.helix = {
+    enable = true;
+  };
+
   programs.mcfly = {
     enable = true;
     enableBashIntegration = true;
@@ -524,6 +532,7 @@ with pkgs.hax; {
             nix-ide = "jnoortheen.nix-ide";
             prettier = "esbenp.prettier-vscode";
             python = "ms-python.python";
+            rust = "statiolake.vscode-rustfmt";
             shell-format = "foxundermoon.shell-format";
             terraform = "hashicorp.terraform";
           };
@@ -567,12 +576,13 @@ with pkgs.hax; {
             },
             "[dockerfile]": { "${formatter}": "${extensions.prettier}" },
             "[elixir]": {"${formatter}": "${extensions.elixir-ls}"},
+            "[ignore]": { "${formatter}": "${extensions.shell-format}" },
             "[properties]": { "${formatter}": "${extensions.shell-format}" },
-            "[shellscript]": { "${formatter}": "${extensions.shell-format}" },
             "[python]": {"${formatter}": "${extensions.python}"},
+            "[rust]": { "${formatter}": "${extensions.rust}" },
+            "[shellscript]": { "${formatter}": "${extensions.shell-format}" },
             "[typescript]": {"${formatter}": "${extensions.prettier}"},
             "[typescriptreact]": {"${formatter}": "${extensions.prettier}"},
-            "[ignore]": { "${formatter}": "${extensions.shell-format}" },
             "terraform.languageServer.enable": true,
             "terraform.languageServer.pathToBinary": "${nix-bin}/terraform-ls",
             "terraform.languageServer.args": [ "serve" ],
