@@ -61,7 +61,7 @@ in
           ${pkgs.steam-run}/bin/steam-run ./valheim_server.x86_64 \
             -name "${cfg.serverName}" \
             -port ${toString cfg.port} \
-            -world "${cfg.world}" \
+            -world "${cfg.worldName}" \
             -password "$VALHEIM_PASSWORD" \
             -public 1
         '';
