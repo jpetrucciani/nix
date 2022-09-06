@@ -64,6 +64,9 @@ in
       role = "server";
       extraFlags = "--no-deploy traefik";
     };
+    valheim = {
+      enable = true;
+    };
   } // common.services;
   virtualisation.docker.enable = true;
 
