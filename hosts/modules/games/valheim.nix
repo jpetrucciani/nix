@@ -1,5 +1,6 @@
 { config, pkgs, lib, ... }:
 let
+  inherit (lib) types;
   cfg = config.services.valheim;
 in
 {
