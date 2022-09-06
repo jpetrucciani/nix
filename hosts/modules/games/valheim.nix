@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }:
 let
-  inherit (lib) types;
+  inherit (lib.types) mkOption mkIf path port str;
   cfg = config.services.valheim;
 in
 {
@@ -9,33 +9,33 @@ in
   options.services.valheim = {
     enable = mkEnableOption "valheim";
     secretFile = mkOption {
-      type = types.path;
+      type = path;
       default = "/etc/default/valheim";
       description = "";
     };
     homeDir = mkOption {
-      type = types.path;
+      type = path;
       default = "/var/lib/valheim";
       description = "where on disk to store your valheim directory";
     };
     port = mkOption {
-      type = types.port;
+      type = port;
       default = 2456;
       description = "the port to use";
     };
     serverName = mkOption {
-      type = types.str;
+      type = str;
       default = "memeworld";
       description = "the broadcasted name of the server";
     };
     worldName = mkOption {
-      type = types.str;
+      type = str;
       default = "Dedicated";
       description = "the name of the world to use";
     };
   };
 
-  config = types.mkIf cfg.enable {
+  config = mkIf cfg.enable {
     users.users.valheim = {
       # Valheim puts save data in the home directory.
       home = cfg.homeDir;
