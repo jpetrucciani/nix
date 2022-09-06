@@ -1,6 +1,7 @@
 { config, pkgs, lib, ... }:
 let
-  inherit (lib.types) mkEnableOption mkOption mkIf path port str;
+  inherit (lib) mkIf;
+  inherit (lib.types) mkEnableOption mkOption path port str;
   cfg = config.services.valheim;
 in
 {
