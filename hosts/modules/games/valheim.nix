@@ -34,7 +34,7 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
+  config = types.mkIf cfg.enable {
     users.users.valheim = {
       # Valheim puts save data in the home directory.
       home = cfg.homeDir;
