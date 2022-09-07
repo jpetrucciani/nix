@@ -85,6 +85,7 @@ with pkgs.hax; {
         htmlq
         gawk
         gcc
+        genpass
         gitAndTools.delta
         gnugrep
         gnupg
