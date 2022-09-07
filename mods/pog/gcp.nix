@@ -42,8 +42,33 @@ rec {
     '';
   };
 
+  gcp_perm = pog {
+    name = "gcp_perm";
+    description = "";
+    flags = [
+      {
+        name = "project";
+        description = "the project to load permissions for";
+        envVar = "GCP_PROJECT";
+        required = true;
+      }
+      {
+        name = "email";
+        description = "the email of the user or service account to search for iam bindings";
+        required = true;
+      }
+    ];
+    script = helpers: ''
+      ${_.gcloud} projects get-iam-policy "$project" \
+        --flatten="bindings[].members" \
+        --format='table(bindings.role)' \
+        --filter="bindings.members:''${email}"
+    '';
+  };
+
   gcp_pog_scripts = [
     glist
+    gcp_perm
     gke_config
   ];
 }
