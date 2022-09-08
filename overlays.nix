@@ -28,4 +28,5 @@
   (import ./mods/pog/k8s.nix)
   (import ./mods/pog/nix.nix)
   (import ./mods/pog/sound.nix)
+  (import ./mods/pog/ssh.nix)
 ]

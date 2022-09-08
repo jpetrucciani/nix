@@ -220,6 +220,7 @@ with pkgs.hax; {
         hax_pog_scripts
         k8s_pog_scripts
         nix_pog_scripts
+        ssh_pog_scripts
 
         # my pkgs
         cloudquery

@@ -15,6 +15,7 @@ with builtins; rec {
     sed = "${pkgs.gnused}/bin/sed";
     grep = "${pkgs.gnugrep}/bin/grep";
     shfmt = "${pkgs.shfmt}/bin/shfmt";
+    cut = "${pkgs.coreutils}/bin/cut";
     head = "${pkgs.coreutils}/bin/head";
     mktemp = "${pkgs.coreutils}/bin/mktemp";
     sort = "${pkgs.coreutils}/bin/sort";
@@ -51,6 +52,11 @@ with builtins; rec {
     # fzf partials
     fzfq = ''${fzf} -q "$1" --no-sort --header-first --reverse'';
     fzfqm = ''${fzfq} -m'';
+
+    # ssh partials
+    _ssh = {
+      hosts = ''${_.grep} '^Host' ~/.ssh/config ~/.ssh/config.d/* 2>/dev/null | ${_.grep} -v '[?*]' | ${_.cut} -d ' ' -f 2- | ${_.sort} -u'';
+    };
 
     # docker partials
     docker = {
@@ -252,6 +258,16 @@ with builtins; rec {
         version = {
           name = "version";
           short = "r";
+        };
+      };
+      ssh = {
+        host = {
+          name = "host";
+          short = "H";
+          description = "the ssh host to use";
+          completion = _._ssh.hosts;
+          prompt = ''${_._ssh.hosts} | ${_.fzfq} --header "HOST"'';
+          promptError = "you must specify a ssh host!";
         };
       };
     };
