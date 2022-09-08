@@ -10,15 +10,15 @@ rec {
         description = "use 'stdenv.mkDerivation' instead of 'buildEnv'";
         bool = true;
       }
-      _.flags.nix.with_python
       _.flags.nix.with_elixir
-      _.flags.nix.with_vlang
-      _.flags.nix.with_nim
       _.flags.nix.with_golang
-      _.flags.nix.with_rust
-      _.flags.nix.with_ruby
+      _.flags.nix.with_nim
       _.flags.nix.with_node
+      _.flags.nix.with_python
+      _.flags.nix.with_ruby
+      _.flags.nix.with_rust
       _.flags.nix.with_terraform
+      _.flags.nix.with_vlang
     ];
     script = ''
       directory="$(pwd | ${_.sed} 's#.*/##')"

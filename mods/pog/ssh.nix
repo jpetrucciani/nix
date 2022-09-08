@@ -27,13 +27,18 @@ rec {
         description = "fork and run this proxy in the background";
         bool = true;
       }
+      {
+        name = "quiet";
+        description = "run the proxy in quiet mode";
+        bool = true;
+      }
     ];
     script = helpers: ''
       ssh \
         -D "''${bind_host}:''${port}" \
-        -q \
         -C \
         -N \
+        ''${quiet:+-q} \
         ''${fork:+-f} \
         "''${user:+user@}''${host}"
     '';

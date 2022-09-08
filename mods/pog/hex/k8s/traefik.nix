@@ -1,6 +1,6 @@
 { hex, ... }:
 let
-  inherit (hex) toYAML;
+  inherit (hex) toYAML ifNotEmptyList;
 
   traefik = rec {
     url = version: "https://helm.traefik.io/traefik/traefik-${version}.tgz";
@@ -25,14 +25,15 @@ let
         ---
         ${toYAML (setup args)}
       '';
-      setup = { name, domain, port ? 80, namespace ? "default", service ? name, internal ? true, secretName ? "" }: {
+      setup = { name, domain, port ? 80, namespace ? "default", service ? name, internal ? true, secretName ? "", labels ? [ ] }: {
         apiVersion = "traefik.containo.us/v1alpha1";
         kind = "IngressRoute";
         metadata = {
+          inherit name;
           annotations = {
             "kubernetes.io/ingress.class" = if internal then "traefik-internal" else "traefik";
           };
-          inherit name;
+          ${ifNotEmptyList labels "labels"} = labels;
         };
         spec = {
           entryPoints = [

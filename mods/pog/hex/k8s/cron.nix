@@ -1,11 +1,11 @@
 { hex, ... }:
 let
-  inherit (hex) ifNotNull toYAML;
+  inherit (hex) ifNotNull ifNotEmptyList toYAML;
 
   cron = rec {
     build =
       { name
-      , image ? "curlimages/curl:7.84.0"
+      , image ? "curlimages/curl:7.85.0"
       , schedule ? "0 * * * *"  # hourly at :00
       , labels ? [ ]
       , namespace ? "default"
@@ -26,6 +26,7 @@ let
           kind = "CronJob";
           metadata = {
             inherit name namespace;
+            ${ifNotEmptyList labels "labels"} = labels;
           };
           spec = {
             inherit failedJobsHistoryLimit successfulJobsHistoryLimit schedule;
