@@ -99,12 +99,14 @@ let
       , ingressPolicy ? defaults.ingressPolicy
       , daemonSet ? false
       , china ? false
-      , saSuffix ? "-service-account"
-      , npSuffix ? "-policy"
-      , rbSuffix ? "-role-binding-view"
-      , hpaSuffix ? "-hpa"
-      , serviceSuffix ? "-service"
-      , ingressSuffix ? "-ingress"
+      , suffix ? ""
+      , depSuffix ? "${suffix}"
+      , saSuffix ? "-service-account${suffix}"
+      , npSuffix ? "-policy${suffix}"
+      , rbSuffix ? "-role-binding-view${suffix}"
+      , hpaSuffix ? "-hpa${suffix}"
+      , serviceSuffix ? "-service${suffix}"
+      , ingressSuffix ? "-ingress${suffix}"
       , pre1_18 ? false
       , host ? null
       , extraServiceAnnotations ? { }
@@ -121,7 +123,7 @@ let
           ingress = ingressPolicy;
         };
         dep = components.deployment {
-          inherit name namespace labels image replicas revisionHistoryLimit maxSurge maxUnavailable saSuffix daemonSet lifecycle imagePullSecrets;
+          inherit name namespace labels image replicas revisionHistoryLimit maxSurge maxUnavailable depSuffix saSuffix daemonSet lifecycle imagePullSecrets;
           inherit cpuRequest memoryRequest cpuLimit memoryLimit command args env volumes subdomain nodeSelector livenessProbe readinessProbe securityContext pre1_18;
         };
         hpa = components.hpa { inherit name namespace labels min max cpuUtilization hpaSuffix; };
@@ -337,6 +339,7 @@ let
         , memoryRequest ? "1Gi"
         , memoryLimit ? null
         , namespace ? "default"
+        , depSuffix ? ""
         , saSuffix ? "-sa"
         , command ? null
         , args ? null
@@ -351,11 +354,16 @@ let
         , daemonSet ? false
         , pre1_18 ? false
         , imagePullSecrets ? [ ]
-        }: {
+        }:
+        let
+          depName = "${name}${depSuffix}";
+        in
+        {
           apiVersion = "apps/v1";
           kind = if daemonSet then "DaemonSet" else "Deployment";
           metadata = {
-            inherit name namespace labels;
+            inherit namespace labels;
+            name = depName;
             annotations = { } // defaults.annotations;
           };
           spec = {
@@ -372,9 +380,10 @@ let
             };
             template = {
               metadata = {
-                inherit name namespace labels;
+                inherit namespace labels;
+                name = depName;
                 annotations = {
-                  "container.apparmor.security.beta.kubernetes.io/${name}" = "unconfined";
+                  "container.apparmor.security.beta.kubernetes.io/${depName}" = "unconfined";
                 } // defaults.annotations;
               };
               spec = {
