@@ -380,10 +380,9 @@ let
             };
             template = {
               metadata = {
-                inherit namespace labels;
-                name = depName;
+                inherit name namespace labels;
                 annotations = {
-                  "container.apparmor.security.beta.kubernetes.io/${depName}" = "unconfined";
+                  "container.apparmor.security.beta.kubernetes.io/${name}" = "unconfined";
                 } // defaults.annotations;
               };
               spec = {
