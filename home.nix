@@ -50,6 +50,7 @@ with pkgs.hax; {
   programs.home-manager.enable = true;
   programs.home-manager.path = "${home-manager}";
 
+  programs.btop.enable = true;
   programs.htop.enable = true;
   programs.dircolors.enable = true;
 
@@ -304,6 +305,18 @@ with pkgs.hax; {
 
   programs.less.enable = true;
   programs.lesspipe.enable = true;
+
+  programs.yt-dlp = {
+    enable = true;
+    extraConfig = ''
+      --embed-thumbnail
+      --embed-metadata
+      --embed-subs
+      --sub-langs all
+      --downloader aria2c
+      --downloader-args aria2c:'-c -x8 -s8 -k1M'
+    '';
+  };
 
   programs.bash = {
     enable = true;
