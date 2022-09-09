@@ -18,52 +18,10 @@ rec {
     sha256 = "sha256-vrQH6wiyxpfRFaGMANagI/eg+yy5m/+cNMnf2dLFLys=";
   };
 
-  haproxy-2-6-2 = haproxy-pin {
-    version = "2.6.2";
-    sha256 = "sha256-+bfcBuAusTtdlNxm4IZKcUruKvnfqxD6NT/58fUsggI=";
+  haproxy-2-6-5 = haproxy-pin {
+    version = "2.6.5";
+    sha256 = "sha256-zp4Z6/zdQ+Ua+KYJDx341RLZct33QvpkimQ7uxkFZgU=";
   };
-
-  pocketbase = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
-        pname = "pocketbase";
-        version = "0.5.1";
-
-        src = fetchFromGitHub {
-          owner = "pocketbase";
-          repo = pname;
-          rev = "v${version}";
-          sha256 = "sha256-Wcj2pAKuRT3gWzczoNd0mJktM2dUL3z+2JUsM5SYRVM=";
-        };
-
-        doCheck = false;
-
-        CGO_ENABLED = 0;
-        ldflags = [
-          "-s"
-          "-w"
-          "-X github.com/pocketbase/pocketbase.Version=${version}"
-        ];
-
-        postBuild = ''
-          go build ./examples/base/main.go
-        '';
-
-        postInstall = ''
-          mkdir -p $out/bin
-          mv ./main $out/bin/pocketbase
-        '';
-
-        vendorSha256 = "sha256-OGbfcKvPTSM9DGJ+u2fXBmHq0Sv/n8oMbHNoPZy854Q=";
-
-        meta = with lib; {
-          description = "open source realtime backend in 1 file";
-          license = licenses.mit;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      }
-    )
-    { };
 
   zinc = prev.callPackage
     ({ stdenvNoCC, callPackage, fetchurl, autoPatchelfHook, unzip, openssl, lib }:
@@ -72,31 +30,31 @@ rec {
           aarch64-darwin = {
             arch = "arm64";
             short = "Darwin";
-            sha256 = "1s95j6j44vgxa3qlf1vhlxhx5a5rn8pwj2qvcan6g4i7xyqm8hnz";
+            sha256 = "1gq28a043v5aaimbdl4siizxnmsp34672lza0yvas2lrdklxh8cz";
           };
 
           aarch64-linux = {
             arch = "arm64";
             short = "Linux";
-            sha256 = "1aq1za1y3sk57m6xv4rm8fhdhy2fxlwg9bd79rsc7d1nmd4mdqhs";
+            sha256 = "07kiw1k95xqb1aid8j7hvv96955hp185gdidmh0rllk3jgg5i1kn";
           };
 
           x86_64-darwin = {
             arch = "x86_64";
             short = "Darwin";
-            sha256 = "06w673irqd73lxr2xzdlzgi3453iqpnq6phfx1v0fhgwbs6qfkap";
+            sha256 = "1wzfw2vd37v6frpfhh61zzvw7vd1bq4kjd01c0zwi1pzlrg414zr";
           };
 
           x86_64-linux = {
             arch = "x86_64";
             short = "Linux";
-            sha256 = "0w3az5ydwgfj2f9v1ikwbhwin7b4jry26l67fb0i3j32c3273w5g";
+            sha256 = "14n368hjmdfjpc28mkwjz1d3hrm3l6z5kzb9vma35nblj35iw5kc";
           };
         };
         dist = dists.${stdenvNoCC.hostPlatform.system} or (throw "Unsupported system: ${stdenvNoCC.hostPlatform.system}");
         pname = "zinc";
         owner = "zinclabs";
-        version = "0.3.0";
+        version = "0.3.1";
       in
       stdenvNoCC.mkDerivation rec {
         inherit pname version;

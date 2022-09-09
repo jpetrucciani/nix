@@ -276,7 +276,6 @@ with pkgs.hax; {
             katafygio
             kube-linter
             pluto
-            polaris
             rbac-tool
           ]
         )

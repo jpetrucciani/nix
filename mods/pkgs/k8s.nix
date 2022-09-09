@@ -61,32 +61,6 @@ rec {
     )
     { };
 
-  polaris = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
-        pname = "polaris";
-        version = "6.0.0";
-
-        src = fetchFromGitHub {
-          owner = "FairwindsOps";
-          repo = pname;
-          rev = version;
-          sha256 = "sha256-Q0jDySEmzCrjCmc4H9ap/AmopNtdAq4zOAh/6LZ/dFo=";
-        };
-
-        vendorSha256 = "sha256-SC86x2vE1TNZBxDNxyxjOPILdQbGAfSz5lmaC9qCkoE=";
-        doCheck = false;
-
-        meta = with lib; {
-          inherit (src.meta) homepage;
-          description = "Validation of best practices in your Kubernetes clusters";
-          license = licenses.asl20;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      }
-    )
-    { };
-
   cyclonus = prev.callPackage
     ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
       buildGo119Module rec {
@@ -135,35 +109,6 @@ rec {
         };
       }
     )
-    { };
-
-  kubediff = prev.callPackage
-    ({ lib, stdenv, fetchFromGitHub, rustPlatform }:
-      let
-        pname = "kubediff";
-        version = "0.1.0";
-        osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Security ] else [ ];
-      in
-      rustPlatform.buildRustPackage rec {
-        inherit pname version;
-
-        src = fetchFromGitHub {
-          owner = "Ramilito";
-          repo = "kubediff";
-          rev = version;
-          sha256 = "sha256-Tjm9UrxvaQk/q6UgWz5OFnwm9XJaTEDe390G5kwN6WM=";
-        };
-
-        buildInputs = osSpecific;
-
-        cargoSha256 = "sha256-91RoYfOdAegrsVPbCmWwwzLouNhn7oSklDhYh4ojgmY=";
-
-        meta = with lib; {
-          description = "a way to diff k8s specs without managed fields";
-          license = licenses.mit;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      })
     { };
 
   kubectl = prev.kubectl.override {
