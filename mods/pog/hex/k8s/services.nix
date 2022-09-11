@@ -406,7 +406,6 @@ let
           };
           spec = {
             inherit revisionHistoryLimit;
-            ${ifNotEmptyAttr affinity "affinity"} = affinity;
             selector = {
               matchLabels = labels;
             };
@@ -426,6 +425,7 @@ let
                 } // defaults.annotations;
               };
               spec = {
+                ${ifNotEmptyAttr affinity "affinity"} = affinity;
                 ${ifNotEmptyList imagePullSecrets "imagePullSecrets"} = imagePullSecrets;
                 ${ifNotNull subdomain "subdomain"} = subdomain;
                 ${ifNotNull nodeSelector "nodeSelector"} = nodeSelector;
