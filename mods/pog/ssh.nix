@@ -1,7 +1,5 @@
 final: prev:
 with prev;
-let
-in
 rec {
   pogproxy = pog {
     name = "pogproxy";

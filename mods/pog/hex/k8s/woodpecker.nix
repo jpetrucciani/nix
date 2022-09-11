@@ -3,13 +3,13 @@ let
   inherit (hex) toYAML;
 
   server = rec {
-    build = {}: ''
+    build = args: ''
       ---
-      ${deployment {}}
+      ${deployment args}
       ---
-      ${service {}}
+      ${service args}
       ---
-      ${pvc {}}
+      ${pvc args}
     '';
     deployment =
       { name ? "woodpecker"
@@ -26,6 +26,7 @@ let
       , github_client ? ""
       , github_secret ? ""
       , agent_secret ? "this_is_a_secret"
+      , ...
       }: {
         apiVersion = "apps/v1";
         kind = "Deployment";
@@ -104,6 +105,7 @@ let
       , all_labels ? labels // default_labels
       , port ? 8000
       , grpc_port ? 9000
+      , ...
       }: {
         apiVersion = "v1";
         kind = "Service";
@@ -113,8 +115,8 @@ let
         spec = {
           ports = [
             {
+              inherit port;
               name = "http";
-              port = port;
               protocol = "TCP";
               targetPort = port;
             }
@@ -129,7 +131,7 @@ let
           type = "ClusterIP";
         };
       };
-    pvc = { name, namespace ? "default", storage ? "10Gi" }: {
+    pvc = { name, namespace ? "default", storage ? "10Gi", ... }: {
       apiVersion = "v1";
       kind = "PersistentVolumeClaim";
       metadata = {
@@ -149,9 +151,9 @@ let
     };
   };
   agent = rec {
-    build = {}: ''
+    build = args: ''
       ---
-      ${deployment {}}
+      ${deployment args}
     '';
     deployment =
       { name ? "woodpecker-agent"

@@ -1,6 +1,7 @@
 { hex, pkgs }:
 let
-  inherit (hex) attrIf ifNotNull ifNotEmptyList toYAML;
+  inherit (hex) attrIf ifNotNull ifNotEmptyList ifNotEmptyAttr toYAML;
+  inherit (pkgs.lib.attrsets) mapAttrsToList;
 
   defaults = {
     annotations = {
@@ -54,6 +55,27 @@ let
         };
 
     };
+    nodeAffinity = { labels, hard ? false, topologyKey ? "kubernetes.io/hostname" }:
+      let
+        labelMatcher = label: { };
+        _type = if hard then "required" else "preferred";
+        affinityType = "${_type}DuringSchedulingIgnoredDuringExecution";
+      in
+      {
+        podAntiAffinity = {
+          ${affinityType} = [
+            {
+              podAffinityTerm = {
+                inherit topologyKey;
+                labelSelector = {
+                  matchExpressions = mapAttrsToList (k: v: { key = k; operator = "In"; values = [ v ]; }) labels;
+                };
+              };
+              weight = 100;
+            }
+          ];
+        };
+      };
   };
 
   services = rec {
@@ -113,26 +135,38 @@ let
       , extraIngressAnnotations ? { }
       , imagePullSecrets ? [ ]
       , ingressTLSSecret ? ""
+      , softAntiAffinity ? false
+      , hardAntiAffinity ? false
+      , extraDep ? { }
+      , extraSA ? { }
+      , extraNP ? { }
+      , extraRB ? { }
+      , extraHPA ? { }
+      , extraSvc ? { }
+      , extraIng ? { }
       }:
       let
-        sa = components.service-account { inherit name namespace china saSuffix imagePullSecrets; };
-        rb = components.role-binding { inherit name namespace rbSuffix saSuffix; };
-        np = components.network-policy {
+        affinity = if softAntiAffinity then defaults.affinity { inherit labels; } else if hardAntiAffinity then defaults.affinity { inherit labels; hard = true; } else { };
+        sa = (components.service-account {
+          inherit name namespace china saSuffix imagePullSecrets;
+        }) // extraSA;
+        rb = (components.role-binding { inherit name namespace rbSuffix saSuffix; }) // extraRB;
+        np = (components.network-policy {
           inherit name namespace labels npSuffix;
           egress = egressPolicy;
           ingress = ingressPolicy;
-        };
-        dep = components.deployment {
-          inherit name namespace labels image replicas revisionHistoryLimit maxSurge maxUnavailable depSuffix saSuffix daemonSet lifecycle imagePullSecrets;
+        }) // extraNP;
+        dep = (components.deployment {
+          inherit name namespace labels image replicas revisionHistoryLimit maxSurge maxUnavailable depSuffix saSuffix daemonSet lifecycle imagePullSecrets affinity;
           inherit cpuRequest memoryRequest cpuLimit memoryLimit command args env volumes subdomain nodeSelector livenessProbe readinessProbe securityContext pre1_18;
-        };
-        hpa = components.hpa { inherit name namespace labels min max cpuUtilization hpaSuffix; };
+        }) // extraDep;
+        hpa = (components.hpa { inherit name namespace labels min max cpuUtilization hpaSuffix; }) // extraHPA;
         svc =
-          if nodePort then components.nodeport-service { inherit name namespace labels port serviceSuffix extraServiceAnnotations; } else
+          (if nodePort then components.nodeport-service { inherit name namespace labels port serviceSuffix extraServiceAnnotations; } else
           if loadBalancer then
             components.lb-service { inherit name namespace labels port altPort ip serviceSuffix extraServiceAnnotations; } else
-            components.service { inherit name namespace labels port altPort serviceSuffix extraServiceAnnotations; };
-        ing = components.ingress { inherit name namespace port ingressSuffix serviceSuffix pre1_18 host extraIngressAnnotations; tls = ingressTLSSecret; };
+            components.service { inherit name namespace labels port altPort serviceSuffix extraServiceAnnotations; }) // extraSvc;
+        ing = (components.ingress { inherit name namespace port ingressSuffix serviceSuffix pre1_18 host extraIngressAnnotations; tls = ingressTLSSecret; }) // extraIng;
       in
       ''
         ${if serviceAccount then "---\n${toYAML sa}" else ""}
@@ -354,6 +388,7 @@ let
         , daemonSet ? false
         , pre1_18 ? false
         , imagePullSecrets ? [ ]
+        , affinity ? { }
         }:
         let
           depName = "${name}${depSuffix}";
@@ -368,6 +403,7 @@ let
           };
           spec = {
             inherit revisionHistoryLimit;
+            ${ifNotEmptyAttr affinity "affinity"} = affinity;
             selector = {
               matchLabels = labels;
             };
