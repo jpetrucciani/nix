@@ -146,7 +146,10 @@ let
       , extraIng ? { }
       }:
       let
-        affinity = if softAntiAffinity then defaults.affinity { inherit labels; } else if hardAntiAffinity then defaults.affinity { inherit labels; hard = true; } else { };
+        affinity =
+          if softAntiAffinity then defaults.nodeAffinity { inherit labels; }
+          else if hardAntiAffinity then defaults.nodeAffinity { inherit labels; hard = true; }
+          else { };
         sa = (components.service-account {
           inherit name namespace china saSuffix imagePullSecrets;
         }) // extraSA;
