@@ -524,6 +524,12 @@ with pkgs.hax; {
         allow-loopback-pinentry
       '';
     };
+    ${attrIf isDarwin "gpgagentconf"} = {
+      target = ".gnupg/gpg-agent.conf";
+      text = ''
+        pinentry-program ${pkgs.pinentry_mac}/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac
+      '';
+    };
     ${attrIf isNixOS "vscodeserver"} = {
       target = ".vscode-server/data/Machine/settings.json";
       text =
