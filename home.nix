@@ -261,7 +261,6 @@ with pkgs.hax; {
         (
           optList isDarwin [
             lima
-            pinentry-curses
           ]
         )
 
@@ -523,12 +522,6 @@ with pkgs.hax; {
       target = ".gnupg/gpg-agent.conf";
       text = ''
         allow-loopback-pinentry
-      '';
-    };
-    ${attrIf isDarwin "gpgagentconf"} = {
-      target = ".gnupg/gpg-agent.conf";
-      text = ''
-        pinentry-program ${homeDirectory}/.nix-profile/bin/pinentry-curses
       '';
     };
     ${attrIf isNixOS "vscodeserver"} = {
