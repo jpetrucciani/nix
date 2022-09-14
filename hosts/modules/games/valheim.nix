@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }:
 let
-  inherit (lib) mkIf mkEnableOption mkOption;
+  inherit (lib) mdDoc mkIf mkEnableOption mkOption;
   inherit (lib.types) path port str;
   cfg = config.services.valheim;
 in
@@ -9,12 +9,17 @@ in
 
   options.services.valheim = {
     enable = mkEnableOption "valheim";
-    secretFile = mkOption {
-      type = path;
-      default = "/etc/default/valheim";
-      description = "";
+    user = mkOption {
+      type = str;
+      default = "valheim";
+      description = mdDoc "User account under which valheim runs";
     };
-    homeDir = mkOption {
+    group = mkOption {
+      type = str;
+      default = "valheim";
+      description = mdDoc "Group under which valheim runs";
+    };
+    dataDir = mkOption {
       type = path;
       default = "/var/lib/valheim";
       description = "where on disk to store your valheim directory";
@@ -34,17 +39,22 @@ in
       default = "Dedicated";
       description = "the name of the world to use";
     };
+    secretFile = mkOption {
+      type = path;
+      default = "/etc/default/valheim";
+      description = "";
+    };
   };
 
   config = mkIf cfg.enable {
-    users.users.valheim = {
+    users.users.${cfg.user} = {
       # Valheim puts save data in the home directory.
-      home = cfg.homeDir;
-      group = "valheim";
+      home = cfg.dataDir;
+      group = cfg.group;
       createHome = true;
       isSystemUser = true;
     };
-    users.groups.valheim = { };
+    users.groups.${cfg.group} = { };
 
     systemd.services.valheim = {
       wantedBy = [ "multi-user.target" ];
@@ -52,7 +62,7 @@ in
         EnvironmentFile = cfg.secretFile;
         ExecStartPre = ''
           ${pkgs.steamcmd}/bin/steamcmd \
-            +force_install_dir ${cfg.homeDir} \
+            +force_install_dir ${cfg.dataDir} \
             +login anonymous \
             +app_update 896660 \
             +quit
@@ -68,8 +78,8 @@ in
         Nice = "-5";
         Restart = "always";
         StateDirectory = "valheim";
-        User = "valheim";
-        WorkingDirectory = cfg.homeDir;
+        User = cfg.user;
+        WorkingDirectory = cfg.dataDir;
       };
       environment = {
         # linux64 directory is required by Valheim.
