@@ -433,7 +433,7 @@ let
                   {
                     inherit image name;
                     ${ifNotEmptyList env "env"} = env;
-                    ${ifNotNull command "command"} = [ command ];
+                    ${ifNotNull command "command"} = if builtins.isString command then [ command ] else command;
                     ${ifNotNull args "args"} = args;
                     ${ifNotNull livenessProbe "livenessProbe"} = livenessProbe;
                     ${ifNotNull readinessProbe "readinessProbe"} = readinessProbe;
