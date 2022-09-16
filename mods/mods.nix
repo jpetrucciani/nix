@@ -3,12 +3,21 @@ with prev;
 with builtins; rec {
   inherit (prev.hax) isM1 isLinux isDarwin isOldMac isNixOS isAndroid isUbuntu isNixDarwin;
 
-  nd = with builtins; fromJSON (readFile ../sources/darwin.json);
+  nd = fromJSON (readFile ../sources/darwin.json);
   nix-darwin = fetchFromGitHub {
     inherit (nd) rev sha256;
     owner = "LnL7";
     repo = "nix-darwin";
   };
+
+  nix2container-pin = fromJSON (readFile ../sources/nix2container.json);
+  nix2container = import
+    (fetchFromGitHub {
+      inherit (nix2container-pin) rev sha256;
+      owner = "nlewo";
+      repo = "nix2container";
+    })
+    { pkgs = prev; };
 
   ### GENERAL STUFF
   _nixos-switch = { host }: writeBashBinChecked "switch" ''

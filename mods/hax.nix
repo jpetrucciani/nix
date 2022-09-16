@@ -25,7 +25,7 @@ final: prev:
     ifIsDarwin = attrIf isDarwin;
     ifIsM1 = attrIf isM1;
 
-    kwb = with builtins; fromJSON (readFile ../sources/kwb.json);
+    kwb = fromJSON (readFile ../sources/kwb.json);
     chief_keef = import (
       prev.pkgs.fetchFromGitHub {
         inherit (kwb) rev sha256;

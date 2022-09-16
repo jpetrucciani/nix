@@ -17,6 +17,7 @@ final: prev: {
       '';
     }
   );
+  nix_hash_nix2container = final._nix_hash "nlewo/nix2container" "master" "nix2container";
   nix_hash_nixos_unstable = final._nix_hash "NixOS/nixpkgs" "nixos-unstable" "nixos_unstable";
   nix_hash_unstable = final._nix_hash "NixOS/nixpkgs" "nixpkgs-unstable" "unstable";
   nix_hash_jpetrucciani = final._nix_hash "jpetrucciani/nix" "main" "jpetrucciani";
