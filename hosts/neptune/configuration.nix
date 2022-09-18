@@ -115,6 +115,17 @@ in
           "home.cobi.dev" = reverse_proxy "home:${toString common.ports.home-assistant}";
           "netdata.cobi.dev" = reverse_proxy "localhost:${toString common.ports.netdata}";
           "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
+          "vault.cobi.dev" = {
+            extraConfig = ''
+              import GEOBLOCK
+              reverse_proxy /* {
+                to phobos:8222
+              }
+              reverse_proxy /notifications/hub {
+                to phobos:3012
+              }
+            '';
+          };
           "cobi.dev" = {
             extraConfig = ''
               route /static/* {
@@ -138,13 +149,6 @@ in
               }
               route /os-up {
                 redir https://github.com/samuela/nixos-up/archive/main.tar.gz
-              }
-            '';
-          };
-          "home.petro.casa" = {
-            extraConfig = ''
-              reverse_proxy /* {
-                to petro.casa:${toString common.ports.home-assistant}
               }
             '';
           };
