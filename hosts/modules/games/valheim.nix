@@ -48,9 +48,8 @@ in
 
   config = mkIf cfg.enable {
     users.users.${cfg.user} = {
-      # Valheim puts save data in the home directory.
+      inherit (cfg) group;
       home = cfg.dataDir;
-      group = cfg.group;
       createHome = true;
       isSystemUser = true;
     };

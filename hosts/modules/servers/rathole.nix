@@ -131,8 +131,8 @@ in
 
   config = mkIf cfg.enable {
     users.users.${cfg.user} = {
+      inherit (cfg) group;
       home = cfg.dataDir;
-      group = cfg.group;
       createHome = true;
       isSystemUser = true;
     };

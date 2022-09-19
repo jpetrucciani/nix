@@ -50,10 +50,25 @@ rec {
     yq = "${pkgs.yq-go}/bin/yq";
     prettier = "${pkgs.nodePackages.prettier}/bin/prettier --write --config ${_files.prettier_config}";
 
-    _yaml_sort_py = pkgs.python310.withPackages (p: with p; [ pyaml ]);
-    yaml_sort = "${_yaml_sort_py} ${_files.yaml_sort}";
+    _yaml_py = pkgs.python310.withPackages (p: with p; [ pyaml ]);
+    yaml_sort = "${_yaml_py} ${_files.yaml_sort}";
+    yaml_crds = "${_yaml_py} ${_files.yaml_crds}";
 
     _files = {
+      yaml_crds = pkgs.writeTextFile {
+        name = "yamlcrds.py";
+        text = ''
+          import sys
+          import yaml
+
+          if __name__ == "__main__":
+              data = sys.stdin.read()
+              yaml_docs = [yaml.safe_load(x) for x in data.split("---") if x]
+              docs = [x for x in yaml_docs if x and x["kind"] == "CustomResourceDefinition"]
+              rendered = "\n---\n".join([yaml.dump(x) for x in docs])
+              print(f"---\n{rendered}")
+        '';
+      };
       yaml_sort = pkgs.writeTextFile {
         name = "yamlsort.py";
         text = ''
@@ -75,7 +90,7 @@ rec {
               yaml_docs = [yaml.safe_load(x) for x in data.split("---") if x]
               docs = [x for x in yaml_docs if x]
               sorted_docs = docs.sort(key=order)
-              rendered = "\n---\n".join([yaml.dump(x) for x in docs])
+              rendered = "\n---\n".join([yaml.dump(x) for x in sorted_docs])
               print(f"---\n{rendered}")
         '';
       };

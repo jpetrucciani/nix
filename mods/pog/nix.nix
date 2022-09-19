@@ -143,16 +143,35 @@ rec {
     pog {
       name = "hexrender";
       description = "a quick and easy way to use nix to render various other config files!";
-      flags = [ ];
+      flags = [
+        # {
+        #   name = "sort";
+        #   description = "apply sort to the resulting yaml";
+        # }
+        # {
+        #   name = "crds";
+        #   description = "filter the results to only the crds";
+        # }
+      ];
       arguments = [
         { name = "nix_file"; }
       ];
-      script = helpers: ''
+      script = helpers: with helpers; ''
         spell="$1"
         spell_render="$(${_.mktemp})"
         fullpath="$(${_.realpath} "$spell")"
         debug "casting $fullpath - hex files at ${./hex}"
         ${_.nix} eval --raw --impure --expr "import ${./hex}/spell.nix \"$fullpath\"" >"$spell_render"
+        # if ${flag "crds"}; then
+        #   debug "filtering to crds only"
+        #   tmp_filter="$(${_.mktemp})"
+        #   cat "$rendered"
+        # fi
+        # if ${flag "sort"}; then
+        #   debug "sorting yaml"
+        #   tmp_sort="$(${_.mktemp})"
+        #   cat "$rendered"
+        # fi
         debug "formatting $fullpath"
         ${_.prettier} --parser yaml "$spell_render" &>/dev/null
         cat "$spell_render"
@@ -211,37 +230,37 @@ rec {
           prettier = "${pkgs.nodePackages.prettier}/bin/prettier --write --config ${../../.prettierrc.js}";
         };
       in
-      helpers: ''
+      helpers: with helpers; ''
         export USE_GKE_GCLOUD_AUTH_PLUGIN=True
-        ${helpers.file.notExists "target"} && die "the file to render ('$target') does not exist!"
+        ${file.notExists "target"} && die "the file to render ('$target') does not exist!"
         rendered=$(${_.mktemp})
         diffed=$(${_.mktemp})
         debug "''${GREEN}render to '$rendered'"
-        ${helpers.timer.start steps.render}
+        ${timer.start steps.render}
         ${_.hr} "$target" >"$rendered"
         render_exit_code=$?
-        render_runtime=${helpers.timer.stop steps.render}
+        render_runtime=${timer.stop steps.render}
         debug "''${GREEN}rendered to '$rendered' in $render_runtime''${RESET}"
         if [ $render_exit_code -ne 0 ]; then
           die "nixrender failed!" 2
         fi
-        ${helpers.var.notEmpty "check"} && ${_.pluto} detect "$rendered"
-        ${helpers.var.notEmpty "prettify"} && ${_.prettier} --parser yaml "$rendered" >/dev/null
-        if ${helpers.var.notEmpty "render"}; then
+        ${flag "check"} && ${_.pluto} detect "$rendered"
+        ${flag "prettify"} && ${_.prettier} --parser yaml "$rendered" >/dev/null
+        if ${flag "render"}; then
           cat "$rendered"
           exit 0
         fi
-        if ${helpers.var.notEmpty "force"}; then
-          ${helpers.timer.start steps.apply}
+        if ${flag "force"}; then
+          ${timer.start steps.apply}
           ${pkgs.kubectl}/bin/kubectl apply -f "$rendered"
-          apply_runtime=${helpers.timer.stop steps.apply}
+          apply_runtime=${timer.stop steps.apply}
           debug "''${GREEN}force applied '$rendered' in $apply_runtime''${RESET}"
           exit 0
         fi
-        ${helpers.timer.start steps.diff}
+        ${timer.start steps.diff}
         ${_.k} diff -f "$rendered" >"$diffed"
         diff_exit_code=$?
-        diff_runtime=${helpers.timer.stop steps.diff}
+        diff_runtime=${timer.stop steps.diff}
         debug "''${GREEN}diffed '$rendered' to '$diffed' in $diff_runtime [exit code $diff_exit_code]''${RESET}"
         if [ $diff_exit_code -ne 0 ] && [ $diff_exit_code -ne 1 ]; then
           die "diff of hex failed!" 3
@@ -253,13 +272,13 @@ rec {
           exit 0
         fi
         ${_.delta} <"$diffed"
-        ${helpers.var.notEmpty "dryrun"} && exit 0
+        ${flag "dryrun"} && exit 0
         echo "---"
-        ${helpers.yesno {prompt="Would you like to apply these changes?";}}
+        ${yesno {prompt="Would you like to apply these changes?";}}
         echo "---"
-        ${helpers.timer.start steps.apply}
+        ${timer.start steps.apply}
         ${_.k} apply -f "$rendered"
-        apply_runtime=${helpers.timer.stop steps.apply}
+        apply_runtime=${timer.stop steps.apply}
         debug "''${GREEN}applied '$rendered' in $apply_runtime''${RESET}"
       '';
   };

@@ -28,8 +28,8 @@ rec {
       name=""
       scale=""
       ${var.empty "file"} && die "you must specify a source file!" 1
-      ${var.notEmpty "horizontal"} && ${var.notEmpty "vertical"} && die "you can only scale in 1 dimension!" 1
-      if ${var.notEmpty "horizontal"}; then
+      ${notFlag "horizontal"} && ${notFlag "vertical"} && die "you can only scale in 1 dimension!" 1
+      if ${notFlag "horizontal"}; then
         name="''${horizontal}x"
         scale="$horizontal:-1"
       else
@@ -71,7 +71,7 @@ rec {
       ${var.empty "file"} && die "you must specify a source file!" 1
       ${var.empty "horizontal"} && ${var.empty "vertical"} && die "you must specify at least one way to flip!" 1
       ${var.empty "output"} && output="''${file%.*}.flip.''${file##*.}"
-      ${var.notEmpty "horizontal"} && ${var.notEmpty "vertical"} && sep=","
+      ${notFlag "horizontal"} && ${notFlag "vertical"} && sep=","
       ${_.ffmpeg} -i "$file" -filter:v "''${vertical:+vflip}''${sep}''${horizontal:+hflip}" -c:a copy "$output"
     '';
   };
@@ -109,7 +109,7 @@ rec {
       ${var.empty "output"} && output="''${file%.*}.cut.''${file##*.}"
         
       start_sec="$(echo "$start" | ${fn.ts_to_seconds})"
-      if ${var.notEmpty "duration"}; then
+      if ${notFlag "duration"}; then
         end_sec="$(echo "$start_sec" "$duration" | ${fn.add})"
       else
         end_sec="$(echo "$end" | ${fn.ts_to_seconds})"

@@ -537,7 +537,7 @@ with builtins; rec {
     , shortDefaultFlags ? true
     }:
     let
-      helpers = {
+      helpers = rec {
         fn = {
           add = "${_.awk} '{print $1 + $2}'";
           sub = "${_.awk} '{print $1 - $2}'";
@@ -567,6 +567,10 @@ with builtins; rec {
           start = name: ''_pog_start_${name}="$(${_.date} +%s.%N)"'';
           stop = name: ''"$(echo "$(${_.date} +%s.%N) - $_pog_start_${name}" | ${pkgs.bc}/bin/bc -l)"'';
         };
+
+        # shorthands
+        flag = var.notEmpty;
+        notFlag = var.empty;
       };
       shortHelp = if shortDefaultFlags then "-h|" else "";
       shortVerbose = if shortDefaultFlags then "-v|" else "";
