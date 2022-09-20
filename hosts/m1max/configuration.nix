@@ -8,7 +8,7 @@ in
 {
   imports = [
     "${common.home-manager.path}/nix-darwin"
-    ../modules/pam.nix
+    "${common.nix-darwin}/modules/security/pam.nix"
   ];
 
   home-manager.users.jacobi = common.jacobi;

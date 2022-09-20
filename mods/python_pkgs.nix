@@ -16,6 +16,7 @@ let
 
     twisted = if isM1 then prev.twisted.overrideAttrs (_: { doInstallCheck = false; }) else prev.twisted;
     pyopenssl = if isM1 then prev.pyopenssl.overrideAttrs (_: { meta.broken = false; }) else prev.pyopenssl;
+    pycurl = if isM1 then prev.pycurl.overrideAttrs (_: { doInstallCheck = false; }) else prev.pycurl;
 
     # my packages
     archives = buildPythonPackage rec {

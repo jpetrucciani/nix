@@ -10,6 +10,6 @@ additional modules for use in the various host configurations for nixos and nix-
 
 This directory contains games and game servers as nix modules!
 
-### [pam.nix](./pam.nix)
+### [servers/](./servers/)
 
-This module allows nix-darwin to control touch id sudo support
+This directory contains misc servers implemented as nix modules!
