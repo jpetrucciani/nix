@@ -231,6 +231,7 @@ with pkgs.hax; {
         hunt
         mdctl
         overflow
+        poglets
         prospector-177
         q
         rare

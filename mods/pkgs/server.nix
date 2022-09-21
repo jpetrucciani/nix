@@ -85,4 +85,37 @@ rec {
     )
     { };
 
+  poglets = prev.callPackage
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
+        pname = "poglets";
+        version = "0.0.1";
+        commit = "63a115529795a9b56173d91b7ef202a3aa17450d";
+
+        src = fetchFromGitHub {
+          owner = "jpetrucciani";
+          repo = pname;
+          rev = version;
+          sha256 = "sha256-D+EM7M/oxczZLlLL7acQB+8aQ1JSMYZDbEDgH3VD+ZA=";
+        };
+
+        vendorSha256 = "sha256-Pra/yuEnkrsJNgEYpIX7fsf1vhQKFXTSb9bHVu8/3UM=";
+
+        ldflags = [
+          "-s"
+          "-w"
+          "-X main.Version=${version}"
+          "-X main.GitCommit=${commit}"
+        ];
+
+        meta = with lib; {
+          inherit (src.meta) homepage;
+          description = "";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
 }

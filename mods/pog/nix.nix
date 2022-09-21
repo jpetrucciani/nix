@@ -34,7 +34,7 @@ rec {
       node=""
       [ "$with_node" = "1" ] && node="node = [nodejs-18_x${"\n"}nodePackages.prettier];" && mkderivation=1;
       golang=""
-      [ "$with_golang" = "1" ] && golang="go = [go_1_19];"
+      [ "$with_golang" = "1" ] && golang="go = [go_1_19${"\n"}go-tools];"
       rust=""
       [ "$with_rust" = "1" ] && rust="rust = [cargo${"\n"}rust-analyzer rustc rustfmt];"
       ruby=""
