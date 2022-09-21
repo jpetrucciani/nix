@@ -37,8 +37,7 @@ in
       extra-substituters = https://jacobi.cachix.org
       extra-trusted-public-keys = jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=
     '';
-    ${attrIf isDarwin "trustedUsers"} = [ "root" ];
-    ${attrIf isNixOS "settings"} = {
+    settings = {
       trusted-users = [ "root" ];
     };
   };
@@ -156,10 +155,6 @@ in
   services = {
     tailscale.enable = true;
     netdata.enable = true;
-    # dictd = {
-    #   enable = true;
-    #   DBs = with pkgs.dictdDBs; [ wiktionary wordnet ];
-    # };
     openssh = {
       enable = true;
       passwordAuthentication = false;
