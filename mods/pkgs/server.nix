@@ -24,7 +24,7 @@ rec {
   };
 
   zinc = prev.callPackage
-    ({ stdenvNoCC, callPackage, fetchurl, autoPatchelfHook, unzip, openssl, lib }:
+    ({ stdenvNoCC, callPackage, fetchurl, autoPatchelfHook, lib }:
       let
         dists = {
           aarch64-darwin = {
@@ -113,6 +113,63 @@ rec {
           description = "";
           license = licenses.mit;
           maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
+  planar-ally = prev.callPackage
+    ({ stdenvNoCC, callPackage, fetchurl, autoPatchelfHook, python310, bashInteractive_5, lib }:
+      let
+        pname = "planarally";
+        owner = "Kruptein";
+        version = "2022.2.3";
+        sha256 = "sha256-u6mTMDAmjUVIbE2l7QZEU9FGXTuwJrVutDhNrI6yLG0=";
+        python = python310.withPackages (p: with p; [
+          aiohttp
+          aiohttp-security
+          aiohttp-session
+          bcrypt
+          cryptography
+          python-socketio
+          peewee
+          typing-extensions
+        ]);
+        run = writeShellScriptBin "planar-ally" ''
+          ${python} 
+        '';
+      in
+      stdenvNoCC.mkDerivation rec {
+        inherit pname version;
+
+        src = fetchurl {
+          inherit sha256;
+          url = "https://github.com/${owner}/${pname}/releases/download/${version}/${pname}-bin-${version}.tar.gz";
+        };
+
+        strictDeps = true;
+        dontConfigure = true;
+        dontBuild = true;
+
+        unpackPhase = ''
+          ${gnutar}/bin/tar xzvf ${src}
+        '';
+        installPhase = ''
+          mkdir -p $out/bin
+          mv ./server/* $out
+
+          # patch directories
+
+          cat <<EOF >$out/bin/planar-ally
+          #!${bashInteractive_5}/bin/bash
+          cd $out
+          ${python}/bin/python ./src/planarserver.py "$@"
+          EOF
+          chmod +x $out/bin/planar-ally
+        '';
+
+        meta = with lib; {
+          license = licenses.mit;
         };
       }
     )

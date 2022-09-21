@@ -360,6 +360,92 @@ let
     #   meta = with lib; { };
     # };
 
+    aiomcache = buildPythonPackage rec {
+      pname = "aiomcache";
+      version = "0.7.0";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "007mbdk566n5r50xg8xhgvc92x082h6svdyja78dmcmlr4xx6gx7";
+      };
+
+      checkInputs = [
+        docker
+        python-memcached
+        pytestCheckHook
+      ];
+      doCheck = false;
+
+      pythonImportsCheck = [ "aiomcache" ];
+
+      meta = with lib; {
+        description = "Minimal pure python memcached client";
+        homepage = "https://github.com/aio-libs/aiomcache/";
+      };
+    };
+
+    aiohttp-security = buildPythonPackage rec {
+      pname = "aiohttp-security";
+      version = "0.4.0";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "01clxi9zdbj3pysd7hph9kll1q98mdp0yqm3vz195qsl0havpm20";
+      };
+
+      checkInputs = [
+        pyjwt
+        pytestCheckHook
+      ];
+
+      doCheck = false;
+
+      propagatedBuildInputs = [ aiohttp aiohttp-session ];
+      pythonImportsCheck = [ "aiohttp_security" ];
+
+      meta = with lib; {
+        description = "security for aiohttp.web";
+        homepage = "https://github.com/aio-libs/aiohttp_security/";
+      };
+    };
+
+    aiohttp-session = buildPythonPackage rec {
+      pname = "aiohttp-session";
+      version = "2.11.0";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "1i2x07jln9162rv2c6hi2d28ba8w0ycv1izn7sac81ba1xh3kpqg";
+      };
+
+      checkInputs = [
+        aiomcache
+        aioredis
+        docker
+        pytestCheckHook
+      ];
+
+      disabledTestPaths = [
+        "tests/test_redis_storage.py"
+        "tests/test_nacl_storage.py"
+        "tests/test_path_domain.py"
+        "tests/test_response_types.py"
+        "tests/test_memcached_storage.py"
+        "tests/test_encrypted_cookie_storage.py"
+        "tests/test_cookie_storage.py"
+        "tests/test_http_exception.py"
+        "tests/test_abstract_storage.py"
+      ];
+
+      propagatedBuildInputs = [ aiohttp ];
+      pythonImportsCheck = [ "aiohttp_session" ];
+
+      meta = with lib; {
+        description = "sessions for aiohttp.web";
+        homepage = "https://github.com/aio-libs/aiohttp_session/";
+      };
+    };
+
   };
 in
 pynixifyOverlay
