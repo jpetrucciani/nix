@@ -13,13 +13,13 @@ rec {
         # dns
         alidns = { name = "github.com/caddy-dns/alidns"; version = "1.0.21"; };
         azure = { name = "github.com/caddy-dns/azure"; version = "v0.2.0"; };
-        cloudflare = { name = "github.com/caddy-dns/cloudflare"; version = "91cf700356a1cd0127bcc4e784dd50ed85794af5"; };
+        cloudflare = { name = "github.com/caddy-dns/cloudflare"; version = "815abbf88b27182428c342b2916a37b7134d266b"; };
         digitalocean = { name = "github.com/caddy-dns/digitalocean"; version = "9c71e343246b954976c9294a7062823605de9b9f"; };
         dnspod = { name = "github.com/caddy-dns/dnspod"; version = "v0.0.4"; };
         duckdns = { name = "github.com/caddy-dns/duckdns"; version = "v0.3.1"; };
         gandi = { name = "github.com/caddy-dns/gandi"; version = "v1.0.2"; };
         hetzner = { name = "github.com/caddy-dns/hetzner"; version = "v0.0.1"; };
-        route53 = { name = "github.com/caddy-dns/route53"; version = "v1.2.0"; };
+        route53 = { name = "github.com/caddy-dns/route53"; version = "v1.2.1"; };
         vultr = { name = "github.com/caddy-dns/vultr"; version = "733392841379526fd314012909963c3c6406687a"; };
 
         # s3 stuff

@@ -9,21 +9,21 @@ rec {
     ({ stdenv, lib, buildGo119Module, fetchFromGitHub, disableTelemetry ? true }:
       buildGo119Module rec {
         pname = "cloudquery";
-        version = "0.32.8";
+        version = "0.32.12";
 
         # additional compile-time data
-        commit = "145cb0fcf0838824a1f63b4e45af1af701a045f4";
-        date = "2022-08-21";
+        commit = "62e0c9f05f85e5ab521b334cdc89712b4cb77962";
+        date = "2022-09-13";
 
         src = fetchFromGitHub
           {
             owner = "cloudquery";
             repo = "cloudquery";
             rev = "cli/v${version}";
-            sha256 = "sha256-lVRxoO9fsI3oQjZrwumLW3iNZfQ3ocH9erLVzJSMXpc=";
+            sha256 = "sha256-mdP8ZwZgIgL2k0ZAizh/o0GfBsDWWRhds7VwFVhYnGM=";
           } + "/cli";
 
-        vendorSha256 = "sha256-2i9EMKcrinoYcMyChD9KT+KmcPkZK9TaYAeax4cSXio=";
+        vendorSha256 = "sha256-Xl0w1Hr+E/VnFbnaBTIDBRF2J0e1D60jjiQt/EJTrOo=";
 
         ldflags = [
           "-s"

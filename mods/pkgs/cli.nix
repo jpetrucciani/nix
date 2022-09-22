@@ -9,16 +9,16 @@ rec {
     ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
       buildGo119Module rec {
         pname = "s3-edit";
-        version = "0.0.15";
+        version = "0.0.16";
 
         src = fetchFromGitHub {
           owner = "tsub";
           repo = "s3-edit";
           rev = "v${version}";
-          sha256 = "0zhnr0j3a465xd1ck88bhjp7akks821gbln34zyadfik68r8h9wi";
+          sha256 = "sha256-BNFbg3IRsLOdakh8d53P0FSOGaGXYJuexECPlCMWCC0=";
         };
 
-        vendorSha256 = "sha256-zTGti5yUGhD9K/PO3D8mtVqxoeZCR7JdVZjo+UoQRhk=";
+        vendorSha256 = "sha256-ZM5Z3yLOwOYpOTyoXmSbyPFBE31F+Jvc6DN4rmHmyt0=";
 
         meta = with lib; {
           inherit (src.meta) homepage;
