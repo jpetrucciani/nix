@@ -221,6 +221,7 @@ with pkgs.hax; {
         hax_pog_scripts
         k8s_pog_scripts
         nix_pog_scripts
+        python_pog_scripts
         ssh_pog_scripts
 
         # my pkgs
@@ -339,7 +340,6 @@ with pkgs.hax; {
 
       # nix memes
       kelby = "echo 'nix-env --tarball-ttl 0 -f https://github.com/jpetrucciani/nix/archive/main.tar.gz'";
-      pynix = "nix shell -f https://github.com/cript0nauta/pynixify/archive/main.tar.gz --argstr python python310";
 
       # misc
       space = "du -Sh | sort -rh | head -10";

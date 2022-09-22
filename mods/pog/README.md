@@ -42,6 +42,10 @@ This module creates some `pog` tools that help make you more productive in Kuber
 
 This module configures some helper tools for creating new nix environments!
 
+### [python.nix](./python.nix)
+
+This module configures some helper tools for interacting with python and pip!
+
 ### [sound.nix](./sound.nix)
 
 This module contains a `soundScript` wrapper that uses `pog` to create command line sound bites!
