@@ -30,6 +30,7 @@ rec {
         { name = "pip_package"; }
       ];
       script = ''
+        export NIX_PATH="nixpkgs=${prev.path}"
         pip_package="$1"
         pynixify_tarball="https://github.com/cript0nauta/pynixify/archive/$pynixify.tar.gz"
         nixpkgs_tarball="https://github.com/NixOS/nixpkgs/archive/$nixpkgs.tar.gz"
