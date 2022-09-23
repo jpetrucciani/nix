@@ -64,7 +64,7 @@ with pkgs.hax; {
         bash-completion
         bashInteractive_5
         bat
-        bun
+        bitwarden-cli
         bzip2
         cacert
         cachix
@@ -83,21 +83,19 @@ with pkgs.hax; {
         figlet
         file
         fq
-        htmlq
         gawk
-        gcc
         genpass
         gitAndTools.delta
         gnugrep
+        gnumake
         gnupg
         gnused
-        gnumake
         gnutar
         google-cloud-sdk
         gron
         gum
         gzip
-        hadolint
+        htmlq
         jq
         libarchive
         libnotify
@@ -111,6 +109,7 @@ with pkgs.hax; {
         nanorc
         ncdu
         netcat-gnu
+        nix
         nix-info
         nix-prefetch-github
         nix-prefetch-scripts
@@ -118,7 +117,6 @@ with pkgs.hax; {
         nix-update
         nixpkgs-fmt
         nixpkgs-review
-        nix
         openssh
         p7zip
         patch
@@ -146,7 +144,6 @@ with pkgs.hax; {
         which
         yank
         yq-go
-        you-get
         zip
 
         # python
