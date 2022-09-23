@@ -155,7 +155,7 @@ rec {
         dist = dists.${stdenvNoCC.hostPlatform.system} or (throw "Unsupported system: ${stdenvNoCC.hostPlatform.system}");
         pname = "gke-gcloud-auth-plugin";
         owner = "google";
-        version = "0.0.1";
+        version = "0.3.0";
         ts = "20220812141601";
       in
       stdenvNoCC.mkDerivation rec {

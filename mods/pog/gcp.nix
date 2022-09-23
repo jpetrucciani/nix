@@ -44,7 +44,7 @@ rec {
 
   gcp_perm = pog {
     name = "gcp_perm";
-    description = "";
+    description = "a quick and easy way to get gcp permissions for a user";
     flags = [
       {
         name = "project";
@@ -66,9 +66,32 @@ rec {
     '';
   };
 
+  gcp_get_gke_build =
+    let
+      curl = "${prev.curl}/bin/curl";
+      head = "${prev.coreutils}/bin/head";
+      jq = "${prev.jq}/bin/jq";
+    in
+    pog {
+      name = "gcp_get_gke_build";
+      description = "a way for us to get the build number and version of 'gke-gcloud-auth-plugin' because google hates us";
+      flags = [
+        {
+          name = "gversion";
+          description = "the version of gcloud we want to check resources for";
+          default = "403.0.0";
+        }
+      ];
+      script = ''
+        channel="https://dl.google.com/dl/cloudsdk/channels/rapid/components-v$gversion.json"
+        ${curl} -s "$channel" | ${jq} -c '.components[] | select(.id|contains("gke-gcloud-auth-plugin-darwin")) | .version' | ${head} -1
+      '';
+    };
+
   gcp_pog_scripts = [
     glist
     gcp_perm
     gke_config
+    gcp_get_gke_build
   ];
 }
