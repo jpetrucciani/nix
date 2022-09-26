@@ -34,8 +34,8 @@ in
       max-jobs = auto
       narinfo-cache-negative-ttl = 10
       extra-experimental-features = nix-command flakes
-      extra-substituters = https://jacobi.cachix.org
-      extra-trusted-public-keys = jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=
+      extra-substituters = https://jacobi.cachix.org https://digitallyinduced.cachix.org
+      extra-trusted-public-keys = jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU= digitallyinduced.cachix.org-1:y+wQvrnxQ+PdEsCt91rmvv39qRCYzEgGQaldK26hCKE=
     '';
     settings = {
       trusted-users = [ "root" ];
