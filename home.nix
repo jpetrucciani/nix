@@ -65,7 +65,7 @@ with pkgs.hax; {
     packages = with pkgs;
       lib.flatten [
         bash-completion
-        bashInteractive_5
+        bashInteractive
         bat
         bitwarden-cli
         bzip2

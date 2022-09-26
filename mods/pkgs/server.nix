@@ -161,7 +161,7 @@ rec {
           # patch directories
 
           cat <<EOF >$out/bin/planar-ally
-          #!${bashInteractive_5}/bin/bash
+          #!${bashInteractive}/bin/bash
           cd $out
           ${python}/bin/python ./src/planarserver.py "$@"
           EOF

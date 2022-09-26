@@ -1,9 +1,9 @@
 { jacobi ? import
     (
       fetchTarball {
-        name = "jpetrucciani-2022-08-10";
-        url = "https://github.com/jpetrucciani/nix/archive/eb005e0a699426b7493bb48d2b05f823b15546cf.tar.gz";
-        sha256 = "0lnhc5x1k7gjcxxqyw793v5jrlhsjgl9n4r2592m0zjkhv5l5m5k";
+        name = "jpetrucciani-2022-09-25";
+        url = "https://github.com/jpetrucciani/nix/archive/0b15ea14815cc64d2abf0df643404401094084e6.tar.gz";
+        sha256 = "0bk22jixq922i2sf1yds1z8ndikwfplyvc5r1l80jq60c48crp35";
       }
     )
     { }
@@ -12,7 +12,7 @@ let
   name = "cfg";
   tools = with jacobi; {
     cli = [
-      bashInteractive_5
+      bashInteractive
       comma
       cowsay
       curl
