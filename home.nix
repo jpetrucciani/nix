@@ -36,6 +36,9 @@ let
     LESS = "-iR";
     BASH_SILENCE_DEPRECATION_WARNING = "1";
 
+    # haskell?
+    IHP_EDITOR = "code --goto";
+
     # thanks google
     USE_GKE_GCLOUD_AUTH_PLUGIN = "True";
   };
@@ -335,9 +338,6 @@ with pkgs.hax; {
       ga = "git add -A .";
       cm = "git commit -m ";
 
-      # nix memes
-      kelby = "echo 'nix-env --tarball-ttl 0 -f https://github.com/jpetrucciani/nix/archive/main.tar.gz'";
-
       # misc
       space = "du -Sh | sort -rh | head -10";
       now = "date +%s";
@@ -598,7 +598,8 @@ with pkgs.hax; {
             "terraform.languageServer.enable": true,
             "terraform.languageServer.pathToBinary": "${nix-bin}/terraform-ls",
             "terraform.languageServer.args": [ "serve" ],
-            "terraform.languageServer.ignoreSingleFileWarning": false
+            "terraform.languageServer.ignoreSingleFileWarning": false,
+            "haskell.manageHLS": "PATH"
           }
         '';
     };

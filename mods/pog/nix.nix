@@ -26,7 +26,7 @@ rec {
       rev=$(echo "$jacobi" | ${_.jq} -r '.rev')
       sha=$(echo "$jacobi" | ${_.jq} -r '.sha256')
       py=""
-      [ "$with_python" = "1" ] && py="python = [(python310.withPackages ( p: with p; [requests]))];"
+      [ "$with_python" = "1" ] && py="python = [(python310.withPackages ( p: with p; [${"\n"}requests]))];"
       vlang=""
       [ "$with_vlang" = "1" ] && vlang="vlang = [vlang.withPackages (p: with p; [])];" && mkderivation=1;
       nim=""
@@ -77,18 +77,6 @@ rec {
     '';
   };
 
-  nixpy = writeBashBinCheckedWithFlags {
-    name = "nixpy";
-    flags = [
-      _.flags.python.package
-      _.flags.python.version
-    ];
-    script = ''
-      [ -z "$package" ] && echo "please pass a package!"; exit 1;
-      [ -z "$version" ] && echo "please pass a version!"; exit 1;
-      ${nix-prefetch}/bin/nix-prefetch python.pkgs.fetchPypi --pname "$package" --version "$version"
-    '';
-  };
   y2n = writeBashBinChecked "y2n" ''
     yaml="$1"
     json=$(${_.y2j} "$yaml") \
@@ -285,7 +273,6 @@ rec {
 
   nix_pog_scripts = [
     nixup
-    nixpy
     y2n
     cache
     nixrender
