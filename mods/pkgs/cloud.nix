@@ -64,7 +64,6 @@ rec {
         '';
 
         meta = with lib; {
-          inherit (src.meta) homepage;
           description = "the open-source cloud asset inventory powered by SQL";
           license = licenses.mpl20;
           maintainers = with maintainers; [ jpetrucciani ];
