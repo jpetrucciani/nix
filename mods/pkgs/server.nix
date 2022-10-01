@@ -89,14 +89,14 @@ rec {
     ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
       buildGo119Module rec {
         pname = "poglets";
-        version = "0.0.2";
-        commit = "7510189b70b0c39986200f0c36a6a81bd278b904";
+        version = "0.0.3";
+        commit = "0e96c5f5887cd317cd92e6e51eb366929cee3ed1";
 
         src = fetchFromGitHub {
           owner = "jpetrucciani";
           repo = pname;
           rev = version;
-          sha256 = "sha256-ubHOLlpwjqnAQ12sng/a0CCXYyREA+M68Gt0vZQQj4c=";
+          sha256 = "sha256-owWLviFu/Y+365XZEw7vjmJMmz8wAYMkvGonVJDJ9rU=";
         };
 
         vendorSha256 = "sha256-Hjdv2Fvl1S52CDs4TAR3Yt9pEFUIvs5N5sVhZY+Edzo=";

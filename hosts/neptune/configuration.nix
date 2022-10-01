@@ -9,6 +9,7 @@ in
     ./hardware-configuration.nix
     ./api.nix
     ./charm.nix
+    ../modules/servers/poglets.nix
   ];
 
   inherit (common) zramSwap;
@@ -154,6 +155,11 @@ in
           };
         };
       };
+    poglets = {
+      enable = true;
+      bindPort = 8420;
+      controlPort = 8421;
+    };
   } // common.services;
 
   # https://github.com/NixOS/nixpkgs/issues/103158
