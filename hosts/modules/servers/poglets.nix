@@ -93,7 +93,7 @@ in
             --data-addr ${cfg.bindAddress} \
             --control-addr ${cfg.controlAddress} \
             --control-port ${toString cfg.controlPort} \
-            ${if cfg.disable then "--disableTransportWrapping \\" else ""}
+            ${if cfg.disableTransportWrapping then "--disableTransportWrapping \\" else ""}
             --token "$POGLETS_TOKEN" 
         '';
         Restart = "on-failure";
