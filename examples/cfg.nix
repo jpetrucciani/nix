@@ -1,9 +1,9 @@
 { jacobi ? import
     (
       fetchTarball {
-        name = "jpetrucciani-2022-09-25";
-        url = "https://github.com/jpetrucciani/nix/archive/0b15ea14815cc64d2abf0df643404401094084e6.tar.gz";
-        sha256 = "0bk22jixq922i2sf1yds1z8ndikwfplyvc5r1l80jq60c48crp35";
+        name = "jpetrucciani-2022-09-30";
+        url = "https://github.com/jpetrucciani/nix/archive/adcd7c18b9aed6ef84866866c0e75b27432f1bfa.tar.gz";
+        sha256 = "071268mg4fd9zfvkam256641rmyp7rm9857ji4v8a7sqdlarijpa";
       }
     )
     { }
@@ -27,6 +27,9 @@ let
       scc
       shfmt
       yq-go
+      (writeShellScriptBin "hms" ''
+        nix-env -i -f ~/cfg.nix
+      '')
     ];
     nix = [
       nixpkgs-fmt

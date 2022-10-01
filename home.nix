@@ -198,7 +198,6 @@ with pkgs.hax; {
           ]
           ++ (optList (!isM1) [ ])
           ++ (optList isLinux [
-            # interactive shell!
             bpython
           ])
           )

@@ -30,7 +30,7 @@ rec {
       _.flags.common.force
     ];
     script = ''
-      ${_.k} --namespace "$namespace" get pods ${_.k8s.fmt.pod} |
+      ${_.k} --namespace "$namespace" get pods |
         ${_.fzfqm} --header-lines=1 |
         ${_.k8s.get_id} |
         ${_.xargs} --no-run-if-empty ${_.k} --namespace "$namespace" delete pods ''${force:+--grace-period=0 --force}

@@ -161,31 +161,6 @@ let
       };
     };
 
-
-    # bypython off of master
-    bpython = (prev.bpython.overrideAttrs
-      (old: {
-        version = "master-2022-05-01";
-        src = builtins.fetchTarball {
-          url = "https://github.com/bpython/bpython/archive/af5e90ab270956d45b9c9399fc2929ab996d22b6.tar.gz";
-          sha256 = "0gwv8rg0pg5j46jjk8d193s1c8a9gcm04m6minhwrnq04wrikbnp";
-        };
-        propagatedBuildInputs = [
-          (curtsies.overridePythonAttrs (_: { doCheck = false; }))
-          cwcwidth
-          greenlet
-          jedi
-          pygments
-          pyperclip
-          pyxdg
-          requests
-          typing-extensions
-          urwid
-        ];
-      })).override {
-      curtsies = curtsies.overridePythonAttrs (_: { doCheck = false; });
-    };
-
     mitmproxy2swagger = buildPythonPackage rec {
       pname = "mitmproxy2swagger";
       version = "0.4.2";
