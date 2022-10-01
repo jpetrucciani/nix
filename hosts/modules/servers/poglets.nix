@@ -35,11 +35,6 @@ in
       type = package;
       description = mdDoc ''poglets package to use'';
     };
-    disableTransportWrapping = mkOption {
-      type = bool;
-      default = true;
-      description = mdDoc ''whether or not to disable transport wrapping'';
-    };
 
     bindAddress = mkOption {
       type = str;
@@ -93,7 +88,6 @@ in
             --data-addr ${cfg.bindAddress} \
             --control-addr ${cfg.controlAddress} \
             --control-port ${toString cfg.controlPort} \
-            ${if cfg.disableTransportWrapping then "--disableTransportWrapping \\" else ""}
             --token "$POGLETS_TOKEN" 
         '';
         Restart = "on-failure";
