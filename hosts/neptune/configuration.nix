@@ -153,8 +153,8 @@ in
               }
             '';
           };
-          "_.hexa.dev" = reverse_proxy "localhost:8421";
-          "meme._.hexa.dev" = reverse_proxy "localhost:8420";
+          "x.hexa.dev" = reverse_proxy "localhost:8421";
+          "meme.x.hexa.dev" = reverse_proxy "localhost:8420";
         };
       };
     poglets = {
