@@ -67,7 +67,6 @@ with pkgs.hax; {
         bash-completion
         bashInteractive
         bat
-        bitwarden-cli
         bzip2
         cacert
         cachix
@@ -270,10 +269,12 @@ with pkgs.hax; {
         (
           optList isLinux [
             binutils
+            bitwarden-cli
             keybase
             sampler
             vtm
 
+            # k8s tools
             katafygio
             kube-linter
             pluto
