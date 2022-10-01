@@ -44,6 +44,13 @@ in
 
   extraGroups = [ "wheel" "networkmanager" "docker" "podman" ];
 
+  sysctl_opts = {
+    "fs.inotify.max_user_watches" = "1048576";
+    "fs.inotify.max_queued_events" = "1048576";
+    "fs.inotify.max_user_instances" = "1048576";
+    "net.core.rmem_max" = "2500000";
+  };
+
   env = {
     CHARM_HOST = "charm.cobi.dev";
     CHARM_HTTP_PORT = "443";

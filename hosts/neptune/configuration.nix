@@ -31,11 +31,7 @@ in
       grub.version = 2;
       grub.device = "/dev/nvme0n1";
     };
-    kernel.sysctl = {
-      "fs.inotify.max_user_watches" = "1048576";
-      "fs.inotify.max_queued_events" = "1048576";
-      "fs.inotify.max_user_instances" = "1048576";
-    };
+    kernel.sysctl = { } // common.sysctl_opts;
     tmpOnTmpfs = true;
   };
 
