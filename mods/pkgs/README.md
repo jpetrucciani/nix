@@ -8,7 +8,7 @@ This directory contains nix packages that I've built that are not yet ready for 
 
 ### [caddy.nix](./caddy.nix)
 
-This overlay provides a [caddy webserver](https://caddyserver.com/v2) builder function called `_xcaddy` and a set of default plugins that you can use to build any flavor of caddy that you'd like!
+This overlay provides a [caddy webserver](https://caddyserver.com/v2) builder function called `_zaddy` and a set of default plugins that you can use to build any flavor of caddy that you'd like!
 
 ### [cli.nix](./cli.nix)
 

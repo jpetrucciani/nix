@@ -89,7 +89,7 @@ in
       in
       {
         enable = true;
-        package = pkgs.xcaddy;
+        package = pkgs.zaddy;
         email = common.emails.personal;
 
         # countries from here http://www.geonames.org/countries/

@@ -1,7 +1,7 @@
 final: prev:
 with prev;
 rec {
-  _xcaddy =
+  _zaddy =
     let
       builtins = {
         caddy-cgi = { name = "github.com/aksdb/caddy-cgi"; version = "7cf2523251ffeef310868d8ed03e17a929236f2e"; };
@@ -31,6 +31,7 @@ rec {
         caddy-json-parse = { name = "github.com/abiosoft/caddy-json-parse"; version = "c57039f26567f4b4120e35b4dc1a9bbd20a4f37f"; };
         caddy-ratelimit = { name = "github.com/mholt/caddy-ratelimit"; version = "9c011f665e5ddff32fe00cab338ace7f360114ff"; };
         caddy-trace = { name = "github.com/greenpau/caddy-trace"; version = "v1.1.10"; };
+        # caddy-troll = { name = "github.com/jpetrucciani/caddy-troll"; version = "bd687c6c60e24f9cf5c8309cbdd48e56629ba71c"; };
         geolocation = { name = "github.com/jpetrucciani/caddy-maxmind-geolocation"; version = "65f8416054495107983d1c5fe128658f35b5e60a"; };
         replace_response = { name = "github.com/caddyserver/replace-response"; version = "d32dc3ffff0c07a3c935ef33092803f90c55ba19"; };
         user_agent_parse = { name = "github.com/neodyme-labs/user_agent_parse"; version = "450380e8b6d048d71937014932ba6d4d56dd611d"; };
@@ -51,7 +52,7 @@ rec {
           go get ${name}@${version}
         '')
         allPlugins;
-      xcaddy = prev.caddy.override {
+      zaddy = prev.caddy.override {
         buildGoModule = args: buildGo119Module (args // {
           inherit vendorSha256;
           overrideModAttrs = _: {
@@ -70,21 +71,22 @@ rec {
         });
       };
     in
-    xcaddy;
-  caddy = prev.caddy.overrideAttrs (_: { passthru.withPackages = _xcaddy; });
+    zaddy;
+  caddy = prev.caddy.overrideAttrs (_: { passthru.withPackages = _zaddy; });
 
   # my preferred caddy install
-  xcaddy = _xcaddy {
+  zaddy = _zaddy {
     plugins = p: with p; [
       caddy-security
       s3-proxy
       geolocation
+      caddy-troll
     ];
-    vendorSha256 = "sha256-6Qzyw/nUXUmTniKJt8s61HuOyW3eLYN5C0pKqbIsPFw=";
+    vendorSha256 = "sha256-GwgGt/M3k4RM64QOq2IPm7EOsF0FnRS/suTxLPzJcgU=";
   };
 
   # caddy with s3-browser plugin
-  xcaddy-browser = _xcaddy {
+  zaddy-browser = _zaddy {
     plugins = p: with p; [
       caddy-security
       s3-proxy
