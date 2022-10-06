@@ -80,7 +80,7 @@ rec {
       caddy-security
       s3-proxy
       geolocation
-      caddy-troll
+      # caddy-troll
     ];
     vendorSha256 = "sha256-GwgGt/M3k4RM64QOq2IPm7EOsF0FnRS/suTxLPzJcgU=";
   };
