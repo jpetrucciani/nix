@@ -20,6 +20,7 @@ let
       v1-2-1 = _v "1.2.1" "1f0xpylnnn42vx6q5arm67f6jgfalwc0rng3f2dxc0mkzk286f52";
       v1-3-0 = _v "1.3.0" "0r35jpa6icykbbxbls9dbhwzrswsi85qssgh6xsv6sgj4s5z8gxs";
       v1-4-0 = _v defaults.version defaults.sha256;
+      latest = v1-4-0;
     };
     chart_url = version: "https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v${version}/deploy/static/provider/cloud/deploy.yaml";
     chart = rec {

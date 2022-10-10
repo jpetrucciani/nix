@@ -13,6 +13,7 @@ let
       _v = v: s: chart.build { version = v; sha256 = s; };
       v1-7-1 = _v "1.7.1" "00pp4cplf018a89awj2wmy8q86926qq5y1zpmgkc1djvdpmxrj5d";
       v1-9-1 = _v defaults.version defaults.sha256;
+      latest = v1-9-1;
     };
     chart_url = version: "https://github.com/cert-manager/cert-manager/releases/download/v${version}/cert-manager.yaml";
     chart = rec {

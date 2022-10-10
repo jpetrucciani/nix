@@ -6,6 +6,10 @@ hexes related to k8s specs and charts!
 
 ## In this directory
 
+### [argocd.nix](./argocd.nix)
+
+[argocd](https://github.com/argoproj/argo-cd) is declarative continuous deployment for kubernetes
+
 ### [authentik.nix](./authentik.nix)
 
 [Authentik](https://github.com/goauthentik/authentik) is an open source IDP written in go
@@ -17,6 +21,10 @@ hexes related to k8s specs and charts!
 ### [cron.nix](./cron.nix)
 
 This hex spell allows very concise cron job declaration in Kubernetes.
+
+### [datadog.nix](./datadog.nix)
+
+[datadog](https://github.com/DataDog/helm-charts) provides helm charts to add logging and monitoring easily to your clusters.
 
 ### [external-secrets.nix](./external-secrets.nix)
 
@@ -33,6 +41,10 @@ This module allows us to transparently use helm charts in hex spells!
 ### [nginx-ingress.nix](./nginx-ingress.nix)
 
 [nginx-ingress controller](https://github.com/kubernetes/ingress-nginx)
+
+### [rancher.nix](./rancher.nix)
+
+[rancher](https://github.com/rancher/rancher) is an open-source multi-cluster orchestration platform
 
 ### [services.nix](./services.nix)
 

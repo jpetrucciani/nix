@@ -15,6 +15,7 @@ let
       v10-33-0 = _v "10.33.0" "02692bgy5g1p7v9fdclb2fmxxv364kv7xbw2b1z5c2r1wj271g6k";
       v11-1-1 = _v "11.1.1" "0rj97xam3rszgvfvviyv4933k5g61h5s782k2ir9arr0fgwvy50b";
       v12-0-2 = _v defaults.version defaults.sha256;
+      latest = v12-0-2;
     };
     chart_url = version: "https://helm.traefik.io/traefik/traefik-${version}.tgz";
     chart =
