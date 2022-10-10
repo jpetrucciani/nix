@@ -1,5 +1,7 @@
 { hex, ... }:
 let
+  inherit (hex) toYAML;
+
   cert-manager = rec {
     defaults = {
       name = "cert-manager";
