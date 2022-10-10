@@ -2,38 +2,25 @@
 let
   inherit (hex) concatMapStrings _if;
   inherit (hex._) prettier sed yaml_sort yq;
-  constants = {
-    flags = {
-      create-namespace = "--create-namespace";
-    };
-  };
   helm = rec {
-    defaults = {
-      external-secrets =
-        { name ? "external-secrets"
-        , namespace ? "external-secrets"
-        , values ? [ ]
-        , sets ? [ "installCRDs=true" ]
-        , version ? "0.5.9"
-        , sha256 ? "0mxm237a7q8gvxvpcqk6zs0rbv725260xdvhd27kibirfjwm4zxl"
-        , extraFlags ? [ constants.flags.create-namespace ]
-        }: build {
-          inherit name namespace values sets version sha256 extraFlags;
-          url = charts.url.external-secrets version;
-        };
+    constants = {
+      flags = {
+        create-namespace = "--create-namespace";
+      };
+      ports = {
+        all = "*";
+        ftp = "21";
+        ssh = "22";
+        smtp = "25";
+        https = "80,443";
+        mysql = "3306";
+        postgres = "5432";
+        mongo = "27017";
+      };
     };
     charts = {
       url = rec {
-        _ = rec {
-          github = { org, repo, repoName, chartName ? repoName, version }: "https://github.com/${org}/${repo}/releases/download/${repoName}-${version}/${chartName}-${version}.tgz";
-        };
-        external-secrets = version: _.github {
-          inherit version;
-          org = "external-secrets";
-          repo = "external-secrets";
-          repoName = "helm-chart";
-          chartName = "external-secrets";
-        };
+        github = { org, repo, repoName, chartName ? repoName, version }: "https://github.com/${org}/${repo}/releases/download/${repoName}-${version}/${chartName}-${version}.tgz";
       };
     };
     build = args: ''

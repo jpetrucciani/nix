@@ -2,10 +2,38 @@
 let
   inherit (hex) attrIf ifNotEmptyAttr toYAML;
 
-  secrets = rec {
+  external-secrets = rec {
     defaults = {
+      name = "external-secrets";
+      namespace = "external-secrets";
+      version = "0.6.0";
+      sha256 = "0pf6z5yzr32cj0i9s1wg0vmbjqrbcsc11gz4s6ymh5jcx07x2b6p";
       store_name = "gsm";
     };
+    version = rec {
+      _v = v: s: args: chart (args // { version = v; sha256 = s; });
+      v0-5-9 = _v "0.5.9" "0mxm237a7q8gvxvpcqk6zs0rbv725260xdvhd27kibirfjwm4zxl";
+      v0-6-0 = _v defaults.version defaults.sha256;
+    };
+    chart_url = version: hex.k8s.helm.charts.url.github {
+      inherit version;
+      org = "external-secrets";
+      repo = "external-secrets";
+      repoName = "helm-chart";
+      chartName = "external-secrets";
+    };
+    chart =
+      { name ? defaults.name
+      , namespace ? defaults.namespace
+      , values ? [ ]
+      , sets ? [ "installCRDs=true" ]
+      , version ? defaults.version
+      , sha256 ? defaults.sha256
+      , extraFlags ? [ hex.k8s.helm.constants.flags.create-namespace ]
+      }: hex.k8s.helm.build {
+        inherit name namespace values sets version sha256 extraFlags;
+        url = chart_url version;
+      };
     cluster_store = rec {
       build =
         { gcp_project
@@ -128,4 +156,4 @@ let
     };
   };
 in
-secrets
+external-secrets
