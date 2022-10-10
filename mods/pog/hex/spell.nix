@@ -10,8 +10,11 @@ let
       })
     { };
   k8s = {
+    authentik = import ./k8s/authentik.nix params;
+    cert-manager = import ./k8s/cert-manager.nix params;
     cron = import ./k8s/cron.nix params;
     external-secrets = import ./k8s/external-secrets.nix params;
+    gitlab-runner = import ./k8s/gitlab-runner.nix params;
     helm = import ./k8s/helm.nix params;
     nginx-ingress = import ./k8s/nginx-ingress.nix params;
     services = import ./k8s/services.nix params;

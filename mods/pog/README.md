@@ -6,6 +6,10 @@ This directory contains overlays that implement tools with my [`pog`](../pog.nix
 
 ## In this directory
 
+### [hex/](./hex/)
+
+Hex is a nix module system that allows us to create powerful abstractions of other languages and configurations via nix! At the moment, this is the most useful for things like kubernetes specs!
+
 ### [aws.nix](./aws.nix)
 
 This module makes some AWS related tools with `pog`.

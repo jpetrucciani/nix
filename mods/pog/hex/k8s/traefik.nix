@@ -3,13 +3,26 @@ let
   inherit (hex) _if toYAML ifNotEmptyList;
 
   traefik = rec {
-    url = version: "https://helm.traefik.io/traefik/traefik-${version}.tgz";
+    defaults = {
+      name = "traefik";
+      namespace = "traefik";
+      version = "12.0.2";
+      sha256 = "0kkknd4lad1r8vclwxfgl3rqr8yjmwp2rsyf9znmmr7ms91ajh8a";
+    };
+    version = rec {
+      _v = v: s: args: chart (args // { version = v; sha256 = s; });
+      v10-24-3 = _v "10.24.3" "1dcby7c4bbjxv42c83n5g45na5hr9dmy0xgy0x2vb5b2rgbcmx70";
+      v10-33-0 = _v "10.33.0" "02692bgy5g1p7v9fdclb2fmxxv364kv7xbw2b1z5c2r1wj271g6k";
+      v11-1-1 = _v "11.1.1" "0rj97xam3rszgvfvviyv4933k5g61h5s782k2ir9arr0fgwvy50b";
+      v12-0-2 = _v defaults.version defaults.sha256;
+    };
+    chart_url = version: "https://helm.traefik.io/traefik/traefik-${version}.tgz";
     chart =
       { name ? "traefik${if internal then "-internal" else ""}"
-      , namespace ? "traefik"
+      , namespace ? defaults.namespace
       , sets ? [ ]
-      , version ? "10.24.3"
-      , sha256 ? "1dcby7c4bbjxv42c83n5g45na5hr9dmy0xgy0x2vb5b2rgbcmx70"
+      , version ? defaults.version
+      , sha256 ? defaults.sha256
       , forceNamespace ? true
       , extraFlags ? [ "--create-namespace" ]
       , internal ? false
@@ -97,7 +110,7 @@ let
       in
       hex.k8s.helm.build {
         inherit name namespace sets version sha256 extraFlags forceNamespace sortYaml;
-        url = url version;
+        url = chart_url version;
         values = [ values_file ];
       };
     ingress_route = rec {
