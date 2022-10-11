@@ -5,6 +5,32 @@ let
   isM1 = isDarwin && isAarch64;
 in
 rec {
+
+  gcsproxy = prev.callPackage
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
+        pname = "gcsproxy";
+        version = "0.3.2";
+
+        src = fetchFromGitHub {
+          owner = "daichirata";
+          repo = pname;
+          rev = "v${version}";
+          sha256 = "sha256-yeAN2pFgakgqTM4/sq9sgVBJi2zL3qamHsKN3s+ntds=";
+        };
+
+        vendorSha256 = "sha256-Wsa9zPFE4q9yBxflovzkrzn0Jq1a4zlxc5jJOsl7HDQ=";
+
+        meta = with lib; {
+          inherit (src.meta) homepage;
+          description = "Reverse proxy for Google Cloud Storage";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
   cloudquery = prev.callPackage
     ({ stdenv, lib, buildGo119Module, fetchFromGitHub, disableTelemetry ? true }:
       buildGo119Module rec {
