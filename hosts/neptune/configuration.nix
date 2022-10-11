@@ -65,6 +65,7 @@ in
 
     openssh.authorizedKeys.keys = with common.pubkeys; [
       m1max
+      nix-m1max
     ] ++ usual;
   };
 
