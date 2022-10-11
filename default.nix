@@ -6,5 +6,10 @@ with builtins;
   }
 , overlays ? [ ]
 , config ? { }
+, system ? builtins.currentSystem
 }:
-import nixpkgs { overlays = (import ./overlays.nix) ++ overlays; config = { allowUnfree = true; } // config; }
+import nixpkgs {
+  inherit system;
+  overlays = (import ./overlays.nix) ++ overlays;
+  config = { allowUnfree = true; } // config;
+}
