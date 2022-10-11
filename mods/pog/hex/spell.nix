@@ -10,13 +10,16 @@ let
       })
     { };
   k8s = {
+    argocd = import ./k8s/argocd.nix params;
     authentik = import ./k8s/authentik.nix params;
     cert-manager = import ./k8s/cert-manager.nix params;
     cron = import ./k8s/cron.nix params;
+    datadog = import ./k8s/datadog.nix params;
     external-secrets = import ./k8s/external-secrets.nix params;
     gitlab-runner = import ./k8s/gitlab-runner.nix params;
     helm = import ./k8s/helm.nix params;
     nginx-ingress = import ./k8s/nginx-ingress.nix params;
+    rancher = import ./k8s/rancher.nix params;
     services = import ./k8s/services.nix params;
     tailscale = import ./k8s/tailscale.nix params;
     traefik = import ./k8s/traefik.nix params;
