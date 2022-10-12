@@ -58,7 +58,7 @@ in
     k3s = {
       enable = true;
       role = "server";
-      extraFlags = "--no-deploy traefik";
+      extraFlags = "--disable traefik";
     };
     valheim = {
       enable = true;
