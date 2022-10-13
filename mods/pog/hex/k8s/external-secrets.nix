@@ -58,6 +58,7 @@ let
           kind = "ClusterSecretStore";
           metadata = {
             inherit name namespace;
+            annotations = { } // hex.annotations;
           };
           spec = {
             provider = {
@@ -118,9 +119,7 @@ let
           kind = "ExternalSecret";
           metadata = {
             inherit name namespace;
-            annotations = {
-              source = "hexrender";
-            };
+            annotations = { } // hex.annotations;
           };
           spec = {
             refreshInterval = refresh_interval;

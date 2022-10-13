@@ -31,6 +31,7 @@ let
       kind = "ServiceAccount";
       metadata = {
         inherit name;
+        annotations = { } // hex.annotations;
       };
     };
     secret = name: {
@@ -38,6 +39,7 @@ let
       kind = "Secret";
       metadata = {
         inherit name;
+        annotations = { } // hex.annotations;
       };
       stringData = {
         nop = "nop";
@@ -46,7 +48,10 @@ let
     role = name: {
       apiVersion = "rbac.authorization.k8s.io/v1";
       kind = "Role";
-      metadata = { inherit name; };
+      metadata = {
+        inherit name;
+        annotations = { } // hex.annotations;
+      };
       rules = [
         {
           apiGroups = [ "" ];
@@ -59,7 +64,10 @@ let
     role-binding = name: {
       apiVersion = "rbac.authorization.k8s.io/v1";
       kind = "RoleBinding";
-      metadata = { inherit name; };
+      metadata = {
+        inherit name;
+        annotations = { } // hex.annotations;
+      };
       subjects = [
         {
           inherit name;
@@ -76,7 +84,10 @@ let
     network-policy = { name, cidr ? defaults.cidr }: {
       apiVersion = "networking.k8s.io/v1";
       kind = "NetworkPolicy";
-      metadata = { inherit name; };
+      metadata = {
+        inherit name;
+        annotations = { } // hex.annotations;
+      };
       spec = {
         egress = [{ to = [{ ipBlock = { cidr = "0.0.0.0/0"; }; }]; }];
         ingress = [{ from = [{ ipBlock = { inherit cidr; }; }]; }];
@@ -135,7 +146,10 @@ let
         {
           apiVersion = "apps/v1";
           kind = "Deployment";
-          metadata = { inherit name; };
+          metadata = {
+            inherit name;
+            annotations = { } // hex.annotations;
+          };
           spec = {
             selector.matchLabels.app = name;
             template = {
@@ -260,7 +274,10 @@ let
         {
           apiVersion = "apps/v1";
           kind = "Deployment";
-          metadata = { inherit name; };
+          metadata = {
+            inherit name;
+            annotations = { } // hex.annotations;
+          };
           spec = {
             selector.matchLabels.app = name;
             template = {

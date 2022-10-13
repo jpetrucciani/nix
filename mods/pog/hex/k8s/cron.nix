@@ -26,6 +26,7 @@ let
           kind = "CronJob";
           metadata = {
             inherit name namespace;
+            annotations = { } // hex.annotations;
             ${ifNotEmptyList labels "labels"} = labels;
           };
           spec = {

@@ -231,12 +231,10 @@ with pkgs.hax; {
         mdctl
         overflow
         poglets
-        prospector-177
         q
         rare
         regula
         s3-edit
-        spacectl
 
         # overlays
         git-trim

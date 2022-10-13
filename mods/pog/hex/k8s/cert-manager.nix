@@ -36,6 +36,7 @@ let
         kind = "Certificate";
         metadata = {
           inherit name namespace;
+          annotations = { } // hex.annotations;
         };
         spec = {
           secretName = name;
@@ -82,7 +83,10 @@ let
           {
             apiVersion = "cert-manager.io/v1";
             kind = "ClusterIssuer";
-            metadata = { inherit name; };
+            metadata = {
+              inherit name;
+              annotations = { } // hex.annotations;
+            };
             spec = {
               acme = {
                 inherit email solvers;

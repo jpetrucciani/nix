@@ -1,6 +1,9 @@
 pkgs:
 with builtins;
 rec {
+  annotations = {
+    source = "hexrender";
+  };
   flatten = x:
     if isList x
     then concatMap flatten x

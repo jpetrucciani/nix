@@ -47,7 +47,7 @@ let
               annotations = {
                 "cloud.google.com/load-balancer-type" = "Internal";
                 "service.beta.kubernetes.io/aws-load-balancer-internal" = "true";
-              };
+              } // hex.annotations;
             };
           } else { };
         values = {
@@ -138,7 +138,7 @@ let
             inherit name;
             annotations = {
               "kubernetes.io/ingress.class" = if internal then "traefik-internal" else "traefik";
-            };
+            } // hex.annotations;
             ${ifNotEmptyList labels "labels"} = labels;
           };
           spec = {

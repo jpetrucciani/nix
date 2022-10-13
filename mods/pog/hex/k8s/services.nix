@@ -4,9 +4,6 @@ let
   inherit (pkgs.lib.attrsets) mapAttrsToList;
 
   defaults = {
-    annotations = {
-      source = "hexrender";
-    };
     egressPolicy = [
       {
         to = [
@@ -187,7 +184,7 @@ let
         kind = "ServiceAccount";
         metadata = {
           name = "${name}${saSuffix}";
-          annotations = { } // defaults.annotations;
+          annotations = { } // hex.annotations;
         };
         ${ifNotEmptyList imagePullSecrets "imagePullSecrets"} = imagePullSecrets;
       };
@@ -205,7 +202,7 @@ let
         metadata = {
           inherit namespace;
           name = "${name}${rbSuffix}";
-          annotations = { } // defaults.annotations;
+          annotations = { } // hex.annotations;
         };
         roleRef = {
           apiGroup = "rbac.authorization.k8s.io";
@@ -226,7 +223,7 @@ let
         metadata = {
           inherit namespace;
           name = "${name}${npSuffix}";
-          annotations = { } // defaults.annotations;
+          annotations = { } // hex.annotations;
         };
         spec = {
           inherit egress ingress;
@@ -246,7 +243,7 @@ let
         metadata = {
           inherit labels namespace;
           name = "${name}${hpaSuffix}";
-          annotations = { } // defaults.annotations;
+          annotations = { } // hex.annotations;
         };
         spec = {
           maxReplicas = max;
@@ -269,7 +266,7 @@ let
             name = "${name}${serviceSuffix}";
           };
           name = "${name}${serviceSuffix}";
-          annotations = { } // defaults.annotations // extraServiceAnnotations;
+          annotations = { } // hex.annotations // extraServiceAnnotations;
         };
         spec = {
           ports = [
@@ -299,7 +296,7 @@ let
             name = "${name}${serviceSuffix}";
           };
           name = "${name}${serviceSuffix}";
-          annotations = { } // defaults.annotations // extraServiceAnnotations;
+          annotations = { } // hex.annotations // extraServiceAnnotations;
         };
         spec = {
           ports = [
@@ -324,7 +321,7 @@ let
             name = "${name}${serviceSuffix}";
           };
           name = "${name}${serviceSuffix}";
-          annotations = { } // defaults.annotations // extraServiceAnnotations;
+          annotations = { } // hex.annotations // extraServiceAnnotations;
         };
         spec = {
           ports = [
@@ -402,7 +399,7 @@ let
           metadata = {
             inherit namespace labels;
             name = depName;
-            annotations = { } // defaults.annotations;
+            annotations = { } // hex.annotations;
           };
           spec = {
             inherit revisionHistoryLimit;
@@ -422,7 +419,7 @@ let
                 name = depName;
                 annotations = {
                   "container.apparmor.security.beta.kubernetes.io/${name}" = "unconfined";
-                } // defaults.annotations;
+                } // hex.annotations;
               };
               spec = {
                 ${ifNotEmptyAttr affinity "affinity"} = affinity;
