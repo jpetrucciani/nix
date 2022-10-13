@@ -312,29 +312,6 @@ let
       meta = with lib; { };
     };
 
-    # ruff = buildPythonPackage rec {
-    #   pname = "ruff";
-    #   version = "0.0.21";
-
-    #   format = "pyproject";
-
-    #   nativeBuildInputs = with pkgs.rustPlatform; [
-    #     cargoSetupHook
-    #     maturinBuildHook
-    #   ];
-
-    #   src = pkgs.fetchFromGitHub {
-    #     owner = "charliermarsh";
-    #     repo = pname;
-    #     rev = "556ae000788032cbf8db7ca4d7246c52fe98052a";
-    #     sha256 = "sha256-V4xZ2ZH3ywtQdmfJZsErbHVn5LyWBD37r/7LfejdsT8=";
-    #   };
-
-    #   doCheck = false;
-
-    #   meta = with lib; { };
-    # };
-
     aiomcache = buildPythonPackage rec {
       pname = "aiomcache";
       version = "0.7.0";
@@ -418,6 +395,32 @@ let
       meta = with lib; {
         description = "sessions for aiohttp.web";
         homepage = "https://github.com/aio-libs/aiohttp_session/";
+      };
+    };
+
+    osrsreboxed = buildPythonPackage rec {
+      pname = "osrsreboxed";
+      version = "2.3.5";
+
+      format = "pyproject";
+      src = pkgs.fetchFromGitHub {
+        owner = "0xNeffarion";
+        repo = "osrsreboxed-db";
+        rev = "93346b7678d1cf741a00a67f9ed802eb88639dc2";
+        sha256 = "sha256-4eyXlTIOrcbm2ZZ7s5OCKbnag4Gi1dX1DLFVQQtuEOc=";
+      };
+
+      preBuild = ''
+        ${pkgs.gnused}/bin/sed -i '/dataclasses/d' ./pyproject.toml
+      '';
+
+      propagatedBuildInputs = [
+        poetry
+      ];
+
+      meta = with lib; {
+        description = "A complete and up-to-date database of Old School Runescape (OSRS) items";
+        homepage = "https://github.com/0xNeffarion/osrsreboxed-db";
       };
     };
 
