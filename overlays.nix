@@ -18,6 +18,7 @@
   (import ./mods/pkgs/server.nix)
 
   # pog sub-overlays
+  (import ./mods/pog/atlassian.nix)
   (import ./mods/pog/aws.nix)
   (import ./mods/pog/docker.nix)
   (import ./mods/pog/ffmpeg.nix)

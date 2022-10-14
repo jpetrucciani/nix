@@ -115,6 +115,7 @@ with builtins; rec {
           default = "us-east-1";
           description = "the AWS region in which to do this operation";
           argument = "REGION";
+          envVar = "AWS_REGION";
           completion = ''echo -e '${concatStringsSep "\\n" _.globals.aws.regions}' '';
         };
       };
