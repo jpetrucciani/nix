@@ -38,6 +38,10 @@ This module provides some tools that interact with GitHub
 
 This module provides some hacky `pog` tools!
 
+### [helm.nix](./helm.nix)
+
+This module provides some tools for analyzing helm repos and charts!
+
 ### [k8s.nix](./k8s.nix)
 
 This module creates some `pog` tools that help make you more productive in Kubernetes!

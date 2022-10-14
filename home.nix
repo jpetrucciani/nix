@@ -217,6 +217,7 @@ with pkgs.hax; {
         general_pog_scripts
         github_pog_scripts
         hax_pog_scripts
+        helm_pog_scripts
         k8s_pog_scripts
         nix_pog_scripts
         python_pog_scripts

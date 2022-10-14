@@ -145,7 +145,8 @@ rec {
         { name = "nix_file"; }
       ];
       script = helpers: with helpers; ''
-        spell="$1"
+        ${var.notEmpty "1"} && spell="$1"
+        ${var.empty "spell"} && spell="$(${_.mktemp})" && cp /dev/stdin "$spell"
         spell_render="$(${_.mktemp})"
         fullpath="$(${_.realpath} "$spell")"
         debug "casting $fullpath - hex files at ${./hex}"
