@@ -142,6 +142,12 @@ in
               route / {
                 redir https://github.com/jpetrucciani/nix
               }
+              route /latest {
+                redir https://github.com/jpetrucciani/nix/archive/main.tar.gz
+              }
+              handle_path /x/* {
+                redir https://github.com/jpetrucciani/nix/archive{path}.tar.gz
+              }
               route /up {
                 redir https://raw.githubusercontent.com/jpetrucciani/nix/main/scripts/nixup.sh
               }
