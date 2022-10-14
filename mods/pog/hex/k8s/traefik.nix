@@ -6,17 +6,22 @@ let
     defaults = {
       name = "traefik";
       namespace = "traefik";
-      version = "12.0.2";
-      sha256 = "0kkknd4lad1r8vclwxfgl3rqr8yjmwp2rsyf9znmmr7ms91ajh8a";
+      version = "15.0.0";
+      sha256 = "0xih856ikw1s7lqs1cxhkmw7xcmp9jijyh3crj0jk8ffcxkj0wbf";
     };
     version = rec {
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
       v10-24-3 = _v "10.24.3" "1dcby7c4bbjxv42c83n5g45na5hr9dmy0xgy0x2vb5b2rgbcmx70";
       v10-33-0 = _v "10.33.0" "02692bgy5g1p7v9fdclb2fmxxv364kv7xbw2b1z5c2r1wj271g6k";
       v11-1-1 = _v "11.1.1" "0rj97xam3rszgvfvviyv4933k5g61h5s782k2ir9arr0fgwvy50b";
-      v12-0-2 = _v defaults.version defaults.sha256;
-      latest = v12-0-2;
+      v12-0-2 = _v "12.0.2" "0kkknd4lad1r8vclwxfgl3rqr8yjmwp2rsyf9znmmr7ms91ajh8a";
+      v12-0-7 = _v "12.0.7" "1hy7ikx2zcwyh8904h792f63mz689bxnwqps4wxsbmw626p3wz8p";
+      v13-0-1 = _v "13.0.1" "13fdl2jgfz3afy15z69c4gqqw9yxs31mbn890kwsji0nysqm2x4d";
+      v14-0-1 = _v "14.0.1" "1san9gi139v53q9fwcihbd9ddnq612zqc3gyhx4vr27y95jh6h2z";
+      v15-0-0 = _v defaults.version defaults.sha256;
+      latest = v15-0-0;
     };
+    index_url = "https://helm.traefik.io/traefik/index.yaml";
     chart_url = version: "https://helm.traefik.io/traefik/traefik-${version}.tgz";
     chart =
       { name ? "traefik${if internal then "-internal" else ""}"

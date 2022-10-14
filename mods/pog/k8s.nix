@@ -153,6 +153,46 @@ rec {
     '';
   };
 
+  _chart_scan = { name, index_url, chart_url, last ? 10 }:
+    let
+      mktemp = "${pkgs.coreutils}/bin/mktemp";
+      jq = "${pkgs.jq}/bin/jq";
+      yq = "${yq-go}/bin/yq";
+      parallel = "${pkgs.parallel}/bin/parallel --will-cite --keep-order -j0 --colsep ' '";
+    in
+    pog {
+      name = "chart_scan_${name}";
+      description = "a quick and easy way to get the latest x releases of the '${name}' chart!";
+      script = ''
+        # temp files
+        temp_json="$(${mktemp} --suffix=.json)"
+        temp_csv="$(${mktemp} --suffix=.csv)"
+
+        # grab index for this chart
+        ${curl}/bin/curl -s '${index_url}' | \
+            ${yq} '.[].traefik.[] | [{"version": .version, "date": .created}]' | \
+            ${coreutils}/bin/head -n ${toString (last * 2)} | \
+            ${yq} -o=json >"$temp_json"
+
+        # form csv, hash in parallel
+        echo "version,date,sha256" >>"$temp_csv"
+        ${jq} -r '.[] | (.version + " " + .date)' <"$temp_json" | \
+            ${parallel} 'echo -n "{1},{=2 uq(); =},"; nix-prefetch-url --unpack "${chart_url}" 2>/dev/null' >>"$temp_csv"
+
+        # format as json
+        ${yq} "$temp_csv" -p=csv -o=json
+      '';
+    };
+
+  chart_scan_traefik = _chart_scan {
+    name = "traefik";
+    index_url = "https://helm.traefik.io/traefik/index.yaml";
+    chart_url = "https://helm.traefik.io/traefik/traefik-{1}.tgz";
+  };
+  chart_scanners = [
+    chart_scan_traefik
+  ];
+
   k8s_pog_scripts = [
     kdesc
     kdrain
@@ -161,5 +201,5 @@ rec {
     krm
     kroll
     kshell
-  ];
+  ] ++ chart_scanners;
 }
