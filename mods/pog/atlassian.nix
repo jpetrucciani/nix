@@ -7,6 +7,7 @@ rec {
     flags = [
       {
         name = "token";
+        description = "the jira token to use for bearer auth [also passable via env with 'JIRA_TOKEN']";
         envVar = "JIRA_TOKEN";
       }
     ];
