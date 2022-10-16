@@ -111,6 +111,24 @@ rec {
     '';
   };
 
+  kedit = pog {
+    name = "kedit";
+    description = "a quick and easy way to edit k8s objects!";
+    flags = [
+      _.flags.k8s.namespace
+      {
+        name = "object";
+        description = "the object to edit";
+        prompt = ''${_.k} --namespace "$namespace" get all | ${_.fzfq} | ${_.k8s.get_id}'';
+        promptError = "you must specify an object to edit!";
+      }
+    ];
+    script = ''
+      debug "''${GREEN}describing object '$object' in the '$namespace' namespace!''${RESET}"
+      ${_.k} --namespace "$namespace" edit "$object"
+    '';
+  };
+
   kdrain = pog {
     name = "kdrain";
     description = "a quick and easy way to drain one or more nodes on k8s!";
@@ -156,6 +174,7 @@ rec {
   k8s_pog_scripts = [
     kdesc
     kdrain
+    kedit
     kex
     klog
     krm

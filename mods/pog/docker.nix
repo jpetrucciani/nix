@@ -36,7 +36,7 @@ rec {
     ];
     script = ''
       debug "''${GREEN}exec'ing into '$container'!''${RESET}"
-      ${_.d} exec --interactive --tty "$container" bash
+      ${_.d} exec --interactive --tty "$container" sh -c "${_.globals.hacks.bash_or_sh}"
     '';
   };
   dshell = pog {
