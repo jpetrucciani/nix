@@ -113,6 +113,7 @@ in
           "home.cobi.dev" = reverse_proxy "home:${toString common.ports.home-assistant}";
           "netdata.cobi.dev" = reverse_proxy "localhost:${toString common.ports.netdata}";
           "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
+          # "q.cobi.dev" = reverse_proxy "localhost:8069";
           "vault.cobi.dev" = {
             extraConfig = ''
               import GEOBLOCK
@@ -164,6 +165,138 @@ in
       enable = true;
       bindPort = 8420;
       controlPort = 8421;
+    };
+    searx = {
+      enable = false;
+      runInUwsgi = true;
+      uwsgiConfig = {
+        http = "127.0.0.1:8069";
+      };
+      environmentFile = "/etc/default/searx";
+      settings = {
+        use_default_settings = {
+          engines = {
+            keep_only = [
+              "github"
+              "google"
+              "stackexchange"
+              "wikipedia"
+            ];
+          };
+        };
+        server = {
+          port = 8069;
+          bind_address = "127.0.0.1";
+          secret_key = "@SEARX_SECRET_KEY@";
+          default_http_headers = {
+            X-Content-Type-Options = "nosniff";
+            X-XSS-Protection = "1; mode=block";
+            X-Download-Options = "noopen";
+            X-Robots-Tag = "noindex, nofollow";
+            Referrer-Policy = "no-referrer";
+          };
+        };
+        ui = {
+          autofocus = true;
+        };
+        general = {
+          instance_name = "sadge";
+        };
+        engines = [
+          {
+            name = "google";
+            engine = "google";
+            shortcut = "go";
+            use_mobile_ui = true;
+            disabled = false;
+          }
+          {
+            name = "google images";
+            engine = "google_images";
+            shortcut = "goi";
+          }
+          {
+            name = "bing";
+            engine = "bing";
+            shortcut = "bi";
+            disabled = true;
+          }
+          # {
+          #   name = "stackoverflow";
+          #   engine = "stackexchange";
+          #   shortcut = "st";
+          #   api_site = "stackoverflow";
+          #   categories = "dev,stackoverflow";
+          # }
+          # {
+          #   name = "askubuntu";
+          #   engine = "stackexchange";
+          #   shortcut = "ubuntu";
+          #   api_site = "askubuntu";
+          #   categories = "dev,stackoverflow";
+          # }
+          # {
+          #   name = "superuser";
+          #   engine = "stackexchange";
+          #   shortcut = "su";
+          #   api_site = "superuser";
+          #   categories = "dev,stackoverflow";
+          # }
+          {
+            name = "genius";
+            engine = "genius";
+            shortcut = "gen";
+            categories = "music";
+          }
+          {
+            name = "pypi";
+            shortcut = "pip";
+            engine = "xpath";
+            paging = "True";
+            search_url = "https://pypi.org/search?q={query}&page={pageno}";
+            results_xpath = ''/html/body/main/div/div/div/form/div/ul/li/a[@class=" package-snippet "]'';
+            url_xpath = "./@href";
+            title_xpath = ''./h3/span[@class=" package-snippet__name "]'';
+            content_xpath = "./p";
+            suggestion_xpath = ''/html/body/main/div/div/div/form/div/div[@class=" callout-block "]/p/span/a[@class=" link "]'';
+            first_page_num = "1";
+            categories = "dev,python";
+            about = {
+              website = "https://pypi.org";
+              wikidata_id = "Q2984686";
+              official_api_documentation = "https://warehouse.readthedocs.io/api-reference/index.html";
+              use_official_api = false;
+              require_api_key = false;
+              results = "HTML";
+            };
+          }
+          {
+            name = "nixpkgs";
+            shortcut = "nix";
+            engine = "elasticsearch";
+            categories = "dev,nix";
+            base_url = "https://nixos-search-5886075189.us-east-1.bonsaisearch.net:443";
+            index = "latest-31-nixos-unstable";
+            query_type = "match";
+          }
+          {
+            name = "github";
+            engine = "github";
+            shortcut = "gh";
+            categories = "dev";
+          }
+          {
+            name = "duckduckgo";
+            engine = "duckduckgo";
+            shortcut = "ddg";
+            disabled = true;
+          }
+        ];
+        search = {
+          safe_search = 0;
+          autocomplete = "google";
+        };
+      };
     };
   } // common.services;
 
