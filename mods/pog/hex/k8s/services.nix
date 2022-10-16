@@ -134,6 +134,7 @@ let
       , ingressTLSSecret ? ""
       , softAntiAffinity ? false
       , hardAntiAffinity ? false
+      , disableHttp ? true
       , extraDep ? { }
       , extraSA ? { }
       , extraNP ? { }
@@ -166,7 +167,7 @@ let
           if loadBalancer then
             components.lb-service { inherit name namespace labels port altPort ip serviceSuffix extraServiceAnnotations; } else
             components.service { inherit name namespace labels port altPort serviceSuffix extraServiceAnnotations; }) // extraSvc;
-        ing = (components.ingress { inherit name namespace port ingressSuffix serviceSuffix pre1_18 host extraIngressAnnotations; tls = ingressTLSSecret; }) // extraIng;
+        ing = (components.ingress { inherit name namespace port ingressSuffix serviceSuffix pre1_18 host extraIngressAnnotations disableHttp; tls = ingressTLSSecret; }) // extraIng;
       in
       ''
         ${if serviceAccount then "---\n${toYAML sa}" else ""}
@@ -466,6 +467,7 @@ let
         , ingressSuffix ? "-ingress"
         , serviceSuffix ? "-service"
         , pre1_18 ? false
+        , disableHttp ? true
         , extraIngressAnnotations ? { }
         }: {
           apiVersion = if pre1_18 then "extensions/v1beta1" else "networking.k8s.io/v1";
@@ -476,9 +478,9 @@ let
             labels = {
               name = "${name}${ingressSuffix}";
             };
-            annotations = {
+            annotations = { } // (if disableHttp then {
               "kubernetes.io/ingress.allow-http" = "false";
-            } // extraIngressAnnotations;
+            } else { }) // extraIngressAnnotations;
           };
           spec = {
             ${if pre1_18 then null else "defaultBackend"} = {
