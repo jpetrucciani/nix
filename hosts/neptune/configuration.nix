@@ -147,10 +147,10 @@ in
                 redir https://github.com/jpetrucciani/nix/archive/main.tar.gz
               }
               handle_path /x/* {
-                redir https://github.com/jpetrucciani/nix/archive{path}.tar.gz
+                redir https://github.com/jpetrucciani/nix/archive/{path.0}.tar.gz
               }
               handle_path /p/* {
-                respond "\{j?import(fetchTarball\{url="https://nix.cobi.dev/latest";\})\{\}\}:with j;{path}"
+                respond "\{j?import(fetchTarball\{url=\"https://nix.cobi.dev/latest\";\})\{\}\}:with j;{path.0}"
               }
               route /up {
                 redir https://raw.githubusercontent.com/jpetrucciani/nix/main/scripts/nixup.sh
