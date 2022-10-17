@@ -82,7 +82,7 @@ rec {
       geolocation
       # caddy-troll
     ];
-    vendorSha256 = "sha256-6Qzyw/nUXUmTniKJt8s61HuOyW3eLYN5C0pKqbIsPFw=";
+    vendorSha256 = "sha256-P7PxSjA4XFm6x9tMGybYs7FX5GkFAzou6qvkYIiz8kg=";
   };
 
   # caddy with s3-browser plugin
@@ -92,6 +92,6 @@ rec {
       s3-proxy
       s3-browser
     ];
-    vendorSha256 = "sha256-YZcbE7maQaZHkWWa7iM+J5uGDF5iS7IznHafUC+7FaY=";
+    vendorSha256 = "sha256-Zh6tF/N1HR4sceKUTRIiC13s+8TrEgkDLF0lqKyx+IA=";
   };
 }

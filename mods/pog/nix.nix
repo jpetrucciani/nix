@@ -45,12 +45,12 @@ rec {
       [ "$with_elixir" = "1" ] && elixir="elixir = [elixir${"\n"}(with beamPackages; [${"\n"}hex])(ifIsLinux [inotify-tools]) (ifIsDarwin [ terminal-notifier (with darwin.apple_sdk.frameworks; [ CoreFoundation CoreServices ])])];"
       envtype=""
       [ "$mkderivation" = "1" ] && envtype="${"\n"}mkDerivation = true;";
-      cat -s <<EOF | ${_.nixpkgs-fmt}
+      ${prev.coreutils}/bin/cat -s <<EOF | ${_.nixpkgs-fmt}
         { jacobi ? import
             (
               fetchTarball {
-                name = "jpetrucciani-$(date '+%F')";
-                url = "https://github.com/jpetrucciani/nix/archive/$rev.tar.gz";
+                name = "jacobi-$(date '+%F')";
+                url = "https://nix.cobi.dev/x/$rev";
                 sha256 = "$sha";
               }
             )
