@@ -93,6 +93,10 @@ in
         package = pkgs.zaddy;
         email = common.emails.personal;
 
+        global = ''
+          order hax after handle_path
+        '';
+
         # countries from here http://www.geonames.org/countries/
         extraConfig = ''
           (GEOBLOCK) {

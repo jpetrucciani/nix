@@ -28,7 +28,7 @@ rec {
 
         # utils
         ## jacobi's plugins
-        caddy-hax = { name = "github.com/jpetrucciani/caddy-hax"; version = "v0.0.1"; };
+        caddy-hax = { name = "github.com/jpetrucciani/caddy-hax"; version = "v0.0.2"; };
         caddy-troll = { name = "github.com/jpetrucciani/caddy-troll"; version = "v0.0.1"; };
         ## other
         caddy-git = { name = "github.com/greenpau/caddy-git"; version = "v1.0.7"; };
@@ -86,7 +86,7 @@ rec {
       caddy-hax
       caddy-troll
     ];
-    vendorSha256 = "sha256-ELx3OUMG+Lqvj4oX+lw149rkmBiFr9hFY0cGulDGMyk=";
+    vendorSha256 = "sha256-DoR6sfszNgtPSsS6Vj0y7V0dPH47n97EkUoPAXnR++o=";
   };
 
   # caddy with s3-browser plugin
