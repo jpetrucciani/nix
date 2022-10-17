@@ -27,11 +27,14 @@ rec {
         s3-browser = { name = "github.com/jpetrucciani/caddy-s3browser"; version = "b553c40251fd727217b3e49eb5c69d18c4460e08"; };
 
         # utils
+        ## jacobi's plugins
+        caddy-hax = { name = "github.com/jpetrucciani/caddy-hax"; version = "v0.0.1"; };
+        caddy-troll = { name = "github.com/jpetrucciani/caddy-troll"; version = "v0.0.1"; };
+        ## other
         caddy-git = { name = "github.com/greenpau/caddy-git"; version = "v1.0.7"; };
         caddy-json-parse = { name = "github.com/abiosoft/caddy-json-parse"; version = "c57039f26567f4b4120e35b4dc1a9bbd20a4f37f"; };
         caddy-ratelimit = { name = "github.com/mholt/caddy-ratelimit"; version = "9c011f665e5ddff32fe00cab338ace7f360114ff"; };
         caddy-trace = { name = "github.com/greenpau/caddy-trace"; version = "v1.1.10"; };
-        # caddy-troll = { name = "github.com/jpetrucciani/caddy-troll"; version = "bd687c6c60e24f9cf5c8309cbdd48e56629ba71c"; };
         geolocation = { name = "github.com/jpetrucciani/caddy-maxmind-geolocation"; version = "65f8416054495107983d1c5fe128658f35b5e60a"; };
         replace_response = { name = "github.com/caddyserver/replace-response"; version = "d32dc3ffff0c07a3c935ef33092803f90c55ba19"; };
         user_agent_parse = { name = "github.com/neodyme-labs/user_agent_parse"; version = "450380e8b6d048d71937014932ba6d4d56dd611d"; };
@@ -80,9 +83,10 @@ rec {
       caddy-security
       s3-proxy
       geolocation
-      # caddy-troll
+      caddy-hax
+      caddy-troll
     ];
-    vendorSha256 = "sha256-P7PxSjA4XFm6x9tMGybYs7FX5GkFAzou6qvkYIiz8kg=";
+    vendorSha256 = "sha256-ELx3OUMG+Lqvj4oX+lw149rkmBiFr9hFY0cGulDGMyk=";
   };
 
   # caddy with s3-browser plugin
