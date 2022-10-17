@@ -93,7 +93,7 @@ in
         package = pkgs.zaddy;
         email = common.emails.personal;
 
-        global = ''
+        globalConfig = ''
           order hax after handle_path
         '';
 
