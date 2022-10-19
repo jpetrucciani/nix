@@ -292,4 +292,47 @@ rec {
     )
     { };
 
+  watcher = prev.callPackage
+    ({ stdenv, lib, fetchFromGitHub }:
+      let
+        name = "watcher";
+        version = "0.2.9";
+      in
+      stdenv.mkDerivation {
+        inherit name;
+
+        src = fetchFromGitHub {
+          owner = "e-dant";
+          repo = name;
+          rev = "release/${version}";
+          sha256 = "sha256-qmFTq3Ue3w+Wti8hjbGXvWLp/I2PEu2zwv5ii18RlH4=";
+        };
+
+        nativeBuildInputs = [
+          clang
+          cmake
+        ];
+
+        configurePhase = ''
+          cmake -S build/in -B build/out
+        '';
+
+        buildPhase = ''
+          cmake --build build/out --config Release -j4
+        '';
+
+        installPhase = ''
+          mkdir -p $out/bin
+          mv ./build/out/water.watcher $out/bin/watcher
+        '';
+
+        meta = with lib; {
+          inherit (src.meta) homepage;
+          description = "Filesystem watcher. Works anywhere. Simple, efficient and friendly.";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      })
+    { };
+
 }
