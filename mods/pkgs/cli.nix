@@ -293,12 +293,12 @@ rec {
     { };
 
   watcher = prev.callPackage
-    ({ stdenv, lib, fetchFromGitHub }:
+    ({ stdenv, clang13Stdenv, lib, fetchFromGitHub }:
       let
         name = "watcher";
         version = "0.2.9";
       in
-      stdenv.mkDerivation {
+      (if isLinux then stdenv else clang13Stdenv).mkDerivation {
         inherit name;
 
         src = fetchFromGitHub {
@@ -308,23 +308,13 @@ rec {
           sha256 = "sha256-qmFTq3Ue3w+Wti8hjbGXvWLp/I2PEu2zwv5ii18RlH4=";
         };
 
-        nativeBuildInputs = [
-          clang
-          cmake
-        ];
+        nativeBuildInputs = [ cmake ] ++ lib.optional isDarwin darwin.apple_sdk.frameworks.AppKit;
 
-        configurePhase = ''
-          cmake -S build/in -B build/out
+        preConfigure = ''
+          cd build/in
         '';
 
-        buildPhase = ''
-          cmake --build build/out --config Release -j4
-        '';
-
-        installPhase = ''
-          mkdir -p $out/bin
-          mv ./build/out/water.watcher $out/bin/watcher
-        '';
+        postInstall = "mv $out/bin/{water.watcher,watcher}";
 
         meta = with lib; {
           inherit (src.meta) homepage;
