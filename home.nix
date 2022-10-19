@@ -57,6 +57,9 @@ with pkgs.hax; {
   programs.htop.enable = true;
   programs.dircolors.enable = true;
 
+  # broken manpages upstream, see: https://github.com/nix-community/home-manager/issues/3342
+  manual.manpages.enable = false;
+
   home = {
     inherit username homeDirectory sessionVariables;
 
@@ -236,6 +239,7 @@ with pkgs.hax; {
         rare
         regula
         s3-edit
+        watcher
 
         # overlays
         git-trim
