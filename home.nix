@@ -239,7 +239,8 @@ with pkgs.hax; {
         rare
         regula
         s3-edit
-        watcher
+        # this breaks on x86_64 darwin?
+        # watcher
 
         # overlays
         git-trim
