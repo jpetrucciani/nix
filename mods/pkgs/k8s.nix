@@ -113,13 +113,13 @@ rec {
 
   kubectl = prev.kubectl.override {
     kubernetes = (prev.kubernetes.override { buildGoModule = buildGo119Module; }).overrideAttrs (old: rec {
-      version = "1.25.2";
+      version = "1.25.3";
 
       src = fetchFromGitHub {
         owner = "kubernetes";
         repo = "kubernetes";
         rev = "v${version}";
-        sha256 = "sha256-L69lm0gfixVKILjyDfC6XXWUiEcPZJyl6hvG2QxJOQQ=";
+        sha256 = "sha256-UDulyX1PXyAe4cqtekOY1nmQnmMqVLFuHnCswFfE6v0=";
       };
     });
   };
