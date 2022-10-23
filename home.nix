@@ -533,7 +533,7 @@ with pkgs.hax; {
         pinentry-program ${pkgs.pinentry_mac}/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac
       '';
     };
-    ${attrIf isNixOS "vscodeserver"} = {
+    ${attrIf false "vscodeserver"} = {
       target = ".vscode-server/data/Machine/settings.json";
       text =
         let
@@ -571,6 +571,9 @@ with pkgs.hax; {
             "python.formatting.provider": "black",
             "prettier.configPath": "${homeDirectory}/.prettierrc.js",
             "nix.enableLanguageServer": true,
+            "nix.serverPath": "/home/jacobi/.nix-profile/bin/rnix-lsp",
+            "nix.formatterPath": "/home/jacobi/.nix-profile/bin/nixpkgs-fmt",
+            "nixEnvSelector.nixFile": "${workspaceRoot}/default.nix",
             "[nix]": {
               "${formatter}": "${extensions.nix-ide}",
               "${tabSize}": 2
@@ -590,6 +593,10 @@ with pkgs.hax; {
               "${formatOnSave}": true,
               "${tabSize}": 2
             },
+            "[haskell]": {
+              "${formatter}": "haskell.haskell",
+              "${formatOnSave}": true
+            },
             "[dockerfile]": { "${formatter}": "${extensions.prettier}" },
             "[elixir]": {"${formatter}": "${extensions.elixir-ls}"},
             "[ignore]": { "${formatter}": "${extensions.shell-format}" },
@@ -600,10 +607,11 @@ with pkgs.hax; {
             "[typescript]": {"${formatter}": "${extensions.prettier}"},
             "[typescriptreact]": {"${formatter}": "${extensions.prettier}"},
             "terraform.languageServer.enable": true,
-            "terraform.languageServer.pathToBinary": "${nix-bin}/terraform-ls",
-            "terraform.languageServer.args": [ "serve" ],
+            "terraform.languageServer.args": ["serve"],
             "terraform.languageServer.ignoreSingleFileWarning": false,
-            "haskell.manageHLS": "PATH"
+            "terraform.languageServer.path": "/home/jacobi/.nix-profile/bin/terraform-ls",
+            "haskell.manageHLS": "PATH",
+            "haskell.formattingProvider": "stylish-haskell"
           }
         '';
     };
