@@ -692,6 +692,7 @@ with pkgs.hax; {
         cm = "commit -m";
         ci = "commit";
         co = "checkout";
+        cod = gs ''git co $(git default) "$@"'';
         st = "status";
         br = gs ''
           esc=$'\e'
@@ -711,12 +712,15 @@ with pkgs.hax; {
         unhide = "update-index --no-skip-worktree";
         hidden = "! git ls-files -v | grep '^S' | cut -c3-";
         branch-name = "!git rev-parse --abbrev-ref HEAD";
+        default = gs "git symbolic-ref refs/remotes/origin/HEAD | sed s@refs/remotes/origin/@@";
         # Delete the remote version of the current branch
         unpublish = "!git push origin :$(git branch-name)";
         # Push current branch
         put = gs ''git push --set-upstream origin $(git branch-name) "$@"'';
         # Pull without merging
         get = "!git pull origin $(git branch-name) --ff-only";
+        # update a branch without checkout
+        gd = gs "git fetch origin $(git default):$(git default)";
         # Pull Master without switching branches
         got =
           "!f() { CURRENT_BRANCH=$(git branch-name) && git checkout $1 && git pull origin $1 --ff-only && git checkout $CURRENT_BRANCH;  }; f";
@@ -733,13 +737,18 @@ with pkgs.hax; {
         shake = "remote prune origin";
       };
       extraConfig = {
-        color.ui = true;
-        push.default = "simple";
-        pull.ff = "only";
         checkout.defaultRemote = "origin";
+        color.ui = true;
+        fetch.prune = true;
+        init.defaultBranch = "main";
+        pull.ff = "only";
+        push.default = "simple";
+        rebase.instructionFormat = "<%ae >%s";
         core = {
           editor = if isDarwin then "code --wait" else "nano";
           pager = "delta --dark";
+          autocrlf = "input";
+          hooksPath = "/dev/null";
         };
         delta = {
           navigate = true;
@@ -748,8 +757,6 @@ with pkgs.hax; {
           line-numbers-left-format = "";
           line-numbers-right-format = "│ ";
         };
-        rebase.instructionFormat = "<%ae >%s";
-        init.defaultBranch = "main";
       };
       ${attrIf (!isNixOS) "signing"} = {
         key = "03C0CBEA6EAB9258";
