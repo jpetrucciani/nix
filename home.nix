@@ -116,6 +116,7 @@ with pkgs.hax; {
         netcat-gnu
         nix
         nix-info
+        nix-output-monitor
         nix-prefetch-github
         nix-prefetch-scripts
         nix-tree
