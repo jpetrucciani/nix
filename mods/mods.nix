@@ -22,7 +22,7 @@ with builtins; rec {
   ### GENERAL STUFF
   _nixos-switch = { host }: writeBashBinChecked "switch" ''
     set -eo pipefail
-    toplevel=$(nix-build --expr 'with import ~/cfg {}; (nixos ~/cfg/hosts/${host}/configuration.nix).toplevel')
+    toplevel=$(nix-build --no-link --expr 'with import ~/cfg {}; (nixos ~/cfg/hosts/${host}/configuration.nix).toplevel')
     if [[ $(realpath /run/current-system) != "$toplevel" || "$POG_FORCE" == "1" ]];then
       ${nvd}/bin/nvd diff /run/current-system "$toplevel"
       sudo nix-env -p /nix/var/nix/profiles/system --set "$toplevel"
@@ -36,11 +36,12 @@ with builtins; rec {
     '';
     nixOS = ''
       ${_.git} -C ~/cfg/ pull origin main
-      "$(nix-build --expr 'with import ~/cfg {}; _nixos-switch' --argstr host "$HOSTNAME")"/bin/switch
+      "$(nix-build --no-link --expr 'with import ~/cfg {}; _nixos-switch' --argstr host "$HOSTNAME")"/bin/switch
     '';
     darwin = ''
       ${_.git} -C ~/.config/nixpkgs/ pull origin main
-      darwin-rebuild switch -I darwin=${nix-darwin} -I darwin-config="$NIXDARWIN_CONFIG"
+      nix_darwin_path="$(nix-build --no-link --expr 'with import ~/.config/nixpkgs {}; nix-darwin')"
+      darwin-rebuild switch -I darwin="$nix_darwin_path" -I darwin-config="$NIXDARWIN_CONFIG"
     '';
     switch =
       if

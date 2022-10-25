@@ -12,6 +12,7 @@ in
   ];
 
   home-manager.users.jacobi = common.jacobi;
+  documentation.enable = false;
 
   time.timeZone = common.timeZone;
   environment.variables = {
