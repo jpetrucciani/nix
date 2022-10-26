@@ -116,7 +116,7 @@ rec {
 
   srv =
     let
-      python = pkgs.python311.withPackages (p: with p; [ ]);
+      python = pkgs.python310.withPackages (p: with p; [ ]);
     in
     pog {
       name = "srv";

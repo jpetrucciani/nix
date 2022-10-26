@@ -1,8 +1,6 @@
 let
   pynixifyOverlay =
     final: prev: {
-      python38 = prev.python38.override { inherit packageOverrides; };
-      python39 = prev.python39.override { inherit packageOverrides; };
       python310 = prev.python310.override { inherit packageOverrides; };
       python311 = prev.python311.override { inherit packageOverrides; };
     };
