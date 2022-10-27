@@ -6,8 +6,8 @@ let
     defaults = {
       name = "traefik";
       namespace = "traefik";
-      version = "15.0.0";
-      sha256 = "0xih856ikw1s7lqs1cxhkmw7xcmp9jijyh3crj0jk8ffcxkj0wbf";
+      version = "18.1.0";
+      sha256 = "0ablg2nhnwfvjhys01syyzrihfakvb640gq1gp386pcadhjsr5iw";
     };
     version = rec {
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
@@ -18,8 +18,10 @@ let
       v12-0-7 = _v "12.0.7" "1hy7ikx2zcwyh8904h792f63mz689bxnwqps4wxsbmw626p3wz8p";
       v13-0-1 = _v "13.0.1" "13fdl2jgfz3afy15z69c4gqqw9yxs31mbn890kwsji0nysqm2x4d";
       v14-0-1 = _v "14.0.1" "1san9gi139v53q9fwcihbd9ddnq612zqc3gyhx4vr27y95jh6h2z";
-      v15-0-0 = _v defaults.version defaults.sha256;
-      latest = v15-0-0;
+      v15-0-0 = _v "15.0.0" "0xih856ikw1s7lqs1cxhkmw7xcmp9jijyh3crj0jk8ffcxkj0wbf";
+      v18-0-0 = _v "18.0.0" "0ay3rg7knc5c7mr5n51yhq3vavm983ggnrjql3slhzmp9rxl3lmp";
+      v18-1-0 = _v defaults.version defaults.sha256;
+      latest = v18-1-0;
     };
     index_url = "https://helm.traefik.io/traefik/index.yaml";
     chart_url = version: "https://helm.traefik.io/traefik/traefik-${version}.tgz";
