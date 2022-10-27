@@ -422,6 +422,57 @@ let
       };
     };
 
+    refurb = buildPythonPackage rec {
+      pname = "refurb";
+      version = "1.4.0";
+
+      format = "pyproject";
+      src = pkgs.fetchFromGitHub {
+        owner = "dosisod";
+        repo = "refurb";
+        rev = "v${version}";
+        sha256 = "sha256-YLgKW2PKI9F+vwtFGi3T0Eb/rJY3sXwE/JPNQ2ityCg=";
+      };
+
+      propagatedBuildInputs = [
+        mypy
+        poetry
+      ];
+
+      meta = with lib; {
+        description = "Tool for refurbishing and modernizing Python codebases";
+        homepage = "https://github.com/dosisod/refurb";
+      };
+    };
+
+    ruff = buildPythonPackage rec {
+      pname = "ruff";
+      version = "0.0.85";
+
+      format = "pyproject";
+
+      src = pkgs.fetchFromGitHub {
+        owner = "charliermarsh";
+        repo = "ruff";
+        rev = "v${version}";
+        sha256 = "sha256-qb0UuZoHQnhShDh5o5jKU73R1D9TjFVEOthKseFR5WY=";
+      };
+
+      cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
+        inherit src sourceRoot;
+        name = "${pname}-${version}";
+        sha256 = "sha256-F5MV+0bvgJE/J4jHl9DvGux0I9/UPh4O/mLUxfVmEE4=";
+      };
+      sourceRoot = "";
+
+      nativeBuildInputs = [ setuptools-rust ] ++ (with pkgs.rustPlatform; [
+        cargoSetupHook
+        maturinBuildHook
+        rust.cargo
+        rust.rustc
+      ]);
+    };
+
   };
 in
 pynixifyOverlay
