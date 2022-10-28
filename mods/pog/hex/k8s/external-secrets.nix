@@ -6,15 +6,16 @@ let
     defaults = {
       name = "external-secrets";
       namespace = "external-secrets";
-      version = "0.6.0";
-      sha256 = "0pf6z5yzr32cj0i9s1wg0vmbjqrbcsc11gz4s6ymh5jcx07x2b6p";
+      version = "0.6.1";
+      sha256 = "02kacs4wdp5q9dlpndkzj4fxi30kpl6gxfqalgq5q9y3vr3l5gwv";
       store_name = "gsm";
     };
     version = rec {
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
       v0-5-9 = _v "0.5.9" "0mxm237a7q8gvxvpcqk6zs0rbv725260xdvhd27kibirfjwm4zxl";
-      v0-6-0 = _v defaults.version defaults.sha256;
-      latest = v0-6-0;
+      v0-6-0 = _v "0.6.0" "0pf6z5yzr32cj0i9s1wg0vmbjqrbcsc11gz4s6ymh5jcx07x2b6p";
+      v0-6-1 = _v defaults.version defaults.sha256;
+      latest = v0-6-1;
     };
     chart_url = version: hex.k8s.helm.charts.url.github {
       inherit version;
