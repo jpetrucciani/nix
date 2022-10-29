@@ -1,7 +1,7 @@
 final: prev:
 with prev;
 rec {
-  nixup = writeBashBinCheckedWithFlags {
+  nixup = pog {
     name = "nixup";
     description = "a quick tool to create a base nix environment!";
     flags = [

@@ -12,6 +12,9 @@ on:
       path:
         type: string
         required: true
+      extra_path:
+        type: string
+        required: false
     secrets:
       pat:
         required: true
@@ -29,6 +32,8 @@ jobs:
             experimental-features = nix-command flakes
       - run: nix-env -f . -iA gh moreutils
       - run: nix shell -f . ${{ inputs.command }} -c ${{ inputs.command }} | sponge ${{ inputs.path }}
+      - run: cp ${{ inputs.path }} ${{ inputs.extra_path }}
+        if: inputs.extra_path != ''
       - uses: peter-evans/create-pull-request@v4.2.0
         id: cpr
         with:
