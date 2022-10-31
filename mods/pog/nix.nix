@@ -186,11 +186,11 @@ rec {
         description = "only render and patch, do not diff or apply";
         bool = true;
       }
-      {
-        name = "check";
-        description = "whether to check the hex for deprecations";
-        bool = true;
-      }
+      # {
+      #   name = "check";
+      #   description = "whether to check the hex for deprecations";
+      #   bool = true;
+      # }
       {
         name = "prettify";
         description = "whether to run prettier on the hex output yaml";
