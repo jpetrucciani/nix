@@ -9,6 +9,7 @@ with builtins; rec {
     curl = "${pkgs.curl}/bin/curl";
     figlet = "${pkgs.figlet}/bin/figlet";
     git = "${pkgs.git}/bin/git";
+    gum = "${pkgs.gum}/bin/gum";
     gron = "${pkgs.gron}/bin/gron";
     jq = "${pkgs.jq}/bin/jq";
     rg = "${pkgs.ripgrep}/bin/rg";
@@ -299,9 +300,8 @@ with builtins; rec {
         "node:16"
         "node:14"
         "node:12"
-        "python:3.11-rc"
+        "python:3.11"
         "python:3.10"
-        "python:3.9"
         "ubuntu:22.04"
         "ubuntu:20.04"
       ];
@@ -553,20 +553,31 @@ with builtins; rec {
           empty = name: ''[ ! -s "''${${name}}" ]'';
           notEmpty = name: ''[ -s "''${${name}}" ]'';
         };
-        yesno = { prompt ? "Would you like to continue?" }: ''
-          while true; do
-            read -r -p "${prompt} " yn
-            case $yn in
-              [Yy]* ) break;;
-              [Nn]* ) exit;;
-              * ) echo "Please answer y/yes or n/no!";;
-            esac
-          done
-        '';
         timer = {
           start = name: ''_pog_start_${name}="$(${_.date} +%s.%N)"'';
           stop = name: ''"$(echo "$(${_.date} +%s.%N) - $_pog_start_${name}" | ${pkgs.bc}/bin/bc -l)"'';
         };
+        confirm = yesno;
+        yesno = { prompt ? "Would you like to continue?" }: ''
+          ${_.gum} confirm "${prompt}"
+        '';
+
+        spinner = { command, spinner ? "dot", align ? "left", title ? "processing..." }: ''
+          ${_.gum} spin --spinner="${spinner}" --align="${align}" --title="${title}" ${command}
+        '';
+        spinners = [
+          "line"
+          "dot"
+          "minidot"
+          "jump"
+          "pulse"
+          "points"
+          "globe"
+          "moon"
+          "monkey"
+          "meter"
+          "hamburger"
+        ];
 
         # shorthands
         flag = var.notEmpty;
@@ -806,7 +817,7 @@ with builtins; rec {
         bool = true;
       }
     ];
-    script = ''
+    script = h: with h; ''
       color="''${color^^}"
       trim_string "     foo       "
       upper 'foo'
@@ -841,6 +852,7 @@ with builtins; rec {
       hidden "this text should be hidden!"
       echo -e "''${GREEN_BG}''${RED}this text is red on a green background and looks awful''${RESET}"
       echo -e "''${!color}this text has its color set by a flag '--color' or env var 'POG_COLOR' (default green)''${RESET}"
+      ${spinner {command="sleep 3";}}
       die "this is a die" 0
     '';
   };

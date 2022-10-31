@@ -214,7 +214,6 @@ rec {
           k = "${pkgs.kubectl}/bin/kubectl";
           hr = "${hexrender}/bin/hexrender";
           delta = "${pkgs.delta}/bin/delta";
-          pluto = "${pluto}/bin/pluto";
           mktemp = "${pkgs.coreutils}/bin/mktemp";
           prettier = "${pkgs.nodePackages.prettier}/bin/prettier --write --config ${../../.prettierrc.js}";
         };
@@ -233,7 +232,6 @@ rec {
         if [ $render_exit_code -ne 0 ]; then
           die "nixrender failed!" 2
         fi
-        ${flag "check"} && ${_.pluto} detect "$rendered"
         ${flag "prettify"} && ${_.prettier} --parser yaml "$rendered" >/dev/null
         if ${flag "render"}; then
           cat "$rendered"
@@ -263,7 +261,7 @@ rec {
         ${_.delta} <"$diffed"
         ${flag "dryrun"} && exit 0
         echo "---"
-        ${yesno {prompt="Would you like to apply these changes?";}}
+        ${confirm {prompt="Would you like to apply these changes?";}}
         echo "---"
         ${timer.start steps.apply}
         ${_.k} apply -f "$rendered"
