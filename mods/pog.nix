@@ -853,6 +853,7 @@ with builtins; rec {
       echo -e "''${GREEN_BG}''${RED}this text is red on a green background and looks awful''${RESET}"
       echo -e "''${!color}this text has its color set by a flag '--color' or env var 'POG_COLOR' (default green)''${RESET}"
       ${spinner {command="sleep 3";}}
+      ${confirm {}}
       die "this is a die" 0
     '';
   };
