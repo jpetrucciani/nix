@@ -48,8 +48,27 @@ rec {
     else
       str;
 
+  patchYaml =
+    { url
+    , sha256
+    , patch
+    , name ? "source"
+    , version ? "0.0.1"
+    , format ? true
+    }: builtins.readFile (pkgs.runCommand "${name}-${version}" { src = builtins.fetchurl { inherit url sha256; }; } ''
+      ${if isFunction patch then patch _ else patch}
+      ${_.prettier} --parser yaml $out
+    '');
+
   _ = rec {
+    _cu = "${pkgs.coreutils}/bin";
+    cut = "${_cu}/cut";
+    head = "${_cu}/head";
+    mktemp = "${_cu}/mktemp";
+    grep = "${pkgs.gnugrep}/bin/grep";
     sed = "${pkgs.gnused}/bin/sed";
+    tail = "${_cu}/tail";
+    tr = "${_cu}/tr";
     yq = "${pkgs.yq-go}/bin/yq";
     prettier = "${pkgs.nodePackages.prettier}/bin/prettier --write --config ${_files.prettier_config}";
 
