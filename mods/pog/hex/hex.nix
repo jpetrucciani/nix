@@ -48,7 +48,7 @@ rec {
     else
       str;
 
-  patchYaml =
+  patchYAML =
     { url
     , sha256
     , patch
