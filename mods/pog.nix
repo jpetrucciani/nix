@@ -558,8 +558,8 @@ with builtins; rec {
           stop = name: ''"$(echo "$(${_.date} +%s.%N) - $_pog_start_${name}" | ${pkgs.bc}/bin/bc -l)"'';
         };
         confirm = yesno;
-        yesno = { prompt ? "Would you like to continue?" }: ''
-          ${_.gum} confirm "${prompt}"
+        yesno = { prompt ? "Would you like to continue?", exit_code ? 0 }: ''
+          ${_.gum} confirm "${prompt}" || exit ${toString exit_code}
         '';
 
         spinner = { command, spinner ? "dot", align ? "left", title ? "processing..." }: ''
@@ -853,7 +853,7 @@ with builtins; rec {
       echo -e "''${GREEN_BG}''${RED}this text is red on a green background and looks awful''${RESET}"
       echo -e "''${!color}this text has its color set by a flag '--color' or env var 'POG_COLOR' (default green)''${RESET}"
       ${spinner {command="sleep 3";}}
-      ${confirm {}}
+      ${confirm {exit_code=69;}}
       die "this is a die" 0
     '';
   };
