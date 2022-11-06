@@ -47,13 +47,11 @@ rec {
       [ "$mkderivation" = "1" ] && envtype="${"\n"}mkDerivation = true;";
       ${prev.coreutils}/bin/cat -s <<EOF | ${_.nixpkgs-fmt}
         { jacobi ? import
-            (
-              fetchTarball {
+            (fetchTarball {
                 name = "jacobi-$(date '+%F')";
                 url = "https://nix.cobi.dev/x/$rev";
                 sha256 = "$sha";
-              }
-            )
+            })
             {}
         }:
         let
