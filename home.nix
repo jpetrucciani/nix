@@ -545,7 +545,7 @@ with pkgs.hax; {
 
           # vscode extensions
           extensions = {
-            elixir-ls = "animus-coop.vscode-elixir-mix-formatter";
+            elixir-ls = "JakeBecker.elixir-ls";
             nix-ide = "jnoortheen.nix-ide";
             prettier = "esbenp.prettier-vscode";
             python = "ms-python.python";
