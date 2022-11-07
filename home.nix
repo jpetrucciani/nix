@@ -112,7 +112,6 @@ with pkgs.hax; {
         moreutils
         nano
         nanorc
-        ncdu
         netcat-gnu
         nix
         nix-info
@@ -276,6 +275,7 @@ with pkgs.hax; {
             binutils
             bitwarden-cli
             keybase
+            ncdu
             sampler
             vtm
 
