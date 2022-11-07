@@ -325,8 +325,8 @@ with pkgs.hax; {
   };
 
   programs.bash = {
-    enable = true;
     inherit sessionVariables;
+    enable = true;
     historyFileSize = -1;
     historySize = -1;
     shellAliases = {
