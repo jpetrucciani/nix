@@ -111,18 +111,18 @@ rec {
     )
     { };
 
-  kubectl = prev.kubectl.override {
-    kubernetes = (prev.kubernetes.override { buildGoModule = buildGo119Module; }).overrideAttrs (old: rec {
-      version = "1.25.3";
+  # kubectl = prev.kubectl.override {
+  #   kubernetes = (prev.kubernetes.override { buildGoModule = buildGo119Module; }).overrideAttrs (old: rec {
+  #     version = "1.25.3";
 
-      src = fetchFromGitHub {
-        owner = "kubernetes";
-        repo = "kubernetes";
-        rev = "v${version}";
-        sha256 = "sha256-UDulyX1PXyAe4cqtekOY1nmQnmMqVLFuHnCswFfE6v0=";
-      };
-    });
-  };
+  #     src = fetchFromGitHub {
+  #       owner = "kubernetes";
+  #       repo = "kubernetes";
+  #       rev = "v${version}";
+  #       sha256 = "sha256-UDulyX1PXyAe4cqtekOY1nmQnmMqVLFuHnCswFfE6v0=";
+  #     };
+  #   });
+  # };
 
   gke-gcloud-auth-plugin = prev.callPackage
     ({ stdenvNoCC, callPackage, fetchurl, autoPatchelfHook, openssl, lib }:
