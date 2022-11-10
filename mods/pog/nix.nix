@@ -25,6 +25,7 @@ rec {
       jacobi=$(${nix_hash_jpetrucciani}/bin/nix_hash_jpetrucciani);
       rev=$(echo "$jacobi" | ${_.jq} -r '.rev')
       sha=$(echo "$jacobi" | ${_.jq} -r '.sha256')
+      toplevel=""
       py=""
       [ "$with_python" = "1" ] && py="python = [(python310.withPackages ( p: with p; [${"\n"}requests]))];"
       vlang=""
@@ -32,9 +33,13 @@ rec {
       nim=""
       [ "$with_nim" = "1" ] && nim="nim = [nim.withPackages (p: with p; [])];"
       node=""
-      [ "$with_node" = "1" ] && node="node = [nodejs-18_x${"\n"}nodePackages.prettier];" && mkderivation=1;
+      if [ "$with_node" = "1" ]; then
+        mkderivation=1
+        toplevel="node = jacobi.nodejs-18_x;"
+        node="node = [node];npm = with node.pkgs; [prettier${"\n"}yarn];"
+      fi
       golang=""
-      [ "$with_golang" = "1" ] && golang="go = [go_1_19${"\n"}go-tools];"
+      [ "$with_golang" = "1" ] && golang="go = [go_1_19${"\n"}go-tools gopls];"
       rust=""
       [ "$with_rust" = "1" ] && rust="rust = [cargo${"\n"}rust-analyzer rustc rustfmt];"
       ruby=""
@@ -42,7 +47,10 @@ rec {
       terraform=""
       [ "$with_terraform" = "1" ] && terraform="terraform = [terraform${"\n"}terraform-ls terrascan tfsec];"
       elixir=""
-      [ "$with_elixir" = "1" ] && elixir="elixir = [elixir${"\n"}(with beamPackages; [${"\n"}hex])(ifIsLinux [inotify-tools]) (ifIsDarwin [ terminal-notifier (with darwin.apple_sdk.frameworks; [ CoreFoundation CoreServices ])])];"
+      if [ "$with_elixir" = "1" ]; then
+        elixir="elixir = [elixir${"\n"}(with beamPackages; [${"\n"}hex])(ifIsLinux [inotify-tools]) (ifIsDarwin [ terminal-notifier (with darwin.apple_sdk.frameworks; [ CoreFoundation CoreServices ])])];"
+        toplevel="inherit (jacobi.hax) ifIsLinux ifIsDarwin;${"\n"}$toplevel"
+      fi
       envtype=""
       [ "$mkderivation" = "1" ] && envtype="${"\n"}mkDerivation = true;";
       ${prev.coreutils}/bin/cat -s <<EOF | ${_.nixpkgs-fmt}
@@ -55,9 +63,9 @@ rec {
             {}
         }:
         let
-          inherit (jacobi.hax) ifIsLinux ifIsDarwin;
-        
           name = "$directory";
+
+          ''${toplevel}
           tools = with jacobi; {
             cli = [
               jq
