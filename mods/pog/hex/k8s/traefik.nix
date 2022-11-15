@@ -13,7 +13,6 @@ let
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
       latest = v20-2-0;
       v20-2-0 = _v defaults.version defaults.sha256;
-      v20-0-0 = _v "20.2.0" "01q64bx4q54n15qivddxifl3lm7iy2148l0qc61zhhh1wp2d07ha";
       v20-1-1 = _v "20.1.1" "1nsali7nbyrjx99pqqcs7y0y9fhcg4xla3hpy11wn1axdlr7mr3w";
       v20-1-0 = _v "20.1.0" "1q79vf4z24pya9v33syhv7f50jr8l2vhdmxqvrb5w9v92drpi57z";
       v20-0-0 = _v "20.0.0" "09pj1xg7ldprlbcp3jmbiw1f395llf0vbaa9xxffiwh56f5nc8mk";
