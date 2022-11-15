@@ -21,6 +21,7 @@ let
       v19-0-2 = _v "19.0.2" "1xifm3bqcg6z91k4f5x2aj854lqjmn50c68q993wmmb9glf1519m";
       v19-0-1 = _v "19.0.1" "09ms5r7m49pkb2wdnzy452c0va4crr0xp61p0i9gkc009x58r15p";
       v19-0-0 = _v "19.0.0" "0pmgw6kfmm1kh3ifn80pkj3pxpzdbgdz4mc214vqc2lnlxrdxzwl";
+      v12-0-7 = _v "12.0.7" "1hy7ikx2zcwyh8904h792f63mz689bxnwqps4wxsbmw626p3wz8p";
     };
     index_url = "https://traefik.github.io/charts/index.yaml";
     chart_url = version: "https://traefik.github.io/charts/traefik/traefik-${version}.tgz";
@@ -34,6 +35,7 @@ let
       , extraFlags ? [ "--create-namespace" ]
       , internal ? false
       , sortYaml ? false
+      , logLevel ? "DEBUG"
         # other options
       , replicas ? 3
       , exposeTraefik ? false
@@ -58,7 +60,7 @@ let
           } else { };
         values = {
           additionalArguments = [
-            "--log.level=DEBUG"
+            "--log.level=${logLevel}"
             "--ping"
             "--metrics.prometheus"
             "--serversTransport.insecureSkipVerify=true"
