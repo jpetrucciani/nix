@@ -447,7 +447,7 @@ let
 
     ruff = buildPythonPackage rec {
       pname = "ruff";
-      version = "0.0.103";
+      version = "0.0.120";
 
       format = "pyproject";
 
@@ -455,13 +455,13 @@ let
         owner = "charliermarsh";
         repo = "ruff";
         rev = "v${version}";
-        sha256 = "sha256-P5/3mixcwyz41nsvrdy1LTOX8+XJtXg5IL+zDRqDKZg=";
+        sha256 = "sha256-7rh0xYwoWRY6D2Us6EB+AI5/PAqWqbWmTYnLk1UjYp8=";
       };
 
       cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
         inherit src sourceRoot;
         name = "${pname}-${version}";
-        sha256 = "sha256-8/m7CZFrK/3kEAIwa0AxTXBYLFc1xHTqXvY0DSIyxNo=";
+        sha256 = "sha256-6P1c4U70V/dP8U2K0FBf7P4BkQXf9U5AQ0IT+XEWTkw=";
       };
       sourceRoot = "";
 
