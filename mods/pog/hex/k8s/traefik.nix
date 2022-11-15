@@ -6,25 +6,25 @@ let
     defaults = {
       name = "traefik";
       namespace = "traefik";
-      version = "18.1.0";
-      sha256 = "0ablg2nhnwfvjhys01syyzrihfakvb640gq1gp386pcadhjsr5iw";
+      version = "20.2.0";
+      sha256 = "01q64bx4q54n15qivddxifl3lm7iy2148l0qc61zhhh1wp2d07ha";
     };
     version = rec {
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
-      v10-24-3 = _v "10.24.3" "1dcby7c4bbjxv42c83n5g45na5hr9dmy0xgy0x2vb5b2rgbcmx70";
-      v10-33-0 = _v "10.33.0" "02692bgy5g1p7v9fdclb2fmxxv364kv7xbw2b1z5c2r1wj271g6k";
-      v11-1-1 = _v "11.1.1" "0rj97xam3rszgvfvviyv4933k5g61h5s782k2ir9arr0fgwvy50b";
-      v12-0-2 = _v "12.0.2" "0kkknd4lad1r8vclwxfgl3rqr8yjmwp2rsyf9znmmr7ms91ajh8a";
-      v12-0-7 = _v "12.0.7" "1hy7ikx2zcwyh8904h792f63mz689bxnwqps4wxsbmw626p3wz8p";
-      v13-0-1 = _v "13.0.1" "13fdl2jgfz3afy15z69c4gqqw9yxs31mbn890kwsji0nysqm2x4d";
-      v14-0-1 = _v "14.0.1" "1san9gi139v53q9fwcihbd9ddnq612zqc3gyhx4vr27y95jh6h2z";
-      v15-0-0 = _v "15.0.0" "0xih856ikw1s7lqs1cxhkmw7xcmp9jijyh3crj0jk8ffcxkj0wbf";
-      v18-0-0 = _v "18.0.0" "0ay3rg7knc5c7mr5n51yhq3vavm983ggnrjql3slhzmp9rxl3lmp";
-      v18-1-0 = _v defaults.version defaults.sha256;
-      latest = v18-1-0;
+      latest = v20-2-0;
+      v20-2-0 = _v defaults.version defaults.sha256;
+      v20-0-0 = _v "20.2.0" "01q64bx4q54n15qivddxifl3lm7iy2148l0qc61zhhh1wp2d07ha";
+      v20-1-1 = _v "20.1.1" "1nsali7nbyrjx99pqqcs7y0y9fhcg4xla3hpy11wn1axdlr7mr3w";
+      v20-1-0 = _v "20.1.0" "1q79vf4z24pya9v33syhv7f50jr8l2vhdmxqvrb5w9v92drpi57z";
+      v20-0-0 = _v "20.0.0" "09pj1xg7ldprlbcp3jmbiw1f395llf0vbaa9xxffiwh56f5nc8mk";
+      v19-0-4 = _v "19.0.4" "1j0fgr2jmi8p2zxf7k8764lidmw96vqcy5y821hlr66a8l1cp1iy";
+      v19-0-3 = _v "19.0.3" "1dshzin4gx8lbm49lf7w75jv5bvya2dzcdvmlynz6q3w8i601lsl";
+      v19-0-2 = _v "19.0.2" "1xifm3bqcg6z91k4f5x2aj854lqjmn50c68q993wmmb9glf1519m";
+      v19-0-1 = _v "19.0.1" "09ms5r7m49pkb2wdnzy452c0va4crr0xp61p0i9gkc009x58r15p";
+      v19-0-0 = _v "19.0.0" "0pmgw6kfmm1kh3ifn80pkj3pxpzdbgdz4mc214vqc2lnlxrdxzwl";
     };
-    index_url = "https://helm.traefik.io/traefik/index.yaml";
-    chart_url = version: "https://helm.traefik.io/traefik/traefik-${version}.tgz";
+    index_url = "https://traefik.github.io/charts/index.yaml";
+    chart_url = version: "https://traefik.github.io/charts/traefik/traefik-${version}.tgz";
     chart =
       { name ? "traefik${if internal then "-internal" else ""}"
       , namespace ? defaults.namespace

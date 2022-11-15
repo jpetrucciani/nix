@@ -57,11 +57,11 @@ rec {
       chart_url = "${base}/gitlab-runner-{1}.tgz";
     };
 
-  chart_scan_traefik = let base = "https://helm.traefik.io/traefik"; in
+  chart_scan_traefik = let base = "https://traefik.github.io/charts"; in
     _chart_scan {
       name = "traefik";
       index_url = "${base}/index.yaml";
-      chart_url = "${base}/traefik-{1}.tgz";
+      chart_url = "${base}/traefik/traefik-{1}.tgz";
     };
 
   helm_pog_scripts = [
