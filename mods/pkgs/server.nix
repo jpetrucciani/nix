@@ -30,31 +30,31 @@ rec {
           aarch64-darwin = {
             arch = "arm64";
             short = "Darwin";
-            sha256 = "1bzrqhiij6j1qcw7vfwac8fkfpvcvmnfdi1pxy6av9ll2dbxwm1s";
+            sha256 = "1i7jlayar9zqy7y2zd43jcwilk0d4kah8h1f01rp99r3bsyvgrpk";
           };
 
           aarch64-linux = {
             arch = "arm64";
             short = "Linux";
-            sha256 = "0gwi2k3rba1kakbb4ihbvkz0fggx2vsv7nvh7fqcj90qdic8zqcv";
+            sha256 = "0yynqxj1d807izy4vyiywqchfmllyxh187dcr8v5m8mlr92zvqks";
           };
 
           x86_64-darwin = {
             arch = "x86_64";
             short = "Darwin";
-            sha256 = "15dl9ls71vza6mzdb7wvgld7mwix68qwfb1ijgvwdinalgwvja1m";
+            sha256 = "0pp7nbwrvayazvmx9l1k2hhdh61n1wqr0jd800xl94fsc0aiwrf2";
           };
 
           x86_64-linux = {
             arch = "x86_64";
             short = "Linux";
-            sha256 = "0yjlp8xrw48nwkkky3bglsp14bg7n9yg6fkskans8nnzsm5m3rsd";
+            sha256 = "0xn1jaln9wjkjcf3h4w34m4n47ixy77bijfs9car3w0f27aiq5ph";
           };
         };
         dist = dists.${stdenvNoCC.hostPlatform.system} or (throw "Unsupported system: ${stdenvNoCC.hostPlatform.system}");
         pname = "zinc";
         owner = "zinclabs";
-        version = "0.3.3";
+        version = "0.3.5";
       in
       stdenvNoCC.mkDerivation rec {
         inherit pname version;

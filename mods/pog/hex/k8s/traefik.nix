@@ -6,21 +6,18 @@ let
     defaults = {
       name = "traefik";
       namespace = "traefik";
-      version = "20.2.0";
-      sha256 = "01q64bx4q54n15qivddxifl3lm7iy2148l0qc61zhhh1wp2d07ha";
+      version = "20.3.0";
+      sha256 = "0vy2c4gli812cb1rwqx8scqaxfajrl664m9s2j6x8xm942w71ivj";
     };
     version = rec {
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
-      latest = v20-2-0;
-      v20-2-0 = _v defaults.version defaults.sha256;
+      latest = v20-3-0;
+      v20-3-0 = _v defaults.version defaults.sha256;
+      v20-2-1 = _v "20.2.1" "0yhnhcvp0pjfc4qsgsi4b9hzxavnaigazyyc4874jd5xs3z4gwmf";
       v20-1-1 = _v "20.1.1" "1nsali7nbyrjx99pqqcs7y0y9fhcg4xla3hpy11wn1axdlr7mr3w";
       v20-1-0 = _v "20.1.0" "1q79vf4z24pya9v33syhv7f50jr8l2vhdmxqvrb5w9v92drpi57z";
       v20-0-0 = _v "20.0.0" "09pj1xg7ldprlbcp3jmbiw1f395llf0vbaa9xxffiwh56f5nc8mk";
       v19-0-4 = _v "19.0.4" "1j0fgr2jmi8p2zxf7k8764lidmw96vqcy5y821hlr66a8l1cp1iy";
-      v19-0-3 = _v "19.0.3" "1dshzin4gx8lbm49lf7w75jv5bvya2dzcdvmlynz6q3w8i601lsl";
-      v19-0-2 = _v "19.0.2" "1xifm3bqcg6z91k4f5x2aj854lqjmn50c68q993wmmb9glf1519m";
-      v19-0-1 = _v "19.0.1" "09ms5r7m49pkb2wdnzy452c0va4crr0xp61p0i9gkc009x58r15p";
-      v19-0-0 = _v "19.0.0" "0pmgw6kfmm1kh3ifn80pkj3pxpzdbgdz4mc214vqc2lnlxrdxzwl";
       v12-0-7 = _v "12.0.7" "1hy7ikx2zcwyh8904h792f63mz689bxnwqps4wxsbmw626p3wz8p";
     };
     index_url = "https://traefik.github.io/charts/index.yaml";

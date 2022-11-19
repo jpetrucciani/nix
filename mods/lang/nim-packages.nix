@@ -364,6 +364,21 @@ rec {
     meta = { };
   };
 
+  oauth = rec {
+    name = "oauth";
+    sub = "/src";
+    src = fetchFromGitHub {
+      owner = "CORDEA";
+      repo = name;
+      rev = "b8c163b0d9cfad6d29ce8c1fb394e5f47182ee1c";
+      sha256 = "sha256-ZQvzIKqTkRbvE28uOoVFGTlVMZy+gQWeyW09K7+nukw=";
+    };
+    dependencies = [
+      sha1
+    ];
+    meta = { };
+  };
+
   pixie = rec {
     name = "pixie";
     version = "3.1.2";
@@ -461,6 +476,17 @@ rec {
       repo = name;
       rev = "7efcb0e34c583e73f34f6f407cb173f58ae79846";
       sha256 = "sha256-bLXQL2EM+05YjXYhSL2nPeRIDDoGuV98T3DLzrQpE4Y=";
+    };
+    meta = { };
+  };
+
+  sha1 = rec {
+    name = "sha1";
+    src = fetchFromGitHub {
+      owner = "onionhammer";
+      repo = name;
+      rev = "92ccc5800bb0ac4865b275a2ce3c1544e98b48bc";
+      sha256 = "sha256-tWHouIa6AFRmbvJaMsoWKNZX7bzqd3Je1kJ4rVHb+wM=";
     };
     meta = { };
   };

@@ -13,7 +13,7 @@ let
         value = pkgs.callPackage (../pkgs + ("/" + n))
           {
             inherit pkgs;
-            nodejs = pkgs.nodejs-14_x;
+            nodejs = pkgs.nodejs-16_x;
           };
       }
     );
