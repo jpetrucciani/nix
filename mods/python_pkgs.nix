@@ -8,7 +8,7 @@ let
   remove = e: builtins.filter (x: x != e);
 
   packageOverrides = final: prev: with final; {
-    inherit (prev.stdenv) isDarwin isAarch64 isNixOS;
+    inherit (prev.stdenv) isDarwin isAarch64;
     isM1 = isDarwin && isAarch64;
     isOldMac = isDarwin && !isAarch64;
 
@@ -31,6 +31,56 @@ let
       meta = with lib; {
         description = "a new way to do python code documentation";
         homepage = "https://github.com/jpetrucciani/archives.git";
+      };
+    };
+
+    boddle = buildPythonPackage rec {
+      pname = "boddle";
+      version = "0.2.9";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "0p3bfb2n0v3w27f5ji0na5pchjprklalddxsjd1bdbdi585naldn";
+      };
+
+      propagatedBuildInputs = [ bottle ];
+
+      meta = with lib; {
+        description = "A unit testing tool for Python's bottle library.";
+        homepage = "https://github.com/keredson/boddle";
+      };
+    };
+
+    procrastinate = buildPythonPackage rec {
+      pname = "procrastinate";
+      version = "0.26.0";
+
+      format = "pyproject";
+      src = pkgs.fetchFromGitHub {
+        owner = "procrastinate-org";
+        repo = pname;
+        rev = version;
+        sha256 = "sha256-DPFvp8tF42y7r3cReX/20slDRpHOmo3TadKMNU7/GtI=";
+      };
+
+      preBuild = ''
+        substituteInPlace ./pyproject.toml --replace 'psycopg2-binary' 'psycopg2'
+        substituteInPlace ./poetry.lock --replace 'psycopg2-binary' 'psycopg2'
+      '';
+
+      propagatedBuildInputs = [
+        aiopg
+        attrs
+        click
+        croniter
+        python-dateutil
+        psycopg2
+        poetry
+      ];
+
+      meta = with lib; {
+        description = "Postgres-based distributed task processing library";
+        homepage = "https://procrastinate.readthedocs.io/";
       };
     };
 
