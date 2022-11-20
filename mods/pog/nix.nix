@@ -18,8 +18,10 @@ rec {
       _.flags.nix.with_ruby
       _.flags.nix.with_rust
       _.flags.nix.with_terraform
+      _.flags.nix.with_pulumi
       _.flags.nix.with_vlang
     ];
+    shortDefaultFlags = false;
     script = ''
       directory="$(pwd | ${_.sed} 's#.*/##')"
       jacobi=$(${nix_hash_jpetrucciani}/bin/nix_hash_jpetrucciani);
@@ -51,6 +53,11 @@ rec {
         elixir="elixir = [elixir${"\n"}(with beamPackages; [${"\n"}hex])(ifIsLinux [inotify-tools]) (ifIsDarwin [ terminal-notifier (with darwin.apple_sdk.frameworks; [ CoreFoundation CoreServices ])])];"
         toplevel="inherit (jacobi.hax) ifIsLinux ifIsDarwin;${"\n"}$toplevel"
       fi
+      pulumi=""
+      if [ "$with_pulumi" = "1" ]; then
+        py="python = [(python310.withPackages ( p: with p; [${"\n"}pulumi]))];"
+        pulumi="pulumi = [pulumi];"
+      fi
       envtype=""
       [ "$mkderivation" = "1" ] && envtype="${"\n"}mkDerivation = true;";
       ${prev.coreutils}/bin/cat -s <<EOF | ${_.nixpkgs-fmt}
@@ -71,7 +78,7 @@ rec {
               jq
               nixpkgs-fmt
             ];
-            ''${golang} ''${node} ''${py} ''${rust} ''${ruby} ''${terraform} ''${vlang} ''${nim} ''${elixir}
+            ''${golang} ''${node} ''${py} ''${rust} ''${ruby} ''${terraform} ''${pulumi} ''${vlang} ''${nim} ''${elixir}
           };
 
           env = jacobi.enviro {

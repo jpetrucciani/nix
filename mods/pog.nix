@@ -234,6 +234,12 @@ with builtins; rec {
           bool = true;
           description = "include terraform";
         };
+        with_pulumi = {
+          name = "with_pulumi";
+          short = "u";
+          bool = true;
+          description = "include pulumi";
+        };
         with_vlang = {
           name = "with_vlang";
           short = "w";
