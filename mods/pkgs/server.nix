@@ -32,19 +32,16 @@ rec {
             short = "Darwin";
             sha256 = "1i7jlayar9zqy7y2zd43jcwilk0d4kah8h1f01rp99r3bsyvgrpk";
           };
-
           aarch64-linux = {
             arch = "arm64";
             short = "Linux";
             sha256 = "0yynqxj1d807izy4vyiywqchfmllyxh187dcr8v5m8mlr92zvqks";
           };
-
           x86_64-darwin = {
             arch = "x86_64";
             short = "Darwin";
             sha256 = "0pp7nbwrvayazvmx9l1k2hhdh61n1wqr0jd800xl94fsc0aiwrf2";
           };
-
           x86_64-linux = {
             arch = "x86_64";
             short = "Linux";
@@ -101,12 +98,21 @@ rec {
 
         vendorSha256 = "sha256-Hjdv2Fvl1S52CDs4TAR3Yt9pEFUIvs5N5sVhZY+Edzo=";
 
+        nativeBuildInputs = [ installShellFiles ];
+
         ldflags = [
           "-s"
           "-w"
           "-X main.Version=${version}"
           "-X main.GitCommit=${commit}"
         ];
+
+        postInstall = ''
+          installShellCompletion --cmd poglets \
+            --bash <($out/bin/poglets completion bash) \
+            --fish <($out/bin/poglets completion fish) \
+            --zsh  <($out/bin/poglets completion zsh)
+        '';
 
         meta = with lib; {
           inherit (src.meta) homepage;
