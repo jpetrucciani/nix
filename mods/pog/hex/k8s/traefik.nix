@@ -6,13 +6,14 @@ let
     defaults = {
       name = "traefik";
       namespace = "traefik";
-      version = "20.4.1";
-      sha256 = "1mpcmrs6jny1p2r4v15h5q7b4k3v0cj2p5zjq6mvah0988wav3jn";
+      version = "20.5.1";
+      sha256 = "0whwfpiw9j0cl30s6p19kv5zg35f6m54223zby9vx78595s2kw6k";
     };
     version = rec {
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
       latest = v20-4-1;
-      v20-4-1 = _v defaults.version defaults.sha256;
+      v20-5-1 = _v defaults.version defaults.sha256;
+      v20-4-1 = _v "20.4.1" "1mpcmrs6jny1p2r4v15h5q7b4k3v0cj2p5zjq6mvah0988wav3jn";
       v20-3-1 = _v "20.3.1" "1nrkh80qafmnwl00j16n04h737jgpd30yxr9r2g89l83p6a4v9xq";
       v20-2-1 = _v "20.2.1" "0yhnhcvp0pjfc4qsgsi4b9hzxavnaigazyyc4874jd5xs3z4gwmf";
       v20-1-1 = _v "20.1.1" "1nsali7nbyrjx99pqqcs7y0y9fhcg4xla3hpy11wn1axdlr7mr3w";
