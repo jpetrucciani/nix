@@ -122,13 +122,41 @@ let
         url = chart_url version;
         values = [ values_file ];
       };
+
+    # middlewares https://doc.traefik.io/traefik/middlewares/http/overview/
+    middleware = rec {
+      build = args: ''
+        ---
+        ${toYAML (setup args)}
+      '';
+      setup = { name, spec, kind ? "Middleware", apiVersion ? "traefik.containo.us/v1alpha1" }: {
+        inherit kind apiVersion spec;
+        metadata = {
+          inherit name;
+        };
+      };
+    };
+
+    # ingressroute https://doc.traefik.io/traefik/v2.2/routing/providers/kubernetes-crd/#kind-ingressroute
     ingress_route = rec {
       constants = { };
       build = args: ''
         ---
         ${toYAML (setup args)}
       '';
-      setup = { name, domain, port ? 80, namespace ? "default", service ? name, internal ? true, secretName ? "", labels ? [ ] }:
+      setup =
+        { name
+        , domain
+        , port ? 80
+        , namespace ? "default"
+        , service ? name
+        , internal ? true
+        , secretName ? ""
+        , labels ? [ ]
+        , middlewares ? [ ]
+        , extraRoutes ? [ ]
+        , extraSpec ? { }
+        }:
         let
           secure = (builtins.stringLength secretName) > 0;
           entrypoint = if secure then "websecure" else "web";
@@ -138,6 +166,7 @@ let
                 inherit secretName;
               };
             } else { };
+          # route = {kind ? "Rule", match ? "Host(`${host}`)", host ? ""}: {};
         in
         {
           apiVersion = "traefik.containo.us/v1alpha1";
@@ -155,17 +184,19 @@ let
             ];
             routes = [
               {
+                inherit middlewares;
                 kind = "Rule";
                 match = "Host(`${domain}`)";
                 services = [
                   {
                     inherit namespace port;
                     name = service;
+                    passHostHeader = true;
                   }
                 ];
               }
-            ];
-          } // tlsOptions;
+            ] ++ extraRoutes;
+          } // tlsOptions // extraSpec;
         };
     };
   };
