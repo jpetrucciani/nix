@@ -6,16 +6,16 @@ let
     defaults = {
       name = "gitlab-runner";
       namespace = "gitlab";
-      version = "0.46.1";
-      sha256 = "065hhf1z5kgv9vidyq0zld19qm3rgqhppkzlyy0nsyz4vl1cik56";
+      version = "0.47.1";
+      sha256 = "0d90ffhmqy6n0kxb07dyxyzhdd8k8l510zvm30kpj1l0nzf0b9xb";
     };
     version = rec {
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
-      v0-45-0 = _v "0.45.0" "03hk3rfz67in5cv01dmvv1cwd3df0rv3d0vwgki69hmyxgmlrq58";
+      latest = v0-47-1;
+      v0-47-1 = _v "0.47.1" "0d90ffhmqy6n0kxb07dyxyzhdd8k8l510zvm30kpj1l0nzf0b9xb";
+      v0-46-1 = _v "0.46.1" "065hhf1z5kgv9vidyq0zld19qm3rgqhppkzlyy0nsyz4vl1cik56";
       v0-45-1 = _v "0.45.1" "0pzgpa29f7lxcsf3jd11jib6fb65f5yj76jn2np8a2nlip58v3lz";
-      v0-46-0 = _v "0.46.0" "01kxhsrqrwbjfq44dwjpq35jj4wzass7zcbb9lqaiblxc22jrgw7";
-      v0-46-1 = _v defaults.version defaults.sha256;
-      latest = v0-46-1;
+      v0-44-3 = _v "0.44.3" "1mgqswh98bg13a0ng1m2wh26vrkcmpk7vxfi8bjknb58z1ndncvq";
     };
     chart_url = version: "https://gitlab-charts.s3.amazonaws.com/gitlab-runner-${version}.tgz";
     chart =
