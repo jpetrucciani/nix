@@ -46,6 +46,10 @@ This module allows us to transparently use helm charts in hex spells!
 
 [rancher](https://github.com/rancher/rancher) is an open-source multi-cluster orchestration platform
 
+### [stackstorm.nix](./stackstorm.nix)
+
+K8s Helm module for running a [StackStorm](https://stackstorm.com) cluster in HA mode.
+
 ### [services.nix](./services.nix)
 
 This module allows us to create best-practices, all-inclusive k8s services with a set of powerful nix functions.
