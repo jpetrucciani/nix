@@ -294,7 +294,7 @@ with builtins; rec {
 
       # docker images to use in various spots
       images = [
-        "alpine:3.16"
+        "alpine:3.17"
         "jpetrucciani/alpine:3.16"
         "jpetrucciani/nix:2.11"
         "mongo:5.0"
