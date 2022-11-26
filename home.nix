@@ -208,6 +208,7 @@ with pkgs.hax; {
         # kubernetes
         kubectl
         kubectx
+        fluxctl
         ## thanks google
         gke-gcloud-auth-plugin
 

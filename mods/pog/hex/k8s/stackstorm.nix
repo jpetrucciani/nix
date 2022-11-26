@@ -2,20 +2,20 @@
 let
   inherit (hex) toYAML;
 
-  rancher = rec {
+  # https://github.com/StackStorm/stackstorm-k8s
+  stackstorm = rec {
     defaults = {
-      name = "rancher";
-      namespace = "rancher";
-      version = "2.6.8";
-      sha256 = "1r176y195prfil61fzdgplcwfvish65pjx2nlylxj2az2acr143n";
+      name = "stackstorm";
+      namespace = "stackstorm";
+      version = "0.100.0";
+      sha256 = "1irm8wbhpp14cbgchm8d368hd194bkldymffjym7wqlc87an7prs";
     };
     version = rec {
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
-      latest = v2-6-8;
-      v2-6-8 = _v defaults.version defaults.sha256;
-      v2-6-4 = _v "2.6.4" "0ggfhgyn01nz4qb0izyihca3hzjc0v4292z9gnji37f82sbkqvcn";
+      latest = v0-100-0;
+      v0-100-0 = _v defaults.version defaults.sha256;
     };
-    chart_url = version: "https://releases.rancher.com/server-charts/stable/rancher-${version}.tgz";
+    chart_url = version: "https://helm.stackstorm.com/stackstorm-ha-${version}.tgz";
     chart =
       { name ? defaults.name
       , namespace ? defaults.namespace
@@ -32,4 +32,4 @@ let
       };
   };
 in
-rancher
+stackstorm

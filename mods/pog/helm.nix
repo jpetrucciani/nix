@@ -1,7 +1,7 @@
 final: prev:
 with prev;
 rec {
-  _chart_scan = { name, index_url, chart_url, last ? 10 }:
+  _chart_scan = { name, index_url, chart_url, chart_name ? name, last ? 10 }:
     let
       mktemp = "${pkgs.coreutils}/bin/mktemp";
       jq = "${pkgs.jq}/bin/jq";
@@ -18,7 +18,7 @@ rec {
 
         # grab index for this chart
         ${curl}/bin/curl -L -s '${index_url}' | \
-            ${yq} '.[].${name}.[] | [{"version": .version, "date": .created}]' | \
+            ${yq} '.[].${chart_name}.[] | [{"version": .version, "date": .created}]' | \
             ${coreutils}/bin/head -n ${toString (last * 2)} | \
             ${yq} -o=json >"$temp_json"
 
@@ -63,12 +63,19 @@ rec {
       index_url = "${base}/index.yaml";
       chart_url = "${base}/traefik/traefik-{1}.tgz";
     };
+  chart_scan_stackstorm = _chart_scan {
+    name = "stackstorm";
+    chart_name = "stackstorm-ha";
+    index_url = "https://helm.stackstorm.com/index.yaml";
+    chart_url = "https://helm.stackstorm.com/stackstorm-ha-{1}.tgz";
+  };
 
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_datadog
     chart_scan_external-secrets
     chart_scan_gitlab-runner
+    chart_scan_stackstorm
     chart_scan_traefik
   ];
 }
