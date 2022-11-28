@@ -254,6 +254,7 @@ with pkgs.hax; {
         nix_hash_medable
         nix_hash_nix-security-box
         nix_hash_nix2container
+        nix_hash_devenv
         nixup
         foo
 

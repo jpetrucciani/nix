@@ -19,6 +19,14 @@ with builtins; rec {
     })
     { pkgs = prev; };
 
+  devenv-pin = fromJSON (readFile ../sources/devenv.json);
+  devenv = (import
+    (fetchFromGitHub {
+      inherit (devenv-pin) rev sha256;
+      owner = "cachix";
+      repo = "devenv";
+    }));
+
   ### GENERAL STUFF
   _nixos-switch = { host }: writeBashBinChecked "switch" ''
     set -eo pipefail

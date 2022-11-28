@@ -50,5 +50,6 @@ final: prev: {
   nix_hash_npmlock2nix = final._nix_hash "nix-community/npmlock2nix" "master" "npmlock2nix";
   nix_hash_medable = final._nix_hash "Medable/nix" "main" "medable";
   nix_hash_nix-security-box = final._nix_hash "fabaff/nix-security-box" "main" "nix-security-box";
+  nix_hash_devenv = final._nix_hash "cachix/devenv" "main" "devenv";
   home-packages = (import ../home.nix).home.packages;
 }
