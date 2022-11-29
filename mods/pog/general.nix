@@ -179,6 +179,81 @@ rec {
     '';
   };
 
+  portwatch =
+    let
+      nc = "${netcat-gnu}/bin/nc";
+      timeout = "${prev.coreutils}/bin/timeout";
+      flags = [
+        {
+          name = "sleep";
+          description = "the amount of time to sleep in between attempts to ping a port";
+          default = "1";
+        }
+        {
+          name = "host";
+          description = "the hostname to wait for ports on";
+          default = "localhost";
+        }
+      ];
+      _portwatch = pog {
+        inherit flags;
+        name = "_portwatch";
+        shortDefaultFlags = false;
+        script = h: with h; ''
+          set -m
+          trap 'pkill -P $$' SIGINT SIGTERM
+          # shellcheck disable=SC2124
+          ports="$@"
+          ${var.empty "ports"} && die "you must specify one or more ports to wait for!" 1
+          _port(){
+            trap 'exit 0' SIGTERM
+            port="$1"
+            echo "[$port] waiting for port"
+            ${timer.start "up"}
+            while ! ${nc} -z "$host" "$port" ; do
+              debug "[$port] pinging port"
+              sleep "$sleep"
+            done
+            wait_time="$(${timer.round 2} ${timer.stop "up"})"
+            green "[$port] port is up after ''${wait_time} seconds!"
+          }
+          for port in $ports; do
+            _port "$port" &
+          done
+          wait
+        '';
+      };
+    in
+    pog {
+      name = "portwatch";
+      description = "a pog script to help with waiting for ports!";
+      flags = flags ++ [{
+        name = "timeout";
+        description = "the amount of seconds to wait before timing out";
+        default = "60";
+      }];
+      shortDefaultFlags = false;
+      script = h: with h;
+        ''
+          set -m
+          _int() { 
+            kill -INT "$child" 2>/dev/null
+          }
+          trap _int SIGINT
+          export POG_HOST="$host"
+          export POG_SLEEP="$sleep"
+          ${timer.start "all"}
+          # shellcheck disable=SC2068
+          ${timeout} "$timeout" ${_portwatch}/bin/_portwatch ''${VERBOSE:+--verbose} ''${NO_COLOR:+--no-color} $@ &
+          child=$!
+          wait "$child"
+          exit_code="$?"
+          [ "$exit_code" -ge 124 ] && die "[💩] timed out waiting for ports after ''${timeout} seconds!"
+          all_time="$(${timer.round 0} ${timer.stop "all"})"
+          green "[🚀] all ports up after ''${all_time} seconds!"
+        '';
+    };
+
   general_pog_scripts = [
     batwhich
     get_cert
@@ -193,5 +268,6 @@ rec {
     sqlfmt
     whatip
     whereami
+    portwatch
   ];
 }

@@ -562,6 +562,7 @@ with builtins; rec {
         timer = {
           start = name: ''_pog_start_${name}="$(${_.date} +%s.%N)"'';
           stop = name: ''"$(echo "$(${_.date} +%s.%N) - $_pog_start_${name}" | ${pkgs.bc}/bin/bc -l)"'';
+          round = places: ''${coreutils}/bin/printf '%.*f\n' ${toString places}'';
         };
         confirm = yesno;
         yesno = { prompt ? "Would you like to continue?", exit_code ? 0 }: ''
