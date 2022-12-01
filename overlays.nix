@@ -6,6 +6,7 @@
   (import ./mods/python_pkgs.nix)
   (import ./mods/custom_pkgs.nix)
   (import ./mods/lang.nix)
+  (import ./mods/override.nix)
   (import ./mods/pog.nix)
   (import ./mods/mods.nix)
 
