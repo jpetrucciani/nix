@@ -174,6 +174,7 @@ in
           "gemologic.dev" = {
             extraConfig = ''
               route / {
+                header +Content-Type "text/html; charset=utf-8"
                 respond "${landing_page}"
               }
             '';
@@ -181,6 +182,7 @@ in
           "gemologic.cloud" = {
             extraConfig = ''
               route / {
+                header +Content-Type "text/html; charset=utf-8"
                 respond "${landing_page}"
               }
             '';
