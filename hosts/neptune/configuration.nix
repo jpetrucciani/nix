@@ -87,6 +87,7 @@ in
             }
           '';
         };
+        landing_page = ''<html style='background-image: linear-gradient(to bottom right, #000, #6A3DE8);height:100%'></html>'';
       in
       {
         enable = true;
@@ -170,6 +171,20 @@ in
           };
           "x.hexa.dev" = reverse_proxy "localhost:8421";
           "meme.x.hexa.dev" = reverse_proxy "localhost:8420";
+          "gemologic.dev" = {
+            extraConfig = ''
+              route / {
+                respond "${landing_page}"
+              }
+            '';
+          };
+          "gemologic.cloud" = {
+            extraConfig = ''
+              route / {
+                respond "${landing_page}"
+              }
+            '';
+          };
         };
       };
     poglets = {
