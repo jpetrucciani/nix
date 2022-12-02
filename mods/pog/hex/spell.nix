@@ -21,6 +21,7 @@ let
     nginx-ingress = import ./k8s/nginx-ingress.nix params;
     rancher = import ./k8s/rancher.nix params;
     services = import ./k8s/services.nix params;
+    signoz = import ./k8s/signoz.nix params;
     stackstorm = import ./k8s/stackstorm.nix params;
     tailscale = import ./k8s/tailscale.nix params;
     traefik = import ./k8s/traefik.nix params;

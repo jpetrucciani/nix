@@ -13,19 +13,27 @@ rec {
       description = "a quick and easy way to get the latest x releases of the '${name}' chart!";
       script = ''
         # temp files
+        temp_resp="$(${mktemp} --suffix=.yaml)"
         temp_json="$(${mktemp} --suffix=.json)"
         temp_csv="$(${mktemp} --suffix=.csv)"
 
         # grab index for this chart
-        ${curl}/bin/curl -L -s '${index_url}' | \
-            ${yq} '.[].${chart_name}.[] | [{"version": .version, "date": .created}]' | \
+        ${curl}/bin/curl -L -s '${index_url}' >"$temp_resp"
+        
+        debug "pulled chart data to $temp_resp"
+
+        <"$temp_resp" ${yq} '.[].${chart_name}.[] | [{"version": .version, "date": .created}]' | \
             ${coreutils}/bin/head -n ${toString (last * 2)} | \
             ${yq} -o=json >"$temp_json"
+
+        debug "parsed json into $temp_json"
 
         # form csv, hash in parallel
         echo "version,date,sha256" >>"$temp_csv"
         ${jq} -r '.[] | (.version + " " + .date)' <"$temp_json" | \
             ${parallel} 'echo -n "{1},{=2 uq(); =},"; nix-prefetch-url --unpack "${chart_url}" 2>/dev/null' >>"$temp_csv"
+
+        debug "formed json into csv at $temp_csv"
 
         # format as json
         ${yq} "$temp_csv" -p=csv -o=json
@@ -63,6 +71,7 @@ rec {
       index_url = "${base}/index.yaml";
       chart_url = "${base}/traefik/traefik-{1}.tgz";
     };
+
   chart_scan_stackstorm = _chart_scan {
     name = "stackstorm";
     chart_name = "stackstorm-ha";
@@ -70,11 +79,18 @@ rec {
     chart_url = "https://helm.stackstorm.com/stackstorm-ha-{1}.tgz";
   };
 
+  chart_scan_signoz = _chart_scan {
+    name = "signoz";
+    index_url = "https://charts.signoz.io/index.yaml";
+    chart_url = "https://github.com/SigNoz/charts/releases/download/signoz-{1}/signoz-{1}.tgz";
+  };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_datadog
     chart_scan_external-secrets
     chart_scan_gitlab-runner
+    chart_scan_signoz
     chart_scan_stackstorm
     chart_scan_traefik
   ];
