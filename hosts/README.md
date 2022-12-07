@@ -6,10 +6,6 @@ This directory contains my NixOS configurations for each of my NixOS machines, a
 
 ## In this directory
 
-### [andromeda/](./andromeda)
-
-This is an arm NixOS install inside a VM for work.
-
 ### [charon/](./charon)
 
 This is my personal M1 Mac Mini server, running MacOS and using nix-darwin and home-manager to manage things.
@@ -25,6 +21,10 @@ This is a bare-metal physical nixos server!
 ### [m1max/](./m1max)
 
 This is my work M1 Max Macbook, running MacOS and using nix-darwin and home-manager to manage things.
+
+### [milkyway/](./milkyway/)
+
+This is a nixos install running on top of wsl2!
 
 ### [modules/](./modules)
 
