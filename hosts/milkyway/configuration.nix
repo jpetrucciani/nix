@@ -1,6 +1,5 @@
 { lib, pkgs, config, modulesPath, ... }:
 with lib;
-
 let
   nixos-wsl = (import (fetchTarball { url = "https://github.com/nix-community/NixOS-WSL/archive/main.tar.gz"; })).outputs;
   hostname = "milkyway";
@@ -13,30 +12,25 @@ in
     nixos-wsl.nixosModules.wsl
   ];
 
-  home-manager.users.jacobi = common.jacobi;
-  nixpkgs.pkgs = common.pinned;
   environment.etc."nixpkgs-path".source = common.pinned.path;
+  environment.systemPackages = with pkgs; [ ];
   environment.variables = {
     NIX_HOST = hostname;
     NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
   };
 
-  time.timeZone = common.timeZone;
-
-  networking.hostName = hostname;
-  nixpkgs.config.allowUnfree = true;
-  environment.systemPackages = with pkgs; [ ];
-
+  home-manager.users.jacobi = common.jacobi;
   wsl = {
     enable = true;
-    automountPath = "/mnt";
     defaultUser = "jacobi";
     startMenuLaunchers = true;
+    wslConf.automount.root = "/mnt";
 
     # Enable native Docker support
     # docker-native.enable = true;
   };
 
+  networking.hostName = hostname;
   nix = common.nix // {
     nixPath = [
       "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
@@ -44,8 +38,22 @@ in
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
   };
-
-  system.stateVersion = "22.05";
-  security.sudo = common.security.sudo;
+  nixpkgs.pkgs = common.pinned;
+  nixpkgs.config.allowUnfree = true;
   programs.command-not-found.enable = false;
+
+  security.sudo = common.security.sudo;
+  system.stateVersion = "22.05";
+  time.timeZone = common.timeZone;
+
+  users.users.jacobi = {
+    isNormalUser = true;
+    description = "jacobi";
+    extraGroups = [ "networkmanager" "wheel" ];
+  };
+
+  # nvidia?
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.opengl.enable = true;
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
 }
