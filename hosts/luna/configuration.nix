@@ -55,24 +55,9 @@ in
     LC_TIME = "en_US.UTF-8";
   };
 
-  services.xserver.enable = true;
-  services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.desktopManager.xfce.enable = true;
-
-  services.xserver = {
-    layout = "us";
-    xkbVariant = "";
-  };
-
   sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
 
   users.users.jacobi = {
     isNormalUser = true;
@@ -88,11 +73,24 @@ in
   };
 
   nixpkgs.config.allowUnfree = true;
-  environment.systemPackages = with pkgs; [
-  ];
+  environment.systemPackages = with pkgs; [ ];
 
   networking.firewall.enable = false;
-  services = { } // common.services;
+  services = {
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
+    xserver = {
+      enable = true;
+      displayManager.lightdm.enable = true;
+      desktopManager.xfce.enable = true;
+      layout = "us";
+      xkbVariant = "";
+    };
+  } // common.services;
   virtualisation.docker.enable = true;
 
   system.stateVersion = "22.11";
