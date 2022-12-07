@@ -18,6 +18,10 @@ This is my personal M1 Mac Mini server, running MacOS and using nix-darwin and h
 
 This is an experimental NixOS install inside a VM.
 
+### [luna/](./luna)
+
+This is a bare-metal physical nixos server!
+
 ### [m1max/](./m1max)
 
 This is my work M1 Max Macbook, running MacOS and using nix-darwin and home-manager to manage things.
