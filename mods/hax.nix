@@ -12,6 +12,7 @@ final: prev:
     isNixOS = isLinux && (builtins.match ''.*ID="?nixos.*'' (builtins.readFile /etc/os-release)) == [ ];
     isAndroid = isAarch64 && !isDarwin && !isNixOS;
     isUbuntu = isLinux && (builtins.match ''.*ID="?ubuntu.*'' (builtins.readFile /etc/os-release)) == [ ];
+    isWSL = isLinux && (builtins.match ''.*microsoft-standard-WSL2.*'' (builtins.readFile /proc/version)) == [ ];
     isNixDarwin = builtins.getEnv "NIXDARWIN_CONFIG" != "";
 
     attrIf = check: name: if check then name else null;
@@ -24,6 +25,7 @@ final: prev:
     ifIsAndroid = attrIf isAndroid;
     ifIsDarwin = attrIf isDarwin;
     ifIsM1 = attrIf isM1;
+    ifIsWSL = attrIf isWSL;
 
     kwb = fromJSON (readFile ../sources/kwb.json);
     chief_keef = import (

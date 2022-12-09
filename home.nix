@@ -1,6 +1,6 @@
 let
   pkgs = import ./default.nix { };
-  inherit (pkgs.hax) isDarwin fetchFromGitHub;
+  inherit (pkgs.hax) isDarwin isWSL fetchFromGitHub;
 
   firstName = "jacobi";
   lastName = "petrucciani";

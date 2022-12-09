@@ -20,9 +20,21 @@ in
     cudaPackages.cudatoolkit
     cudaPackages.cudnn
   ];
-  environment.variables = {
+  environment.variables = with pkgs; {
     NIX_HOST = hostname;
     NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
+    _CUDA_PATH = pkgs.cudaPackages.cudatoolkit.outPath;
+    _CUDA_LDPATH = "${
+      lib.concatStringsSep ":" [
+        "/usr/lib/wsl/lib"
+        "/run/opengl-drivers/lib"
+        "/run/opengl-drivers-32/lib"
+        "${cudaPackages.cudatoolkit}/lib"
+        "${cudaPackages.cudnn}/lib"
+      ]
+    }:${
+      lib.makeLibraryPath [ stdenv.cc.cc.lib cudaPackages.cudatoolkit.lib ]
+    }";
   };
 
   home-manager.users.jacobi = common.jacobi;
@@ -56,10 +68,16 @@ in
     isNormalUser = true;
     description = "jacobi";
     extraGroups = [ "networkmanager" "wheel" ];
+    openssh.authorizedKeys.keys = with common.pubkeys; [
+      m1max
+      nix-m1max
+    ] ++ usual;
   };
 
-  # nvidia?
-  services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.opengl.enable = true;
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+  services = { } // common.services;
+
+  # nvidia? not needed for cuda memes?
+  # services.xserver.videoDrivers = [ "nvidia" ];
+  # hardware.opengl.enable = true;
+  # hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
 }
