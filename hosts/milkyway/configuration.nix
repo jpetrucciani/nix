@@ -13,7 +13,13 @@ in
   ];
 
   environment.etc."nixpkgs-path".source = common.pinned.path;
-  environment.systemPackages = with pkgs; [ ];
+
+  # cuda stuff?
+  environment.noXlibs = false;
+  environment.systemPackages = with pkgs; [
+    cudaPackages.cudatoolkit
+    cudaPackages.cudnn
+  ];
   environment.variables = {
     NIX_HOST = hostname;
     NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
@@ -53,7 +59,7 @@ in
   };
 
   # nvidia?
-  services.xserver.videoDrivers = [ "nvidia" ];
+  # services.xserver.videoDrivers = [ "nvidia" ];
   hardware.opengl.enable = true;
   hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
 }
