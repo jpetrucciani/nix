@@ -20,22 +20,31 @@ in
     cudaPackages.cudatoolkit
     cudaPackages.cudnn
   ];
-  environment.variables = with pkgs; {
-    NIX_HOST = hostname;
-    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
-    _CUDA_PATH = pkgs.cudaPackages.cudatoolkit.outPath;
-    _CUDA_LDPATH = "${
+  environment.variables =
+    let
+      cuda = pkgs.cudaPackages.cudatoolkit;
+      cudnn = pkgs.cudaPackages.cudnn;
+      cudaTarget = "cuda114";
+    in
+    with pkgs; {
+      NIX_HOST = hostname;
+      NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
+      _CUDA_PATH = cuda.outPath;
+      _CUDA_LDPATH = "${
       lib.concatStringsSep ":" [
         "/usr/lib/wsl/lib"
         "/run/opengl-drivers/lib"
         "/run/opengl-drivers-32/lib"
-        "${cudaPackages.cudatoolkit}/lib"
-        "${cudaPackages.cudnn}/lib"
+        "${cuda}/lib"
+        "${cudnn}/lib"
       ]
     }:${
-      lib.makeLibraryPath [ stdenv.cc.cc.lib cudaPackages.cudatoolkit.lib ]
+      lib.makeLibraryPath [ stdenv.cc.cc.lib cuda.lib ]
     }";
-  };
+      XLA_FLAGS = "--xla_gpu_cuda_data_dir=${cuda.outPath}";
+      XLA_TARGET = cudaTarget;
+      EXLA_TARGET = cudaTarget;
+    };
 
   home-manager.users.jacobi = common.jacobi;
   wsl = {
