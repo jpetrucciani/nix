@@ -1,11 +1,13 @@
 { config, pkgs, ... }:
 let
-  hostname = "luna";
+  hostname = "ymir";
   common = import ../common.nix { inherit config pkgs; };
+  nixos-hardware = (import (fetchTarball { url = "https://github.com/NixOS/nixos-hardware/archive/25010a042c23695ae457a97aad60e9b1d49f2ecc.tar.gz"; })).outputs;
 in
 {
   imports = [
     "${common.home-manager.path}/nixos"
+    "${nixos-hardware.path}/dell/xps/15-9560"
     ./hardware-configuration.nix
   ];
 
@@ -22,11 +24,11 @@ in
   home-manager.users.jacobi = common.jacobi;
   nixpkgs.pkgs = common.pinned;
 
-  # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
   boot.kernel.sysctl = { } // common.sysctl_opts;
+  boot.kernelParams = [ "acpi_rev_override=1" ];
   boot.tmpOnTmpfs = true;
 
   environment.etc."nixpkgs-path".source = common.pinned.path;
@@ -38,16 +40,39 @@ in
   time.timeZone = common.timeZone;
 
   networking.hostName = hostname;
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
+  networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;
+  networking.firewall.enable = false;
+
+  # Set your time zone.
+  time.timeZone = common.timeZone;
 
   i18n.defaultLocale = common.defaultLocale;
   i18n.extraLocaleSettings = common.extraLocaleSettings;
 
+  # Configure keymap in X11
+  services = {
+    xserver = {
+      enable = true;
+      layout = "us";
+      xkbVariant = "";
+      displayManager.gdm.enable = true;
+      desktopManager.gnome.enable = true;
+      libinput.enable = true;
+    };
+    printing.enable = true;
+    rtkit.enable = true;
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
+  } // common.services;
+
+  # Enable sound with pipewire.
   sound.enable = true;
   hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
 
   users.users.jacobi = {
     isNormalUser = true;
@@ -64,27 +89,7 @@ in
 
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [ ];
-
-  networking.firewall.enable = false;
-  services = {
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-    };
-    xserver = {
-      enable = true;
-      displayManager.lightdm.enable = true;
-      desktopManager.xfce.enable = true;
-      videoDrivers = [ "amdgpu" ];
-      layout = "us";
-      xkbVariant = "";
-    };
-  } // common.services;
-  virtualisation.docker.enable = true;
-
-  system.stateVersion = "22.11";
+  system.stateVersion = "23.05";
   security.sudo = common.security.sudo;
   programs.command-not-found.enable = false;
 }

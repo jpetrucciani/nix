@@ -51,6 +51,20 @@ in
     "net.core.rmem_max" = 2500000;
   };
 
+  defaultLocale = "en_US.UTF-8";
+  extraLocaleSettings = let utf8 = "en_US.UTF-8"; in
+    {
+      LC_ADDRESS = utf8;
+      LC_IDENTIFICATION = utf8;
+      LC_MEASUREMENT = utf8;
+      LC_MONETARY = utf8;
+      LC_NAME = utf8;
+      LC_NUMERIC = utf8;
+      LC_PAPER = utf8;
+      LC_TELEPHONE = utf8;
+      LC_TIME = utf8;
+    };
+
   env = {
     CHARM_HOST = "charm.cobi.dev";
     CHARM_HTTP_PORT = "443";
@@ -91,6 +105,7 @@ in
 
     # laptops
     pluto = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEgmAVUZdA5QrsCQFYhL0bf+NbXowV9M12PPiwoWRMJK jacobi@pluto";
+    ymir = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJu8erBI/BUNkvQR4OC+1Q8zrpVzI4NyAufuXieWshQk jacobi@ymir";
     m1max = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJnJ2nh4yutW5Xq11Cp4wdJUU+dJxeNZn9SZsHAj9TRg jacobi@m1max";
     andromeda = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL5IQw8Fxc+IXIUTfwka558rzb67bpprt4Q1g6V133Ok jacobi@andromeda";
     # nix-daemon on laptops
