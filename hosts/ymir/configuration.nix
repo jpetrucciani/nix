@@ -37,15 +37,11 @@ in
     NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
   };
 
-  time.timeZone = common.timeZone;
-
   networking.hostName = hostname;
   networking.networkmanager.enable = true;
   networking.firewall.enable = false;
 
-  # Set your time zone.
   time.timeZone = common.timeZone;
-
   i18n.defaultLocale = common.defaultLocale;
   i18n.extraLocaleSettings = common.extraLocaleSettings;
 
@@ -68,7 +64,6 @@ in
     };
   } // common.services;
 
-  # Enable sound with pipewire.
   sound.enable = true;
   hardware.pulseaudio.enable = false;
 
