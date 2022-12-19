@@ -295,8 +295,8 @@ with builtins; rec {
       # docker images to use in various spots
       images = [
         "alpine:3.17"
-        "jpetrucciani/alpine:3.16"
-        "jpetrucciani/nix:2.11"
+        "jpetrucciani/alpine:3.17"
+        "jpetrucciani/nix:2.12"
         "mongo:5.0"
         "mongo:4.4.12"
         "mysql:8.0"

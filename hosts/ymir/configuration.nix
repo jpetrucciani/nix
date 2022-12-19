@@ -2,12 +2,12 @@
 let
   hostname = "ymir";
   common = import ../common.nix { inherit config pkgs; };
-  nixos-hardware = (import (fetchTarball { url = "https://github.com/NixOS/nixos-hardware/archive/25010a042c23695ae457a97aad60e9b1d49f2ecc.tar.gz"; })).outputs;
+  nixos-hardware = fetchTarball { url = "https://github.com/NixOS/nixos-hardware/archive/25010a042c23695ae457a97aad60e9b1d49f2ecc.tar.gz"; };
 in
 {
   imports = [
     "${common.home-manager.path}/nixos"
-    "${nixos-hardware.path}/dell/xps/15-9560"
+    "${nixos-hardware}/dell/xps/15-9560"
     ./hardware-configuration.nix
   ];
 
@@ -40,7 +40,6 @@ in
   time.timeZone = common.timeZone;
 
   networking.hostName = hostname;
-  networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;
   networking.firewall.enable = false;
 
@@ -61,7 +60,6 @@ in
       libinput.enable = true;
     };
     printing.enable = true;
-    rtkit.enable = true;
     pipewire = {
       enable = true;
       alsa.enable = true;
