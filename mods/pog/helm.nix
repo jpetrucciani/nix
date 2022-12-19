@@ -85,11 +85,19 @@ rec {
     chart_url = "https://github.com/SigNoz/charts/releases/download/signoz-{1}/signoz-{1}.tgz";
   };
 
+  chart_scan_infisical = let base = "https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts"; in
+    _chart_scan {
+      name = "infisical";
+      index_url = "${base}/index.yaml";
+      chart_url = "${base}/infisical-{1}.tgz";
+    };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_datadog
     chart_scan_external-secrets
     chart_scan_gitlab-runner
+    chart_scan_infisical
     chart_scan_signoz
     chart_scan_stackstorm
     chart_scan_traefik

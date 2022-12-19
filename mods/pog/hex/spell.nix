@@ -18,6 +18,7 @@ let
     external-secrets = import ./k8s/external-secrets.nix params;
     gitlab-runner = import ./k8s/gitlab-runner.nix params;
     helm = import ./k8s/helm.nix params;
+    infisical = import ./k8s/infisical.nix params;
     nginx-ingress = import ./k8s/nginx-ingress.nix params;
     rancher = import ./k8s/rancher.nix params;
     services = import ./k8s/services.nix params;
