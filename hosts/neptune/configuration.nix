@@ -88,6 +88,7 @@ in
           '';
         };
         landing_page = ''<html style='background-image: linear-gradient(to bottom right, #000, #6A3DE8);height:100%'></html>'';
+        traefik = "localhost:8088";
       in
       {
         enable = true;
@@ -113,8 +114,8 @@ in
         '';
         virtualHosts = {
           "api.cobi.dev" = reverse_proxy "localhost:10000";
-          "auth.cobi.dev" = reverse_proxy "localhost:8088";
-          "search.cobi.dev" = reverse_proxy "localhost:5000";
+          "auth.cobi.dev" = reverse_proxy traefik;
+          "search.cobi.dev" = reverse_proxy traefik;
           # "charm.cobi.dev" = reverse_proxy "localhost:35354";
           # "home.cobi.dev" = reverse_proxy "home:${toString common.ports.home-assistant}";
           "netdata.cobi.dev" = reverse_proxy "localhost:${toString common.ports.netdata}";
