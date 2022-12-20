@@ -26,6 +26,7 @@ let
     stackstorm = import ./k8s/stackstorm.nix params;
     tailscale = import ./k8s/tailscale.nix params;
     traefik = import ./k8s/traefik.nix params;
+    whoogle = import ./k8s/whoogle.nix params;
     woodpecker = import ./k8s/woodpecker.nix params;
   };
   hex = (import ./hex.nix pkgs) // { inherit k8s; };
