@@ -46,6 +46,12 @@ rec {
     chart_url = "https://github.com/argoproj/argo-helm/releases/download/argo-cd-{1}/argo-cd-{1}.tgz";
   };
 
+  chart_scan_authentik = _chart_scan {
+    name = "authentik";
+    index_url = "https://charts.goauthentik.io/index.yaml";
+    chart_url = "https://github.com/goauthentik/helm/releases/download/authentik-{1}/authentik-{1}.tgz";
+  };
+
   chart_scan_datadog = _chart_scan {
     name = "datadog";
     index_url = "https://helm.datadoghq.com/index.yaml";
@@ -94,6 +100,7 @@ rec {
 
   helm_pog_scripts = [
     chart_scan_argo-cd
+    chart_scan_authentik
     chart_scan_datadog
     chart_scan_external-secrets
     chart_scan_gitlab-runner
