@@ -522,6 +522,33 @@ let
       ]);
     };
 
+    falconn = buildPythonPackage rec {
+      pname = "falconn";
+      version = "1.3.1";
+
+      src = pkgs.fetchFromGitHub {
+        owner = "falconn-lib";
+        repo = pname;
+        rev = "v${version}";
+        sha256 = "sha256-kz4w3uW3Y45ov7g86MPA3x2WlvBP8EKLVhqeHDKiemk=";
+      };
+      nativeBuildInputs = [ pkgs.eigen ];
+      propagatedBuildInputs = [
+        numpy
+      ];
+      postPatch = ''
+        ls -alF
+        sed -i -E 's#(cd FALCONN\-\*)#\1\/#g' ./Makefile
+        make python_package
+      '';
+      preBuild = ''
+        cd ./python_package/dist/FALCONN-*/
+      '';
+      pythonImportsCheck = [
+        "falconn"
+      ];
+    };
+
   };
 in
 pynixifyOverlay
