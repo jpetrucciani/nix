@@ -33,9 +33,9 @@ rec {
   q = prev.callPackage
     ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
       let
-        version = "0.8.2";
-        commit = "72fa909c3d5da33ba4ffc96920988a9b5873427f";
-        date = "2022-08-02";
+        version = "0.8.4";
+        commit = "";
+        date = "2022-10-23";
       in
       buildGo119Module rec {
         inherit version;
@@ -45,7 +45,7 @@ rec {
           owner = "natesales";
           repo = "q";
           rev = "v${version}";
-          sha256 = "sha256-Esg2i8UNT+SuW9+jsnVEOt1ot822CamZ3JoR8ReY0+4=";
+          sha256 = "sha256-M2TgDha+F4hY7f9sabzZEdsxdp8rdXDZB4ktmpDF5D8=";
         };
 
         ldflags = [
@@ -56,7 +56,7 @@ rec {
           "-X main.date=${date}"
         ];
 
-        vendorSha256 = "sha256-oarXbxROTd7knHr9GKlrPnnS6ehkps2ZYYsUS9cn6ek=";
+        vendorSha256 = "sha256-216NwRlU7mmr+ebiBwq9DVtFb2SpPgkGUrVZMUAY9rI=";
         doCheck = false;
 
         meta = with lib; {
@@ -323,6 +323,47 @@ rec {
           maintainers = with maintainers; [ jpetrucciani ];
         };
       })
+    { };
+
+  tlsh-go = prev.callPackage
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      let
+        version = "0.3.0";
+        commit = "e1837ecb20c659b7491d68712f99b47d80368b30";
+        date = "2022-12-12";
+      in
+      buildGo119Module rec {
+        inherit version;
+        pname = "tlsh-go";
+
+        src = fetchFromGitHub {
+          owner = "glaslos";
+          repo = "tlsh";
+          rev = "v${version}";
+          sha256 = "sha256-fDFMF7ajhJ0veylJPoSxOtkkdwcRmR9G7MJgk5fnAdY=";
+        };
+
+        ldflags = [
+          "-s"
+          "-w"
+          "-X main.VERSION=${version}"
+          "-X main.BUILDDATE=${date}"
+        ];
+
+        postInstall = ''
+          mv $out/bin/app $out/bin/tlsh
+        '';
+
+        vendorSha256 = "sha256-pQpattmS9VmO3ZIQUFn66az8GSmB4IvYhTTCFn6SUmo=";
+
+        meta = with lib; {
+          inherit (src.meta) homepage;
+          description = "TLSH lib in Golang";
+          license = licenses.asl20;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
     { };
 
 }
