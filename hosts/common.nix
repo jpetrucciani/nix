@@ -22,6 +22,14 @@ let
     inherit (nd) sha256;
     url = "https://github.com/LnL7/nix-darwin/archive/${nd.rev}.tar.gz";
   };
+
+  mms = import
+    (fetchTarball {
+      url = "https://github.com/mkaito/nixos-modded-minecraft-servers/archive/68f2066499c035fd81c9dacfea2f512d6b0b62e5.tar.gz";
+      sha256 = "1nmw497ahb9hjjh0kwr1z782q41gcw5kw4dl4alg8pnyhgq141r1";
+    })
+    { };
+
   jacobi = import ../home.nix;
 
   attrIf = check: name: if check then name else null;
@@ -284,5 +292,40 @@ in
     home-assistant = 8123;
     netdata = 19999;
     plex = 32400;
+  };
+
+  minecraft = {
+    conf = {
+      jre8 = pkgs.temurin-bin-8;
+      jre17 = pkgs.temurin-bin-17;
+
+      jvmOpts = concatStringsSep " " [
+        "-XX:+UseG1GC"
+        "-XX:+ParallelRefProcEnabled"
+        "-XX:MaxGCPauseMillis=200"
+        "-XX:+UnlockExperimentalVMOptions"
+        "-XX:+DisableExplicitGC"
+        "-XX:+AlwaysPreTouch"
+        "-XX:G1NewSizePercent=40"
+        "-XX:G1MaxNewSizePercent=50"
+        "-XX:G1HeapRegionSize=16M"
+        "-XX:G1ReservePercent=15"
+        "-XX:G1HeapWastePercent=5"
+        "-XX:G1MixedGCCountTarget=4"
+        "-XX:InitiatingHeapOccupancyPercent=20"
+        "-XX:G1MixedGCLiveThresholdPercent=90"
+        "-XX:G1RSetUpdatingPauseTimePercent=5"
+        "-XX:SurvivorRatio=32"
+        "-XX:+PerfDisableSharedMem"
+        "-XX:MaxTenuringThreshold=1"
+      ];
+
+      defaults = {
+        white-list = true;
+        spawn-protection = 0;
+        max-tick-time = 5 * 60 * 1000;
+        allow-flight = true;
+      };
+    };
   };
 }

@@ -6,6 +6,7 @@ in
 {
   imports = [
     "${common.home-manager.path}/nixos"
+    "${common.mms.path}/nixos/modules/services/games/minecraft-servers"
     ./hardware-configuration.nix
   ];
 
@@ -38,8 +39,6 @@ in
   time.timeZone = common.timeZone;
 
   networking.hostName = hostname;
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
   networking.networkmanager.enable = true;
 
   i18n.defaultLocale = common.defaultLocale;
