@@ -8,7 +8,6 @@ in
     "${common.home-manager.path}/nixos"
     ./hardware-configuration.nix
     ./api.nix
-    ./charm.nix
     ../modules/servers/poglets.nix
   ];
 
