@@ -549,6 +549,41 @@ let
       ];
     };
 
+    lox = buildPythonPackage rec {
+      pname = "lox";
+      version = "0.11.0";
+
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "0lpffhkj378yfd1vyg3b5nfp5hmc6hnkl4vvp84w7mww0m524q7r";
+      };
+
+      propagatedBuildInputs = [
+        pathos
+        sphinx-rtd-theme
+      ];
+      pythonImportsCheck = [
+        "lox"
+      ];
+
+      preBuild = ''
+        sed -i '/pytest-runner/d' ./setup.py
+        sed -i '/tool:pytest/,+2d' ./setup.cfg
+      '';
+      checkInputs = [
+        pytestCheckHook
+        pytest-benchmark
+        pytest-mock
+        tqdm
+      ];
+
+      meta = with lib; {
+        description = "Threading and Multiprocessing for every project";
+        homepage = "https://github.com/BrianPugh/lox";
+        license = licenses.asl20;
+      };
+    };
+
   };
 in
 pynixifyOverlay
