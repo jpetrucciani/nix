@@ -116,11 +116,9 @@ in
           "api.cobi.dev" = reverse_proxy "localhost:10000";
           "auth.cobi.dev" = reverse_proxy traefik;
           "search.cobi.dev" = reverse_proxy traefik;
-          # "charm.cobi.dev" = reverse_proxy "localhost:35354";
-          # "home.cobi.dev" = reverse_proxy "home:${toString common.ports.home-assistant}";
           "netdata.cobi.dev" = reverse_proxy "localhost:${toString common.ports.netdata}";
           "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
-          # "q.cobi.dev" = reverse_proxy "localhost:8069";
+          "ombi.cobi.dev" = reverse_proxy "localhost:5999";
           "vault.cobi.dev" = {
             extraConfig = ''
               import GEOBLOCK
@@ -195,6 +193,10 @@ in
       enable = true;
       bindPort = 8420;
       controlPort = 8421;
+    };
+    ombi = {
+      enable = true;
+      port = 5999;
     };
     searx = {
       enable = false;
