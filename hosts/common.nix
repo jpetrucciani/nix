@@ -27,15 +27,14 @@ let
     (fetchTarball {
       url = "https://github.com/mkaito/nixos-modded-minecraft-servers/archive/68f2066499c035fd81c9dacfea2f512d6b0b62e5.tar.gz";
       sha256 = "1nmw497ahb9hjjh0kwr1z782q41gcw5kw4dl4alg8pnyhgq141r1";
-    })
-    { };
+    });
 
   jacobi = import ../home.nix;
 
   attrIf = check: name: if check then name else null;
 in
 {
-  inherit home-manager jacobi nix-darwin pinned;
+  inherit home-manager jacobi nix-darwin mms pinned;
 
   nix = {
     extraOptions = ''
@@ -298,8 +297,10 @@ in
     conf = {
       jre8 = pkgs.temurin-bin-8;
       jre17 = pkgs.temurin-bin-17;
+      jre18 = pkgs.temurin-bin-18;
+      jre19 = pkgs.temurin-bin-19;
 
-      jvmOpts = concatStringsSep " " [
+      jvmOpts = builtins.concatStringsSep " " [
         "-XX:+UseG1GC"
         "-XX:+ParallelRefProcEnabled"
         "-XX:MaxGCPauseMillis=200"
@@ -321,7 +322,7 @@ in
       ];
 
       defaults = {
-        white-list = true;
+        white-list = false;
         spawn-protection = 0;
         max-tick-time = 5 * 60 * 1000;
         allow-flight = true;

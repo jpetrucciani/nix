@@ -6,7 +6,7 @@ in
 {
   imports = [
     "${common.home-manager.path}/nixos"
-    "${common.mms.path}/nixos/modules/services/games/minecraft-servers"
+    "${common.mms}/nixos/modules/services/games/minecraft-servers"
     ./hardware-configuration.nix
   ];
 
@@ -79,6 +79,46 @@ in
       videoDrivers = [ "amdgpu" ];
       layout = "us";
       xkbVariant = "";
+    };
+    modded-minecraft-servers = with common.minecraft; {
+      eula = true;
+      instances = {
+        rlcraft = {
+          inherit (conf) jvmOpts;
+          enable = true;
+          rsyncSSHKeys = [ common.pubkeys.pluto ];
+          jvmPackage = conf.jre8;
+          jvmInitialAllocation = "8G";
+          jvmMaxAllocation = "10G";
+          serverConfig =
+            conf.defaults
+              // {
+              server-port = 25569;
+              rcon-port = 25568;
+              motd = "jacobi's rlcraft server";
+
+              # rlcraft specific settings
+              difficulty = 3;
+              max-tick-time = -1;
+              enable-command-block = true;
+            };
+        };
+        vaulthunters = {
+          inherit (conf) jvmOpts;
+          enable = true;
+          rsyncSSHKeys = [ common.pubkeys.pluto ];
+          jvmPackage = conf.jre17;
+          jvmInitialAllocation = "8G";
+          jvmMaxAllocation = "10G";
+          serverConfig =
+            conf.defaults
+              // {
+              server-port = 25570;
+              rcon-port = 25571;
+              motd = "jacobi's vaulthunter server";
+            };
+        };
+      };
     };
   } // common.services;
   virtualisation.docker.enable = true;
