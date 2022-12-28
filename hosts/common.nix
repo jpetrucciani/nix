@@ -185,6 +185,126 @@ in
     wheelNeedsPassword = false;
   };
 
+  _services = {
+    blocky = {
+      enable = true;
+      # settings: https://0xerr0r.github.io/blocky/configuration
+      settings = {
+        blocking = {
+          blackLists = {
+            ads = [
+              "http://sysctl.org/cameleon/hosts"
+              "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
+              "https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt"
+              "https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt"
+            ];
+            special = [
+              "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews/hosts"
+            ];
+          };
+          blockTTL = "1m";
+          blockType = "zeroIp";
+          clientGroupsBlock = {
+            default = [
+              "ads"
+              "special"
+            ];
+          };
+          downloadAttempts = 5;
+          downloadCooldown = "10s";
+          downloadTimeout = "4m";
+          refreshPeriod = "4h";
+          startStrategy = "failOnError";
+          whiteLists = {
+            ads = [
+            ];
+          };
+        };
+        bootstrapDns = "tcp+udp:1.1.1.1";
+        caching = {
+          cacheTimeNegative = "30m";
+          maxItemsCount = 0;
+          maxTime = "30m";
+          minTime = "5m";
+          prefetchExpires = "2h";
+          prefetchMaxItemsCount = 0;
+          prefetchThreshold = 5;
+          prefetching = true;
+        };
+        clientLookup = {
+          clients = {
+            luna = [
+              "192.168.1.44"
+            ];
+          };
+          singleNameOrder = [
+            2
+            1
+          ];
+        };
+        conditional = {
+          fallbackUpstream = false;
+          mapping = { };
+          rewrite = { };
+        };
+        connectIPVersion = "dual";
+        customDNS = {
+          customTTL = "1h";
+          filterUnmappedTypes = true;
+          mapping = {
+            "milkyway.cobi" = "192.168.1.40";
+            "titan.cobi" = "192.168.1.41";
+            "luna.cobi" = "192.168.1.44";
+            "jupiter.cobi" = "192.168.1.69";
+            "charon.cobi" = "192.168.1.71";
+            "pluto.cobi" = "192.168.1.100";
+            "phobos.cobi" = "192.168.1.134";
+            "neptune.cobi" = "100.101.139.41";
+          };
+          rewrite = { };
+        };
+        ede = {
+          enable = true;
+        };
+        filtering = {
+          queryTypes = [
+            "AAAA"
+          ];
+        };
+        hostsFile = {
+          filePath = "/etc/hosts";
+          filterLoopback = true;
+          hostsTTL = "60m";
+          refreshPeriod = "30m";
+        };
+        httpPort = 4000;
+        logFormat = "text";
+        logLevel = "info";
+        logPrivacy = false;
+        logTimestamp = true;
+        minTlsServeVersion = 1.3;
+        port = 53;
+        prometheus = {
+          enable = true;
+          path = "/metrics";
+        };
+        queryLog = {
+          creationAttempts = 1;
+          creationCooldown = "2s";
+          logRetentionDays = 28;
+          target = "/var/log/blocky/";
+          type = "csv";
+        };
+        startVerifyUpstream = true;
+        upstream = {
+          default = [
+            "1.1.1.1"
+          ];
+        };
+        upstreamTimeout = "2s";
+      };
+    };
+  };
   services = {
     tailscale.enable = true;
     netdata.enable = true;

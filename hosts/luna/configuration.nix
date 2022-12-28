@@ -66,6 +66,7 @@ in
 
   networking.firewall.enable = false;
   services = {
+    inherit (common._services) blocky;
     pipewire = {
       enable = true;
       alsa.enable = true;
