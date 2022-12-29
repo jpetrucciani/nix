@@ -121,9 +121,126 @@ in
         };
       };
     };
+    n8n = {
+      enable = true;
+    };
+    step-ca =
+      let
+        base = "/var/lib/step-ca";
+        certs = "${base}/certs";
+        secrets = "${base}/secrets";
+      in
+      {
+        enable = true;
+        port = 443;
+        address = "0.0.0.0";
+        intermediatePasswordFile = "${secrets}/password";
+        settings = {
+          dnsNames = [ "cobi" ];
+          root = "${certs}/root_ca.crt";
+          crt = "${certs}/intermediate_ca.crt";
+          key = "${secrets}/intermediate_ca_key";
+          db = {
+            type = "badger";
+            dataSource = "${base}/db";
+          };
+          ssh = {
+            hostKey = "${secrets}/ssh_host_ca_key";
+            userKey = "${secrets}/ssh_user_ca_key";
+          };
+          logger = {
+            format = "text";
+          };
+          claims = {
+            minTLSCertDuration = "5m";
+            maxTLSCertDuration = "90d";
+            defaultTLSCertDuration = "24h";
+          };
+          authority = {
+            provisioners = [
+              {
+                type = "ACME";
+                name = "acme";
+              }
+              {
+                type = "SSHPOP";
+                name = "sshpop";
+                claims = {
+                  enableSSHCA = true;
+                };
+              }
+            ];
+          };
+          tls = {
+            cipherSuites = [
+              "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256"
+              "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
+            ];
+            minVersion = 1.2;
+            maxVersion = 1.3;
+            renegotiation = false;
+          };
+          templates = {
+            ssh = {
+              user = [
+                {
+                  name = "config.tpl";
+                  type = "snippet";
+                  template = "${base}/templates/ssh/config.tpl";
+                  path = "~/.ssh/config";
+                  comment = "#";
+                }
+                {
+                  name = "step_includes.tpl";
+                  type = "prepend-line";
+                  template = "${base}/templates/ssh/step_includes.tpl";
+                  path = ''''${STEPPATH}/ssh/includes'';
+                  comment = "#";
+                }
+                {
+                  name = "step_config.tpl";
+                  type = "file";
+                  template = "${base}/templates/ssh/step_config.tpl";
+                  path = "ssh/config";
+                  comment = "#";
+                }
+                {
+                  name = "known_hosts.tpl";
+                  type = "file";
+                  template = "${base}/templates/ssh/known_hosts.tpl";
+                  path = "ssh/known_hosts";
+                  comment = "#";
+                }
+              ];
+              host = [
+                {
+                  name = "sshd_config.tpl";
+                  type = "snippet";
+                  template = "${base}/templates/ssh/sshd_config.tpl";
+                  path = "/etc/ssh/sshd_config";
+                  comment = "#";
+                  requires = [
+                    "Certificate"
+                    "Key"
+                  ];
+                }
+                {
+                  name = "ca.tpl";
+                  type = "snippet";
+                  template = "${base}/templates/ssh/ca.tpl";
+                  path = "/etc/ssh/ca.pub";
+                  comment = "#";
+                }
+              ];
+            };
+          };
+        };
+      };
   } // common.services;
-  virtualisation.docker.enable = true;
 
+  systemd.services.n8n.serviceConfig.EnvironmentFile = "/etc/default/n8n";
+
+  virtualisation.docker.enable = true;
   system.stateVersion = "22.11";
   security.sudo = common.security.sudo;
   programs.command-not-found.enable = false;

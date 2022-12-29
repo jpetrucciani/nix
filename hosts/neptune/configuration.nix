@@ -117,6 +117,7 @@ in
           "search.cobi.dev" = reverse_proxy traefik;
           "netdata.cobi.dev" = reverse_proxy "localhost:${toString common.ports.netdata}";
           "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
+          "n8n.cobi.dev" = reverse_proxy "luna:${toString common.ports.n8n}";
           "ombi.cobi.dev" = reverse_proxy "localhost:5999";
           "vault.cobi.dev" = {
             extraConfig = ''

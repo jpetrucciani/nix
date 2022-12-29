@@ -252,6 +252,7 @@ in
           customTTL = "1h";
           filterUnmappedTypes = true;
           mapping = {
+            "cobi" = "192.168.1.44";
             "milkyway.cobi" = "192.168.1.40";
             "titan.cobi" = "192.168.1.41";
             "luna.cobi" = "192.168.1.44";
@@ -407,6 +408,7 @@ in
     ssh = 22;
     http = 80;
     https = 443;
+    n8n = 5678;
     jellyfin = 8096;
     home-assistant = 8123;
     netdata = 19999;
