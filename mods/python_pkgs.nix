@@ -472,45 +472,22 @@ let
       };
     };
 
-    refurb = buildPythonPackage rec {
-      pname = "refurb";
-      version = "1.4.0";
-
-      format = "pyproject";
-      src = pkgs.fetchFromGitHub {
-        owner = "dosisod";
-        repo = "refurb";
-        rev = "v${version}";
-        sha256 = "sha256-YLgKW2PKI9F+vwtFGi3T0Eb/rJY3sXwE/JPNQ2ityCg=";
-      };
-
-      propagatedBuildInputs = [
-        mypy
-        poetry
-      ];
-
-      meta = with lib; {
-        description = "Tool for refurbishing and modernizing Python codebases";
-        homepage = "https://github.com/dosisod/refurb";
-      };
-    };
-
     ruff = buildPythonPackage rec {
       pname = "ruff";
-      version = "0.0.196";
+      version = "0.0.202";
 
       format = "pyproject";
       src = pkgs.fetchFromGitHub {
         owner = "charliermarsh";
         repo = "ruff";
         rev = "v${version}";
-        sha256 = "sha256-CXiURLRxQw4x1jKqfyYPjLdajAPbbEphva+zinz+Qk8=";
+        sha256 = "sha256-A442CoPYaEs641P54n3I3XxtjL4DDEk1n0ca8HJkeGU=";
       };
 
       cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
         inherit src sourceRoot;
         name = "${pname}-${version}";
-        sha256 = "sha256-fLPodfjwqbCC/givaZJ84IR5Tl6rpxMJbMvDtJcQukE=";
+        sha256 = "sha256-YtqKeSfntd3ja3j0UIgPTVfitYWjdSGcZkuQzwuO1H4=";
       };
       sourceRoot = "";
 
