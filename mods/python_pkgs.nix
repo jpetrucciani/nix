@@ -188,16 +188,29 @@ let
 
     notion-client = buildPythonPackage rec {
       pname = "notion-client";
-      version = "0.9.0";
+      version = "2.0.0";
 
-      src = fetchPypi {
-        inherit pname version;
-        sha256 = "004vx0fv7v12r18m1np1hjx9qnxgdk6aajsjhchvz0fyl2588f3l";
+      src = pkgs.fetchFromGitHub {
+        owner = "ramnes";
+        repo = "notion-sdk-py";
+        rev = version;
+        sha256 = "sha256-zfG1OgH/2ytDUC+ogIY9/nP+xkgjiMt9+HVcWEMXoj8=";
       };
 
-      propagatedBuildInputs = [ httpx ];
+      propagatedBuildInputs = [
+        httpx
+      ];
 
-      doCheck = false;
+      # disable coverage options as they don't provide us value, and they break the defalt pytestCheckHook
+      preCheck = ''
+        sed -i '/addopts/d' ./setup.cfg
+      '';
+      checkInputs = [
+        pytestCheckHook
+        anyio
+        pytest-asyncio
+        pytest-vcr
+      ];
 
       pythonImportsCheck = [
         "notion_client"
@@ -206,6 +219,9 @@ let
       meta = with lib; {
         description = "Python client for the official Notion API";
         homepage = "https://github.com/ramnes/notion-sdk-py";
+        changelog = "https://github.com/ramnes/notion-sdk-py/releases/tag/${version}";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
       };
     };
 
