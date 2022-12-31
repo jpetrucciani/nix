@@ -18,51 +18,18 @@ rec {
           sha256 = "sha256-BNFbg3IRsLOdakh8d53P0FSOGaGXYJuexECPlCMWCC0=";
         };
 
+        ldflags = [
+          "-s"
+          "-w"
+          "-X cmd.version=${version}"
+        ];
+
         vendorSha256 = "sha256-ZM5Z3yLOwOYpOTyoXmSbyPFBE31F+Jvc6DN4rmHmyt0=";
 
         meta = with lib; {
           inherit (src.meta) homepage;
           description = "Edit directly a file on Amazon S3 in CLI";
           license = licenses.mit;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      }
-    )
-    { };
-
-  q = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
-      let
-        version = "0.8.4";
-        commit = "";
-        date = "2022-10-23";
-      in
-      buildGo119Module rec {
-        inherit version;
-        pname = "q";
-
-        src = fetchFromGitHub {
-          owner = "natesales";
-          repo = "q";
-          rev = "v${version}";
-          sha256 = "sha256-M2TgDha+F4hY7f9sabzZEdsxdp8rdXDZB4ktmpDF5D8=";
-        };
-
-        ldflags = [
-          "-s"
-          "-w"
-          "-X main.version=${version}"
-          "-X main.commit=${commit}"
-          "-X main.date=${date}"
-        ];
-
-        vendorSha256 = "sha256-216NwRlU7mmr+ebiBwq9DVtFb2SpPgkGUrVZMUAY9rI=";
-        doCheck = false;
-
-        meta = with lib; {
-          inherit (src.meta) homepage;
-          description = "A tiny command line DNS client with support for UDP, TCP, DoT, DoH, DoQ and ODoH";
-          license = licenses.gpl3Only;
           maintainers = with maintainers; [ jpetrucciani ];
         };
       }
@@ -92,16 +59,6 @@ rec {
       }
     )
     { };
-
-  prospector-177 = (import
-    (fetchFromGitHub {
-      name = "frozen-prospector";
-      owner = "jpetrucciani";
-      repo = "nix";
-      rev = "58e698a20ba4cc8b58a9e08e359cc413e2868a6b";
-      sha256 = "02z5hmbh0zag6smzsyd1pxgzzw84vnrdiqww3jyk3iwk6abkzjh6";
-    })
-    { }).prospector-176; # i memed myself here, but this works for now
 
   memzoom = prev.callPackage
     ({ stdenv, lib, fetchFromGithub }: stdenv.mkDerivation rec {
@@ -261,31 +218,6 @@ rec {
           inherit (src.meta) homepage;
           description = "Simulating shitty network connections so you can build better systems";
           license = licenses.asl20;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      }
-    )
-    { };
-
-  spacectl = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
-        pname = "spacectl";
-        version = "0.10.0";
-
-        src = fetchFromGitHub {
-          owner = "spacelift-io";
-          repo = "spacectl";
-          rev = "v${version}";
-          sha256 = "sha256-Mba8So8VJAxZ2VSH9T6iI2wUV1eRlGnP1V5COfjN/NE=";
-        };
-
-        vendorSha256 = "sha256-87uMH7w8XA4WB485nnkEQ6sJDXy8NRECPEUGv80dAhg=";
-
-        meta = with lib; {
-          inherit (src.meta) homepage;
-          description = "Spacelift client and CLI";
-          license = licenses.mit;
           maintainers = with maintainers; [ jpetrucciani ];
         };
       }
