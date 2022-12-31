@@ -551,10 +551,15 @@ let
         sha256 = "0lpffhkj378yfd1vyg3b5nfp5hmc6hnkl4vvp84w7mww0m524q7r";
       };
 
-      propagatedBuildInputs = [
-        pathos
+      nativeBuildInputs = [
         sphinx-rtd-theme
       ];
+
+      propagatedBuildInputs = [
+        pathos
+        tqdm
+      ];
+
       pythonImportsCheck = [
         "lox"
       ];
@@ -567,13 +572,14 @@ let
         pytestCheckHook
         pytest-benchmark
         pytest-mock
-        tqdm
       ];
 
       meta = with lib; {
-        description = "Threading and Multiprocessing for every project";
+        description = "Threading and Multiprocessing made easy";
         homepage = "https://github.com/BrianPugh/lox";
+        changelog = "https://github.com/BrianPugh/lox/releases/tag/v${version}";
         license = licenses.asl20;
+        maintainers = with maintainers; [ jpetrucciani ];
       };
     };
 
