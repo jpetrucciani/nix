@@ -119,6 +119,21 @@ in
               motd = "jacobi's vaulthunter server";
             };
         };
+        vaulthunters-other = {
+          inherit (conf) jvmOpts;
+          enable = true;
+          rsyncSSHKeys = [ common.pubkeys.pluto ];
+          jvmPackage = conf.jre17;
+          jvmInitialAllocation = "8G";
+          jvmMaxAllocation = "10G";
+          serverConfig =
+            conf.defaults
+              // {
+              server-port = 25572;
+              rcon-port = 25573;
+              motd = "jacobi's other vaulthunter server";
+            };
+        };
       };
     };
     n8n = {
