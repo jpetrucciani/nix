@@ -551,6 +551,7 @@ let
     lox = buildPythonPackage rec {
       pname = "lox";
       version = "0.11.0";
+      disabled = pythonOlder "3.7";
 
       src = fetchPypi {
         inherit pname version;
@@ -585,6 +586,54 @@ let
         homepage = "https://github.com/BrianPugh/lox";
         changelog = "https://github.com/BrianPugh/lox/releases/tag/v${version}";
         license = licenses.asl20;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
+    looker-sdk = buildPythonPackage rec {
+      pname = "looker-sdk";
+      version = "22.20.0";
+      disabled = pythonOlder "3.7";
+
+      src = pkgs.fetchFromGitHub {
+        owner = "looker-open-source";
+        repo = "sdk-codegen";
+        rev = "sdk-v${version}";
+        sha256 = "sha256-S5s88FequBLbgz+zbEcBFi/N2pCgC0zdwyrcd7SP+no=";
+      };
+      sourceRoot = "source/python";
+
+      propagatedBuildInputs = [
+        attrs
+        cattrs
+        exceptiongroup
+        requests
+        typing-extensions
+      ];
+
+      pythonImportsCheck = [
+        "looker_sdk"
+      ];
+
+      checkInputs = [
+        pytestCheckHook
+        pillow
+        pytest-mock
+        pyyaml
+      ];
+
+      # disable tests that attempt to actually communicate with the api
+      disabledTestPaths = [
+        "tests/integration/test_netrc.py"
+        "tests/integration/test_methods.py"
+        "tests/rtl/test_api_methods.py"
+      ];
+
+      meta = with lib; {
+        description = "Looker REST API SDK for Python";
+        homepage = "https://github.com/looker-open-source/sdk-codegen/tree/main/python";
+        changelog = "https://github.com/looker-open-source/sdk-codegen/blob/main/python/CHANGELOG.md";
+        license = licenses.mit;
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };

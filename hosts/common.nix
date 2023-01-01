@@ -289,13 +289,13 @@ in
           enable = true;
           path = "/metrics";
         };
-        queryLog = {
-          creationAttempts = 1;
-          creationCooldown = "2s";
-          logRetentionDays = 28;
-          target = "/var/log/blocky/";
-          type = "csv";
-        };
+        # queryLog = {
+        # creationAttempts = 1;
+        # creationCooldown = "2s";
+        # logRetentionDays = 28;
+        # target = "/var/log/blocky/";
+        # type = "console";
+        # };
         startVerifyUpstream = true;
         upstream = {
           default = [
