@@ -30,7 +30,7 @@ let
 
       meta = with lib; {
         description = "a new way to do python code documentation";
-        homepage = "https://github.com/jpetrucciani/archives.git";
+        homepage = "https://github.com/jpetrucciani/archives";
       };
     };
 
@@ -530,7 +530,6 @@ let
         numpy
       ];
       postPatch = ''
-        ls -alF
         sed -i -E 's#(cd FALCONN\-\*)#\1\/#g' ./Makefile
         make python_package
       '';
@@ -540,6 +539,13 @@ let
       pythonImportsCheck = [
         "falconn"
       ];
+      meta = with lib; {
+        description = "";
+        homepage = "https://github.com/FALCONN-LIB/FALCONN";
+        changelog = "https://github.com/FALCONN-LIB/FALCONN/releases/tag/v${version}";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
     };
 
     lox = buildPythonPackage rec {
