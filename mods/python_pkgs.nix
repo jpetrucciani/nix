@@ -553,13 +553,33 @@ let
       version = "0.11.0";
       disabled = pythonOlder "3.7";
 
-      src = fetchPypi {
-        inherit pname version;
-        sha256 = "0lpffhkj378yfd1vyg3b5nfp5hmc6hnkl4vvp84w7mww0m524q7r";
+      src = pkgs.fetchFromGitHub {
+        owner = "BrianPugh";
+        repo = pname;
+        rev = "v${version}";
+        sha256 = "sha256-kXfFRIFI1OcbDc1LujbFo/Iqg7pgwtXLkIcIFA9nehs=";
       };
 
+      # patch out pytest-runner, and invalid pytest args
+      preBuild = ''
+        sed -i '/pytest-runner/d' ./setup.py
+        sed -i '/collect_ignore/d' ./setup.cfg
+      '';
+
+      outputs = [
+        "out"
+        "doc"
+      ];
+
       nativeBuildInputs = [
+        sphinxHook
         sphinx-rtd-theme
+      ];
+
+      checkInputs = [
+        pytestCheckHook
+        pytest-benchmark
+        pytest-mock
       ];
 
       propagatedBuildInputs = [
@@ -569,16 +589,6 @@ let
 
       pythonImportsCheck = [
         "lox"
-      ];
-
-      preBuild = ''
-        sed -i '/pytest-runner/d' ./setup.py
-        sed -i '/tool:pytest/,+2d' ./setup.cfg
-      '';
-      checkInputs = [
-        pytestCheckHook
-        pytest-benchmark
-        pytest-mock
       ];
 
       meta = with lib; {
@@ -624,8 +634,8 @@ let
 
       # disable tests that attempt to actually communicate with the api
       disabledTestPaths = [
-        "tests/integration/test_netrc.py"
         "tests/integration/test_methods.py"
+        "tests/integration/test_netrc.py"
         "tests/rtl/test_api_methods.py"
       ];
 
