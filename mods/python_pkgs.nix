@@ -648,6 +648,82 @@ let
       };
     };
 
+    slack-bolt = buildPythonPackage rec {
+      pname = "slack-bolt";
+      version = "1.16.1";
+
+      src = pkgs.fetchFromGitHub {
+        owner = "slackapi";
+        repo = "bolt-python";
+        rev = "v${version}";
+        sha256 = "sha256-xzEsTx+44ae++WxArxO2rhCsot+ELuhc0aZ44MXY0c4=";
+      };
+
+      propagatedBuildInputs = [ slack-sdk ];
+
+      pythonImportsCheck = [
+        "slack_bolt"
+      ];
+
+      checkInputs = [
+        mock
+        pytestCheckHook
+        pytest-asyncio
+
+        # frameworks
+        bottle
+        boddle
+        cherrypy
+        django
+        falcon
+        fastapi
+        flask
+        flask-sockets
+        pyramid
+        tornado
+        starlette
+      ] ++ lib.optionals stdenv.isLinux [
+        # server types that are broken on darwin 
+        chalice
+        moto
+        sanic
+        sanic-testing
+      ];
+
+      disabledTestPaths = [
+        # disable tests that require credentials
+        "tests/slack_bolt_async/oauth/test_async_oauth_flow.py"
+        "tests/slack_bolt/oauth/test_oauth_flow.py"
+      ] ++ lib.optionals stdenv.isDarwin [
+        # disable tests that test broken things on darwin
+        "tests/adapter_tests_async/test_async_sanic.py"
+        "tests/adapter_tests/aws/test_aws_chalice.py"
+        "tests/adapter_tests/aws/test_aws_lambda.py"
+        "tests/adapter_tests/aws/test_lambda_s3_oauth_flow.py"
+      ];
+
+      # disable tests that test auth or end to end integration
+      disabledTests = [
+        "test_events"
+        "test_interactions"
+        "test_lazy_listeners"
+        "test_oauth"
+      ];
+
+      # patch out pytest-runner
+      preBuild = ''
+        sed -i '/pytest-runner/d' ./setup.py
+      '';
+
+      meta = with lib; {
+        description = "A framework to build Slack apps using Python ";
+        homepage = "https://github.com/slackapi/bolt-python";
+        changelog = "https://github.com/slackapi/bolt-python/releases/tag/v${version}";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
   };
 in
 pynixifyOverlay
