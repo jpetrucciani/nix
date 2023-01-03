@@ -23,65 +23,6 @@ rec {
     sha256 = "sha256-zp4Z6/zdQ+Ua+KYJDx341RLZct33QvpkimQ7uxkFZgU=";
   };
 
-  zinc = prev.callPackage
-    ({ stdenvNoCC, callPackage, fetchurl, autoPatchelfHook, lib }:
-      let
-        dists = {
-          aarch64-darwin = {
-            arch = "arm64";
-            short = "Darwin";
-            sha256 = "1i7jlayar9zqy7y2zd43jcwilk0d4kah8h1f01rp99r3bsyvgrpk";
-          };
-          aarch64-linux = {
-            arch = "arm64";
-            short = "Linux";
-            sha256 = "0yynqxj1d807izy4vyiywqchfmllyxh187dcr8v5m8mlr92zvqks";
-          };
-          x86_64-darwin = {
-            arch = "x86_64";
-            short = "Darwin";
-            sha256 = "0pp7nbwrvayazvmx9l1k2hhdh61n1wqr0jd800xl94fsc0aiwrf2";
-          };
-          x86_64-linux = {
-            arch = "x86_64";
-            short = "Linux";
-            sha256 = "0xn1jaln9wjkjcf3h4w34m4n47ixy77bijfs9car3w0f27aiq5ph";
-          };
-        };
-        dist = dists.${stdenvNoCC.hostPlatform.system} or (throw "Unsupported system: ${stdenvNoCC.hostPlatform.system}");
-        pname = "zinc";
-        owner = "zinclabs";
-        version = "0.3.5";
-      in
-      stdenvNoCC.mkDerivation rec {
-        inherit pname version;
-
-        src = fetchurl {
-          inherit (dist) sha256;
-          url = "https://github.com/${owner}/${pname}/releases/download/v${version}/${pname}_${version}_${dist.short}_${dist.arch}.tar.gz";
-        };
-
-        strictDeps = true;
-        nativeBuildInputs = lib.optionals stdenvNoCC.isLinux [ autoPatchelfHook ];
-
-        dontConfigure = true;
-        dontBuild = true;
-
-        unpackPhase = ''
-          ${gnutar}/bin/tar xzvf ${src}
-        '';
-        installPhase = ''
-          mkdir -p $out/bin
-          mv ./zinc $out/bin/zinc
-        '';
-
-        meta = with lib; {
-          license = licenses.mit;
-        };
-      }
-    )
-    { };
-
   poglets = prev.callPackage
     ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
       buildGo119Module rec {

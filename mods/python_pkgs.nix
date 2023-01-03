@@ -73,14 +73,17 @@ let
         attrs
         click
         croniter
-        python-dateutil
-        psycopg2
         poetry
+        psycopg2
+        python-dateutil
       ];
 
       meta = with lib; {
         description = "Postgres-based distributed task processing library";
-        homepage = "https://procrastinate.readthedocs.io/";
+        homepage = "https://github.com/procrastinate-org/procrastinate";
+        changelog = "https://procrastinate.readthedocs.io/en/latest/changelog.html";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
       };
     };
 
@@ -682,7 +685,7 @@ let
         pyramid
         tornado
         starlette
-      ] ++ lib.optionals stdenv.isLinux [
+      ] ++ lib.optionals (!stdenv.isDarwin) [
         # server types that are broken on darwin 
         chalice
         moto
