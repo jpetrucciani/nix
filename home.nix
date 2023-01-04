@@ -102,6 +102,7 @@ with pkgs.hax; {
         gzip
         htmlq
         jq
+        just
         libarchive
         libnotify
         lolcat
@@ -240,6 +241,7 @@ with pkgs.hax; {
         rare
         regula
         s3-edit
+        ov
         # this breaks on x86_64 darwin?
         # watcher
 
@@ -425,12 +427,6 @@ with pkgs.hax; {
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
-  };
-
-  programs.just = {
-    enable = true;
-    enableBashIntegration = true;
-    package = pkgs.just;
   };
 
   programs.readline = {
@@ -843,18 +839,10 @@ with pkgs.hax; {
     '';
   };
 
-  programs.pistol = {
-    enable = true;
-    config = {
-      "text/*" = "bat --paging=never --color=always %pistol-filename%";
-      "inode/directory" = "ls -l --color %pistol-filename%";
-    };
-  };
-
   # fix vscode
   imports =
     if isNixOS then [
-      "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/d2343b5eb47b811856085f3eff4d899a32b2c136"}/modules/vscode-server/home.nix"
+      "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/c54b714db58ad05d064f394d6603751ee6bd04f6"}/modules/vscode-server/home.nix"
     ] else [ ];
 
   ${attrIf isNixOS "services"}.vscode-server.enable = isNixOS;

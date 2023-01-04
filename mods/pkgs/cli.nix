@@ -298,4 +298,44 @@ rec {
     )
     { };
 
+  ov = prev.callPackage
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
+        pname = "ov";
+        version = "0.13.0";
+
+        src = fetchFromGitHub {
+          owner = "noborus";
+          repo = "ov";
+          rev = "v${version}";
+          sha256 = "sha256-vBPhCSor3wGCawz+097Lw29xgW6z5fV5PAMAq7TBiNM=";
+        };
+
+        ldflags = [
+          "-s"
+          "-w"
+          "-X main.Version=${version}"
+        ];
+
+        vendorSha256 = "sha256-y3oSL1W2cjt6oUVbglHhun3XNCidqb7LTXtoA25+mpo=";
+
+        nativeBuildInputs = [ installShellFiles ];
+
+        postInstall = ''
+          installShellCompletion --cmd ov \
+            --bash <($out/bin/ov --completion bash) \
+            --fish <($out/bin/ov --completion fish) \
+            --zsh  <($out/bin/ov --completion zsh)
+        '';
+
+        meta = with lib; {
+          inherit (src.meta) homepage;
+          description = "Feature-rich terminal-based text viewer";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
 }
