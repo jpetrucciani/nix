@@ -605,6 +605,7 @@ with builtins; rec {
         "completion"
       ];
       text = ''
+        # shellcheck disable=SC2317
         ${if strict then "set -o errexit -o pipefail -o noclobber" else ""}
         VERBOSE="''${POG_VERBOSE-}"
         NO_COLOR="''${POG_NO_COLOR-}"
@@ -700,22 +701,20 @@ with builtins; rec {
       '';
       completion = ''
         #!/bin/bash
+        # shellcheck disable=SC2317
         _${name}()
         {
           local current previous completions
           compopt +o default
 
-          # shellcheck disable=SC2317
           flags(){
             echo "\
               -h -v ${concatStringsSep " " (map (x: "-${x.short}") parsedFlags)} \
               --help --verbose --no-color ${concatStringsSep " " (map (x: "--${x.name}") parsedFlags)}"
           }
-          # shellcheck disable=SC2317
           files(){
             ${_.ls}
           }
-          # shellcheck disable=SC2317
           executables(){
             echo -n "$PATH" |
               ${_.xargs} -d: -I{} -r -- find -L {} -maxdepth 1 -mindepth 1 -type f -executable -printf '%P\n' 2>/dev/null |
