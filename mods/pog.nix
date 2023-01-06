@@ -605,6 +605,7 @@ with builtins; rec {
         "completion"
       ];
       text = ''
+        # shellcheck disable=SC2317
         ${if strict then "set -o errexit -o pipefail -o noclobber" else ""}
         VERBOSE="''${POG_VERBOSE-}"
         NO_COLOR="''${POG_NO_COLOR-}"
@@ -700,6 +701,7 @@ with builtins; rec {
       '';
       completion = ''
         #!/bin/bash
+        # shellcheck disable=SC2317
         _${name}()
         {
           local current previous completions
