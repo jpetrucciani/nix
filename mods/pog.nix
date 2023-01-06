@@ -705,11 +705,13 @@ with builtins; rec {
           local current previous completions
           compopt +o default
 
+          # shellcheck disable=SC2317
           flags(){
             echo "\
               -h -v ${concatStringsSep " " (map (x: "-${x.short}") parsedFlags)} \
               --help --verbose --no-color ${concatStringsSep " " (map (x: "--${x.name}") parsedFlags)}"
           }
+          # shellcheck disable=SC2317
           files(){
             ${_.ls}
           }
