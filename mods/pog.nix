@@ -713,6 +713,7 @@ with builtins; rec {
           files(){
             ${_.ls}
           }
+          # shellcheck disable=SC2317
           executables(){
             echo -n "$PATH" |
               ${_.xargs} -d: -I{} -r -- find -L {} -maxdepth 1 -mindepth 1 -type f -executable -printf '%P\n' 2>/dev/null |
