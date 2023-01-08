@@ -17,6 +17,7 @@
   (import ./mods/pkgs/experimental.nix)
   (import ./mods/pkgs/k8s.nix)
   (import ./mods/pkgs/server.nix)
+  (import ./mods/pkgs/webapp.nix)
 
   # pog sub-overlays
   (import ./mods/pog/aws.nix)
