@@ -228,51 +228,51 @@ let
       };
     };
 
-    mitmproxy2swagger = buildPythonPackage rec {
-      pname = "mitmproxy2swagger";
-      version = "0.4.2";
+    # mitmproxy2swagger = buildPythonPackage rec {
+    #   pname = "mitmproxy2swagger";
+    #   version = "0.4.2";
 
-      src = fetchPypi {
-        inherit version;
-        pname = "mitmproxy2swagger";
-        sha256 = "sha256-VTbHa+Dv0DD6t/xjYXGFnc4lA78XCUdYpVRIhWETqe4=";
-      };
+    #   src = fetchPypi {
+    #     inherit version;
+    #     pname = "mitmproxy2swagger";
+    #     sha256 = "sha256-VTbHa+Dv0DD6t/xjYXGFnc4lA78XCUdYpVRIhWETqe4=";
+    #   };
 
-      propagatedBuildInputs = [
-        setuptools
-        asgiref
-        blinker
-        brotli
-        certifi
-        click
-        cryptography
-        flask
-        h11
-        h2
-        hyperframe
-        kaitaistruct
-        ldap3
-        msgpack
-        passlib
-        protobuf
-        publicsuffix2
-        pyopenssl
-        pyparsing
-        pyperclip
-        ruamel-yaml
-        sortedcontainers
-        tornado
-        urwid
-        wsproto
-        zstandard
-        colorama
-        flask
-        mitmproxy
-        markupsafe
-      ];
+    #   propagatedBuildInputs = [
+    #     setuptools
+    #     asgiref
+    #     blinker
+    #     brotli
+    #     certifi
+    #     click
+    #     cryptography
+    #     flask
+    #     h11
+    #     h2
+    #     hyperframe
+    #     kaitaistruct
+    #     ldap3
+    #     msgpack
+    #     passlib
+    #     protobuf
+    #     publicsuffix2
+    #     pyopenssl
+    #     pyparsing
+    #     pyperclip
+    #     ruamel-yaml
+    #     sortedcontainers
+    #     tornado
+    #     urwid
+    #     wsproto
+    #     zstandard
+    #     colorama
+    #     flask
+    #     mitmproxy
+    #     markupsafe
+    #   ];
 
-      doCheck = false;
-    };
+    #   doCheck = false;
+    # };
 
     uncompyle6 = buildPythonPackage rec {
       pname = "uncompyle6";
