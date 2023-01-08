@@ -26,5 +26,5 @@ rec {
     '';
   };
 
-  hax_pog_scripts = [ ] ++ (if isLinux then [ mitm2openapi ] else [ ]);
+  hax_pog_scripts = [ ] ++ (if isLinux then [ ] else [ ]);
 }
