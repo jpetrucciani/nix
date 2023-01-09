@@ -72,10 +72,7 @@ in
       LC_TIME = utf8;
     };
 
-  env = {
-    CHARM_HOST = "charm.cobi.dev";
-    CHARM_HTTP_PORT = "443";
-  };
+  env = { };
 
   emails = {
     personal = "j@cobi.dev";
@@ -379,10 +376,11 @@ in
         "insomnia"
         "karabiner-elements"
         "keybase"
-        "notion"
         "macfuse"
+        "notion"
         "parsec"
         "qlvideo"
+        "raycast"
         "rectangle"
         "utm"
       ];

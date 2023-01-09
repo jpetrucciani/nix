@@ -491,33 +491,6 @@ let
       };
     };
 
-    ruff = buildPythonPackage rec {
-      pname = "ruff";
-      version = "0.0.202";
-
-      format = "pyproject";
-      src = pkgs.fetchFromGitHub {
-        owner = "charliermarsh";
-        repo = "ruff";
-        rev = "v${version}";
-        sha256 = "sha256-A442CoPYaEs641P54n3I3XxtjL4DDEk1n0ca8HJkeGU=";
-      };
-
-      cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
-        inherit src sourceRoot;
-        name = "${pname}-${version}";
-        sha256 = "sha256-YtqKeSfntd3ja3j0UIgPTVfitYWjdSGcZkuQzwuO1H4=";
-      };
-      sourceRoot = "";
-
-      nativeBuildInputs = [ setuptools-rust ] ++ (with pkgs.rustPlatform; [
-        cargoSetupHook
-        maturinBuildHook
-        rust.cargo
-        rust.rustc
-      ]);
-    };
-
     falconn = buildPythonPackage rec {
       pname = "falconn";
       version = "1.3.1";
