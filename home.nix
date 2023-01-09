@@ -114,6 +114,7 @@ with pkgs.hax; {
         nano
         nanorc
         netcat-gnu
+        nil
         nix
         nix-info
         nix-output-monitor
@@ -134,7 +135,6 @@ with pkgs.hax; {
         ripgrep
         ripgrep-all
         rlwrap
-        rnix-lsp
         scc
         scrypt
         shellcheck
