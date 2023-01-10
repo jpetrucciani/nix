@@ -27,7 +27,7 @@ rec {
       toplevel=""
       pg=""
       if [ "$with_db_pg" = "1" ]; then
-        pg="(__pg { postgres = _.postgres; })${"\n"}(__pg_bootstrap { inherit name; postgres = pg; })${"\n"}(__pg_shell { inherit name; postgres = pg; })"
+        pg="(__pg { postgres = pg; })${"\n"}(__pg_bootstrap { inherit name; postgres = pg; })${"\n"}(__pg_shell { inherit name; postgres = pg; })"
         toplevel="pg = jacobi.postgresql_15;${"\n"}$toplevel"
       fi
       py=""
