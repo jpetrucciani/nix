@@ -423,7 +423,7 @@ with builtins; rec {
         buildInputs = packages;
         paths = packages;
       };
-  toolset = tools: lib.flatten [ (lib.flatten (builtins.attrValues tools)) ];
+  _toolset = tools: lib.flatten [ (lib.flatten (builtins.attrValues tools)) ];
 
   bashEsc = ''\033'';
   bashColors = [
