@@ -5,7 +5,7 @@ rec {
     { name ? "db"
     , db_name ? name
     , password ? name
-    , extensions ? [ "pgcrypto" "uuid-ossp" ]
+    , extensions ? [ "pgcrypto" "uuid-ossp" "pgjwt" ]
     , postgres ? postgresql_15
     , extra_bootstrap ? ""
     }: pog {
@@ -14,13 +14,18 @@ rec {
       script =
         let
           pg_ctl = ''${postgres}/bin/pg_ctl -o "-k '$PGDATA'" -D "$PGDATA"'';
-          psql = ''${postgres}/bin/psql -d postgres -h localhost -p "$PGPORT" -c'';
+          _psql = x: ''${postgres}/bin/psql -d ${x} -h localhost -p "$PGPORT" -c'';
+          psql = _psql "postgres";
+          psql_db = _psql db_name;
           create_db = "CREATE DATABASE ${db_name};";
           create_ext = builtins.concatStringsSep "\n" (map (x: ''CREATE EXTENSION IF NOT EXISTS \"${x}\";'') extensions);
           create_user = ''
             CREATE USER ${name} WITH ENCRYPTED PASSWORD '${password}';
             GRANT ALL PRIVILEGES ON DATABASE ${db_name} TO ${name};
             ALTER USER ${name} CREATEDB;
+          '';
+          grant_schema = ''
+            GRANT USAGE ON SCHEMA public TO ${name};
           '';
         in
         ''
@@ -30,6 +35,7 @@ rec {
             ${psql} "${create_db}"
             ${psql} "${create_ext}"
             ${psql} "${create_user}"
+            ${psql_db} "${grant_schema}"
             ${extra_bootstrap}
             ${pg_ctl} stop
           }
