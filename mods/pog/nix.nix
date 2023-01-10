@@ -5,11 +5,7 @@ rec {
     name = "nixup";
     description = "a quick tool to create a base nix environment!";
     flags = [
-      {
-        name = "mkderivation";
-        description = "use 'stdenv.mkDerivation' instead of 'buildEnv'";
-        bool = true;
-      }
+      _.flags.nix.with_db_pg
       _.flags.nix.with_elixir
       _.flags.nix.with_golang
       _.flags.nix.with_nim
@@ -28,16 +24,20 @@ rec {
       rev=$(echo "$jacobi" | ${_.jq} -r '.rev')
       sha=$(echo "$jacobi" | ${_.jq} -r '.sha256')
       toplevel=""
+      pg=""
+      if [ "$with_db_pg" = "1" ]; then
+        pg="(__pg { postgres = _.postgres; })${"\n"}(__pg_bootstrap { inherit name; postgres = pg; })${"\n"}(__pg_shell { inherit name; postgres = pg; })"
+        toplevel="pg = jacobi.postgresql_15;${"\n"}$toplevel"
+      fi
       py=""
       [ "$with_python" = "1" ] && py="python = [(python310.withPackages ( p: with p; [${"\n"}requests]))];"
       vlang=""
-      [ "$with_vlang" = "1" ] && vlang="vlang = [vlang.withPackages (p: with p; [])];" && mkderivation=1;
+      [ "$with_vlang" = "1" ] && vlang="vlang = [vlang.withPackages (p: with p; [])];"
       nim=""
       [ "$with_nim" = "1" ] && nim="nim = [nim.withPackages (p: with p; [])];"
       node=""
       if [ "$with_node" = "1" ]; then
-        mkderivation=1
-        toplevel="node = jacobi.nodejs-18_x;"
+        toplevel="node = jacobi.nodejs-18_x;${"\n"}$toplevel"
         node="node = [node];npm = with node.pkgs; [prettier${"\n"}yarn];"
       fi
       golang=""
@@ -58,8 +58,6 @@ rec {
         py="python = [(python310.withPackages ( p: with p; [${"\n"}pulumi]))];"
         pulumi="pulumi = [pulumi];"
       fi
-      envtype=""
-      [ "$mkderivation" = "1" ] && envtype="${"\n"}mkDerivation = true;";
       ${prev.coreutils}/bin/cat -s <<EOF | ${_.nixpkgs-fmt}
         { jacobi ? import
             (fetchTarball {
@@ -75,14 +73,18 @@ rec {
           ''${toplevel}
           tools = with jacobi; {
             cli = [
-              jq
+              coreutils
               nixpkgs-fmt
             ];
             ''${golang} ''${node} ''${py} ''${rust} ''${ruby} ''${terraform} ''${pulumi} ''${vlang} ''${nim} ''${elixir}
+            scripts = [''${pg}];
           };
 
-          env = jacobi.enviro {
-            inherit name tools; $envtype
+        env = let paths = jacobi._toolset tools; in
+          jacobi.buildEnv {
+            inherit name;
+            buildInputs = paths;
+            paths = paths;
           };
         in
         env

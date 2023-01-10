@@ -198,6 +198,12 @@ with builtins; rec {
         };
       };
       nix = {
+        with_db_pg = {
+          name = "with_db_pg";
+          short = "d";
+          bool = true;
+          description = "include postgres db and helper scripts";
+        };
         with_python = {
           name = "with_python";
           short = "p";
