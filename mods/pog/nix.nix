@@ -3,6 +3,7 @@ with prev;
 rec {
   nixup = pog {
     name = "nixup";
+    version = "0.0.1";
     description = "a quick tool to create a base nix environment!";
     flags = [
       _.flags.nix.with_db_pg

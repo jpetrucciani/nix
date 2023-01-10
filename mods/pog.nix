@@ -604,7 +604,8 @@ with builtins; rec {
       defaultFlagHelp = if showDefaultFlags then "[${shortHelp}--help] [${shortVerbose}--verbose] [--no-color] " else "";
     in
     stdenv.mkDerivation {
-      inherit name version;
+      inherit version;
+      pname = name;
       dontUnpack = true;
       nativeBuildInputs = [ installShellFiles pkgs.shellcheck ];
       passAsFile = [
