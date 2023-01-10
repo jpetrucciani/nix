@@ -89,8 +89,6 @@ in
       cleanup = "zap";
       upgrade = true;
     };
-    # fix brew on m1. see: https://github.com/LnL7/nix-darwin/pull/304/files
-    brewPrefix = "/opt/homebrew/bin";
     casks = common.mac.casks.all_personal;
     masApps = common.mac.apps;
     extraConfig = "";
