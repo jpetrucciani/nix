@@ -25,7 +25,7 @@ rec {
             ALTER USER ${name} CREATEDB;
           '';
           grant_schema = ''
-            GRANT USAGE ON SCHEMA public TO ${name};
+            GRANT ALL ON SCHEMA public TO ${name};
           '';
         in
         ''
