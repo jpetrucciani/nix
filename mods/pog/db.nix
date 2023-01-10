@@ -48,8 +48,8 @@ rec {
   };
 
   db_pog_scripts = [
-    __pg
-    __pg_bootstrap
-    __pg_shell
+    (__pg { })
+    (__pg_bootstrap { })
+    (__pg_shell { })
   ];
 }
