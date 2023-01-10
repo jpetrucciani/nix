@@ -5,7 +5,7 @@ rec {
     { name ? "db"
     , db_name ? name
     , password ? name
-    , extensions ? [ "pgcrypto" "uuid-ossp" "pgjwt" ]
+    , extensions ? [ "pgcrypto" "uuid-ossp" ]
     , postgres ? postgresql_15
     , extra_bootstrap ? ""
     }: pog {
