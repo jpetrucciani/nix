@@ -62,7 +62,7 @@ rec {
     { };
 
   bigquery-emulator = prev.callPackage
-    ({ lib, buildGo119Module, fetchFromGitHub, clangStdenv, clang, glibc }:
+    ({ lib, buildGo119Module, fetchFromGitHub, clangStdenv }:
       (buildGo119Module.override { stdenv = clangStdenv; }) rec {
         pname = "bigquery-emulator";
         version = "0.2.10";
@@ -77,10 +77,9 @@ rec {
 
         vendorSha256 = "sha256-saIbb5CAmxFkAR/kxQxKdgL1Vnx7XaCox0V3SM6Ngus=";
 
-        nativeBuildInputs = [ clang glibc ];
-
         CGO_ENABLED = 1;
 
+        nativeBuildInputs = [ ];
         subPackages = [
           "./cmd/bigquery-emulator"
         ];
