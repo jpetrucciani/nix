@@ -1,9 +1,5 @@
 final: prev:
 with prev;
-let
-  inherit (stdenv) isLinux isDarwin isAarch64;
-  isM1 = isDarwin && isAarch64;
-in
 rec {
   haproxy-pin = { version, sha256 }: haproxy.overrideAttrs (attrs: rec {
     inherit version;
@@ -65,58 +61,43 @@ rec {
     )
     { };
 
-  planar-ally = prev.callPackage
-    ({ stdenvNoCC, callPackage, fetchurl, autoPatchelfHook, python310, bashInteractive_5, lib }:
-      let
-        pname = "planarally";
-        owner = "Kruptein";
-        version = "2022.2.3";
-        sha256 = "sha256-u6mTMDAmjUVIbE2l7QZEU9FGXTuwJrVutDhNrI6yLG0=";
-        python = python310.withPackages (p: with p; [
-          aiohttp
-          aiohttp-security
-          aiohttp-session
-          bcrypt
-          cryptography
-          python-socketio
-          peewee
-          typing-extensions
-        ]);
-        run = writeShellScriptBin "planar-ally" ''
-          ${python} 
-        '';
-      in
-      stdenvNoCC.mkDerivation rec {
-        inherit pname version;
+  bigquery-emulator = prev.callPackage
+    ({ lib, buildGo119Module, fetchFromGitHub, clangStdenv, clang, glibc }:
+      (buildGo119Module.override { stdenv = clangStdenv; }) rec {
+        pname = "bigquery-emulator";
+        version = "0.2.10";
+        commit = "fdf32e7e7db6b22829cd8366d6768ef5acd64a11";
 
-        src = fetchurl {
-          inherit sha256;
-          url = "https://github.com/${owner}/${pname}/releases/download/${version}/${pname}-bin-${version}.tar.gz";
+        src = fetchFromGitHub {
+          owner = "goccy";
+          repo = pname;
+          rev = "v${version}";
+          sha256 = "sha256-Vl6l0qfdKhKPF2WhgUmVNgPXIOGB1FaAm4dqdoBT4P0=";
         };
 
-        strictDeps = true;
-        dontConfigure = true;
-        dontBuild = true;
+        vendorSha256 = "sha256-saIbb5CAmxFkAR/kxQxKdgL1Vnx7XaCox0V3SM6Ngus=";
 
-        unpackPhase = ''
-          ${gnutar}/bin/tar xzvf ${src}
-        '';
-        installPhase = ''
-          mkdir -p $out/bin
-          mv ./server/* $out
+        nativeBuildInputs = [ clang glibc ];
 
-          # patch directories
+        CGO_ENABLED = 1;
 
-          cat <<EOF >$out/bin/planar-ally
-          #!${bashInteractive}/bin/bash
-          cd $out
-          ${python}/bin/python ./src/planarserver.py "$@"
-          EOF
-          chmod +x $out/bin/planar-ally
-        '';
+        subPackages = [
+          "./cmd/bigquery-emulator"
+        ];
+
+        ldflags = [
+          "-s"
+          "-w"
+          "-X main.version=${version}"
+          "-X main.revision=${commit}"
+          "-linkmode external"
+        ];
 
         meta = with lib; {
+          inherit (src.meta) homepage;
+          description = "BigQuery emulator server implemented in Go";
           license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
         };
       }
     )

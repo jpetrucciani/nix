@@ -285,7 +285,7 @@ with builtins; rec {
         };
       };
     };
-    globals = rec {
+    globals = {
       hacks = {
         bash_or_sh = "if command -v bash >/dev/null 2>/dev/null; then exec bash; else exec sh; fi";
         docker = {
@@ -317,7 +317,7 @@ with builtins; rec {
         "ubuntu:22.04"
         "ubuntu:20.04"
       ];
-      aws = rec {
+      aws = {
         regions = [
           "us-east-1"
           "us-east-2"
@@ -337,7 +337,7 @@ with builtins; rec {
           "cn-north-1"
         ];
       };
-      gcp = rec {
+      gcp = {
         regions = [
           "asia-east1"
           "asia-east2"
@@ -370,7 +370,7 @@ with builtins; rec {
           "us-west4"
         ];
       };
-      tencent = rec {
+      tencent = {
         regions = [
           "ap-guangzhou"
           "ap-shanghai"

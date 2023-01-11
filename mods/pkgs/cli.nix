@@ -1,10 +1,6 @@
 final: prev:
 with prev;
-let
-  inherit (stdenv) isLinux isDarwin isAarch64;
-  isM1 = isDarwin && isAarch64;
-in
-rec {
+{
   s3-edit = prev.callPackage
     ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
       buildGo119Module rec {
@@ -261,7 +257,6 @@ rec {
     ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
       let
         version = "0.3.0";
-        commit = "e1837ecb20c659b7491d68712f99b47d80368b30";
         date = "2022-12-12";
       in
       buildGo119Module rec {

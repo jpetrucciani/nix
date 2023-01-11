@@ -1,6 +1,6 @@
 final: prev:
 with prev;
-rec {
+{
   mitm2openapi = pog {
     name = "mitm2openapi";
     description = "convert mitmproxy flows into openapi specs!";

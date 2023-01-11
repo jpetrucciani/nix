@@ -465,7 +465,7 @@ let
       };
     };
 
-    osrsreboxed = buildPythonPackage rec {
+    osrsreboxed = buildPythonPackage {
       pname = "osrsreboxed";
       version = "2.3.5";
 

@@ -1,10 +1,6 @@
 final: prev:
 with prev;
-let
-  inherit (stdenv) isLinux isDarwin isAarch64;
-  isM1 = isDarwin && isAarch64;
-in
-rec {
+{
   katafygio = prev.callPackage
     ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
       buildGo119Module rec {
@@ -154,7 +150,6 @@ rec {
         };
         dist = dists.${stdenvNoCC.hostPlatform.system} or (throw "Unsupported system: ${stdenvNoCC.hostPlatform.system}");
         pname = "gke-gcloud-auth-plugin";
-        owner = "google";
         version = "0.4.0";
         ts = "20221014224505";
       in

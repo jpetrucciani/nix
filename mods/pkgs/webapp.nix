@@ -1,14 +1,9 @@
 final: prev:
 with prev;
-let
-  inherit (stdenv) isLinux isDarwin isAarch64;
-  isM1 = isDarwin && isAarch64;
-in
-rec {
+{
   json-crack = prev.callPackage
     ({ stdenvNoCC, fetchFromGitHub, mkYarnPackage, nodejs ? nodejs-18_x }:
       let
-        pname = "jsoncrack";
         version = "2.5.0";
 
         src = fetchFromGitHub {
