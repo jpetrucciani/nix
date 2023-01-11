@@ -35,6 +35,7 @@ rec {
             ${psql} "${create_db}"
             ${psql} "${create_ext}"
             ${psql} "${create_user}"
+            ${psql_db} "${create_ext}"
             ${psql_db} "${grant_schema}"
             ${extra_bootstrap}
             ${pg_ctl} stop
