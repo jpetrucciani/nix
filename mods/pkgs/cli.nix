@@ -353,6 +353,15 @@ with prev;
 
         vendorSha256 = "sha256-clAeO/J6dN6M2AT5agp2OCruApBIX7byBaUeEeusN4c=";
 
+        nativeBuildInputs = [ installShellFiles ];
+
+        postInstall = ''
+          installShellCompletion --cmd cgapp \
+            --bash <($out/bin/cgapp completion bash) \
+            --fish <($out/bin/cgapp completion fish) \
+            --zsh  <($out/bin/cgapp completion zsh)
+        '';
+
         doCheck = false;
 
         meta = with lib; {

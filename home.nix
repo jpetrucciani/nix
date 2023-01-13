@@ -242,6 +242,7 @@ with pkgs.hax; {
         regula
         s3-edit
         ov
+        cgapp
         # this breaks on x86_64 darwin?
         # watcher
 
