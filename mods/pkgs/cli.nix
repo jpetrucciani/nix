@@ -333,4 +333,45 @@ with prev;
     )
     { };
 
+  cgapp = prev.callPackage
+    ({ lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
+        pname = "cli";
+        version = "3.6.2";
+
+        src = fetchFromGitHub {
+          owner = "create-go-app";
+          repo = "cli";
+          rev = "v${version}";
+          sha256 = "sha256-m/O2W8jVLJvy3J5Nb3DpcbVh4G2xkJWm0S7gBy+oi2k=";
+        };
+
+        ldflags = [
+          "-s"
+          "-w"
+        ];
+
+        vendorSha256 = "sha256-clAeO/J6dN6M2AT5agp2OCruApBIX7byBaUeEeusN4c=";
+
+        nativeBuildInputs = [ installShellFiles ];
+
+        postInstall = ''
+          installShellCompletion --cmd cgapp \
+            --bash <($out/bin/cgapp completion bash) \
+            --fish <($out/bin/cgapp completion fish) \
+            --zsh  <($out/bin/cgapp completion zsh)
+        '';
+
+        doCheck = false;
+
+        meta = with lib; {
+          inherit (src.meta) homepage;
+          description = "Create a new production-ready project with backend, frontend and deploy automation";
+          license = licenses.asl20;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
 }
