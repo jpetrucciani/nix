@@ -700,6 +700,40 @@ let
       };
     };
 
+    starred =
+      buildPythonPackage rec {
+        pname = "starred";
+        version = "4.2.0";
+
+        format = "pyproject";
+        src = pkgs.fetchFromGitHub {
+          owner = "maguowei";
+          repo = pname;
+          rev = "v${version}";
+          sha256 = "sha256-ugseXFiDQXLCg9wImpLCPmRJp31/OI8VuxxYD4JJ8mg=";
+        };
+
+        propagatedBuildInputs = [
+          aiohttp
+          click
+          github3_py
+          gql
+          poetry-core
+          requests
+        ];
+
+        pythonCheckImports = [
+          "starred"
+        ];
+
+        meta = with lib; {
+          description = "Create your own Awesome List by GitHub stars";
+          homepage = "https://github.com/maguowei/starred";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      };
+
   };
 in
 pynixifyOverlay
