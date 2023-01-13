@@ -374,4 +374,42 @@ with prev;
     )
     { };
 
+  migrate-go = prev.callPackage
+    ({ lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
+        pname = "migrate";
+        version = "4.15.2";
+
+        src = fetchFromGitHub {
+          owner = "golang-migrate";
+          repo = "migrate";
+          rev = "v${version}";
+          sha256 = "sha256-nVR6zMG/a4VbGgR9a/6NqMNYwFTifAZW3F6rckvOEJM=";
+        };
+
+        ldflags = [
+          "-s"
+          "-w"
+          "-X main.Version=${version}"
+          "-extldflags 'static'"
+        ];
+
+        vendorSha256 = "sha256-lPNPl6fqBT3XLQie9z93j91FLtrMjKbHnXUQ6b4lDb4=";
+
+        doCheck = false;
+
+        postInstall = ''
+          rm $out/bin/cli
+        '';
+
+        meta = with lib; {
+          inherit (src.meta) homepage;
+          description = "Database migrations. CLI and Golang library";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
 }
