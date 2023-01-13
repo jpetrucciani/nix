@@ -86,11 +86,11 @@ in
       instances = {
         rlcraft = {
           inherit (conf) jvmOpts;
-          enable = true;
+          enable = false;
           rsyncSSHKeys = [ common.pubkeys.pluto ];
           jvmPackage = conf.jre8;
-          jvmInitialAllocation = "8G";
-          jvmMaxAllocation = "10G";
+          jvmInitialAllocation = "6G";
+          jvmMaxAllocation = "8G";
           serverConfig =
             conf.defaults
               // {
@@ -109,8 +109,8 @@ in
           enable = true;
           rsyncSSHKeys = [ common.pubkeys.pluto ];
           jvmPackage = conf.jre17;
-          jvmInitialAllocation = "8G";
-          jvmMaxAllocation = "10G";
+          jvmInitialAllocation = "6G";
+          jvmMaxAllocation = "8G";
           serverConfig =
             conf.defaults
               // {
@@ -124,8 +124,8 @@ in
           enable = true;
           rsyncSSHKeys = [ common.pubkeys.pluto ];
           jvmPackage = conf.jre17;
-          jvmInitialAllocation = "8G";
-          jvmMaxAllocation = "10G";
+          jvmInitialAllocation = "6G";
+          jvmMaxAllocation = "8G";
           serverConfig =
             conf.defaults
               // {
