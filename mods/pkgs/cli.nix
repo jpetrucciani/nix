@@ -394,6 +394,13 @@ with prev;
           "-extldflags 'static'"
         ];
 
+        tags = [
+          "postgres"
+          "mysql"
+          "pgx"
+          "mongodb"
+        ];
+
         vendorSha256 = "sha256-lPNPl6fqBT3XLQie9z93j91FLtrMjKbHnXUQ6b4lDb4=";
 
         doCheck = false;
