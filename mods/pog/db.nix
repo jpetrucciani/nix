@@ -1,5 +1,15 @@
 final: prev:
 with prev;
+let
+  flags = {
+    redis_port = {
+      name = "port";
+      envVar = "REDIS_PORT";
+      default = "6379";
+      description = "port that redis lives on";
+    };
+  };
+in
 rec {
   __pg_bootstrap =
     { name ? "db"
@@ -54,9 +64,34 @@ rec {
     script = ''${final.portwatch}/bin/portwatch "$PGPORT" && ${postgres}/bin/psql -h localhost -p "$PGPORT" -U ${name} -d ${name} ${extra_flags}'';
   };
 
+  __rd = pog {
+    name = "__rd";
+    description = "run your local redis db";
+    flags = [
+      flags.redis_port
+    ];
+    script = ''
+      ${redis}/bin/redis-server --port "$port"
+    '';
+  };
+  __rd_shell = pog {
+    name = "__rd_shell";
+    description = "run your local redis db";
+    flags = [
+      flags.redis_port
+    ];
+    script = ''
+      ${redis}/bin/redis-cli -p "$port"
+    '';
+  };
+
   db_pog_scripts = [
+    # postgres
     (__pg { })
     (__pg_bootstrap { })
     (__pg_shell { })
+    # redis
+    __rd
+    __rd_shell
   ];
 }
