@@ -7,6 +7,7 @@ rec {
     description = "a quick tool to create a base nix environment!";
     flags = [
       _.flags.nix.with_db_pg
+      _.flags.nix.with_db_redis
       _.flags.nix.with_elixir
       _.flags.nix.with_golang
       _.flags.nix.with_nim
@@ -29,6 +30,10 @@ rec {
       if [ "$with_db_pg" = "1" ]; then
         pg="(__pg { postgres = pg; })${"\n"}(__pg_bootstrap { inherit name; postgres = pg; })${"\n"}(__pg_shell { inherit name; postgres = pg; })"
         toplevel="pg = jacobi.postgresql_15;${"\n"}$toplevel"
+      fi
+      redis=""
+      if [ "$with_db_redis" = "1" ]; then
+        redis="__rd${"\n"}__rd_shell"
       fi
       py=""
       [ "$with_python" = "1" ] && py="python = [(python310.withPackages ( p: with p; [${"\n"}requests]))];"
@@ -78,7 +83,7 @@ rec {
               nixpkgs-fmt
             ];
             ''${golang} ''${node} ''${py} ''${rust} ''${ruby} ''${terraform} ''${pulumi} ''${vlang} ''${nim} ''${elixir}
-            scripts = [''${pg}];
+            scripts = [''${pg} ''${redis}];
           };
 
         env = let paths = jacobi._toolset tools; in

@@ -103,9 +103,9 @@ with builtins; rec {
     # json partials
     refresh_patch = ''
       echo "spec.template.metadata.labels.date = \"$(${_.date} +'%s')\";" |
-       ${_.gron} -u |
-       ${_.tr} -d '\n' |
-       ${_.sed} -E 's#\s+##g'
+        ${_.gron} -u |
+        ${_.tr} -d '\n' |
+        ${_.sed} -E 's#\s+##g'
     '';
 
     # flags to reuse
@@ -204,6 +204,12 @@ with builtins; rec {
           bool = true;
           description = "include postgres db and helper scripts";
         };
+        with_db_redis = {
+          name = "with_db_redis";
+          short = "";
+          bool = true;
+          description = "include redis db and helper scripts";
+        };
         with_python = {
           name = "with_python";
           short = "p";
@@ -224,13 +230,13 @@ with builtins; rec {
         };
         with_rust = {
           name = "with_rust";
-          short = "r";
+          short = "";
           bool = true;
           description = "include rust";
         };
         with_ruby = {
           name = "with_ruby";
-          short = "b";
+          short = "";
           bool = true;
           description = "include ruby";
         };
@@ -242,25 +248,25 @@ with builtins; rec {
         };
         with_pulumi = {
           name = "with_pulumi";
-          short = "u";
+          short = "";
           bool = true;
           description = "include pulumi";
         };
         with_vlang = {
           name = "with_vlang";
-          short = "w";
+          short = "v";
           bool = true;
           description = "include a vlang with dependencies";
         };
         with_nim = {
           name = "with_nim";
-          short = "i";
+          short = "";
           bool = true;
           description = "include a nim with dependencies";
         };
         with_elixir = {
           name = "with_elixir";
-          short = "e";
+          short = "";
           bool = true;
           description = "include elixir with dependencies";
         };
@@ -597,6 +603,7 @@ with builtins; rec {
         flag = var.notEmpty;
         notFlag = var.empty;
       };
+      filterBlank = filter (x: x != "");
       shortHelp = if shortDefaultFlags then "-h|" else "";
       shortVerbose = if shortDefaultFlags then "-v|" else "";
       shortHelpDoc = if shortDefaultFlags then "-h, " else "";
@@ -641,7 +648,7 @@ with builtins; rec {
           fi
         }
 
-        OPTIONS="h,v,${concatStringsSep "," (map (x: x.shortOpt) parsedFlags)}"
+        OPTIONS="${if shortDefaultFlags then "h,v," else ""}${concatStringsSep "," (map (x: x.shortOpt) parsedFlags)}"
         LONGOPTS="help,no-color,verbose,${concatStringsSep "," (map (x: x.longOpt) parsedFlags)}"
 
         # shellcheck disable=SC2251
@@ -703,53 +710,60 @@ with builtins; rec {
         }
         setup_colors
         ${if bashBible then bashbible.bible else ""}
-        ${concatStringsSep "\n" (filter (x: x != "") (map (x: x.flagPrompt) parsedFlags))}
+        ${concatStringsSep "\n" (filterBlank (map (x: x.flagPrompt) parsedFlags))}
         # script
         ${if builtins.isFunction script then script helpers else script}
       '';
-      completion = ''
-        #!/bin/bash
-        # shellcheck disable=SC2317
-        _${name}()
-        {
-          local current previous completions
-          compopt +o default
+      completion =
+        let
+          argCompletion =
+            if argumentCompletion == "files" then ''
+              compopt -o default
+              COMPREPLY=()
+            '' else ''
+              completions=$(${argumentCompletion} "$current")
+              # shellcheck disable=SC2207
+              COMPREPLY=( $(compgen -W "$completions" -- "$current") )
+            '';
+        in
+        ''
+          #!/bin/bash
+          # shellcheck disable=SC2317
+          _${name}()
+          {
+            local current previous completions
+            compopt +o default
 
-          flags(){
-            echo "\
-              -h -v ${concatStringsSep " " (map (x: "-${x.short}") parsedFlags)} \
-              --help --verbose --no-color ${concatStringsSep " " (map (x: "--${x.name}") parsedFlags)}"
-          }
-          files(){
-            ${_.ls}
-          }
-          executables(){
-            echo -n "$PATH" |
-              ${_.xargs} -d: -I{} -r -- find -L {} -maxdepth 1 -mindepth 1 -type f -executable -printf '%P\n' 2>/dev/null |
-              ${_.sort} -u
-          }
+            flags(){
+              echo "\
+                ${if shortDefaultFlags then "-h -v " else ""}${concatStringsSep " " (map (x: "-${x.short}") (filter (x: x.short != "") parsedFlags))} \
+                --help --verbose --no-color ${concatStringsSep " " (map (x: "--${x.name}") parsedFlags)}"
+            }
+            executables(){
+              echo -n "$PATH" |
+                ${_.xargs} -d: -I{} -r -- find -L {} -maxdepth 1 -mindepth 1 -type f -executable -printf '%P\n' 2>/dev/null |
+                ${_.sort} -u
+            }
 
-          COMPREPLY=()
-          current="''${COMP_WORDS[COMP_CWORD]}"
-          previous="''${COMP_WORDS[COMP_CWORD-1]}"
-
-          if [[ $current = -* ]]; then
-            completions=$(flags)
-            # shellcheck disable=SC2207
-            COMPREPLY=( $(compgen -W "$completions" -- "$current") )
-          ${concatStringsSep "\n" (map (x: x.completionBlock) parsedFlags)}
-          elif [[ $COMP_CWORD = 1 ]] || [[ $previous = -* && $COMP_CWORD = 2 ]]; then
-            completions=$(${argumentCompletion} "$current")
-            # shellcheck disable=SC2207
-            COMPREPLY=( $(compgen -W "$completions" -- "$current") )
-          else
-            compopt -o default
             COMPREPLY=()
-          fi
-          return 0
-        }
-        complete -F _${name} ${name}
-      '';
+            current="''${COMP_WORDS[COMP_CWORD]}"
+            previous="''${COMP_WORDS[COMP_CWORD-1]}"
+
+            if [[ $current = -* ]]; then
+              completions=$(flags)
+              # shellcheck disable=SC2207
+              COMPREPLY=( $(compgen -W "$completions" -- "$current") )
+            ${concatStringsSep "\n" (map (x: x.completionBlock) parsedFlags)}
+            elif [[ $COMP_CWORD = 1 ]] || [[ $previous = -* && $COMP_CWORD = 2 ]]; then
+              ${argCompletion}
+            else
+              compopt -o default
+              COMPREPLY=()
+            fi
+            return 0
+          }
+          complete -F _${name} ${name}
+        '';
       installPhase = ''
         mkdir -p $out/bin
         echo '#!/bin/bash' >$out/bin/${name}
@@ -770,6 +784,7 @@ with builtins; rec {
     { name
     , _name ? (replaceStrings [ "-" ] [ "_" ] name)
     , short ? substring 0 1 name
+    , shortDef ? if short != "" then "-${short}|" else ""
     , default ? ""
     , hasDefault ? (stringLength default) > 0
     , bool ? false
@@ -796,16 +811,19 @@ with builtins; rec {
           [ -z "''${${_name}}" ] && ${_name}="$(${prompt})"
           [ -z "''${${_name}}" ] && die "${promptError}" ${toString promptErrorExitCode}
         '' else "";
-      ex = "[-${short}|--${_name}${if bool then "" else " ${argument}"}]";
+      ex = "[${shortDef}--${_name}${if bool then "" else " ${argument}"}]";
       helpDoc =
-        (rightPad flagPadding "-${short}, --${_name}") +
+        let
+          base = (if short != "" then "-${short}, " else "") + "--${_name}";
+        in
+        (rightPad flagPadding base) +
         "\t${description}" +
         "${if hasDefault then " [default: '${default}']" else ""}" +
         "${if hasPrompt then " [will prompt if not passed in]" else ""}" +
         "${if bool then " [bool]" else ""}"
       ;
       definition = ''
-        -${short}|--${_name})
+        ${shortDef}--${_name})
             ${_name}=${if bool then "1" else "$2"}
             shift ${if bool then "" else "2"}
             ;;'';
@@ -830,6 +848,7 @@ with builtins; rec {
       _.flags.common.color
       {
         name = "functions";
+        short = "";
         description = "list all functions! (this is a lot of text)";
         bool = true;
       }
