@@ -8,7 +8,7 @@ let
       lib.optionalAttrs (pathExists ../pkgs)
         (listToAttrs (lib.mapAttrsToList fn (readDir ../pkgs)))
     ) (
-      n: _: rec {
+      n: _: {
         name = lib.removeSuffix ".nix" n;
         value = pkgs.callPackage (../pkgs + ("/" + n))
           {

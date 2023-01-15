@@ -36,6 +36,22 @@ final: prev:
       }
     );
 
+    pythonPackageOverlay =
+      overlay: attr: self: super:
+      let
+        pyOverlay = a: {
+          ${a} = self.lib.fix (py:
+            super.${a}.override (old: {
+              self = py;
+              packageOverrides = self.lib.composeExtensions
+                (old.packageOverrides or (_: _: { }))
+                overlay;
+            }));
+        };
+      in
+      if builtins.isList attr then
+        (builtins.zipAttrsWith (name: values: builtins.head values) (map pyOverlay attr)) else pyOverlay attr;
+
     ssh = rec {
       github = ''
         Host github.com
