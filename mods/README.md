@@ -14,6 +14,10 @@ This directory contains package sets for specific languages that I overlay funct
 
 This directory contains nix packages that I've built that are not yet ready for nixpkgs proper, or that don't make sense to open as a PR to nixpkgs proper. These are broken out into individual overlays for organization
 
+### [python/](./python/)
+
+This directory provides my python package overlays.
+
 ### [bashbible.nix](./bashbible.nix)
 
 This overlay contains the bashbible implemented entirely in nix attr sets.
@@ -45,7 +49,3 @@ This overlay provides many more packages and scripts for use in my setup. This i
 ### [pog.nix](./pog.nix)
 
 This overlay provides the `pog` function, as well as a good amount of constants that make building tools easier.
-
-### [python_pkgs.nix](./python_pkgs.nix)
-
-This overlay provides my python package overrides.

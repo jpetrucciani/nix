@@ -3,12 +3,19 @@
   (import ./mods/bashbible.nix)
   (import ./mods/fake_platform.nix)
   (import ./mods/hashers.nix)
-  (import ./mods/python_pkgs.nix)
   (import ./mods/custom_pkgs.nix)
   (import ./mods/lang.nix)
   (import ./mods/override.nix)
   (import ./mods/pog.nix)
   (import ./mods/mods.nix)
+
+  # python sub-overlays
+  (import ./mods/python/experimental.nix)
+  (import ./mods/python/fixes.nix)
+  (import ./mods/python/hax.nix)
+  (import ./mods/python/misc.nix)
+  (import ./mods/python/pr.nix)
+  (import ./mods/python/types.nix)
 
   # sub-overlays
   (import ./mods/pkgs/caddy.nix)
