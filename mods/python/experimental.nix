@@ -207,6 +207,11 @@ final: prev: prev.hax.pythonPackageOverlay
         pytestCheckHook
       ];
 
+      preBuild = ''
+        mv ./pyproject.toml ./pyproject.bak
+        ${yq}/bin/tomlq -yt 'del(.tool.poetry.include)' ./pyproject.bak > ./pyproject.toml
+      '';
+
       pythonImportsCheck = [
         "renoir"
       ];
@@ -240,6 +245,8 @@ final: prev: prev.hax.pythonPackageOverlay
 
       preBuild = ''
         sed -i -E 's#pyyaml = "\^5.3.1"#pyyaml = "\^6.0.0"#' ./pyproject.toml
+        mv ./pyproject.toml ./pyproject.bak
+        ${yq}/bin/tomlq -yt 'del(.tool.poetry.include)' ./pyproject.bak > ./pyproject.toml
       '';
 
       pythonImportsCheck = [
@@ -305,6 +312,8 @@ final: prev: prev.hax.pythonPackageOverlay
         sed -i -E 's#pyyaml = "\^5.4"#pyyaml = "\^6.0.0"#' ./pyproject.toml
         sed -i -E 's#uvicorn = "\~0.19.0"#uvicorn = "\~0.20.0"#' ./pyproject.toml
         sed -i -E 's#h2 = ">= 3.2.0\, < 4.1.0"#h2 = ">= 4.1.0"#' ./pyproject.toml
+        mv ./pyproject.toml ./pyproject.bak
+        ${yq}/bin/tomlq -yt 'del(.tool.poetry.include)' ./pyproject.bak > ./pyproject.toml
       '';
 
       checkInputs = [
