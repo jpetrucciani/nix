@@ -329,6 +329,47 @@ final: prev: prev.hax.pythonPackageOverlay
       };
     };
 
+    emmett-crypto = buildPythonPackage rec {
+      pname = "emmett-crypto";
+      version = "0.3.0";
+
+      format = "pyproject";
+      src = pkgs.fetchFromGitHub {
+        owner = "emmett-framework";
+        repo = "crypto";
+        rev = "v${version}";
+        sha256 = "sha256-hPBcpno+cFKRNNnsT0YsReqW1XLTjqERmwhGHpqFa0Y=";
+      };
+
+      cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
+        inherit src sourceRoot;
+        name = "${pname}-${version}";
+        sha256 = "sha256-qL9lG0u1bnGhQ4RRqEhT8Ev81z7CcZJM0EpsVrjUe0c=";
+      };
+      sourceRoot = "";
+
+      pythonImportsCheck = [
+        "emmett_crypto"
+      ];
+
+      nativeBuildInputs = [
+        setuptools-rust
+      ] ++ (with pkgs.rustPlatform; [
+        cargoSetupHook
+        maturinBuildHook
+        rust.cargo
+        rust.rustc
+      ]);
+
+      meta = with lib; {
+        description = "Cryptographic utilities for Emmett framework";
+        homepage = "https://github.com/emmett-framework/crypto";
+        changelog = "https://github.com/emmett-framework/crypto/blob/master/CHANGES.md";
+        license = licenses.bsd3;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
     granian = buildPythonPackage rec {
       pname = "granian";
       version = "0.2.1";
@@ -355,6 +396,10 @@ final: prev: prev.hax.pythonPackageOverlay
       propagatedBuildInputs = [
         typer
         uvloop
+      ];
+
+      pythonImportsCheck = [
+        "granian"
       ];
 
       nativeBuildInputs = [
