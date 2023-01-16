@@ -270,6 +270,12 @@ with builtins; rec {
           bool = true;
           description = "include elixir with dependencies";
         };
+        with_php = {
+          name = "with_php";
+          short = "";
+          bool = true;
+          description = "include a php with packages";
+        };
       };
       python = {
         package = {

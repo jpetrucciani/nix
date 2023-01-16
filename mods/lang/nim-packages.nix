@@ -59,7 +59,7 @@ rec {
     meta = { };
   };
 
-  chronicles = rec {
+  chronicles = {
     name = "chronicles";
     src = fetchFromGitHub {
       owner = "status-im";
@@ -82,7 +82,7 @@ rec {
     meta = { };
   };
 
-  chronos = rec {
+  chronos = {
     name = "nim-chronos";
     src = fetchFromGitHub {
       owner = "status-im";
@@ -243,7 +243,7 @@ rec {
     meta = { };
   };
 
-  json_serialization = rec {
+  json_serialization = {
     name = "json_serialization";
     src = fetchFromGitHub {
       owner = "status-im";
@@ -352,7 +352,7 @@ rec {
     meta = { };
   };
 
-  norm = rec {
+  norm = {
     name = "norm";
     sub = "/src";
     src = fetchFromGitHub {
@@ -392,12 +392,13 @@ rec {
 
   prologue = rec {
     name = "prologue";
+    version = "0.6.4";
     sub = "/src";
     src = fetchFromGitHub {
       owner = "planety";
       repo = name;
-      rev = "e456548b5a44bc5383993782478e34a989dabb0a";
-      sha256 = "sha256-b70VD3fsu7M2Sqpwx1HEmz1AybEo+aCtHYeocQmuhGQ=";
+      rev = "v${version}";
+      sha256 = "sha256-CrInegW+qASgw9Uyx9wIckTmbs9k9v9oEgPruAM8sMY=";
     };
     dependencies = [
       regex
@@ -409,7 +410,7 @@ rec {
     meta = { };
   };
 
-  q = rec {
+  q = {
     name = "q";
     src = fetchFromGitHub {
       owner = "OpenSystemsLab";
@@ -457,7 +458,7 @@ rec {
     meta = { };
   };
 
-  segmentation = rec {
+  segmentation = {
     name = "segmentation";
     sub = "/src";
     src = fetchFromGitHub {

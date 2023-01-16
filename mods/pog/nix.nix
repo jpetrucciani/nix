@@ -12,6 +12,7 @@ rec {
       _.flags.nix.with_golang
       _.flags.nix.with_nim
       _.flags.nix.with_node
+      _.flags.nix.with_php
       _.flags.nix.with_python
       _.flags.nix.with_ruby
       _.flags.nix.with_rust
@@ -37,10 +38,12 @@ rec {
       fi
       py=""
       [ "$with_python" = "1" ] && py="python = [(python310.withPackages ( p: with p; [${"\n"}requests]))];"
+      php=""
+      [ "$with_php" = "1" ] && php="php = [php82];"
       vlang=""
-      [ "$with_vlang" = "1" ] && vlang="vlang = [vlang.withPackages (p: with p; [])];"
+      [ "$with_vlang" = "1" ] && vlang="vlang = [(vlang.withPackages (p: with p; []))];"
       nim=""
-      [ "$with_nim" = "1" ] && nim="nim = [nim.withPackages (p: with p; [])];"
+      [ "$with_nim" = "1" ] && nim="nim = [(nim.withPackages (p: with p; []))];"
       node=""
       if [ "$with_node" = "1" ]; then
         toplevel="node = jacobi.nodejs-18_x;${"\n"}$toplevel"
@@ -82,7 +85,7 @@ rec {
               coreutils
               nixpkgs-fmt
             ];
-            ''${golang} ''${node} ''${py} ''${rust} ''${ruby} ''${terraform} ''${pulumi} ''${vlang} ''${nim} ''${elixir}
+            ''${golang} ''${node} ''${py} ''${rust} ''${ruby} ''${terraform} ''${pulumi} ''${vlang} ''${nim} ''${elixir} ''${php}
             scripts = [''${pg} ''${redis}];
           };
 

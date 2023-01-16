@@ -1,16 +1,19 @@
 final: prev:
 with prev;
-with builtins; rec {
+rec {
   nimWithPackages =
     packages:
     let
+      nimPackages = prev.callPackage ./lang/nim-packages.nix { };
       addPath = { src, name, sub ? "", meta ? { }, ... }: ''--add-flags "--path:${src}${sub}"'';
-      additionalPaths = map addPath (packages (prev.callPackage ./lang/nim-packages.nix { }));
+      additionalPaths = map addPath (packages nimPackages);
     in
     prev.nim.overrideAttrs (old: {
       wrapperArgs = old.wrapperArgs ++ additionalPaths;
     });
-  nim = prev.nim.overrideAttrs (_: { passthru.withPackages = nimWithPackages; });
+  nim = prev.nim.overrideAttrs (_: {
+    passthru.withPackages = nimWithPackages;
+  });
 
   vWithPackages =
     packages:
