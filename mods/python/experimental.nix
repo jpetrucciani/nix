@@ -372,20 +372,20 @@ final: prev: prev.hax.pythonPackageOverlay
 
     granian = buildPythonPackage rec {
       pname = "granian";
-      version = "0.2.1";
+      version = "0.2.3";
 
       format = "pyproject";
       src = pkgs.fetchFromGitHub {
         owner = "emmett-framework";
         repo = pname;
         rev = "v${version}";
-        sha256 = "sha256-8xgHhrV9gdE5b9meNr2rRxPbufRPVy2kClZeIRoEZgM=";
+        sha256 = "sha256-2JnyO0wxkV49R/0wzDb/PnUWWHi3ckwK4nVe7dWeH1k=";
       };
 
       cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
         inherit src sourceRoot;
         name = "${pname}-${version}";
-        sha256 = "sha256-cyDQ+mN6xT3hF0FPy5QmXE+2rTFnw5mIShyoGZanS6A=";
+        sha256 = "sha256-rRTOSyOQ7qWGipyug92KHVmvjS8cMSpnjxZigru86Yg=";
       };
       sourceRoot = "";
 
