@@ -2,7 +2,7 @@
 let
   inherit (hex) ifNotNull ifNotEmptyList toYAML;
 
-  cron = rec {
+  cron = {
     build =
       { name
       , image ? "curlimages/curl:7.85.0"

@@ -1,7 +1,5 @@
 { hex, ... }:
 let
-  inherit (hex) toYAML;
-
   datadog = rec {
     defaults = {
       name = "datadog";

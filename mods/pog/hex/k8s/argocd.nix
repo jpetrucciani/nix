@@ -1,7 +1,5 @@
 { hex, ... }:
 let
-  inherit (hex) toYAML;
-
   argocd = rec {
     defaults = {
       name = "argocd";

@@ -22,8 +22,8 @@ in
   ];
   environment.variables =
     let
+      inherit (pkgs.cudaPackages) cudnn;
       cuda = pkgs.cudaPackages.cudatoolkit;
-      cudnn = pkgs.cudaPackages.cudnn;
       cudaTarget = "cuda114";
     in
     with pkgs; {

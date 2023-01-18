@@ -54,7 +54,6 @@ let
     };
     nodeAffinity = { labels, hard ? false, topologyKey ? "kubernetes.io/hostname" }:
       let
-        labelMatcher = label: { };
         _type = if hard then "required" else "preferred";
         affinityType = "${_type}DuringSchedulingIgnoredDuringExecution";
       in
@@ -101,6 +100,7 @@ let
       , command ? null
       , args ? null
       , env ? [ ]
+      , envFrom ? [ ]
       , volumes ? [ ]
       , ip ? null
       , service ? true
@@ -159,7 +159,7 @@ let
         }) // extraNP;
         dep = (components.deployment {
           inherit name namespace labels image replicas revisionHistoryLimit maxSurge maxUnavailable depSuffix saSuffix daemonSet lifecycle imagePullSecrets affinity;
-          inherit cpuRequest memoryRequest cpuLimit memoryLimit command args env volumes subdomain nodeSelector livenessProbe readinessProbe securityContext pre1_18;
+          inherit cpuRequest memoryRequest cpuLimit memoryLimit command args env envFrom volumes subdomain nodeSelector livenessProbe readinessProbe securityContext pre1_18;
         }) // extraDep;
         hpa = (components.hpa { inherit name namespace labels min max cpuUtilization hpaSuffix; }) // extraHPA;
         svc =
@@ -179,7 +179,7 @@ let
         ${if networkPolicy then "---\n${toYAML np}" else ""}
         ${if ingress then "---\n${toYAML ing}" else ""}
       '';
-    components = rec {
+    components = {
       service-account = { name, namespace ? "default", china ? false, saSuffix ? "-sa", imagePullSecrets ? [ ] }: {
         apiVersion = "v1";
         kind = "ServiceAccount";
@@ -379,6 +379,7 @@ let
         , command ? null
         , args ? null
         , env ? [ ]
+        , envFrom ? [ ]
         , volumes ? [ ]
         , subdomain ? null
         , nodeSelector ? null
@@ -431,6 +432,7 @@ let
                   {
                     inherit image name;
                     ${ifNotEmptyList env "env"} = env;
+                    ${ifNotEmptyList envFrom "envFrom"} = envFrom;
                     ${ifNotNull command "command"} = if builtins.isString command then [ command ] else command;
                     ${ifNotNull args "args"} = args;
                     ${ifNotNull livenessProbe "livenessProbe"} = livenessProbe;

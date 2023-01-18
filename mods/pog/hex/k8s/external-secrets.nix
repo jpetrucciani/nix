@@ -93,12 +93,13 @@ let
         , secret_ref ? ""
         , namespace ? "default"
         , extract ? false
+        , decoding_strategy ? "Auto"
         , extra_data ? [ ]
         , labels ? { }
         , string_data ? { }
         }: ''
           ---
-          ${toYAML (secret {inherit name filename env store store_kind refresh_interval secret_ref namespace extract extra_data labels string_data;})}
+          ${toYAML (secret {inherit name filename env store store_kind refresh_interval secret_ref namespace extract decoding_strategy extra_data labels string_data;})}
         '';
 
       secret =
@@ -111,6 +112,7 @@ let
         , secret_ref
         , namespace
         , extract
+        , decoding_strategy
         , extra_data
         , labels
         , string_data
@@ -144,7 +146,10 @@ let
             };
             ${attrIf extract "dataFrom"} = [
               {
-                extract.key = if secret_ref == "" then "${env}${name}" else secret_ref;
+                extract = {
+                  key = if secret_ref == "" then "${env}${name}" else secret_ref;
+                  decodingStrategy = decoding_strategy;
+                };
               }
             ];
             ${attrIf (!extract) "data"} = [

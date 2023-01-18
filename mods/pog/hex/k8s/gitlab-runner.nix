@@ -1,7 +1,5 @@
 { hex, pkgs, ... }:
 let
-  inherit (hex) toYAML;
-
   gitlab-runner = rec {
     defaults = {
       name = "gitlab-runner";
