@@ -348,8 +348,11 @@ let
 
       deployment =
         let
-          volumeDef = { name, secret ? null, hostPath ? null, configMap ? null, emptyDir ? false, items ? null, ... }: {
+          volumeDef = { name, secret ? null, hostPath ? null, configMap ? null, emptyDir ? false, items ? null, pvc ? null, ... }: {
             inherit name;
+            ${ifNotNull pvc "persistentVolumeClaim"} = {
+              claimName = pvc;
+            };
             ${ifNotNull secret "secret"} = {
               secretName = secret;
               ${ifNotNull items "items"} = items;
