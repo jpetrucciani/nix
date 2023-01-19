@@ -2,7 +2,7 @@ name: formatting
 on: {workflow_dispatch, push: {branches: [main]}, pull_request}
 jobs:
   prettier:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3.3.0
       - uses: cachix/install-nix-action@v18
@@ -12,7 +12,7 @@ jobs:
       - run: nix-env -f . -iA nodePackages.prettier
       - run: prettier --check .
   nixpkgs-fmt:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3.3.0
       - uses: cachix/install-nix-action@v18

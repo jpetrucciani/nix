@@ -6,18 +6,23 @@ on:
       tag:
         type: string
         required: true
+        description: the name of the source to check for updates
       command:
         type: string
         required: true
+        description: the command to run to generate the hashes
       path:
         type: string
         required: true
+        description: the path to place the hashes
       extra_path:
         type: string
         required: false
+        description: an additional path to place the hashes
     secrets:
       pat:
         required: true
+        description: a personal access token with permissions to open and merge PRs to this repo
 
 jobs:
   check-for-updates:
