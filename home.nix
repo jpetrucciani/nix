@@ -135,6 +135,7 @@ with pkgs.hax; {
         ripgrep
         ripgrep-all
         rlwrap
+        ruff
         scc
         scrypt
         shellcheck
@@ -156,11 +157,8 @@ with pkgs.hax; {
         (python310.withPackages
           (pkgs: with pkgs; [
             # linting
-            bandit
             black
             mypy
-            flake8
-            pylint
 
             # common use case
             gamble
@@ -544,7 +542,7 @@ with pkgs.hax; {
           # vscode extensions
           extensions = {
             elixir-ls = "JakeBecker.elixir-ls";
-            nix-ide = "jnoortheen.nix-ide";
+            nixpkgs-fmt = "B4dM4n.nixpkgs-fmt";
             prettier = "esbenp.prettier-vscode";
             python = "ms-python.python";
             rust = "statiolake.vscode-rustfmt";
@@ -560,21 +558,20 @@ with pkgs.hax; {
             "${formatter}": "${extensions.prettier}",
             "python.formatting.blackPath": "${nix-bin}/black",
             "python.linting.mypyPath": "${nix-bin}/mypy",
-            "python.linting.flake8Path": "${nix-bin}/flake8",
             "python.linting.banditEnabled": true,
             "python.linting.banditArgs": ["-s", "B101", "B311"],
             "python.linting.mypyEnabled": true,
-            "python.linting.flake8Enabled": true,
+            "python.linting.flake8Args": ["--max-line-length=120", "--ignore="],
             "python.languageServer": "Pylance",
             "python.analysis.diagnosticSeverityOverrides": {"reportMissingImports": "none"},
             "python.formatting.provider": "black",
             "prettier.configPath": "${homeDirectory}/.prettierrc.js",
             "nix.enableLanguageServer": true,
-            "nix.serverPath": "/home/jacobi/.nix-profile/bin/rnix-lsp",
-            "nix.formatterPath": "/home/jacobi/.nix-profile/bin/nixpkgs-fmt",
+            "nix.serverPath": "${nix-bin}/nil",
+            "nix.formatterPath": "${nix-bin}/nixpkgs-fmt",
             "nixEnvSelector.nixFile": "${workspaceRoot}/default.nix",
             "[nix]": {
-              "${formatter}": "${extensions.nix-ide}",
+              "${formatter}": "${extensions.nixpkgs-fmt}",
               "${tabSize}": 2
             },
             "[terraform]": {
@@ -608,9 +605,9 @@ with pkgs.hax; {
             "terraform.languageServer.enable": true,
             "terraform.languageServer.args": ["serve"],
             "terraform.languageServer.ignoreSingleFileWarning": false,
-            "terraform.languageServer.path": "/home/jacobi/.nix-profile/bin/terraform-ls",
-            "haskell.manageHLS": "PATH",
-            "haskell.formattingProvider": "stylish-haskell"
+            "terraform.languageServer.path": "${nix-bin}/terraform-ls",
+            "zircon.shell": "${nix-bin}/bash",
+            "shellformat.path": "${nix-bin}/shfmt"
           }
         '';
     };
