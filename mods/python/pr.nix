@@ -247,6 +247,7 @@ final: prev: prev.hax.pythonPackageOverlay
       };
 
       checkInputs = [
+        httpx
         mock
         pytestCheckHook
         pytest-asyncio
