@@ -202,7 +202,9 @@ final: prev: prev.hax.pythonPackageOverlay
     slack-bolt = buildPythonPackage rec {
       pname = "slack-bolt";
       version = "1.16.1";
+      format = "setuptools";
 
+      disabled = pythonOlder "3.7";
       src = pkgs.fetchFromGitHub {
         owner = "slackapi";
         repo = "bolt-python";
@@ -216,30 +218,40 @@ final: prev: prev.hax.pythonPackageOverlay
         "slack_bolt"
       ];
 
+      passthru.optional-dependencies = {
+        async = [
+          aiohttp
+          websockets
+        ];
+        adapter = [
+          boddle
+          boto3
+          bottle
+          cherrypy
+          django
+          falcon
+          fastapi
+          flask
+          flask-sockets
+          pyramid
+          starlette
+          tornado
+          uvicorn
+        ] ++ lib.optionals (!stdenv.isDarwin) [
+          # server types that are broken on darwin
+          chalice
+          moto
+          sanic
+          sanic-testing
+        ];
+      };
+
       checkInputs = [
         mock
         pytestCheckHook
         pytest-asyncio
-
-        # frameworks
-        bottle
-        boddle
-        cherrypy
-        django
-        falcon
-        fastapi
-        flask
-        flask-sockets
-        pyramid
-        tornado
-        starlette
-      ] ++ lib.optionals (!stdenv.isDarwin) [
-        # server types that are broken on darwin 
-        chalice
-        moto
-        sanic
-        sanic-testing
-      ];
+      ] ++ passthru.optional-dependencies.async
+      ++ passthru.optional-dependencies.adapter;
 
       disabledTestPaths = [
         # disable tests that require credentials
