@@ -1,6 +1,6 @@
 let
   pkgs = import ./default.nix { };
-  inherit (pkgs.hax) isDarwin isWSL fetchFromGitHub;
+  inherit (pkgs.hax) isDarwin isX86Mac fetchFromGitHub;
 
   firstName = "jacobi";
   lastName = "petrucciani";
@@ -241,11 +241,8 @@ with pkgs.hax; {
         s3-edit
         ov
         cgapp
-        # this breaks on x86_64 darwin?
-        # watcher
 
         # overlays
-        git-trim
         nix_hash_unstable
         nix_hash_nixos_unstable
         nix_hash_jpetrucciani
@@ -269,6 +266,14 @@ with pkgs.hax; {
         (
           optList isDarwin [
             lima
+          ]
+        )
+
+        # all except old mac
+        (
+          optList (!isX86Mac) [
+            git-trim
+            watcher
           ]
         )
 
