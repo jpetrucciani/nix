@@ -8,6 +8,7 @@ final: prev:
     inherit (pkgs) fetchFromGitHub;
 
     isM1 = isDarwin && isAarch64;
+    isX86Mac = isDarwin && !isAarch64;
     isArmLinux = isAarch64 && isLinux;
     isNixOS = isLinux && (builtins.match ''.*ID="?nixos.*'' (builtins.readFile /etc/os-release)) == [ ];
     isAndroid = isAarch64 && !isDarwin && !isNixOS;
