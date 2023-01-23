@@ -565,6 +565,7 @@ with pkgs.hax; {
             "python.languageServer": "Pylance",
             "python.analysis.diagnosticSeverityOverrides": {"reportMissingImports": "none"},
             "python.formatting.provider": "black",
+            "ruff.path": ["${nix-bin}/ruff"],
             "prettier.configPath": "${homeDirectory}/.prettierrc.js",
             "nix.enableLanguageServer": true,
             "nix.serverPath": "${nix-bin}/nil",
