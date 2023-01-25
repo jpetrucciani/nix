@@ -198,6 +198,12 @@ with builtins; rec {
         };
       };
       nix = {
+        overmind = {
+          name = "overmind";
+          short = "o";
+          bool = true;
+          description = "include an overmind config";
+        };
         with_db_pg = {
           name = "with_db_pg";
           short = "d";
@@ -269,6 +275,12 @@ with builtins; rec {
           short = "";
           bool = true;
           description = "include elixir with dependencies";
+        };
+        with_crystal = {
+          name = "with_crystal";
+          short = "";
+          bool = true;
+          description = "include crystal with dependencies";
         };
         with_php = {
           name = "with_php";

@@ -6,6 +6,8 @@ rec {
     version = "0.0.1";
     description = "a quick tool to create a base nix environment!";
     flags = [
+      # _.flags.nix.overmind
+      _.flags.nix.with_crystal
       _.flags.nix.with_db_pg
       _.flags.nix.with_db_redis
       _.flags.nix.with_elixir
@@ -13,92 +15,113 @@ rec {
       _.flags.nix.with_nim
       _.flags.nix.with_node
       _.flags.nix.with_php
+      _.flags.nix.with_pulumi
       _.flags.nix.with_python
       _.flags.nix.with_ruby
       _.flags.nix.with_rust
       _.flags.nix.with_terraform
-      _.flags.nix.with_pulumi
       _.flags.nix.with_vlang
     ];
     shortDefaultFlags = false;
-    script = ''
-      directory="$(pwd | ${_.sed} 's#.*/##')"
-      jacobi=$(${nix_hash_jpetrucciani}/bin/nix_hash_jpetrucciani);
-      rev=$(echo "$jacobi" | ${_.jq} -r '.rev')
-      sha=$(echo "$jacobi" | ${_.jq} -r '.sha256')
-      toplevel=""
-      pg=""
-      if [ "$with_db_pg" = "1" ]; then
-        pg="(__pg { postgres = pg; })${"\n"}(__pg_bootstrap { inherit name; postgres = pg; })${"\n"}(__pg_shell { inherit name; postgres = pg; })"
-        toplevel="pg = jacobi.postgresql_15;${"\n"}$toplevel"
-      fi
-      redis=""
-      if [ "$with_db_redis" = "1" ]; then
-        redis="__rd${"\n"}__rd_shell"
-      fi
-      py=""
-      [ "$with_python" = "1" ] && py="python = [(python310.withPackages ( p: with p; [${"\n"}requests]))];"
-      php=""
-      [ "$with_php" = "1" ] && php="php = [php82];"
-      vlang=""
-      [ "$with_vlang" = "1" ] && vlang="vlang = [(vlang.withPackages (p: with p; []))];"
-      nim=""
-      [ "$with_nim" = "1" ] && nim="nim = [(nim.withPackages (p: with p; []))];"
-      node=""
-      if [ "$with_node" = "1" ]; then
-        toplevel="node = jacobi.nodejs-18_x;${"\n"}$toplevel"
-        node="node = [node];npm = with node.pkgs; [prettier${"\n"}yarn];"
-      fi
-      golang=""
-      [ "$with_golang" = "1" ] && golang="go = [go_1_19${"\n"}go-tools gopls];"
-      rust=""
-      [ "$with_rust" = "1" ] && rust="rust = [cargo${"\n"}rust-analyzer rustc rustfmt];"
-      ruby=""
-      [ "$with_ruby" = "1" ] && ruby="ruby = [(ruby_3_1.withPackages ( p: with p; []))${"\n"}sqlite];"
-      terraform=""
-      [ "$with_terraform" = "1" ] && terraform="terraform = [terraform${"\n"}terraform-ls terrascan tfsec];"
-      elixir=""
-      if [ "$with_elixir" = "1" ]; then
-        elixir="elixir = [elixir${"\n"}(with beamPackages; [${"\n"}hex])(ifIsLinux [inotify-tools]) (ifIsDarwin [ terminal-notifier (with darwin.apple_sdk.frameworks; [ CoreFoundation CoreServices ])])];"
-        toplevel="inherit (jacobi.hax) ifIsLinux ifIsDarwin;${"\n"}$toplevel"
-      fi
-      pulumi=""
-      if [ "$with_pulumi" = "1" ]; then
-        py="python = [(python310.withPackages ( p: with p; [${"\n"}pulumi]))];"
-        pulumi="pulumi = [pulumi];"
-      fi
-      ${prev.coreutils}/bin/cat -s <<EOF | ${_.nixpkgs-fmt}
-        { jacobi ? import
-            (fetchTarball {
-                name = "jacobi-$(date '+%F')";
-                url = "https://nix.cobi.dev/x/$rev";
-                sha256 = "$sha";
-            })
-            {}
-        }:
-        let
-          name = "$directory";
+    script = h:
+      ''
+        directory="$(pwd | ${_.sed} 's#.*/##')"
+        jacobi=$(${nix_hash_jpetrucciani}/bin/nix_hash_jpetrucciani);
+        rev=$(echo "$jacobi" | ${_.jq} -r '.rev')
+        sha=$(echo "$jacobi" | ${_.jq} -r '.sha256')
+        toplevel=""
+        crystal=""
+        if [ "$with_crystal" = "1" ]; then
+          crystal="crystal = [crystal_1_2${"\n"}shards];"
+        fi
+        pg=""
+        if [ "$with_db_pg" = "1" ]; then
+          pg="(__pg { postgres = pg; })${"\n"}(__pg_bootstrap { inherit name; postgres = pg; })${"\n"}(__pg_shell { inherit name; postgres = pg; })"
+          toplevel="pg = jacobi.postgresql_15;${"\n"}$toplevel"
+        fi
+        redis=""
+        if [ "$with_db_redis" = "1" ]; then
+          redis="__rd${"\n"}__rd_shell"
+        fi
+        elixir=""
+        if [ "$with_elixir" = "1" ]; then
+          elixir="elixir = [elixir${"\n"}(with beamPackages; [${"\n"}hex])(ifIsLinux [inotify-tools]) (ifIsDarwin [ terminal-notifier (with darwin.apple_sdk.frameworks; [ CoreFoundation CoreServices ])])];"
+          toplevel="inherit (jacobi.hax) ifIsLinux ifIsDarwin;${"\n"}$toplevel"
+        fi
+        golang=""
+        if [ "$with_golang" = "1" ]; then
+          golang="go = [go_1_19${"\n"}go-tools gopls];"
+        fi
+        nim=""
+        if [ "$with_nim" = "1" ]; then
+          nim="nim = [(nim.withPackages (p: with p; []))];"
+        fi
+        node=""
+        if [ "$with_node" = "1" ]; then
+          toplevel="node = jacobi.nodejs-18_x;${"\n"}$toplevel"
+          node="node = [node];npm = with node.pkgs; [prettier${"\n"}yarn];"
+        fi
+        php=""
+        if [ "$with_php" = "1" ]; then
+          php="php = [php82];"
+        fi
+        pulumi=""
+        if [ "$with_pulumi" = "1" ]; then
+          py="python = [(python310.withPackages ( p: with p; [${"\n"}pulumi]))];"
+          pulumi="pulumi = [pulumi];"
+        fi
+        py=""
+        if [ "$with_python" = "1" ]; then
+          py="python = [(python310.withPackages ( p: with p; [${"\n"}requests]))];"
+        fi
+        ruby=""
+        if [ "$with_ruby" = "1" ]; then
+          ruby="ruby = [(ruby_3_1.withPackages ( p: with p; []))${"\n"}sqlite];"
+        fi
+        rust=""
+        if [ "$with_rust" = "1" ]; then
+          rust="rust = [cargo${"\n"}rust-analyzer rustc rustfmt];"
+        fi
+        terraform=""
+        if [ "$with_terraform" = "1" ]; then
+          terraform="terraform = [terraform${"\n"}terraform-ls terrascan tfsec];"
+        fi
+        vlang=""
+        if [ "$with_vlang" = "1" ]; then
+          vlang="vlang = [(vlang.withPackages (p: with p; []))];"
+        fi
+        ${prev.coreutils}/bin/cat -s <<EOF | ${_.nixpkgs-fmt}
+          { jacobi ? import
+              (fetchTarball {
+                  name = "jacobi-$(date '+%F')";
+                  url = "https://nix.cobi.dev/x/$rev";
+                  sha256 = "$sha";
+              })
+              {}
+          }:
+          let
+            name = "$directory";
 
-          ''${toplevel}
-          tools = with jacobi; {
-            cli = [
-              coreutils
-              nixpkgs-fmt
-            ];
-            ''${golang} ''${node} ''${py} ''${rust} ''${ruby} ''${terraform} ''${pulumi} ''${vlang} ''${nim} ''${elixir} ''${php}
-            scripts = [''${pg} ''${redis}];
-          };
+            ''${toplevel}
+            tools = with jacobi; {
+              cli = [
+                coreutils
+                nixpkgs-fmt
+              ];
+              ''${crystal} ''${elixir} ''${golang} ''${nim} ''${node} ''${php} ''${pulumi} ''${py} ''${ruby} ''${rust} ''${terraform} ''${vlang}
+              scripts = [''${pg} ''${redis}];
+            };
 
-        env = let paths = jacobi._toolset tools; in
-          jacobi.buildEnv {
-            inherit name;
-            buildInputs = paths;
-            paths = paths;
-          };
-        in
-        env
-      EOF
-    '';
+          env = let paths = jacobi._toolset tools; in
+            jacobi.buildEnv {
+              inherit name;
+              buildInputs = paths;
+              paths = paths;
+            };
+          in
+          env
+        EOF
+      '';
   };
 
   y2n = writeBashBinChecked "y2n" ''

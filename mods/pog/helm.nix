@@ -44,6 +44,7 @@ rec {
     name = "argo-cd";
     index_url = "https://argoproj.github.io/argo-helm/index.yaml";
     chart_url = "https://github.com/argoproj/argo-helm/releases/download/argo-cd-{1}/argo-cd-{1}.tgz";
+    last = 100;
   };
 
   chart_scan_authentik = _chart_scan {

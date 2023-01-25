@@ -308,8 +308,10 @@ in
     netdata.enable = true;
     openssh = {
       enable = true;
-      passwordAuthentication = false;
-      permitRootLogin = "no";
+      settings = {
+        permitRootLogin = "no";
+        passwordAuthentication = false;
+      };
       forwardX11 = true;
       kexAlgorithms = [
         "curve25519-sha256"

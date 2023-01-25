@@ -4,13 +4,14 @@ let
     defaults = {
       name = "authentik";
       namespace = "default";
-      version = "2023.1.1";
-      sha256 = "1952ybfp2v0nd3j35p1k2jkdaiim5giwfhbdz1mhjwa7cj0c5vnd";
+      version = "2023.1.2";
+      sha256 = "1vym8san70qcqxbfphvv3f8q09f1yf67pf9vx2zc3yl0dziv76qj";
     };
     version = rec {
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
-      latest = v2023-1-1;
-      v2023-1-1 = _v defaults.version defaults.sha256;
+      latest = v2023-1-2;
+      v2023-1-2 = _v defaults.version defaults.sha256;
+      v2023-1-1 = _v "2023.1.1" "1952ybfp2v0nd3j35p1k2jkdaiim5giwfhbdz1mhjwa7cj0c5vnd";
       v2022-12-4 = _v "2022.12.4" "12s7qd09sz3mwxi7zg4406lgyy06qbg0l9ky2si8lcnsbmxj0g6f";
       v2022-12-2 = _v "2022.12.2" "0klhs31vpis0g9nnfhhh76lcd9y09g8b095cdc51kxgb2cv67r0d";
       v2022-12-1 = _v "2022.12.1" "0wyjc573d8f4hjzk17bwzbb4l0rlg13d1iz9j34zzhy2shifjs1v";
