@@ -22,7 +22,8 @@ final: prev: prev.hax.pythonPackageOverlay
           }) else super.curio;
 
     anybadge = super.anybadge.overridePythonAttrs (old: {
-      checkInputs = old.checkInputs ++ [ super.requests ];
+      nativeCheckInputs = old.nativeCheckInputs ++ [ super.requests ];
+      propagatedBuildInputs = [ super.packaging ];
       disabledTests = [
         "test_module_same_output_as_main_cli"
         "test_server_badge_request"
