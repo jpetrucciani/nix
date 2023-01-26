@@ -85,6 +85,7 @@ let
       , autoscale ? true
       , networkPolicy ? true
       , serviceAccount ? true
+      , serviceAccountToken ? false
       , roleBinding ? true
       , port ? 443
       , altPort ? null
@@ -151,7 +152,10 @@ let
         sa = (components.service-account {
           inherit name namespace china saSuffix imagePullSecrets;
         }) // extraSA;
-        rb = (components.role-binding { inherit name namespace rbSuffix saSuffix; }) // extraRB;
+        sa-token = (components.service-account-token {
+          inherit name namespace saSuffix});
+            rb= ( components. role-binding{ inherit name namespace rbSuffix saSuffix;
+        }) // extraRB;
         np = (components.network-policy {
           inherit name namespace labels npSuffix;
           egress = egressPolicy;
@@ -170,6 +174,7 @@ let
         ing = (components.ingress { inherit name namespace port ingressSuffix serviceSuffix pre1_18 host extraIngressAnnotations disableHttp; tls = ingressTLSSecret; }) // extraIng;
       in
       ''
+        ${if serviceAccountToken then "---\n${toYAML sa-token}" else ""}
         ${if serviceAccount then "---\n${toYAML sa}" else ""}
         ${if roleBinding then "---\n${toYAML rb}" else ""}
         ---
@@ -180,12 +185,25 @@ let
         ${if ingress then "---\n${toYAML ing}" else ""}
       '';
     components = {
+      service-account-token = { name, namespace ? "default", saSuffix ? "-sa" }: {
+        apiVersion = "v1";
+        kind = "Secret";
+        metadata = {
+          inherit namespace;
+          annotations = {
+            "kubernetes.io/service-account.name" = "${name}${saSuffix}";
+          };
+          name = "${name}${saSuffix}-token";
+        };
+        type = "kubernetes.io/service-account-token";
+      };
       service-account = { name, namespace ? "default", china ? false, saSuffix ? "-sa", imagePullSecrets ? [ ] }: {
         apiVersion = "v1";
         kind = "ServiceAccount";
         metadata = {
-          name = "${name}${saSuffix}";
+          inherit namespace;
           annotations = { } // hex.annotations;
+          name = "${name}${saSuffix}";
         };
         ${ifNotEmptyList imagePullSecrets "imagePullSecrets"} = imagePullSecrets;
       };
