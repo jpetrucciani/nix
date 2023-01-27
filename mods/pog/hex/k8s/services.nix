@@ -153,8 +153,10 @@ let
           inherit name namespace china saSuffix imagePullSecrets;
         }) // extraSA;
         sa-token = (components.service-account-token {
-          inherit name namespace saSuffix});
-            rb= ( components. role-binding{ inherit name namespace rbSuffix saSuffix;
+          inherit name namespace saSuffix;
+        });
+        rb = (components.role-binding {
+          inherit name namespace rbSuffix saSuffix;
         }) // extraRB;
         np = (components.network-policy {
           inherit name namespace labels npSuffix;
