@@ -1,8 +1,8 @@
 { jacobi ? import
     (fetchTarball {
-      name = "jpetrucciani-2022-12-19";
-      url = "https://github.com/jpetrucciani/nix/archive/aeeb4ff7b48518bb9814e5a54187781e4978a8ec.tar.gz";
-      sha256 = "1qnmsfdaygh7ilvsdhlcsg5qm83d6fg58zg8bkgcgswq61yjbbbi";
+      name = "jpetrucciani-2023-01-27";
+      url = "https://github.com/jpetrucciani/nix/archive/2fbd55e396bd2eb59131c0e6e77f7e5fb0b2a086.tar.gz";
+      sha256 = "1gixml2xzmkbgd5p1nbkhbxc3saq9iwp0wljcrbx70gpdvv3llxp";
     })
     { }
 }:
@@ -11,42 +11,50 @@ let
   tools = with jacobi; {
     cli = [
       bashInteractive
-      comma
+      coreutils
       cowsay
       curl
       delta
+      direnv
       dyff
       figlet
       git
       gron
       jq
       just
+      moreutils
       nodePackages.prettier
       scc
-      shfmt
       yq-go
+      hax.comma
       (writeShellScriptBin "hms" ''
         nix-env -i -f ~/cfg.nix
       '')
     ];
+    k8s = [
+      kubectl
+      kubectx
+      gke-gcloud-auth-plugin
+    ];
     nix = [
       nixpkgs-fmt
       nixup
+      nix-direnv
     ];
     python = [
+      ruff
       (python310.withPackages (p: with p; [
-        bandit
         black
-        flake8
         mypy
-        pylint
         requests
       ]))
     ];
   };
 
-  env = jacobi.enviro {
-    inherit name tools;
-  };
+  env = let paths = jacobi._toolset tools; in
+    jacobi.buildEnv {
+      inherit name paths;
+      buildInputs = paths;
+    };
 in
 env
