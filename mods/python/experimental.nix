@@ -2,65 +2,14 @@ final: prev: prev.hax.pythonPackageOverlay
   (self: super: with super; rec {
     pynecone-io =
       let
-        newStarlette = let version = "0.23.1"; in
-          starlette.overridePythonAttrs (_: {
-            inherit version;
-            format = "pyproject";
-            nativeBuildInputs = [
-              hatchling
-            ];
-            src = pkgs.fetchFromGitHub {
-              owner = "encode";
-              repo = "starlette";
-              rev = "refs/tags/${version}";
-              hash = "sha256-LcFrdaRgFBqcdylCzNlewj/papsg/sZ1FMVxBDLvQWI=";
-            };
-            patches = [ ];
-            checkInputs = [
-              httpx
-            ];
-          });
-        newFastapi = let version = "0.88.0"; in
-          fastapi.overridePythonAttrs (_: {
-            inherit version;
-            src = pkgs.fetchFromGitHub {
-              owner = "tiangolo";
-              repo = "fastapi";
-              rev = "refs/tags/${version}";
-              hash = "sha256-2rjKmQcehqkL5OnmtLRTvsyUSpK2aUgyE9VLvz+oWNw=";
-            };
-            propagatedBuildInputs = [
-              newStarlette
-              newPydantic
-            ];
-            disabledTestPaths = _.disabledTestPaths ++ [ "tests/test_generate_unique_id_function.py" ];
-          });
-        newPydantic = let version = "1.10.2"; in
-          (pydantic.override { withDocs = false; }).overridePythonAttrs (_: {
-            inherit version;
-            src = pkgs.fetchFromGitHub {
-              owner = "pydantic";
-              repo = "pydantic";
-              rev = "refs/tags/v${version}";
-              sha256 = "sha256-NQMnqcN2muQd6J4RtL5IcSO5OdQnIR28rmwCSWGfe14=";
-            };
-          });
-        newRedis = let version = "4.4.0"; in
-          redis.overridePythonAttrs (_: {
-            inherit version;
-            src = fetchPypi {
-              inherit version;
-              pname = "redis";
-              sha256 = "sha256-e4yH0ZxF0/EnGxJIWNKlwTFgxOdNSDXignNAD6NNUig=";
-            };
-          });
         sqlalchemy2-stubs = buildPythonPackage rec {
           pname = "sqlalchemy2-stubs";
-          version = "0.0.2a30";
+          version = "0.0.2a32";
 
+          disabled = pythonOlder "3.7";
           src = fetchPypi {
             inherit pname version;
-            sha256 = "0qi5k8k1qv9i5khx3ylyhb52xra67gmiq4pmbwhp3r6b85kn1rx6";
+            sha256 = "sha256-Kiz6tx01rGO/Ia2EHYYQzZOjvUxlYoSMU4+pdVhcJzk=";
           };
 
           propagatedBuildInputs = [ typing-extensions ];
@@ -69,14 +18,32 @@ final: prev: prev.hax.pythonPackageOverlay
         sqlmodel = buildPythonPackage rec {
           pname = "sqlmodel";
           version = "0.0.8";
+          format = "pyproject";
 
-          src = fetchPypi {
-            inherit pname version;
-            sha256 = "sha256-M3G00a1Z0v/QxTBYLCFAtsBrCQsyr5ucZBKYbXsRcDY=";
+          disabled = pythonOlder "3.7";
+          src = pkgs.fetchFromGitHub {
+            owner = "tiangolo";
+            repo = "sqlmodel";
+            rev = version;
+            sha256 = "sha256-HASWDm64vZsOnK+cL2/G9xiTbsBD2RoILXrigZMQncQ=";
           };
 
+          pythonImportsCheck = [
+            "sqlmodel"
+          ];
+
+          preBuild =
+            let
+              sed = "${pkgs.gnused}/bin/sed -i -E";
+            in
+            ''
+              ${sed} 's#,<=1.4.41##g' ./pyproject.toml
+              ${sed} 's#(version = )"0"#\1"${version}"#g' ./pyproject.toml
+            '';
+
           propagatedBuildInputs = [
-            newPydantic
+            poetry-core
+            pydantic
             sqlalchemy
             sqlalchemy2-stubs
           ];
@@ -101,7 +68,7 @@ final: prev: prev.hax.pythonPackageOverlay
       in
       buildPythonPackage rec {
         pname = "pynecone";
-        version = "0.1.12";
+        version = "0.1.13";
         format = "pyproject";
 
 
@@ -109,29 +76,35 @@ final: prev: prev.hax.pythonPackageOverlay
           owner = "pynecone-io";
           repo = "pynecone";
           rev = "v${version}";
-          sha256 = "sha256-Vrhq6TratGfwA+WKf17k3z/8zNSRNhnpgubBUic457s=";
+          sha256 = "sha256-ND2igjfZPsEsmgYE7lUZugPXVMDDpKEzhm9WWIGbD8k=";
         };
 
         propagatedBuildInputs = [
           pkgs.nodejs-18_x
+          fastapi
           gunicorn
           httpx
           plotly
           poetry-core
+          pydantic
+          redis
           rich
           uvicorn
           websockets
           # special
           sqlmodel
           typer
-          newFastapi
-          newPydantic
-          newRedis
         ];
 
-        preBuild = ''
-          ${pkgs.gnused}/bin/sed -i -E 's#BUN_PATH =.*#BUN_PATH = "${pkgs.bun}/bin/bun"#g' ./pynecone/constants.py
-        '';
+        preBuild =
+          let
+            sed = "${pkgs.gnused}/bin/sed -i -E";
+          in
+          ''
+            ${sed} 's#BUN_PATH =.*#BUN_PATH = "${pkgs.bun}/bin/bun"#g' ./pynecone/constants.py
+            ${sed} 's#(rich = )"\^12.6.0"#\1"\^13.0.0"#g' ./pyproject.toml
+            ${sed} 's#(pydantic = )"1.10.2"#\1"1.10.4"#g' ./pyproject.toml
+          '';
 
         pythonImportsCheck = [
           "pynecone"
