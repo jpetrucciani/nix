@@ -563,12 +563,13 @@ with pkgs.hax; {
             "${formatter}": "${extensions.prettier}",
             "python.formatting.blackPath": "${nix-bin}/black",
             "python.linting.mypyPath": "${nix-bin}/mypy",
-            "python.linting.banditEnabled": true,
-            "python.linting.banditArgs": ["-s", "B101", "B311"],
             "python.linting.mypyEnabled": true,
-            "python.linting.flake8Args": ["--max-line-length=120", "--ignore="],
+            "python.linting.flake8Args": ["--max-line-length=120", "--ignore=W503,W605"],
             "python.languageServer": "Pylance",
-            "python.analysis.diagnosticSeverityOverrides": {"reportMissingImports": "none"},
+            "python.analysis.diagnosticSeverityOverrides": {
+              "reportMissingImports": "none",
+              "reportInvalidStringEscapeSequence": "none"
+            },
             "python.formatting.provider": "black",
             "ruff.path": ["${nix-bin}/ruff"],
             "prettier.configPath": "${homeDirectory}/.prettierrc.js",
