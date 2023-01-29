@@ -89,7 +89,7 @@ in
             @geoblock {
               not maxmind_geolocation {
                 db_path {env.GEOIP_DB}
-                allow_countries US CA GM
+                allow_countries US
               }
               not remote_ip 127.0.0.1
             }
@@ -110,6 +110,17 @@ in
               route / {
                 header +Content-Type "text/html; charset=utf-8"
                 respond "${landing_page}"
+              }
+            '';
+          };
+          "vault.ba3digital.com" = {
+            extraConfig = ''
+              import GEOBLOCK
+              reverse_proxy /* {
+                to 192.168.69.20:8222
+              }
+              reverse_proxy /notifications/hub {
+                to 192.168.69.20:3012
               }
             '';
           };
