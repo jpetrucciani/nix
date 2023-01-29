@@ -14,6 +14,10 @@ This is an experimental NixOS install inside a VM using the apple virtualization
 
 This is my personal M1 Mac Mini server, running MacOS and using nix-darwin and home-manager to manage things.
 
+### [foundry/](./foundry/)
+
+this directory contains builders for cloud VM images and isos
+
 ### [hyperion/](./hyperion)
 
 This is an experimental NixOS install inside a VM.

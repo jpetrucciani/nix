@@ -280,6 +280,7 @@ with pkgs.hax; {
         # linux specific
         (
           optList isLinux [
+            nixos-generators
             binutils
             bitwarden-cli
             keybase

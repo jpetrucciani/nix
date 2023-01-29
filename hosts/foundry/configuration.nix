@@ -1,0 +1,62 @@
+{ pkgs, ... }:
+let
+  nixpkgs = import ../../default.nix { };
+  common = import ../common.nix { inherit config pkgs; };
+in
+{
+  inherit (common) nix;
+
+  boot.kernel.sysctl = { "net.ipv4.ip_forward" = 1; } // common.sysctl_opts;
+
+  nixpkgs.pkgs = nixpkgs;
+  environment.systemPackages = with nixpkgs; [
+    bashInteractive
+    bash-completion
+    coreutils-full
+    curl
+    figlet
+    gawk
+    gnugrep
+    gnused
+    gron
+    jq
+    just
+    lolcat
+    lsof
+    moreutils
+    nano
+    nix
+    ripgrep
+    wget
+    yq-go
+  ];
+
+  security.sudo = common.security.sudo;
+  security.acme = {
+    defaults = {
+      email = common.emails.personal;
+    };
+    acceptTerms = true;
+  };
+  users.mutableUsers = false;
+  users.extraUsers.jacobi = {
+    createHome = true;
+    isNormalUser = true;
+    home = "/home/jacobi";
+    description = "jacobi";
+    group = "users";
+    extraGroups = [ "wheel" "networkmanager" "docker" ];
+    useDefaultShell = true;
+    openssh.authorizedKeys.keys = with common.pubkeys; [ titan pluto ];
+  };
+
+  networking.firewall.enable = false;
+  services = {
+    inherit (common.services) openssh;
+    netdata.enable = true;
+    tailscale.enable = true;
+  };
+
+  system.stateVersion = "22.11";
+  programs.command-not-found.enable = false;
+}

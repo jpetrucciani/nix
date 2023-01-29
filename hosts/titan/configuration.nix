@@ -23,6 +23,7 @@ in
   nixpkgs.pkgs = common.pinned;
 
   boot = {
+    binfmt.emulatedSystems = [ "aarch64-linux" ];
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
@@ -57,15 +58,7 @@ in
     ] ++ usual;
   };
 
-  services = {
-    # step-ca = {
-    #   enable = false;
-    #   address = "127.0.0.1";
-    #   port = 9443;
-    #   intermediatePasswordFile = "/etc/default/step-ca/pass";
-    #   settings = fromJSON "";
-    # };
-  } // common.services;
+  services = { } // common.services;
   virtualisation.docker.enable = true;
 
   system.stateVersion = "22.11";
