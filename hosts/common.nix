@@ -450,4 +450,23 @@ in
       };
     };
   };
+
+  extraHosts = {
+    proxmox =
+      let
+        terra = "192.168.69.10";
+        ben = "192.168.69.20";
+        bedrock = "192.168.69.70";
+      in
+      ''
+        ${terra} terra
+        ${terra} cobi.dev
+        ${terra} api.cobi.dev
+        ${terra} auth.cobi.dev
+        ${terra} vault.cobi.dev
+        ${terra} nix.cobi.dev
+        ${ben} ben
+        ${bedrock} bedrock
+      '';
+  };
 }

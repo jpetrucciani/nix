@@ -17,6 +17,6 @@ cd ~/cfg
 
 # initial switch
 export HOSTNAME='bedrock'
-nix build -f . hms
+nix build --extra-experimental-features nix-command -f . hms
 ./result/bin/hms
 ```

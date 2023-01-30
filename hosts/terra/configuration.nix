@@ -40,6 +40,7 @@ in
   time.timeZone = common.timeZone;
 
   networking.hostName = hostname;
+  networking.extraHosts = common.extraHosts.proxmox;
   networking.useDHCP = false;
   networking.interfaces.ens18.useDHCP = false;
   networking.interfaces.ens18.ipv4.addresses = [{

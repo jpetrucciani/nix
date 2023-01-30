@@ -40,6 +40,7 @@ in
   time.timeZone = common.timeZone;
 
   networking.hostName = hostname;
+  networking.extraHosts = common.extraHosts.proxmox;
   networking.firewall.enable = false;
 
   users.mutableUsers = false;

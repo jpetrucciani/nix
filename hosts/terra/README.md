@@ -17,6 +17,6 @@ cd ~/cfg
 
 # initial switch
 export HOSTNAME='terra'
-nix build -f . hms
+nix build --extra-experimental-features -f . hms
 ./result/bin/hms
 ```
