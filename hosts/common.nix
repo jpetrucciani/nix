@@ -85,13 +85,10 @@ in
     megaboss = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEhhl/jKYcglH7+tTYgsVRKqVuf7hwF6yOgpdYIQWAyJ jacobi-megaboss";
 
     # servers
-    hyperion = "";
-    tethys = "";
-    mimas = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIbBo1RRXmMm8GBVzaoM27hgoMuNB+bsXJLSUj6xuxEQ armboss";
+    bedrock = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHyGIL87ScZN4Bir5yxlLendu4Iex2RjrmDRLE3+u7Aq jacobi@bedrock";
     titan = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDKnCuUSP/RbAfUvNkD43wm6w5dhsfdIgSqawj9Z0UQX jacobi@titan";
     jupiter = "";
     saturn = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPY2sNJE5ysSTeFzTv2U+zIeIB5LMhbUaP+yC5VDgEHD jacobi@saturn";
-    home = "";
     neptune = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPqXt2116T/hpMpdmlh3QquPcF/COXPtJS4BkjwECf++ jacobi@neptune";
     charon = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIQf/+Cw19PwfLGRs7VyJR9rqwglDG/ZwBbwJY1Aagxo jacobi@charon";
     mars = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBMW7fOdfDeI+9TwYHPUzApYDlNFOfLkl9NC06Du23mP jacobi@mars";
@@ -125,14 +122,15 @@ in
     ];
 
     server = [
-      neptune
-      saturn
+      bedrock
       titan
-      tethys
-      hyperion
-      mimas
-      jupiter
-      home
+      saturn
+      neptune
+      charon
+      phobos
+      luna
+      milkyway
+      terra
     ];
 
     android = [

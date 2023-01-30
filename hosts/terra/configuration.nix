@@ -73,6 +73,10 @@ in
         };
         landing_page = ''<html style='background-image: linear-gradient(to bottom right, #000, #6A3DE8);height:100%'></html>'';
         neptune_traefik = "neptune:8088";
+        ip = {
+          ba3 = "192.168.69.20";
+          bedrock = "192.168.69.70";
+        };
       in
       {
         enable = true;
@@ -176,10 +180,10 @@ in
             extraConfig = ''
               import GEOBLOCK
               reverse_proxy /* {
-                to 192.168.69.20:8222
+                to ${ip.ba3}:8222
               }
               reverse_proxy /notifications/hub {
-                to 192.168.69.20:3012
+                to ${ip.ba3}:3012
               }
             '';
           };
