@@ -18,10 +18,6 @@ This is my personal M1 Mac Mini server, running MacOS and using nix-darwin and h
 
 this directory contains builders for cloud VM images and isos
 
-### [hyperion/](./hyperion)
-
-This is an experimental NixOS install inside a VM.
-
 ### [luna/](./luna)
 
 This is a bare-metal physical nixos server!
@@ -45,10 +41,6 @@ This is a bare-metal server.
 ### [pluto/](./pluto)
 
 This is my personal M1 Pro Macbook, running MacOS and using nix-darwin and home-manager to manage things.
-
-### [tethys/](./tethys)
-
-This is an experimental NixOS install inside a VM.
 
 ### [titan/](./titan)
 

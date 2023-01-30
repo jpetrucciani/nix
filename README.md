@@ -2,32 +2,7 @@
 
 [![uses nix](https://img.shields.io/badge/uses-nix-%237EBAE4)](https://nixos.org/)
 
-_my nixpkgs setup and overlays_
-
-## install
-
-```bash
-# install nix
-## linux and mac
-curl -L https://nix.cobi.dev/up | bash
-
-nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-nix-channel --update
-nix-shell '<home-manager>' -A install
-
-# pull repo into ~/.config/nixpkgs/
-cd ~/.config/nixpkgs
-rm home.nix
-
-# read only
-git clone https://github.com/jpetrucciani/nix.git .
-
-# write access (requires a ssh key)
-git clone git@github.com:jpetrucciani/nix.git .
-
-# enable home-manager
-home-manager switch
-```
+_my nixpkgs setup and modules/overlays/examples!_
 
 ## In this repo
 
@@ -41,11 +16,11 @@ This directory contains examples of use of my repo as a source for other tools/e
 
 ### [hosts/](./hosts/)
 
-This directory contains my NixOS configurations for each of my NixOS machines, as well as a `common.nix` file that contains shared configurations for all of my NixOS machines.
+This directory contains my NixOS configurations for each of my NixOS machines, as well as a `common.nix` file that contains shared configurations for all of my servers/clients.
 
 ### [mods/](./mods/)
 
-This directory contains my overlays for nixpkgs, but is set up in a way that others can reuse specific parts of my overlays if they'd like to use this repo as a source.
+This directory contains my overlays for nixpkgs, but is set up in a way that others can reuse specific parts of my overlays if they'd like to use this repo as a source. This dierctory is a bit of a rabbit hole!
 
 ### [pkgs/](./pkgs/)
 
@@ -69,4 +44,4 @@ This file contains my main [home-manager](https://github.com/nix-community/home-
 
 ### [overlays.nix](./overlays.nix)
 
-This file declares the overlays that I apply to my pinned version of nixpkgs. This should load all of the files in the [mods](./mods/) directory, which are overlay functions which apply to my nixpkgs object in nix.
+This file declares the overlays that I apply to my pinned version of nixpkgs. This should load all of the files in the [mods](./mods/) directory, which are overlay functions which apply to my nixpkgs object in nix. **note that this file is much more verbose than what is required! personally, I prefer the explicitness here**

@@ -14,6 +14,10 @@ This directory contains package sets for specific languages that I overlay funct
 
 This directory contains nix packages that I've built that are not yet ready for nixpkgs proper, or that don't make sense to open as a PR to nixpkgs proper. These are broken out into individual overlays for organization
 
+### [pog/](./pog/)
+
+This directory contains overlays that implement tools with my [`pog`](./pog.nix) module! The pog module can be used to create very powerful, best practices CLI tools in an easy way.
+
 ### [python/](./python/)
 
 This directory provides my python package overlays.
