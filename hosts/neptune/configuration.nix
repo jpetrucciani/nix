@@ -76,53 +76,6 @@ in
       role = "server";
       extraFlags = "--disable traefik";
     };
-    caddy =
-      let
-        reverse_proxy = location: {
-          extraConfig = ''
-            import GEOBLOCK
-            reverse_proxy /* {
-              to ${location}
-            }
-          '';
-        };
-        landing_page = ''<html style='background-image: linear-gradient(to bottom right, #000, #6A3DE8);height:100%'></html>'';
-        traefik = "localhost:8088";
-      in
-      {
-        enable = true;
-        package = pkgs.zaddy;
-        email = common.emails.personal;
-
-        globalConfig = ''
-          order hax after handle_path
-        '';
-
-        # countries from here http://www.geonames.org/countries/
-        extraConfig = ''
-          (GEOBLOCK) {
-            @geoblock {
-              not maxmind_geolocation {
-                db_path {env.GEOIP_DB}
-                allow_countries US CA GM
-              }
-              not remote_ip 127.0.0.1
-            }
-            respond @geoblock 403
-          }
-        '';
-        virtualHosts = {
-          "api.cobi.dev" = reverse_proxy "localhost:10000";
-          "auth.cobi.dev" = reverse_proxy traefik;
-          "search.cobi.dev" = reverse_proxy traefik;
-          "netdata.cobi.dev" = reverse_proxy "localhost:${toString common.ports.netdata}";
-          "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
-          "n8n.cobi.dev" = reverse_proxy "luna:${toString common.ports.n8n}";
-          "ombi.cobi.dev" = reverse_proxy "localhost:5999";
-          "x.hexa.dev" = reverse_proxy "localhost:8421";
-          "meme.x.hexa.dev" = reverse_proxy "localhost:8420";
-        };
-      };
     poglets = {
       enable = true;
       bindPort = 8420;

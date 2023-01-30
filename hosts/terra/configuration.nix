@@ -72,7 +72,7 @@ in
           '';
         };
         landing_page = ''<html style='background-image: linear-gradient(to bottom right, #000, #6A3DE8);height:100%'></html>'';
-        traefik = "localhost:8088";
+        neptune_traefik = "neptune:8088";
       in
       {
         enable = true;
@@ -97,6 +97,15 @@ in
           }
         '';
         virtualHosts = {
+          "api.cobi.dev" = reverse_proxy "neptune:10000";
+          "auth.cobi.dev" = reverse_proxy neptune_traefik;
+          "search.cobi.dev" = reverse_proxy neptune_traefik;
+          "netdata.cobi.dev" = reverse_proxy "localhost:${toString common.ports.netdata}";
+          "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
+          "n8n.cobi.dev" = reverse_proxy "luna:${toString common.ports.n8n}";
+          "ombi.cobi.dev" = reverse_proxy "neptune:5999";
+          "x.hexa.dev" = reverse_proxy "neptune:8421";
+          "meme.x.hexa.dev" = reverse_proxy "neptune:8420";
           "vault.cobi.dev" = {
             extraConfig = ''
               import GEOBLOCK
