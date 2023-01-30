@@ -119,74 +119,8 @@ in
           "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
           "n8n.cobi.dev" = reverse_proxy "luna:${toString common.ports.n8n}";
           "ombi.cobi.dev" = reverse_proxy "localhost:5999";
-          "vault.cobi.dev" = {
-            extraConfig = ''
-              import GEOBLOCK
-              reverse_proxy /* {
-                to phobos:8222
-              }
-              reverse_proxy /notifications/hub {
-                to phobos:3012
-              }
-            '';
-          };
-          "cobi.dev" = {
-            extraConfig = ''
-              route /static/* {
-                s3proxy {
-                  bucket "jacobi-static"
-                  force_path_style
-                }
-              }
-              route / {
-                redir https://github.com/jpetrucciani/
-              }
-            '';
-          };
-          "nix.cobi.dev" = {
-            extraConfig = ''
-              route / {
-                redir https://github.com/jpetrucciani/nix
-              }
-              route /latest {
-                redir https://github.com/jpetrucciani/nix/archive/main.tar.gz
-              }
-              handle_path /x/* {
-                redir https://github.com/jpetrucciani/nix/archive/{path.0}.tar.gz
-              }
-              handle_path /p/* {
-                hax {
-                  enable_tarball
-                  tarball_file_name "default.nix"
-                  tarball_file_text "\{j?import(fetchTarball\{url=\"https://nix.cobi.dev/latest\";\})\{\}\}:with j;{path.0}"
-                }
-              }
-              route /up {
-                redir https://raw.githubusercontent.com/jpetrucciani/nix/main/scripts/nixup.sh
-              }
-              route /os-up {
-                redir https://github.com/samuela/nixos-up/archive/main.tar.gz
-              }
-            '';
-          };
           "x.hexa.dev" = reverse_proxy "localhost:8421";
           "meme.x.hexa.dev" = reverse_proxy "localhost:8420";
-          "gemologic.dev" = {
-            extraConfig = ''
-              route / {
-                header +Content-Type "text/html; charset=utf-8"
-                respond "${landing_page}"
-              }
-            '';
-          };
-          "gemologic.cloud" = {
-            extraConfig = ''
-              route / {
-                header +Content-Type "text/html; charset=utf-8"
-                respond "${landing_page}"
-              }
-            '';
-          };
         };
       };
     poglets = {

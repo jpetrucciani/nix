@@ -63,18 +63,6 @@ in
     valheim = {
       enable = true;
     };
-    vaultwarden = {
-      enable = true;
-      dbBackend = "postgresql";
-      environmentFile = "/etc/default/vaultwarden";
-      config = {
-        databaseUrl = "postgresql://vaultwarden@jupiter/vaultwarden";
-        domain = "https://vault.cobi.dev";
-        enableDbWal = "false";
-        signupsAllowed = false;
-        websocketEnabled = true;
-      };
-    };
   } // common.services;
   virtualisation.docker.enable = true;
 
