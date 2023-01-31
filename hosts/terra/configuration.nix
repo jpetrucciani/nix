@@ -100,6 +100,17 @@ in
             }
             respond @geoblock 403
           }
+
+          (BA3GEOBLOCK) {
+            @ba3geoblock {
+              not maxmind_geolocation {
+                db_path {env.GEOIP_DB}
+                allow_countries US CA BD
+              }
+              not remote_ip 127.0.0.1
+            }
+            respond @ba3geoblock 403
+          }
         '';
         virtualHosts = {
           "api.cobi.dev" = reverse_proxy "neptune:10000";
@@ -179,7 +190,7 @@ in
           };
           "vault.ba3digital.com" = {
             extraConfig = ''
-              import GEOBLOCK
+              import BA3GEOBLOCK
               reverse_proxy /* {
                 to ${ip.ba3}:8222
               }
