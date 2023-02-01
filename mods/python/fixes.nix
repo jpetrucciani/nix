@@ -13,6 +13,7 @@ final: prev: prev.hax.pythonPackageOverlay
                 "passlib/tests/test_context.py"
               ];
           }) else super.passlib;
+
     curio =
       if isDarwin then
         super.curio.overrideAttrs
