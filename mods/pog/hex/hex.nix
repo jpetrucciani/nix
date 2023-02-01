@@ -139,7 +139,7 @@ rec {
 
   };
 
-  constants = rec {
+  constants = {
     ports = {
       all = "*";
       ssh = "22";
