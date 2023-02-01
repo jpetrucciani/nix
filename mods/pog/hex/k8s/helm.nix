@@ -39,8 +39,8 @@ let
       , includeCRDs ? true
       , extraFlags ? [ ]
       , forceNamespace ? false
-      , preRender ? null
-      , postRender ? null
+      , preRender ? ""
+      , postRender ? ""
       , prettify ? true
       , sortYaml ? false
       }:
