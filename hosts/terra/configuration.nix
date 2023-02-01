@@ -193,7 +193,7 @@ in
             extraConfig = ''
               route / {
                 header +Content-Type "text/html; charset=utf-8"
-                respond "${landing_page {name = "broadsword";}}"
+                respond "${landing_page {title = "broadsword";}}"
               }
             '';
           };
