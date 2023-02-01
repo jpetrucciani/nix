@@ -465,6 +465,9 @@ in
         ${terra} auth.cobi.dev
         ${terra} vault.cobi.dev
         ${terra} nix.cobi.dev
+        ${terra} broadsword.tech
+        ${terra} hexa.dev
+        ${terra} x.hexa.dev
         ${ben} ben
         ${bedrock} bedrock
       '';
