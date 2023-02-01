@@ -21,6 +21,18 @@ final: prev: prev.hax.pythonPackageOverlay
             doCheck = false;
             doInstallCheck = false;
           }) else super.curio;
+
+    inflect = super.inflect.overridePythonAttrs (old: rec {
+      version = "5.6.2";
+      src = super.fetchPypi {
+        inherit version;
+        pname = "inflect";
+        sha256 = "sha256-qtx+1zko9eAUEpeUu6wDBYzKNdCpc6X8TrRcf6JgBfk=";
+      };
+    });
+    pyramid = super.pyramid.overrideAttrs (_: {
+      doInstallCheck = false;
+    });
   })
   [ "python310" "python311" ]
   final
