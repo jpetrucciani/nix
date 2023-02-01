@@ -72,7 +72,8 @@ in
             }
           '';
         };
-        landing_page = ''<html style='background-image: linear-gradient(to bottom right, #000, #6A3DE8);height:100%'></html>'';
+        landing_page = { title ? "gemologic", start ? "#000", end ? "#6A3DE8" }:
+          ''<html style='background-image: linear-gradient(to bottom right, ${start}, ${end});height:100%'><head><title>${title}</title></head></html>'';
         neptune_traefik = "neptune:8088";
         ip = {
           ba3 = "192.168.69.20";
@@ -176,7 +177,7 @@ in
             extraConfig = ''
               route / {
                 header +Content-Type "text/html; charset=utf-8"
-                respond "${landing_page}"
+                respond "${landing_page {}}"
               }
             '';
           };
@@ -184,7 +185,15 @@ in
             extraConfig = ''
               route / {
                 header +Content-Type "text/html; charset=utf-8"
-                respond "${landing_page}"
+                respond "${landing_page {}}"
+              }
+            '';
+          };
+          "broadsword.tech" = {
+            extraConfig = ''
+              route / {
+                header +Content-Type "text/html; charset=utf-8"
+                respond "${landing_page {name = "broadsword";}}"
               }
             '';
           };
