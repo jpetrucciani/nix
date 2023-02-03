@@ -28,12 +28,6 @@ This package provides [rare](https://github.com/zix99/rare) in nixpkgs. It is a 
 
 This package provides the [Alibaba Cloud CLI](https://github.com/aliyun/aliyun-cli) in nixpkgs. It is a CLI tool for the Alibaba Cloud platform. Written in Go.
 
-##### cloudquery
-
-[![built in go](https://img.shields.io/badge/built%20in-go-%2301ADD8)](https://go.dev/)
-
-This package provides [Cloudquery](https://github.com/cloudquery/cloudquery) in nixpkgs. It is a tool that extracts, transforms, and loads your cloud assets into normalized PostgreSQL tables. Written in Go.
-
 ### [k8s.nix](./k8s.nix)
 
 This overlay provides a handful of kubernetes related tools, like below:

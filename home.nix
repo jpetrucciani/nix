@@ -227,7 +227,6 @@ with pkgs.hax; {
         ssh_pog_scripts
 
         # my pkgs
-        cloudquery
         cyclonus
         goldilocks
         horcrux
