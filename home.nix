@@ -143,6 +143,7 @@ with pkgs.hax; {
         skate
         statix
         step-cli
+        talosctl
         terraform-ls
         time
         unzip
