@@ -227,7 +227,7 @@ final: prev: prev.hax.pythonPackageOverlay
           boddle
           boto3
           bottle
-          cherrypy
+          (if prev.stdenv.isDarwin then cherrypy.overridePythonAttrs (_: { doCheck = false; }) else cherrypy)
           django
           falcon
           fastapi
@@ -237,7 +237,7 @@ final: prev: prev.hax.pythonPackageOverlay
           starlette
           tornado
           uvicorn
-        ] ++ lib.optionals (!stdenv.isDarwin) [
+        ] ++ lib.optionals (!prev.stdenv.isDarwin) [
           # server types that are broken on darwin
           chalice
           moto
