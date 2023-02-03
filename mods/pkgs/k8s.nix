@@ -2,8 +2,8 @@ final: prev:
 with prev;
 {
   katafygio = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
+    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+      buildGo120Module rec {
         pname = "katafygio";
         version = "0.8.3";
 
@@ -33,8 +33,8 @@ with prev;
     { };
 
   goldilocks = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
+    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+      buildGo120Module rec {
         pname = "goldilocks";
         version = "4.3.3";
 
@@ -58,8 +58,8 @@ with prev;
     { };
 
   cyclonus = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
+    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+      buildGo120Module rec {
         pname = "cyclonus";
         version = "0.5.0";
 
@@ -83,8 +83,8 @@ with prev;
     { };
 
   rbac-tool = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
+    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+      buildGo120Module rec {
         pname = "rbac-tool";
         version = "1.9.0";
 
@@ -166,8 +166,8 @@ with prev;
     { };
 
   murre = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
+    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+      buildGo120Module rec {
         pname = "murre";
         version = "0.0.3";
 

@@ -20,8 +20,8 @@ rec {
   };
 
   poglets = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
+    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+      buildGo120Module rec {
         pname = "poglets";
         version = "0.0.3";
         commit = "0e96c5f5887cd317cd92e6e51eb366929cee3ed1";
@@ -62,20 +62,20 @@ rec {
     { };
 
   bigquery-emulator = prev.callPackage
-    ({ lib, buildGo119Module, fetchFromGitHub, clangStdenv }:
-      (buildGo119Module.override { stdenv = clangStdenv; }) rec {
+    ({ lib, buildGo120Module, fetchFromGitHub, clangStdenv }:
+      (buildGo120Module.override { stdenv = clangStdenv; }) rec {
         pname = "bigquery-emulator";
-        version = "0.2.10";
-        commit = "fdf32e7e7db6b22829cd8366d6768ef5acd64a11";
+        version = "0.2.12";
+        commit = "f21fa982972a8be6444c23459a88df58de7b14b4";
 
         src = fetchFromGitHub {
           owner = "goccy";
           repo = pname;
           rev = "v${version}";
-          sha256 = "sha256-Vl6l0qfdKhKPF2WhgUmVNgPXIOGB1FaAm4dqdoBT4P0=";
+          sha256 = "sha256-mGR3s7OHuiMN1LqoWKRkJoXmZkqL7Ye9zJkDC4OFtus=";
         };
 
-        vendorSha256 = "sha256-saIbb5CAmxFkAR/kxQxKdgL1Vnx7XaCox0V3SM6Ngus=";
+        vendorSha256 = "sha256-NJktyKDyByAWLAc/oayOSQxohKPcxAHiW2ynM77cCOY=";
 
         CGO_ENABLED = 1;
 

@@ -2,8 +2,8 @@ final: prev:
 with prev;
 {
   s3-edit = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
+    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+      buildGo120Module rec {
         pname = "s3-edit";
         version = "0.0.16";
 
@@ -33,8 +33,8 @@ with prev;
     { };
 
   overflow = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
+    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+      buildGo120Module rec {
         pname = "overflow";
         version = "2.1.0";
 
@@ -89,8 +89,8 @@ with prev;
     { };
 
   horcrux = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
+    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+      buildGo120Module rec {
         pname = "horcrux";
         version = "0.3";
 
@@ -117,7 +117,7 @@ with prev;
     ({ lib, stdenv, fetchFromGitHub, rustPlatform }:
       let
         pname = "hunt";
-        version = "1.7.5";
+        version = "1.7.6";
       in
       rustPlatform.buildRustPackage rec {
         inherit pname version;
@@ -126,14 +126,14 @@ with prev;
           owner = "LyonSyonII";
           repo = "hunt-rs";
           rev = "v${version}";
-          sha256 = "sha256-SIAJpJSRMLxmITE/5X0e+sOm17vnki1C7nPRXCpquic=";
+          sha256 = "sha256-mNQY2vp4wNDhVqrFNVS/RBXVi9EMbTZ6pE0Z79dLUeM=";
         };
 
-        cargoSha256 = "sha256-HU3gbsYm0dVZfwrXie8QCs5+a925/YildFVO41+YSaI=";
+        cargoSha256 = "sha256-hjvJ9E5U6zGSWUXNDdu0GwUcd7uZeconfjiCSaEzZXU=";
 
         meta = with lib; {
           description = "simplified find command made with rust";
-          # license = licenses.mit;
+          license = licenses.mit;
           maintainers = with maintainers; [ jpetrucciani ];
         };
       })
@@ -143,7 +143,7 @@ with prev;
     ({ lib, stdenv, fetchFromGitHub, rustPlatform }:
       let
         pname = "jaq";
-        version = "0.7.0";
+        version = "0.9.0";
       in
       rustPlatform.buildRustPackage rec {
         inherit pname version;
@@ -152,10 +152,10 @@ with prev;
           owner = "01mf02";
           repo = pname;
           rev = "v${version}";
-          sha256 = "sha256-lVpNe93/rtEzoeFxlR+bC01SHpHKxBb+fE2yQqUuE9o=";
+          sha256 = "sha256-Y1QLNiAeHKYsSbFW235mdTiHyQFBQQsO+FtuFxDX9Hs=";
         };
 
-        cargoSha256 = "sha256-WLI/zZv9dciY9Nx9xqMUjkxzcXVw0tafxRejos8J5v8=";
+        cargoSha256 = "sha256-+9uy5R/dO2T/6dRhtYlPCKfosaYua0JvbECvMacc3XA=";
 
         meta = with lib; {
           description = "a jq clone focussed on correctness, speed, and simplicity";
@@ -166,19 +166,19 @@ with prev;
     { };
 
   rare = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
+    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+      buildGo120Module rec {
         pname = "rare";
-        version = "0.2.2";
+        version = "0.3.0";
 
         src = fetchFromGitHub {
           owner = "zix99";
           repo = "rare";
           rev = version;
-          sha256 = "sha256-5MSAbFtPgMhE7x/p/9smEU25RCokXQffAhOKCI1zxCM=";
+          sha256 = "sha256-TL+oqi/q0ObJN08jJur0aaSqey3p/B7bb57vQYYHnF0=";
         };
 
-        vendorSha256 = "sha256-mswPEdhuHLjsLFXMczdHiK30Gn4whDrigees4pqUDC4=";
+        vendorSha256 = "sha256-4+yvgOGlJ33RV0WNJlYUFf/8ergTflMhSn13EJUmVSk=";
 
         meta = with lib; {
           inherit (src.meta) homepage;
@@ -224,7 +224,7 @@ with prev;
     ({ stdenv, clang13Stdenv, lib, fetchFromGitHub }:
       let
         name = "watcher";
-        version = "0.2.9";
+        version = "0.5.5";
       in
       (if isLinux then stdenv else clang13Stdenv).mkDerivation {
         inherit name;
@@ -233,7 +233,7 @@ with prev;
           owner = "e-dant";
           repo = name;
           rev = "release/${version}";
-          sha256 = "sha256-qmFTq3Ue3w+Wti8hjbGXvWLp/I2PEu2zwv5ii18RlH4=";
+          sha256 = "sha256-s8MuSUC+TbzfadoiqW11Eh7ZTirFjEtVbIMofD0xRc8=";
         };
 
         nativeBuildInputs = [ cmake ] ++ lib.optional isDarwin darwin.apple_sdk.frameworks.AppKit;
@@ -242,7 +242,7 @@ with prev;
           cd build/in
         '';
 
-        postInstall = "mv $out/bin/{water.watcher,watcher}";
+        postInstall = "mv $out/bin/{wtr.watcher,watcher}";
 
         meta = with lib; {
           inherit (src.meta) homepage;
@@ -254,12 +254,12 @@ with prev;
     { };
 
   tlsh-go = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
       let
         version = "0.3.0";
         date = "2022-12-12";
       in
-      buildGo119Module rec {
+      buildGo120Module rec {
         inherit version;
         pname = "tlsh-go";
 
@@ -294,16 +294,16 @@ with prev;
     { };
 
   ov = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
+    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+      buildGo120Module rec {
         pname = "ov";
-        version = "0.13.0";
+        version = "0.14.1";
 
         src = fetchFromGitHub {
           owner = "noborus";
           repo = "ov";
           rev = "v${version}";
-          sha256 = "sha256-vBPhCSor3wGCawz+097Lw29xgW6z5fV5PAMAq7TBiNM=";
+          sha256 = "sha256-ow2tIML7+x0X3FSpr4UQ8bzzYhZJZ9pZL8eNReEjitQ=";
         };
 
         ldflags = [
@@ -312,7 +312,7 @@ with prev;
           "-X main.Version=${version}"
         ];
 
-        vendorSha256 = "sha256-y3oSL1W2cjt6oUVbglHhun3XNCidqb7LTXtoA25+mpo=";
+        vendorSha256 = "sha256-X2/kcXxdGwFvdiTu1MGyv90OngWmR/xR2YtjvmLkiVE=";
 
         nativeBuildInputs = [ installShellFiles ];
 
@@ -334,8 +334,8 @@ with prev;
     { };
 
   cgapp = prev.callPackage
-    ({ lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
+    ({ lib, buildGo120Module, fetchFromGitHub }:
+      buildGo120Module rec {
         pname = "cli";
         version = "3.6.2";
 
@@ -375,8 +375,8 @@ with prev;
     { };
 
   migrate-go = prev.callPackage
-    ({ lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
+    ({ lib, buildGo120Module, fetchFromGitHub }:
+      buildGo120Module rec {
         pname = "migrate";
         version = "4.15.2";
 
