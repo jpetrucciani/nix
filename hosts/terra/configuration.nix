@@ -58,7 +58,7 @@ in
     isNormalUser = true;
     passwordFile = "/etc/passwordFile-jacobi";
 
-    openssh.authorizedKeys.keys = with common.pubkeys; [ ] ++ usual;
+    openssh.authorizedKeys.keys = with common.pubkeys; [ m1max ] ++ usual;
   };
 
   services = {
