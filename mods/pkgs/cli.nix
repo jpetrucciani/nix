@@ -419,4 +419,30 @@ with prev;
     )
     { };
 
+  erdtree = prev.callPackage
+    ({ lib, stdenv, fetchFromGitHub, rustPlatform }:
+      let
+        pname = "erdtree";
+        version = "1.0.0";
+      in
+      rustPlatform.buildRustPackage rec {
+        inherit pname version;
+
+        src = fetchFromGitHub {
+          owner = "solidiquis";
+          repo = pname;
+          rev = "v${version}";
+          sha256 = "sha256-gZC90flsfH03Grc1netzlv/iX/9DH+rpaSstfXFearc=";
+        };
+
+        cargoSha256 = "sha256-0I60lUYyR4Za2Q3FqcdqJhUKFjX5+PE88G6JxxxiBXw=";
+
+        meta = with lib; {
+          description = "File-tree visualizer and disk usage analyzer";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      })
+    { };
+
 }

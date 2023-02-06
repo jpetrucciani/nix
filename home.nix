@@ -140,7 +140,6 @@ with pkgs.hax; {
         scrypt
         shellcheck
         shfmt
-        skate
         statix
         step-cli
         talosctl
@@ -228,19 +227,20 @@ with pkgs.hax; {
         ssh_pog_scripts
 
         # my pkgs
+        cgapp
         cyclonus
+        erdtree
         goldilocks
         horcrux
         hunt
         mdctl
+        ov
         overflow
         poglets
         q
         rare
         regula
         s3-edit
-        ov
-        cgapp
 
         # overlays
         nix_hash_unstable
