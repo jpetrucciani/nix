@@ -27,15 +27,15 @@ rec {
           _psql = x: ''${postgres}/bin/psql -d ${x} -h localhost -p "$PGPORT" -c'';
           psql = _psql "postgres";
           psql_db = _psql db_name;
-          create_db = "CREATE DATABASE ${db_name};";
+          create_db = "CREATE DATABASE '${db_name}';";
           create_ext = builtins.concatStringsSep "\n" (map (x: ''CREATE EXTENSION IF NOT EXISTS \"${x}\";'') extensions);
           create_user = ''
-            CREATE USER ${name} WITH ENCRYPTED PASSWORD '${password}';
-            GRANT ALL PRIVILEGES ON DATABASE ${db_name} TO ${name};
-            ALTER USER ${name} CREATEDB;
+            CREATE USER '${name}' WITH ENCRYPTED PASSWORD '${password}';
+            GRANT ALL PRIVILEGES ON DATABASE '${db_name}' TO '${name}';
+            ALTER USER '${name}' CREATEDB;
           '';
           grant_schema = ''
-            GRANT ALL ON SCHEMA public TO ${name};
+            GRANT ALL ON SCHEMA public TO '${name}';
           '';
         in
         ''
