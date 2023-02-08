@@ -4,13 +4,13 @@ with prev;
   json-crack = prev.callPackage
     ({ stdenvNoCC, fetchFromGitHub, mkYarnPackage, nodejs ? nodejs-18_x }:
       let
-        version = "2.5.0";
+        version = "2.6.0";
 
         src = fetchFromGitHub {
           owner = "AykutSarac";
           repo = "jsoncrack.com";
           rev = "v${version}";
-          sha256 = "sha256-RWrvKeYBjSNfEfcu/nYhvL4w4yVCKjr0ZZaZCeuIWvc=";
+          hash = "sha256-Jmpv/PvWLkMUjRTKRiJwW/OmNVgPlfu/dG9qeCAykRM=";
         };
         yarn = mkYarnPackage {
           inherit src;
@@ -31,6 +31,8 @@ with prev;
           distPhase = ''
             mkdir -p $out
             cp -r ./deps/json-crack/out/* $out
+            mv $out/editor.html $out/index.html
+            rm $out/CNAME
           '';
 
           dontFixup = true;

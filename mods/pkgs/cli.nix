@@ -423,7 +423,7 @@ with prev;
     ({ lib, stdenv, fetchFromGitHub, rustPlatform }:
       let
         pname = "erdtree";
-        version = "1.0.0";
+        version = "1.0";
       in
       rustPlatform.buildRustPackage rec {
         inherit pname version;
@@ -432,10 +432,10 @@ with prev;
           owner = "solidiquis";
           repo = pname;
           rev = "v${version}";
-          sha256 = "sha256-gZC90flsfH03Grc1netzlv/iX/9DH+rpaSstfXFearc=";
+          sha256 = "sha256-dEarwDp1ZKrv36muz7ngK56GlU30ZECSwxSJabSIi3Q=";
         };
 
-        cargoSha256 = "sha256-0I60lUYyR4Za2Q3FqcdqJhUKFjX5+PE88G6JxxxiBXw=";
+        cargoSha256 = "sha256-ef93zQcjOrUuYJP52tYUlUENsnJdah0GLKuin0FeRWo=";
 
         meta = with lib; {
           description = "File-tree visualizer and disk usage analyzer";
