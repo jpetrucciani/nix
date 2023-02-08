@@ -20,7 +20,6 @@ let
       v20-3-1 = _v "20.3.1" "1nrkh80qafmnwl00j16n04h737jgpd30yxr9r2g89l83p6a4v9xq";
       v20-2-1 = _v "20.2.1" "0yhnhcvp0pjfc4qsgsi4b9hzxavnaigazyyc4874jd5xs3z4gwmf";
       v20-1-1 = _v "20.1.1" "1nsali7nbyrjx99pqqcs7y0y9fhcg4xla3hpy11wn1axdlr7mr3w";
-      v20-1-0 = _v "20.1.0" "1q79vf4z24pya9v33syhv7f50jr8l2vhdmxqvrb5w9v92drpi57z";
       v20-0-0 = _v "20.0.0" "09pj1xg7ldprlbcp3jmbiw1f395llf0vbaa9xxffiwh56f5nc8mk";
       v19-0-4 = _v "19.0.4" "1j0fgr2jmi8p2zxf7k8764lidmw96vqcy5y821hlr66a8l1cp1iy";
       v12-0-7 = _v "12.0.7" "1hy7ikx2zcwyh8904h792f63mz689bxnwqps4wxsbmw626p3wz8p";
@@ -47,6 +46,8 @@ let
       , portHttp ? 8000
       , exposeHttps ? true
       , portHttps ? 8443
+      , exposeMetrics ? false
+      , portMetrics ? 9100
       }:
       let
         proto = {
@@ -96,6 +97,12 @@ let
               expose = exposeHttps;
               exposedPort = portHttps;
               port = 8443;
+              protocol = proto.tcp;
+            };
+            metrics = {
+              expose = exposeMetrics;
+              exposedPort = portMetrics;
+              port = 9100;
               protocol = proto.tcp;
             };
           };
