@@ -489,11 +489,31 @@ with pkgs.hax; {
     enable = true;
   };
 
+  programs.ssh = {
+    enable = true;
+    compression = true;
+    includes = [ "config.d/*" ];
+    extraConfig =
+      let
+        mac_meme = ''
+          IPQoS 0x00
+            XAuthLocation /opt/X11/bin/xauth
+        '';
+      in
+      ''
+        User jacobi
+        PasswordAuthentication no
+        IdentitiesOnly yes
+        # secure stuff
+        Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+        KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group-exchange-sha256
+        MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com
+        HostKeyAlgorithms ssh-ed25519,ssh-ed25519-cert-v01@openssh.com,sk-ssh-ed25519@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,rsa-sha2-256,rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-512,rsa-sha2-512-cert-v01@openssh.com
+        ${optionalString isDarwin mac_meme}
+      '';
+  };
+
   home.file = {
-    ssh_config = {
-      target = ".ssh/config";
-      text = pkgs.hax.ssh.config;
-    };
     ssh_config_github = {
       target = ".ssh/config.d/github";
       text = pkgs.hax.ssh.github;
@@ -518,22 +538,7 @@ with pkgs.hax; {
     };
     prettierrc = {
       target = ".prettierrc.js";
-      text = ''
-        const config = {
-          printWidth: 100,
-          arrowParens: 'always',
-          singleQuote: true,
-          tabWidth: 2,
-          useTabs: false,
-          semi: true,
-          bracketSpacing: false,
-          bracketSameLine: false,
-          requirePragma: false,
-          proseWrap: 'preserve',
-          trailingComma: 'all',
-        };
-        module.exports = config;
-      '';
+      text = builtins.readFile ./.prettierrc.js;
     };
     ${attrIf isLinux "gpgconf"} = {
       target = ".gnupg/gpg.conf";
@@ -867,7 +872,7 @@ with pkgs.hax; {
   # fix vscode
   imports =
     if isNixOS then [
-      "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/c54b714db58ad05d064f394d6603751ee6bd04f6"}/modules/vscode-server/home.nix"
+      "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/bb6028fde6bea2ad5b778f9d7570d6ff776ee9f4"}/modules/vscode-server/home.nix"
     ] else [ ];
 
   ${attrIf isNixOS "services"}.vscode-server.enable = isNixOS;
