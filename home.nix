@@ -30,14 +30,12 @@ let
   };
 
   sessionVariables = {
-    EDITOR = "nano";
-    HISTCONTROL = "ignoreboth";
-    PAGER = "less";
-    LESS = "-iR";
     BASH_SILENCE_DEPRECATION_WARNING = "1";
-
-    # haskell?
-    IHP_EDITOR = "code --goto";
+    EDITOR = "nano";
+    GIT_SSH_COMMAND = "${pkgs.openssh}/bin/ssh";
+    HISTCONTROL = "ignoreboth";
+    LESS = "-iR";
+    PAGER = "less";
 
     # thanks google
     USE_GKE_GCLOUD_AUTH_PLUGIN = "True";
