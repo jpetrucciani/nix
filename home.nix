@@ -416,6 +416,24 @@ with pkgs.hax; {
       complete -F __start_kubectl k
       complete -F _kube_contexts kubectx kx
       complete -F _kube_namespaces kubens kns
+
+      # there are often duplicate path entries on non-nixos; remove them
+      NEWPATH=
+      OLDIFS=$IFS
+      IFS=:
+      for entry in $PATH;do
+        if [[ ! :$NEWPATH: == *:$entry:* ]];then
+          if [[ -z $NEWPATH ]];then
+            NEWPATH=$entry
+          else
+            NEWPATH=$NEWPATH:$entry
+          fi
+        fi
+      done
+
+      IFS=$OLDIFS
+      export PATH="$NEWPATH"
+      unset OLDIFS NEWPATH
     '' + (if isAndroid then ''
       eval "$(starship init bash)"
     '' else "") + (if isNixOS then ''
@@ -439,6 +457,8 @@ with pkgs.hax; {
     variables = {
       show-all-if-ambiguous = true;
       skip-completed-text = true;
+      completion-query-items = -1;
+      expand-tilde = false;
       bell-style = false;
     };
     bindings = {
@@ -615,7 +635,8 @@ with pkgs.hax; {
             "terraform.languageServer.ignoreSingleFileWarning": false,
             "terraform.languageServer.path": "${nix-bin}/terraform-ls",
             "zircon.shell": "${nix-bin}/bash",
-            "shellformat.path": "${nix-bin}/shfmt"
+            "shellformat.path": "${nix-bin}/shfmt",
+            "terminal.integrated.allowChords": false
           }
         '';
     };
