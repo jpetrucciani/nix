@@ -108,7 +108,7 @@ final: prev: prev.hax.pythonPackageOverlay
         owner = "BrianPugh";
         repo = pname;
         rev = "v${version}";
-        sha256 = "sha256-kXfFRIFI1OcbDc1LujbFo/Iqg7pgwtXLkIcIFA9nehs=";
+        hash = "sha256-kXfFRIFI1OcbDc1LujbFo/Iqg7pgwtXLkIcIFA9nehs=";
       };
 
       # patch out pytest-runner, and invalid pytest args
@@ -160,7 +160,7 @@ final: prev: prev.hax.pythonPackageOverlay
         owner = "looker-open-source";
         repo = "sdk-codegen";
         rev = "sdk-v${version}";
-        sha256 = "sha256-S5s88FequBLbgz+zbEcBFi/N2pCgC0zdwyrcd7SP+no=";
+        hash = "sha256-S5s88FequBLbgz+zbEcBFi/N2pCgC0zdwyrcd7SP+no=";
       };
       sourceRoot = "source/python";
 
@@ -209,7 +209,7 @@ final: prev: prev.hax.pythonPackageOverlay
         owner = "slackapi";
         repo = "bolt-python";
         rev = "v${version}";
-        sha256 = "sha256-xzEsTx+44ae++WxArxO2rhCsot+ELuhc0aZ44MXY0c4=";
+        hash = "sha256-xzEsTx+44ae++WxArxO2rhCsot+ELuhc0aZ44MXY0c4=";
       };
 
       propagatedBuildInputs = [ slack-sdk ];

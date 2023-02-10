@@ -60,7 +60,7 @@ final: prev: prev.hax.pythonPackageOverlay
       doCheck = false;
       pythonImportsCheck = [ "uncompyle6" ];
 
-      meta = with lib; {
+      meta = {
         description = "Python cross-version byte-code decompiler";
         homepage = "https://github.com/rocky/python-uncompyle6/";
       };
@@ -79,7 +79,7 @@ final: prev: prev.hax.pythonPackageOverlay
 
       doCheck = false;
 
-      meta = with lib; {
+      meta = {
         description = "Python cross-version byte-code decompiler";
         homepage = "https://github.com/rocky/python-decompile3/";
       };
@@ -97,7 +97,7 @@ final: prev: prev.hax.pythonPackageOverlay
       doCheck = false;
       pythonImportsCheck = [ "pyrasite" ];
 
-      meta = with lib; {
+      meta = {
         description = "Inject code into a running Python process";
         homepage = "http://pyrasite.com";
       };
@@ -123,7 +123,7 @@ final: prev: prev.hax.pythonPackageOverlay
 
           doCheck = false;
 
-          meta = with lib; {
+          meta = {
             description = "Python graph (network) package";
             homepage = "https://altgraph.readthedocs.io";
           };
@@ -141,14 +141,14 @@ final: prev: prev.hax.pythonPackageOverlay
 
           doCheck = false;
 
-          meta = with lib; { };
+          meta = { };
         })
         setuptools
         pkgs.zlib
       ];
       doCheck = false;
 
-      meta = with lib; { };
+      meta = { };
     };
   })
   [ "python310" "python311" ]
