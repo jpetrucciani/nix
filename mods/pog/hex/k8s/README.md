@@ -38,21 +38,33 @@ This module contains the helm chart for the [GitLab Kubernetes Executor](https:/
 
 This module allows us to transparently use helm charts in hex spells!
 
+### [infisical.nix](./infisical.nix)
+
+TODO
+
 ### [nginx-ingress.nix](./nginx-ingress.nix)
 
 [nginx-ingress controller](https://github.com/kubernetes/ingress-nginx)
+
+### [prometheus.nix](./prometheus.nix)
+
+Helpers for prometheus related things in k8s land!
 
 ### [rancher.nix](./rancher.nix)
 
 [rancher](https://github.com/rancher/rancher) is an open-source multi-cluster orchestration platform
 
-### [stackstorm.nix](./stackstorm.nix)
-
-K8s Helm module for running a [StackStorm](https://stackstorm.com) cluster in HA mode.
-
 ### [services.nix](./services.nix)
 
 This module allows us to create best-practices, all-inclusive k8s services with a set of powerful nix functions.
+
+### [signoz.nix](./signoz.nix)
+
+TODO
+
+### [stackstorm.nix](./stackstorm.nix)
+
+K8s Helm module for running a [StackStorm](https://stackstorm.com) cluster in HA mode.
 
 ### [tailscale.nix](./tailscale.nix)
 
@@ -61,6 +73,10 @@ This module contains useful shorthands for using tailscale within kubernetes
 ### [traefik.nix](./traefik.nix)
 
 [Traefik](https://github.com/traefik/traefik-helm-chart) is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease.
+
+### [whoogle.nix](./whoogle.nix)
+
+TODO
 
 ### [woodpecker.nix](./woodpecker.nix)
 

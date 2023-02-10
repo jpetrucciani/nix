@@ -59,13 +59,6 @@ rec {
     chart_url = "https://github.com/DataDog/helm-charts/releases/download/datadog-{1}/datadog-{1}.tgz";
   };
 
-  chart_scan_devtron = _chart_scan {
-    name = "devtron";
-    chart_name = "devtron-operator";
-    index_url = "https://helm.devtron.ai/index.yaml";
-    chart_url = "https://github.com/devtron-labs/charts/releases/download/devtron-operator-{1}/devtron-operator-{1}.tgz";
-  };
-
   chart_scan_external-secrets = _chart_scan {
     name = "external-secrets";
     index_url = "https://charts.external-secrets.io/index.yaml";

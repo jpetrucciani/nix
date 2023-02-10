@@ -152,9 +152,9 @@ let
         sa = (components.service-account {
           inherit name namespace china saSuffix imagePullSecrets;
         }) // extraSA;
-        sa-token = (components.service-account-token {
+        sa-token = components.service-account-token {
           inherit name namespace saSuffix;
-        });
+        };
         rb = (components.role-binding {
           inherit name namespace rbSuffix saSuffix;
         }) // extraRB;

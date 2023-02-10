@@ -1,7 +1,5 @@
 { hex, ... }:
 let
-  inherit (hex) toYAML;
-
   server = rec {
     build = args: ''
       ---
