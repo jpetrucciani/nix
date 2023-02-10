@@ -103,7 +103,6 @@ rec {
     chart_scan_argo-cd
     chart_scan_authentik
     chart_scan_datadog
-    chart_scan_devtron
     chart_scan_external-secrets
     chart_scan_gitlab-runner
     chart_scan_infisical
