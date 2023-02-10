@@ -8,6 +8,7 @@ in
     "${common.home-manager.path}/nixos"
     "${common.mms}/nixos/modules/services/games/minecraft-servers"
     ./hardware-configuration.nix
+    ../modules/games/stationeers.nix
   ];
 
   inherit (common) zramSwap;
@@ -62,7 +63,7 @@ in
   };
 
   nixpkgs.config.allowUnfree = true;
-  environment.systemPackages = with pkgs; [ ];
+  environment.systemPackages = [ ];
 
   networking.firewall.enable = false;
   services = {
@@ -80,6 +81,10 @@ in
       videoDrivers = [ "amdgpu" ];
       layout = "us";
       xkbVariant = "";
+    };
+    stationeers = {
+      enable = true;
+      worldName = "memeworld";
     };
     modded-minecraft-servers = with common.minecraft; {
       eula = true;
@@ -106,7 +111,7 @@ in
         };
         vaulthunters = {
           inherit (conf) jvmOpts;
-          enable = true;
+          enable = false;
           rsyncSSHKeys = [ common.pubkeys.pluto ];
           jvmPackage = conf.jre17;
           jvmInitialAllocation = "6G";
@@ -121,7 +126,7 @@ in
         };
         vaulthunters-other = {
           inherit (conf) jvmOpts;
-          enable = true;
+          enable = false;
           rsyncSSHKeys = [ common.pubkeys.pluto ];
           jvmPackage = conf.jre17;
           jvmInitialAllocation = "6G";
