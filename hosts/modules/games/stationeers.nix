@@ -31,8 +31,13 @@ in
     };
     maxPlayers = mkOption {
       type = number;
-      default = 8;
+      default = 10;
       description = "the amount of players to support";
+    };
+    saveInterval = mkOption {
+      type = number;
+      default = 300;
+      description = "time in between auto saves";
     };
     serverName = mkOption {
       type = str;
@@ -80,10 +85,10 @@ in
             ServerVisible true \
             GamePort "${toString cfg.port}" \
             AutoSave true \
-            SaveInterval 300 \
+            SaveInterval "${toString cfg.saveInterval}" \
             ServerPassword "$STATIONEERS_PASSWORD" \
             ServerMaxPlayers ${toString cfg.maxPlayers} \
-            UPNPEnabled true
+            UPNPEnabled false
         '';
         Nice = "-5";
         Restart = "always";
