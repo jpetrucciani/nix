@@ -31,7 +31,7 @@ in
     };
     maxPlayers = mkOption {
       type = number;
-      default = 10;
+      default = 30;
       description = "the amount of players to support";
     };
     saveInterval = mkOption {
