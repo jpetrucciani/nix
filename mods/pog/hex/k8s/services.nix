@@ -450,7 +450,7 @@ let
                 inherit namespace labels;
                 name = depName;
                 annotations = {
-                  "container.apparmor.security.beta.kubernetes.io/${name}" = appArmor;
+                  ${ifNotNull appArmor "container.apparmor.security.beta.kubernetes.io/${name}"} = appArmor;
                 } // hex.annotations // extraPodAnnotations;
               };
               spec = {
