@@ -49,6 +49,7 @@ let
       , portHttps ? 8443
       , exposeMetrics ? false
       , portMetrics ? 9100
+      , extraValues ? { }
       }:
       let
         proto = {
@@ -125,7 +126,7 @@ let
         } // internalAnnotations;
         values_file = pkgs.writeTextFile {
           name = "traefik-values.yaml";
-          text = toYAML values;
+          text = toYAML (values // extraValues);
         };
       in
       hex.k8s.helm.build {

@@ -872,7 +872,7 @@ with pkgs.hax; {
   # fix vscode
   imports =
     if isNixOS then [
-      "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/bb6028fde6bea2ad5b778f9d7570d6ff776ee9f4"}/modules/vscode-server/home.nix"
+      "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/43ca5e6d4e45ae6933aaeb1850b4cdf62c25a11f"}/modules/vscode-server/home.nix"
     ] else [ ];
 
   ${attrIf isNixOS "services"}.vscode-server.enable = isNixOS;
