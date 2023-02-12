@@ -132,11 +132,13 @@ let
       , host ? null
       , extraServiceAnnotations ? { }
       , extraIngressAnnotations ? { }
+      , extraPodAnnotations ? { }
       , imagePullSecrets ? [ ]
       , ingressTLSSecret ? ""
       , softAntiAffinity ? false
       , hardAntiAffinity ? false
       , disableHttp ? true
+      , appArmor ? "unconfined"
       , extraDep ? { }
       , extraSA ? { }
       , extraNP ? { }
@@ -166,7 +168,8 @@ let
         }) // extraNP;
         dep = (components.deployment {
           inherit name namespace labels image replicas revisionHistoryLimit maxSurge maxUnavailable depSuffix saSuffix daemonSet lifecycle imagePullSecrets affinity;
-          inherit cpuRequest memoryRequest cpuLimit memoryLimit command args env envAttrs envFrom volumes subdomain nodeSelector livenessProbe readinessProbe securityContext pre1_18;
+          inherit cpuRequest memoryRequest cpuLimit memoryLimit command args volumes subdomain nodeSelector livenessProbe readinessProbe securityContext pre1_18;
+          inherit env envAttrs envFrom extraPodAnnotations appArmor;
         }) // extraDep;
         hpa = (components.hpa { inherit name namespace labels min max cpuUtilization hpaSuffix; }) // extraHPA;
         svc =
@@ -416,6 +419,8 @@ let
         , pre1_18 ? false
         , imagePullSecrets ? [ ]
         , affinity ? { }
+        , extraPodAnnotations ? { }
+        , appArmor ? "unconfined"
         }:
         let
           depName = "${name}${depSuffix}";
@@ -445,8 +450,8 @@ let
                 inherit namespace labels;
                 name = depName;
                 annotations = {
-                  "container.apparmor.security.beta.kubernetes.io/${name}" = "unconfined";
-                } // hex.annotations;
+                  "container.apparmor.security.beta.kubernetes.io/${name}" = appArmor;
+                } // hex.annotations // extraPodAnnotations;
               };
               spec = {
                 ${ifNotEmptyAttr affinity "affinity"} = affinity;
