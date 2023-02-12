@@ -75,8 +75,10 @@ in
         landing_page = { title ? "gemologic", start ? "#000", end ? "#6A3DE8" }:
           ''<html style='background-image: linear-gradient(to bottom right, ${start}, ${end});height:100%'><head><title>${title}</title></head></html>'';
         neptune_traefik = "neptune:8088";
+        orbit_traefik = "${ip.orbit}:8088";
         ip = {
           ba3 = "192.168.69.20";
+          orbit = "192.168.69.42";
           bedrock = "192.168.69.70";
         };
       in
@@ -117,6 +119,7 @@ in
           "api.cobi.dev" = reverse_proxy "neptune:10000";
           "auth.cobi.dev" = reverse_proxy neptune_traefik;
           "search.cobi.dev" = reverse_proxy neptune_traefik;
+          "recipe.cobi.dev" = reverse_proxy orbit_traefik;
           "netdata.cobi.dev" = reverse_proxy "localhost:${toString common.ports.netdata}";
           "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
           "n8n.cobi.dev" = reverse_proxy "luna:${toString common.ports.n8n}";
