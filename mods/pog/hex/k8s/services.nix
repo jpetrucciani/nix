@@ -101,6 +101,7 @@ let
       , command ? null
       , args ? null
       , env ? [ ]
+      , envAttrs ? { }
       , envFrom ? [ ]
       , volumes ? [ ]
       , ip ? null
@@ -165,7 +166,7 @@ let
         }) // extraNP;
         dep = (components.deployment {
           inherit name namespace labels image replicas revisionHistoryLimit maxSurge maxUnavailable depSuffix saSuffix daemonSet lifecycle imagePullSecrets affinity;
-          inherit cpuRequest memoryRequest cpuLimit memoryLimit command args env envFrom volumes subdomain nodeSelector livenessProbe readinessProbe securityContext pre1_18;
+          inherit cpuRequest memoryRequest cpuLimit memoryLimit command args env envAttrs envFrom volumes subdomain nodeSelector livenessProbe readinessProbe securityContext pre1_18;
         }) // extraDep;
         hpa = (components.hpa { inherit name namespace labels min max cpuUtilization hpaSuffix; }) // extraHPA;
         svc =
@@ -402,6 +403,7 @@ let
         , command ? null
         , args ? null
         , env ? [ ]
+        , envAttrs ? { }
         , envFrom ? [ ]
         , volumes ? [ ]
         , subdomain ? null
@@ -454,7 +456,7 @@ let
                 containers = [
                   {
                     inherit image name;
-                    ${ifNotEmptyList env "env"} = env;
+                    ${ifNotEmptyList env "env"} = env ++ (hex.envAttrToNVP envAttrs);
                     ${ifNotEmptyList envFrom "envFrom"} = envFrom;
                     ${ifNotNull command "command"} = if builtins.isString command then [ command ] else command;
                     ${ifNotNull args "args"} = args;
