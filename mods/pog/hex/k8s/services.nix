@@ -461,7 +461,7 @@ let
                 containers = [
                   {
                     inherit image name;
-                    ${ifNotEmptyList env "env"} = [ ] ++ env ++ (hex.envAttrToNVP envAttrs);
+                    env = [ ] ++ env ++ (hex.envAttrToNVP envAttrs);
                     ${ifNotEmptyList envFrom "envFrom"} = envFrom;
                     ${ifNotNull command "command"} = if builtins.isString command then [ command ] else command;
                     ${ifNotNull args "args"} = args;
