@@ -47,7 +47,7 @@ rec {
       substring preLen (sLen - preLen) str
     else
       str;
-  envAttrToNVP = with pkgs.lib.attrsets; x: mapAttrsToList nameValuePair x;
+  envAttrToNVP = with pkgs.lib.attrsets; x: builtins.filter (x: x.name != "") (mapAttrsToList nameValuePair x);
 
   patchYAML =
     { url
