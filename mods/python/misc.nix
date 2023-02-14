@@ -94,21 +94,21 @@ final: prev: prev.hax.pythonPackageOverlay
 
     milli = buildPythonPackage rec {
       pname = "milli";
-      version = "0.0.0";
+      version = "1.0.0";
 
       format = "pyproject";
       src = pkgs.fetchFromGitHub {
         owner = "AlexAltea";
         repo = "milli-py";
-        rev = "80018960c9b5808d9dea3dc98662565410ff836d";
-        hash = "sha256-4puH0kdn8MyISW7JULvfdqNFZe8bPQc+2K5IgA9+Mnw=";
+        rev = "43e80a7956c4ced3d730d8e8424a6d9d4a3c3006";
+        hash = "sha256-wdUz1j7cHKeeJBMbC8bMg7yUQ3Cn+HDcBFzZXB5CaRE=";
         fetchSubmodules = true;
       };
 
       cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
         inherit src sourceRoot;
         name = "${pname}-${version}";
-        hash = "sha256-mE8lTcinhxGgevd3xrbuRxjwtFj5u0ZdObiewhoMQIg=";
+        hash = "sha256-kunz3sjYCJoPdxdKPDofIy03e/u7wBeGuY0L9rrxQEM=";
       };
       sourceRoot = "";
 
@@ -129,6 +129,39 @@ final: prev: prev.hax.pythonPackageOverlay
         description = "Python bindings for Milli, the embeddable Rust-based search engine powering Meilisearch";
         homepage = "https://github.com/AlexAltea/milli-py";
         license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
+    speechrecognition = buildPythonPackage rec {
+      pname = "speech_recognition";
+      version = "3.9.0";
+
+      format = "setuptools";
+      src = pkgs.fetchFromGitHub {
+        owner = "Uberi";
+        repo = pname;
+        rev = version;
+        hash = "sha256-FsiAa+cQbomFkRvoFscceVBJUW3mW6EyiizfFfqB/u8=";
+      };
+
+      doCheck = false;
+      propagatedBuildInputs = [
+        requests
+        soundfile
+        google-cloud-speech
+        openai-whisper
+        pkgs.flac
+      ];
+
+      pythonCheckImports = [
+        "speech_recognition"
+      ];
+
+      meta = with lib; {
+        description = "Speech recognition module for Python, supporting several engines and APIs, online and offline";
+        homepage = "https://github.com/Uberi/speech_recognition";
+        license = licenses.bsd3;
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
