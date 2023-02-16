@@ -218,7 +218,7 @@ in
       dbBackend = "postgresql";
       environmentFile = "/etc/default/vaultwarden";
       config = {
-        databaseUrl = "postgresql://vaultwarden@jupiter/vaultwarden";
+        databaseUrl = "postgresql://vaultwarden@100.84.224.73/vaultwarden";
         domain = "https://vault.cobi.dev";
         enableDbWal = "false";
         signupsAllowed = false;
