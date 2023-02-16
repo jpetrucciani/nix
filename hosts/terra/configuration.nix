@@ -130,10 +130,10 @@ in
             extraConfig = ''
               import GEOBLOCK
               reverse_proxy /* {
-                to phobos:8222
+                to localhost:8222
               }
               reverse_proxy /notifications/hub {
-                to phobos:3012
+                to localhost:3012
               }
             '';
           };
@@ -218,7 +218,6 @@ in
       dbBackend = "postgresql";
       environmentFile = "/etc/default/vaultwarden";
       config = {
-        databaseUrl = "postgresql://vaultwarden@100.84.224.73/vaultwarden";
         domain = "https://vault.cobi.dev";
         enableDbWal = "false";
         signupsAllowed = false;
