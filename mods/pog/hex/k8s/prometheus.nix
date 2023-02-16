@@ -4,11 +4,11 @@ let
 in
 {
   gmp = {
-    pod_monitoring = { name, port, matchLabels, interval ? "30s", metricRelabeling ? [ ] }: (toYAML {
+    pod_monitoring = { name, port, matchLabels, namespace ? "default", interval ? "30s", metricRelabeling ? [ ] }: (toYAML {
       apiVersion = "monitoring.googleapis.com/v1";
       kind = "PodMonitoring";
       metadata = {
-        inherit name;
+        inherit name namespace;
       };
       spec = {
         endpoints = [
