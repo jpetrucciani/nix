@@ -20,7 +20,7 @@ with prev;
           "-X cmd.version=${version}"
         ];
 
-        vendorSha256 = "sha256-ZM5Z3yLOwOYpOTyoXmSbyPFBE31F+Jvc6DN4rmHmyt0=";
+        vendorHash = "sha256-ZM5Z3yLOwOYpOTyoXmSbyPFBE31F+Jvc6DN4rmHmyt0=";
 
         meta = with lib; {
           inherit (src.meta) homepage;
@@ -45,7 +45,7 @@ with prev;
           sha256 = "sha256-7grkSLpLpf9WKMXfXjj8F82L6qdlZsfASSXBslQVZeI=";
         };
 
-        vendorSha256 = "sha256-CLJijtBf8iSBpLV2shkb5u5kHSfFXUGKagkwrsT9FJM=";
+        vendorHash = "sha256-CLJijtBf8iSBpLV2shkb5u5kHSfFXUGKagkwrsT9FJM=";
 
         meta = with lib; {
           description = "command-line tool for exploiting stack-based buffer overflow vulnerabilities";
@@ -101,7 +101,7 @@ with prev;
           sha256 = "sha256-F8zGdjGKVuL/y763a1ZqcdmziGx9PfzXU81RaN7nL+Q=";
         };
 
-        vendorSha256 = "sha256-pQpattmS9VmO3ZIQUFn66az8GSmB4IvYhTTCFn6SUmo=";
+        vendorHash = null;
 
         meta = with lib; {
           inherit (src.meta) homepage;
@@ -178,7 +178,7 @@ with prev;
           sha256 = "sha256-TL+oqi/q0ObJN08jJur0aaSqey3p/B7bb57vQYYHnF0=";
         };
 
-        vendorSha256 = "sha256-4+yvgOGlJ33RV0WNJlYUFf/8ergTflMhSn13EJUmVSk=";
+        vendorHash = "sha256-4+yvgOGlJ33RV0WNJlYUFf/8ergTflMhSn13EJUmVSk=";
 
         meta = with lib; {
           inherit (src.meta) homepage;
@@ -205,7 +205,7 @@ with prev;
           sha256 = "sha256-jfVxoKkZscemOdlyQNFXckhlEcl7UZ+MPoIQu2lcUaE=";
         };
 
-        vendorSha256 = "sha256-AruaKBvPmHw13NTr0folQW1HouRVMW5M3gbFWT1tF/s=";
+        vendorHash = "sha256-AruaKBvPmHw13NTr0folQW1HouRVMW5M3gbFWT1tF/s=";
 
         # disable checks because they need networking
         doCheck = false;
@@ -281,7 +281,7 @@ with prev;
           mv $out/bin/app $out/bin/tlsh
         '';
 
-        vendorSha256 = "sha256-pQpattmS9VmO3ZIQUFn66az8GSmB4IvYhTTCFn6SUmo=";
+        vendorHash = null;
 
         meta = with lib; {
           inherit (src.meta) homepage;
@@ -312,7 +312,7 @@ with prev;
           "-X main.Version=${version}"
         ];
 
-        vendorSha256 = "sha256-X2/kcXxdGwFvdiTu1MGyv90OngWmR/xR2YtjvmLkiVE=";
+        vendorHash = "sha256-X2/kcXxdGwFvdiTu1MGyv90OngWmR/xR2YtjvmLkiVE=";
 
         nativeBuildInputs = [ installShellFiles ];
 
@@ -351,7 +351,7 @@ with prev;
           "-w"
         ];
 
-        vendorSha256 = "sha256-clAeO/J6dN6M2AT5agp2OCruApBIX7byBaUeEeusN4c=";
+        vendorHash = "sha256-clAeO/J6dN6M2AT5agp2OCruApBIX7byBaUeEeusN4c=";
 
         nativeBuildInputs = [ installShellFiles ];
 
@@ -401,7 +401,7 @@ with prev;
           "mongodb"
         ];
 
-        vendorSha256 = "sha256-lPNPl6fqBT3XLQie9z93j91FLtrMjKbHnXUQ6b4lDb4=";
+        vendorHash = "sha256-lPNPl6fqBT3XLQie9z93j91FLtrMjKbHnXUQ6b4lDb4=";
 
         doCheck = false;
 

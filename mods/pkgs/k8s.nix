@@ -14,7 +14,7 @@ with prev;
           sha256 = "sha256-fRMXRKr620l7Y6uaYur3LbCGgLeSJ27zEGK0Zq7LZEY=";
         };
 
-        vendorSha256 = "sha256-4hf6OueNHkReXdn9RuO4G4Zrpghp45YkuEwmci4wjz8=";
+        vendorHash = "sha256-4hf6OueNHkReXdn9RuO4G4Zrpghp45YkuEwmci4wjz8=";
 
         ldflags = [
           "-s"
@@ -45,7 +45,7 @@ with prev;
           sha256 = "sha256-M6SRXkr9hPXKwO+aQ1xYj5NUrRRo4g4vMi19XwINDXw=";
         };
 
-        vendorSha256 = "sha256-pz+gjNvXsaFGLYWCPaa5zOc2TUovNaTFrvT/dW49KuQ=";
+        vendorHash = "sha256-pz+gjNvXsaFGLYWCPaa5zOc2TUovNaTFrvT/dW49KuQ=";
 
         meta = with lib; {
           inherit (src.meta) homepage;
@@ -70,7 +70,7 @@ with prev;
           sha256 = "sha256-Q6FFSb2iczJQKFx6AVs3nsZfNE6qJ9YKgajeU7MmMfI=";
         };
 
-        vendorSha256 = "sha256-/IQC1vJ4MebuNp+3hvTz85w1guq5e58XM/KMQKWWQoI=";
+        vendorHash = "sha256-/IQC1vJ4MebuNp+3hvTz85w1guq5e58XM/KMQKWWQoI=";
 
         meta = with lib; {
           inherit (src.meta) homepage;
@@ -95,7 +95,7 @@ with prev;
           sha256 = "sha256-EujU0Ljr+VhGQ3VMhpdP/mikHFKVARR2vRl94/tZ7As=";
         };
 
-        vendorSha256 = "sha256-nADcFaVdC3UrZxqrwqjcNho/80n856Co2KG0AknflWM=";
+        vendorHash = "sha256-nADcFaVdC3UrZxqrwqjcNho/80n856Co2KG0AknflWM=";
 
         meta = with lib; {
           inherit (src.meta) homepage;
@@ -178,7 +178,7 @@ with prev;
           sha256 = "sha256-GTOnNubjIwazj9P65wcD7NtYzx7xGPZTeJ+mLuLgZjw=";
         };
 
-        vendorSha256 = "sha256-d1djlrtFm16ofpaRqPZ0loCLb38RgkopIl/woZr5OuE=";
+        vendorHash = "sha256-d1djlrtFm16ofpaRqPZ0loCLb38RgkopIl/woZr5OuE=";
 
         ldflags = [
           "-s"

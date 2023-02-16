@@ -33,7 +33,7 @@ rec {
           sha256 = "sha256-owWLviFu/Y+365XZEw7vjmJMmz8wAYMkvGonVJDJ9rU=";
         };
 
-        vendorSha256 = "sha256-Hjdv2Fvl1S52CDs4TAR3Yt9pEFUIvs5N5sVhZY+Edzo=";
+        vendorHash = "sha256-Hjdv2Fvl1S52CDs4TAR3Yt9pEFUIvs5N5sVhZY+Edzo=";
 
         nativeBuildInputs = [ installShellFiles ];
 
@@ -75,7 +75,7 @@ rec {
           sha256 = "sha256-mGR3s7OHuiMN1LqoWKRkJoXmZkqL7Ye9zJkDC4OFtus=";
         };
 
-        vendorSha256 = "sha256-NJktyKDyByAWLAc/oayOSQxohKPcxAHiW2ynM77cCOY=";
+        vendorHash = "sha256-NJktyKDyByAWLAc/oayOSQxohKPcxAHiW2ynM77cCOY=";
 
         CGO_ENABLED = 1;
 

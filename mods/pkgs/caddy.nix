@@ -41,7 +41,7 @@ rec {
       };
     in
     { plugins
-    , vendorSha256
+    , vendorHash
     }:
     let
       allPlugins = final.lib.flatten (plugins builtins);
@@ -57,7 +57,7 @@ rec {
         allPlugins;
       zaddy = prev.caddy.override {
         buildGoModule = args: buildGo119Module (args // {
-          inherit vendorSha256;
+          inherit vendorHash;
           overrideModAttrs = _: {
             preBuild = ''
               ${caddyPatchMain}
@@ -86,7 +86,7 @@ rec {
       caddy-hax
       caddy-troll
     ];
-    vendorSha256 = "sha256-1+oUWV5gTObuLcIe/jOjvtQS2NO002Gq922i33Y679E=";
+    vendorHash = "sha256-PcRSiosxMJzLNELzkuhV6y2jL46COBkefAuXJK1nbV4=";
   };
 
   # caddy with s3-browser plugin
@@ -96,6 +96,6 @@ rec {
       s3-proxy
       s3-browser
     ];
-    vendorSha256 = "sha256-Xz97PUuSFqi/32eQFFxxPmH4LE5NNwJGY2I5Cfn1NZc=";
+    vendorHash = "sha256-Tdk05zrTETgo8h5Y0t2SGoH3KKalKXM4ef72eMsmCDo=";
   };
 }
