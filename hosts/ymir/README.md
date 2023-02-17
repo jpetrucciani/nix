@@ -17,7 +17,7 @@ cd ~/cfg
 
 # initial switch
 export HOSTNAME='ymir'
-nix build --extra-experimental-features -f . hms
+nix build --extra-experimental-features nix-command -f . hms
 ./result/bin/hms
 ```
 
