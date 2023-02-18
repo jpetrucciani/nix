@@ -91,7 +91,7 @@ rec {
     , post ? ""
     , procfile ? "Procfile"
     , title ? "run"
-    , description ? "a quick and easy service orchestrator"
+    , description ? "a quick and easy service orchestrator!"
     , overmindPort ? 4322
     , overmind ? pkgs.overmind
     , bash ? pkgs.bashInteractive
