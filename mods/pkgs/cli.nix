@@ -166,8 +166,8 @@ with prev;
     { };
 
   rare = prev.callPackage
-    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
-      buildGo120Module rec {
+    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+      buildGo119Module rec {
         pname = "rare";
         version = "0.3.0";
 
