@@ -85,6 +85,39 @@ rec {
     '';
   };
 
+  __run =
+    { name ? "run"
+    , pre ? ""
+    , post ? ""
+    , procfile ? "Procfile"
+    , title ? "run"
+    , description ? "a quick and easy service orchestrator!"
+    , overmindPort ? 4322
+    , overmind ? pkgs.overmind
+    , bash ? pkgs.bashInteractive
+    , tmux ? pkgs.tmux
+    , tmuxConfig ? ./resources/tmux.conf
+    , sleepHack ? 0.2
+    }:
+    let
+      o = "${overmind}/bin/overmind";
+    in
+    pog {
+      inherit name description;
+      script = ''
+        export OVERMIND_NO_PORT="1"
+        export OVERMIND_SOCKET=":${toString overmindPort}"
+        export OVERMIND_NETWORK="tcp"
+        export OVERMIND_TMUX_CONFIG=${tmuxConfig}
+        export PATH="${tmux}/bin/:$PATH"
+        ${pre}
+        ${o} start -f ${procfile} --title "${title}" --shell ${bash}/bin/bash -D
+        sleep ${toString sleepHack} # this is a hack to stop overmind from crashing?
+        ${o} connect
+        ${post}
+      '';
+    };
+
   db_pog_scripts = [
     # postgres
     (__pg { })
@@ -93,5 +126,7 @@ rec {
     # redis
     __rd
     __rd_shell
+    # magic run helper
+    (__run { })
   ];
 }
