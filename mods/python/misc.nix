@@ -100,8 +100,8 @@ final: prev: prev.hax.pythonPackageOverlay
       src = pkgs.fetchFromGitHub {
         owner = "AlexAltea";
         repo = "milli-py";
-        rev = "43e80a7956c4ced3d730d8e8424a6d9d4a3c3006";
-        hash = "sha256-wdUz1j7cHKeeJBMbC8bMg7yUQ3Cn+HDcBFzZXB5CaRE=";
+        rev = "3c452e3d7313fa77c2fea3dad8c690919bb9c09b";
+        hash = "sha256-QPfrYVKRvjLSAZ0gHOW3YKp5s9YiyE0LPcPxiU5kwfk=";
         fetchSubmodules = true;
       };
 
@@ -114,6 +114,10 @@ final: prev: prev.hax.pythonPackageOverlay
 
       pythonImportsCheck = [
         "milli"
+      ];
+
+      buildInputs = [
+        pkgs.libiconv
       ];
 
       nativeBuildInputs = [

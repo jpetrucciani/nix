@@ -114,39 +114,43 @@ rec {
     '';
   };
 
-  srv =
-    let
-      python = pkgs.python310.withPackages (p: with p; [ ]);
-    in
-    pog {
-      name = "srv";
-      description = "a quick and easy way to serve a directory on a given port";
-      flags = [
-        {
-          name = "port";
-          description = "the port to serve on";
-          default = "7777";
-        }
-        {
-          name = "directory";
-          description = "the directory to serve";
-          default = ".";
-        }
-        {
-          name = "cgi";
-          description = "run in cgi mode";
-          bool = true;
-        }
-        {
-          name = "bind";
-          description = "the host to bind to";
-          default = "0.0.0.0";
-        }
-      ];
-      script = ''
-        ${python}/bin/python -m http.server ''${cgi:+--cgi} --bind "$bind" --directory "$directory" "$port"
-      '';
-    };
+  srv = pog {
+    name = "srv";
+    description = "a quick and easy way to serve a directory on a given port";
+    flags = [
+      {
+        name = "port";
+        description = "the port to serve on";
+        default = "7777";
+      }
+      {
+        name = "directory";
+        description = "the directory to serve";
+        default = ".";
+      }
+      {
+        name = "bind";
+        description = "the host to bind to";
+        default = "0.0.0.0";
+      }
+      {
+        name = "upload";
+        description = "allow uploads";
+        bool = true;
+      }
+    ];
+    script = ''
+      ${miniserve}/bin/miniserve \
+        --title srv \
+        ''${upload:+--mkdir --upload-files} \
+        --interfaces "$bind" \
+        --port "$port" \
+        --hide-version-footer \
+        --hide-theme-selector \
+        --enable-tar-gz \
+        "$directory" "$@"
+    '';
+  };
 
   sqlfmt = pog {
     name = "sqlfmt";
