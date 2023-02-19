@@ -148,6 +148,7 @@ in
               route /static/* {
                 s3proxy {
                   bucket "jacobi-static"
+                  endpoint "https://s3.wasabisys.com"
                   force_path_style
                 }
               }
