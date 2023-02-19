@@ -78,6 +78,14 @@ in
             }
           '';
         };
+        ts_reverse_proxy = location: {
+          extraConfig = ''
+            import TAILSCALE
+            reverse_proxy /* {
+              to ${location}
+            }
+          '';
+        };
         landing_page = { title ? "gemologic", start ? "#000", end ? "#6A3DE8" }:
           ''<html style='background-image: linear-gradient(to bottom right, ${start}, ${end});height:100%'><head><title>${title}</title></head></html>'';
         neptune_traefik = "neptune:8088";
@@ -99,6 +107,11 @@ in
 
         # countries from here http://www.geonames.org/countries/
         extraConfig = ''
+          (TAILSCALE) {
+            @tailscale not remote_ip 127.0.0.1 100.64.0.0/10
+            respond @tailscale "Kek" 403
+          }
+
           (GEOBLOCK) {
             @geoblock {
               not maxmind_geolocation {
@@ -126,7 +139,7 @@ in
           "auth.cobi.dev" = reverse_proxy neptune_traefik;
           "search.cobi.dev" = reverse_proxy neptune_traefik;
           "recipe.cobi.dev" = reverse_proxy orbit_traefik;
-          "netdata.cobi.dev" = reverse_proxy "localhost:${toString common.ports.netdata}";
+          "netdata.cobi.dev" = ts_reverse_proxy "localhost:${toString common.ports.netdata}";
           "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
           "n8n.cobi.dev" = reverse_proxy "luna:${toString common.ports.n8n}";
           "ombi.cobi.dev" = reverse_proxy "neptune:5999";
