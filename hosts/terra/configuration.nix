@@ -136,7 +136,7 @@ in
           }
         '';
         virtualHosts = {
-          "api.cobi.dev" = reverse_proxy "neptune:10000";
+          "api.cobi.dev" = reverse_proxy "localhost:10000";
           "auth.cobi.dev" = reverse_proxy neptune_traefik;
           "search.cobi.dev" = reverse_proxy neptune_traefik;
           "recipe.cobi.dev" = reverse_proxy orbit_traefik;
