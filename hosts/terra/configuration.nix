@@ -49,7 +49,13 @@ in
   }];
   networking.defaultGateway = "192.168.69.1";
   networking.nameservers = [ "1.1.1.1" ];
-  networking.firewall.enable = false;
+  networking.firewall = {
+    enable = true;
+    trustedInterfaces = [ "tailscale0" ];
+    allowedTCPPorts = with common.ports; [ ] ++ usual;
+    allowedUDPPorts = [ ];
+    checkReversePath = "loose";
+  };
 
   users.mutableUsers = false;
   users.users.root.hashedPassword = "!";

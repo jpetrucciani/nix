@@ -143,10 +143,32 @@ rec {
         ${python}/bin/python ${spots.py}
       '';
     };
+
+  wasabi = pog {
+    name = "wasabi";
+    description = "a wrapper for awscli to interact with wasabi";
+    flags = [
+      {
+        name = "profile";
+        default = "wasabi";
+        envVar = "WASABI_PROFILE";
+        description = "the AWS profile to reference for wasabi";
+      }
+      {
+        name = "region";
+        envVar = "WASABI_REGION";
+        default = "s3.wasabisys.com";
+      }
+    ];
+    script = ''
+      ${awscli2}/bin/aws --endpoint-url="https://$region" --profile "$profile" "$@"
+    '';
+  };
   aws_pog_scripts = [
     aws_id
     ecr_login
     ecr_login_public
     ec2_spot_interrupt
+    wasabi
   ];
 }
