@@ -7,7 +7,6 @@ in
   imports = [
     "${common.home-manager.path}/nixos"
     ./hardware-configuration.nix
-    ./api.nix
     ../modules/servers/poglets.nix
   ];
 

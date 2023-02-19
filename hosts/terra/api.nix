@@ -1,12 +1,5 @@
 { pkgs, ... }:
 let
-  api = with pkgs; stdenv.mkDerivation {
-    pname = "api";
-    version = "0.02";
-    src = /home/jacobi/dev/api;
-    nativeBuildInputs = [ autoPatchelfHook ];
-    installPhase = '' '';
-  };
   environment = (import /home/jacobi/dev/api/default.nix) { };
 in
 {

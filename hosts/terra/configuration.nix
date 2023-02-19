@@ -6,6 +6,7 @@ in
 {
   imports = [
     "${common.home-manager.path}/nixos"
+    ./api.nix
     ./hardware-configuration.nix
   ];
 
