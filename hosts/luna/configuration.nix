@@ -374,6 +374,12 @@ in
             targets = [ "127.0.0.1:${toString common.ports.prometheus_node_exporter}" ];
           }];
         }
+        {
+          job_name = "terra";
+          static_configs = [{
+            targets = [ "terra:${toString common.ports.prometheus_node_exporter}" ];
+          }];
+        }
       ];
       exporters = common.templates.prometheus_exporters { };
     };

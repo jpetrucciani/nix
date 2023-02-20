@@ -249,6 +249,7 @@ in
       inherit hostname;
       extra_scrape_configs = [ (common.templates.promtail_scrapers.caddy { }) ];
     };
+    prometheus.exporters = common.templates.prometheus_exporters { };
   } // common.services;
 
   virtualisation.docker.enable = true;
