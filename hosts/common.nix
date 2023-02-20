@@ -33,7 +33,7 @@ let
 
   attrIf = check: name: if check then name else null;
 in
-{
+rec {
   inherit home-manager jacobi nix-darwin mms pinned;
 
   nix = {
@@ -407,9 +407,13 @@ in
     ssh = 22;
     http = 80;
     https = 443;
+    grafana = 3000;
+    loki = 3100;
     n8n = 5678;
     jellyfin = 8096;
     home-assistant = 8123;
+    prometheus = 9001;
+    promtail = 9080;
     netdata = 19999;
     plex = 32400;
   };
@@ -471,5 +475,42 @@ in
         ${ben} ben
         ${bedrock} bedrock
       '';
+  };
+
+  templates = {
+    promtail =
+      { hostname
+      , loki_ip ? "100.78.40.10"
+      , promtail_port ? ports.promtail
+      , loki_port ? ports.loki
+      }: {
+        enable = true;
+        configuration = {
+          server = {
+            http_listen_port = promtail_port;
+            grpc_listen_port = 0;
+          };
+          positions = {
+            filename = "/tmp/positions.yaml";
+          };
+          clients = [{
+            url = "http://${loki_ip}:${toString loki_port}/loki/api/v1/push";
+          }];
+          scrape_configs = [{
+            job_name = "journal";
+            journal = {
+              max_age = "12h";
+              labels = {
+                job = "systemd-journal";
+                host = hostname;
+              };
+            };
+            relabel_configs = [{
+              source_labels = [ "__journal__systemd_unit" ];
+              target_label = "unit";
+            }];
+          }];
+        };
+      };
   };
 }

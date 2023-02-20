@@ -245,6 +245,7 @@ in
         websocketEnabled = true;
       };
     };
+    promtail = common.templates.promtail { inherit hostname; };
   } // common.services;
 
   virtualisation.docker.enable = true;
