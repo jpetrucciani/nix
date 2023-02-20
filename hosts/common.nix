@@ -413,6 +413,7 @@ rec {
     jellyfin = 8096;
     home-assistant = 8123;
     prometheus = 9001;
+    prometheus_node_exporter = 9002;
     promtail = 9080;
     netdata = 19999;
     plex = 32400;
@@ -517,6 +518,13 @@ rec {
       caddy = { path ? "/var/log/caddy/*.log" }: {
         job_name = "caddy";
         static_configs = [{ targets = [ "localhost" ]; labels = { job = "caddylogs"; __path__ = path; }; }];
+      };
+    };
+    prometheus_exporters = {}: {
+      node = {
+        enable = true;
+        enabledCollectors = [ "systemd" ];
+        port = ports.prometheus_node_exporter;
       };
     };
   };

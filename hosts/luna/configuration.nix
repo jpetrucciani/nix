@@ -368,7 +368,14 @@ in
             targets = [ "127.0.0.1:${toString common.ports.loki}" ];
           }];
         }
+        {
+          job_name = "luna";
+          static_configs = [{
+            targets = [ "127.0.0.1:${toString common.ports.prometheus_node_exporter}" ];
+          }];
+        }
       ];
+      exporters = common.templates.prometheus_exporters { };
     };
     promtail = common.templates.promtail { inherit hostname; loki_ip = "127.0.0.1"; };
   } // common.services;
