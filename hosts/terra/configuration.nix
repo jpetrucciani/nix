@@ -247,7 +247,7 @@ in
     };
     promtail = common.templates.promtail {
       inherit hostname;
-      extra_scrape_configs = common.templates.promtail_scrapers.caddy { };
+      extra_scrape_configs = [ (common.templates.promtail_scrapers.caddy { }) ];
     };
   } // common.services;
 
