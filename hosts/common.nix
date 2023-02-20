@@ -509,8 +509,8 @@ rec {
             relabel_configs = [{
               source_labels = [ "__journal__systemd_unit" ];
               target_label = "unit";
-            }] ++ extra_scrape_configs;
-          }];
+            }];
+          }] ++ extra_scrape_configs;
         };
       };
     promtail_scrapers = {
