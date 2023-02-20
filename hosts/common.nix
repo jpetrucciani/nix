@@ -483,6 +483,7 @@ rec {
       , loki_ip ? "100.78.40.10"
       , promtail_port ? ports.promtail
       , loki_port ? ports.loki
+      , extra_scrape_configs ? [ ]
       }: {
         enable = true;
         configuration = {
@@ -508,9 +509,15 @@ rec {
             relabel_configs = [{
               source_labels = [ "__journal__systemd_unit" ];
               target_label = "unit";
-            }];
+            }] ++ extra_scrape_configs;
           }];
         };
       };
+    promtail_scrapers = {
+      caddy = { path ? "/var/log/caddy/*.log" }: {
+        job_name = "caddy";
+        static_configs = [{ targets = [ "localhost" ]; labels = { job = "caddylogs"; __path__ = path; }; }];
+      };
+    };
   };
 }

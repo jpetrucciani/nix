@@ -58,7 +58,9 @@ in
     ] ++ usual;
   };
 
-  services = { } // common.services;
+  services = {
+    promtail = common.templates.promtail { inherit hostname; };
+  } // common.services;
   virtualisation.docker.enable = true;
 
   system.stateVersion = "22.11";

@@ -216,6 +216,7 @@ in
         };
       };
     };
+    promtail = common.templates.promtail { inherit hostname; };
   } // common.services;
 
   # https://github.com/NixOS/nixpkgs/issues/103158

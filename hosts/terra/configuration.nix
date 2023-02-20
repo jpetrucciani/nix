@@ -245,7 +245,10 @@ in
         websocketEnabled = true;
       };
     };
-    promtail = common.templates.promtail { inherit hostname; };
+    promtail = common.templates.promtail {
+      inherit hostname;
+      extra_scrape_configs = common.templates.promtail_scrapers.caddy { };
+    };
   } // common.services;
 
   virtualisation.docker.enable = true;

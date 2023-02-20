@@ -66,6 +66,7 @@ in
         host all all 192.168.69.0/24 trust
       '';
     };
+    promtail = common.templates.promtail { inherit hostname; };
   } // common.services;
 
 
