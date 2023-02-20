@@ -67,6 +67,7 @@ in
       '';
     };
     promtail = common.templates.promtail { inherit hostname; };
+    prometheus.exporters = common.templates.prometheus_exporters { };
   } // common.services;
 
 

@@ -60,6 +60,7 @@ in
 
   services = {
     promtail = common.templates.promtail { inherit hostname; };
+    prometheus.exporters = common.templates.prometheus_exporters { };
   } // common.services;
   virtualisation.docker.enable = true;
 

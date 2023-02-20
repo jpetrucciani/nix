@@ -360,27 +360,33 @@ in
     prometheus = {
       enable = true;
       port = common.ports.prometheus;
-      scrapeConfigs = [
-        # Scrape the Loki service
-        {
-          job_name = "Loki service";
-          static_configs = [{
-            targets = [ "127.0.0.1:${toString common.ports.loki}" ];
-          }];
-        }
-        {
-          job_name = "luna";
-          static_configs = [{
-            targets = [ "127.0.0.1:${toString common.ports.prometheus_node_exporter}" ];
-          }];
-        }
-        {
-          job_name = "terra";
-          static_configs = [{
-            targets = [ "terra:${toString common.ports.prometheus_node_exporter}" ];
-          }];
-        }
-      ];
+      scrapeConfigs =
+        let
+          hostScrape = host: {
+            job_name = host;
+            static_configs = [{
+              targets = [ "${host}:${toString common.ports.prometheus_node_exporter}" ];
+            }];
+          };
+        in
+        [
+          {
+            job_name = "Loki service";
+            static_configs = [{
+              targets = [ "127.0.0.1:${toString common.ports.loki}" ];
+            }];
+          }
+          {
+            job_name = "luna";
+            static_configs = [{
+              targets = [ "127.0.0.1:${toString common.ports.prometheus_node_exporter}" ];
+            }];
+          }
+          (hostScrape "bedrock")
+          (hostScrape "phobos")
+          (hostScrape "terra")
+          (hostScrape "titan")
+        ];
       exporters = common.templates.prometheus_exporters { };
     };
     promtail = common.templates.promtail { inherit hostname; loki_ip = "127.0.0.1"; };
