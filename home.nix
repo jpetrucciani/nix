@@ -131,7 +131,6 @@ with pkgs.hax; {
         ranger
         re2c
         ripgrep
-        ripgrep-all
         rlwrap
         ruff
         scc
