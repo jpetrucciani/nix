@@ -1,6 +1,6 @@
 { hex, pkgs }:
 let
-  inherit (hex) toYAML boolToString concatMapStrings removePrefix;
+  inherit (hex) toYAML boolToString concatMapStrings removePrefix ifNotNull;
 
   imagePullPolicy = "Always";
   joinTags = concatMapStrings (x: ",tag:${x}");
@@ -102,7 +102,7 @@ let
     proxy = rec {
       build =
         { name
-        , destination_ip
+        , destination_ip ? null
         , cidr ? defaults.cidr
         , tailscale_image ? "${tailscale_image_base}:${tailscale_image_tag}"
         , tailscale_image_base ? defaults.tailscale_image_base
@@ -114,6 +114,7 @@ let
         , memory ? defaults.tailscale_resources.memory
         , userspace ? false
         , exit_node ? false
+        , subnet_router_cidr ? null
         }: ''
           ---
           ${toYAML (sa name)}
@@ -126,7 +127,7 @@ let
           ---
           ${toYAML (network-policy {inherit name cidr;})}
           ---
-          ${toYAML (deployment {inherit name destination_ip tailscale_image all_tags cpu memory userspace exit_node;})}
+          ${toYAML (deployment {inherit name destination_ip tailscale_image all_tags cpu memory userspace exit_node subnet_router_cidr;})}
         '';
       deployment =
         { name
@@ -137,6 +138,7 @@ let
         , memory
         , userspace
         , exit_node
+        , subnet_router_cidr
         }:
         let
           exit_node_flag = if exit_node then " ${exitNode}" else "";
@@ -179,24 +181,13 @@ let
                     inherit imagePullPolicy;
                     name = "tailscale";
                     image = tailscale_image;
-                    env = [
-                      {
-                        name = "TS_KUBE_SECRET";
-                        value = name;
-                      }
-                      {
-                        name = "TS_USERSPACE";
-                        value = boolToString userspace;
-                      }
-                      {
-                        name = "TS_EXTRA_ARGS";
-                        value = "${advertise_tags_flag}${exit_node_flag}";
-                      }
-                      {
-                        name = "TS_DEST_IP";
-                        value = destination_ip;
-                      }
-                    ];
+                    env = hex.envAttrToNVP {
+                      TS_KUBE_SECRET = name;
+                      TS_USERSPACE = boolToString userspace;
+                      TS_EXTRA_ARGS = "${advertise_tags_flag}${exit_node_flag}";
+                      ${ifNotNull destination_ip "TS_DEST_IP"} = destination_ip;
+                      ${ifNotNull subnet_router_cidr "TS_ROUTES"} = subnet_router_cidr;
+                    };
                     resources = {
                       requests = {
                         inherit cpu memory;
@@ -316,20 +307,11 @@ let
                     inherit imagePullPolicy;
                     name = "tailscale";
                     image = tailscale_image;
-                    env = [
-                      {
-                        name = "TS_KUBE_SECRET";
-                        value = name;
-                      }
-                      {
-                        name = "TS_USERSPACE";
-                        value = boolToString userspace;
-                      }
-                      {
-                        name = "TS_EXTRA_ARGS";
-                        value = "${advertise_tags_flag}${exit_node_flag}";
-                      }
-                    ];
+                    env = hex.envAttrToNVP {
+                      TS_KUBE_SECRET = name;
+                      TS_USERSPACE = boolToString userspace;
+                      TS_EXTRA_ARGS = "${advertise_tags_flag}${exit_node_flag}";
+                    };
                     resources = {
                       requests = {
                         cpu = tailscale_cpu;

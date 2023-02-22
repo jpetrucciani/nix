@@ -146,6 +146,7 @@ with pkgs.hax; {
         watch
         wget
         which
+        xh
         yank
         yq-go
         zip
@@ -571,6 +572,7 @@ with pkgs.hax; {
           extensions = {
             elixir-ls = "JakeBecker.elixir-ls";
             nixpkgs-fmt = "B4dM4n.nixpkgs-fmt";
+            nix-ide = "jnoortheen.nix-ide";
             prettier = "esbenp.prettier-vscode";
             python = "ms-python.python";
             rust = "statiolake.vscode-rustfmt";
@@ -598,10 +600,19 @@ with pkgs.hax; {
             "prettier.configPath": "${homeDirectory}/.prettierrc.js",
             "nix.enableLanguageServer": true,
             "nix.serverPath": "${nix-bin}/nil",
-            "nix.formatterPath": "${nix-bin}/nixpkgs-fmt",
+            "nix.serverSettings": {
+              "nil": {
+                "diagnostics": {
+                  "ignored": ["unused_binding", "unused_with"]
+                },
+                "formatting": {
+                  "command": ["nixpkgs-fmt"]
+                }
+              }
+            },
             "nixEnvSelector.nixFile": "${workspaceRoot}/default.nix",
             "[nix]": {
-              "${formatter}": "${extensions.nixpkgs-fmt}",
+              "${formatter}": "${extensions.nix-ide}",
               "${tabSize}": 2
             },
             "[terraform]": {
