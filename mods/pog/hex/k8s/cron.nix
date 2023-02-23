@@ -39,7 +39,10 @@ let
                     containers = [
                       {
                         inherit name image;
-                        env = [{ name = "HEX"; value = "true"; }] ++ env;
+                        env = with hex.defaults.env; [
+                          pod_ip
+                          pod_name
+                        ] ++ [{ name = "HEX"; value = "true"; }] ++ env;
                         ${ifNotNull command "command"} = [ command ];
                         ${ifNotNull args "args"} = args;
                         resources = {

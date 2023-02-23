@@ -115,6 +115,7 @@ let
         , userspace ? false
         , exit_node ? false
         , subnet_router_cidr ? null
+        , bind_local ? false
         }: ''
           ---
           ${toYAML (sa name)}
@@ -127,7 +128,7 @@ let
           ---
           ${toYAML (network-policy {inherit name cidr;})}
           ---
-          ${toYAML (deployment {inherit name destination_ip tailscale_image all_tags cpu memory userspace exit_node subnet_router_cidr;})}
+          ${toYAML (deployment {inherit name destination_ip tailscale_image all_tags cpu memory userspace exit_node subnet_router_cidr bind_local;})}
         '';
       deployment =
         { name
@@ -139,6 +140,7 @@ let
         , userspace
         , exit_node
         , subnet_router_cidr
+        , bind_local
         }:
         let
           exit_node_flag = if exit_node then " ${exitNode}" else "";
@@ -181,19 +183,32 @@ let
                     inherit imagePullPolicy;
                     name = "tailscale";
                     image = tailscale_image;
-                    env = hex.envAttrToNVP {
+                    env = with hex.defaults.env; [
+                      pod_ip
+                      pod_name
+                    ] ++ (hex.envAttrToNVP {
                       TS_KUBE_SECRET = name;
                       TS_USERSPACE = boolToString userspace;
                       TS_EXTRA_ARGS = "${advertise_tags_flag}${exit_node_flag}";
                       ${ifNotNull destination_ip "TS_DEST_IP"} = destination_ip;
                       ${ifNotNull subnet_router_cidr "TS_ROUTES"} = subnet_router_cidr;
-                    };
+                    });
                     resources = {
                       requests = {
                         inherit cpu memory;
                       };
                     };
                     securityContext.capabilities.add = [ "NET_ADMIN" ];
+                    ${if bind_local then "lifecycle" else null}.postStart.exec.command = [
+                      "/bin/sh"
+                      "-c"
+                      (builtins.concatStringsSep " && " [
+                        "until tailscale --socket=/tmp/tailscaled.sock ping $TS_DEST_IP; do sleep 1; done"
+                        "iptables -t nat -A PREROUTING -d $POD_IP -j DNAT --to-destination $TS_DEST_IP"
+                        "iptables -t nat -A POSTROUTING -j MASQUERADE"
+                      ]
+                      )
+                    ];
                   }
                 ];
               };
@@ -307,11 +322,14 @@ let
                     inherit imagePullPolicy;
                     name = "tailscale";
                     image = tailscale_image;
-                    env = hex.envAttrToNVP {
+                    env = with hex.defaults.env; [
+                      pod_ip
+                      pod_name
+                    ] ++ (hex.envAttrToNVP {
                       TS_KUBE_SECRET = name;
                       TS_USERSPACE = boolToString userspace;
                       TS_EXTRA_ARGS = "${advertise_tags_flag}${exit_node_flag}";
-                    };
+                    });
                     resources = {
                       requests = {
                         cpu = tailscale_cpu;

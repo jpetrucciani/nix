@@ -48,6 +48,20 @@ rec {
     else
       str;
   envAttrToNVP = with pkgs.lib.attrsets; x: builtins.filter (x: x.name != "") (mapAttrsToList nameValuePair x);
+  defaults = {
+    env = rec {
+      _field = var: field: {
+        name = var;
+        valueFrom = {
+          fieldRef = {
+            fieldPath = field;
+          };
+        };
+      };
+      pod_name = _field "POD_NAME" "metadata.name";
+      pod_ip = _field "POD_IP" "status.podIP";
+    };
+  };
 
   patchYAML =
     { url
