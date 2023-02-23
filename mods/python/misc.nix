@@ -100,8 +100,8 @@ final: prev: prev.hax.pythonPackageOverlay
       src = pkgs.fetchFromGitHub {
         owner = "AlexAltea";
         repo = "milli-py";
-        rev = "3c452e3d7313fa77c2fea3dad8c690919bb9c09b";
-        hash = "sha256-QPfrYVKRvjLSAZ0gHOW3YKp5s9YiyE0LPcPxiU5kwfk=";
+        rev = "4cbb103fa679d254332e98291af29350a8bab1cd";
+        hash = "sha256-q9kc1WQIqYjLrCQFvku+YvvSYNruyhaRJP5Mwutujrg=";
         fetchSubmodules = true;
       };
 

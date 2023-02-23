@@ -552,6 +552,30 @@ let
             ];
           };
         };
+
+      pvc =
+        { name
+        , namespace ? "default"
+        , accessModes ? [ "ReadWriteOnce" ]
+        , storage ? "10Gi"
+        , storageClass ? "standard"
+        , extra ? { }
+        }: {
+          apiVersion = "v1";
+          kind = "PersistentVolumeClaim";
+          metadata = {
+            inherit name namespace;
+          };
+          spec = {
+            inherit accessModes;
+            resources = {
+              requests = {
+                inherit storage;
+              };
+            };
+            storageClassName = storageClass;
+          };
+        } // extra;
     };
   };
 in
