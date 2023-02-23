@@ -16,7 +16,7 @@ let
       memory = "2Gi";
     };
     tailscale_image_base = "ghcr.io/tailscale/tailscale";
-    tailscale_image_tag = "v1.36.1";
+    tailscale_image_tag = "v1.36.2";
     cloudsql_image_base = "gcr.io/cloudsql-docker/gce-proxy";
     cloudsql_image_tag = "1.33.2";
 
@@ -166,7 +166,7 @@ let
                     command = [ "/bin/sh" ];
                     args = [
                       "-c"
-                      "sysctl -w net.ipv4.ip_forward=1"
+                      "sysctl -w net.ipv4.ip_forward=1 net.ipv6.conf.all.forwarding=1"
                     ];
                     resources = {
                       requests = {
