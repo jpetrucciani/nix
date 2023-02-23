@@ -57,7 +57,7 @@ let
           apiGroups = [ "" ];
           resources = [ "secrets" ];
           resourceNames = [ name ];
-          verbs = [ "get" "update" ];
+          verbs = [ "get" "update" "patch" ];
         }
       ];
     };
