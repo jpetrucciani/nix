@@ -1,4 +1,7 @@
-{ pkgs, ... }:
+{ pkgs
+, isBarebones ? false
+, ...
+}:
 let
   inherit (pkgs.stdenv) isDarwin isLinux isAarch64;
   isM1 = isDarwin && isAarch64;
@@ -29,7 +32,10 @@ let
       sha256 = "1nmw497ahb9hjjh0kwr1z782q41gcw5kw4dl4alg8pnyhgq141r1";
     });
 
-  jacobi = import ../home.nix;
+  jacobi = import ../home.nix {
+    inherit home-manager isBarebones;
+    pkgs = pinned;
+  };
 
   attrIf = check: name: if check then name else null;
 in
@@ -73,6 +79,12 @@ rec {
     };
 
   env = { };
+
+  name = rec {
+    first = "jacobi";
+    last = "petrucciani";
+    full = "${first} ${last}";
+  };
 
   emails = {
     personal = "j@cobi.dev";

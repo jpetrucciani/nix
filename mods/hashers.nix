@@ -51,5 +51,5 @@ final: prev: {
   nix_hash_medable = final._nix_hash "Medable/nix" "main" "medable";
   nix_hash_nix-security-box = final._nix_hash "fabaff/nix-security-box" "main" "nix-security-box";
   nix_hash_devenv = final._nix_hash "cachix/devenv" "main" "devenv";
-  home-packages = (import ../home.nix).home.packages;
+  home-packages = (import ../home.nix { }).home.packages;
 }

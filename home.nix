@@ -1,5 +1,5 @@
+{ pkgs ? import ./default.nix { }, home-manager ? null, isBarebones ? false }:
 let
-  pkgs = import ./default.nix { };
   inherit (pkgs.hax) isDarwin isX86Mac fetchFromGitHub;
 
   firstName = "jacobi";
@@ -20,14 +20,6 @@ let
       "/Users/${firstName}"
     else
       (if onAws then "/home/ubuntu" else "/home/${firstName}");
-
-  # home-manager pin
-  hm = with builtins; fromJSON (readFile ./sources/home-manager.json);
-  home-manager = fetchFromGitHub {
-    inherit (hm) rev sha256;
-    owner = "nix-community";
-    repo = "home-manager";
-  };
 
   sessionVariables = {
     BASH_SILENCE_DEPRECATION_WARNING = "1";
@@ -71,13 +63,10 @@ with pkgs.hax; {
         bzip2
         cacert
         cachix
-        charm
         coreutils-full
         cowsay
         curl
         diffutils
-        docker-client
-        dogdns
         dos2unix
         dyff
         ed
@@ -94,7 +83,6 @@ with pkgs.hax; {
         gnupg
         gnused
         gnutar
-        google-cloud-sdk
         gron
         gum
         gzip
@@ -128,19 +116,15 @@ with pkgs.hax; {
         pigz
         procps
         pssh
+        q
         ranger
         re2c
-        ripgrep
         rlwrap
         ruff
         scc
         scrypt
-        shellcheck
         shfmt
         statix
-        step-cli
-        talosctl
-        terraform-ls
         time
         unzip
         watch
@@ -151,61 +135,9 @@ with pkgs.hax; {
         yq-go
         zip
 
-        # python
-        (python310.withPackages
-          (pkgs: with pkgs; [
-            # linting
-            black
-            mypy
-
-            # common use case
-            gamble
-            httpx
-            requests
-            cryptography
-
-            # text
-            anybadge
-            tabulate
-            beautifulsoup4
-            praw
-
-            # api
-            fastapi
-            uvicorn
-
-            # 3rd party apis
-            geoip2
-
-            # data
-            numpy
-            pandas
-            scipy
-
-            # type annotations (from nixpkgs)
-            types-requests
-            types-tabulate
-            types-enum34
-            types-ipaddress
-
-            # my types (for nixpkgs)
-            boto3-stubs
-            botocore-stubs
-
-            # my packages (for nixpkgs)
-            notion-client
-          ]
-          ++ (optList (!isM1) [ ])
-          ++ (optList isLinux [
-            bpython
-          ])
-          )
-        )
-
         # kubernetes
         kubectl
         kubectx
-        fluxctl
         ## thanks google
         gke-gcloud-auth-plugin
 
@@ -224,21 +156,121 @@ with pkgs.hax; {
         python_pog_scripts
         ssh_pog_scripts
 
-        # my pkgs
-        cgapp
-        cyclonus
-        erdtree
-        goldilocks
-        horcrux
-        hunt
-        mdctl
-        ov
-        overflow
-        poglets
-        q
-        rare
-        regula
-        s3-edit
+        (optList (!isBarebones) [
+          docker-client
+          google-cloud-sdk
+          ripgrep
+          shellcheck
+          step-cli
+          talosctl
+          terraform-ls
+
+          # python
+          (python310.withPackages
+            (pkgs: with pkgs; [
+              # linting
+              black
+              mypy
+
+              # common use case
+              gamble
+              httpx
+              requests
+              cryptography
+
+              # text
+              anybadge
+              tabulate
+              beautifulsoup4
+              praw
+
+              # api
+              fastapi
+              uvicorn
+
+              # 3rd party apis
+              geoip2
+
+              # data
+              numpy
+              pandas
+              scipy
+
+              # type annotations (from nixpkgs)
+              types-requests
+              types-tabulate
+              types-enum34
+              types-ipaddress
+
+              # my types (for nixpkgs)
+              boto3-stubs
+              botocore-stubs
+
+              # my packages (for nixpkgs)
+              notion-client
+            ]
+            ++ (optList (!isM1) [ ])
+            ++ (optList isLinux [
+              bpython
+            ])
+            )
+          )
+
+          # my packages
+          cgapp
+          cyclonus
+          erdtree
+          goldilocks
+          horcrux
+          hunt
+          mdctl
+          ov
+          overflow
+          poglets
+          rare
+          regula
+          s3-edit
+
+          # keef's stuff
+          hax.comma
+
+          # sounds
+          meme_sounds
+          # mac specific
+          (
+            optList isDarwin [
+              lima
+            ]
+          )
+
+          # all except old mac
+          (
+            optList (!isX86Mac) [
+              git-trim
+              watcher
+            ]
+          )
+
+          # linux specific
+          (
+            optList isLinux [
+              nixos-generators
+              binutils
+              bitwarden-cli
+              keybase
+              ncdu
+              sampler
+              vtm
+
+              # k8s tools
+              katafygio
+              kube-linter
+              pluto
+              rbac-tool
+            ]
+          )
+
+        ])
 
         # overlays
         nix_hash_unstable
@@ -253,46 +285,6 @@ with pkgs.hax; {
         nix_hash_devenv
         nixup
         foo
-
-        # keef's stuff
-        hax.comma
-
-        # sounds
-        meme_sounds
-
-        # mac specific
-        (
-          optList isDarwin [
-            lima
-          ]
-        )
-
-        # all except old mac
-        (
-          optList (!isX86Mac) [
-            git-trim
-            watcher
-          ]
-        )
-
-        # linux specific
-        (
-          optList isLinux [
-            nixos-generators
-            binutils
-            bitwarden-cli
-            keybase
-            ncdu
-            sampler
-            vtm
-
-            # k8s tools
-            katafygio
-            kube-linter
-            pluto
-            rbac-tool
-          ]
-        )
 
         # ubuntu specific
         (
@@ -497,7 +489,7 @@ with pkgs.hax; {
       let
         mac_meme = ''
           IPQoS 0x00
-            XAuthLocation /opt/X11/bin/xauth
+          XAuthLocation /opt/X11/bin/xauth
         '';
       in
       ''

@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 let
   hostname = "bedrock";
-  common = import ../common.nix { inherit config pkgs; };
+  common = import ../common.nix { inherit config pkgs; isBarebones = true; };
 in
 {
   imports = [
@@ -73,9 +73,5 @@ in
 
   system.stateVersion = "22.11";
   security.sudo = common.security.sudo;
-  security.acme = {
-    acceptTerms = true;
-    defaults.email = common.emails.personal;
-  };
   programs.command-not-found.enable = false;
 }
