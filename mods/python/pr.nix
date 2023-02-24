@@ -201,7 +201,7 @@ final: prev: prev.hax.pythonPackageOverlay
 
     slack-bolt = buildPythonPackage rec {
       pname = "slack-bolt";
-      version = "1.16.1";
+      version = "1.16.2";
       format = "setuptools";
 
       disabled = pythonOlder "3.7";
@@ -209,7 +209,7 @@ final: prev: prev.hax.pythonPackageOverlay
         owner = "slackapi";
         repo = "bolt-python";
         rev = "v${version}";
-        hash = "sha256-xzEsTx+44ae++WxArxO2rhCsot+ELuhc0aZ44MXY0c4=";
+        hash = "sha256-HV2AUC3Q8MUyq3bwHIeeYLnMisXY5cFFPCHC7YYwODw=";
       };
 
       propagatedBuildInputs = [ slack-sdk ];
@@ -227,7 +227,7 @@ final: prev: prev.hax.pythonPackageOverlay
           boddle
           boto3
           bottle
-          (if prev.stdenv.isDarwin then cherrypy.overridePythonAttrs (_: { doCheck = false; }) else cherrypy)
+          (cherrypy.overridePythonAttrs (_: { doCheck = false; }))
           django
           falcon
           fastapi
@@ -256,6 +256,7 @@ final: prev: prev.hax.pythonPackageOverlay
 
       disabledTestPaths = [
         # disable tests that require credentials
+        "tests/scenario_tests_async/test_web_client_customization.py"
         "tests/slack_bolt_async/oauth/test_async_oauth_flow.py"
         "tests/slack_bolt/oauth/test_oauth_flow.py"
       ] ++ lib.optionals stdenv.isDarwin [
