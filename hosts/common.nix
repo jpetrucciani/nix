@@ -98,6 +98,7 @@ rec {
 
     # servers
     bedrock = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHyGIL87ScZN4Bir5yxlLendu4Iex2RjrmDRLE3+u7Aq jacobi@bedrock";
+    granite = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN+Ueb5yUyGWNA71L2If6pwy5AORXO3LN4CzREgwWhO2 jacobi@granite";
     titan = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDKnCuUSP/RbAfUvNkD43wm6w5dhsfdIgSqawj9Z0UQX jacobi@titan";
     jupiter = "";
     saturn = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPY2sNJE5ysSTeFzTv2U+zIeIB5LMhbUaP+yC5VDgEHD jacobi@saturn";

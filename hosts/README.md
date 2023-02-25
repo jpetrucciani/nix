@@ -12,6 +12,8 @@ This is an experimental NixOS install inside a VM using the apple virtualization
 
 ### [bedrock/](./bedrock)
 
+TODO
+
 ### [charon/](./charon)
 
 This is my personal M1 Mac Mini server, running MacOS and using nix-darwin and home-manager to manage things.
@@ -19,6 +21,10 @@ This is my personal M1 Mac Mini server, running MacOS and using nix-darwin and h
 ### [foundry/](./foundry/)
 
 this directory contains builders for cloud VM images and isos
+
+### [granite/](./granite/)
+
+TODO
 
 ### [luna/](./luna)
 
