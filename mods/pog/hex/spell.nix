@@ -10,6 +10,7 @@ let
       })
     { };
   k8s = {
+    addons = import ./k8s/addons.nix params;
     argocd = import ./k8s/argocd.nix params;
     authentik = import ./k8s/authentik.nix params;
     cert-manager = import ./k8s/cert-manager.nix params;

@@ -99,6 +99,13 @@ rec {
       chart_url = "${base}/infisical-{1}.tgz";
     };
 
+  chart_scan_nfs = let chart = "nfs-subdir-external-provisioner"; in _chart_scan {
+    name = "nfs";
+    chart_name = chart;
+    index_url = "https://kubernetes-sigs.github.io/${chart}/index.yaml";
+    chart_url = "https://github.com/kubernetes-sigs/${chart}/releases/download/${chart}-{1}/${chart}-{1}.tgz";
+  };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
@@ -106,6 +113,7 @@ rec {
     chart_scan_external-secrets
     chart_scan_gitlab-runner
     chart_scan_infisical
+    chart_scan_nfs
     chart_scan_signoz
     chart_scan_stackstorm
     chart_scan_traefik
