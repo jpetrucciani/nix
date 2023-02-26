@@ -35,6 +35,14 @@ let
 
   optList = conditional: list: if conditional then list else [ ];
 
+  doom-emacs = pkgs.callPackage
+    (builtins.fetchTarball {
+      url = "https://github.com/nix-community/nix-doom-emacs/archive/master.tar.gz";
+    })
+    {
+      doomPrivateDir = ./doom.d;
+    };
+
 in
 with pkgs.hax; {
   nixpkgs.overlays = import ./overlays.nix;
@@ -155,6 +163,8 @@ with pkgs.hax; {
         nix_pog_scripts
         python_pog_scripts
         ssh_pog_scripts
+
+        doom-emacs
 
         (optList (!isBarebones) [
           docker-client
@@ -398,15 +408,17 @@ with pkgs.hax; {
       export XDG_DATA_DIRS="$HOME/.nix-profile/share:''${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
       source <(${pkgs.kubectl}/bin/kubectl completion bash)
       source ~/.nix-profile/etc/profile.d/bash_completion.sh
-      source ~/.nix-profile/share/bash-completion/completions/docker
       source ~/.nix-profile/share/bash-completion/completions/git
       source ~/.nix-profile/share/bash-completion/completions/ssh
       complete -o bashdefault -o default -o nospace -F __git_wrap__git_main g
-      complete -F _docker d
       complete -F __start_kubectl k
       complete -F _kube_contexts kubectx kx
       complete -F _kube_namespaces kubens kns
-
+    '' + (if (!isBarebones) then ''
+      source ~/.nix-profile/share/bash-completion/completions/docker
+      complete -F _docker d
+    '' else "") +
+    ''
       # there are often duplicate path entries on non-nixos; remove them
       NEWPATH=
       OLDIFS=$IFS

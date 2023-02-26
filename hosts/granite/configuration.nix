@@ -58,7 +58,6 @@ in
     prometheus.exporters = common.templates.prometheus_exporters { };
   } // common.services;
 
-
   system.stateVersion = "22.11";
   security.sudo = common.security.sudo;
   programs.command-not-found.enable = false;
