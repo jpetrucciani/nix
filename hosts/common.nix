@@ -420,6 +420,7 @@ rec {
     ssh = 22;
     http = 80;
     https = 443;
+    nfs = 2049;
     grafana = 3000;
     loki = 3100;
     n8n = 5678;

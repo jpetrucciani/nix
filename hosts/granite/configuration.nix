@@ -49,11 +49,27 @@ in
     inherit (common) extraGroups;
     isNormalUser = true;
     passwordFile = "/etc/passwordFile-jacobi";
-
     openssh.authorizedKeys.keys = with common.pubkeys; [ ] ++ usual;
   };
 
   services = {
+    nfs.server =
+      let
+        opts = "(rw,nohide,insecure,no_subtree_check)";
+        paths = [
+          "/export/granite"
+          "/export/orbit"
+        ];
+        nfsVol = path: "${path}  *${opts}";
+        volumes = builtins.concatStringsSep "\n" (map nfsVol paths);
+      in
+      {
+        enable = true;
+        exports = ''
+          /export *(rw,fsid=0,no_subtree_check,insecure)
+          ${volumes}
+        '';
+      };
     promtail = common.templates.promtail { inherit hostname; };
     prometheus.exporters = common.templates.prometheus_exporters { };
   } // common.services;
