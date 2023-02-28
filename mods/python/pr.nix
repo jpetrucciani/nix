@@ -22,14 +22,14 @@ final: prev: prev.hax.pythonPackageOverlay
 
     procrastinate = buildPythonPackage rec {
       pname = "procrastinate";
-      version = "0.26.0";
+      version = "0.27.0";
 
       format = "pyproject";
       src = pkgs.fetchFromGitHub {
         owner = "procrastinate-org";
         repo = pname;
         rev = version;
-        sha256 = "sha256-DPFvp8tF42y7r3cReX/20slDRpHOmo3TadKMNU7/GtI=";
+        sha256 = "sha256-+Nv3ssQ7IBhtoMT4AfJ4XCQolEa/ZG/nSxEbiBwiAJk=";
       };
 
       preBuild = ''
