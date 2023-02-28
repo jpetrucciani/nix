@@ -171,12 +171,13 @@ with pkgs.hax; {
           google-cloud-sdk
           ripgrep
           shellcheck
+          sqlfluff
           step-cli
           talosctl
           terraform-ls
 
           # python
-          (python310.withPackages
+          (python311.withPackages
             (pkgs: with pkgs; [
               # linting
               black
