@@ -1,25 +1,25 @@
 { fetchFromGitHub }:
 {
-  chalk = rec {
+  chalk = {
     name = "chalk";
     src = fetchFromGitHub {
       owner = "etienne-napoleone";
       repo = "chalk";
       rev = "9ba93156e937b17c00d4802de531f535d4b2882c";
-      sha256 = "sha256-hcyiVdpWfG5rI0u79cUqm0Naf5WfN0Wj7LNCL3k94/8=";
+      hash = "sha256-hcyiVdpWfG5rI0u79cUqm0Naf5WfN0Wj7LNCL3k94/8=";
     };
     meta = {
       home = "https://github.com/thecodrr/chalk";
       description = "A terminal string colorizer for the V language";
     };
   };
-  crayon = rec {
+  crayon = {
     name = "crayon";
     src = fetchFromGitHub {
       owner = "thecodrr";
       repo = "crayon";
       rev = "1ad0ed63d606850759f7a571a9aa1a5c411e0a61";
-      sha256 = "sha256-xSJmj4M+1dP0V1TTuRMDmyjevbVHu1dv+MAV1OU8mLE=";
+      hash = "sha256-xSJmj4M+1dP0V1TTuRMDmyjevbVHu1dv+MAV1OU8mLE=";
     };
     meta = {
       home = "https://github.com/thecodrr/crayon";
@@ -32,7 +32,7 @@
       owner = "0xLeif";
       repo = name;
       rev = "f2f2603a561b8a50ae3b3d74d6790da3b43de36d";
-      sha256 = "sha256-cHNLOoGvT1Vd/t1CbyTo548/A43CWuQgEEMqqbdRB40=";
+      hash = "sha256-cHNLOoGvT1Vd/t1CbyTo548/A43CWuQgEEMqqbdRB40=";
     };
     meta = {
       home = "https://github.com/0xLeif/lol";
@@ -46,7 +46,7 @@
       owner = "Waqar144";
       repo = name;
       rev = "0d178b592241d2d613cd54064b99d6ca74e8f6dc";
-      sha256 = "sha256-5gHTrzYGeaJJRHUk+x93XYUpKU8gIkcSPD8rQxaun5I=";
+      hash = "sha256-5gHTrzYGeaJJRHUk+x93XYUpKU8gIkcSPD8rQxaun5I=";
     };
     meta = {
       home = "https://github.com/Waqar144/progressbar";
@@ -59,7 +59,7 @@
       owner = "serkonda7";
       repo = name;
       rev = "34e977018072ede3363f0d33d0729898e1049dd0";
-      sha256 = "sha256-Xz0/siGUVz7Rnaouujj7o5ymUE5vqYYomDV6qRWvzEU=";
+      hash = "sha256-Xz0/siGUVz7Rnaouujj7o5ymUE5vqYYomDV6qRWvzEU=";
     };
     meta = {
       home = "https://github.com/serkonda7/termtable";
@@ -72,7 +72,7 @@
       owner = "jeenyuhs";
       repo = name;
       rev = "54781c306c4f3b32de7a1a2f0765eec654edcb8c";
-      sha256 = "sha256-fifvDRJrTjyClxYTcTdfpNNHUCj/9HV0jAbFEdimvJQ=";
+      hash = "sha256-fifvDRJrTjyClxYTcTdfpNNHUCj/9HV0jAbFEdimvJQ=";
     };
     meta = {
       home = "https://github.com/jeenyuhs/vesseract";
@@ -85,7 +85,7 @@
       owner = "nedpals";
       repo = name;
       rev = "ff48b08c845e324391db83082cec55e025fe9c73";
-      sha256 = "sha256-E5M8XHfgoBsIlWePMeyd3MDMuqryVJk32r+G99kU9r0=";
+      hash = "sha256-E5M8XHfgoBsIlWePMeyd3MDMuqryVJk32r+G99kU9r0=";
     };
     meta = {
       home = "https://github.com/nedpals/vex";
@@ -98,7 +98,7 @@
       owner = "Terisback";
       repo = name;
       rev = "da464bf4534a0d89e82dcd5c14df4469a14877fb";
-      sha256 = "sha256-oDZDkQ9oY34Erig/ReiFUB5rsA/T/hMfcyDPD5lUkfU=";
+      hash = "sha256-oDZDkQ9oY34Erig/ReiFUB5rsA/T/hMfcyDPD5lUkfU=";
     };
     meta = {
       home = "https://github.com/nedpals/discord.v";
@@ -111,7 +111,7 @@
       owner = "Delta456";
       repo = name;
       rev = "76de43cb6a554900ff7517d6d946aa187936a398";
-      sha256 = "sha256-wKfn2Q1bhx7Yyvd7Dd0rD4q9bMnJZpjd38vtj2OlwEQ=";
+      hash = "sha256-wKfn2Q1bhx7Yyvd7Dd0rD4q9bMnJZpjd38vtj2OlwEQ=";
     };
     meta = {
       home = "https://github.com/Delta456/range";
@@ -124,7 +124,7 @@
       owner = "Delta456";
       repo = name;
       rev = "0cc424a5ab88867ebcc3676758bc8f676d07e745";
-      sha256 = "sha256-tLqMr3M5B7r5vYaSZjFG+OJkyqp+UQ7S0mbqLBWZKFA=";
+      hash = "sha256-tLqMr3M5B7r5vYaSZjFG+OJkyqp+UQ7S0mbqLBWZKFA=";
     };
     meta = {
       home = "https://github.com/Delta456/random";
@@ -137,7 +137,7 @@
       owner = "ChAoSUnItY";
       repo = name;
       rev = "62b413b250739f0e1a6483a19c338debdec0376c";
-      sha256 = "sha256-qfHvXUSM09BiRHqfYs1fMvISHArJkgORdC8+TI6R+DA=";
+      hash = "sha256-qfHvXUSM09BiRHqfYs1fMvISHArJkgORdC8+TI6R+DA=";
     };
     meta = {
       home = "https://github.com/ChAoSUnItY/vaker";
@@ -150,7 +150,7 @@
       owner = "zztkm";
       repo = name;
       rev = "ea0908614cd9ec9a06cc086cad3b6084cca8fe4b";
-      sha256 = "sha256-E7+3wTfFPYMxeNWLZ6+ByRJIXlQQwlc0nBUV6u98arc=";
+      hash = "sha256-E7+3wTfFPYMxeNWLZ6+ByRJIXlQQwlc0nBUV6u98arc=";
     };
     meta = {
       home = "https://github.com/zztkm/vdotenv";
@@ -163,7 +163,7 @@
       owner = "jdonnerstag";
       repo = name;
       rev = "ad2fb4ea8be0b62766c1767937f039470c071976";
-      sha256 = "sha256-+YtVuxJkYvNaU/mN5RnESC/yMu/qIvGdXnDM5xryjVg=";
+      hash = "sha256-+YtVuxJkYvNaU/mN5RnESC/yMu/qIvGdXnDM5xryjVg=";
     };
     meta = {
       home = "https://github.com/jdonnerstag/vlang-yaml";
