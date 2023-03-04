@@ -20,6 +20,7 @@ rec {
         gandi = { name = "github.com/caddy-dns/gandi"; version = "v1.0.2"; };
         hetzner = { name = "github.com/caddy-dns/hetzner"; version = "v0.0.1"; };
         route53 = { name = "github.com/caddy-dns/route53"; version = "v1.2.1"; };
+        tencentcloud = { name = "github.com/caddy-dns/tencentcloud"; version = "v0.1.0"; };
         vultr = { name = "github.com/caddy-dns/vultr"; version = "733392841379526fd314012909963c3c6406687a"; };
 
         # s3 stuff
