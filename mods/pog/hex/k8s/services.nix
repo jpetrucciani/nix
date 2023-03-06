@@ -128,6 +128,7 @@ let
       , hpaSuffix ? "-hpa${suffix}"
       , serviceSuffix ? "-service${suffix}"
       , ingressSuffix ? "-ingress${suffix}"
+      , tsSuffix ? "-ts${suffix}"
       , pre1_18 ? false
       , host ? null
       , extraServiceAnnotations ? { }
@@ -138,6 +139,9 @@ let
       , softAntiAffinity ? false
       , hardAntiAffinity ? false
       , disableHttp ? true
+      , tailscaleSidecar ? false
+      , tailscale_image_base ? hex.k8s.tailscale.defaults.tailscale_image_base
+      , tailscale_image_tag ? hex.k8s.tailscale.defaults.tailscale_image_tag
       , appArmor ? "unconfined"
       , extraDep ? { }
       , extraSA ? { }
@@ -161,6 +165,25 @@ let
         rb = (components.role-binding {
           inherit name namespace rbSuffix saSuffix;
         }) // extraRB;
+        ts_r = hex.k8s.tailscale.role "${name}${tsSuffix}";
+        ts_rb = {
+          apiVersion = "rbac.authorization.k8s.io/v1";
+          kind = "RoleBinding";
+          metadata = {
+            name = "tailscale";
+          };
+          roleRef = {
+            apiGroup = "rbac.authorization.k8s.io";
+            kind = "Role";
+            name = "${name}${tsSuffix}";
+          };
+          subjects = [
+            {
+              kind = "ServiceAccount";
+              name = "${name}${saSuffix}";
+            }
+          ];
+        };
         np = (components.network-policy {
           inherit name namespace labels npSuffix;
           egress = egressPolicy;
@@ -169,7 +192,7 @@ let
         dep = (components.deployment {
           inherit name namespace labels image replicas revisionHistoryLimit maxSurge maxUnavailable depSuffix saSuffix daemonSet lifecycle imagePullSecrets affinity;
           inherit cpuRequest memoryRequest cpuLimit memoryLimit command args volumes subdomain nodeSelector livenessProbe readinessProbe securityContext pre1_18;
-          inherit env envAttrs envFrom extraPodAnnotations appArmor;
+          inherit env envAttrs envFrom extraPodAnnotations appArmor tailscaleSidecar tailscale_image_base tailscale_image_tag tsSuffix;
         }) // extraDep;
         hpa = (components.hpa { inherit name namespace labels min max cpuUtilization hpaSuffix; }) // extraHPA;
         svc =
@@ -183,6 +206,8 @@ let
         ${if serviceAccountToken then "---\n${toYAML sa-token}" else ""}
         ${if serviceAccount then "---\n${toYAML sa}" else ""}
         ${if roleBinding then "---\n${toYAML rb}" else ""}
+        ${if tailscaleSidecar then "---\n${toYAML ts_r}" else ""}
+        ${if tailscaleSidecar then "---\n${toYAML ts_rb}" else ""}
         ---
         ${toYAML dep}
         ${if service then "---\n${toYAML svc}" else ""}
@@ -403,6 +428,7 @@ let
         , namespace ? "default"
         , depSuffix ? ""
         , saSuffix ? "-sa"
+        , tsSuffix ? "-ts"
         , command ? null
         , args ? null
         , env ? [ ]
@@ -421,6 +447,9 @@ let
         , affinity ? { }
         , extraPodAnnotations ? { }
         , appArmor ? "unconfined"
+        , tailscaleSidecar ? false
+        , tailscale_image_base ? hex.k8s.tailscale.defaults.tailscale_image_base
+        , tailscale_image_tag ? hex.k8s.tailscale.defaults.tailscale_image_tag
         }:
         let
           depName = "${name}${depSuffix}";
@@ -483,7 +512,16 @@ let
                     };
                     ${ifNotEmptyList volumes "volumeMounts"} = map volumeMountDef volumes;
                   }
-                ];
+                ] ++ (if tailscaleSidecar then [{
+                  name = "ts";
+                  image = "${tailscale_image_base}:${tailscale_image_tag}";
+                  env = hex.envAttrToNVP {
+                    TS_KUBE_SECRET = "${name}${tsSuffix}";
+                    TS_USERSPACE = false;
+                    TS_EXTRA_ARGS = "--advertise-tags=k8s,proxy";
+                  };
+                  securityContext.capabilities.add = [ "NET_ADMIN" ];
+                }] else [ ]);
                 serviceAccountName = "${name}${saSuffix}";
                 ${ifNotEmptyList volumes "volumes"} = map volumeDef volumes;
               };

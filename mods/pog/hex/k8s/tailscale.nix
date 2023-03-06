@@ -21,7 +21,6 @@ let
     cloudsql_image_tag = "1.33.2";
 
     tags = [ "k8s" "proxy" ];
-
     cidr = "100.64.0.0/10";
   };
 
@@ -53,6 +52,11 @@ let
         annotations = { } // hex.annotations;
       };
       rules = [
+        {
+          apiGroups = [ "" ];
+          resources = [ "secrets" ];
+          verbs = [ "create" ];
+        }
         {
           apiGroups = [ "" ];
           resources = [ "secrets" ];
