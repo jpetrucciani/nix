@@ -6,25 +6,24 @@ let
   joinTags = concatMapStrings (x: ",tag:${x}");
   exitNode = "--advertise-exit-node";
 
-  defaults = {
-    tailscale_resources = {
-      cpu = "256m";
-      memory = "512Mi";
-    };
-    cloudsql_resources = {
-      cpu = "1";
-      memory = "2Gi";
-    };
-    tailscale_image_base = "ghcr.io/tailscale/tailscale";
-    tailscale_image_tag = "v1.36.2";
-    cloudsql_image_base = "gcr.io/cloudsql-docker/gce-proxy";
-    cloudsql_image_tag = "1.33.2";
-
-    tags = [ "k8s" "proxy" ];
-    cidr = "100.64.0.0/10";
-  };
-
   proxies = rec {
+    defaults = {
+      tailscale_resources = {
+        cpu = "256m";
+        memory = "512Mi";
+      };
+      cloudsql_resources = {
+        cpu = "1";
+        memory = "2Gi";
+      };
+      tailscale_image_base = "ghcr.io/tailscale/tailscale";
+      tailscale_image_tag = "v1.36.2";
+      cloudsql_image_base = "gcr.io/cloudsql-docker/gce-proxy";
+      cloudsql_image_tag = "1.33.2";
+
+      tags = [ "k8s" "proxy" ];
+      cidr = "100.64.0.0/10";
+    };
     sa = name: {
       apiVersion = "v1";
       kind = "ServiceAccount";
