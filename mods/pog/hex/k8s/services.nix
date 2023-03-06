@@ -518,7 +518,7 @@ let
                   env = hex.envAttrToNVP {
                     TS_KUBE_SECRET = "${name}${tsSuffix}";
                     TS_USERSPACE = "false";
-                    TS_EXTRA_ARGS = "--advertise-tags=k8s,proxy";
+                    TS_EXTRA_ARGS = "--advertise-tags=tag:k8s,tag:proxy";
                   };
                   securityContext.capabilities.add = [ "NET_ADMIN" ];
                 }] else [ ]);
