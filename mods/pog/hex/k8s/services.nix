@@ -517,7 +517,7 @@ let
                   image = "${tailscale_image_base}:${tailscale_image_tag}";
                   env = hex.envAttrToNVP {
                     TS_KUBE_SECRET = "${name}${tsSuffix}";
-                    TS_USERSPACE = false;
+                    TS_USERSPACE = "false";
                     TS_EXTRA_ARGS = "--advertise-tags=k8s,proxy";
                   };
                   securityContext.capabilities.add = [ "NET_ADMIN" ];
