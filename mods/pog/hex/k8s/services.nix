@@ -142,6 +142,7 @@ let
       , tailscaleSidecar ? false
       , tailscale_image_base ? hex.k8s.tailscale.defaults.tailscale_image_base
       , tailscale_image_tag ? hex.k8s.tailscale.defaults.tailscale_image_tag
+      , hostAliases ? [ ]
       , appArmor ? "unconfined"
       , extraDep ? { }
       , extraSA ? { }
@@ -192,7 +193,7 @@ let
         dep = (components.deployment {
           inherit name namespace labels image replicas revisionHistoryLimit maxSurge maxUnavailable depSuffix saSuffix daemonSet lifecycle imagePullSecrets affinity;
           inherit cpuRequest memoryRequest cpuLimit memoryLimit command args volumes subdomain nodeSelector livenessProbe readinessProbe securityContext pre1_18;
-          inherit env envAttrs envFrom extraPodAnnotations appArmor tailscaleSidecar tailscale_image_base tailscale_image_tag tsSuffix;
+          inherit env envAttrs envFrom extraPodAnnotations appArmor tailscaleSidecar tailscale_image_base tailscale_image_tag tsSuffix hostAliases;
         }) // extraDep;
         hpa = (components.hpa { inherit name namespace labels min max cpuUtilization hpaSuffix; }) // extraHPA;
         svc =
@@ -450,6 +451,7 @@ let
         , tailscaleSidecar ? false
         , tailscale_image_base ? hex.k8s.tailscale.defaults.tailscale_image_base
         , tailscale_image_tag ? hex.k8s.tailscale.defaults.tailscale_image_tag
+        , hostAliases ? [ ]
         }:
         let
           depName = "${name}${depSuffix}";
@@ -524,6 +526,7 @@ let
                 }] else [ ]);
                 serviceAccountName = "${name}${saSuffix}";
                 ${ifNotEmptyList volumes "volumes"} = map volumeDef volumes;
+                ${ifNotEmptyList hostAliases "hostAliases"} = hostAliases;
               };
             };
           };
