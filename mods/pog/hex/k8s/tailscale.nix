@@ -1,6 +1,6 @@
 { hex, pkgs }:
 let
-  inherit (hex) toYAML boolToString concatMapStrings removePrefix ifNotNull;
+  inherit (hex) toYAML boolToString concatMapStrings removePrefix ifNotNull ifNotEmptyList;
 
   imagePullPolicy = "Always";
   joinTags = concatMapStrings (x: ",tag:${x}");
@@ -119,6 +119,7 @@ let
         , exit_node ? false
         , subnet_router_cidr ? null
         , bind_local ? false
+        , hostAliases ? [ ]
         }: ''
           ---
           ${toYAML (sa name)}
@@ -131,7 +132,7 @@ let
           ---
           ${toYAML (network-policy {inherit name cidr;})}
           ---
-          ${toYAML (deployment {inherit name destination_ip tailscale_image all_tags cpu memory userspace exit_node subnet_router_cidr bind_local;})}
+          ${toYAML (deployment {inherit name destination_ip tailscale_image all_tags cpu memory userspace exit_node subnet_router_cidr bind_local hostAliases;})}
         '';
       deployment =
         { name
@@ -144,6 +145,7 @@ let
         , exit_node
         , subnet_router_cidr
         , bind_local
+        , hostAliases
         }:
         let
           exit_node_flag = if exit_node then " ${exitNode}" else "";
@@ -214,6 +216,7 @@ let
                     ];
                   }
                 ];
+                ${ifNotEmptyList hostAliases "hostAliases"} = hostAliases;
               };
             };
           };
@@ -244,6 +247,7 @@ let
         , tailscale_memory ? defaults.tailscale_resources.memory
         , userspace ? false
         , exit_node ? false
+        , hostAliases ? [ ]
         }: ''
           ---
           ${toYAML (sa name)}
@@ -256,7 +260,7 @@ let
           ---
           ${toYAML (network-policy {inherit name cidr;})}
           ---
-          ${toYAML (deployment {inherit name tailscale_image cloudsql_image memory cpu gcp_project gcp_region cloudsql_instance secret_name port all_tags tailscale_cpu tailscale_memory userspace exit_node;})}
+          ${toYAML (deployment {inherit name tailscale_image cloudsql_image memory cpu gcp_project gcp_region cloudsql_instance secret_name port all_tags tailscale_cpu tailscale_memory userspace exit_node hostAliases;})}
         '';
       deployment =
         { name
@@ -274,6 +278,7 @@ let
         , tailscale_memory
         , userspace
         , exit_node
+        , hostAliases
         }:
         let
           exit_node_flag = if exit_node then " ${exitNode}" else "";
@@ -342,6 +347,7 @@ let
                     securityContext.capabilities.add = [ "NET_ADMIN" ];
                   }
                 ];
+                ${ifNotEmptyList hostAliases "hostAliases"} = hostAliases;
               };
             };
           };

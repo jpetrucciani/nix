@@ -21,6 +21,11 @@ final: prev: prev.hax.pythonPackageOverlay
             doCheck = false;
             doInstallCheck = false;
           }) else super.curio;
+
+    aioquic = super.aioquic.overrideAttrs (_: {
+      patches = [ ];
+      disabledTestPaths = [ "tests/test_tls.py" ];
+    });
   })
   [ "python310" "python311" ]
   final

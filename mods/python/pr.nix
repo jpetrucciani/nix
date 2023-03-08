@@ -201,7 +201,7 @@ final: prev: prev.hax.pythonPackageOverlay
 
     slack-bolt = buildPythonPackage rec {
       pname = "slack-bolt";
-      version = "1.16.2";
+      version = "1.16.3";
       format = "setuptools";
 
       disabled = pythonOlder "3.7";
@@ -209,7 +209,7 @@ final: prev: prev.hax.pythonPackageOverlay
         owner = "slackapi";
         repo = "bolt-python";
         rev = "v${version}";
-        hash = "sha256-HV2AUC3Q8MUyq3bwHIeeYLnMisXY5cFFPCHC7YYwODw=";
+        hash = "sha256-Lt1heTXrg7K3huznara9ukjxUHAZ0LgcfmMqQMQjMIw=";
       };
 
       propagatedBuildInputs = [ slack-sdk ];
