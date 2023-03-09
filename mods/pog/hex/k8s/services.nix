@@ -151,6 +151,7 @@ let
       , extraHPA ? { }
       , extraSvc ? { }
       , extraIng ? { }
+      , __init ? false
       }:
       let
         affinity =
@@ -193,7 +194,7 @@ let
         dep = (components.deployment {
           inherit name namespace labels image replicas revisionHistoryLimit maxSurge maxUnavailable depSuffix saSuffix daemonSet lifecycle imagePullSecrets affinity;
           inherit cpuRequest memoryRequest cpuLimit memoryLimit command args volumes subdomain nodeSelector livenessProbe readinessProbe securityContext pre1_18;
-          inherit env envAttrs envFrom extraPodAnnotations appArmor tailscaleSidecar tailscale_image_base tailscale_image_tag tsSuffix hostAliases;
+          inherit env envAttrs envFrom extraPodAnnotations appArmor tailscaleSidecar tailscale_image_base tailscale_image_tag tsSuffix hostAliases __init;
         }) // extraDep;
         hpa = (components.hpa { inherit name namespace labels min max cpuUtilization hpaSuffix; }) // extraHPA;
         svc =
@@ -452,6 +453,7 @@ let
         , tailscale_image_base ? hex.k8s.tailscale.defaults.tailscale_image_base
         , tailscale_image_tag ? hex.k8s.tailscale.defaults.tailscale_image_tag
         , hostAliases ? [ ]
+        , __init ? false
         }:
         let
           depName = "${name}${depSuffix}";
@@ -494,8 +496,8 @@ let
                     inherit image name;
                     env = [ ] ++ env ++ (hex.envAttrToNVP envAttrs);
                     ${ifNotEmptyList envFrom "envFrom"} = envFrom;
-                    ${ifNotNull command "command"} = if builtins.isString command then [ command ] else command;
-                    ${ifNotNull args "args"} = args;
+                    ${ifNotNull command "command"} = if __init then [ "tail" ] else if builtins.isString command then [ command ] else command;
+                    ${ifNotNull args "args"} = if __init then [ "-f" "/dev/null" ] else args;
                     ${ifNotNull livenessProbe "livenessProbe"} = livenessProbe;
                     ${ifNotNull readinessProbe "readinessProbe"} = readinessProbe;
                     ${ifNotNull securityContext "securityContext"} = securityContext;

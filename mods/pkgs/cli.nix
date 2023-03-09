@@ -419,32 +419,6 @@ with prev;
     )
     { };
 
-  erdtree = prev.callPackage
-    ({ lib, stdenv, fetchFromGitHub, rustPlatform }:
-      let
-        pname = "erdtree";
-        version = "1.0";
-      in
-      rustPlatform.buildRustPackage rec {
-        inherit pname version;
-
-        src = fetchFromGitHub {
-          owner = "solidiquis";
-          repo = pname;
-          rev = "v${version}";
-          sha256 = "sha256-dEarwDp1ZKrv36muz7ngK56GlU30ZECSwxSJabSIi3Q=";
-        };
-
-        cargoSha256 = "sha256-ef93zQcjOrUuYJP52tYUlUENsnJdah0GLKuin0FeRWo=";
-
-        meta = with lib; {
-          description = "File-tree visualizer and disk usage analyzer";
-          license = licenses.mit;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      })
-    { };
-
   lastresort = prev.callPackage
     ({ lib, stdenv, fetchFromGitHub, rustPlatform }:
       let
