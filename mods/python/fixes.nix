@@ -26,6 +26,13 @@ final: prev: prev.hax.pythonPackageOverlay
       patches = [ ];
       disabledTestPaths = [ "tests/test_tls.py" ];
     });
+
+    slack-sdk =
+      if isDarwin then
+        super.slack-sdk.overrideAttrs
+          (old: {
+            doCheck = false;
+          }) else super.slack-sdk;
   })
   [ "python310" "python311" ]
   final
