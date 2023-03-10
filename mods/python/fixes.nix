@@ -29,8 +29,8 @@ final: prev: prev.hax.pythonPackageOverlay
 
     slack-sdk =
       if isDarwin then
-        super.slack-sdk.overrideAttrs
-          (old: {
+        super.slack-sdk.overridePythonAttrs
+          (_: {
             doCheck = false;
           }) else super.slack-sdk;
   })

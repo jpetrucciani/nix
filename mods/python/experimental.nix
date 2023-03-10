@@ -257,7 +257,7 @@ final: prev: prev.hax.pythonPackageOverlay
         h11
         h2
         pendulum
-        (pydal.overridePythonAttrs (_: rec {
+        (pydal.overridePythonAttrs (_: {
           version = "17.3";
           src = pkgs.fetchFromGitHub {
             owner = "web2py";
