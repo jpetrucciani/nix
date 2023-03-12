@@ -400,6 +400,98 @@ final: prev: prev.hax.pythonPackageOverlay
       };
     };
 
+    icon-font-to-png = buildPythonPackage rec {
+      pname = "icon-font-to-png";
+      version = "0.4.1";
+
+      format = "setuptools";
+      src = pkgs.fetchFromGitHub {
+        owner = "Pythonity";
+        repo = pname;
+        rev = "v${version}";
+        hash = "sha256-6BK9LtI9Kr/rdQQidUtk4YCW5rZfvFzbDF4hkjoQYW8=";
+      };
+
+      propagatedBuildInputs = [
+        pillow
+        requests
+        six
+        tinycss
+      ];
+
+      meta = with lib; {
+        description = "Python script (and library) for exporting icons from icon fonts (e.g. Font Awesome, Octicons) as PNG images";
+        homepage = "https://github.com/Pythonity/icon-font-to-png";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
+    stylecloud = buildPythonPackage rec {
+      pname = "stylecloud";
+      version = "0.5.2";
+
+      format = "setuptools";
+      src = pkgs.fetchFromGitHub {
+        owner = "minimaxir";
+        repo = pname;
+        rev = "v${version}";
+        hash = "sha256-WZRzT254JWhhaKYuiq9KMmTo1m5ywK0TzmaVJVeCt2k=";
+      };
+
+      propagatedBuildInputs = [
+        wordcloud
+        icon-font-to-png
+        palettable
+        fire
+        matplotlib
+      ];
+
+      meta = with lib; {
+        description = "CLI to generate stylistic wordclouds, including gradients and icon shapes";
+        homepage = "https://github.com/minimaxir/stylecloud";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
+    icon-image = buildPythonPackage rec {
+      pname = "icon-image";
+      version = "0.0.0";
+
+      format = "setuptools";
+      src = pkgs.fetchFromGitHub {
+        owner = "minimaxir";
+        repo = pname;
+        rev = "5ceceb8fa66e56a59ed7a833cd585df21869e3b9";
+        hash = "sha256-Vq9oBdruldS4wURU1XbmfwXsjnVO/L1zRDhPU11OqsE=";
+      };
+
+      propagatedBuildInputs = [
+        pillow
+        numpy
+        icon-font-to-png
+        fire
+      ];
+
+      preBuild = ''
+        cat >./setup.py << EOF
+        from setuptools import setup
+        setup(
+          name="icon-image",
+          entry_points={"console_scripts": ["icon-image=icon_image:cli"]}
+        )
+        EOF
+      '';
+
+      meta = with lib; {
+        description = "quickly generate a Font Awesome icon imposed on a background for steering AI image generation";
+        homepage = "https://github.com/minimaxir/icon-image";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
   })
   [ "python310" "python311" ]
   final
