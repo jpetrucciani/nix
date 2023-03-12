@@ -50,7 +50,7 @@ rec {
         fi
         golang=""
         if [ "$with_golang" = "1" ]; then
-          golang="go = [go_1_19${"\n"}go-tools gopls];"
+          golang="go = [go_1_20${"\n"}go-tools gopls];"
         fi
         nim=""
         if [ "$with_nim" = "1" ]; then
@@ -72,7 +72,7 @@ rec {
         fi
         py=""
         if [ "$with_python" = "1" ]; then
-          py="python = [(python310.withPackages ( p: with p; [${"\n"}requests]))];"
+          py="python = [(python311.withPackages ( p: with p; [${"\n"}requests]))];"
         fi
         ruby=""
         if [ "$with_ruby" = "1" ]; then
