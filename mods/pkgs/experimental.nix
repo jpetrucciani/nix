@@ -37,10 +37,16 @@ in
         rev = "09e90680072d8ecdf02eaf21c393218385d2c616";
         sha256 = "sha256-mzRw9kUW6BtmK8AHoliD2/QEOeM+uiWhNll+xq3/eEc=";
       };
+      postBuild = ''
+        make stream
+      '';
       installPhase = ''
         mkdir -p $out/bin
         mv ./main $out/bin/whisper
+        mv ./stream $out/bin/whisper-stream
       '';
-      buildInputs = osSpecific;
+      buildInputs = with pkgs; [
+        SDL2
+      ] ++ osSpecific;
     };
 }
