@@ -470,4 +470,43 @@ with prev;
     )
     { };
 
+  buffalo = prev.callPackage
+    ({ lib, buildGo120Module, fetchFromGitHub }:
+      buildGo120Module rec {
+        pname = "buffalo";
+        version = "0.18.14";
+
+        src = fetchFromGitHub {
+          owner = "gobuffalo";
+          repo = "cli";
+          rev = "v${version}";
+          sha256 = "sha256-HNJE5TZgfStuX5fyZGAsiOBmE80Fv1uH2DUiBQ+2Geo=";
+        };
+
+        ldflags = [
+          "-s"
+          "-w"
+        ];
+
+        vendorHash = "sha256-7AZ78upxTn3wqsHlbyyhQfYqIcW/Op5sLUgqv4AkG9Y=";
+
+        nativeBuildInputs = [ installShellFiles ];
+
+        postInstall = ''
+          installShellCompletion --cmd buffalo \
+            --bash <($out/bin/buffalo completion bash) \
+            --fish <($out/bin/buffalo completion fish) \
+            --zsh  <($out/bin/buffalo completion zsh)
+        '';
+
+        meta = with lib; {
+          description = "";
+          homepage = "https://github.com/gobuffalo/cli";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
 }
