@@ -758,7 +758,7 @@ with pkgs.hax; {
         # Delete the remote version of the current branch
         unpublish = "!git push origin :$(git branch-name)";
         # Push current branch
-        put = gs ''git push --set-upstream origin $(git branch-name) "$@"'';
+        put = gs ''git push "$@"'';
         # Pull without merging
         get = "!git pull origin $(git branch-name) --ff-only";
         # update a branch without checkout
@@ -798,6 +798,9 @@ with pkgs.hax; {
           side-by-side = true;
           line-numbers-left-format = "";
           line-numbers-right-format = "│ ";
+        };
+        push = {
+          autoSetupRemote = true;
         };
       };
       ${attrIf (!isNixOS) "signing"} = {

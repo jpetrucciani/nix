@@ -1,6 +1,6 @@
 final: prev: prev.hax.pythonPackageOverlay
   (self: super: with super; rec {
-    pynecone-io =
+    pynecone =
       let
         sqlalchemy2-stubs = buildPythonPackage rec {
           pname = "sqlalchemy2-stubs";
@@ -68,28 +68,32 @@ final: prev: prev.hax.pythonPackageOverlay
       in
       buildPythonPackage rec {
         pname = "pynecone";
-        version = "0.1.13";
+        version = "0.1.20";
         format = "pyproject";
 
 
         src = pkgs.fetchFromGitHub {
           owner = "pynecone-io";
-          repo = "pynecone";
+          repo = pname;
           rev = "v${version}";
-          sha256 = "sha256-ND2igjfZPsEsmgYE7lUZugPXVMDDpKEzhm9WWIGbD8k=";
+          sha256 = "sha256-I3+4p20shdqWSEmxTj7iN1zoKsxRG3x8HbhUkg2avV0=";
         };
 
         propagatedBuildInputs = [
           pkgs.nodejs-18_x
+          cloudpickle
           fastapi
           gunicorn
           httpx
           plotly
           poetry-core
+          psutil
           pydantic
+          python-socketio
           redis
           rich
           uvicorn
+          watchdog
           websockets
           # special
           sqlmodel
@@ -104,6 +108,7 @@ final: prev: prev.hax.pythonPackageOverlay
             ${sed} 's#BUN_PATH =.*#BUN_PATH = "${pkgs.bun}/bin/bun"#g' ./pynecone/constants.py
             ${sed} 's#(rich = )"\^12.6.0"#\1"\^13.0.0"#g' ./pyproject.toml
             ${sed} 's#(pydantic = )"1.10.2"#\1"1.10.4"#g' ./pyproject.toml
+            ${sed} 's#(watchdog = )"\^2.3.1"#\1"\^2.2.1"#g' ./pyproject.toml
           '';
 
         pythonImportsCheck = [
