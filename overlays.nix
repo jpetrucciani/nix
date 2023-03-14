@@ -11,6 +11,7 @@
 
   # python sub-overlays
   (import ./mods/python/experimental.nix)
+  (import ./mods/python/fastapi.nix)
   (import ./mods/python/fixes.nix)
   (import ./mods/python/hax.nix)
   (import ./mods/python/misc.nix)
