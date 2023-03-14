@@ -164,11 +164,31 @@ rec {
       ${awscli2}/bin/aws --endpoint-url="https://$region" --profile "$profile" "$@"
     '';
   };
+
+  awslocal = pog {
+    name = "awslocal";
+    description = "a wrapper for awscli to interact with localstack";
+    flags = [
+      {
+        name = "endpoint";
+        description = "the aws endpoint to use";
+        default = "http://localhost:9000";
+      }
+    ];
+    script = ''
+      export AWS_ACCESS_KEY_ID="test"
+      export AWS_SECRET_ACCESS_KEY="test"
+      export AWS_DEFAULT_REGION="us-east-1"
+      ${awscli2}/bin/aws --endpoint-url="$endpoint" "$@"
+    '';
+  };
+
   aws_pog_scripts = [
     aws_id
     ecr_login
     ecr_login_public
     ec2_spot_interrupt
     wasabi
+    awslocal
   ];
 }

@@ -75,4 +75,69 @@ with prev;
       }
     )
     { };
+
+  gofakes3 = prev.callPackage
+    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+      buildGo120Module rec {
+        pname = "gofakes3";
+        version = "0.0.0";
+
+        src = fetchFromGitHub {
+          owner = "johannesboyne";
+          repo = pname;
+          rev = "c0edf658332badad9eb3a69f44dbdcbfec487a68";
+          sha256 = "sha256-aToCIEkjfoQzG5+RyiLCK5IyEYyj3rJ9OoSm8lRMiVc=";
+        };
+
+        ldflags = [
+          "-s"
+          "-w"
+        ];
+
+        vendorHash = "sha256-5Q2X0Wl/ltpP5SFr9TUbirISNL7IAyaDUkcESwqss/g=";
+
+        meta = with lib; {
+          description = "A simple fake AWS S3 object storage (used for local test-runs against AWS S3 APIs)";
+          homepage = "https://github.com/johannesboyne/gofakes3";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
+  goaws = prev.callPackage
+    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+      buildGo120Module rec {
+        pname = "goaws";
+        version = "0.4.1";
+
+        src = fetchFromGitHub {
+          owner = "Admiral-Piett";
+          repo = pname;
+          rev = "v${version}";
+          sha256 = "sha256-f0iEz/V/bnTxuXDo7X6yxQCBAhRyAEFzQoTC9ZB/9pM=";
+        };
+
+        vendorHash = "sha256-VqRRCQKtqhRtxG8uJrf332vXr1Lo0ivu8UNWf6y/K2s=";
+
+        ldflags = [
+          "-s"
+          "-w"
+        ];
+
+        postInstall = ''
+          mv $out/bin/cmd $out/bin/goaws
+        '';
+
+        meta = with lib; {
+          description = "AWS (SQS/SNS) Clone for Development testing";
+          homepage = "https://github.com/Admiral-Piett/goaws";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      }
+    )
+    { };
+
 }

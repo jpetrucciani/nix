@@ -10,6 +10,10 @@ This directory provides my composable python package overlays! These are set up 
 
 This overlay contains weird and possibly broken python packaging experiments
 
+### [fastapi.nix](./fastapi.nix)
+
+This overlay contains packages related to [fastapi](https://fastapi.tiangolo.com/)
+
 ### [fixes.nix](./fixes.nix)
 
 This overlay contains fixes for current python packages in nixpkgs that may be broken
@@ -17,6 +21,10 @@ This overlay contains fixes for current python packages in nixpkgs that may be b
 ### [hax.nix](./hax.nix)
 
 This overlay contains interesting hax related to python packages
+
+### [localstack.nix](./localstack.nix)
+
+This overlay contains pacakges related to [localstack](https://github.com/localstack/localstack)
 
 ### [misc.nix](./misc.nix)
 

@@ -14,6 +14,7 @@
   (import ./mods/python/fastapi.nix)
   (import ./mods/python/fixes.nix)
   (import ./mods/python/hax.nix)
+  (import ./mods/python/localstack.nix)
   (import ./mods/python/misc.nix)
   (import ./mods/python/pr.nix)
   (import ./mods/python/types.nix)

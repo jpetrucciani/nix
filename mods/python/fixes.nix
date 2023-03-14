@@ -33,6 +33,7 @@ final: prev: prev.hax.pythonPackageOverlay
           (_: {
             doCheck = false;
           }) else super.slack-sdk;
+
   })
   [ "python310" "python311" ]
   final
