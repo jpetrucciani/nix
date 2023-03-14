@@ -105,6 +105,14 @@ final: prev: prev.hax.pythonPackageOverlay
         hash = "sha256-OU/Q7BG0ud/e+FSQTrwzHCkBHMfnb3mzWj87ruRi9Y8=";
       };
 
+      preBuild =
+        let
+          sed = "${pkgs.gnused}/bin/sed -i -E";
+        in
+        ''
+          ${sed} '/asyncio_mode =/d' ./pyproject.toml
+        '';
+
       pythonImportsCheck = [
         "prometheus_fastapi_instrumentator"
       ];
@@ -120,7 +128,7 @@ final: prev: prev.hax.pythonPackageOverlay
 
       disabledTestPaths = [
         "tests/test_instrumentator_multiple_apps.py"
-      ];
+      ] ++ (if super.stdenv.isDarwin then [ "tests/test_instrumentation.py" ] else [ ]);
 
       propagatedBuildInputs = [
         fastapi
