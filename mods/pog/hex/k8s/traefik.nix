@@ -150,6 +150,20 @@ let
         };
       } // extraSpec;
       _ = {
+        add_prefix = { prefix, name ? "add-prefix", extraSpec ? { } }: build {
+          inherit name extraSpec;
+          spec = {
+            addPrefix = {
+              inherit prefix;
+            };
+          };
+        };
+        compress = { name ? "compress", extraSpec ? { } }: build {
+          inherit name extraSpec;
+          spec = {
+            compress = { };
+          };
+        };
         default_index = { name ? "default-index", extraSpec ? { } }: build {
           inherit name extraSpec;
           spec = {
@@ -159,12 +173,10 @@ let
             };
           };
         };
-        add_prefix = { prefix, name ? "add-prefix", extraSpec ? { } }: build {
+        ip_whitelist = { ips, name ? "ip-whitelist", extraSpec ? { } }: build {
           inherit name extraSpec;
           spec = {
-            addPrefix = {
-              inherit prefix;
-            };
+            ipWhiteList.sourceRange = ips;
           };
         };
         strip_prefix = { prefixes, name ? "strip-prefix", extraSpec ? { } }: build {
