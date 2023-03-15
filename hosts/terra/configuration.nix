@@ -74,6 +74,7 @@ in
         reverse_proxy = location: {
           extraConfig = ''
             import GEOBLOCK
+            import SECURITY
             reverse_proxy /* {
               to ${location}
             }
@@ -134,6 +135,19 @@ in
             }
             respond @ba3geoblock 403
           }
+
+          (SECURITY) {
+            encode zstd gzip
+            header {
+              -Server
+              Strict-Transport-Security "max-age=31536000; include-subdomains;"
+              X-XSS-Protection "1; mode=block"
+              X-Frame-Options "DENY"
+              X-Content-Type-Options nosniff
+              Referrer-Policy  no-referrer-when-downgrade
+              X-Robots-Tag "none"
+            }
+          }
         '';
         virtualHosts = {
           "api.cobi.dev" = reverse_proxy "localhost:10000";
@@ -149,6 +163,7 @@ in
           "vault.cobi.dev" = {
             extraConfig = ''
               import GEOBLOCK
+              import SECURITY
               reverse_proxy /* {
                 to localhost:8222
               }
@@ -159,6 +174,7 @@ in
           };
           "cobi.dev" = {
             extraConfig = ''
+              import SECURITY
               route /static/* {
                 s3proxy {
                   bucket "jacobi-static"
@@ -173,6 +189,7 @@ in
           };
           "nix.cobi.dev" = {
             extraConfig = ''
+              import SECURITY
               route / {
                 redir https://github.com/jpetrucciani/nix
               }
@@ -199,6 +216,7 @@ in
           };
           "gemologic.dev" = {
             extraConfig = ''
+              import SECURITY
               route / {
                 header +Content-Type "text/html; charset=utf-8"
                 respond "${landing_page {}}"
@@ -207,6 +225,7 @@ in
           };
           "gemologic.cloud" = {
             extraConfig = ''
+              import SECURITY
               route / {
                 header +Content-Type "text/html; charset=utf-8"
                 respond "${landing_page {}}"
@@ -215,6 +234,7 @@ in
           };
           "broadsword.tech" = {
             extraConfig = ''
+              import SECURITY
               route / {
                 header +Content-Type "text/html; charset=utf-8"
                 respond "${landing_page {title = "broadsword";}}"
@@ -224,6 +244,7 @@ in
           "vault.ba3digital.com" = {
             extraConfig = ''
               import BA3GEOBLOCK
+              import SECURITY
               reverse_proxy /* {
                 to ${ip.ba3}:8222
               }
