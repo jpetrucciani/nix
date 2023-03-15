@@ -654,7 +654,10 @@ with pkgs.hax; {
             "terraform.languageServer.path": "${nix-bin}/terraform-ls",
             "zircon.shell": "${nix-bin}/bash",
             "shellformat.path": "${nix-bin}/shfmt",
-            "terminal.integrated.allowChords": false
+            "terminal.integrated.allowChords": false,
+            "files.exclude": {
+              "**/.terraform": true
+            }
           }
         '';
     };

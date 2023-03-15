@@ -1,5 +1,5 @@
 name: check for kwb updates
-on: {workflow_dispatch, schedule: [cron: '0 2 * * *']}
+on: {workflow_dispatch}
 jobs:
   kwb:
     uses: jpetrucciani/nix/.github/workflows/check_update.yml@main
