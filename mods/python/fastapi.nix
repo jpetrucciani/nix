@@ -201,6 +201,54 @@ final: prev: prev.hax.pythonPackageOverlay
       };
     };
 
+    ormar-postgres-extensions = buildPythonPackage rec {
+      pname = "ormar-postgres-extensions";
+      version = "2.3.0";
+
+      format = "setuptools";
+      src = pkgs.fetchFromGitHub {
+        owner = "tophat";
+        repo = pname;
+        rev = "v${version}";
+        hash = "sha256-s4+H8RwZbtBzZ+jLZweC1fPPkRtgEiFTXwWOrNEBClM=";
+      };
+
+      preBuild = ''
+        substituteInPlace ./setup.py --replace 'psycopg2-binary' 'psycopg2'
+      '';
+
+      pythonImportsCheck = [
+        "ormar_postgres_extensions"
+      ];
+
+      SETUPTOOLS_SCM_PRETEND_VERSION = version;
+
+      nativeBuildInputs = [
+        setuptools-scm
+      ];
+
+      nativeCheckInputs = [
+        pytestCheckHook
+        pytest-asyncio
+      ];
+
+      propagatedBuildInputs = [
+        asyncpg
+        ormar
+        psycopg2
+        pydantic
+        sqlalchemy
+      ];
+
+      doCheck = false;
+
+      meta = with lib; {
+        description = "Extensions to the Ormar ORM to support PostgreSQL specific types";
+        homepage = "https://github.com/tophat/ormar-postgres-extensions";
+        license = licenses.asl20;
+      };
+    };
+
   })
   [ "python310" "python311" ]
   final
