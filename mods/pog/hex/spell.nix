@@ -23,6 +23,7 @@ let
     nginx-ingress = import ./k8s/nginx-ingress.nix params;
     prometheus = import ./k8s/prometheus.nix params;
     rancher = import ./k8s/rancher.nix params;
+    robusta = import ./k8s/robusta.nix params;
     services = import ./k8s/services.nix params;
     signoz = import ./k8s/signoz.nix params;
     stackstorm = import ./k8s/stackstorm.nix params;

@@ -1,19 +1,18 @@
 { hex, ... }:
 let
-  infisical = rec {
+  robusta = rec {
     defaults = {
-      name = "infisical";
-      namespace = "infisical";
-      version = "0.1.13";
-      sha256 = "0gn5085zmk6zqka1vjbfyrd7xkd8mq5hzkhiy4gj7sd8qi9xkaa2";
+      name = "robusta";
+      namespace = "robusta";
+      version = "0.10.13";
+      sha256 = "000yyggbvczh2fh6kj68cpikjgx7y08g57472m2ffzkqn80v67bz";
     };
     version = rec {
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
-      latest = v0-1-13;
-      v0-1-13 = _v "0.1.13" "0gn5085zmk6zqka1vjbfyrd7xkd8mq5hzkhiy4gj7sd8qi9xkaa2";
-      v0-1-3 = _v "0.1.3" "00yjnj4s5hk2ibchsaw4qql0rccsj9rqh2s4769qq4lkhapdnrc6";
+      latest = v0-10-13;
+      v0-10-13 = _v defaults.version defaults.sha256;
     };
-    chart_url = version: "https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/infisical-${version}.tgz";
+    chart_url = version: "https://robusta-charts.storage.googleapis.com/robusta-${version}.tgz";
     chart =
       { name ? defaults.name
       , namespace ? defaults.namespace
@@ -30,4 +29,4 @@ let
       };
   };
 in
-infisical
+robusta
