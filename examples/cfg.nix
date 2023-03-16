@@ -1,8 +1,8 @@
 { jacobi ? import
     (fetchTarball {
-      name = "jpetrucciani-2023-02-11";
-      url = "https://github.com/jpetrucciani/nix/archive/6d7df8d392abd9333e0e48757702e828ee2012d7.tar.gz";
-      sha256 = "019rdq1rwh52r2gf06hhy7ldh2k0wa0sdbqmrspmn4v8g96vz98i";
+      name = "jpetrucciani-2023-03-16";
+      url = "https://github.com/jpetrucciani/nix/archive/3f4f59bbd16b1acb3df5d1a4ad17259b14ce01ac.tar.gz";
+      sha256 = "0xn7vipxz95jnsslxdfvm1d73rrsmrvf0z2bxhzjl37xa43zm03y";
     })
     { }
 }:
@@ -17,6 +17,7 @@ let
       delta
       direnv
       dyff
+      fif
       figlet
       git
       gron
@@ -43,7 +44,7 @@ let
     ];
     python = [
       ruff
-      (python310.withPackages (p: with p; [
+      (python311.withPackages (p: with p; [
         black
         mypy
         requests
