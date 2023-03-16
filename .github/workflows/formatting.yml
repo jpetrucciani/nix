@@ -4,7 +4,7 @@ jobs:
   prettier:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3.3.0
+      - uses: actions/checkout@v3.4.0
       - uses: cachix/install-nix-action@v20
         with:
           extra_nix_config: |
@@ -14,7 +14,7 @@ jobs:
   nixpkgs-fmt:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3.3.0
+      - uses: actions/checkout@v3.4.0
       - uses: cachix/install-nix-action@v20
         with:
           extra_nix_config: |
