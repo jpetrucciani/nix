@@ -6,14 +6,15 @@ let
     defaults = {
       name = "external-secrets";
       namespace = "external-secrets";
-      version = "0.7.2";
-      sha256 = "17isdcbb94kqwxg0v0mfj1ypjiqn3airghnd1bswlg609w73a8h4";
+      version = "0.8.0";
+      sha256 = "0hysn0qdcfwdq8kj0yk9sidr88ki3rmsnb5xc5rij9f5a886vadq";
       store_name = "gsm";
     };
     version = rec {
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
-      latest = v0-7-2;
-      v0-7-2 = _v defaults.version defaults.sha256;
+      latest = v0-8-0;
+      v0-8-0 = _v defaults.version defaults.sha256;
+      v0-7-2 = _v "0.7.2" "17isdcbb94kqwxg0v0mfj1ypjiqn3airghnd1bswlg609w73a8h4";
       v0-7-1 = _v "0.7.1" "0sran9s7zb4v1gw92qvcrzqzalgmnmlz1mhjh948vxqd320gdldi";
       v0-7-0 = _v "0.7.0" "1zinl1hgppjsg8yg0mbqqdxbiy30i4d2nm8m9zg843ky28cfwjpd";
       v0-6-1 = _v "0.6.1" "02kacs4wdp5q9dlpndkzj4fxi30kpl6gxfqalgq5q9y3vr3l5gwv";
