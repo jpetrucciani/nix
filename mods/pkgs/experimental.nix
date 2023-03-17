@@ -49,4 +49,28 @@ in
         SDL2
       ] ++ osSpecific;
     };
+
+
+  alpaca-cpp =
+    let
+      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Security AppKit ] else [ ];
+    in
+    clangStdenv.mkDerivation rec {
+      name = "alpaca.cpp";
+      src = fetchFromGitHub {
+        owner = "antimatter15";
+        repo = name;
+        rev = "235a4115dfe50c63a0290ffb6c70719c9a9341ee";
+        sha256 = "sha256-HQ5ybgaaJ60HTJESmQP7e0gXIaYv2beoue/Lt+yXfl0=";
+      };
+      buildPhase = ''
+        make chat
+      '';
+      installPhase = ''
+        mkdir -p $out/bin
+        cp ./chat $out/bin/chat
+        mv ./chat $out/bin/alpaca-chat
+      '';
+      buildInputs = osSpecific;
+    };
 }
