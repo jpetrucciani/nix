@@ -11,5 +11,8 @@ in
         --host 0.0.0.0 \
         --port 10000
     '';
+    environment = {
+      PLAYWRIGHT_BROWSERS_PATH = pkgs.playwright.browsers.outPath;
+    };
   };
 }
