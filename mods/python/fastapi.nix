@@ -95,14 +95,14 @@ final: prev: prev.hax.pythonPackageOverlay
 
     prometheus-fastapi-instrumentator = buildPythonPackage rec {
       pname = "prometheus-fastapi-instrumentator";
-      version = "5.11.1";
+      version = "6.0.0";
 
       format = "pyproject";
       src = pkgs.fetchFromGitHub {
         owner = "trallnag";
         repo = pname;
         rev = "v${version}";
-        hash = "sha256-OU/Q7BG0ud/e+FSQTrwzHCkBHMfnb3mzWj87ruRi9Y8=";
+        hash = "sha256-VVDsMwd/d2hnhM9ZHCkWUVkaGrw1wgLzFDF2mK24r0o=";
       };
 
       preBuild =
