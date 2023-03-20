@@ -34,6 +34,15 @@ final: prev: prev.hax.pythonPackageOverlay
             doCheck = false;
           }) else super.slack-sdk;
 
+    certbot = super.certbot.overridePythonAttrs (_: {
+      src = super.pkgs.fetchFromGitHub {
+        owner = "certbot";
+        repo = "certbot";
+        rev = "refs/tags/v2.4.0";
+        hash = "sha256-BQsdhlYABZtz5+SORiCVnWMZdMmiWGM9W1YLqObyFo8=";
+      };
+    });
+
   })
   [ "python310" "python311" ]
   final
