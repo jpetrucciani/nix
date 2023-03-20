@@ -186,6 +186,7 @@ let
             }
           ];
         };
+        ts_secret = hex.k8s.tailscale.secret "${name}${tsSuffix}";
         np = (components.network-policy {
           inherit name namespace labels npSuffix;
           egress = egressPolicy;
@@ -210,6 +211,7 @@ let
         ${if roleBinding then "---\n${toYAML rb}" else ""}
         ${if tailscaleSidecar then "---\n${toYAML ts_r}" else ""}
         ${if tailscaleSidecar then "---\n${toYAML ts_rb}" else ""}
+        ${if tailscaleSidecar then "---\n${toYAML ts_secret}" else ""}
         ---
         ${toYAML dep}
         ${if service then "---\n${toYAML svc}" else ""}
