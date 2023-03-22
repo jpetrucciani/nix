@@ -23,7 +23,7 @@ rec {
         {
           name = "python";
           description = "the version of python to use from nixpkgs";
-          default = "python310";
+          default = "python311";
         }
       ];
       arguments = [
