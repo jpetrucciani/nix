@@ -13,7 +13,7 @@ let
         "/run/opengl-drivers/lib"
         "/run/opengl-drivers-32/lib"
         "${cuda}/lib"
-        "${cudnn}/lib"
+        "${pkgs.cudaPackages.cudnn}/lib"
       ]
     }:${
       lib.makeLibraryPath [ stdenv.cc.cc.lib cuda.lib ]
@@ -34,19 +34,15 @@ in
     cudaPackages.cudatoolkit
     cudaPackages.cudnn
   ];
-  environment.variables =
-    let
-      inherit (pkgs.cudaPackages) cudnn;
-    in
-    with pkgs; {
-      NIX_HOST = hostname;
-      NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
-      _CUDA_PATH = CUDA_PATH;
-      _CUDA_LDPATH = CUDA_LDPATH;
-      XLA_FLAGS = "--xla_gpu_cuda_data_dir=${CUDA_PATH}";
-      XLA_TARGET = cudaTarget;
-      EXLA_TARGET = cudaTarget;
-    };
+  environment.variables = with pkgs; {
+    NIX_HOST = hostname;
+    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
+    _CUDA_PATH = CUDA_PATH;
+    _CUDA_LDPATH = CUDA_LDPATH;
+    XLA_FLAGS = "--xla_gpu_cuda_data_dir=${CUDA_PATH}";
+    XLA_TARGET = cudaTarget;
+    EXLA_TARGET = cudaTarget;
+  };
 
   home-manager.users.jacobi = common.jacobi;
   wsl = {
