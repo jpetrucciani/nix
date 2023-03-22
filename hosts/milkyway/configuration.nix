@@ -76,7 +76,7 @@ in
   users.users.jacobi = {
     isNormalUser = true;
     description = "jacobi";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     openssh.authorizedKeys.keys = with common.pubkeys; [
       m1max
       nix-m1max
@@ -84,6 +84,11 @@ in
   };
 
   services = { } // common.services;
+
+  virtualisation.docker = {
+    enable = true;
+    # enableNvidia = true;
+  };
 
   # nvidia? not needed for cuda memes?
   # services.xserver.videoDrivers = [ "nvidia" ];
