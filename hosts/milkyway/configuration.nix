@@ -4,6 +4,20 @@ let
   nixos-wsl = (import (fetchTarball { url = "https://github.com/nix-community/NixOS-WSL/archive/main.tar.gz"; })).outputs;
   hostname = "milkyway";
   common = import ../common.nix { inherit config pkgs; };
+  cuda = pkgs.cudaPackages.cudatoolkit;
+  cudaTarget = "cuda114";
+  CUDA_PATH = cuda.outPath;
+  CUDA_LDPATH = "${
+      lib.concatStringsSep ":" [
+        "/usr/lib/wsl/lib"
+        "/run/opengl-drivers/lib"
+        "/run/opengl-drivers-32/lib"
+        "${cuda}/lib"
+        "${cudnn}/lib"
+      ]
+    }:${
+      lib.makeLibraryPath [ stdenv.cc.cc.lib cuda.lib ]
+    }";
 in
 {
   imports = [
@@ -23,25 +37,13 @@ in
   environment.variables =
     let
       inherit (pkgs.cudaPackages) cudnn;
-      cuda = pkgs.cudaPackages.cudatoolkit;
-      cudaTarget = "cuda114";
     in
     with pkgs; {
       NIX_HOST = hostname;
       NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
-      _CUDA_PATH = cuda.outPath;
-      _CUDA_LDPATH = "${
-      lib.concatStringsSep ":" [
-        "/usr/lib/wsl/lib"
-        "/run/opengl-drivers/lib"
-        "/run/opengl-drivers-32/lib"
-        "${cuda}/lib"
-        "${cudnn}/lib"
-      ]
-    }:${
-      lib.makeLibraryPath [ stdenv.cc.cc.lib cuda.lib ]
-    }";
-      XLA_FLAGS = "--xla_gpu_cuda_data_dir=${cuda.outPath}";
+      _CUDA_PATH = CUDA_PATH;
+      _CUDA_LDPATH = CUDA_LDPATH;
+      XLA_FLAGS = "--xla_gpu_cuda_data_dir=${CUDA_PATH}";
       XLA_TARGET = cudaTarget;
       EXLA_TARGET = cudaTarget;
     };
@@ -83,15 +85,20 @@ in
     ] ++ usual;
   };
 
-  services = { } // common.services;
+  services = {
+    xserver.videoDrivers = [ "nvidia" ];
+  } // common.services;
 
   virtualisation.docker = {
     enable = true;
-    # enableNvidia = true;
+    enableNvidia = true;
   };
 
+  systemd.services.docker.Environment.CUDA_PATH = CUDA_PATH;
+  systemd.services.docker.Environment.LD_LIBRARY_PATH = CUDA_LDPATH;
+
   # nvidia? not needed for cuda memes?
-  # services.xserver.videoDrivers = [ "nvidia" ];
-  # hardware.opengl.enable = true;
-  # hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+  hardware.opengl.enable = true;
+  hardware.opengl.driSupport32Bit = true;
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
 }
