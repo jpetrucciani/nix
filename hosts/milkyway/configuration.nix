@@ -90,10 +90,8 @@ in
     enableNvidia = true;
   };
 
-  systemd.services.docker.serviceConfig.Environment = {
-    CUDA_PATH = CUDA_PATH;
-    LD_LIBRARY_PATH = CUDA_LDPATH;
-  };
+  systemd.services.docker.environment.CUDA_PATH = CUDA_PATH;
+  systemd.services.docker.environment.LD_LIBRARY_PATH = CUDA_LDPATH;
 
   # nvidia? not needed for cuda memes?
   hardware.opengl.enable = true;
