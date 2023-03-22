@@ -14,8 +14,8 @@ in
       src = fetchFromGitHub {
         owner = "ggerganov";
         repo = name;
-        rev = "b9bd1d014113b7498f04ad4d28e6021d5f4cddad";
-        sha256 = "sha256-HfEKf5K8OLnk34ob9qDjvxi0rm+EFnhQg/fDs0aivI0=";
+        rev = "da0e9fe90ccf6e73597eb19dd0cfc0a28363fb3b";
+        sha256 = "sha256-LwwAwoKug1DawfCirW6qQkyifhONH/5OfjM7p9QQ9mM=";
       };
       installPhase = ''
         mkdir -p $out/bin
@@ -60,8 +60,8 @@ in
       src = fetchFromGitHub {
         owner = "antimatter15";
         repo = name;
-        rev = "235a4115dfe50c63a0290ffb6c70719c9a9341ee";
-        sha256 = "sha256-HQ5ybgaaJ60HTJESmQP7e0gXIaYv2beoue/Lt+yXfl0=";
+        rev = "c5ae5d08a56b82c17ef8121bc01221924576ad28";
+        sha256 = "sha256-5uzrB+r0KpG4jcL6Hd3voeARXlEv+2dvltaCcql5VIc=";
       };
       buildPhase = ''
         make chat
