@@ -92,7 +92,7 @@ in
     enableNvidia = true;
   };
 
-  systemd.services.docker.environment.PATH = "${WSL_MAGIC}:$PATH";
+  systemd.services.docker.path = [ WSL_MAGIC ];
   systemd.services.docker.environment.CUDA_PATH = CUDA_PATH;
   systemd.services.docker.environment.LD_LIBRARY_PATH = CUDA_LDPATH;
 
