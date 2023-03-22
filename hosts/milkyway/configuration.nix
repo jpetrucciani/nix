@@ -16,7 +16,7 @@ let
         "${pkgs.cudaPackages.cudnn}/lib"
       ]
     }:${
-      lib.makeLibraryPath [ stdenv.cc.cc.lib cuda.lib ]
+      lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib cuda.lib ]
     }";
 in
 {
