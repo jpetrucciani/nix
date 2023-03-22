@@ -6,9 +6,11 @@ let
   common = import ../common.nix { inherit config pkgs; };
   cuda = pkgs.cudaPackages.cudatoolkit;
   cudaTarget = "cuda114";
+  WSL_MAGIC = "/usr/lib/wsl/lib";
   CUDA_PATH = cuda.outPath;
   CUDA_LDPATH = "${
       lib.concatStringsSep ":" [
+        WSL_MAGIC
         "/usr/lib/wsl/lib"
         "/run/opengl-drivers/lib"
         "/run/opengl-drivers-32/lib"
@@ -90,6 +92,7 @@ in
     enableNvidia = true;
   };
 
+  systemd.services.docker.environment.PATH = "${WSL_MAGIC}:$PATH";
   systemd.services.docker.environment.CUDA_PATH = CUDA_PATH;
   systemd.services.docker.environment.LD_LIBRARY_PATH = CUDA_LDPATH;
 
