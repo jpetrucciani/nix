@@ -11,7 +11,6 @@ let
   CUDA_LDPATH = "${
       lib.concatStringsSep ":" [
         WSL_MAGIC
-        "/usr/lib/wsl/lib"
         "/run/opengl-drivers/lib"
         "/run/opengl-drivers-32/lib"
         "${cuda}/lib"
@@ -35,6 +34,7 @@ in
   environment.systemPackages = with pkgs; [
     cudaPackages.cudatoolkit
     cudaPackages.cudnn
+    nvidia-docker
   ];
   environment.variables = with pkgs; {
     NIX_HOST = hostname;
@@ -92,11 +92,9 @@ in
     enableNvidia = true;
   };
 
-  systemd.services.docker.path = [ WSL_MAGIC ];
+  systemd.services.docker.serviceConfig.EnvironmentFile = "/etc/default/docker";
   systemd.services.docker.environment.CUDA_PATH = CUDA_PATH;
   systemd.services.docker.environment.LD_LIBRARY_PATH = CUDA_LDPATH;
-
-  # nvidia? not needed for cuda memes?
   hardware.opengl.enable = true;
   hardware.opengl.driSupport32Bit = true;
   hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
