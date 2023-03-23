@@ -497,6 +497,56 @@ final: prev: prev.hax.pythonPackageOverlay
       };
     };
 
+    fastllama = buildPythonPackage rec {
+      pname = "fastllama";
+      version = "0.0.0";
+      format = "other";
+
+      src = pkgs.fetchFromGitHub {
+        owner = "PotatoSpudowski";
+        repo = pname;
+        rev = "7cd5b22446f46b0396f8bd87cc292c60a7ee873f";
+        hash = "sha256-H+ZgBW2ELbr4jCxzRHcddJLvT7wdEhWxXLxRlQQzbEk=";
+      };
+
+      patches = [
+        (pkgs.fetchpatch {
+          url = "https://github.com/jpetrucciani/fastLLaMa/commit/89e53be0f6063f8b26ab9a544369d834e23c37f2.patch";
+          sha256 = "sha256-WfCBNv64vkAacTiVf/JMPzXJm8sjaK4xLd6kgbk0vOg=";
+        })
+      ];
+
+      nativeBuildInputs = [ pkgs.cmake pybind11 ];
+      propagatedBuildInputs = [ ];
+
+      buildPhase = ''
+        make
+        mkdir -p build
+        cd build
+        cmake ..
+        make
+      '';
+
+      installPhase = ''
+        mkdir -p $out/lib/${python.libPrefix}/site-packages/
+        mv ../build/fastLlama.so $out/lib/${python.libPrefix}/site-packages/.
+      '';
+
+      pythonImportsCheck = [
+        "fastLlama"
+      ];
+
+      dontUseCmakeConfigure = true;
+      dontUsePipInstall = true;
+
+      meta = with lib; {
+        description = "";
+        homepage = "https://github.com/PotatoSpudowski/fastLLaMa";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
   })
   [ "python310" "python311" ]
   final
