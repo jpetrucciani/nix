@@ -499,7 +499,7 @@ final: prev: prev.hax.pythonPackageOverlay
 
     fastllama =
       let
-        osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Security AppKit ] else [ ];
+        osSpecific = with pkgs.darwin.apple_sdk.frameworks; if pkgs.stdenv.isDarwin then [ Security AppKit ] else [ ];
       in
       buildPythonPackage rec {
         pname = "fastllama";
