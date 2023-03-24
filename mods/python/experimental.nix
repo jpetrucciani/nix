@@ -499,7 +499,7 @@ final: prev: prev.hax.pythonPackageOverlay
 
     fastllama =
       let
-        osSpecific = with pkgs.darwin.apple_sdk.frameworks; if pkgs.stdenv.isDarwin then [ Security AppKit ] else [ ];
+        osSpecific = with pkgs.darwin.apple_sdk.frameworks; if pkgs.stdenv.isDarwin then [ Accelerate ] else [ ];
       in
       buildPythonPackage rec {
         pname = "fastllama";
@@ -515,12 +515,13 @@ final: prev: prev.hax.pythonPackageOverlay
 
         patches = [
           (pkgs.fetchpatch {
-            url = "https://github.com/jpetrucciani/fastLLaMa/commit/89e53be0f6063f8b26ab9a544369d834e23c37f2.patch";
-            sha256 = "sha256-WfCBNv64vkAacTiVf/JMPzXJm8sjaK4xLd6kgbk0vOg=";
+            url = "https://github.com/jpetrucciani/fastLLaMa/commit/9dda45fd232e1c40b5d0bcdcaadafa4afeb4285d.patch";
+            sha256 = "sha256-GuCz1EiMe5GDDcnCNq7tE1NFSG1ZCOqool9OOV99+KM=";
           })
         ];
 
-        nativeBuildInputs = [ pkgs.cmake pybind11 ] ++ osSpecific;
+        buildInputs = osSpecific;
+        nativeBuildInputs = [ pkgs.cmake pybind11 ];
         propagatedBuildInputs = [ ];
 
         buildPhase = ''
