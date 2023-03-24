@@ -7,15 +7,15 @@ in
 {
   llama-cpp =
     let
-      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Security AppKit ] else [ ];
+      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate ] else [ ];
     in
     clangStdenv.mkDerivation rec {
       name = "llama.cpp";
       src = fetchFromGitHub {
         owner = "ggerganov";
         repo = name;
-        rev = "da0e9fe90ccf6e73597eb19dd0cfc0a28363fb3b";
-        sha256 = "sha256-LwwAwoKug1DawfCirW6qQkyifhONH/5OfjM7p9QQ9mM=";
+        rev = "4870e455b3653f7d7769fa5772b2c90ffad088df";
+        sha256 = "sha256-bbfmn9Zn1fFEMvAztwIfq3ZxULlK3MbRjcO0eYs/kCI=";
       };
       installPhase = ''
         mkdir -p $out/bin
@@ -27,7 +27,7 @@ in
 
   whisper-cpp =
     let
-      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Security AppKit ] else [ ];
+      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate ] else [ ];
     in
     clangStdenv.mkDerivation rec {
       name = "whisper.cpp";
@@ -53,7 +53,7 @@ in
 
   alpaca-cpp =
     let
-      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Security AppKit ] else [ ];
+      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate ] else [ ];
     in
     clangStdenv.mkDerivation rec {
       name = "alpaca.cpp";
