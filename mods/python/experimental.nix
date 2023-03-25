@@ -584,6 +584,13 @@ final: prev: prev.hax.pythonPackageOverlay
         propagatedBuildInputs = [ ];
 
         buildPhase = ''
+          # fixup n_parts map for use with alpaca instead
+          substituteInPlace ./bridge.cpp \
+            --replace '5120, 2' '5120, 1' \
+            --replace '6656, 4' '6656, 1' \
+            --replace '8192, 8' '8192, 1'
+          
+          # build
           make
           mkdir -p build
           cd build
