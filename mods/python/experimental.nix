@@ -556,6 +556,61 @@ final: prev: prev.hax.pythonPackageOverlay
         };
       };
 
+    fastllama =
+      let
+        osSpecific = with pkgs.darwin.apple_sdk.frameworks; if pkgs.stdenv.isDarwin then [ Accelerate ] else [ ];
+      in
+      buildPythonPackage rec {
+        pname = "fastllama";
+        version = "0.0.0";
+        format = "other";
+
+        src = pkgs.fetchFromGitHub {
+          owner = "PotatoSpudowski";
+          repo = pname;
+          rev = "f7e682c5592b1062598e15539e12cb88918bc003";
+          hash = "sha256-eKK82C1sXXy3OiREPixfuYHfke1t7Kz0hlFea2VdgoI=";
+        };
+
+        patches = [
+          (pkgs.fetchpatch {
+            url = "https://github.com/jpetrucciani/fastLLaMa/commit/9dda45fd232e1c40b5d0bcdcaadafa4afeb4285d.patch";
+            sha256 = "sha256-GuCz1EiMe5GDDcnCNq7tE1NFSG1ZCOqool9OOV99+KM=";
+          })
+        ];
+
+        buildInputs = osSpecific;
+        nativeBuildInputs = [ pkgs.cmake pybind11 ];
+        propagatedBuildInputs = [ ];
+
+        buildPhase = ''
+          make
+          mkdir -p build
+          cd build
+          cmake ..
+          make
+        '';
+
+        installPhase = ''
+          mkdir -p $out/lib/${python.libPrefix}/site-packages/
+          mv ../build/fastLlama.so $out/lib/${python.libPrefix}/site-packages/.
+        '';
+
+        pythonImportsCheck = [
+          "fastLlama"
+        ];
+
+        dontUseCmakeConfigure = true;
+        dontUsePipInstall = true;
+
+        meta = with lib; {
+          description = "Python wrapper to run llama.cpp";
+          homepage = "https://github.com/PotatoSpudowski/fastLLaMa";
+          license = licenses.mit;
+          maintainers = with maintainers; [ jpetrucciani ];
+        };
+      };
+
   })
   [ "python310" "python311" ]
   final
