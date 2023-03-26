@@ -3,10 +3,9 @@ with prev;
 rec {
   nixup = pog {
     name = "nixup";
-    version = "0.0.1";
+    version = "0.0.2";
     description = "a quick tool to create a base nix environment!";
     flags = [
-      # _.flags.nix.overmind
       _.flags.nix.with_crystal
       _.flags.nix.with_db_pg
       _.flags.nix.with_db_redis
@@ -37,7 +36,7 @@ rec {
         pg=""
         if [ "$with_db_pg" = "1" ]; then
           pg="(__pg { postgres = pg; })${"\n"}(__pg_bootstrap { inherit name; postgres = pg; })${"\n"}(__pg_shell { inherit name; postgres = pg; })"
-          toplevel="pg = jacobi.postgresql_15;${"\n"}$toplevel"
+          toplevel="pg = nixpkgs.postgresql_15;${"\n"}$toplevel"
         fi
         redis=""
         if [ "$with_db_redis" = "1" ]; then
@@ -46,7 +45,7 @@ rec {
         elixir=""
         if [ "$with_elixir" = "1" ]; then
           elixir="elixir = [elixir${"\n"}(with beamPackages; [${"\n"}hex])(ifIsLinux [inotify-tools]) (ifIsDarwin [ terminal-notifier (with darwin.apple_sdk.frameworks; [ CoreFoundation CoreServices ])])];"
-          toplevel="inherit (jacobi.hax) ifIsLinux ifIsDarwin;${"\n"}$toplevel"
+          toplevel="inherit (nixpkgs.hax) ifIsLinux ifIsDarwin;${"\n"}$toplevel"
         fi
         golang=""
         if [ "$with_golang" = "1" ]; then
@@ -58,7 +57,7 @@ rec {
         fi
         node=""
         if [ "$with_node" = "1" ]; then
-          toplevel="node = jacobi.nodejs-18_x;${"\n"}$toplevel"
+          toplevel="node = nixpkgs.nodejs-18_x;${"\n"}$toplevel"
           node="node = [node];npm = with node.pkgs; [prettier${"\n"}yarn];"
         fi
         php=""
@@ -91,7 +90,7 @@ rec {
           vlang="vlang = [(vlang.withPackages (p: with p; []))];"
         fi
         ${prev.coreutils}/bin/cat -s <<EOF | ${_.nixpkgs-fmt}
-          { jacobi ? import
+          { nixpkgs ? import
               (fetchTarball {
                   name = "jacobi-$(date '+%F')";
                   url = "https://nix.cobi.dev/x/$rev";
@@ -100,10 +99,10 @@ rec {
               {}
           }:
           let
+            inherit (nixpkgs.lib) flatten;
             name = "$directory";
-
             ''${toplevel}
-            tools = with jacobi; {
+            tools = with nixpkgs; {
               cli = [
                 coreutils
                 nixpkgs-fmt
@@ -112,8 +111,8 @@ rec {
               scripts = [''${pg} ''${redis}];
             };
 
-          env = let paths = jacobi._toolset tools; in
-            jacobi.buildEnv {
+          paths = flatten [ (flatten (builtins.attrValues tools)) ];
+          env = nixpkgs.buildEnv {
               inherit name;
               buildInputs = paths;
               paths = paths;
