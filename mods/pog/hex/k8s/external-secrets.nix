@@ -48,7 +48,7 @@ let
         , namespace ? "external-secrets"
         }: ''
           ---
-          ${toYAML (store {inherit name aws gcp_project secret filename namespace;})}
+          ${toYAML (store {inherit name aws aws_region gcp_project secret filename namespace;})}
         '';
       store =
         { name
