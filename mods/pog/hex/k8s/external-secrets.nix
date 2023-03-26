@@ -15,10 +15,7 @@ let
       latest = v0-8-1;
       v0-8-1 = _v defaults.version defaults.sha256;
       v0-7-2 = _v "0.7.2" "17isdcbb94kqwxg0v0mfj1ypjiqn3airghnd1bswlg609w73a8h4";
-      v0-7-1 = _v "0.7.1" "0sran9s7zb4v1gw92qvcrzqzalgmnmlz1mhjh948vxqd320gdldi";
-      v0-7-0 = _v "0.7.0" "1zinl1hgppjsg8yg0mbqqdxbiy30i4d2nm8m9zg843ky28cfwjpd";
       v0-6-1 = _v "0.6.1" "02kacs4wdp5q9dlpndkzj4fxi30kpl6gxfqalgq5q9y3vr3l5gwv";
-      v0-6-0 = _v "0.6.0" "0pf6z5yzr32cj0i9s1wg0vmbjqrbcsc11gz4s6ymh5jcx07x2b6p";
       v0-5-9 = _v "0.5.9" "0mxm237a7q8gvxvpcqk6zs0rbv725260xdvhd27kibirfjwm4zxl";
     };
     chart_url = version: hex.k8s.helm.charts.url.github {
@@ -42,17 +39,21 @@ let
       };
     cluster_store = rec {
       build =
-        { gcp_project
+        { aws ? false
+        , aws_region ? "us-east-1"
+        , gcp_project ? null
         , name ? defaults.store_name
         , secret ? "${name}-creds"
         , filename ? "${name}-creds.json"
         , namespace ? "external-secrets"
         }: ''
           ---
-          ${toYAML (store {inherit name gcp_project secret filename namespace;})}
+          ${toYAML (store {inherit name aws gcp_project secret filename namespace;})}
         '';
       store =
         { name
+        , aws
+        , aws_region
         , gcp_project
         , secret
         , filename
@@ -67,7 +68,7 @@ let
           };
           spec = {
             provider = {
-              gcpsm = {
+              ${if (gcp_project != null) then "gcpsm" else null} = {
                 projectID = gcp_project;
                 auth = {
                   secretRef = {
@@ -75,6 +76,24 @@ let
                       inherit namespace;
                       name = secret;
                       key = filename;
+                    };
+                  };
+                };
+              };
+              ${if aws then "aws" else null} = {
+                service = "SecretsManager";
+                region = aws_region;
+                auth = {
+                  secretRef = {
+                    accessKeyIDSecretRef = {
+                      inherit namespace;
+                      name = secret;
+                      key = "access-key";
+                    };
+                    secretAccessKeySecretRef = {
+                      inherit namespace;
+                      name = secret;
+                      key = "secret-access-key";
                     };
                   };
                 };

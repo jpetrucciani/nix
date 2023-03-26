@@ -534,7 +534,7 @@ rec {
         static_configs = [{ targets = [ "localhost" ]; labels = { job = "caddylogs"; __path__ = path; }; }];
       };
     };
-    prometheus_exporters = {}: {
+    prometheus_exporters = _: {
       node = {
         enable = true;
         enabledCollectors = [ "systemd" ];
