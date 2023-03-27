@@ -72,6 +72,7 @@ rec {
   waluigi = soundScript "waluigi" "${soundFolder}/waluigi.mp3" "sha256-uT9BDNDaeuQPoE/WafS0Wo6FlrCvOmDJwG7rsFVf6Zw=";
 
   keith_ultrawide = soundScript "keith_ultrawide" "${soundFolder}/keith/ultrawide.ogg" "sha256-r23YcTBFCUyXCwGY8hEKWCr2vLBUQKyemAuWbqX0ulY=";
+  ultrawides_are_ultra_pog = soundScript "keith_ultrawide" "${soundFolder}/keith/ultrawides_are_ultra_pog.mp3" "sha256-eXXzztQ8a4jREUTaiRgQbMkk0Qup2Ga1zF/91Qs8ddA=";
   ben_and_cobi_were_so_right = soundScript "ben_and_cobi_were_so_right" "${soundFolder}/keith/ben_and_cobi_were_so_right.mp3" "sha256-5dgNLwKb02M+VxG3AuHOBp1n9HYaVS6T7Kr9L6/f/Ns=";
 
   meme_sounds = [
