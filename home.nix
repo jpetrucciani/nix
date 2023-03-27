@@ -656,7 +656,26 @@ with pkgs.hax; {
             "shellformat.path": "${nix-bin}/shfmt",
             "terminal.integrated.allowChords": false,
             "files.exclude": {
-              "**/.terraform": true
+              ".git": true,
+              "**/.terraform": true,
+              "**/.git": true,
+              "**/__pycache__": true,
+              "**/.mypy_cache": true,
+              "**/.ruff_cache": true,
+              "**/.direnv": true,
+              "**/.db": true,
+              "**/.pytest_cache": true
+            },
+            "search.exclude": {
+              ".git": true,
+              "**/.terraform": true,
+              "**/.git": true,
+              "**/__pycache__": true,
+              "**/.mypy_cache": true,
+              "**/.ruff_cache": true,
+              "**/.direnv": true,
+              "**/.db": true,
+              "**/.pytest_cache": true
             }
           }
         '';

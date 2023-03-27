@@ -71,6 +71,9 @@ rec {
   hello_mario = soundScript "hello_mario" "${soundFolder}/hello_mario.mp3" "sha256-hRKpRcM3o+LNdCzm5VkXkXbLkBby8fzNlDb0dd5+u20=";
   waluigi = soundScript "waluigi" "${soundFolder}/waluigi.mp3" "sha256-uT9BDNDaeuQPoE/WafS0Wo6FlrCvOmDJwG7rsFVf6Zw=";
 
+  keith_ultrawide = soundScript "keith_ultrawide" "${soundFolder}/keith/ultrawide.ogg" "sha256-r23YcTBFCUyXCwGY8hEKWCr2vLBUQKyemAuWbqX0ulY=";
+  ben_and_cobi_were_so_right = soundScript "ben_and_cobi_were_so_right" "${soundFolder}/keith/ben_and_cobi_were_so_right.mp3" "sha256-5dgNLwKb02M+VxG3AuHOBp1n9HYaVS6T7Kr9L6/f/Ns=";
+
   meme_sounds = [
     bruh
     coin
@@ -82,5 +85,7 @@ rec {
     guh
     hello_mario
     waluigi
+    keith_ultrawide
+    ben_and_cobi_were_so_right
   ];
 }
