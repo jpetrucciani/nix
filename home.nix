@@ -164,7 +164,8 @@ with pkgs.hax; {
         python_pog_scripts
         ssh_pog_scripts
 
-        doom-emacs
+        # not really using this :(
+        # doom-emacs
 
         (optList (!isBarebones) [
           docker-client
@@ -447,12 +448,15 @@ with pkgs.hax; {
 
   programs.zoxide = {
     enable = true;
-    enableBashIntegration = true;
   };
 
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
+  };
+
+  programs.nushell = {
+    enable = true;
   };
 
   programs.readline = {
