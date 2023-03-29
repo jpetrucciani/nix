@@ -618,6 +618,112 @@ final: prev: prev.hax.pythonPackageOverlay
         };
       };
 
+
+    geojson = super.geojson.overridePythonAttrs {
+      version = "2.5.0";
+      src = fetchPypi {
+        version = "2.5.0";
+        pname = "geojson";
+        hash = "sha256-bku3rOQiakXZyMixNIs/xDVAZYNZ+Tw/fgPvqfFfZYo=";
+      };
+      doCheck = false;
+      pythonImportsCheck = [
+        "geojson"
+      ];
+    };
+
+    langchain = buildPythonPackage rec {
+      pname = "langchain";
+      version = "0.0.125";
+      format = "pyproject";
+
+      src = fetchPypi {
+        inherit pname version;
+        hash = "sha256-r1TRkL0K6Mq2M8G2plLHaq5oXW6yf/OdP5sk0nup8a8=";
+      };
+
+      nativeBuildInputs = [
+        poetry-core
+      ];
+
+      propagatedBuildInputs = [
+        pyyaml
+        (sqlalchemy.overridePythonAttrs {
+          version = "1.4.42";
+          src = fetchPypi {
+            version = "1.4.42";
+            pname = "SQLAlchemy";
+            hash = "sha256-F35BkUxHbtHht3/QWWbqiMCUBT4XqFMDxM4Af4jv82M=";
+          };
+        })
+        aiohttp
+        dataclasses-json
+        numpy
+        pydantic
+        pyowm
+        requests
+        tenacity
+      ];
+
+      passthru.optional-dependencies = {
+        all = [
+          aleph-alpha-client
+          anthropic
+          beautifulsoup4
+          cohere
+          deeplake
+          elasticsearch
+          faiss-cpu
+          google-api-python-client
+          google-search-results
+          huggingface-hub
+          jina
+          jinja2
+          manifest-ml
+          networkx
+          nlpcloud
+          nltk
+          nomic
+          openai
+          opensearch-py
+          pgvector
+          pinecone-client
+          psycopg2-binary
+          pypdf
+          qdrant-client
+          redis
+          sentence-transformers
+          spacy
+          tensorflow-text
+          tiktoken
+          torch
+          transformers
+          weaviate-client
+          wikipedia
+          wolframalpha
+        ];
+        llms = [
+          anthropic
+          cohere
+          huggingface-hub
+          manifest-ml
+          nlpcloud
+          openai
+          torch
+          transformers
+        ];
+      };
+
+      pythonImportsCheck = [ "langchain" ];
+
+      meta = with lib; {
+        description = "Building applications with LLMs through composability";
+        homepage = "https://pypi.org/project/langchain/0.0.125/";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
   })
   [ "python310" "python311" ]
   final

@@ -113,9 +113,8 @@ rec {
 
           paths = flatten [ (flatten (builtins.attrValues tools)) ];
           env = nixpkgs.buildEnv {
-              inherit name;
+              inherit name paths;
               buildInputs = paths;
-              paths = paths;
             };
           in
           env
