@@ -81,7 +81,7 @@ rec {
       flags.redis_port
     ];
     script = ''
-      ${redis}/bin/redis-cli -p "$port"
+      ${final.portwatch}/bin/portwatch "$port" && ${redis}/bin/redis-cli -p "$port"
     '';
   };
 
