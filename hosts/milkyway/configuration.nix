@@ -35,6 +35,12 @@ in
     cudaPackages.cudatoolkit
     cudaPackages.cudnn
     nvidia-docker
+    (pkgs.writeShellScriptBin "_invokeai" ''
+      nix run github:nixified-ai/flake#invokeai-nvidia -- --web --host 0.0.0.0
+    '')
+    (pkgs.writeShellScriptBin "_koboldai" ''
+      nix run github:nixified-ai/flake#koboldai-nvidia -- --host
+    '')
   ];
   environment.variables = with pkgs; {
     NIX_HOST = hostname;
