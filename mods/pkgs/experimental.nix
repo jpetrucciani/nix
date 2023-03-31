@@ -14,8 +14,8 @@ in
       src = fetchFromGitHub {
         owner = "ggerganov";
         repo = name;
-        rev = "34c1072e497eb92d81ee7c0e12aa6741496a41c6";
-        sha256 = "sha256-MDhPldsQ1qVwG05T1kwnLmgND8Myrby/3KwwBvvTjd0=";
+        rev = "3525899277d2e2bdc8ec3f0e6e40c47251608700";
+        sha256 = "sha256-3sd5kDcvlXgvqfxC5f3S5lMbksDNrQdCJJdCLqdhc64=";
       };
       installPhase = ''
         mkdir -p $out/bin
