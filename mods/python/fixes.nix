@@ -43,6 +43,17 @@ final: prev: prev.hax.pythonPackageOverlay
       };
     });
 
+    # databases = super.databases.overridePythonAttrs (_: {
+    #   version = "0.7.1";
+    #   src = super.pkgs.fetchFromGitHub {
+    #     owner = "encode";
+    #     repo = "databases";
+    #     rev = "deedd134a9fce3c45ce7e79ebc3d420a034020bd";
+    #     hash = "sha256-WlJbl3r16WwVi/McuisU1tu9/CZZ8oL+K0dQY6lYQ+Y=";
+    #   };
+    #   meta.broken = false;
+    # });
+
   })
   [ "python310" "python311" ]
   final

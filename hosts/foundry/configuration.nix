@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 let
   nixpkgs = import ../../default.nix { };
   common = import ../common.nix { inherit config pkgs; };
@@ -21,7 +21,7 @@ in
     gron
     jq
     just
-    lolcat
+    clolcat
     lsof
     moreutils
     nano

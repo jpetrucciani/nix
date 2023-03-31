@@ -71,6 +71,7 @@ with pkgs.hax; {
         bzip2
         cacert
         cachix
+        clolcat
         coreutils-full
         cowsay
         curl
@@ -99,7 +100,6 @@ with pkgs.hax; {
         just
         libarchive
         libnotify
-        lolcat
         loop
         lsof
         man-pages
@@ -441,7 +441,7 @@ with pkgs.hax; {
     '' + (if isAndroid then ''
       eval "$(starship init bash)"
     '' else "") + (if isNixOS then ''
-      ${pkgs.figlet}/bin/figlet "$(hostname)" | ${pkgs.lolcat}/bin/lolcat
+      ${pkgs.figlet}/bin/figlet "$(hostname)" | ${pkgs.clolcat}/bin/clolcat
       echo
     '' else "");
   };
