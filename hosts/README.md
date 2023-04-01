@@ -12,7 +12,7 @@ This is an experimental NixOS install inside a VM using the apple virtualization
 
 ### [bedrock/](./bedrock)
 
-TODO
+This is a postgres nixos server
 
 ### [charon/](./charon)
 
@@ -24,7 +24,7 @@ this directory contains builders for cloud VM images and isos
 
 ### [granite/](./granite/)
 
-TODO
+This is an NFS store server
 
 ### [luna/](./luna)
 
@@ -46,13 +46,25 @@ additional modules for use in the various host configurations for nixos and nix-
 
 This is a bare-metal server.
 
+### [phobos/](./phobos)
+
+This is an experimental NixOS install inside a VM.
+
 ### [pluto/](./pluto)
 
 This is my personal M1 Pro Macbook, running MacOS and using nix-darwin and home-manager to manage things.
 
+### [terra/](./terra)
+
+This is my largest NixOS based machine
+
 ### [titan/](./titan)
 
 This is an experimental NixOS install inside a VM.
+
+### [ymir/](./ymir)
+
+This is a graphical NixOS install on a physical xps laptop
 
 ### [common.nix](./common.nix)
 
