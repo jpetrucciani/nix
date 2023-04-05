@@ -164,8 +164,14 @@ with pkgs.hax; {
         python_pog_scripts
         ssh_pog_scripts
 
-        # not really using this :(
-        # doom-emacs
+        # lsps
+        (with nodePackages; [
+          bash-language-server
+          dockerfile-language-server-nodejs
+          vscode-json-languageserver
+          yaml-language-server
+          vlang
+        ])
 
         (optList (!isBarebones) [
           docker-client
@@ -185,6 +191,7 @@ with pkgs.hax; {
               mypy
 
               # common use case
+              python-lsp-server
               gamble
               httpx
               requests
@@ -316,7 +323,6 @@ with pkgs.hax; {
             starship
           ]
         )
-
       ];
   };
 
@@ -480,6 +486,22 @@ with pkgs.hax; {
 
   programs.helix = {
     enable = true;
+    settings = {
+      # theme = "base16";
+      editor = {
+        lsp.display-messages = true;
+        cursor-shape = {
+          insert = "bar";
+          normal = "block";
+          select = "underline";
+        };
+      };
+      keys.normal = {
+        space.space = "file_picker";
+        space.w = ":w";
+        space.q = ":q";
+      };
+    };
   };
 
   programs.mcfly = {
