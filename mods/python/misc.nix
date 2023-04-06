@@ -1,4 +1,4 @@
-(self: super: with super; {
+(final: prev: with prev; {
   osrsreboxed = buildPythonPackage {
     pname = "osrsreboxed";
     version = "2.3.5";

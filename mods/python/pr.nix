@@ -1,5 +1,5 @@
 # this overlay is for python packages that i've opened PRs to nixpkgs for
-(self: super: with super; rec {
+(final: prev: with prev; rec {
   boddle = buildPythonPackage rec {
     pname = "boddle";
     version = "0.2.9";
@@ -236,7 +236,7 @@
         starlette
         tornado
         uvicorn
-      ] ++ lib.optionals (!super.stdenv.isDarwin) [
+      ] ++ lib.optionals (!prev.stdenv.isDarwin) [
         # server types that are broken on darwin
         chalice
         moto

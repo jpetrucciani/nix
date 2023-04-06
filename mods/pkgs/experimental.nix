@@ -8,17 +8,34 @@ in
   llama-cpp =
     let
       osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate ] else [ ];
+      vicunaPrompt = writeTextFile {
+        name = "chat-with-vicuna.txt";
+        text = ''
+          A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions.
+
+          ### Human: Hello, Assistant.
+          ### Assistant: Hello. How may I help you today?
+          ### Human: Please tell me the largest city in Europe.
+          ### Assistant: Sure. The largest city in Europe is Moscow, the capital of Russia.
+          ### Human:
+        '';
+      };
     in
     clangStdenv.mkDerivation rec {
       name = "llama.cpp";
       src = fetchFromGitHub {
         owner = "ggerganov";
         repo = name;
-        rev = "3525899277d2e2bdc8ec3f0e6e40c47251608700";
-        sha256 = "sha256-3sd5kDcvlXgvqfxC5f3S5lMbksDNrQdCJJdCLqdhc64=";
+        rev = "d2beca95dcfcd6f1145886e914b879ffc3604b7a";
+        sha256 = "sha256-B2eOjHREaawpdZPIlb5hjPsC24ReURKfxQ8amkxwwxo=";
       };
+      cmakeFlags = with pkgs; lib.optionals (system == "aarch64-darwin") [
+        "-DCMAKE_C_FLAGS=-D__ARM_FEATURE_DOTPROD=1"
+      ];
       installPhase = ''
-        mkdir -p $out/bin
+        mkdir -p $out/bin $out/prompts
+        cp ${vicunaPrompt} $out/prompts/vicuna.txt
+        mv ./prompts/* $out/prompts/.
         mv ./main $out/bin/llama
         mv ./quantize $out/bin/llama-quantize
       '';

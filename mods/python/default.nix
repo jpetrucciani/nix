@@ -10,7 +10,6 @@
           ./fastapi.nix
           ./fixes.nix
           ./hax.nix
-          ./localstack.nix
           ./misc.nix
           ./pr.nix
           ./types.nix

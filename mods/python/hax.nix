@@ -1,4 +1,4 @@
-(self: super: with super; {
+(final: prev: with prev; {
   # mitmproxy2swagger = buildPythonPackage rec {
   #   pname = "mitmproxy2swagger";
   #   version = "0.4.2";

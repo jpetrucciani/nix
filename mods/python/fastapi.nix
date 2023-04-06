@@ -1,4 +1,4 @@
-(self: super: with super; rec {
+final: prev: with prev; rec {
 
   asgi-lifespan = buildPythonPackage rec {
     pname = "asgi-lifespan";
@@ -127,7 +127,7 @@
 
     disabledTestPaths = [
       "tests/test_instrumentator_multiple_apps.py"
-    ] ++ (if super.stdenv.isDarwin then [ "tests/test_instrumentation.py" ] else [ ]);
+    ] ++ (if prev.stdenv.isDarwin then [ "tests/test_instrumentation.py" ] else [ ]);
 
     propagatedBuildInputs = [
       fastapi
@@ -247,5 +247,4 @@
       license = licenses.asl20;
     };
   };
-
-})
+}

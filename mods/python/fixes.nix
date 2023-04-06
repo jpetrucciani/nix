@@ -1,40 +1,40 @@
-(self: super:
+final: prev:
 let
-  inherit (super.stdenv) isDarwin;
+  inherit (prev.stdenv) isDarwin;
 in
 {
   passlib =
     if isDarwin then
-      super.passlib.overrideAttrs
+      prev.passlib.overrideAttrs
         (_: {
           disabledTestPaths =
             [
               "passlib/tests/test_context.py"
             ];
-        }) else super.passlib;
+        }) else prev.passlib;
 
   curio =
     if isDarwin then
-      super.curio.overrideAttrs
+      prev.curio.overrideAttrs
         (_: {
           doCheck = false;
           doInstallCheck = false;
-        }) else super.curio;
+        }) else prev.curio;
 
-  aioquic = super.aioquic.overrideAttrs (_: {
+  aioquic = prev.aioquic.overrideAttrs (_: {
     patches = [ ];
     disabledTestPaths = [ "tests/test_tls.py" ];
   });
 
   slack-sdk =
     if isDarwin then
-      super.slack-sdk.overridePythonAttrs
+      prev.slack-sdk.overridePythonAttrs
         (_: {
           doCheck = false;
-        }) else super.slack-sdk;
+        }) else prev.slack-sdk;
 
-  certbot = super.certbot.overridePythonAttrs (_: {
-    src = super.pkgs.fetchFromGitHub {
+  certbot = prev.certbot.overridePythonAttrs (_: {
+    src = prev.pkgs.fetchFromGitHub {
       owner = "certbot";
       repo = "certbot";
       rev = "refs/tags/v2.4.0";
@@ -42,9 +42,9 @@ in
     };
   });
 
-  # databases = super.databases.overridePythonAttrs (_: {
+  # databases = prev.databases.overridePythonAttrs (_: {
   #   version = "0.7.1";
-  #   src = super.pkgs.fetchFromGitHub {
+  #   src = prev.pkgs.fetchFromGitHub {
   #     owner = "encode";
   #     repo = "databases";
   #     rev = "deedd134a9fce3c45ce7e79ebc3d420a034020bd";
@@ -53,4 +53,4 @@ in
   #   meta.broken = false;
   # });
 
-})
+}

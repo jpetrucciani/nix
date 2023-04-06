@@ -1,4 +1,4 @@
-(self: super: with super; rec {
+(final: prev: with prev; rec {
   boto3-stubs = buildPythonPackage rec {
     pname = "boto3-stubs";
     version = "1.20.35";
