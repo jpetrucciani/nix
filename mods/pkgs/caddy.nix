@@ -57,7 +57,7 @@ rec {
         '')
         allPlugins;
       zaddy = prev.caddy.override {
-        buildGoModule = args: buildGo119Module (args // {
+        buildGoModule = args: buildGo120Module (args // {
           inherit vendorHash;
           overrideModAttrs = _: {
             preBuild = ''
