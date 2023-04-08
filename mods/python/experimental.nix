@@ -563,14 +563,42 @@ final: prev: with prev; rec {
     ];
   };
 
-  langchain = buildPythonPackage rec {
-    pname = "langchain";
-    version = "0.0.125";
+  openapi-schema-pydantic = buildPythonPackage rec {
+    pname = "openapi-schema-pydantic";
+    version = "1.2.4";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-r1TRkL0K6Mq2M8G2plLHaq5oXW6yf/OdP5sk0nup8a8=";
+      hash = "sha256-PiLPWLdKafdSzH5fFTf25EFkKC2ycAy7zTu5nd0GUZY=";
+    };
+
+    nativeBuildInputs = [
+      setuptools
+    ];
+
+    propagatedBuildInputs = [
+      pydantic
+    ];
+
+    pythonImportsCheck = [ "openapi_schema_pydantic" ];
+
+    meta = with lib; {
+      description = "OpenAPI (v3) specification schema as pydantic class";
+      homepage = "https://pypi.org/project/openapi-schema-pydantic/1.2.4/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  langchain = buildPythonPackage rec {
+    pname = "langchain";
+    version = "0.0.134";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-+5XEQ7xLxJq7PAfDiM4nxMWQ7903G00/wIJCjGkRE54=";
     };
 
     nativeBuildInputs = [
@@ -590,6 +618,7 @@ final: prev: with prev; rec {
       aiohttp
       dataclasses-json
       numpy
+      openapi-schema-pydantic
       pydantic
       pyowm
       requests
