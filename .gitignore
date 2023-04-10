@@ -9,3 +9,5 @@ cloudquery.log
 pb_data/
 data/
 pynixify/
+styles/*
+!styles/Vocab

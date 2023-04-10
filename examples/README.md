@@ -6,7 +6,7 @@ This directory contains examples of use of my repo as a source for other tools/e
 
 Drop a file like this in your home directory (`~/cfg.nix`) and run `nix-env -i -f ~/cfg.nix` to use this file to manage your globally installed nix packages!
 
-Or, alternatively, use a similar setup within a project directory to create a reproducible environment for that directory!
+Or, use a similar setup within a project directory to create a reproducible environment for that directory!
 
 ```bash
 # use nixup for an easy way to bootstrap a default.nix!

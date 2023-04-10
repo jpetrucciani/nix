@@ -146,7 +146,6 @@ final: prev: with prev; rec {
       pytestCheckHook
     ];
 
-    # TODO: re-enable tests
     doCheck = false;
 
     pythonImportsCheck = [
@@ -502,20 +501,20 @@ final: prev: with prev; rec {
       llama-cpp-pin = pkgs.fetchFromGitHub {
         owner = "ggerganov";
         repo = "llama.cpp";
-        rev = "eeaa7b0492fc79baab8bb1fe195d6c87159f2bd3";
-        hash = "sha256-uYM3lRjooaPyFGMHB9nOUfY+qkVeZ+u7boa/o+0C/O0=";
+        rev = "180b693a47b6b825288ef9f2c39d24b6eea4eea6";
+        hash = "sha256-omDUqS6ljFRg2jcT7S+isUda/0rS4gOQlOEl8qZWwVw=";
       };
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
-      version = "0.1.23";
+      version = "0.1.30";
 
       format = "pyproject";
       src = pkgs.fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
-        rev = "38f7dea6ca318e62c9b8aab55435566d8e62616b";
-        hash = "sha256-/d83p8p8l01amm4KVbThfCyiWQoFnUHXfaEDK1T/vUY=";
+        rev = "bc02ce353b29cf67ff66a31eee6c14c5ceff708c";
+        hash = "sha256-CFP39qnG+AkYWszFaNZnh2vMhOBMRgZ46at/OMFmUiI=";
       };
 
       preConfigure = ''

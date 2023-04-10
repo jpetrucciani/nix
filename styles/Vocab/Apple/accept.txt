@@ -1,0 +1,6 @@
+[mM]ac
+[mM]acOS
+[mM]acbook
+iPhone
+iOS
+(?i)iterm

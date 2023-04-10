@@ -1,0 +1,12 @@
+[lL]inux
+[uU]nix
+[dD]otfiles?
+[cC]ron
+sudo
+su
+isos?
+(?i)systemd
+(?i)hetzner
+(?i)cli
+(?i)env
+(?i)fd

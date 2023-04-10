@@ -135,6 +135,7 @@ with pkgs.hax; {
         statix
         time
         unzip
+        vale
         watch
         wget
         which
@@ -244,7 +245,6 @@ with pkgs.hax; {
           hunt
           mdctl
           ov
-          overflow
           poglets
           rare
           regula
