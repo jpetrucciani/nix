@@ -1,7 +1,8 @@
 [nN]ix
 [nN]ixpkgs
-(?i)attr
-(?i)attrsets
+(?i)attrs?
+(?i)attrsets?
+(?i)shas?
 [sS]tatix
 composable
 (?i)devenv

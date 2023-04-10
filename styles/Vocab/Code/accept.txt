@@ -34,3 +34,9 @@
 (?i)medable
 (?i)mdctl
 (?i)falconn
+(?i)acls
+(?i)pingdom
+(?i)pagerduty
+(?i)readmes?
+(?i)ci
+(?i)cd
