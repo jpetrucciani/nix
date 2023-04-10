@@ -21,3 +21,13 @@ jobs:
             experimental-features = nix-command flakes
       - run: nix-env -f . -iA nixpkgs-fmt
       - run: nixpkgs-fmt --check .
+  vale:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3.5.0
+      - uses: cachix/install-nix-action@v20
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - run: nix-env -f . -iA vale fd
+      - run: vale sync && vale $(fd --glob --hidden '*.md')

@@ -1,0 +1,17 @@
+[mM]eme
+[kK]eef
+[pP]og
+[hH]ax
+[hH]acky
+(?i)andromeda
+(?i)charon
+(?i)luna
+(?i)m1max
+(?i)milkyway
+(?i)neptune
+(?i)phobos
+(?i)pluto
+(?i)terra
+(?i)titan
+(?i)ymir
+(?i)valheim

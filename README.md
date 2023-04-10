@@ -8,7 +8,7 @@ _my nixpkgs setup and modules/overlays/examples!_
 
 ### [.github/](./.github/)
 
-This directory contains my GitHub actions, which are used to automatically check for updates to various sources, and rebuild and cache my nix setups for multiple platforms.
+This directory contains my GitHub actions, which automatically check for updates to various sources, and rebuild and cache my nix setups for various platforms.
 
 ### [examples/](./examples/)
 
@@ -16,23 +16,23 @@ This directory contains examples of use of my repo as a source for other tools/e
 
 ### [hosts/](./hosts/)
 
-This directory contains my NixOS configurations for each of my NixOS machines, as well as a `common.nix` file that contains shared configurations for all of my servers/clients.
+This directory contains my NixOS configurations for each of my NixOS machines, as well as a `common.nix` file that contains shared configurations for my servers/clients.
 
 ### [mods/](./mods/)
 
-This directory contains my overlays for nixpkgs, but is set up in a way that others can reuse specific parts of my overlays if they'd like to use this repo as a source. This dierctory is a bit of a rabbit hole!
+This directory contains my overlays for nixpkgs, but configured in a way that others can reuse specific parts of my overlays if they'd like to use this repo as a source.
 
 ### [pkgs/](./pkgs/)
 
-This directory contains nix packages that I've built that are not yet ready for nixpkgs proper, or that don't make sense to open as a PR to nixpkgs proper.
+This directory contains nix packages that I've built that might not be yet ready for nixpkgs proper, or that don't make sense to open as a PR to nixpkgs proper.
 
 ### [scripts/](./scripts/)
 
-This directory contains various random scripts that I use in a few places in this repo, or in packages created by this repo.
+This directory contains various random scripts that I use in this repo, or in packages created by this repo.
 
 ### [sources/](./sources/)
 
-This directory contains rev/sha256 combos for any of the other repos that I track and pin in this repo. These are automatically updated with GitHub actions!
+This directory contains rev/sha256 combos for any of the other repos that I track and pin in this repo. These automatically update with GitHub actions!
 
 ### [default.nix](./default.nix)
 
@@ -44,4 +44,4 @@ This file contains my main [home-manager](https://github.com/nix-community/home-
 
 ### [overlays.nix](./overlays.nix)
 
-This file declares the overlays that I apply to my pinned version of nixpkgs. This should load all of the files in the [mods](./mods/) directory, which are overlay functions which apply to my nixpkgs object in nix. **note that this file is much more verbose than what is required! personally, I prefer the explicitness here**
+This file declares the overlays that I apply to my pinned version of nixpkgs. This should load the files in the [mods](./mods/) directory, which are overlay functions which apply to my nixpkgs object in nix. **note that this file is much more verbose than required! personally, I prefer the explicitness here**

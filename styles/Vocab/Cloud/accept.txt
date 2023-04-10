@@ -1,0 +1,5 @@
+(?i)AWS
+(?i)GCP
+(?i)alibaba
+(?i)tencent
+(?i)yandex

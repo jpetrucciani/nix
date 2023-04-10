@@ -1,6 +1,6 @@
 # pog
 
-This directory contains overlays that implement tools with my [`pog`](../pog.nix) module!
+This directory contains overlays that create tools with my [`pog`](../pog.nix) module!
 
 ---
 

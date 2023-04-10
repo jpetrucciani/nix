@@ -32,30 +32,6 @@ with prev;
     )
     { };
 
-  overflow = prev.callPackage
-    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
-      buildGo120Module rec {
-        pname = "overflow";
-        version = "2.1.0";
-
-        src = fetchFromGitHub {
-          owner = "sradley";
-          repo = "overflow";
-          rev = "v${version}";
-          sha256 = "sha256-7grkSLpLpf9WKMXfXjj8F82L6qdlZsfASSXBslQVZeI=";
-        };
-
-        vendorHash = "sha256-CLJijtBf8iSBpLV2shkb5u5kHSfFXUGKagkwrsT9FJM=";
-
-        meta = with lib; {
-          description = "command-line tool for exploiting stack-based buffer overflow vulnerabilities";
-          license = licenses.mit;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      }
-    )
-    { };
-
   memzoom = prev.callPackage
     ({ stdenv, lib, fetchFromGithub }: stdenv.mkDerivation rec {
       pname = "memzoom";

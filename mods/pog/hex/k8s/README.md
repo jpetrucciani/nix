@@ -20,11 +20,11 @@ hexes related to k8s specs and charts!
 
 ### [cron.nix](./cron.nix)
 
-This hex spell allows very concise cron job declaration in Kubernetes.
+This hex spell allows concise cron job declaration in Kubernetes.
 
 ### [datadog.nix](./datadog.nix)
 
-[datadog](https://github.com/DataDog/helm-charts) provides helm charts to add logging and monitoring easily to your clusters.
+[datadog](https://github.com/DataDog/helm-charts) provides helm charts to add logging and monitoring to your clusters.
 
 ### [external-secrets.nix](./external-secrets.nix)
 
@@ -40,7 +40,7 @@ This module allows us to transparently use helm charts in hex spells!
 
 ### [infisical.nix](./infisical.nix)
 
-TODO
+This module contains an [infisical](https://github.com/Infisical/infisical) helm chart
 
 ### [nginx-ingress.nix](./nginx-ingress.nix)
 
@@ -60,7 +60,7 @@ This module allows us to create best-practices, all-inclusive k8s services with 
 
 ### [signoz.nix](./signoz.nix)
 
-TODO
+This module contains the [signoz](https://github.com/SigNoz/signoz) helm chart
 
 ### [stackstorm.nix](./stackstorm.nix)
 
@@ -76,7 +76,7 @@ This module contains useful shorthands for using tailscale within kubernetes
 
 ### [whoogle.nix](./whoogle.nix)
 
-TODO
+This module contains a [whoogle](https://github.com/benbusby/whoogle-search) deployment
 
 ### [woodpecker.nix](./woodpecker.nix)
 
