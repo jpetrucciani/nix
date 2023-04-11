@@ -13,6 +13,7 @@
   (import ./mods/python/default.nix)
 
   # sub-overlays
+  (import ./mods/pkgs/ai.nix)
   (import ./mods/pkgs/caddy.nix)
   (import ./mods/pkgs/cli.nix)
   (import ./mods/pkgs/cloud.nix)

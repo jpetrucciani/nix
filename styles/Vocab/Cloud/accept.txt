@@ -3,3 +3,8 @@
 (?i)alibaba
 (?i)tencent
 (?i)yandex
+(?i)vpcs?
+(?i)sas?
+(?i)iam
+(?i)gcloud
+(?i)awscli

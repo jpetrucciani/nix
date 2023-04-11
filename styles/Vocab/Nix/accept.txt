@@ -4,5 +4,7 @@
 (?i)attrsets?
 (?i)shas?
 [sS]tatix
+[cC]achix
 composable
+declaratively
 (?i)devenv

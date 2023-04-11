@@ -1,5 +1,8 @@
 final: prev:
 with prev;
+let
+  shardsDerivation = shards: builtins.toFile "shards.nix" (lib.generators.toPretty { } shards);
+in
 {
   s3-edit = prev.callPackage
     ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
@@ -485,4 +488,35 @@ with prev;
     )
     { };
 
+  miniss = crystal.buildCrystalPackage rec {
+    pname = "miniss";
+    version = "0.0.2";
+
+    src = fetchFromGitHub {
+      owner = "noraj";
+      repo = pname;
+      rev = version;
+      hash = "sha256-hsIuKAlJPCMU02MUm7SNAt4vR/ZT0B4oi8fdGOcdk7A=";
+    };
+
+    format = "shards";
+    shardsFile = shardsDerivation {
+      ameba = {
+        url = "https://github.com/crystal-ameba/ameba.git";
+        rev = "v1.4.3";
+        sha256 = "0pjlnnz8p2qrry80jz7b2rrqqbzv4qwrqksxwr61hg3zajsndkx5";
+      };
+      docopt = {
+        url = "https://github.com/chenkovsky/docopt.cr.git";
+        rev = "cbfdc5f3f4d5934664d07513b1a701e1e5046b34";
+        sha256 = "0bgnd8cngkqzzpkn5vdn80al4dnpq2sycmvf5in3jfbyisajjx94";
+      };
+    };
+
+    crystalBinaries.miniss.src = "src/miniss.cr";
+    installPhase = ''
+      mkdir -p $out/bin
+      mv ./bin/miniss $out/bin/.
+    '';
+  };
 }

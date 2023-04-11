@@ -6,6 +6,10 @@ This directory provides my composable python package overlays! These are set up 
 
 ## In this directory
 
+### [ai.nix](./ai.nix)
+
+This overlay contains AI related python packages
+
 ### [experimental.nix](./experimental.nix)
 
 This overlay contains weird and possibly broken python packaging experiments
