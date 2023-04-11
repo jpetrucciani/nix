@@ -65,3 +65,6 @@
 (?i)authd
 (?i)authed
 (?i)auth'd
+(?i)falconn
+(?i)polaris
+(?i)pocketbase
