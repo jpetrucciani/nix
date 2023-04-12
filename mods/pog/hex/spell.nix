@@ -1,7 +1,7 @@
 SPELL:
 with builtins;
 let
-  pkgs = import ../../../.;
+  pkgs = import (import ../../../flake-compat.nix).inputs.nixpkgs { };
   k8s = {
     addons = import ./k8s/addons.nix params;
     argocd = import ./k8s/argocd.nix params;
