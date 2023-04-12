@@ -186,4 +186,38 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  llama-index = buildPythonPackage rec {
+    pname = "llama-index";
+    version = "0.5.12";
+    format = "setuptools";
+
+    src = fetchPypi {
+      pname = "llama_index";
+      inherit version;
+      hash = "sha256-AIPsAZRrfB8VbJkPGAwKZ64OPRFLPfCFGHIfSroyAPk=";
+    };
+
+    nativeCheckInputs = [
+      ipython
+      pillow
+    ];
+
+    propagatedBuildInputs = [
+      langchain
+      tiktoken
+      numpy
+      openai
+      pandas
+    ];
+
+    pythonImportsCheck = [ "llama_index" ];
+
+    meta = with lib; {
+      description = "Interface between LLMs and your data";
+      homepage = "https://github.com/jerryjliu/llama_index";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
