@@ -1,14 +1,7 @@
 SPELL:
 with builtins;
 let
-  nixpkgs = fromJSON (readFile ./nixpkgs.json);
-  pkgs = import
-    (fetchTarball
-      {
-        inherit (nixpkgs) sha256;
-        url = "https://github.com/NixOS/nixpkgs/archive/${nixpkgs.rev}.tar.gz";
-      })
-    { };
+  pkgs = import ../../../.;
   k8s = {
     addons = import ./k8s/addons.nix params;
     argocd = import ./k8s/argocd.nix params;
