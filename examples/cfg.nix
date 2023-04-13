@@ -1,4 +1,4 @@
-{ jacobi ? import
+{ pkgs ? import
     (fetchTarball {
       name = "jpetrucciani-2023-04-10";
       url = "https://github.com/jpetrucciani/nix/archive/285d3a4956cfe442830b06c30a946790c7429acb.tar.gz";
@@ -8,7 +8,7 @@
 }:
 let
   name = "cfg";
-  tools = with jacobi; {
+  tools = with pkgs; {
     cli = [
       bashInteractive
       coreutils
@@ -52,10 +52,10 @@ let
     ];
   };
 
-  env = let paths = jacobi._toolset tools; in
-    jacobi.buildEnv {
-      inherit name paths;
-      buildInputs = paths;
-    };
+  paths = pkgs.lib.flatten [ (builtins.attrValues tools) ];
+  env = pkgs.buildEnv {
+    inherit name paths;
+    buildInputs = paths;
+  };
 in
 env

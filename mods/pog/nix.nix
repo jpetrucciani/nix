@@ -3,7 +3,7 @@ with prev;
 rec {
   nixup = pog {
     name = "nixup";
-    version = "0.0.2";
+    version = "0.0.3";
     description = "a quick tool to create a base nix environment!";
     flags = [
       _.flags.nix.with_crystal
@@ -75,7 +75,7 @@ rec {
         fi
         ruby=""
         if [ "$with_ruby" = "1" ]; then
-          ruby="ruby = [(ruby_3_1.withPackages ( p: with p; []))${"\n"}sqlite];"
+          ruby="ruby = [(ruby_3_2.withPackages ( p: with p; []))${"\n"}sqlite];"
         fi
         rust=""
         if [ "$with_rust" = "1" ]; then
@@ -90,7 +90,7 @@ rec {
           vlang="vlang = [(vlang.withPackages (p: with p; []))];"
         fi
         ${prev.coreutils}/bin/cat -s <<EOF | ${_.nixpkgs-fmt}
-          { nixpkgs ? import
+          { pkgs ? import
               (fetchTarball {
                   name = "jacobi-$(date '+%F')";
                   url = "https://nix.cobi.dev/x/$rev";
@@ -99,10 +99,9 @@ rec {
               {}
           }:
           let
-            inherit (nixpkgs.lib) flatten;
             name = "$directory";
             ''${toplevel}
-            tools = with nixpkgs; {
+            tools = with pkgs; {
               cli = [
                 coreutils
                 nixpkgs-fmt
@@ -111,13 +110,12 @@ rec {
               scripts = [''${pg} ''${redis}];
             };
 
-          paths = flatten [ (flatten (builtins.attrValues tools)) ];
-          env = nixpkgs.buildEnv {
-              inherit name paths;
-              buildInputs = paths;
-            };
+          paths = pkgs.lib.flatten [ (builtins.attrValues tools) ];
           in
-          env
+          pkgs.buildEnv {
+            inherit name paths;
+            buildInputs = paths;
+          };
         EOF
       '';
   };
