@@ -200,7 +200,7 @@
 
   slack-bolt = buildPythonPackage rec {
     pname = "slack-bolt";
-    version = "1.16.3";
+    version = "1.17.1";
     format = "setuptools";
 
     disabled = pythonOlder "3.7";
@@ -208,7 +208,7 @@
       owner = "slackapi";
       repo = "bolt-python";
       rev = "v${version}";
-      hash = "sha256-Lt1heTXrg7K3huznara9ukjxUHAZ0LgcfmMqQMQjMIw=";
+      hash = "sha256-pQC35bMd19nDbw0O29e+g6msMn6wW/E7xKBcIjhPOUY=";
     };
 
     propagatedBuildInputs = [ slack-sdk ];
@@ -238,7 +238,6 @@
         uvicorn
       ] ++ lib.optionals (!prev.stdenv.isDarwin) [
         # server types that are broken on darwin
-        chalice
         moto
         sanic
         sanic-testing
@@ -255,13 +254,15 @@
 
     disabledTestPaths = [
       # disable tests that require credentials
+      "tests/adapter_tests/aws/test_aws_chalice.py"
+      "tests/scenario_tests_async/test_authorize.py"
       "tests/scenario_tests_async/test_web_client_customization.py"
+      "tests/scenario_tests/test_authorize.py"
       "tests/slack_bolt_async/oauth/test_async_oauth_flow.py"
       "tests/slack_bolt/oauth/test_oauth_flow.py"
     ] ++ lib.optionals stdenv.isDarwin [
       # disable tests that test broken things on darwin
       "tests/adapter_tests_async/test_async_sanic.py"
-      "tests/adapter_tests/aws/test_aws_chalice.py"
       "tests/adapter_tests/aws/test_aws_lambda.py"
       "tests/adapter_tests/aws/test_lambda_s3_oauth_flow.py"
     ];
