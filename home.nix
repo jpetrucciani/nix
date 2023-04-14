@@ -243,7 +243,6 @@ with pkgs.hax; {
           goldilocks
           horcrux
           hunt
-          mdctl
           ov
           poglets
           rare

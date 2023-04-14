@@ -41,7 +41,6 @@
 (?i)xps
 (?i)yarn
 (?i)medable
-(?i)mdctl
 (?i)acls
 (?i)pingdom
 (?i)pagerduty

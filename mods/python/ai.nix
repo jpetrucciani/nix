@@ -94,14 +94,238 @@ final: prev: with prev; rec {
     };
   };
 
-  langchain = buildPythonPackage rec {
-    pname = "langchain";
-    version = "0.0.138";
+  hnswlib = buildPythonPackage rec {
+    pname = "hnswlib";
+    version = "0.7.0";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "nmslib";
+      repo = pname;
+      rev = "v${version}";
+      hash = "sha256-XXz0NIQ5dCGwcX2HtbK5NFTalP0TjLO6ll6TmH3oflI=";
+    };
+    nativeBuildInputs = [ ];
+    propagatedBuildInputs = [
+      pybind11
+      numpy
+      setuptools
+    ];
+    pythonImportsCheck = [
+      "hnswlib"
+    ];
+    doCheck = false;
+    meta = with lib; {
+      description = "Header-only C++/python library for fast approximate nearest neighbors";
+      homepage = "https://github.com/nmslib/hnswlib";
+      changelog = "https://github.com/nmslib/hnswlib/releases/tag/v${version}";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  pymilvus = prev.pymilvus.overridePythonAttrs (_: rec {
+    pname = "pymilvus";
+    version = "2.2.6";
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-/i3WObwoY6Ffqw+Guij6+uGbKYKET2AJ+d708efmSx0=";
+    };
+    postPatch = "";
+  });
+
+  # chromadb = buildPythonPackage rec {
+  #   pname = "chromadb";
+  #   version = "0.3.21";
+  #   format = "pyproject";
+
+  #   src = fetchPypi {
+  #     inherit pname version;
+  #     hash = "sha256-ezQXiSZm3JDfEOr65xnuGJA3xEjByW5seWTaqHBIPDo=";
+  #   };
+
+  #   nativeBuildInputs = [
+  #     setuptools
+  #     setuptools-scm
+  #   ];
+
+  #   propagatedBuildInputs = [
+  #     clickhouse-connect
+  #     duckdb
+  #     fastapi
+  #     hnswlib
+  #     numpy
+  #     pandas
+  #     posthog
+  #     pydantic
+  #     requests
+  #     sentence-transformers
+  #     uvicorn
+  #   ];
+
+  #   pythonImportsCheck = [ "chromadb" ];
+
+  #   meta = with lib; {
+  #     description = "Chroma";
+  #     homepage = "https://github.com/chroma-core/chroma";
+  #     license = licenses.asl20;
+  #     maintainers = with maintainers; [ jpetrucciani ];
+  #   };
+  # };
+
+  clickhouse-connect = buildPythonPackage rec {
+    pname = "clickhouse-connect";
+    version = "0.5.20";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-RPPz0IGfzgVf2FlkDK/Yr4HMZJfa68JyHR/PMwJvvfY=";
+      hash = "sha256-X8moSEnzw7b2kotFoN8X+mPrz05RizpI7HByCVfhhoM=";
+    };
+
+    nativeBuildInputs = [
+      cython
+      setuptools
+    ];
+
+    propagatedBuildInputs = [
+      certifi
+      lz4
+      pytz
+      urllib3
+      zstandard
+    ];
+
+    passthru.optional-dependencies = {
+      arrow = [
+        pyarrow
+      ];
+      numpy = [
+        numpy
+      ];
+      orjson = [
+        orjson
+      ];
+      pandas = [
+        pandas
+      ];
+      sqlalchemy = [
+        sqlalchemy
+      ];
+      superset = [
+        apache-superset
+      ];
+    };
+
+    pythonImportsCheck = [ "clickhouse_connect" ];
+
+    meta = with lib; {
+      description = "ClickHouse core driver, SqlAlchemy, and Superset libraries";
+      homepage = "https://github.com/ClickHouse/clickhouse-connect";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  posthog = buildPythonPackage rec {
+    pname = "posthog";
+    version = "2.5.0";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-dgHvdbSD62emIpyv7ALaliT21G32EGZ3HKnj+YYoT8M=";
+    };
+
+    propagatedBuildInputs = [
+      backoff
+      monotonic
+      python-dateutil
+      requests
+      setuptools
+      six
+    ];
+
+    passthru.optional-dependencies = {
+      dev = [
+        black
+        flake8
+        flake8-print
+        isort
+        pre-commit
+      ];
+      sentry = [
+        django
+        sentry-sdk
+      ];
+      test = [
+        coverage
+        flake8
+        freezegun
+        mock
+        pylint
+        pytest
+      ];
+    };
+
+    pythonImportsCheck = [ "posthog" ];
+
+    meta = with lib; {
+      description = "Integrate PostHog into any python application";
+      homepage = "https://github.com/posthog/posthog-python";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  # gptcache = buildPythonPackage rec {
+  #   pname = "gptcache";
+  #   version = "0.1.10";
+  #   format = "setuptools";
+
+  #   src = pkgs.fetchFromGitHub {
+  #     owner = "zilliztech";
+  #     repo = pname;
+  #     rev = version;
+  #     hash = "sha256-3qwmd+H0ip3Jq1BqixKEBSKMxzYaKmh5rGBsPCo1ri4=";
+  #   };
+
+  #   propagatedBuildInputs = [
+  #     cachetools
+  #     chromadb
+  #     faiss
+  #     final.sqlalchemy_1
+  #     hnswlib
+  #     huggingface-hub
+  #     numpy
+  #     onnxruntime
+  #     openai
+  #     pydantic
+  #     pymilvus
+  #     transformers
+  #   ];
+
+  #   preBuild = ''
+  #     substituteInPlace ./gptcache/utils/__init__.py --replace '_check_library("torch")' 'pass'
+  #   '';
+
+  #   pythonImportsCheck = [ "gptcache" ];
+
+  #   meta = with lib; {
+  #     description = "GPTCache, a powerful caching library for LLMs";
+  #     homepage = "https://github.com/zilliztech/GPTCache";
+  #     license = licenses.mit;
+  #     maintainers = with maintainers; [ jpetrucciani ];
+  #   };
+  # };
+
+  langchain = buildPythonPackage rec {
+    pname = "langchain";
+    version = "0.0.139";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-Tqhq1hkvRcZcu9wk/xpWqqxL7owDi+mCmBNpylU1kN8=";
     };
 
     nativeBuildInputs = [
@@ -109,21 +333,14 @@ final: prev: with prev; rec {
     ];
 
     propagatedBuildInputs = [
-      pyyaml
-      (sqlalchemy.overridePythonAttrs {
-        version = "1.4.42";
-        src = fetchPypi {
-          version = "1.4.42";
-          pname = "SQLAlchemy";
-          hash = "sha256-F35BkUxHbtHht3/QWWbqiMCUBT4XqFMDxM4Af4jv82M=";
-        };
-      })
+      final.sqlalchemy_1
       aiohttp
       dataclasses-json
       numpy
       openapi-schema-pydantic
       pydantic
       pyowm
+      pyyaml
       requests
       tenacity
     ];
@@ -139,6 +356,7 @@ final: prev: with prev; rec {
         faiss-cpu
         google-api-python-client
         google-search-results
+        # gptcache
         huggingface-hub
         jina
         jinja2
@@ -177,11 +395,17 @@ final: prev: with prev; rec {
       ];
     };
 
+    # gptcache was added as an optional dep, and it requires many other deps
+    postPatch = ''
+      ${pkgs.gnused}/bin/sed -i -E '/gptcache =/d' pyproject.toml
+    '';
+
     pythonImportsCheck = [ "langchain" ];
 
     meta = with lib; {
       description = "Building applications with LLMs through composability";
       homepage = "https://github.com/hwchase17/langchain";
+      changelog = "https://github.com/hwchase17/langchain/releases/tag/v${version}";
       license = licenses.mit;
       maintainers = with maintainers; [ jpetrucciani ];
     };
@@ -189,13 +413,13 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.5.12";
+    version = "0.5.15";
     format = "setuptools";
 
     src = fetchPypi {
       pname = "llama_index";
       inherit version;
-      hash = "sha256-AIPsAZRrfB8VbJkPGAwKZ64OPRFLPfCFGHIfSroyAPk=";
+      hash = "sha256-6zKhSlCgFywLtKoVC3b9IOp4b5cdpmQ3KL7GfZJcoPw=";
     };
 
     nativeCheckInputs = [

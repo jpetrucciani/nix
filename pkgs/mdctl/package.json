@@ -1,7 +1,0 @@
-{
-  "name": "pkg",
-  "version": "0.0.0",
-  "dependencies": {
-    "@medable/mdctl-cli": "1.0.69"
-  }
-}

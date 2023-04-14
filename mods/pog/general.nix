@@ -258,6 +258,21 @@ rec {
         '';
     };
 
+  pdfcat = pog {
+    name = "pdfcat";
+    description = "concatenate pdf files!";
+    flags = [
+      {
+        name = "output";
+        default = "merged.pdf";
+        description = "the file to output the merged pdf to";
+      }
+    ];
+    script = h: with h; ''
+      ${pkgs.ghostscript}/bin/gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile="$output" "$@"
+    '';
+  };
+
   general_pog_scripts = [
     batwhich
     get_cert
@@ -273,5 +288,6 @@ rec {
     whatip
     whereami
     portwatch
+    pdfcat
   ];
 }

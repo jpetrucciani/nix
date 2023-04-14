@@ -8,3 +8,5 @@
 composable
 declaratively
 (?i)devenv
+(?i)darwin
+(?i)x86_64

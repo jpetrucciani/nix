@@ -1,9 +1,9 @@
 [
   (import ./mods/hax.nix)
+  (import ./mods/_pkgs.nix)
   (import ./mods/bashbible.nix)
   (import ./mods/fake_platform.nix)
   (import ./mods/hashers.nix)
-  (import ./mods/custom_pkgs.nix)
   (import ./mods/lang.nix)
   (import ./mods/override.nix)
   (import ./mods/pog.nix)
