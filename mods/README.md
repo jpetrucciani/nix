@@ -22,13 +22,13 @@ This directory contains overlays containing tools with my [`pog`](./pog.nix) mod
 
 This directory provides my python package overlays.
 
+### [\_pkgs.nix](./_pkgs.nix)
+
+This overlay allows me to load the custom packages I've built in my [pkgs/](../pkgs/) directory
+
 ### [bashbible.nix](./bashbible.nix)
 
 This overlay contains the bashbible implemented entirely in nix attr sets.
-
-### [custom_pkgs.nix](./custom_pkgs.nix)
-
-This overlay allows me to load the custom packages I've build in my [pkgs/](../pkgs/) directory
 
 ### [fake_platform.nix](./fake_platform.nix)
 
