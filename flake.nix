@@ -18,5 +18,17 @@
     kwb.url = "github:kwbauson/cfg";
   };
 
-  outputs = { self, ... }: { };
+  outputs = { self, ... }:
+    let
+      inherit (self.inputs.nixpkgs) lib;
+      forAllSystems = lib.genAttrs lib.systems.flakeExposed;
+    in
+    {
+      packages = forAllSystems
+        (system: import self.inputs.nixpkgs {
+          inherit system;
+          overlays = (import ./overlays.nix);
+          config = { allowUnfree = true; };
+        });
+    };
 }
