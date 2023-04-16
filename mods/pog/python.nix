@@ -1,8 +1,5 @@
 final: prev:
 with prev;
-let
-  nixpkgs-json = builtins.fromJSON (builtins.readFile ../../sources/nixpkgs.json);
-in
 rec {
   pynix =
     pog {
@@ -14,11 +11,6 @@ rec {
           short = "x";
           description = "the rev or branch of pynixify to use";
           default = "main";
-        }
-        {
-          name = "nixpkgs";
-          description = "the rev or branch of nixpkgs to use";
-          default = nixpkgs-json.rev;
         }
         {
           name = "python";
