@@ -1,25 +1,19 @@
 final: prev:
 let
-  inherit (builtins) listToAttrs pathExists readDir;
-  inherit (prev.lib) hasSuffix mapAttrsToList optionalAttrs removeSuffix;
-  inherit (prev.lib.attrsets) filterAttrs;
-  inherit (prev.pkgs) callPackage nodejs-16_x;
-  custom =
-    (
-      fn:
-      optionalAttrs (pathExists ../pkgs)
-        (listToAttrs (mapAttrsToList fn (filterAttrs (k: v: (v == "directory") || (hasSuffix ".nix" k)) (readDir ../pkgs))))
-    ) (
-      n: _: {
-        name = removeSuffix ".nix" n;
-        value = callPackage (../pkgs + ("/" + n))
-          {
-            inherit (prev) pkgs;
-            nodejs = nodejs-16_x;
-          };
-      }
-    );
+  inherit (builtins) listToAttrs mapAttrs pathExists readDir;
+  inherit (prev.lib) hasSuffix isDerivation mapAttrsToList optionalAttrs pathIsDirectory removeSuffix;
+  inherit (prev.lib.attrsets) collect filterAttrs mapAttrs';
+  inherit (prev.pkgs) callPackage;
+  custom = listToAttrs (map (x: { name = x.pname; value = x; }) (collect isDerivation (_custom ../pkgs)));
+  _custom = x:
+    if hasSuffix ".nix" x || pathExists (x + "/default.nix")
+    then callPackage x { inherit (prev) pkgs; }
+    else
+      if pathIsDirectory x
+      then (mapAttrs' (k: _: { name = removeSuffix ".nix" k; value = _custom (x + "/${k}"); }) (readDir x))
+      else null;
 in
 {
   inherit custom;
-} // custom
+}
+# // custom

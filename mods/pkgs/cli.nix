@@ -118,32 +118,6 @@ in
       })
     { };
 
-  jaq = prev.callPackage
-    ({ lib, stdenv, fetchFromGitHub, rustPlatform }:
-      let
-        pname = "jaq";
-        version = "0.9.0";
-      in
-      rustPlatform.buildRustPackage rec {
-        inherit pname version;
-
-        src = fetchFromGitHub {
-          owner = "01mf02";
-          repo = pname;
-          rev = "v${version}";
-          sha256 = "sha256-Y1QLNiAeHKYsSbFW235mdTiHyQFBQQsO+FtuFxDX9Hs=";
-        };
-
-        cargoSha256 = "sha256-+9uy5R/dO2T/6dRhtYlPCKfosaYua0JvbECvMacc3XA=";
-
-        meta = with lib; {
-          description = "a jq clone focussed on correctness, speed, and simplicity";
-          license = licenses.mit;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      })
-    { };
-
   rare = prev.callPackage
     ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
       buildGo119Module rec {
