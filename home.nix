@@ -153,7 +153,6 @@ with pkgs.hax; {
         helm_pog_scripts
         k8s_pog_scripts
         nix_pog_scripts
-        python_pog_scripts
         ssh_pog_scripts
 
         # lsps
