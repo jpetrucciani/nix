@@ -265,7 +265,7 @@ with pkgs.hax; {
           (
             optList (!isX86Mac) [
               git-trim
-              watcher
+              # watcher
             ]
           )
 
