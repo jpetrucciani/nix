@@ -30,7 +30,7 @@ in
       grub.device = "/dev/sda";
     };
     kernel.sysctl = { } // common.sysctl_opts;
-    tmpOnTmpfs = true;
+    tmp.useTmpfs = true;
   };
 
   environment.variables = {

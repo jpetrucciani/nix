@@ -29,7 +29,7 @@ in
       efi.canTouchEfiVariables = true;
     };
     kernel.sysctl = { } // common.sysctl_opts;
-    tmpOnTmpfs = true;
+    tmp.useTmpfs = true;
   };
 
   environment.variables = {

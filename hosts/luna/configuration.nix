@@ -29,7 +29,7 @@ in
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
   boot.kernel.sysctl = { } // common.sysctl_opts;
-  boot.tmpOnTmpfs = true;
+  boot.tmp.useTmpfs = true;
 
   environment.etc."nixpkgs-path".source = common.pinned.path;
   environment.variables = {

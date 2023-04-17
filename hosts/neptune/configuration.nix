@@ -30,7 +30,7 @@ in
       grub.device = "/dev/nvme0n1";
     };
     kernel.sysctl = { } // common.sysctl_opts;
-    tmpOnTmpfs = true;
+    tmp.useTmpfs = true;
   };
 
   environment.variables = {

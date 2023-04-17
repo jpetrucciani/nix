@@ -29,7 +29,7 @@ in
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
   boot.kernel.sysctl = { } // common.sysctl_opts;
   boot.kernelParams = [ "acpi_rev_override=1" ];
-  boot.tmpOnTmpfs = true;
+  boot.tmp.useTmpfs = true;
 
   environment.etc."nixpkgs-path".source = common.pinned.path;
   environment.variables = {
