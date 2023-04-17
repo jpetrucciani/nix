@@ -320,12 +320,12 @@ final: prev: with prev; rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.141";
+    version = "0.0.142";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-JFiI/z1EOcAkLzo2Zp+4ORfTns5PpsMW1MNPHeY/Uy0=";
+      hash = "sha256-zIbh7VZWOA9JKPF7sBMCgdQtaCgMADsE6n64kNvbtHk=";
     };
 
     nativeBuildInputs = [
@@ -336,6 +336,7 @@ final: prev: with prev; rec {
       final.sqlalchemy_1
       aiohttp
       dataclasses-json
+      numexpr
       numpy
       openapi-schema-pydantic
       pydantic
