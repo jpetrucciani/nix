@@ -34,15 +34,6 @@ let
   };
 
   optList = conditional: list: if conditional then list else [ ];
-
-  doom-emacs = pkgs.callPackage
-    (builtins.fetchTarball {
-      url = "https://github.com/nix-community/nix-doom-emacs/archive/master.tar.gz";
-    })
-    {
-      doomPrivateDir = ./doom.d;
-    };
-
 in
 with pkgs.hax; {
   nixpkgs.overlays = import ./overlays.nix;
@@ -162,7 +153,6 @@ with pkgs.hax; {
         helm_pog_scripts
         k8s_pog_scripts
         nix_pog_scripts
-        python_pog_scripts
         ssh_pog_scripts
 
         # lsps
@@ -292,15 +282,9 @@ with pkgs.hax; {
 
         # overlays
         nix_hash_unstable
-        nix_hash_nixos_unstable
         nix_hash_jpetrucciani
         nix_hash_kwb
-        nix_hash_hm
-        nix_hash_darwin
         nix_hash_medable
-        nix_hash_nix-security-box
-        nix_hash_nix2container
-        nix_hash_devenv
         nixup
         foo
 

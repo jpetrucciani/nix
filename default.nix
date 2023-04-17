@@ -1,9 +1,4 @@
-with builtins;
-{ nixpkgs-json ? fromJSON (readFile ./sources/nixpkgs.json)
-, nixpkgs ? fetchTarball {
-    inherit (nixpkgs-json) sha256;
-    url = "https://github.com/NixOS/nixpkgs/archive/${nixpkgs-json.rev}.tar.gz";
-  }
+{ nixpkgs ? (import ./flake-compat.nix).inputs.nixpkgs
 , overlays ? [ ]
 , config ? { }
 , system ? builtins.currentSystem

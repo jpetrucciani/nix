@@ -36,7 +36,7 @@ This directory contains rev/sha256 combos for any of the other repos that I trac
 
 ### [default.nix](./default.nix)
 
-This file acts as the entrypoint for nix to pin my nixpkgs version to the rev and sha256 found [in the sources directory](./sources/nixpkgs.json).
+This file acts as the entrypoint for nix to pin my nixpkgs version to the rev and sha256 found [in the flake.lock](./flake.lock).
 
 ### [home.nix](./home.nix)
 

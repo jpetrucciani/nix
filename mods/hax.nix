@@ -28,14 +28,7 @@ final: prev:
     ifIsM1 = attrIf isM1;
     ifIsWSL = attrIf isWSL;
 
-    kwb = fromJSON (readFile ../sources/kwb.json);
-    chief_keef = import (
-      prev.pkgs.fetchFromGitHub {
-        inherit (kwb) rev sha256;
-        owner = "kwbauson";
-        repo = "cfg";
-      }
-    );
+    chief_keef = import (import ../flake-compat.nix).inputs.kwb { };
 
     pythonPackageOverlay =
       overlay: attr: self: super:

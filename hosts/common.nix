@@ -11,20 +11,9 @@ let
   isUbuntu = isLinux && (builtins.match ".*ID=ubuntu.*" (builtins.readFile /etc/os-release)) == [ ];
   isNixDarwin = pkgs.getEnv "NIXDARWIN_CONFIG" != "";
 
-  pinned = import ../default.nix { };
-
-  hm = with builtins; fromJSON (readFile ../sources/home-manager.json);
-  home-manager = import
-    (fetchTarball {
-      inherit (hm) sha256;
-      url = "https://github.com/nix-community/home-manager/archive/${hm.rev}.tar.gz";
-    })
-    { pkgs = pinned; };
-  nd = with builtins; fromJSON (readFile ../sources/darwin.json);
-  nix-darwin = fetchTarball {
-    inherit (nd) sha256;
-    url = "https://github.com/LnL7/nix-darwin/archive/${nd.rev}.tar.gz";
-  };
+  pinned = import (import ../flake-compat.nix).inputs.nixpkgs { };
+  home-manager = import (import ../flake-compat.nix).inputs.home-manager { };
+  nix-darwin = import (import ../flake-compat.nix).inputs.nix-darwin { };
 
   mms = import
     (fetchTarball {
