@@ -168,5 +168,4 @@
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
-
 })

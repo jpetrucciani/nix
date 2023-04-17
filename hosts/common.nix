@@ -11,7 +11,7 @@ let
   isUbuntu = isLinux && (builtins.match ".*ID=ubuntu.*" (builtins.readFile /etc/os-release)) == [ ];
   isNixDarwin = pkgs.getEnv "NIXDARWIN_CONFIG" != "";
 
-  pinned = import (import ../flake-compat.nix).inputs.nixpkgs { };
+  pinned = import ../default.nix { };
   home-manager = import (import ../flake-compat.nix).inputs.home-manager { };
   nix-darwin = import (import ../flake-compat.nix).inputs.nix-darwin { };
 

@@ -27,7 +27,7 @@
       packages = forAllSystems
         (system: import self.inputs.nixpkgs {
           inherit system;
-          overlays = (import ./overlays.nix);
+          overlays = import ./overlays.nix;
           config = { allowUnfree = true; };
         });
     };
