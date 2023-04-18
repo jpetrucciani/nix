@@ -1,4 +1,4 @@
-name: formatting
+name: check
 on: {workflow_dispatch, push: {branches: [main]}, pull_request}
 jobs:
   prettier:
@@ -6,28 +6,29 @@ jobs:
     steps:
       - uses: actions/checkout@v3.5.2
       - uses: cachix/install-nix-action@v20
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-      - run: nix-env -f . -iA nodePackages.prettier
-      - run: prettier --check .
+      - run: nix run .#nodePackages.prettier -- --check .
   nixpkgs-fmt:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3.5.2
       - uses: cachix/install-nix-action@v20
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-      - run: nix-env -f . -iA nixpkgs-fmt
-      - run: nixpkgs-fmt --check .
+      - run: nix run .#nixpkgs-fmt -- --check .
+  statix:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3.5.2
+      - uses: cachix/install-nix-action@v20
+      - run: nix run .#statix -- check
+  deadnix:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3.5.2
+      - uses: cachix/install-nix-action@v20
+      - run: nix run .#deadnix -- -f .
   vale:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3.5.2
       - uses: cachix/install-nix-action@v20
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-      - run: nix-env -f . -iA vale fd
+      - run: nix profile install .#{vale,fd}
       - run: vale sync && vale $(fd --glob --hidden '*.md')
