@@ -4,7 +4,7 @@ jobs:
   check-for-updates:
     runs-on: ubuntu-22.04
     env:
-      GITHUB_TOKEN: ${{ secrets.pat }}
+      GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v3.5.2
       - uses: cachix/install-nix-action@v20
@@ -13,11 +13,11 @@ jobs:
             experimental-features = nix-command flakes
       - run: nix flake update
       - uses: peter-evans/create-pull-request@v5.0.0
-        id: cpr
+        id: pr
         with:
           delete-branch: true
           title: automatic update
           commit-message: automatic update
           branch: automatic-update
-          token: ${{ secrets.pat }}
-      - run: gh pr merge --auto --squash ${{ steps.cpr.outputs.pull-request-url }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - run: gh pr merge --auto --squash ${{ steps.pr.outputs.pull-request-url }}
