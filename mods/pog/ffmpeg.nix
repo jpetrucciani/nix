@@ -115,7 +115,7 @@ rec {
         end_sec="$(echo "$end" | ${fn.ts_to_seconds})"
       fi
 
-      ${_.ffmpeg} -ss "$start_sec" -i "$file" -to "$end_sec" -c:v copy -c:a copy "$output"
+      ${_.ffmpeg} -ss "$start_sec" -to "$end_sec" -i "$file" -c:v copy -c:a copy "$output"
     '';
   };
 

@@ -7,7 +7,7 @@ let
 in
 {
   imports = [
-    "${common.home-manager.path}/nix-darwin"
+    "${common.home-manager}/nix-darwin"
     "${common.nix-darwin}/modules/security/pam.nix"
   ];
 
