@@ -93,21 +93,23 @@
 
   milli = buildPythonPackage rec {
     pname = "milli";
-    version = "1.0.0";
+    version = "1.1.1";
 
     format = "pyproject";
     src = pkgs.fetchFromGitHub {
       owner = "AlexAltea";
       repo = "milli-py";
-      rev = "4cbb103fa679d254332e98291af29350a8bab1cd";
-      hash = "sha256-q9kc1WQIqYjLrCQFvku+YvvSYNruyhaRJP5Mwutujrg=";
+      rev = "v${version}";
+      hash = "sha256-l8WS8B7w57RFYppDsl/6QAOA32m+xO/zs5JV1qBzfJ0=";
       fetchSubmodules = true;
     };
 
-    cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
-      inherit src sourceRoot;
-      name = "${pname}-${version}";
-      hash = "sha256-kunz3sjYCJoPdxdKPDofIy03e/u7wBeGuY0L9rrxQEM=";
+    cargoDeps = pkgs.rustPlatform.importCargoLock {
+      lockFile = "${src}/Cargo.lock";
+      outputHashes = {
+        "heed-0.12.5" = "sha256-atkKiK8rzqji47tJvUzbIXMw8U1uddHkHakPuEUvmFg=";
+        "lmdb-rkv-sys-0.15.1" = "sha256-zLHTprwF7aa+2jaD7dGYmOZpJYFijMTb4I3ODflNUII=";
+      };
     };
     sourceRoot = "";
 
