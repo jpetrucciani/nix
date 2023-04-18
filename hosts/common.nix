@@ -12,9 +12,8 @@ let
   isUbuntu = isLinux && (builtins.match ".*ID=ubuntu.*" (builtins.readFile /etc/os-release)) == [ ];
   isNixDarwin = pkgs.getEnv "NIXDARWIN_CONFIG" != "";
 
+  inherit ((import ../flake-compat.nix).inputs) home-manager nix-darwin;
   pinned = import ../default.nix { inherit (pkgs) system; };
-  home-manager = (import ../flake-compat.nix).inputs.home-manager;
-  nix-darwin = (import ../flake-compat.nix).inputs.nix-darwin;
 
   mms = import
     (fetchTarball {
