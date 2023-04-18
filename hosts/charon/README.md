@@ -6,19 +6,7 @@ This is my personal M1 Mac Mini server, running MacOS and using nix-darwin and h
 
 ```bash
 # ensure nix is installed, repo is cloned to ~/.config/nixpkgs
-
-# export NIX_PATH, load into a shell
-export NIX_PATH="darwin-config=/Users/$USER/.config/nixpkgs/hosts/charon/configuration.nix:nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixpkgs:$NIX_PATH"
-nix shell -f https://github.com/LnL7/nix-darwin/archive/master.tar.gz
-
-# run initial install
-darwin-installer
-
-# rebuild and grab
-ls -alF /nix/store/ | grep nix-darwin/
-
-## grab this nix store path from above
-darwin-rebuild switch -I darwin=/nix/store/0zvb9p81gk91q42sid21rym45zwj9xcw-nix-darwin -I darwin-config=/Users/$USER/.config/nixpkgs/hosts/charon/configuration.nix
+$(nix-build --no-link --expr 'with import ~/.config/nixpkgs {}; _nix-darwin-switch' --argstr host charon)/bin/switch
 ```
 
 ## manual tweaks

@@ -22,7 +22,7 @@ let
 in
 {
   imports = [
-    "${common.home-manager.path}/nixos"
+    "${common.home-manager}/nixos"
     "${modulesPath}/profiles/minimal.nix"
     nixos-wsl.nixosModules.wsl
   ];

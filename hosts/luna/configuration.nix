@@ -5,7 +5,7 @@ let
 in
 {
   imports = [
-    "${common.home-manager.path}/nixos"
+    "${common.home-manager}/nixos"
     "${common.mms}/nixos/modules/services/games/minecraft-servers"
     ./hardware-configuration.nix
     ../modules/games/stationeers.nix

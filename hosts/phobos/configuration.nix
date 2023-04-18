@@ -5,7 +5,7 @@ let
 in
 {
   imports = [
-    "${common.home-manager.path}/nixos"
+    "${common.home-manager}/nixos"
     ./hardware-configuration.nix
     ../modules/games/valheim.nix
   ];

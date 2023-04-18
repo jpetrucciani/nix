@@ -6,7 +6,7 @@ let
 in
 {
   imports = [
-    "${common.home-manager.path}/nixos"
+    "${common.home-manager}/nixos"
     "${nixos-hardware}/dell/xps/15-9560"
     ./hardware-configuration.nix
   ];

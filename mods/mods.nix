@@ -30,7 +30,7 @@ rec {
     '';
     nixOS = ''
       ${_.git} -C ~/cfg/ pull origin main
-      "$(nix-build --no-link --expr 'with import ~/cfg {}; _nixos-switch' --argstr host "$HOSTNAME")"/bin/switch
+      "$(nix-build --no-link --expr 'with import ~/cfg {}; _nixos-switch' --argstr host "$(machine-name)")"/bin/switch
     '';
     darwin = ''
       ${_.git} -C ~/.config/nixpkgs/ pull origin main
