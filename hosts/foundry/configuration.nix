@@ -1,6 +1,6 @@
 { pkgs, config, ... }:
 let
-  nixpkgs = import ../../default.nix { };
+  nixpkgs = import ../../default.nix { inherit (pkgs) system; };
   common = import ../common.nix { inherit config pkgs; };
 in
 {

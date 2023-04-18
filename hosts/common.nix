@@ -1,4 +1,5 @@
 { pkgs
+, machine-name
 , isBarebones ? false
 , ...
 }:
@@ -11,9 +12,9 @@ let
   isUbuntu = isLinux && (builtins.match ".*ID=ubuntu.*" (builtins.readFile /etc/os-release)) == [ ];
   isNixDarwin = pkgs.getEnv "NIXDARWIN_CONFIG" != "";
 
-  pinned = import ../default.nix { };
-  home-manager = import (import ../flake-compat.nix).inputs.home-manager { };
-  nix-darwin = import (import ../flake-compat.nix).inputs.nix-darwin { };
+  pinned = import ../default.nix { inherit (pkgs) system; };
+  home-manager = (import ../flake-compat.nix).inputs.home-manager;
+  nix-darwin = (import ../flake-compat.nix).inputs.nix-darwin;
 
   mms = import
     (fetchTarball {
@@ -22,7 +23,7 @@ let
     });
 
   jacobi = import ../home.nix {
-    inherit home-manager isBarebones;
+    inherit home-manager machine-name isBarebones;
     pkgs = pinned;
   };
 

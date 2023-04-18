@@ -30,5 +30,44 @@
           overlays = import ./overlays.nix;
           config = { allowUnfree = true; };
         });
+
+      nixosConfigurations = builtins.listToAttrs
+        (map
+          (name: {
+            inherit name; value = self.inputs.nixpkgs.lib.nixosSystem {
+            pkgs = self.packages.x86_64-linux;
+            specialArgs = { machine-name = name; };
+            modules = [ ./hosts/${name}/configuration.nix ];
+          };
+          })
+          [
+            "andromeda"
+            "bedrock"
+            "granite"
+            "luna"
+            "milkyway"
+            "neptune"
+            "phobos"
+            "terra"
+            "titan"
+            "ymir"
+          ]);
+
+      darwinConfigurations = builtins.listToAttrs
+        (map
+          (name: {
+            inherit name; value = self.inputs.nix-darwin.lib.darwinSystem {
+            pkgs = self.packages.aarch64-darwin;
+            specialArgs = { machine-name = name; };
+            modules = [
+              ./hosts/${name}/configuration.nix
+            ];
+          };
+          })
+          [
+            "charon"
+            "pluto"
+            "m1max"
+          ]);
     };
 }

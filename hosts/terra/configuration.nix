@@ -1,7 +1,7 @@
-{ config, pkgs, ... }:
+{ config, machine-name, pkgs, ... }:
 let
   hostname = "terra";
-  common = import ../common.nix { inherit config pkgs; };
+  common = import ../common.nix { inherit config machine-name pkgs; };
 in
 {
   imports = [

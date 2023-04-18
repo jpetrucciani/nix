@@ -26,5 +26,5 @@ with prev;
     '';
   };
 
-  hax_pog_scripts = [ ] ++ (if isLinux then [ ] else [ ]);
+  hax_pog_scripts = [ ] ++ (if stdenv.isLinux then [ ] else [ ]);
 }

@@ -28,7 +28,7 @@ final: prev:
     ifIsM1 = attrIf isM1;
     ifIsWSL = attrIf isWSL;
 
-    chief_keef = import (import ../flake-compat.nix).inputs.kwb { };
+    chief_keef = import (import ../flake-compat.nix).inputs.kwb { inherit (pkgs) system; };
 
     pythonPackageOverlay =
       overlay: attr: self: super:
@@ -103,10 +103,6 @@ final: prev:
       script = ''
         exec ${chief_keef.better-comma}/bin/, \
           --overlay ${./mods.nix} \
-          --overlay ${./pkgs/cli.nix} \
-          --overlay ${./pkgs/cloud.nix} \
-          --overlay ${./pkgs/k8s.nix} \
-          --overlay ${./pkgs/server.nix} \
           ''${overlay:+--overlay $overlay} \
           ''${unset:+-u} \
           ''${description:+-d} \

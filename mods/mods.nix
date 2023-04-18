@@ -1,15 +1,10 @@
 final: prev:
 with prev;
-with builtins; rec {
-  inherit (prev.hax) isM1 isLinux isDarwin isOldMac isNixOS isAndroid isUbuntu isNixDarwin;
-
-  nix-darwin = import (import ../flake-compat.nix).inputs.nix-darwin { };
-  nix2container = import (import ../flake-compat.nix).inputs.nix2container { pkgs = prev; };
-  devenv = import (import ../flake-compat.nix).inputs.devenv { };
+rec {
+  inherit (prev.hax) isDarwin isNixOS;
 
   ### GENERAL STUFF
   _nixos-switch = { host }: writeBashBinChecked "switch" ''
-    set -eo pipefail
     toplevel=$(nix-build --no-link --expr 'with import ~/cfg {}; (nixos ~/cfg/hosts/${host}/configuration.nix).toplevel')
     if [[ $(realpath /run/current-system) != "$toplevel" || "$POG_FORCE" == "1" ]];then
       ${nvd}/bin/nvd diff /run/current-system "$toplevel"
@@ -17,6 +12,17 @@ with builtins; rec {
       sudo "$toplevel"/bin/switch-to-configuration switch
     fi
   '';
+  _nix-darwin-switch = { host }:
+    writeBashBinChecked "switch" ''
+      profile=/nix/var/nix/profiles/system
+      toplevel="$(nix build --no-link --print-out-paths ~/.config/nixpkgs#darwinConfigurations.${host}.system)"
+      if [[ $(realpath "$profile") != "$toplevel" ]];then
+        ${nvd}/bin/nvd diff "$profile" "$toplevel"
+        sudo -H nix-env -p "$profile" --set "$toplevel"
+        "$toplevel"/activate-user
+        sudo "$toplevel"/activate
+      fi
+    '';
   _hms = {
     default = ''
       ${_.git} -C ~/.config/nixpkgs/ pull origin main
@@ -28,12 +34,9 @@ with builtins; rec {
     '';
     darwin = ''
       ${_.git} -C ~/.config/nixpkgs/ pull origin main
-      nix_darwin_path="$(nix-build --no-link --expr 'with import ~/.config/nixpkgs {}; nix-darwin')"
-      darwin-rebuild switch -I darwin="$nix_darwin_path" -I darwin-config="$NIXDARWIN_CONFIG"
+      "$(nix-build --no-link --expr 'with import ~/.config/nixpkgs {}; _nix-darwin-switch' --argstr host "$(machine-name)")"/bin/switch
     '';
-    switch =
-      if
-        isNixOS then _hms.nixOS else (if isNixDarwin then _hms.darwin else _hms.default);
+    switch = if isNixOS then _hms.nixOS else (if isDarwin then _hms.darwin else _hms.default);
   };
 
   hms = writeBashBinChecked "hms" _hms.switch;

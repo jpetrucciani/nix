@@ -1,13 +1,13 @@
-{ config, pkgs, ... }:
+{ config, machine-name, pkgs, ... }:
 let
   hostname = "m1max";
-  common = import ../common.nix { inherit config pkgs; };
+  common = import ../common.nix { inherit config machine-name pkgs; };
   configPath = "/Users/jacobi/.config/nixpkgs/hosts/${hostname}/configuration.nix";
   username = "jacobi";
 in
 {
   imports = [
-    "${common.home-manager.path}/nix-darwin"
+    "${common.home-manager}/nix-darwin"
     "${common.nix-darwin}/modules/security/pam.nix"
   ];
 

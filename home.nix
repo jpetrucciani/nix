@@ -1,4 +1,4 @@
-{ pkgs ? import ./default.nix { }, home-manager ? null, isBarebones ? false }:
+{ pkgs, machine-name, home-manager ? null, isBarebones ? false }:
 let
   inherit (pkgs.hax) isAndroid isDarwin isLinux isM1 isNixOS isX86Mac;
   inherit (pkgs.hax) docker_aliases kubernetes_aliases;
@@ -144,6 +144,11 @@ in
         gke-gcloud-auth-plugin
 
         # load in my custom checked pog scripts
+        (
+          writeBashBinChecked "machine-name" ''
+            echo "${machine-name}"
+          ''
+        )
         hms
         aws_pog_scripts
         docker_pog_scripts
@@ -289,25 +294,6 @@ in
         nix_hash_medable
         nixup
         foo
-
-        # ubuntu specific
-        (
-          optList isUbuntu [
-            (
-              writeBashBinChecked "u" ''
-                sudo apt update
-                sudo apt upgrade
-              ''
-            )
-          ]
-        )
-
-        # android specific
-        (
-          optList isAndroid [
-            starship
-          ]
-        )
       ];
   };
 
