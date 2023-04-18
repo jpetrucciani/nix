@@ -1,4 +1,4 @@
-{ hex, ... }:
+{ ... }:
 let
   nginx = rec {
     defaults = {

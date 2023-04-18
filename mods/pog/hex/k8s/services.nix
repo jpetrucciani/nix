@@ -1,4 +1,4 @@
-{ hex, pkgs }:
+{ hex, pkgs, ... }:
 let
   inherit (hex) attrIf ifNotNull ifNotEmptyList ifNotEmptyAttr toYAML;
   inherit (pkgs.lib.attrsets) mapAttrsToList;
@@ -115,11 +115,9 @@ let
       , livenessProbe ? null
       , readinessProbe ? null
       , securityContext ? null
-      , strategy ? null
       , egressPolicy ? defaults.egressPolicy
       , ingressPolicy ? defaults.ingressPolicy
       , daemonSet ? false
-      , china ? false
       , suffix ? ""
       , depSuffix ? "${suffix}"
       , saSuffix ? "-service-account${suffix}"
@@ -159,7 +157,7 @@ let
           else if hardAntiAffinity then defaults.nodeAffinity { inherit labels; hard = true; }
           else { };
         sa = (components.service-account {
-          inherit name namespace china saSuffix imagePullSecrets;
+          inherit name namespace saSuffix imagePullSecrets;
         }) // extraSA;
         sa-token = components.service-account-token {
           inherit name namespace saSuffix;
@@ -194,7 +192,7 @@ let
         }) // extraNP;
         dep = (components.deployment {
           inherit name namespace labels image replicas revisionHistoryLimit maxSurge maxUnavailable depSuffix saSuffix daemonSet lifecycle imagePullSecrets affinity;
-          inherit cpuRequest memoryRequest cpuLimit memoryLimit command args volumes subdomain nodeSelector livenessProbe readinessProbe securityContext pre1_18;
+          inherit cpuRequest memoryRequest cpuLimit memoryLimit command args volumes subdomain nodeSelector livenessProbe readinessProbe securityContext;
           inherit env envAttrs envFrom extraPodAnnotations appArmor tailscaleSidecar tailscale_image_base tailscale_image_tag tsSuffix hostAliases __init;
         }) // extraDep;
         hpa = (components.hpa { inherit name namespace labels min max cpuUtilization hpaSuffix; }) // extraHPA;
@@ -232,7 +230,7 @@ let
         };
         type = "kubernetes.io/service-account-token";
       };
-      service-account = { name, namespace ? "default", china ? false, saSuffix ? "-sa", imagePullSecrets ? [ ] }: {
+      service-account = { name, namespace ? "default", saSuffix ? "-sa", imagePullSecrets ? [ ] }: {
         apiVersion = "v1";
         kind = "ServiceAccount";
         metadata = {
@@ -446,7 +444,6 @@ let
         , securityContext ? null
         , lifecycle ? null
         , daemonSet ? false
-        , pre1_18 ? false
         , imagePullSecrets ? [ ]
         , affinity ? { }
         , extraPodAnnotations ? { }

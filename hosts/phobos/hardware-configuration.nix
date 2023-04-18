@@ -1,4 +1,4 @@
-{ config, lib, pkgs, modulesPath, ... }:
+{ config, lib, ... }:
 {
   imports = [ ];
   boot.initrd.availableKernelModules = [ "sd_mod" "sr_mod" ];

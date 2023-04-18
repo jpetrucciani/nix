@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3.5.2
       - uses: cachix/install-nix-action@v20
-      - run: nix run .#deadnix -- -f .
+      - run: nix run .#deadnix -- -f -_ -l .
   vale:
     runs-on: ubuntu-22.04
     steps:

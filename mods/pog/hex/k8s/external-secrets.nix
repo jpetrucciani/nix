@@ -1,4 +1,4 @@
-{ hex, pkgs }:
+{ hex, ... }:
 let
   inherit (hex) attrIf ifNotEmptyAttr toYAML;
 

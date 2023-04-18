@@ -5,7 +5,7 @@ rec {
     packages:
     let
       nimPackages = prev.callPackage ./lang/nim-packages.nix { };
-      addPath = { src, name, sub ? "", meta ? { }, ... }: ''--add-flags "--path:${src}${sub}"'';
+      addPath = { src, sub ? "", ... }: ''--add-flags "--path:${src}${sub}"'';
       additionalPaths = map addPath (packages nimPackages);
     in
     prev.nim.overrideAttrs (old: {

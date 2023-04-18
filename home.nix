@@ -1,4 +1,4 @@
-{ pkgs ? import ./default.nix { }, machine-name, home-manager ? null, isBarebones ? false }:
+{ pkgs ? import ./default.nix { }, machine-name ? "void", home-manager ? null, isBarebones ? false }:
 let
   inherit (pkgs.hax) isAndroid isDarwin isLinux isM1 isNixOS isX86Mac;
   inherit (pkgs.hax) docker_aliases kubernetes_aliases;

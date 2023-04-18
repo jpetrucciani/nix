@@ -34,7 +34,7 @@ rec {
       description = "eval";
       default = ".";
     }];
-    script = helpers: ''
+    script = ''
       file="''${1:-/dev/stdin}"
       process_line() {
         read -r
@@ -159,7 +159,7 @@ rec {
     arguments = [
       { name = "sql_file"; }
     ];
-    script = helpers: ''
+    script = ''
       ${pkgs.python311Packages.sqlparse}/bin/sqlformat -k upper -r "$1"
       echo
     '';
@@ -169,7 +169,7 @@ rec {
     name = "whatip";
     description = "fetch the current ip of the main network interface!";
     flags = [ ];
-    script = helpers: ''
+    script = ''
       ${_.curl} -s ifconfig.io
     '';
   };
@@ -178,7 +178,7 @@ rec {
     name = "whereami";
     description = "a quick and easy way to try a geoip lookup! (requires an api key)";
     flags = [ ];
-    script = helpers: ''
+    script = ''
       ${_.curl} -s --netrc-optional "https://api.cobi.dev/geoip/$(${whatip}/bin/whatip)" | ${_.jq}
     '';
   };

@@ -44,7 +44,7 @@ final: prev:
         };
       in
       if builtins.isList attr then
-        (builtins.zipAttrsWith (name: builtins.head) (map pyOverlay attr)) else pyOverlay attr;
+        (builtins.zipAttrsWith (_: builtins.head) (map pyOverlay attr)) else pyOverlay attr;
 
     ssh = rec {
       github = ''

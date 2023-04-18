@@ -47,7 +47,7 @@ rec {
     let
       allPlugins = final.lib.flatten (plugins builtins);
       caddyPatchMain = final.lib.strings.concatMapStringsSep "\n"
-        ({ name, version }: ''
+        ({ name, ... }: ''
           sed -i '/plug in Caddy modules here/a\\t_ "${name}"' cmd/caddy/main.go
         '')
         allPlugins;

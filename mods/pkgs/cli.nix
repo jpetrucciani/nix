@@ -5,7 +5,7 @@ let
 in
 {
   s3-edit = prev.callPackage
-    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+    ({ lib, buildGo120Module, fetchFromGitHub }:
       buildGo120Module rec {
         pname = "s3-edit";
         version = "0.0.16";
@@ -36,7 +36,7 @@ in
     { };
 
   memzoom = prev.callPackage
-    ({ stdenv, lib, fetchFromGithub }: stdenv.mkDerivation rec {
+    ({ stdenv, lib }: stdenv.mkDerivation rec {
       pname = "memzoom";
       version = "1.0";
 
@@ -68,7 +68,7 @@ in
     { };
 
   horcrux = prev.callPackage
-    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+    ({ lib, buildGo120Module, fetchFromGitHub }:
       buildGo120Module rec {
         pname = "horcrux";
         version = "0.3";
@@ -93,7 +93,7 @@ in
     { };
 
   hunt = prev.callPackage
-    ({ lib, stdenv, fetchFromGitHub, rustPlatform }:
+    ({ lib, fetchFromGitHub, rustPlatform }:
       let
         pname = "hunt";
         version = "1.7.6";
@@ -119,7 +119,7 @@ in
     { };
 
   rare = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+    ({ lib, buildGo119Module, fetchFromGitHub }:
       buildGo119Module rec {
         pname = "rare";
         version = "0.3.0";
@@ -145,7 +145,7 @@ in
     { };
 
   comcast = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+    ({ lib, buildGo119Module, fetchFromGitHub }:
       buildGo119Module rec {
         pname = "comcast";
         version = "1.0.1";
@@ -207,7 +207,7 @@ in
     { };
 
   tlsh-go = prev.callPackage
-    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+    ({ lib, buildGo120Module, fetchFromGitHub }:
       let
         version = "0.3.0";
         date = "2022-12-12";
@@ -247,7 +247,7 @@ in
     { };
 
   ov = prev.callPackage
-    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+    ({ lib, buildGo120Module, fetchFromGitHub }:
       buildGo120Module rec {
         pname = "ov";
         version = "0.14.1";
@@ -373,7 +373,7 @@ in
     { };
 
   lastresort = prev.callPackage
-    ({ lib, stdenv, fetchFromGitHub, rustPlatform }:
+    ({ lib, fetchFromGitHub, rustPlatform }:
       let
         pname = "lastresort";
         version = "0.4.0";
@@ -399,7 +399,7 @@ in
     { };
 
   terraform-cloud-exporter = prev.callPackage
-    ({ stdenv, lib, buildGo119Module, fetchFromGitHub }:
+    ({ lib, buildGo119Module, fetchFromGitHub }:
       buildGo119Module rec {
         pname = "terraform-cloud-exporter";
         version = "2.3.0";
@@ -495,7 +495,7 @@ in
   };
 
   bkt = prev.callPackage
-    ({ lib, stdenv, fetchFromGitHub, rustPlatform }:
+    ({ lib, fetchFromGitHub, rustPlatform }:
       let
         pname = "bkt";
         version = "0.6.1";

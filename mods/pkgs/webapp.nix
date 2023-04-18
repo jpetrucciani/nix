@@ -2,7 +2,7 @@ final: prev:
 with prev;
 {
   json-crack = prev.callPackage
-    ({ stdenvNoCC, fetchFromGitHub, mkYarnPackage, nodejs ? nodejs-18_x }:
+    ({ fetchFromGitHub, mkYarnPackage }:
       let
         version = "2.6.0";
 
