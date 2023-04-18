@@ -1,4 +1,4 @@
-{ ... }:
+_:
 let
   server = rec {
     build = args: ''
