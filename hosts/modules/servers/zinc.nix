@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption mkOption literalExpression mdDoc;
-  inherit (lib.types) bool lines package path port str;
+  inherit (lib.types) bool package path port str;
   cfg = config.services.zinc;
 in
 {

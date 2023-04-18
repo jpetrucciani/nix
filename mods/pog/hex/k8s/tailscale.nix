@@ -1,4 +1,4 @@
-{ hex, pkgs }:
+{ hex, ... }:
 let
   inherit (hex) toYAML boolToString concatMapStrings removePrefix ifNotNull ifNotEmptyList;
 

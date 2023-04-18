@@ -1,9 +1,9 @@
-{ lib, pkgs, config, modulesPath, ... }:
+{ lib, machine-name, pkgs, config, modulesPath, ... }:
 with lib;
 let
   nixos-wsl = (import (fetchTarball { url = "https://github.com/nix-community/NixOS-WSL/archive/main.tar.gz"; })).outputs;
   hostname = "milkyway";
-  common = import ../common.nix { inherit config pkgs; };
+  common = import ../common.nix { inherit config machine-name pkgs; };
   cuda = pkgs.cudaPackages.cudatoolkit;
   cudaTarget = "cuda114";
   WSL_MAGIC = "/usr/lib/wsl/lib";

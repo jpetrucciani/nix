@@ -1,4 +1,4 @@
-{ hex, pkgs, ... }:
+{ hex, ... }:
 let
   gitlab-runner = rec {
     defaults = {
@@ -30,7 +30,7 @@ let
       , forceNamespace ? true
       , extraFlags ? [ hex.k8s.helm.constants.flags.create-namespace ]
       }: hex.k8s.helm.build {
-        inherit name namespace sha256 values version forceNamespace sets;
+        inherit name namespace sha256 values version forceNamespace sets extraFlags;
         url = chart_url version;
       };
   };

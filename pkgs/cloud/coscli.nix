@@ -1,4 +1,4 @@
-{ stdenv, lib, buildGo120Module, fetchFromGitHub, ... }:
+{ lib, buildGo120Module, fetchFromGitHub, ... }:
 buildGo120Module rec {
   pname = "coscli";
   version = "0.13.0";

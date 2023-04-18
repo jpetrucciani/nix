@@ -69,7 +69,6 @@ rec {
     , patch
     , name ? "source"
     , version ? "0.0.1"
-    , format ? true
     }: builtins.readFile (pkgs.runCommand "${name}-${version}" { src = builtins.fetchurl { inherit url sha256; }; } ''
       ${if isFunction patch then patch _ else patch}
       ${_.prettier} --parser yaml $out

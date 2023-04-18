@@ -1,7 +1,5 @@
 { hex, ... }:
 let
-  inherit (hex) toYAML;
-
   # https://github.com/StackStorm/stackstorm-k8s
   stackstorm = rec {
     defaults = {

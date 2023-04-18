@@ -1,19 +1,11 @@
 { pkgs
+, machine-name
 , isBarebones ? false
 , ...
 }:
 let
-  inherit (pkgs.stdenv) isDarwin isLinux isAarch64;
-  isM1 = isDarwin && isAarch64;
-  isOldMac = isDarwin && !isAarch64;
-  isNixOS = isLinux && (builtins.match ".*ID=nixos.*" (builtins.readFile /etc/os-release)) == [ ];
-  isAndroid = isAarch64 && !isDarwin && !isNixOS;
-  isUbuntu = isLinux && (builtins.match ".*ID=ubuntu.*" (builtins.readFile /etc/os-release)) == [ ];
-  isNixDarwin = pkgs.getEnv "NIXDARWIN_CONFIG" != "";
-
-  pinned = import ../default.nix { };
-  home-manager = import (import ../flake-compat.nix).inputs.home-manager { };
-  nix-darwin = import (import ../flake-compat.nix).inputs.nix-darwin { };
+  inherit ((import ../flake-compat.nix).inputs) home-manager nix-darwin;
+  pinned = import ../default.nix { inherit (pkgs) system; };
 
   mms = import
     (fetchTarball {
@@ -22,11 +14,9 @@ let
     });
 
   jacobi = import ../home.nix {
-    inherit home-manager isBarebones;
+    inherit home-manager machine-name isBarebones;
     pkgs = pinned;
   };
-
-  attrIf = check: name: if check then name else null;
 in
 rec {
   inherit home-manager jacobi nix-darwin mms pinned;

@@ -2,7 +2,7 @@ final: prev:
 with prev;
 {
   regula = prev.callPackage
-    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+    ({ lib, buildGo120Module, fetchFromGitHub }:
       buildGo120Module rec {
         pname = "regula";
         version = "2.9.0";
@@ -51,7 +51,7 @@ with prev;
     { };
 
   gofakes3 = prev.callPackage
-    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+    ({ lib, buildGo120Module, fetchFromGitHub }:
       buildGo120Module rec {
         pname = "gofakes3";
         version = "0.0.0";
@@ -81,7 +81,7 @@ with prev;
     { };
 
   goaws = prev.callPackage
-    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+    ({ lib, buildGo120Module, fetchFromGitHub }:
       buildGo120Module rec {
         pname = "goaws";
         version = "0.4.1";

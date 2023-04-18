@@ -1,8 +1,8 @@
 final: prev:
 let
-  inherit (builtins) listToAttrs mapAttrs pathExists readDir;
-  inherit (prev.lib) hasSuffix isDerivation mapAttrsToList optionalAttrs pathIsDirectory removeSuffix;
-  inherit (prev.lib.attrsets) collect filterAttrs mapAttrs';
+  inherit (builtins) listToAttrs pathExists readDir;
+  inherit (prev.lib) hasSuffix isDerivation pathIsDirectory removeSuffix;
+  inherit (prev.lib.attrsets) collect mapAttrs';
   inherit (prev.pkgs) callPackage;
   custom = listToAttrs (map (x: { name = x.pname; value = x; }) (collect isDerivation (_custom ../pkgs)));
   _custom = x:

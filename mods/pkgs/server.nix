@@ -20,7 +20,7 @@ rec {
   };
 
   poglets = prev.callPackage
-    ({ stdenv, lib, buildGo120Module, fetchFromGitHub }:
+    ({ lib, buildGo120Module, fetchFromGitHub }:
       buildGo120Module rec {
         pname = "poglets";
         version = "0.0.3";

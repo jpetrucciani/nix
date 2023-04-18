@@ -1,4 +1,4 @@
-{ hex, ... }:
+_:
 let
   server = rec {
     build = args: ''
@@ -20,7 +20,7 @@ let
       , all_labels ? labels // default_labels
       , admins ? "jpetrucciani"
       , host ? ""
-      , github ? true
+        # , github ? true
       , github_client ? ""
       , github_secret ? ""
       , agent_secret ? "this_is_a_secret"

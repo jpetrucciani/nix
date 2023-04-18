@@ -70,7 +70,7 @@ let
 
         issuer = { name, ingress_class, acme_server, email, solvers }:
           let
-            solvers = solvers ++ [
+            all_solvers = solvers ++ [
               {
                 http01 = {
                   ingress = {
@@ -89,7 +89,8 @@ let
             };
             spec = {
               acme = {
-                inherit email solvers;
+                inherit email;
+                solvers = all_solvers;
                 server = acme_server;
                 privateKeySecretRef = {
                   name = "${name}-key";
