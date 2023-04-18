@@ -198,9 +198,23 @@
     };
   };
 
+  slack-sdk =
+    let
+      version = "3.21.2";
+    in
+    prev.slack-sdk.overridePythonAttrs (old: sqlalchemy_1.replaceSqlalchemy old // {
+      inherit version;
+      src = prev.fetchPypi {
+        inherit version;
+        pname = "slack_sdk";
+        hash = "sha256-y3SqdkrjLNYZcbqnRdi99Q/+pK0G5KCiqx6HmuaRhJY=";
+      };
+      doCheck = false;
+    });
+
   slack-bolt = buildPythonPackage rec {
     pname = "slack-bolt";
-    version = "1.17.1";
+    version = "1.17.2";
     format = "setuptools";
 
     disabled = pythonOlder "3.7";
@@ -208,7 +222,7 @@
       owner = "slackapi";
       repo = "bolt-python";
       rev = "v${version}";
-      hash = "sha256-pQC35bMd19nDbw0O29e+g6msMn6wW/E7xKBcIjhPOUY=";
+      hash = "sha256-CaNwIXjXtYm9MXFa/r6XZ/mo2PjaZOK5mcwcoy6Uoxw=";
     };
 
     propagatedBuildInputs = [ slack-sdk ];

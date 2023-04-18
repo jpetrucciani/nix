@@ -42,20 +42,6 @@ rec {
       };
     });
 
-  slack-sdk =
-    let
-      version = "3.21.1";
-    in
-    prev.slack-sdk.overridePythonAttrs (old: sqlalchemy_1.replaceSqlalchemy old // {
-      inherit version;
-      src = prev.fetchPypi {
-        inherit version;
-        pname = "slack_sdk";
-        hash = "sha256-RR8jlPbTaW0IybKQhEMyqrbo45RzMn/D99GXlMfrRB0=";
-      };
-      doCheck = false;
-    });
-
   databases = prev.databases.overridePythonAttrs (old: sqlalchemy_1.replaceSqlalchemy old // {
     meta.broken = false;
   });
