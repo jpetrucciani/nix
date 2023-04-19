@@ -5,7 +5,7 @@ rec {
 
   ### GENERAL STUFF
   _nixos-switch = { host }: writeBashBinChecked "switch" ''
-    toplevel=$(nix build --no-link --print-out-paths ~/cfg#nixosConfigurations.${host}.config.system.build.toplevel')
+    toplevel="$(nix build --no-link --print-out-paths ~/cfg#nixosConfigurations.${host}.config.system.build.toplevel)"
     if [[ $(realpath /run/current-system) != "$toplevel" || "$POG_FORCE" == "1" ]];then
       ${nvd}/bin/nvd diff /run/current-system "$toplevel"
       sudo nix-env -p /nix/var/nix/profiles/system --set "$toplevel"
