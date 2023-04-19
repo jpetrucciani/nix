@@ -14,7 +14,7 @@ let
     });
 
   jacobi = import ../home.nix {
-    inherit home-manager machine-name pkgs isBarebones;
+    inherit home-manager flake machine-name pkgs isBarebones;
   };
 in
 rec {

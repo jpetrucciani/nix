@@ -1,4 +1,4 @@
-{ pkgs ? import ./default.nix { }, machine-name ? "void", home-manager ? null, isBarebones ? false }:
+{ pkgs ? import ./default.nix { }, flake ? null, machine-name ? "void", home-manager ? null, isBarebones ? false }:
 let
   inherit (pkgs.hax) isDarwin isLinux isM1 isX86Mac;
   inherit (pkgs.hax) docker_aliases kubernetes_aliases;
@@ -907,7 +907,7 @@ in
   # fix vscode
   imports =
     if isLinux then [
-      "${(import ../flake-compat.nix).inputs.vscode-server}/modules/vscode-server/home.nix"
+      "${flake.inputs.vscode-server}/modules/vscode-server/home.nix"
     ] else [ ];
 
   ${attrIf isLinux "services"}.vscode-server.enable = isLinux;
