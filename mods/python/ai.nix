@@ -320,12 +320,12 @@ final: prev: with prev; rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.143";
+    version = "0.0.144";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-3cHHu2qZV2eo5RY33XDByFehwyBDOjeQl+XVukBlbEY=";
+      hash = "sha256-uSeVt8+B5dJ7611+5sKd0U1d+TLSKmgWBvFbTW+v3Q0=";
     };
 
     nativeBuildInputs = [
