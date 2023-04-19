@@ -907,7 +907,7 @@ in
   # fix vscode
   imports =
     if isLinux then [
-      "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/57f1716bc625d2892579294cc207956679e3d94c"}/modules/vscode-server/home.nix"
+      "${(import ../flake-compat.nix).inputs.vscode-server}/modules/vscode-server/home.nix"
     ] else [ ];
 
   ${attrIf isLinux "services"}.vscode-server.enable = isLinux;

@@ -1,8 +1,8 @@
 { config, machine-name, pkgs, ... }:
 let
+  inherit ((import ../flake-compat.nix).inputs) nixos-hardware;
   hostname = "ymir";
   common = import ../common.nix { inherit config machine-name pkgs; };
-  nixos-hardware = fetchTarball { url = "https://github.com/NixOS/nixos-hardware/archive/25010a042c23695ae457a97aad60e9b1d49f2ecc.tar.gz"; };
 in
 {
   imports = [
