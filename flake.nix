@@ -36,7 +36,7 @@
           (name: {
             inherit name; value = self.inputs.nixpkgs.lib.nixosSystem {
             pkgs = self.packages.x86_64-linux;
-            specialArgs = { machine-name = name; };
+            specialArgs = { flake = self; machine-name = name; };
             modules = [ ./hosts/${name}/configuration.nix ];
           };
           })
@@ -58,7 +58,7 @@
           (name: {
             inherit name; value = self.inputs.nix-darwin.lib.darwinSystem {
             pkgs = self.packages.aarch64-darwin;
-            specialArgs = { machine-name = name; };
+            specialArgs = { flake = self; machine-name = name; };
             modules = [
               ./hosts/${name}/configuration.nix
             ];

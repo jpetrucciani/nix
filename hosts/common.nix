@@ -1,11 +1,11 @@
 { pkgs
+, flake
 , machine-name
 , isBarebones ? false
 , ...
 }:
 let
-  inherit ((import ../flake-compat.nix).inputs) home-manager nix-darwin;
-  pinned = import ../default.nix { inherit (pkgs) system; };
+  inherit (flake.inputs) home-manager nix-darwin;
 
   mms = import
     (fetchTarball {
@@ -14,12 +14,11 @@ let
     });
 
   jacobi = import ../home.nix {
-    inherit home-manager machine-name isBarebones;
-    pkgs = pinned;
+    inherit home-manager machine-name pkgs isBarebones;
   };
 in
 rec {
-  inherit home-manager jacobi nix-darwin mms pinned;
+  inherit home-manager jacobi nix-darwin mms pkgs;
 
   nix = {
     extraOptions = ''

@@ -1,7 +1,7 @@
-{ config, machine-name, pkgs, ... }:
+{ config, flake, machine-name, pkgs, ... }:
 let
   hostname = "titan";
-  common = import ../common.nix { inherit config machine-name pkgs; };
+  common = import ../common.nix { inherit config flake machine-name pkgs; };
 in
 {
   imports = [
@@ -32,7 +32,7 @@ in
     tmp.useTmpfs = true;
   };
 
-  environment.etc."nixpkgs-path".source = common.pinned.path;
+  environment.etc."nixpkgs-path".source = common.pkgs.path;
   environment.variables = {
     NIX_HOST = hostname;
     NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";

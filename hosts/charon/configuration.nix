@@ -1,7 +1,7 @@
-{ config, machine-name, pkgs, ... }:
+{ config, flake, machine-name, pkgs, ... }:
 let
   hostname = "charon";
-  common = import ../common.nix { inherit config machine-name pkgs; };
+  common = import ../common.nix { inherit config flake machine-name pkgs; };
   configPath = "/Users/jacobi/.config/nixpkgs/hosts/${hostname}/configuration.nix";
   username = "jacobi";
 in

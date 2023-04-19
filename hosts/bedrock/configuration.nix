@@ -1,7 +1,7 @@
-{ config, machine-name, pkgs, ... }:
+{ config, flake, machine-name, pkgs, ... }:
 let
   hostname = "bedrock";
-  common = import ../common.nix { inherit config machine-name pkgs; isBarebones = true; };
+  common = import ../common.nix { inherit config flake machine-name pkgs; isBarebones = true; };
 in
 {
   imports = [
