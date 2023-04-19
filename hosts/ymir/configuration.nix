@@ -1,6 +1,6 @@
 { config, flake, machine-name, pkgs, ... }:
 let
-  inherit ((import ../flake-compat.nix).inputs) nixos-hardware;
+  inherit (flake.inputs) nixos-hardware;
   hostname = "ymir";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
 in

@@ -19,8 +19,7 @@ cd ~/cfg
 
 # initial switch
 export HOSTNAME='andromeda'
-nix build -f . hms
-./result/bin/hms
+$(nix-build --no-link --expr 'with import ~/cfg {}; _nixos-switch' --argstr host "$HOSTNAME")/bin/switch
 ```
 
 ---
