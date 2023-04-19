@@ -1,6 +1,6 @@
 { pkgs ? import ./default.nix { }, machine-name ? "void", home-manager ? null, isBarebones ? false }:
 let
-  inherit (pkgs.hax) isAndroid isDarwin isLinux isM1 isNixOS isX86Mac;
+  inherit (pkgs.hax) isDarwin isLinux isM1 isX86Mac;
   inherit (pkgs.hax) docker_aliases kubernetes_aliases;
   inherit (pkgs.hax) attrIf optionalString words;
 
@@ -415,9 +415,7 @@ in
       IFS=$OLDIFS
       export PATH="$NEWPATH"
       unset OLDIFS NEWPATH
-    '' + (if isAndroid then ''
-      eval "$(starship init bash)"
-    '' else "") + (if isNixOS then ''
+    '' + (if isLinux then ''
       ${pkgs.figlet}/bin/figlet "$(hostname)" | ${pkgs.clolcat}/bin/clolcat
       echo
     '' else "");
@@ -681,7 +679,7 @@ in
 
   # starship config
   programs.starship = {
-    enable = !isAndroid;
+    enable = true;
     settings = {
       add_newline = false;
       character = {
@@ -822,7 +820,7 @@ in
           autoSetupRemote = true;
         };
       };
-      ${attrIf (!isNixOS) "signing"} = {
+      ${attrIf (!isLinux) "signing"} = {
         key = "03C0CBEA6EAB9258";
         gpgPath = "gpg";
         signByDefault = true;
@@ -908,9 +906,9 @@ in
 
   # fix vscode
   imports =
-    if isNixOS then [
+    if isLinux then [
       "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/57f1716bc625d2892579294cc207956679e3d94c"}/modules/vscode-server/home.nix"
     ] else [ ];
 
-  ${attrIf isNixOS "services"}.vscode-server.enable = isNixOS;
+  ${attrIf isLinux "services"}.vscode-server.enable = isLinux;
 }

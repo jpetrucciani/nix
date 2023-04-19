@@ -20,7 +20,6 @@ in
   };
 
   home-manager.users.jacobi = common.jacobi;
-  nixpkgs.pkgs = common.pinned;
 
   boot = {
     loader = {

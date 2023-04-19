@@ -22,7 +22,6 @@ in
   };
 
   home-manager.users.jacobi = common.jacobi;
-  nixpkgs.pkgs = common.pinned;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;

@@ -10,23 +10,16 @@ final: prev:
     isM1 = isDarwin && isAarch64;
     isX86Mac = isDarwin && !isAarch64;
     isArmLinux = isAarch64 && isLinux;
-    isNixOS = isLinux && (builtins.match ''.*ID="?nixos.*'' (builtins.readFile /etc/os-release)) == [ ];
-    isAndroid = isAarch64 && !isDarwin && !isNixOS;
-    isUbuntu = isLinux && (builtins.match ''.*ID="?ubuntu.*'' (builtins.readFile /etc/os-release)) == [ ];
-    isWSL = isLinux && (builtins.match ''.*microsoft-standard-WSL2.*'' (builtins.readFile /proc/version)) == [ ];
     isNixDarwin = builtins.getEnv "NIXDARWIN_CONFIG" != "";
 
     attrIf = check: name: if check then name else null;
     # attrIf helpers
     ifIsLinux = attrIf isLinux;
     ifIsArmLinux = attrIf isArmLinux;
-    ifIsNixOS = attrIf isNixOS;
     ifIsUbuntu = attrIf isUbuntu;
     ifIsNixDarwin = attrIf isNixDarwin;
-    ifIsAndroid = attrIf isAndroid;
     ifIsDarwin = attrIf isDarwin;
     ifIsM1 = attrIf isM1;
-    ifIsWSL = attrIf isWSL;
 
     chief_keef = import (import ../flake-compat.nix).inputs.kwb { inherit (pkgs) system; };
 

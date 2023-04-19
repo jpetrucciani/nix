@@ -71,7 +71,6 @@ in
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
   };
-  nixpkgs.pkgs = common.pinned;
   nixpkgs.config.allowUnfree = true;
   programs.command-not-found.enable = false;
 

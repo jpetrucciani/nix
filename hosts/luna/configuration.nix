@@ -22,7 +22,6 @@ in
   };
 
   home-manager.users.jacobi = common.jacobi;
-  nixpkgs.pkgs = common.pinned;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;

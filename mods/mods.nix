@@ -1,7 +1,7 @@
 final: prev:
 with prev;
 rec {
-  inherit (prev.hax) isDarwin isNixOS;
+  inherit (prev.hax) isDarwin isLinux;
 
   ### GENERAL STUFF
   _nixos-switch = { host }: writeBashBinChecked "switch" ''
@@ -36,7 +36,7 @@ rec {
       ${_.git} -C ~/.config/nixpkgs/ pull origin main
       "$(nix-build --no-link --expr 'with import ~/.config/nixpkgs {}; _nix-darwin-switch' --argstr host "$(machine-name)")"/bin/switch
     '';
-    switch = if isNixOS then _hms.nixOS else (if isDarwin then _hms.darwin else _hms.default);
+    switch = if isLinux then _hms.nixOS else (if isDarwin then _hms.darwin else _hms.default);
   };
 
   hms = writeBashBinChecked "hms" _hms.switch;
