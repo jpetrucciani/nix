@@ -1,6 +1,63 @@
 { pkgs, ... }:
 let
-  environment = (import /home/jacobi/dev/api/default.nix) { };
+  environment = pkgs.buildEnv {
+    name = "api";
+    paths = [
+      (pkgs.python311.withPackages (p: with p;[
+        aiocron
+        delegator-py
+        discordpy
+        feedparser
+        geoip2
+        gamble
+        httpx
+        paramiko
+        requests
+        GitPython
+        praw
+        tweepy
+        python-dotenv
+
+        # text
+        anybadge
+        beautifulsoup4
+        qrcode
+        tabulate
+        # stylecloud
+        icon-image
+
+        # automation
+        playwright
+
+        # data
+        numpy
+        pandas
+
+        # db
+        gspread
+        oauth2client
+        peewee
+        psycopg2
+        pydrive2
+
+        # server
+        fastapi
+        uvicorn
+
+        # testing
+        black
+        freezegun
+        pytest
+        pytest-cov
+        mypy
+
+        # types
+        types-freezegun
+        types-requests
+        types-tabulate
+      ]))
+    ];
+  };
 in
 {
   systemd.services.api = {
