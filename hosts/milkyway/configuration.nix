@@ -75,6 +75,7 @@ in
     ];
   };
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   programs.command-not-found.enable = false;
 
   security.sudo = common.security.sudo;
