@@ -320,12 +320,12 @@ final: prev: with prev; rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.144";
+    version = "0.0.145";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-uSeVt8+B5dJ7611+5sKd0U1d+TLSKmgWBvFbTW+v3Q0=";
+      hash = "sha256-rrr/TnOaLeAQHA5mW564ISmu00nuHlDyLvck7vQaFBw=";
     };
 
     nativeBuildInputs = [
@@ -345,6 +345,7 @@ final: prev: with prev; rec {
       pyyaml
       requests
       tenacity
+      tqdm
     ];
 
     passthru.optional-dependencies = {
