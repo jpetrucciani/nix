@@ -128,7 +128,7 @@ in
             @ba3geoblock {
               not maxmind_geolocation {
                 db_path {env.GEOIP_DB}
-                allow_countries US CA BD
+                allow_countries US CA BD PH
               }
               not remote_ip 127.0.0.1
             }
