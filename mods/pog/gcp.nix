@@ -71,6 +71,8 @@ rec {
       curl = "${prev.curl}/bin/curl";
       head = "${prev.coreutils}/bin/head";
       jq = "${prev.jq}/bin/jq";
+      nurl = "${prev.nix}/bin/nix-prefetch-url";
+      base_url = "https://dl.google.com/dl/cloudsdk/channels/rapid/components/google-cloud-sdk-gke-gcloud-auth-plugin-";
     in
     pog {
       name = "gcp_get_gke_build";
@@ -79,12 +81,22 @@ rec {
         {
           name = "gversion";
           description = "the version of gcloud we want to check resources for";
-          default = "408.0.1";
+          default = "424.0.0";
         }
       ];
       script = ''
         channel="https://dl.google.com/dl/cloudsdk/channels/rapid/components-v$gversion.json"
-        ${curl} -s "$channel" | ${jq} -c '.components[] | select(.id|contains("gke-gcloud-auth-plugin-darwin")) | .version' | ${head} -1
+        data=$(${curl} -s "$channel" | ${jq} -c '.components[] | select(.id|contains("gke-gcloud-auth-plugin-darwin")) | .version' | ${head} -1)
+        version=$(echo "$data" | ${jq} -r '.build_number')
+        echo "pulled data for: $data"
+        echo "arm64 darwin"
+        ${nurl} "${base_url}darwin-arm-$version.tar.gz" 2>/dev/null
+        echo "arm64 linux"
+        ${nurl} "${base_url}linux-arm-$version.tar.gz" 2>/dev/null
+        echo "x86_64 darwin"
+        ${nurl} "${base_url}darwin-x86_64-$version.tar.gz" 2>/dev/null
+        echo "x86_64 linux"
+        ${nurl} "${base_url}linux-x86_64-$version.tar.gz" 2>/dev/null
       '';
     };
 

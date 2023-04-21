@@ -114,31 +114,31 @@ with prev;
           aarch64-darwin = {
             arch = "arm";
             short = "darwin";
-            sha256 = "1jr5fp5ilkslf1x37nyzkk3w895i5mx6sx2x35dqdczkai5hf9d3";
+            sha256 = "0nf1d88b2c2aqrmcb2hrw9g5gxvhxj0m39mbnz7k2xw6gcl2brbk";
           };
 
           aarch64-linux = {
             arch = "arm";
             short = "linux";
-            sha256 = "1why4cpp23kjryk2hhnfg5zvwcv6zbhp8w537c75av6cfqgm59pn";
+            sha256 = "18x1rn8sidcpnx1ipxi9gl6hpqhsp8zf8gjc20nyb8rjjk2pdh14";
           };
 
           x86_64-darwin = {
             arch = "x86_64";
             short = "darwin";
-            sha256 = "0g38w0yniy08w9f202a1vixqpf6m5g09qwzzm0m81c9cpc5f5ic0";
+            sha256 = "1239rmp753vp6lb6fdq7kxa19x2qn7a11zb4j5dd5nwx6rxlhp4m";
           };
 
           x86_64-linux = {
             arch = "x86_64";
             short = "Linux";
-            sha256 = "1y7s1078m8l3pypgg0z447pv8i2ka7gblzi0dwm00kjyb5sgzmdz";
+            sha256 = "1ibmd3fjmwvm0dc1vmirf656hznh6sdak8z67fxq3ipbgmjmn3bz";
           };
         };
         dist = dists.${stdenvNoCC.hostPlatform.system} or (throw "Unsupported system: ${stdenvNoCC.hostPlatform.system}");
         pname = "gke-gcloud-auth-plugin";
-        version = "0.4.0";
-        ts = "20221014224505";
+        version = "0.5.2";
+        ts = "20230317195124";
       in
       stdenvNoCC.mkDerivation rec {
         inherit pname version;
