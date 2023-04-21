@@ -1,5 +1,13 @@
 final: prev:
 with prev;
+let
+  inherit (builtins) isString;
+  inherit (builtins) concatStringsSep filter replaceStrings split stringLength substring;
+  upper = lib.strings.toUpper;
+  reverse = x: concatStringsSep "" (lib.lists.reverseList (lib.stringToCharacters x));
+  rightPad = num: text: reverse (lib.strings.fixedWidthString num " " (reverse text));
+  ind = text: concatStringsSep "\n" (map (x: "  ${x}") (filter isString (split "\n" text)));
+in
 rec {
   _ = rec {
     # binaries
@@ -793,11 +801,6 @@ rec {
       '';
     };
 
-  upper = lib.strings.toUpper;
-  reverse = x: concatStringsSep "" (lib.lists.reverseList (lib.stringToCharacters x));
-  rightPad = num: text: reverse (lib.strings.fixedWidthString num " " (reverse text));
-
-  ind = text: concatStringsSep "\n" (map (x: "  ${x}") (filter isString (split "\n" text)));
   flag =
     { name
     , _name ? (replaceStrings [ "-" ] [ "_" ] name)
