@@ -2,7 +2,6 @@ final: prev:
 (x: { hax = x; }) (
   with prev;
   with lib;
-  with builtins;
   lib // rec {
     inherit (stdenv) isLinux isDarwin isAarch64;
     inherit (pkgs) fetchFromGitHub;

@@ -1,6 +1,8 @@
 pkgs:
-with builtins;
 rec {
+  inherit (builtins) isList isAttrs isInt isBool isFloat isFunction;
+  inherit (builtins) attrNames concatMap concatStringsSep substring replaceStrings stringLength;
+  inherit (pkgs.lib.strings) toJSON toLower;
   annotations = {
     source = "hexrender";
   };

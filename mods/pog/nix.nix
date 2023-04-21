@@ -173,16 +173,12 @@ rec {
     in
     pog {
       name = "hexrender";
-      description = "a quick and easy way to use nix to render various other config files!";
+      description = "a quick and easy way to use nix to render various other types of config files!";
       flags = [
-        # {
-        #   name = "sort";
-        #   description = "apply sort to the resulting yaml";
-        # }
-        # {
-        #   name = "crds";
-        #   description = "filter the results to only the crds";
-        # }
+        {
+          name = "format";
+          default = "yaml";
+        }
       ];
       arguments = [
         { name = "nix_file"; }
@@ -193,19 +189,9 @@ rec {
         spell_render="$(${_.mktemp})"
         fullpath="$(${_.realpath} "$spell")"
         debug "casting $fullpath - hex files at ${./hex}"
-        ${_.nix} eval --raw --impure --expr "import ${./hex}/spell.nix \"$fullpath\"" >"$spell_render"
-        # if ${flag "crds"}; then
-        #   debug "filtering to crds only"
-        #   tmp_filter="$(${_.mktemp})"
-        #   cat "$rendered"
-        # fi
-        # if ${flag "sort"}; then
-        #   debug "sorting yaml"
-        #   tmp_sort="$(${_.mktemp})"
-        #   cat "$rendered"
-        # fi
+        ${_.nix} eval --raw --impure --expr "import ${./hex}/spell.nix ${prev.path} \"$fullpath\"" >"$spell_render"
         debug "formatting $fullpath"
-        ${_.prettier} --parser yaml "$spell_render" &>/dev/null
+        ${_.prettier} --parser "$format" "$spell_render" &>/dev/null
         cat "$spell_render"
       '';
     };

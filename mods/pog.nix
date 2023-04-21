@@ -1,6 +1,6 @@
 final: prev:
 with prev;
-with builtins; rec {
+rec {
   _ = rec {
     # binaries
     ## text

@@ -1,9 +1,10 @@
-SPELL:
-with builtins;
+_pkgs: SPELL:
 let
-  pkgs = import (import ../../../flake-compat.nix).inputs.nixpkgs { };
+  inherit (builtins) functionArgs isFunction intersectAttrs;
+  pkgs = import _pkgs { };
   k8s = {
     addons = import ./k8s/addons.nix params;
+    airbyte = import ./k8s/airbyte.nix params;
     argocd = import ./k8s/argocd.nix params;
     authentik = import ./k8s/authentik.nix params;
     cert-manager = import ./k8s/cert-manager.nix params;

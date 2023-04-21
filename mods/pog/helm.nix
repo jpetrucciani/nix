@@ -113,6 +113,13 @@ rec {
       chart_url = "${base}/robusta-{1}.tgz";
     };
 
+  chart_scan_airbyte = let base = "https://airbytehq.github.io/helm-charts"; in
+    _chart_scan {
+      name = "airbyte";
+      index_url = "${base}/index.yaml";
+      chart_url = "${base}/airbyte-{1}.tgz";
+    };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik

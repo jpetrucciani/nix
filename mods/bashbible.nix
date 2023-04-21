@@ -1,11 +1,11 @@
 final: prev:
 with prev;
-with builtins; rec {
+{
   # bash bible functions implemented as a set of attribute sets in nix
   # https://github.com/dylanaraps/pure-bash-bible
   bashbible = rec {
     functions = {
-      strings = rec {
+      strings = {
         trim_string = ''
           trim_string() {
             # Usage: trim_string "   example   string    "
@@ -115,7 +115,7 @@ with builtins; rec {
           }
         '';
       };
-      arrays = rec {
+      arrays = {
         reverse_array = ''
           reverse_array() {
             # Usage: reverse_array "array"
@@ -150,7 +150,7 @@ with builtins; rec {
           }
         '';
       };
-      files = rec {
+      files = {
         head = ''
           head() {
             # Usage: head "n" "file"
@@ -192,7 +192,7 @@ with builtins; rec {
           }
         '';
       };
-      paths = rec {
+      paths = {
         dirname = ''
           dirname() {
             # Usage: dirname "path"
@@ -229,7 +229,7 @@ with builtins; rec {
           }
         '';
       };
-      terminal = rec {
+      terminal = {
         get_term_size = ''
           get_term_size() {
             # Usage: get_term_size
@@ -257,7 +257,7 @@ with builtins; rec {
           }
         '';
       };
-      conversion = rec {
+      conversion = {
         hex_to_rgb = ''
           hex_to_rgb() {
             # Usage: hex_to_rgb "#FFFFFF"
@@ -274,7 +274,7 @@ with builtins; rec {
           }
         '';
       };
-      other = rec {
+      other = {
         read_sleep = ''
           read_sleep() {
             # Usage: read_sleep 1
