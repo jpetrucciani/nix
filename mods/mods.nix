@@ -1,6 +1,6 @@
 final: prev:
-with prev;
 rec {
+  inherit (prev) _ nvd writeBashBinChecked;
   inherit (prev.hax) isDarwin isLinux;
 
   ### GENERAL STUFF

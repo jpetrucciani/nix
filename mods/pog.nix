@@ -1,15 +1,17 @@
 final: prev:
-with prev;
 let
   inherit (builtins) isString;
   inherit (builtins) concatStringsSep filter replaceStrings split stringLength substring;
-  upper = lib.strings.toUpper;
-  reverse = x: concatStringsSep "" (lib.lists.reverseList (lib.stringToCharacters x));
-  rightPad = num: text: reverse (lib.strings.fixedWidthString num " " (reverse text));
+  inherit (prev.lib) stringToCharacters;
+  inherit (prev.lib.lists) reverseList;
+  inherit (prev.lib.strings) fixedWidthString toUpper;
+  upper = toUpper;
+  reverse = x: concatStringsSep "" (reverseList (stringToCharacters x));
+  rightPad = num: text: reverse (fixedWidthString num " " (reverse text));
   ind = text: concatStringsSep "\n" (map (x: "  ${x}") (filter isString (split "\n" text)));
 in
 rec {
-  _ = rec {
+  _ = with prev; rec {
     # binaries
     ## text
     awk = "${pkgs.gawk}/bin/awk";
@@ -429,11 +431,11 @@ rec {
   };
 
   writeBashBinChecked = name: text:
-    stdenv.mkDerivation {
+    prev.stdenv.mkDerivation {
       inherit name text;
       dontUnpack = true;
       passAsFile = "text";
-      nativeBuildInputs = [ pkgs.shellcheck ];
+      nativeBuildInputs = [ prev.pkgs.shellcheck ];
       installPhase = ''
         mkdir -p $out/bin
         echo '#!/bin/bash' > $out/bin/${name}
@@ -447,7 +449,7 @@ rec {
   enviro =
     { name
     , tools
-    , packages ? prev.lib.flatten [ (lib.flatten (builtins.attrValues tools)) ]
+    , packages ? prev.lib.flatten [ (builtins.attrValues tools) ]
     , mkDerivation ? false
     }:
     if mkDerivation then
@@ -461,7 +463,7 @@ rec {
         buildInputs = packages;
         paths = packages;
       };
-  _toolset = tools: lib.flatten [ (lib.flatten (builtins.attrValues tools)) ];
+  _toolset = tools: prev.lib.flatten [ (builtins.attrValues tools) ];
 
   bashEsc = ''\033'';
   bashColors = [
@@ -600,8 +602,8 @@ rec {
         };
         timer = {
           start = name: ''_pog_start_${name}="$(${_.date} +%s.%N)"'';
-          stop = name: ''"$(echo "$(${_.date} +%s.%N) - $_pog_start_${name}" | ${pkgs.bc}/bin/bc -l)"'';
-          round = places: ''${coreutils}/bin/printf '%.*f\n' ${toString places}'';
+          stop = name: ''"$(echo "$(${_.date} +%s.%N) - $_pog_start_${name}" | ${prev.pkgs.bc}/bin/bc -l)"'';
+          round = places: ''${prev.pkgs.coreutils}/bin/printf '%.*f\n' ${toString places}'';
         };
         confirm = yesno;
         yesno = { prompt ? "Would you like to continue?", exit_code ? 0 }: ''
@@ -636,11 +638,11 @@ rec {
       shortVerboseDoc = if shortDefaultFlags then "-v, " else "";
       defaultFlagHelp = if showDefaultFlags then "[${shortHelp}--help] [${shortVerbose}--verbose] [--no-color] " else "";
     in
-    stdenv.mkDerivation {
+    prev.stdenv.mkDerivation {
       inherit version;
       pname = name;
       dontUnpack = true;
-      nativeBuildInputs = [ installShellFiles pkgs.shellcheck ];
+      nativeBuildInputs = [ prev.installShellFiles prev.shellcheck ];
       passAsFile = [
         "text"
         "completion"
@@ -735,7 +737,7 @@ rec {
           exit "$code"
         }
         setup_colors
-        ${if bashBible then bashbible.bible else ""}
+        ${if bashBible then prev.bashbible.bible else ""}
         ${concatStringsSep "\n" (filterBlank (map (x: x.flagPrompt) parsedFlags))}
         # script
         ${if builtins.isFunction script then script helpers else script}

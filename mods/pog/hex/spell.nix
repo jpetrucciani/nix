@@ -1,7 +1,7 @@
-_pkgs: SPELL:
+nixpkgs: SPELL:
 let
   inherit (builtins) functionArgs isFunction intersectAttrs;
-  pkgs = import _pkgs { };
+  pkgs = import nixpkgs { };
   k8s = {
     addons = import ./k8s/addons.nix params;
     airbyte = import ./k8s/airbyte.nix params;
