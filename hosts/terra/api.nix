@@ -69,7 +69,7 @@ in
         --port 10000
     '';
     environment = {
-      PLAYWRIGHT_BROWSERS_PATH = pkgs.playwright.browsers.outPath;
+      PLAYWRIGHT_BROWSERS_PATH = pkgs.playwright-driver.browsers.outPath;
     };
   };
 }
