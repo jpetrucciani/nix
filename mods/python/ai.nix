@@ -52,7 +52,6 @@ final: prev: with prev; rec {
       };
     };
 
-
   geojson = prev.geojson.overridePythonAttrs {
     version = "2.5.0";
     src = fetchPypi {
@@ -444,6 +443,143 @@ final: prev: with prev; rec {
       description = "Interface between LLMs and your data";
       homepage = "https://github.com/jerryjliu/llama_index";
       license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  accelerate = buildPythonPackage rec {
+    pname = "accelerate";
+    version = "0.18.0";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-HdNv2XLeSm0M/+Xk1tMGIv2FN2X3c7VYLPB5be7+EBY=";
+    };
+
+    propagatedBuildInputs = [
+      numpy
+      packaging
+      psutil
+      pyyaml
+      torch
+    ];
+
+    passthru.optional-dependencies = {
+      dev = [
+        black
+        datasets
+        deepspeed
+        evaluate
+        hf-doc-builder
+        parameterized
+        pytest
+        pytest-subtests
+        pytest-xdist
+        rich
+        ruff
+        scikit-learn
+        scipy
+        tqdm
+        transformers
+      ];
+      quality = [
+        black
+        hf-doc-builder
+        ruff
+      ];
+      rich = [
+        rich
+      ];
+      sagemaker = [
+        sagemaker
+      ];
+      test_dev = [
+        datasets
+        deepspeed
+        evaluate
+        scikit-learn
+        scipy
+        tqdm
+        transformers
+      ];
+      test_prod = [
+        parameterized
+        pytest
+        pytest-subtests
+        pytest-xdist
+      ];
+      test_trackers = [
+        comet-ml
+        tensorboard
+        wandb
+      ];
+      testing = [
+        datasets
+        deepspeed
+        evaluate
+        parameterized
+        pytest
+        pytest-subtests
+        pytest-xdist
+        scikit-learn
+        scipy
+        tqdm
+        transformers
+      ];
+    };
+
+    pythonImportsCheck = [ "accelerate" ];
+
+    meta = with lib; {
+      description = "Accelerate";
+      homepage = "https://github.com/huggingface/accelerate";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  peft = buildPythonPackage rec {
+    pname = "peft";
+    version = "0.2.0";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-zjP0hMcDgZBwW2nk0iiSMMfBgZwQhHgUg6yOEY8Kca8=";
+    };
+
+    propagatedBuildInputs = [
+      accelerate
+      numpy
+      packaging
+      psutil
+      pyyaml
+      torch
+      transformers
+    ];
+
+    passthru.optional-dependencies = {
+      dev = [
+        black
+        hf-doc-builder
+        ruff
+      ];
+      docs_specific = [
+        hf-doc-builder
+      ];
+      quality = [
+        black
+        ruff
+      ];
+    };
+
+    pythonImportsCheck = [ "peft" ];
+
+    meta = with lib; {
+      description = "Parameter-Efficient Fine-Tuning (PEFT";
+      homepage = "https://github.com/huggingface/peft";
+      license = licenses.asl20;
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
