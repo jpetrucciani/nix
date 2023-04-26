@@ -214,7 +214,7 @@
 
   slack-bolt = buildPythonPackage rec {
     pname = "slack-bolt";
-    version = "1.17.2";
+    version = "1.18.0";
     format = "setuptools";
 
     disabled = pythonOlder "3.7";
@@ -222,7 +222,7 @@
       owner = "slackapi";
       repo = "bolt-python";
       rev = "v${version}";
-      hash = "sha256-CaNwIXjXtYm9MXFa/r6XZ/mo2PjaZOK5mcwcoy6Uoxw=";
+      hash = "sha256-s9djd/MDNnyNkjkeApY6Fb1mhI6iop8RghaSJdi4eAs=";
     };
 
     propagatedBuildInputs = [ slack-sdk ];
