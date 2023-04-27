@@ -115,7 +115,7 @@ rec {
           pkgs.buildEnv {
             inherit name paths;
             buildInputs = paths;
-          };
+          }
         EOF
       '';
   };
