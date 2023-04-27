@@ -25,8 +25,8 @@ in
       src = fetchFromGitHub {
         owner = "ggerganov";
         repo = name;
-        rev = "7a32fcb3b29f4db8aed8a85dc58eb958fb118153";
-        hash = "sha256-epTEt5pWc3em6kARl+o3enN71NsTnhLddmXZwcVKB7Q=";
+        rev = "0b2da20538d01926b77ea237dd1c930c4d20b686";
+        hash = "sha256-iOp2xzWLqFplA99BXc+0ytz+zXmey4SLXkr00/+TAas=";
       };
       cmakeFlags = with pkgs; lib.optionals (system == "aarch64-darwin") [
         "-DCMAKE_C_FLAGS=-D__ARM_FEATURE_DOTPROD=1"
