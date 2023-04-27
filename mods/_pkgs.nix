@@ -1,19 +1,18 @@
 final: prev:
 let
   inherit (builtins) listToAttrs pathExists readDir;
-  inherit (prev.lib) hasSuffix isDerivation pathIsDirectory removeSuffix;
-  inherit (prev.lib.attrsets) collect mapAttrs';
+  inherit (prev.lib) hasSuffix pathIsDirectory removeSuffix;
+  inherit (prev.lib.attrsets) collect mapAttrs;
   inherit (prev.pkgs) callPackage;
-  custom = listToAttrs (map (x: { name = x.pname; value = x; }) (collect isDerivation (_custom ../pkgs)));
-  _custom = x:
-    if hasSuffix ".nix" x || pathExists (x + "/default.nix")
-    then callPackage x { inherit (prev) pkgs; }
+  _custom = p:
+    if hasSuffix ".nix" p || pathExists (p + "/default.nix")
+    then { name = removeSuffix ".nix" (baseNameOf (toString p)); value = p; __stop = true; }
     else
-      if pathIsDirectory x
-      then (mapAttrs' (k: _: { name = removeSuffix ".nix" k; value = _custom (x + "/${k}"); }) (readDir x))
+      if pathIsDirectory p
+      then mapAttrs (p': _: _custom (p + "/${p'}")) (readDir p)
       else null;
+  custom = mapAttrs (_: p: callPackage p { }) (listToAttrs (collect (x: x.__stop or false) (_custom ../pkgs)));
 in
 {
   inherit custom;
-}
-# // custom
+} // custom
