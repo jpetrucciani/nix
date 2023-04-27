@@ -4,37 +4,6 @@ let
   shardsDerivation = shards: builtins.toFile "shards.nix" (lib.generators.toPretty { } shards);
 in
 {
-  s3-edit = prev.callPackage
-    ({ lib, buildGo120Module, fetchFromGitHub }:
-      buildGo120Module rec {
-        pname = "s3-edit";
-        version = "0.0.16";
-
-        src = fetchFromGitHub {
-          owner = "tsub";
-          repo = "s3-edit";
-          rev = "v${version}";
-          sha256 = "sha256-BNFbg3IRsLOdakh8d53P0FSOGaGXYJuexECPlCMWCC0=";
-        };
-
-        ldflags = [
-          "-s"
-          "-w"
-          "-X cmd.version=${version}"
-        ];
-
-        vendorHash = "sha256-ZM5Z3yLOwOYpOTyoXmSbyPFBE31F+Jvc6DN4rmHmyt0=";
-
-        meta = with lib; {
-          inherit (src.meta) homepage;
-          description = "Edit directly a file on Amazon S3 in CLI";
-          license = licenses.mit;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      }
-    )
-    { };
-
   memzoom = prev.callPackage
     ({ stdenv, lib }: stdenv.mkDerivation rec {
       pname = "memzoom";
@@ -144,35 +113,6 @@ in
     )
     { };
 
-  comcast = prev.callPackage
-    ({ lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
-        pname = "comcast";
-        version = "1.0.1";
-
-        # this is forked to fix go mod stuff
-        src = fetchFromGitHub {
-          owner = "jpetrucciani";
-          repo = "comcast";
-          rev = "93b2589b3e677c4f351c2ee7bf8709ce762ca697";
-          sha256 = "sha256-jfVxoKkZscemOdlyQNFXckhlEcl7UZ+MPoIQu2lcUaE=";
-        };
-
-        vendorHash = "sha256-AruaKBvPmHw13NTr0folQW1HouRVMW5M3gbFWT1tF/s=";
-
-        # disable checks because they need networking
-        doCheck = false;
-
-        meta = with lib; {
-          inherit (src.meta) homepage;
-          description = "Simulating shitty network connections so you can build better systems";
-          license = licenses.asl20;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      }
-    )
-    { };
-
   watcher = prev.callPackage
     ({ stdenv, clang13Stdenv, lib, fetchFromGitHub }:
       let
@@ -204,46 +144,6 @@ in
           maintainers = with maintainers; [ jpetrucciani ];
         };
       })
-    { };
-
-  tlsh-go = prev.callPackage
-    ({ lib, buildGo120Module, fetchFromGitHub }:
-      let
-        version = "0.3.0";
-        date = "2022-12-12";
-      in
-      buildGo120Module rec {
-        inherit version;
-        pname = "tlsh-go";
-
-        src = fetchFromGitHub {
-          owner = "glaslos";
-          repo = "tlsh";
-          rev = "v${version}";
-          sha256 = "sha256-fDFMF7ajhJ0veylJPoSxOtkkdwcRmR9G7MJgk5fnAdY=";
-        };
-
-        ldflags = [
-          "-s"
-          "-w"
-          "-X main.VERSION=${version}"
-          "-X main.BUILDDATE=${date}"
-        ];
-
-        postInstall = ''
-          mv $out/bin/app $out/bin/tlsh
-        '';
-
-        vendorHash = null;
-
-        meta = with lib; {
-          inherit (src.meta) homepage;
-          description = "TLSH lib in Golang";
-          license = licenses.asl20;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      }
-    )
     { };
 
   ov = prev.callPackage
@@ -365,57 +265,6 @@ in
         meta = with lib; {
           inherit (src.meta) homepage;
           description = "Database migrations. CLI and Golang library";
-          license = licenses.mit;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      }
-    )
-    { };
-
-  lastresort = prev.callPackage
-    ({ lib, fetchFromGitHub, rustPlatform }:
-      let
-        pname = "lastresort";
-        version = "0.4.0";
-      in
-      rustPlatform.buildRustPackage rec {
-        inherit pname version;
-
-        src = fetchFromGitHub {
-          owner = "ctsrc";
-          repo = "Base256";
-          rev = "v${version}";
-          sha256 = "sha256-wwwm7x42Fk7Hsf1rE+dKLQJGTkmZnbFGDl5OX3gJ1rU=";
-        };
-
-        cargoSha256 = "sha256-tt5B8jt3DSb7LWCCDWITpe9XD/EmFbGubUmlysFqRuM=";
-
-        meta = with lib; {
-          description = "Encode and decode data in base 256 easily typed words";
-          license = licenses.isc;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      })
-    { };
-
-  terraform-cloud-exporter = prev.callPackage
-    ({ lib, buildGo119Module, fetchFromGitHub }:
-      buildGo119Module rec {
-        pname = "terraform-cloud-exporter";
-        version = "2.3.0";
-
-        src = fetchFromGitHub {
-          owner = "pacoguzman";
-          repo = pname;
-          rev = "v${version}";
-          sha256 = "sha256-77ns9cBKr/d7gCZRdizuJm+adkk0WNeCVtKMZMLXmQA=";
-        };
-
-        vendorHash = "sha256-aw2Hv3utc/sIZC1E3RDsQcmT+FVIhTWkdU0+dB0/4ho=";
-
-        meta = with lib; {
-          inherit (src.meta) homepage;
-          description = "Prometheus exporter for Terraform Cloud metrics";
           license = licenses.mit;
           maintainers = with maintainers; [ jpetrucciani ];
         };
