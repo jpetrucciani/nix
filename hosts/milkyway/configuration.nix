@@ -30,6 +30,8 @@ in
     nixos-wsl.nixosModules.wsl
   ];
 
+  boot.tmp.useTmpfs = true;
+
   environment.etc."nixpkgs-path".source = common.pkgs.path;
 
   # cuda stuff?
