@@ -319,12 +319,12 @@ final: prev: with prev; rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.150";
+    version = "0.0.151";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-Lnt8hjb8MoWXQwtD24x91EtL4VlpikFz9dLYNhOdArc=";
+      hash = "sha256-6cPPs3Erzj9bVt5ou06K2QXAS16SQz0GzgiC9tr4g6I=";
     };
 
     nativeBuildInputs = [
@@ -339,6 +339,7 @@ final: prev: with prev; rec {
       numexpr
       numpy
       openapi-schema-pydantic
+      pexpect
       pydantic
       pyowm
       pyyaml
