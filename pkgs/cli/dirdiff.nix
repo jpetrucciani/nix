@@ -1,4 +1,4 @@
-{ lib, fetchFromGitHub, rustPlatform, fetchurl, ... }:
+{ lib, fetchFromGitHub, rustPlatform, ... }:
 let
   pname = "dirdiff";
   version = "0.2.0";
