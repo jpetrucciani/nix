@@ -1,8 +1,8 @@
 { pkgs ? import
     (fetchTarball {
-      name = "jpetrucciani-2023-04-10";
-      url = "https://github.com/jpetrucciani/nix/archive/285d3a4956cfe442830b06c30a946790c7429acb.tar.gz";
-      sha256 = "1frhaihkr0dbl9zvsr3ifmh4sab22q7rpljj3a9gbp3y8apz60zy";
+      name = "jpetrucciani-2023-04-26";
+      url = "https://github.com/jpetrucciani/nix/archive/5f01d3c72d7d2b003debb8d333d654f5a51c2403.tar.gz";
+      sha256 = "19kr4d49z54sf8z8llbdc720im07slb3128c0dpqc172hxrnpqwj";
     })
     { }
 }:
@@ -53,9 +53,8 @@ let
   };
 
   paths = pkgs.lib.flatten [ (builtins.attrValues tools) ];
-  env = pkgs.buildEnv {
-    inherit name paths;
-    buildInputs = paths;
-  };
 in
-env
+pkgs.buildEnv {
+  inherit name paths;
+  buildInputs = paths;
+}
