@@ -416,14 +416,18 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.5.15";
+    version = "0.5.26";
     format = "setuptools";
 
     src = fetchPypi {
       pname = "llama_index";
       inherit version;
-      hash = "sha256-6zKhSlCgFywLtKoVC3b9IOp4b5cdpmQ3KL7GfZJcoPw=";
+      hash = "sha256-7Dy09MzBKp/Y1eeoHDSKyvvJa6FFXgGufKzKAYkm5Qc=";
     };
+
+    postPatch = ''
+      substituteInPlace ./setup.py --replace "langchain==0.0.142" "langchain"
+    '';
 
     nativeCheckInputs = [
       ipython
