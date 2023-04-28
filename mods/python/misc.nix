@@ -170,4 +170,33 @@
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  roadmapper = buildPythonPackage rec {
+    pname = "roadmapper";
+    version = "1.2.0";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-Sb3gomE5LDrxRM1U/QkrSQ2IemJ5Xhab4l4Ty6grNyM=";
+    };
+
+    nativeBuildInputs = [
+      setuptools
+    ];
+
+    propagatedBuildInputs = [
+      pillow
+      python-dateutil
+    ];
+
+    pythonImportsCheck = [ "roadmapper" ];
+
+    meta = with lib; {
+      description = "Roadmapper. A Roadmap-as-Code (RaC) python library for generating a roadmap by using python code";
+      homepage = "https://pypi.org/project/roadmapper/1.2.0/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 })
