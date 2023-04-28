@@ -5,8 +5,8 @@ This is my work M1 Max Macbook, running MacOS and using nix-darwin and home-mana
 ## setup
 
 ```bash
-# ensure nix is installed, repo is cloned to ~/.config/nixpkgs
-$(nix-build --no-link --expr 'with import ~/.config/nixpkgs {}; _nix-darwin-switch' --argstr host m1max)/bin/switch
+# ensure nix is installed, repo is cloned to ~/cfg
+$(nix-build --no-link --expr 'with import ~/cfg {}; _nix-darwin-switch' --argstr host m1max)/bin/switch
 
 ```
 

@@ -15,7 +15,7 @@ rec {
   _nix-darwin-switch = { host }:
     writeBashBinChecked "switch" ''
       profile=/nix/var/nix/profiles/system
-      toplevel="$(nix build --no-link --print-out-paths ~/.config/nixpkgs#darwinConfigurations.${host}.system)"
+      toplevel="$(nix build --no-link --print-out-paths ~/cfg#darwinConfigurations.${host}.system)"
       if [[ $(realpath "$profile") != "$toplevel" ]];then
         ${nvd}/bin/nvd diff "$profile" "$toplevel"
         sudo -H nix-env -p "$profile" --set "$toplevel"
@@ -25,7 +25,7 @@ rec {
     '';
   _hms = {
     default = ''
-      ${_.git} -C ~/.config/nixpkgs/ pull origin main
+      ${_.git} -C ~/cfg/ pull origin main
       home-manager switch
     '';
     nixOS = ''
@@ -33,8 +33,8 @@ rec {
       "$(nix-build --no-link --expr 'with import ~/cfg {}; _nixos-switch' --argstr host "$(machine-name)")"/bin/switch
     '';
     darwin = ''
-      ${_.git} -C ~/.config/nixpkgs/ pull origin main
-      "$(nix-build --no-link --expr 'with import ~/.config/nixpkgs {}; _nix-darwin-switch' --argstr host "$(machine-name)")"/bin/switch
+      ${_.git} -C ~/cfg/ pull origin main
+      "$(nix-build --no-link --expr 'with import ~/cfg {}; _nix-darwin-switch' --argstr host "$(machine-name)")"/bin/switch
     '';
     switch = if isLinux then _hms.nixOS else (if isDarwin then _hms.darwin else _hms.default);
   };

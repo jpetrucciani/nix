@@ -5,8 +5,8 @@ This is my personal M1 Mac Mini server, running MacOS and using nix-darwin and h
 ## setup
 
 ```bash
-# ensure nix is installed, repo is cloned to ~/.config/nixpkgs
-$(nix-build --no-link --expr 'with import ~/.config/nixpkgs {}; _nix-darwin-switch' --argstr host charon)/bin/switch
+# ensure nix is installed, repo is cloned to ~/cfg
+$(nix-build --no-link --expr 'with import ~/cfg {}; _nix-darwin-switch' --argstr host charon)/bin/switch
 ```
 
 ## manual tweaks
