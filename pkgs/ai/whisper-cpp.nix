@@ -1,7 +1,8 @@
-{ darwin, isDarwin, clangStdenv, fetchFromGitHub, SDL2 }:
+{ darwin, stdenv, clangStdenv, fetchFromGitHub, SDL2 }:
 let
+  inherit (stdenv) isAarch64 isDarwin;
   version = "1.3.0";
-  osSpecific = with darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate ] else [ ];
+  osSpecific = with darwin.apple_sdk.frameworks; if isDarwin then ([ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ])) else [ ];
 in
 clangStdenv.mkDerivation rec {
   name = "whisper.cpp";

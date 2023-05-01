@@ -1,6 +1,7 @@
-{ lib, system, darwin, isDarwin, clangStdenv, fetchFromGitHub, writeTextFile }:
+{ lib, system, darwin, stdenv, clangStdenv, fetchFromGitHub, writeTextFile }:
 let
-  osSpecific = with darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate ] else [ ];
+  inherit (stdenv) isAarch64 isDarwin;
+  osSpecific = with darwin.apple_sdk.frameworks; if isDarwin then ([ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ])) else [ ];
   vicunaPrompt = writeTextFile {
     name = "chat-with-vicuna.txt";
     text = ''
@@ -19,8 +20,8 @@ clangStdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "ggerganov";
     repo = name;
-    rev = "11d902364b0e3b503a02a4e757ee2dc38aacb68f";
-    hash = "sha256-CQg6xCHSLpJjItdvEg2b1MDw3qyEv3pK0DcCxcxHgrs=";
+    rev = "7ff0dcd32091c703a12adb0c57c32c565ce17664";
+    hash = "sha256-XiVSNe7pH82wFLob9McnqKZTN/Y0tOo67FbjwFukds4=";
   };
   cmakeFlags = lib.optionals (system == "aarch64-darwin") [
     "-DCMAKE_C_FLAGS=-D__ARM_FEATURE_DOTPROD=1"
