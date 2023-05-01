@@ -1,7 +1,7 @@
 { darwin, stdenv, clangStdenv, fetchFromGitHub, SDL2 }:
 let
   inherit (stdenv) isAarch64 isDarwin;
-  version = "1.3.0";
+  version = "1.4.0";
   osSpecific = with darwin.apple_sdk.frameworks; if isDarwin then ([ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ])) else [ ];
 in
 clangStdenv.mkDerivation rec {
@@ -10,7 +10,7 @@ clangStdenv.mkDerivation rec {
     owner = "ggerganov";
     repo = name;
     rev = "v${version}";
-    hash = "sha256-PJUQ2IoocPv1bWRv3eXzB1aWlUZ8zGFgdwIOk2stCoo=";
+    hash = "sha256-176MpooVQrq1dXC62h8Yyyhw6IjCA50tp1J4DQPSePQ=";
   };
   postBuild = ''
     make stream
