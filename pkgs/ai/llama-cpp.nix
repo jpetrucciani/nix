@@ -34,4 +34,11 @@ clangStdenv.mkDerivation rec {
     mv ./quantize $out/bin/llama-quantize
   '';
   buildInputs = osSpecific;
+
+  meta = with lib; {
+    description = "Port of Facebook's LLaMA model in C/C++";
+    homepage = "https://github.com/ggerganov/llama.cpp";
+    license = licenses.mit;
+    maintainers = with maintainers; [ jpetrucciani ];
+  };
 }

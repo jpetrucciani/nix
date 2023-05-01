@@ -1,4 +1,4 @@
-{ darwin, stdenv, clangStdenv, fetchFromGitHub }:
+{ lib, darwin, stdenv, clangStdenv, fetchFromGitHub }:
 let
   inherit (stdenv) isAarch64 isDarwin;
   osSpecific = with darwin.apple_sdk.frameworks; if isDarwin then ([ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ])) else [ ];
@@ -20,4 +20,11 @@ clangStdenv.mkDerivation rec {
     mv ./chat $out/bin/alpaca-chat
   '';
   buildInputs = osSpecific;
+
+  meta = with lib; {
+    description = "Locally run an Instruction-Tuned Chat-Style LLM";
+    homepage = "https://github.com/antimatter15/alpaca.cpp";
+    license = licenses.mit;
+    maintainers = with maintainers; [ jpetrucciani ];
+  };
 }

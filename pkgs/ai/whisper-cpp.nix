@@ -1,4 +1,4 @@
-{ darwin, stdenv, clangStdenv, fetchFromGitHub, SDL2 }:
+{ lib, darwin, stdenv, clangStdenv, fetchFromGitHub, SDL2 }:
 let
   inherit (stdenv) isAarch64 isDarwin;
   version = "1.4.0";
@@ -23,4 +23,11 @@ clangStdenv.mkDerivation rec {
   buildInputs = [
     SDL2
   ] ++ osSpecific;
+
+  meta = with lib; {
+    description = "Port of OpenAI's Whisper model in C/C++";
+    homepage = "https://github.com/ggerganov/whisper.cpp";
+    license = licenses.mit;
+    maintainers = with maintainers; [ jpetrucciani ];
+  };
 }
