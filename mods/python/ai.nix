@@ -1,24 +1,25 @@
 final: prev: with prev; rec {
   llama-cpp-python =
     let
-      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if pkgs.stdenv.isDarwin then [ Accelerate ] else [ ];
+      inherit (stdenv) isAarch64 isDarwin;
+      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ]) else [ ];
       llama-cpp-pin = pkgs.fetchFromGitHub {
         owner = "ggerganov";
         repo = "llama.cpp";
-        rev = "54bb60e26858be251a0eb3cb70f80322aff804a0";
-        hash = "sha256-a+MQ/CUQd+aTQy04P2re5LK4fdLrWRepbBYSv9wXvVE=";
+        rev = "7f15c5c477d9933689a9d1c40794483e350c2f19";
+        hash = "sha256-/zl8PwnQwoTW+5hV5H/qV7ZNKnBmCh5iRP/70q4fI9g=";
       };
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
-      version = "0.1.38";
+      version = "0.1.39";
 
       format = "pyproject";
       src = pkgs.fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "v${version}";
-        hash = "sha256-/Ykndsp6puFxa+FSHNln9M2frS7/sMMBJSNJ/mU/CSI=";
+        hash = "sha256-B95jzrwmJhLgBdwWvJGd3d1v8/lUzTkL3fINwUKiVpA=";
       };
 
       preConfigure = ''
