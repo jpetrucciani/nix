@@ -14,14 +14,16 @@ let
       ### Human:
     '';
   };
+  version = "master-f4cef87";
 in
 clangStdenv.mkDerivation rec {
+  inherit version;
   name = "llama.cpp";
   src = fetchFromGitHub {
     owner = "ggerganov";
     repo = name;
-    rev = "7ff0dcd32091c703a12adb0c57c32c565ce17664";
-    hash = "sha256-XiVSNe7pH82wFLob9McnqKZTN/Y0tOo67FbjwFukds4=";
+    rev = "refs/tags/${version}";
+    hash = "sha256-+3F1PyHqviXDqJPth5MeFN3KkcgMuTRF7UeO/7a6VJg=";
   };
   cmakeFlags = lib.optionals (system == "aarch64-darwin") [
     "-DCMAKE_C_FLAGS=-D__ARM_FEATURE_DOTPROD=1"
