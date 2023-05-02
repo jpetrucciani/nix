@@ -10,6 +10,10 @@ This directory provides my composable python package overlays! These are set up 
 
 This overlay contains AI related python packages
 
+### [default.nix](./default.nix)
+
+This nix file combines all of the overlays in this directory into a single overlay for nixpkgs itself
+
 ### [experimental.nix](./experimental.nix)
 
 This overlay contains weird and possibly broken python packaging experiments
@@ -17,6 +21,10 @@ This overlay contains weird and possibly broken python packaging experiments
 ### [fastapi.nix](./fastapi.nix)
 
 This overlay contains packages related to [fastapi](https://fastapi.tiangolo.com/)
+
+### [finance.nix](./finance.nix)
+
+This overlay contains packages related to financial analysis and statistics
 
 ### [fixes.nix](./fixes.nix)
 
@@ -29,6 +37,10 @@ This overlay contains interesting hax related to python packages
 ### [misc.nix](./misc.nix)
 
 This overlay is for random python libraries I want in nixpkgs
+
+### [notebook.nix](./notebook.nix)
+
+This overlay is for jupyter notebook specific packages
 
 ### [pr.nix](./pr.nix)
 
