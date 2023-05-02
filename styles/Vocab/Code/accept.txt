@@ -67,3 +67,4 @@
 (?i)falconn
 (?i)polaris
 (?i)pocketbase
+(?i)jupyter
