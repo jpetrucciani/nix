@@ -1,15 +1,13 @@
-{ pkgs, config, ... }:
+{ pkgs, config, flake, machine-name, ... }:
 let
-  nixpkgs = import ../../default.nix { inherit (pkgs) system; };
-  common = import ../common.nix { inherit config pkgs; };
+  common = import ../common.nix { inherit config flake machine-name pkgs; };
 in
 {
   inherit (common) nix;
 
   boot.kernel.sysctl = { "net.ipv4.ip_forward" = 1; } // common.sysctl_opts;
 
-  nixpkgs.pkgs = nixpkgs;
-  environment.systemPackages = with nixpkgs; [
+  environment.systemPackages = with pkgs; [
     bashInteractive
     bash-completion
     coreutils-full
@@ -47,7 +45,7 @@ in
     group = "users";
     extraGroups = [ "wheel" "networkmanager" "docker" ];
     useDefaultShell = true;
-    openssh.authorizedKeys.keys = with common.pubkeys; [ titan pluto ];
+    openssh.authorizedKeys.keys = with common.pubkeys; [ milkyway pluto ];
   };
 
   networking.firewall.enable = false;

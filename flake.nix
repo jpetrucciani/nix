@@ -69,5 +69,28 @@
             "pluto"
             "m1max"
           ]);
+
+      osGenerators = builtins.listToAttrs
+        (map
+          (name: {
+            inherit name; value = self.inputs.nixos-generators.nixosGenerate {
+            pkgs = self.packages.x86_64-linux;
+            specialArgs = { flake = self; machine-name = name; };
+            modules = [ ./hosts/foundry/configuration.nix ];
+            format = name;
+          };
+          })
+          [
+            "amazon"
+            "azure"
+            "do"
+            "gce"
+            "hyperv"
+            "install-iso"
+            "iso"
+            "proxmox"
+            "virtualbox"
+            "vmware"
+          ]);
     };
 }
