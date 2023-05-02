@@ -320,12 +320,12 @@ final: prev: with prev; rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.155";
+    version = "0.0.156";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-gBnJVI3T/MyfpM1eYi6ynnCbbfwZ6NkFwoe30doEFKE=";
+      hash = "sha256-OjvgKrf3EHsPNMyYAg7l6C6B5xzTliY8LecbKMbYqqc=";
     };
 
     nativeBuildInputs = [
@@ -417,30 +417,70 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.6.0a6";
+    version = "0.6.0";
     format = "setuptools";
 
-    src = fetchPypi {
-      pname = "llama_index";
-      inherit version;
-      hash = "sha256-aV3FUrUSQAC+AlU55rSpwKmEqtn+BFEG9eX9lG1XUPI=";
+    src = prev.pkgs.fetchFromGitHub {
+      owner = "jerryjliu";
+      repo = "llama_index";
+      rev = "refs/tags/v${version}";
+      hash = "sha256-IS3qNARGkGf6aVIcfYEIs7RUY+8KksYv3xQogdvNAag=";
     };
 
-    postPatch = ''
-      substituteInPlace ./setup.py --replace "langchain==0.0.142" "langchain"
-    '';
-
     nativeCheckInputs = [
-      ipython
+      pytestCheckHook
+      nltk
       pillow
     ];
 
     propagatedBuildInputs = [
+      faiss
       langchain
-      tiktoken
       numpy
       openai
       pandas
+      tiktoken
+    ];
+
+    disabledTestPaths = [
+      "tests/embeddings/test_base.py"
+      "tests/indices/empty/test_base.py"
+      "tests/indices/keyword_table/test_base.py"
+      "tests/indices/keyword_table/test_retrievers.py"
+      "tests/indices/knowledge_graph/test_base.py"
+      "tests/indices/knowledge_graph/test_retrievers.py"
+      "tests/indices/list/test_index.py"
+      "tests/indices/list/test_retrievers.py"
+      "tests/indices/postprocessor/test_base.py"
+      "tests/indices/query/query_transform/test_base.py"
+      "tests/indices/query/test_compose_vector.py"
+      "tests/indices/query/test_compose.py"
+      "tests/indices/query/test_query_bundle.py"
+      "tests/indices/response/test_response_builder.py"
+      "tests/indices/struct_store/test_base.py"
+      "tests/indices/struct_store/test_pandas.py"
+      "tests/indices/struct_store/test_sql_query.py"
+      "tests/indices/test_loading_graph.py"
+      "tests/indices/test_loading.py"
+      "tests/indices/test_node_utils.py"
+      "tests/indices/test_prompt_helper.py"
+      "tests/indices/tree/test_embedding_retriever.py"
+      "tests/indices/tree/test_index.py"
+      "tests/indices/tree/test_retrievers.py"
+      "tests/indices/vector_store/test_faiss.py"
+      "tests/indices/vector_store/test_milvus.py"
+      "tests/indices/vector_store/test_pinecone.py"
+      "tests/indices/vector_store/test_retrievers.py"
+      "tests/indices/vector_store/test_simple.py"
+      "tests/indices/vector_store/test_weaviate.py"
+      "tests/langchain_helpers/test_text_splitter.py"
+      "tests/optimization/test_base.py"
+      "tests/playground/test_base.py"
+      "tests/selectors/test_llm_selectors.py"
+      "tests/test_utils.py"
+      "tests/token_predictor/test_base.py"
+      "tests/indices/test_utils.py"
+      "tests/indices/keyword_table/test_utils.py"
     ];
 
     pythonImportsCheck = [ "llama_index" ];
