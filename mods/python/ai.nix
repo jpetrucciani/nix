@@ -417,13 +417,13 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.5.26";
+    version = "0.6.0a6";
     format = "setuptools";
 
     src = fetchPypi {
       pname = "llama_index";
       inherit version;
-      hash = "sha256-7Dy09MzBKp/Y1eeoHDSKyvvJa6FFXgGufKzKAYkm5Qc=";
+      hash = "sha256-aV3FUrUSQAC+AlU55rSpwKmEqtn+BFEG9eX9lG1XUPI=";
     };
 
     postPatch = ''
