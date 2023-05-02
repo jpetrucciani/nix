@@ -194,7 +194,7 @@
 
     meta = with lib; {
       description = "Roadmapper. A Roadmap-as-Code (RaC) python library for generating a roadmap by using python code";
-      homepage = "https://pypi.org/project/roadmapper/1.2.0/";
+      homepage = "https://github.com/csgoh/roadmapper";
       license = licenses.mit;
       maintainers = with maintainers; [ jpetrucciani ];
     };
