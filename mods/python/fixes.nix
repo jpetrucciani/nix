@@ -46,4 +46,13 @@ rec {
     meta.broken = false;
   });
 
+  nbdime = let version = "3.2.1"; in prev.nbdime.overridePythonAttrs (_: {
+    inherit version;
+    src = prev.fetchPypi {
+      inherit version;
+      pname = "nbdime";
+      hash = "sha256-MUCaMPhI/8azJUBpfoLVoKG4TcwycWynTni8xLRXxFM=";
+    };
+    meta.broken = false;
+  });
 }
