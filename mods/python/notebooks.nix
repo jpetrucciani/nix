@@ -118,6 +118,71 @@ final: prev: with prev; rec {
       };
     };
 
+  voila =
+    let
+      pname = "voila";
+      version = "0.5.0a4";
+      format = "wheel";
+      src = fetchPypi {
+        inherit pname version;
+        format = "wheel";
+        python = "py3";
+        dist = "py3";
+        platform = "any";
+        hash = "sha256-Lo0yK7dd11yiGFPHZprqrN/dV6FKwMDsWoFXFQdjEZE=";
+      };
+    in
+    buildPythonPackage {
+      inherit pname src version format;
+
+      nativeBuildInputs = [
+        hatchling
+        hatch-jupyter-builder
+        jupyter-core
+        jupyterlab
+      ];
+
+      propagatedBuildInputs = [
+        jupyter-client
+        jupyter-core
+        jupyter-server
+        jupyterlab_server
+        nbclient
+        nbconvert
+        traitlets
+        websockets
+      ];
+
+      passthru.optional-dependencies = {
+        dev = [
+          black
+          hatch
+          jupyter-releaser
+          pre-commit
+        ];
+        test = [
+          ipykernel
+          ipywidgets
+          matplotlib
+          mock
+          numpy
+          pandas
+          papermill
+          pytest
+          pytest-tornasync
+        ];
+      };
+
+      pythonImportsCheck = [ "voila" ];
+
+      meta = with lib; {
+        description = "Turn Jupyter notebooks into standalone web applications";
+        homepage = "https://github.com/voila-dashboards/voila";
+        license = licenses.bsd3;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
   xalglib = buildPythonPackage rec {
     pname = "xalglib";
     version = "3.16.0";
