@@ -28,14 +28,14 @@ rec {
 
   sqlalchemy_1 =
     let
-      version = "1.4.47";
+      version = "1.4.48";
     in
     prev.sqlalchemy.overridePythonAttrs (_: {
       inherit version;
       src = prev.fetchPypi {
         inherit version;
         pname = "SQLAlchemy";
-        hash = "sha256-lfwC9/wfMZmqpHqKdXQ3E0z2GOnZlMhO/9U/Uww4WG8=";
+        hash = "sha256-tHvChwltmJoIOM6W99jpZpFKJNqHftQadTHUS1XNuN8=";
       };
       passthru.replaceSqlalchemy = old: {
         propagatedBuildInputs = prev.lib.remove prev.sqlalchemy old.propagatedBuildInputs or [ ] ++ [ sqlalchemy_1 ];
