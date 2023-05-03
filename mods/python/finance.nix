@@ -149,4 +149,36 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  swifter = buildPythonPackage rec {
+    pname = "swifter";
+    version = "1.3.4";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-Ysh6IMTfr805Q82EVeYU66EdA82k/6IEZbMur6Vx9L0=";
+    };
+
+    propagatedBuildInputs = [
+      bleach
+      cloudpickle
+      dask
+      ipywidgets
+      parso
+      ray
+      tqdm
+    ];
+
+    doCheck = false;
+
+    pythonImportsCheck = [ "swifter" ];
+
+    meta = with lib; {
+      description = "A package which efficiently applies any function to a pandas dataframe or series in the fastest available manner";
+      homepage = "https://github.com/jmcarpenter2/swifter";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
