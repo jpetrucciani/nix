@@ -6,11 +6,11 @@
     }).overrideAttrs (old: {
       passthru = old.passthru // {
         overlays = map import [
+          ./fixes.nix
           ./ai.nix
           ./experimental.nix
           ./fastapi.nix
           ./finance.nix
-          ./fixes.nix
           ./hax.nix
           ./misc.nix
           ./notebooks.nix

@@ -247,4 +247,121 @@ final: prev: with prev; rec {
       license = licenses.asl20;
     };
   };
+
+  vbuild = buildPythonPackage rec {
+    pname = "vbuild";
+    version = "0.8.1";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-uf+QcfphAJVj6TXt3qT98UlMcZQShfBf1XZI9z3Bnsw=";
+    };
+
+    postPatch = ''
+      substituteInPlace ./pyproject.toml --replace "poetry.masonry.api" "poetry.core.masonry.api"
+    '';
+
+    nativeBuildInputs = [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = [
+      pscript
+    ];
+
+    pythonImportsCheck = [ "vbuild" ];
+
+    meta = with lib; {
+      description = "A simple module to extract html/script/style from a vuejs '.vue' file (can minimize/es2015 compliant js) ... just py2 or py3, NO nodejs";
+      homepage = "https://github.com/manatlan/vbuild";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  fastapi-socketio = buildPythonPackage rec {
+    pname = "fastapi-socketio";
+    version = "0.0.10";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-IC+bMZ8BAAHL0RFOySoNnrX1ypMW6uX9QaYIjaCBJyc=";
+    };
+
+    propagatedBuildInputs = [
+      fastapi
+      python-socketio
+    ];
+
+    passthru.optional-dependencies = {
+      test = [
+        pytest
+      ];
+    };
+
+    doCheck = false;
+
+    pythonImportsCheck = [ "fastapi_socketio" ];
+
+    meta = with lib; {
+      description = "Easily integrate socket.io with your FastAPI app";
+      homepage = "https://github.com/pyropy/fastapi-socketio";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  nicegui = buildPythonPackage rec {
+    pname = "nicegui";
+    version = "1.2.11";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-acGKJ1EvKPJXeStCHE93oM8ytoiKInN+o/TO/qjrRO8=";
+    };
+
+    postPatch = ''
+      substituteInPlace ./pyproject.toml \
+        --replace 'watchfiles = "^0.18.1"' 'watchfiles = ">0.18.1"'
+    '';
+
+    nativeBuildInputs = [
+      poetry-core
+      setuptools
+    ];
+
+    propagatedBuildInputs = [
+      fastapi
+      fastapi-socketio
+      httptools
+      importlib-metadata
+      jinja2
+      markdown2
+      matplotlib
+      orjson
+      plotly
+      pygments
+      python-dotenv
+      python-multipart
+      pywebview
+      typing-extensions
+      uvicorn
+      uvloop
+      vbuild
+      watchfiles
+      websockets
+    ];
+
+    pythonImportsCheck = [ "nicegui" ];
+
+    meta = with lib; {
+      description = "Web User Interface with Buttons, Dialogs, Markdown, 3D Scences and Plots";
+      homepage = "https://github.com/zauberzeug/nicegui";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }

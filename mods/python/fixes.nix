@@ -55,4 +55,19 @@ rec {
     };
     meta.broken = false;
   });
+
+  python-multipart = let version = "0.0.6"; in prev.python-multipart.overridePythonAttrs (_: {
+    inherit version;
+    format = "pyproject";
+    src = prev.pkgs.fetchFromGitHub {
+      owner = "andrew-d";
+      repo = "python-multipart";
+      rev = "refs/tags/${version}";
+      hash = "sha256-Qadzs6T28xj2L2PsRr4WPfBcBOUa5QTC3i4HyxpOGzU=";
+    };
+    nativeBuildInputs = with prev; [
+      hatch-vcs
+      hatchling
+    ];
+  });
 }
