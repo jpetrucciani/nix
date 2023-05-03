@@ -1,6 +1,6 @@
 # cloud
 
-TODO
+This directory contains tooling related to various cloud providers
 
 ---
 

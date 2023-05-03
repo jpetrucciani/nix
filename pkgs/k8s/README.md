@@ -1,6 +1,6 @@
 # k8s
 
-TODO
+This directory contains tools related to kubernetes
 
 ---
 

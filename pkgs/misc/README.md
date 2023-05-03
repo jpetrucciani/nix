@@ -1,6 +1,6 @@
 # misc
 
-TODO
+This is a catch-all directory, for anything that doesn't fit nicely into other directories
 
 ---
 
@@ -8,12 +8,6 @@ TODO
 
 ### [horcrux.nix](./horcrux.nix)
 
-TODO
-
 ### [killport.nix](./killport.nix)
 
-TODO
-
 ### [soulmsg.nix](./soulmsg.nix)
-
-TODO

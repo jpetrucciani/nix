@@ -1,6 +1,6 @@
 # cli
 
-TODO
+This directory contains cli tools
 
 ---
 
