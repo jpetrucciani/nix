@@ -1,10 +1,6 @@
 { lib, flake, machine-name, pkgs, config, modulesPath, ... }:
 with lib;
 let
-  nixos-wsl = (import (fetchTarball {
-    url = "https://github.com/nix-community/NixOS-WSL/archive/f3b6f6b04728416c64fc5ef52199fd9b9843c47d.tar.gz";
-    sha256 = "12lambwrd2s6jgi1b3vlfpmswf79l9g3hnjdq2ilgjshm5534a7v";
-  })).outputs;
   hostname = "milkyway";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
   cuda = pkgs.cudaPackages.cudatoolkit;
@@ -27,7 +23,7 @@ in
   imports = [
     "${common.home-manager}/nixos"
     "${modulesPath}/profiles/minimal.nix"
-    nixos-wsl.nixosModules.wsl
+    flake.inputs.nixos-wsl.nixosModules.wsl
   ];
 
   boot.tmp.useTmpfs = true;
