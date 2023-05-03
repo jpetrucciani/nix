@@ -107,36 +107,6 @@ with prev;
     )
     { };
 
-  murre = prev.callPackage
-    ({ lib, buildGo120Module, fetchFromGitHub }:
-      buildGo120Module rec {
-        pname = "murre";
-        version = "0.0.3";
-
-        src = fetchFromGitHub {
-          owner = "groundcover-com";
-          repo = "murre";
-          rev = "v${version}";
-          sha256 = "sha256-GTOnNubjIwazj9P65wcD7NtYzx7xGPZTeJ+mLuLgZjw=";
-        };
-
-        vendorHash = "sha256-d1djlrtFm16ofpaRqPZ0loCLb38RgkopIl/woZr5OuE=";
-
-        ldflags = [
-          "-s"
-          "-w"
-        ];
-
-        meta = with lib; {
-          inherit (src.meta) homepage;
-          description = "on-demand, scaleable source of container resource metrics for K8s";
-          license = licenses.asl20;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      }
-    )
-    { };
-
   kubeshark = prev.callPackage
     ({ stdenvNoCC, fetchurl, autoPatchelfHook, lib }:
       let
