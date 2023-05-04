@@ -118,6 +118,71 @@ final: prev: with prev; rec {
       };
     };
 
+  jupyterlab-code-formatter = buildPythonPackage rec {
+    pname = "jupyterlab-code-formatter";
+    version = "1.6.1";
+    format = "pyproject";
+
+    src = fetchPypi {
+      pname = "jupyterlab_code_formatter";
+      inherit version;
+      hash = "sha256-3fCEODKSzs7dyq4EP0xiuT0nqFhQV4ooD4/e2aG5OjI=";
+    };
+
+    nativeBuildInputs = [
+      jupyter-packaging
+      jupyterlab
+      setuptools
+      wheel
+    ];
+
+    pythonImportsCheck = [ "jupyterlab_code_formatter" ];
+
+    meta = with lib; {
+      description = "Code formatter for JupyterLab";
+      homepage = "https://github.com/ryantam626/jupyterlab_code_formatter";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  jupyterlab-execute-time =
+    let
+      pname = "jupyterlab-execute-time";
+      version = "2.3.1";
+      format = "wheel";
+      src = fetchPypi {
+        inherit version;
+        pname = "jupyterlab_execute_time";
+        format = "wheel";
+        python = "py3";
+        dist = "py3";
+        platform = "any";
+        hash = "sha256-l10U+f6VyBaJrXTj84XaDBqDqdHm4J6dwC9ms60Fml4=";
+      };
+    in
+    buildPythonPackage {
+      inherit pname src version format;
+
+      nativeBuildInputs = [
+        jupyter-packaging
+        jupyterlab
+      ];
+
+      propagatedBuildInputs = [
+        jupyter-server
+      ];
+
+      pythonImportsCheck = [ "jupyterlab_execute_time" ];
+
+      meta = with lib; {
+        description = "Display cell timings in Jupyter Lab";
+        homepage = "https://github.com/deshaw/jupyterlab-execute-time";
+        license = licenses.bsd3;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
   voila =
     let
       pname = "voila";
