@@ -1,4 +1,4 @@
-{ fetchFromGitHub, buildNpmPackage, bash }:
+{ fetchFromGitHub, buildNpmPackage, fetchpatch, bash }:
 let
   src = fetchFromGitHub {
     owner = "mckaywrigley";
@@ -15,6 +15,13 @@ buildNpmPackage {
   dontNpmBuild = true;
   NODE_OPTIONS = "--openssl-legacy-provider";
   npmDepsHash = "sha256-7mReAoIQcIk+n6UDYtLLlTyuT2F11jY9rvwJiykouVw=";
+
+  patches = [
+    (fetchpatch {
+      url = "https://github.com/jpetrucciani/chatbot-ui/commit/239219e0a4f6743e18fc2cdf6034ebc638eb7464.patch";
+      sha256 = "sha256-cWQcTmQRZ7P6xhBqkZyyivup70QLLghvzL2dv+aY0+8=";
+    })
+  ];
 
   buildPhase = ''
     rm Makefile
