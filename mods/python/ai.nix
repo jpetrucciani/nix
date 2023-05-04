@@ -320,12 +320,12 @@ final: prev: with prev; rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.157";
+    version = "0.0.158";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-6TQRZksJmIrRAMgH/z+OsRjgU9kmh4/U48uqDyJ5pGc=";
+      hash = "sha256-KbV4psPMuXtj/6k0UcWQ4DqlXBmoNMCi0vhXMTnKXpA=";
     };
 
     nativeBuildInputs = [
@@ -333,7 +333,7 @@ final: prev: with prev; rec {
     ];
 
     propagatedBuildInputs = [
-      final.sqlalchemy_1
+      sqlalchemy
       aiohttp
       dataclasses-json
       jinja2
