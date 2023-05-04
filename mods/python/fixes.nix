@@ -70,4 +70,14 @@ rec {
       hatchling
     ];
   });
+
+  betterproto = prev.betterproto.overridePythonAttrs (_: {
+    src = prev.pkgs.fetchFromGitHub {
+      owner = "danielgtaylor";
+      repo = "python-betterproto";
+      rev = "0adcc9020cf738489e8b21efc653bd883b12d4af";
+      hash = "sha256-nQlLFQgwwkCOa3+DliHkWeoxlaS0LN8haXEQ8ARmblY=";
+    };
+  });
+  grpclib = prev.grpclib.overridePythonAttrs (_: { doCheck = false; });
 }
