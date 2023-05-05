@@ -43,7 +43,7 @@ in
       nix run github:nixified-ai/flake#koboldai-nvidia -- --host
     '')
   ];
-  environment.variables = with pkgs; {
+  environment.variables = {
     NIX_HOST = hostname;
     NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
     _CUDA_PATH = CUDA_PATH;
