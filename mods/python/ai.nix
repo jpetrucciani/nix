@@ -417,14 +417,14 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.6.0";
+    version = "0.6.1";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-IS3qNARGkGf6aVIcfYEIs7RUY+8KksYv3xQogdvNAag=";
+      hash = "sha256-sz4ttYlPK/8+hCJhSybK2WUGIPvcgn+EH70AtEjZnlY=";
     };
 
     nativeCheckInputs = [
@@ -447,6 +447,7 @@ final: prev: with prev; rec {
       "tests/indices/empty/test_base.py"
       "tests/indices/keyword_table/test_base.py"
       "tests/indices/keyword_table/test_retrievers.py"
+      "tests/indices/keyword_table/test_utils.py"
       "tests/indices/knowledge_graph/test_base.py"
       "tests/indices/knowledge_graph/test_retrievers.py"
       "tests/indices/list/test_index.py"
@@ -464,10 +465,12 @@ final: prev: with prev; rec {
       "tests/indices/test_loading.py"
       "tests/indices/test_node_utils.py"
       "tests/indices/test_prompt_helper.py"
+      "tests/indices/test_utils.py"
       "tests/indices/tree/test_embedding_retriever.py"
       "tests/indices/tree/test_index.py"
       "tests/indices/tree/test_retrievers.py"
       "tests/indices/vector_store/test_faiss.py"
+      "tests/indices/vector_store/test_lancedb.py"
       "tests/indices/vector_store/test_milvus.py"
       "tests/indices/vector_store/test_pinecone.py"
       "tests/indices/vector_store/test_retrievers.py"
@@ -479,8 +482,6 @@ final: prev: with prev; rec {
       "tests/selectors/test_llm_selectors.py"
       "tests/test_utils.py"
       "tests/token_predictor/test_base.py"
-      "tests/indices/test_utils.py"
-      "tests/indices/keyword_table/test_utils.py"
     ];
 
     pythonImportsCheck = [ "llama_index" ];
