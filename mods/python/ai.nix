@@ -12,14 +12,14 @@ final: prev: with prev; rec {
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
-      version = "0.1.42";
+      version = "0.1.43";
 
       format = "pyproject";
       src = pkgs.fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "v${version}";
-        hash = "sha256-QsIsEbTeRuLWAjZrgLOGk0Vvv9iTZeHso0p1OO5yU0Y=";
+        hash = "sha256-pxS4wA1zRUM2yOyLIo8KvusllYWbpiUT40BtzYNM8Jc=";
       };
 
       preConfigure = ''
