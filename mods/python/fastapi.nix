@@ -358,7 +358,7 @@ final: prev: with prev; rec {
     pythonImportsCheck = [ "nicegui" ];
 
     meta = with lib; {
-      description = "Web User Interface with Buttons, Dialogs, Markdown, 3D Scences and Plots";
+      description = "Create web-based interfaces with Python. The nice way";
       homepage = "https://github.com/zauberzeug/nicegui";
       license = licenses.mit;
       maintainers = with maintainers; [ jpetrucciani ];

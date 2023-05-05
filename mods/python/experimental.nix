@@ -43,7 +43,7 @@ final: prev: with prev; rec {
         propagatedBuildInputs = [
           poetry-core
           pydantic
-          sqlalchemy
+          sqlalchemy_1
           sqlalchemy2-stubs
         ];
 
@@ -67,7 +67,7 @@ final: prev: with prev; rec {
     in
     buildPythonPackage rec {
       pname = "pynecone";
-      version = "0.1.20";
+      version = "0.1.28";
       format = "pyproject";
 
 
@@ -75,7 +75,7 @@ final: prev: with prev; rec {
         owner = "pynecone-io";
         repo = pname;
         rev = "v${version}";
-        sha256 = "sha256-I3+4p20shdqWSEmxTj7iN1zoKsxRG3x8HbhUkg2avV0=";
+        sha256 = "sha256-VewlmyfxoxysT5Bq6bnkfUwYjzgAYj7VMeA7ihLyW7Y=";
       };
 
       propagatedBuildInputs = [
@@ -105,9 +105,13 @@ final: prev: with prev; rec {
         in
         ''
           ${sed} 's#BUN_PATH =.*#BUN_PATH = "${pkgs.bun}/bin/bun"#g' ./pynecone/constants.py
-          ${sed} 's#(rich = )"\^12.6.0"#\1"\^13.0.0"#g' ./pyproject.toml
-          ${sed} 's#(pydantic = )"1.10.2"#\1"1.10.4"#g' ./pyproject.toml
-          ${sed} 's#(watchdog = )"\^2.3.1"#\1"\^2.2.1"#g' ./pyproject.toml
+          ${sed} \
+            -e 's#(rich = )"\^12.6.0"#\1"\^13.0.0"#g' \
+            -e's#(pydantic = )"1.10.2"#\1">1.10.2"#g' \
+            -e 's#(watchdog = )"\^2.3.1"#\1"\>2.3.1"#g' \
+            -e 's#(fastapi = )"\^0.88.0"#\1"\>0.88.0"#g' \
+            -e 's#(python-multipart = )"\^0.0.5"#\1"\>0.0.5"#g' \
+            ./pyproject.toml
         '';
 
       pythonImportsCheck = [
