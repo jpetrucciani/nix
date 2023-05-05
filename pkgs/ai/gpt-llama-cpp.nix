@@ -3,8 +3,8 @@ let
   src = fetchFromGitHub {
     owner = "keldenl";
     repo = "gpt-llama.cpp";
-    rev = "615a2f74269a13155d1ca2f3537269a3121f6c4b";
-    hash = "sha256-XCd3Ycn60aqZw3dE92u97XqabXHN9B0onmturvjuk0Y=";
+    rev = "c6ee4da687f6da12add2e7fd349b03247af81763";
+    hash = "sha256-kp2w7D9bHv5jv9n4LG/BmvM71ts9SSRCyCMaJXA8R+U=";
   };
   python = python310.withPackages (p: with p; [
     numpy
@@ -15,7 +15,7 @@ in
 buildNpmPackage {
   inherit src;
   pname = "gpt-llama-cpp";
-  version = "0.2.2";
+  version = "0.2.3";
 
   postPatch = ''
     sed -i -E 's#("postinstall": )(.*)#\1"true"#g' ./package.json
