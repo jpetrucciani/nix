@@ -1,7 +1,7 @@
 { lib, stdenv, runCommand, darwin, fetchFromGitHub, rustPlatform }:
 let
   pname = "killport";
-  version = "0.8.0";
+  version = "0.7.0";
 in
 rustPlatform.buildRustPackage rec {
   inherit pname version;
@@ -10,7 +10,7 @@ rustPlatform.buildRustPackage rec {
     owner = "jkfran";
     repo = pname;
     rev = "v${version}";
-    sha256 = "sha256-dpFHwo6fcV2BT96oBQjjuU6JfxSpzuyAC4QLoo5Uqzw=";
+    sha256 = "sha256-n/Hz2S0C0lNmTNJXAK2/Co6GdAUpNb7x7mY9EiKM/rk=";
   };
 
   buildInputs = lib.optional (stdenv.isDarwin && !stdenv.isAarch64) (
@@ -23,7 +23,7 @@ rustPlatform.buildRustPackage rec {
     ''
   );
 
-  cargoHash = "sha256-WKjCB9/CFd1sIB5vRdETcgaMHS7VwyMUyFIjujOxz88=";
+  cargoHash = "sha256-u5HJLBT8hYKaJQBFaJUb2yyQrmPsN6+P0mTH+iHDPu0=";
 
   meta = with lib; {
     description = "Easily kill processes running on a specified port";
