@@ -20,6 +20,7 @@ buildNpmPackage {
   postPatch = ''
     sed -i -E 's#("postinstall": )(.*)#\1"true"#g' ./package.json
     substituteInPlace ./routes/chatRoutes.js --replace "'main'" "'llama'"
+    substituteInPlace ./routes/completionsRoutes.js --replace "'main'" "'llama'"
     substituteInPlace ./utils.js --replace "join(path, 'llama.cpp')" "'${llama-cpp}/bin'"
   '';
 
