@@ -341,6 +341,7 @@ final: prev: with prev; rec {
       jinja2
       numexpr
       numpy
+      openai
       openapi-schema-pydantic
       pexpect
       pydantic
