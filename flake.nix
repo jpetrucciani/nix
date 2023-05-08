@@ -47,6 +47,7 @@
           [
             "andromeda"
             "bedrock"
+            "edge"
             "granite"
             "luna"
             "milkyway"
