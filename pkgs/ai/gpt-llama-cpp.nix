@@ -3,8 +3,8 @@ let
   src = fetchFromGitHub {
     owner = "keldenl";
     repo = "gpt-llama.cpp";
-    rev = "3d2562b88df21a6e96a2cc0b7f3b64e65c3efad7";
-    hash = "sha256-ALqbaKoJ2XVMljapK87PwdNq5Rcew+IuTDHtcc1A0Kg=";
+    rev = "86f0f0ea5bb44e0044e716fafc26dacc42e8ad7a";
+    hash = "sha256-PCG27PxJUAWZw2mqFCpxGC6F7kxMx+ObLE1VeNe3l7c=";
   };
   python = python310.withPackages (p: with p; [
     numpy
