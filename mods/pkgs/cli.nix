@@ -121,46 +121,6 @@ in
       })
     { };
 
-  ov = prev.callPackage
-    ({ lib, buildGo120Module, fetchFromGitHub }:
-      buildGo120Module rec {
-        pname = "ov";
-        version = "0.14.1";
-
-        src = fetchFromGitHub {
-          owner = "noborus";
-          repo = "ov";
-          rev = "v${version}";
-          sha256 = "sha256-ow2tIML7+x0X3FSpr4UQ8bzzYhZJZ9pZL8eNReEjitQ=";
-        };
-
-        ldflags = [
-          "-s"
-          "-w"
-          "-X main.Version=${version}"
-        ];
-
-        vendorHash = "sha256-X2/kcXxdGwFvdiTu1MGyv90OngWmR/xR2YtjvmLkiVE=";
-
-        nativeBuildInputs = [ installShellFiles ];
-
-        postInstall = ''
-          installShellCompletion --cmd ov \
-            --bash <($out/bin/ov --completion bash) \
-            --fish <($out/bin/ov --completion fish) \
-            --zsh  <($out/bin/ov --completion zsh)
-        '';
-
-        meta = with lib; {
-          inherit (src.meta) homepage;
-          description = "Feature-rich terminal-based text viewer";
-          license = licenses.mit;
-          maintainers = with maintainers; [ jpetrucciani ];
-        };
-      }
-    )
-    { };
-
   cgapp = prev.callPackage
     ({ lib, buildGo120Module, fetchFromGitHub }:
       buildGo120Module rec {
