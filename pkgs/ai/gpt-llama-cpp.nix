@@ -1,4 +1,4 @@
-{ fetchFromGitHub, buildNpmPackage, bash, nodejs_18, python310, llama-cpp }:
+{ fetchFromGitHub, buildNpmPackage, bash, nodejs_20, python310, llama-cpp }:
 let
   src = fetchFromGitHub {
     owner = "keldenl";
@@ -24,6 +24,7 @@ buildNpmPackage {
     substituteInPlace ./utils.js --replace "join(path, 'llama.cpp')" "'${llama-cpp}/bin'"
   '';
 
+  nodejs = nodejs_20;
   dontNpmBuild = true;
   NODE_OPTIONS = "--openssl-legacy-provider";
 
@@ -37,7 +38,7 @@ buildNpmPackage {
     #!${bash}/bin/bash
     export PORT="\''${PORT:-8420}"
     cd $out/lib/node_modules/gpt-llama.cpp
-    ${nodejs_18}/bin/node ./index.js "\$@"
+    ${nodejs_20}/bin/node ./index.js "\$@"
     EOF
     chmod +x $out/bin/gpt-llama-cpp
   '';
