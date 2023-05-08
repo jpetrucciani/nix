@@ -23,8 +23,11 @@ in
 
   boot = {
     loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
+      grub = {
+        enable = true;
+        device = "/dev/sda";
+        useOSProber = true;
+      };
     };
     kernel.sysctl = { } // common.sysctl_opts;
     tmp.useTmpfs = true;
