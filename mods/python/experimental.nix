@@ -67,7 +67,7 @@ final: prev: with prev; rec {
     in
     buildPythonPackage rec {
       pname = "pynecone";
-      version = "0.1.28";
+      version = "0.1.29";
       format = "pyproject";
 
 
@@ -75,11 +75,11 @@ final: prev: with prev; rec {
         owner = "pynecone-io";
         repo = pname;
         rev = "v${version}";
-        sha256 = "sha256-VewlmyfxoxysT5Bq6bnkfUwYjzgAYj7VMeA7ihLyW7Y=";
+        sha256 = "sha256-jn8qM8w0Uy4wIS5aXelL0dxGolD6hrfc9fBvFyS9K6s=";
       };
 
       propagatedBuildInputs = [
-        pkgs.nodejs-18_x
+        pkgs.nodejs_20
         cloudpickle
         fastapi
         gunicorn
