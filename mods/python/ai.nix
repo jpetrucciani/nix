@@ -420,14 +420,14 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.6.1";
+    version = "0.6.2";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-sz4ttYlPK/8+hCJhSybK2WUGIPvcgn+EH70AtEjZnlY=";
+      hash = "sha256-bVPB0/0lXIQ+NVdj6dzaAgbcwZOESFk6YyouJoRwVBE=";
     };
 
     nativeCheckInputs = [
