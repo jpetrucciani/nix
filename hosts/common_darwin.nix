@@ -1,8 +1,9 @@
 { pkgs
-, flake
-, machine-name
 , ...
 }:
+let
+  inherit (pkgs.lib.lists) subtractLists;
+in
 {
   system = {
     defaults = {
@@ -86,8 +87,8 @@
           "utm"
         ];
         all = fonts ++ fun ++ work ++ comms ++ util;
-        all_personal = pkgs.lib.lists.subtractLists work all;
-        all_work = pkgs.lib.lists.subtractLists fun all;
+        all_personal = subtractLists work all;
+        all_work = subtractLists fun all;
       };
     in
     {
