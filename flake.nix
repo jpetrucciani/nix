@@ -65,6 +65,7 @@
             pkgs = self.packages.aarch64-darwin;
             specialArgs = { flake = self; machine-name = name; };
             modules = [
+              ./hosts/common_darwin.nix
               ./hosts/${name}/configuration.nix
             ];
           };

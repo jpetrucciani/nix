@@ -21,10 +21,6 @@ sudo chown root:wheel /Library/LaunchDaemons/com.startup.sysctl.plist
 sudo launchctl load /Library/LaunchDaemons/com.startup.sysctl.plist
 ```
 
-### touch id sudo
-
-We probably want to be able to use touch id for sudo on iterm. The [module here](../modules/pam.nix) can help nix-darwin configure this for us.
-
 ### disable annoying message for brew installs
 
 ```bash
