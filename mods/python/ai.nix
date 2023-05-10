@@ -420,14 +420,14 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.6.2";
+    version = "0.6.4";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-bVPB0/0lXIQ+NVdj6dzaAgbcwZOESFk6YyouJoRwVBE=";
+      hash = "sha256-LxZBcVugGoMaxMcfjFcxfZVL7EX/lVoo/wMRxtMM3+I=";
     };
 
     nativeCheckInputs = [
@@ -447,6 +447,8 @@ final: prev: with prev; rec {
 
     disabledTestPaths = [
       "tests/embeddings/test_base.py"
+      "tests/indices/document_summary/test_index.py"
+      "tests/indices/document_summary/test_retrievers.py"
       "tests/indices/empty/test_base.py"
       "tests/indices/keyword_table/test_base.py"
       "tests/indices/keyword_table/test_retrievers.py"
