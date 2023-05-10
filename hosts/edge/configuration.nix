@@ -41,6 +41,8 @@ in
   time.timeZone = common.timeZone;
 
   networking.hostName = hostname;
+  networking.nameservers = [ "10.31.65.200" "1.1.1.1" ];
+  networking.search = [ "blackedge.local" ];
   networking.useDHCP = false;
   networking.interfaces.eth0.useDHCP = true;
   networking.firewall.enable = false;
