@@ -1,6 +1,7 @@
 { pkgs
 , flake
 , machine-name
+, ...
 }:
 {
   system = {
