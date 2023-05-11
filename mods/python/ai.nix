@@ -635,4 +635,98 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  pyllamacpp = buildPythonPackage rec {
+    pname = "pyllamacpp";
+    version = "2.1.3";
+    format = "pyproject";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "abdeladim-s";
+      repo = pname;
+      rev = "refs/tags/v${version}";
+      hash = "sha256-APDOsSGI3QOd+h+7ZAVbXM5m8DKilF0UmbdIvU1FcIA=";
+      fetchSubmodules = true;
+    };
+
+    nativeBuildInputs = [
+      pkgs.cmake
+      pkgs.ninja
+      pybind11
+      setuptools
+      wheel
+    ];
+
+    pythonImportsCheck = [ "pyllamacpp" ];
+    dontUseCmakeConfigure = true;
+
+    meta = with lib; {
+      description = "Python bindings for llama.cpp";
+      homepage = "https://github.com/abdeladim-s/pyllamacpp";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  pygptj = buildPythonPackage rec {
+    pname = "pygptj";
+    version = "2.0.3";
+    format = "pyproject";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "abdeladim-s";
+      repo = pname;
+      rev = "refs/tags/v${version}";
+      hash = "sha256-Ub7qXARiOIpT4UaI9mACtrRUiPbIQgABUias3TNDqP0=";
+      fetchSubmodules = true;
+    };
+
+    nativeBuildInputs = [
+      pkgs.cmake
+      pkgs.ninja
+      setuptools
+      wheel
+    ];
+
+    dontUseCmakeConfigure = true;
+
+    propagatedBuildInputs = [
+      numpy
+    ];
+
+    pythonImportsCheck = [ "pygptj" ];
+
+    meta = with lib; {
+      description = "Python bindings for the GGML GPT-J Laguage model";
+      homepage = "https://github.com/abdeladim-s/pygptj";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  pygpt4all = buildPythonPackage rec {
+    pname = "pygpt4all";
+    version = "1.1.0";
+    format = "setuptools";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "nomic-ai";
+      repo = pname;
+      rev = "refs/tags/v${version}";
+      hash = "sha256-4/AogNqSv2bBugkXj4T5G6xgr2tubZNkBpUu/CUDYko=";
+    };
+
+    pythonImportsCheck = [ "pygpt4all" ];
+    propagatedBuildInputs = [
+      pyllamacpp
+      pygptj
+    ];
+
+    meta = with lib; {
+      description = "Official Python CPU inference for GPT4All language models based on llama.cpp and ggml";
+      homepage = "https://github.com/nomic-ai/pygpt4all";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
