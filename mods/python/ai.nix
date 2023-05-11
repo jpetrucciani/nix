@@ -104,9 +104,10 @@ final: prev: with prev; rec {
       rev = "v${version}";
       hash = "sha256-XXz0NIQ5dCGwcX2HtbK5NFTalP0TjLO6ll6TmH3oflI=";
     };
-    nativeBuildInputs = [ ];
-    propagatedBuildInputs = [
+    nativeBuildInputs = [
       pybind11
+    ];
+    propagatedBuildInputs = [
       numpy
       setuptools
     ];
@@ -657,7 +658,6 @@ final: prev: with prev; rec {
       nativeBuildInputs = [
         pkgs.cmake
         pkgs.ninja
-        pybind11
         setuptools
         wheel
       ];
@@ -737,6 +737,51 @@ final: prev: with prev; rec {
       description = "Official Python CPU inference for GPT4All language models based on llama.cpp and ggml";
       homepage = "https://github.com/nomic-ai/pygpt4all";
       license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  chromadb = buildPythonPackage rec {
+    pname = "chromadb";
+    version = "0.3.22";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-QayyYsLHu0Gv7NUHN/RA3OP9qj0/4XSdDkvh/8hpnmM=";
+    };
+
+    nativeBuildInputs = [
+      setuptools
+      setuptools-scm
+    ];
+
+    propagatedBuildInputs = [
+      clickhouse-connect
+      duckdb
+      fastapi
+      hnswlib
+      httptools
+      numpy
+      pandas
+      posthog
+      pydantic
+      python-dotenv
+      requests
+      sentence-transformers
+      typing-extensions
+      uvicorn
+      uvloop
+      watchfiles
+      websockets
+    ];
+
+    pythonImportsCheck = [ "chromadb" ];
+
+    meta = with lib; {
+      description = "the AI-native open-source embedding database ";
+      homepage = "https://github.com/chroma-core/chroma";
+      license = licenses.asl20;
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };

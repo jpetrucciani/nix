@@ -80,4 +80,8 @@ rec {
     };
   });
   grpclib = prev.grpclib.overridePythonAttrs (_: { doCheck = false; });
+
+  tensorboard = prev.tensorboard.overridePythonAttrs (_: {
+    disabled = false;
+  });
 }
