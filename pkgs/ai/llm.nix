@@ -1,5 +1,7 @@
-{ lib, fetchFromGitHub, rustPlatform }:
+{ lib, stdenv, darwin, fetchFromGitHub, rustPlatform }:
 let
+  inherit (stdenv) isAarch64 isDarwin;
+  osSpecific = with darwin.apple_sdk.frameworks; if isDarwin then ([ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ])) else [ ];
   pname = "llm";
   version = "0.1.1";
 in
@@ -13,6 +15,7 @@ rustPlatform.buildRustPackage rec {
     sha256 = "sha256-yvLz3u5hMD1z+HyNjaCHLh+KZl1DNvfUedGe8pr3ayM=";
     fetchSubmodules = true;
   };
+  buildInputs = osSpecific;
 
   cargoHash = "sha256-TuN729VwCGsRHjN6LHEATfRUMGYZuEWl8vi/qz7DAf4=";
 
