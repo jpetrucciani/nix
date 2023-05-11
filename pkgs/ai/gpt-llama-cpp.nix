@@ -3,8 +3,8 @@ let
   src = fetchFromGitHub {
     owner = "keldenl";
     repo = "gpt-llama.cpp";
-    rev = "c2fd630ce8e4fd1e27cd9fe2ac65d00a51e304a4";
-    hash = "sha256-cOKHRu+O4T2dZUneGNtrFinHdAnMfZxvu6I+kA1WYZQ=";
+    rev = "4781f29aa842b238388c962609ef574ff40a2855";
+    hash = "sha256-sx5XiabkJ1/CgQZLbLSAGw5Qe1f1ZUWVnKYPbDXa2hA=";
   };
   python = python310.withPackages (p: with p; [
     numpy
@@ -15,10 +15,10 @@ in
 buildNpmPackage {
   inherit src;
   pname = "gpt-llama-cpp";
-  version = "0.2.3";
+  version = "0.2.5";
 
   postPatch = ''
-    sed -i -E 's#("postinstall": )(.*)#\1"true"#g' ./package.json
+    sed -i -E 's#("postinstall": )(.*)#\1"true",#g' ./package.json
     substituteInPlace ./routes/chatRoutes.js --replace "'main'" "'llama'"
     substituteInPlace ./routes/completionsRoutes.js --replace "'main'" "'llama'"
     substituteInPlace ./utils.js --replace "join(path, 'llama.cpp')" "'${llama-cpp}/bin'"
@@ -31,7 +31,7 @@ buildNpmPackage {
   nativeBuildInputs = [ python ];
   propagatedBuildInputs = [ python llama-cpp ];
 
-  npmDepsHash = "sha256-JhZLxZvHdf1ojE2A3hNureBLCOaYP4ajHdYu+lmV998=";
+  npmDepsHash = "sha256-iO4h4iqPV96xz3fcxxO0ivMY/ipCUJMhtTPYC3I2x9g=";
 
   postInstall = ''
     cat <<EOF >$out/bin/gpt-llama-cpp
