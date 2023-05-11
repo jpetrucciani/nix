@@ -636,73 +636,84 @@ final: prev: with prev; rec {
     };
   };
 
-  pyllamacpp = buildPythonPackage rec {
-    pname = "pyllamacpp";
-    version = "2.1.3";
-    format = "pyproject";
+  pyllamacpp =
+    let
+      inherit (stdenv) isAarch64 isDarwin;
+      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ]) else [ ];
+    in
+    buildPythonPackage rec {
+      pname = "pyllamacpp";
+      version = "2.1.3";
+      format = "pyproject";
 
-    src = pkgs.fetchFromGitHub {
-      owner = "abdeladim-s";
-      repo = pname;
-      rev = "refs/tags/v${version}";
-      hash = "sha256-APDOsSGI3QOd+h+7ZAVbXM5m8DKilF0UmbdIvU1FcIA=";
-      fetchSubmodules = true;
+      src = pkgs.fetchFromGitHub {
+        owner = "abdeladim-s";
+        repo = pname;
+        rev = "refs/tags/v${version}";
+        hash = "sha256-APDOsSGI3QOd+h+7ZAVbXM5m8DKilF0UmbdIvU1FcIA=";
+        fetchSubmodules = true;
+      };
+      buildInputs = osSpecific;
+      nativeBuildInputs = [
+        pkgs.cmake
+        pkgs.ninja
+        pybind11
+        setuptools
+        wheel
+      ];
+
+      pythonImportsCheck = [ "pyllamacpp" ];
+      dontUseCmakeConfigure = true;
+
+      meta = with lib; {
+        description = "Python bindings for llama.cpp";
+        homepage = "https://github.com/abdeladim-s/pyllamacpp";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
     };
 
-    nativeBuildInputs = [
-      pkgs.cmake
-      pkgs.ninja
-      pybind11
-      setuptools
-      wheel
-    ];
+  pygptj =
+    let
+      inherit (stdenv) isAarch64 isDarwin;
+      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ]) else [ ];
+    in
+    buildPythonPackage rec {
+      pname = "pygptj";
+      version = "2.0.3";
+      format = "pyproject";
 
-    pythonImportsCheck = [ "pyllamacpp" ];
-    dontUseCmakeConfigure = true;
+      src = pkgs.fetchFromGitHub {
+        owner = "abdeladim-s";
+        repo = pname;
+        rev = "refs/tags/v${version}";
+        hash = "sha256-Ub7qXARiOIpT4UaI9mACtrRUiPbIQgABUias3TNDqP0=";
+        fetchSubmodules = true;
+      };
 
-    meta = with lib; {
-      description = "Python bindings for llama.cpp";
-      homepage = "https://github.com/abdeladim-s/pyllamacpp";
-      license = licenses.mit;
-      maintainers = with maintainers; [ jpetrucciani ];
+      buildInputs = osSpecific;
+      nativeBuildInputs = [
+        pkgs.cmake
+        pkgs.ninja
+        setuptools
+        wheel
+      ];
+
+      dontUseCmakeConfigure = true;
+
+      propagatedBuildInputs = [
+        numpy
+      ];
+
+      pythonImportsCheck = [ "pygptj" ];
+
+      meta = with lib; {
+        description = "Python bindings for the GGML GPT-J Laguage model";
+        homepage = "https://github.com/abdeladim-s/pygptj";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
     };
-  };
-
-  pygptj = buildPythonPackage rec {
-    pname = "pygptj";
-    version = "2.0.3";
-    format = "pyproject";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "abdeladim-s";
-      repo = pname;
-      rev = "refs/tags/v${version}";
-      hash = "sha256-Ub7qXARiOIpT4UaI9mACtrRUiPbIQgABUias3TNDqP0=";
-      fetchSubmodules = true;
-    };
-
-    nativeBuildInputs = [
-      pkgs.cmake
-      pkgs.ninja
-      setuptools
-      wheel
-    ];
-
-    dontUseCmakeConfigure = true;
-
-    propagatedBuildInputs = [
-      numpy
-    ];
-
-    pythonImportsCheck = [ "pygptj" ];
-
-    meta = with lib; {
-      description = "Python bindings for the GGML GPT-J Laguage model";
-      homepage = "https://github.com/abdeladim-s/pygptj";
-      license = licenses.mit;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
 
   pygpt4all = buildPythonPackage rec {
     pname = "pygpt4all";
