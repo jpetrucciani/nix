@@ -36,7 +36,7 @@ rec {
         pg=""
         if [ "$with_db_pg" = "1" ]; then
           pg="(__pg { postgres = pg; })${"\n"}(__pg_bootstrap { inherit name; postgres = pg; })${"\n"}(__pg_shell { inherit name; postgres = pg; })"
-          toplevel="pg = nixpkgs.postgresql_15;${"\n"}$toplevel"
+          toplevel="pg = pkgs.postgresql_15;${"\n"}$toplevel"
         fi
         redis=""
         if [ "$with_db_redis" = "1" ]; then
@@ -45,7 +45,7 @@ rec {
         elixir=""
         if [ "$with_elixir" = "1" ]; then
           elixir="elixir = [elixir${"\n"}(with beamPackages; [${"\n"}hex])(ifIsLinux [inotify-tools]) (ifIsDarwin [ terminal-notifier (with darwin.apple_sdk.frameworks; [ CoreFoundation CoreServices ])])];"
-          toplevel="inherit (nixpkgs.hax) ifIsLinux ifIsDarwin;${"\n"}$toplevel"
+          toplevel="inherit (pkgs.hax) ifIsLinux ifIsDarwin;${"\n"}$toplevel"
         fi
         golang=""
         if [ "$with_golang" = "1" ]; then
@@ -57,7 +57,7 @@ rec {
         fi
         node=""
         if [ "$with_node" = "1" ]; then
-          toplevel="node = nixpkgs.nodejs-18_x;${"\n"}$toplevel"
+          toplevel="node = pkgs.nodejs-20_x;${"\n"}$toplevel"
           node="node = [node];npm = with node.pkgs; [prettier${"\n"}yarn];"
         fi
         php=""
