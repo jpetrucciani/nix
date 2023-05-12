@@ -14,7 +14,7 @@ let
       ### Human:
     '';
   };
-  version = "master-b9fd7ee";
+  version = "master-553fd4d";
 in
 clangStdenv.mkDerivation rec {
   inherit version;
@@ -23,7 +23,7 @@ clangStdenv.mkDerivation rec {
     owner = "ggerganov";
     repo = name;
     rev = "refs/tags/${version}";
-    hash = "sha256-4A6inSU+0FsBpcOBq5pfmrkVgK5+DtOMBKWgUhB9omc=";
+    hash = "sha256-R/HQaQHsq2hcZxBo+D9GDN2l2rHjaQ6cFsaXvFJk8Eo=";
   };
   cmakeFlags = lib.optionals (system == "aarch64-darwin") [
     "-DCMAKE_C_FLAGS=-D__ARM_FEATURE_DOTPROD=1"
