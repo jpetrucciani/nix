@@ -54,7 +54,7 @@ in
     isNormalUser = true;
     passwordFile = "/etc/passwordFile-jacobi";
 
-    openssh.authorizedKeys.keys = with common.pubkeys; [ edgewin ] ++ usual;
+    openssh.authorizedKeys.keys = with common.pubkeys; [ edgewin hub2 ] ++ usual;
   };
 
   services = { } // common.services;
