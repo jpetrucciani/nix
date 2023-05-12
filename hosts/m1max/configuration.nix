@@ -13,6 +13,7 @@ in
 
   home-manager.users.jacobi = common.jacobi;
   documentation.enable = false;
+  security.pam.enableSudoTouchIdAuth = true;
 
   time.timeZone = common.timeZone;
   environment.variables = {
@@ -26,7 +27,6 @@ in
     home = "/Users/${username}";
   };
 
-  security.pam.enableSudoTouchIdAuth = true;
   system.stateVersion = 4;
   nix = common.nix // {
     useDaemon = true;

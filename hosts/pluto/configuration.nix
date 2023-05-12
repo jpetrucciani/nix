@@ -34,5 +34,8 @@ in
       "darwin=${common.nix-darwin}"
       "darwin-config=${configPath}"
     ];
+    settings = {
+      trusted-users = [ "root" "jacobi" ];
+    };
   };
 }
