@@ -421,14 +421,14 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.6.5";
+    version = "0.6.6";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-vlWgAVzulvmiiSPZ6f1+Q0EvD/WMUvpNATh5sO1zWoE=";
+      hash = "sha256-wQacMPJllG1/pIja89kswWSlndjvElV9dkJcw5Mf4+A=";
     };
 
     nativeCheckInputs = [
@@ -476,12 +476,9 @@ final: prev: with prev; rec {
       "tests/indices/tree/test_index.py"
       "tests/indices/tree/test_retrievers.py"
       "tests/indices/vector_store/test_faiss.py"
-      "tests/indices/vector_store/test_lancedb.py"
-      "tests/indices/vector_store/test_milvus.py"
       "tests/indices/vector_store/test_pinecone.py"
       "tests/indices/vector_store/test_retrievers.py"
       "tests/indices/vector_store/test_simple.py"
-      "tests/indices/vector_store/test_weaviate.py"
       "tests/langchain_helpers/test_text_splitter.py"
       "tests/optimization/test_base.py"
       "tests/playground/test_base.py"
