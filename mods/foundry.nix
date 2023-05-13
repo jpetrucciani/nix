@@ -1,7 +1,6 @@
 { pkgs }:
 let
   inherit (pkgs.lib) concatStringsSep genList;
-  constants = import ./constants.nix { inherit pkgs; };
   nixconf = ''
     build-users-group = nixbld
     sandbox = false
