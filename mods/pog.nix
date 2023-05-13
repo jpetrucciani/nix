@@ -335,21 +335,15 @@ rec {
       # docker images to use in various spots
       images = [
         "alpine:3.17"
-        "jpetrucciani/alpine:3.17"
-        "jpetrucciani/nix:2.12"
-        "mongo:5.0"
-        "mongo:4.4.12"
-        "mysql:8.0"
-        "mysql:5.7"
+        "ghcr.io/jpetrucciani/foundry-nix:latest"
+        "ghcr.io/jpetrucciani/foundry-python311:latest"
+        "ghcr.io/jpetrucciani/foundry-python312:latest"
         "nicolaka/netshoot:latest"
-        "node:18"
         "node:16"
-        "node:14"
-        "node:12"
+        "node:20"
         "python:3.11"
-        "python:3.10"
+        "python:3.12"
         "ubuntu:22.04"
-        "ubuntu:20.04"
       ];
       aws = {
         regions = [

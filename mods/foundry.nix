@@ -1,6 +1,7 @@
 { pkgs }:
 let
   inherit (pkgs.lib) concatStringsSep genList;
+  inherit (pkgs.writers) writeBashBin;
   nixconf = ''
     build-users-group = nixbld
     sandbox = false
@@ -17,7 +18,7 @@ let
     nogroup:x:65534:
     nixbld:x:30000:${concatStringsSep "," (genList (i: "nixbld${toString (i+1)}") 32)}
   '';
-  foundry = { imageName, paths, env ? [ ], registry ? "ghcr.io/jpetrucciani", workdir ? "/opt/foundry" }:
+  foundry = { imageName, paths, env ? [ ], registry ? "ghcr.io/jpetrucciani", workdir ? "/opt/foundry", description ? "a foundry docker image built with nix" }:
     let
       name = "foundry-${imageName}";
       deps = paths pkgs;
@@ -67,6 +68,10 @@ let
               "USER=nobody"
               "HOME=${workdir}"
             ] ++ env;
+            Labels = {
+              "org.opencontainers.image.authors" = "j@cobi.dev";
+              "org.opencontainers.image.description" = description;
+            };
             WorkingDir = workdir;
             Command = "bash";
           };
@@ -78,14 +83,25 @@ let
             echo '${passwd}' >/etc/passwd
             echo '${group}' >/etc/group
           '';
-          passthru = {
-            build = pkgs.writeShellScriptBin "build" ''
+          passthru = rec {
+            _raw_tag = "$(${raw_tag}/bin/raw_tag)";
+            raw_tag = writeBashBin "raw_tag" ''
+              echo "${registry}/${name}"
+            '';
+            _date_tag = "$(${date_tag}/bin/date_tag)";
+            date_tag = writeBashBin "date_tag" ''
+              echo "$(${raw_tag}/bin/raw_tag):$(${pkgs.coreutils}/bin/date +"%F")"
+            '';
+            build = writeBashBin "build" ''
               ${foundryImage} | docker load
             '';
-            pushToGHCR = pkgs.writeShellScriptBin "pushToGHCR" ''
+            pushToGHCR = writeBashBin "pushToGHCR" ''
               ${foundryImage} | \
                 ${pkgs.gzip}/bin/gzip --fast | \
-                ${pkgs.skopeo}/bin/skopeo --insecure-policy copy docker-archive:/dev/stdin "docker://${registry}/${name}:$(${pkgs.coreutils}/bin/date +"%F")"
+                ${pkgs.skopeo}/bin/skopeo --insecure-policy copy docker-archive:/dev/stdin "docker://${_date_tag}"
+            '';
+            tagAsLatest = writeBashBin "tagAsLatest" ''
+              ${pkgs.skopeo}/bin/skopeo copy "docker://${_date_tag}" "docker://${_raw_tag}:latest"
             '';
           };
         };
@@ -94,6 +110,7 @@ let
 
   foundryNix = foundry {
     imageName = "nix";
+    description = "a baseline image with common tools and a working nix install";
     env = [ ];
     paths = pkgs: with pkgs; [ ];
   };
@@ -111,10 +128,12 @@ let
   ]);
   foundryPython311 = foundry {
     imageName = "python-3.11";
+    description = "a baseline python 3.11 image with common tools and a working nix install";
     paths = _python_pkgs pkgs.python311;
   };
   foundryPython312 = foundry {
     imageName = "python-3.12";
+    description = "a baseline python 3.12 image with common tools and a working nix install";
     paths = _python_pkgs pkgs.python312;
   };
 in
