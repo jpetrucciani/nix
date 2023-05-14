@@ -149,7 +149,7 @@ rec {
       pluginDirs = builtins.concatStringsSep ":" _pluginDirs;
     in
     pog {
-      name = "__rabbitmq2";
+      name = "__rabbitmq";
       description = "";
       script = ''
         ${pkgs.coreutils}/bin/mkdir -p "$RABBIT_DATA" "$RABBIT_PLUGINS"
