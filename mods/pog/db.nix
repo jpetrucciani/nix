@@ -174,6 +174,7 @@ rec {
     __rd_shell
     # magic run helper
     (__run { })
+    # queues
     (__rabbitmq { })
   ];
 }
