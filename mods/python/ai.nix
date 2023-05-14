@@ -175,12 +175,14 @@ final: prev: with prev; rec {
 
   clickhouse-connect = buildPythonPackage rec {
     pname = "clickhouse-connect";
-    version = "0.5.20";
-    format = "pyproject";
+    version = "0.5.24";
+    format = "setuptools";
 
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-X8moSEnzw7b2kotFoN8X+mPrz05RizpI7HByCVfhhoM=";
+    src = pkgs.fetchFromGitHub {
+      owner = "ClickHouse";
+      repo = pname;
+      rev = "refs/tags/v${version}";
+      hash = "sha256-Ff4E7zAPZt5vK/pOvw1S7doEOSgADrrUrjEUpk7cvgQ=";
     };
 
     nativeBuildInputs = [
@@ -188,13 +190,26 @@ final: prev: with prev; rec {
       setuptools
     ];
 
+    nativeCheckInputs = [
+      pytestCheckHook
+      pytest-mock
+      sqlalchemy
+    ];
+
     propagatedBuildInputs = [
       certifi
+      clickhouse-driver
       lz4
+      numpy
+      pandas
       pytz
       urllib3
       zstandard
     ];
+
+    preBuild = ''
+      cythonize --inplace clickhouse_connect/driverc/{buffer,dataconv,npconv}.pyx
+    '';
 
     passthru.optional-dependencies = {
       arrow = [
@@ -216,6 +231,11 @@ final: prev: with prev; rec {
         apache-superset
       ];
     };
+
+    disabledTestPaths = [
+      "examples/perf_test.py"
+      "tests/integration_tests/*"
+    ];
 
     pythonImportsCheck = [ "clickhouse_connect" ];
 
