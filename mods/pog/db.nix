@@ -118,6 +118,52 @@ rec {
       '';
     };
 
+  __rabbitmq =
+    { dataDir ? ".rabbitmq"
+    , port ? 5672
+    , managementPort ? 15672
+    , guest ? true
+    , extraConfig ? ""
+    , plugins ? [ ]
+    , defaultPlugins ? [ "rabbitmq_management" "rabbitmq_shovel" "rabbitmq_shovel_management" ]
+    , pluginDir ? "${dataDir}/plugins"
+    , extraPluginDirs ? [ ]
+    }:
+    let
+      config = writeTextFile {
+        name = "__rabbitmq.conf";
+        text = ''
+          loopback_users.guest = ${pkgs.lib.boolToString guest}
+          listeners.tcp.default = ${toString port}
+          management.listener.port = ${toString managementPort}
+          management.listener.ssl = false
+          ${extraConfig}
+        '';
+      };
+      enabledPlugins = writeTextFile {
+        name = "__rabbitmq_plugins";
+        text = ''
+          [ ${builtins.concatStringsSep "," _plugins} ].
+        '';
+      };
+      _plugins = plugins ++ defaultPlugins;
+      _pluginDirs = [ pluginDir "${rabbitmq-server}/plugins" ] ++ extraPluginDirs;
+      pluginDirs = builtins.concatStringsSep ":" _pluginDirs;
+    in
+    pog {
+      name = "__rabbitmq";
+      description = "";
+      script = ''
+        ${pkgs.coreutils}/bin/mkdir -p "${dataDir}" "${pluginDir}"
+        export RABBITMQ_MNESIA_BASE="${dataDir}"
+        export RABBITMQ_LOG_BASE="${dataDir}/logs"
+        export RABBITMQ_CONFIG_FILE="${config}"
+        export RABBITMQ_ENABLED_PLUGINS_FILE="${enabledPlugins}"
+        export RABBITMQ_PLUGINS_DIR="${pluginDirs}"
+        ${pkgs.rabbitmq-server}/bin/rabbitmq-server
+      '';
+    };
+
   db_pog_scripts = [
     # postgres
     (__pg { })
@@ -128,5 +174,6 @@ rec {
     __rd_shell
     # magic run helper
     (__run { })
+    (__rabbitmq { })
   ];
 }
