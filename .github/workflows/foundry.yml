@@ -8,7 +8,7 @@ jobs:
         image:
           - nix
           - python311
-          - python312
+          # - python312
     name: foundry-${{ matrix.image }}
     runs-on: ubuntu-22.04
     steps:

@@ -122,7 +122,9 @@ let
       (p: with p; [
         black
         mypy
+        httpx
         requests
+        types-requests
       ])
     )
   ]);

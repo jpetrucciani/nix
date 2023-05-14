@@ -49,7 +49,7 @@ rec {
         fi
         golang=""
         if [ "$with_golang" = "1" ]; then
-          golang="go = [go_1_20${"\n"}go-tools gopls];"
+          golang="go = [go${"\n"}go-tools gopls];"
         fi
         nim=""
         if [ "$with_nim" = "1" ]; then
@@ -57,7 +57,7 @@ rec {
         fi
         node=""
         if [ "$with_node" = "1" ]; then
-          toplevel="node = pkgs.nodejs-20_x;${"\n"}$toplevel"
+          toplevel="node = pkgs.nodejs_20;${"\n"}$toplevel"
           node="node = [node];npm = with node.pkgs; [prettier${"\n"}yarn];"
         fi
         php=""
