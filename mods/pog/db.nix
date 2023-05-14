@@ -152,6 +152,8 @@ rec {
       name = "__rabbitmq";
       description = "";
       script = ''
+        export RABBIT_DATA="''${RABBIT_DATA:-.rabbitmq}"
+        export RABBIT_PLUGINS="''${RABBIT_PLUGINS:-''${RABBIT_DATA}/plugins}"
         ${pkgs.coreutils}/bin/mkdir -p "$RABBIT_DATA" "$RABBIT_PLUGINS"
         export RABBITMQ_MNESIA_BASE="$RABBIT_DATA"
         export RABBITMQ_LOG_BASE="$RABBIT_DATA/logs"
