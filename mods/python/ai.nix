@@ -134,45 +134,6 @@ final: prev: with prev; rec {
     postPatch = "";
   });
 
-  # chromadb = buildPythonPackage rec {
-  #   pname = "chromadb";
-  #   version = "0.3.21";
-  #   format = "pyproject";
-
-  #   src = fetchPypi {
-  #     inherit pname version;
-  #     hash = "sha256-ezQXiSZm3JDfEOr65xnuGJA3xEjByW5seWTaqHBIPDo=";
-  #   };
-
-  #   nativeBuildInputs = [
-  #     setuptools
-  #     setuptools-scm
-  #   ];
-
-  #   propagatedBuildInputs = [
-  #     clickhouse-connect
-  #     duckdb
-  #     fastapi
-  #     hnswlib
-  #     numpy
-  #     pandas
-  #     posthog
-  #     pydantic
-  #     requests
-  #     sentence-transformers
-  #     uvicorn
-  #   ];
-
-  #   pythonImportsCheck = [ "chromadb" ];
-
-  #   meta = with lib; {
-  #     description = "Chroma";
-  #     homepage = "https://github.com/chroma-core/chroma";
-  #     license = licenses.asl20;
-  #     maintainers = with maintainers; [ jpetrucciani ];
-  #   };
-  # };
-
   clickhouse-connect = buildPythonPackage rec {
     pname = "clickhouse-connect";
     version = "0.5.24";
