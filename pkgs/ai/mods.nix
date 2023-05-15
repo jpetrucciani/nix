@@ -20,6 +20,7 @@ buildGo120Module rec {
   meta = with lib; {
     description = "AI on the command line";
     homepage = "https://github.com/charmbracelet/mods";
+    mainProgram = "mods";
     license = licenses.mit;
     maintainers = with maintainers; [ jpetrucciani ];
   };

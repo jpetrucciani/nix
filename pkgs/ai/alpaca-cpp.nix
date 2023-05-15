@@ -24,6 +24,7 @@ clangStdenv.mkDerivation rec {
   meta = with lib; {
     description = "Locally run an Instruction-Tuned Chat-Style LLM";
     homepage = "https://github.com/antimatter15/alpaca.cpp";
+    mainProgram = "chat";
     license = licenses.mit;
     maintainers = with maintainers; [ jpetrucciani ];
   };

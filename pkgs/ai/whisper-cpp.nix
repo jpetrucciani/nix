@@ -27,6 +27,7 @@ clangStdenv.mkDerivation rec {
   meta = with lib; {
     description = "Port of OpenAI's Whisper model in C/C++";
     homepage = "https://github.com/ggerganov/whisper.cpp";
+    mainProgram = "whisper";
     license = licenses.mit;
     maintainers = with maintainers; [ jpetrucciani ];
   };
