@@ -764,4 +764,48 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  langcorn = buildPythonPackage rec {
+    pname = "langcorn";
+    version = "0.0.7";
+    format = "pyproject";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "msoedov";
+      repo = pname;
+      rev = "refs/tags/${version}";
+      hash = "sha256-Oo8yVVLnlq/uOkWorqgbMMwmwIbiGTNIVFb1HUm9GTE=";
+    };
+
+    postPatch = ''
+      ${pkgs.gnused}/bin/sed -i -E \
+        -e '/bs4 =/d' \
+        -e '/loguru =/d' \
+        -e 's#(langchain = )"\^0.0.163"#\1">0.0.163"#g' \
+        -e 's#(uvicorn = )"\^0.22.0"#\1">=0.20.0"#g' \
+        pyproject.toml
+    '';
+
+    nativeBuildInputs = [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = [
+      fastapi
+      fire
+      langchain
+      loguru
+      openai
+      uvicorn
+    ];
+
+    pythonImportsCheck = [ "langcorn" ];
+
+    meta = with lib; {
+      description = "A Python package creating rest api interface for LangChain";
+      homepage = "https://github.com/msoedov/langcorn";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
