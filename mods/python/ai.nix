@@ -722,12 +722,12 @@ final: prev: with prev; rec {
 
   chromadb = buildPythonPackage rec {
     pname = "chromadb";
-    version = "0.3.22";
+    version = "0.3.23";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-QayyYsLHu0Gv7NUHN/RA3OP9qj0/4XSdDkvh/8hpnmM=";
+      hash = "sha256-h/qSLJLi6Q+0gjS0NenU8MYWRvvRUmBi9T9jMm/CEig=";
     };
 
     nativeBuildInputs = [
