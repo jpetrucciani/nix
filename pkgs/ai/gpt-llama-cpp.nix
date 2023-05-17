@@ -3,8 +3,8 @@ let
   src = fetchFromGitHub {
     owner = "keldenl";
     repo = "gpt-llama.cpp";
-    rev = "4781f29aa842b238388c962609ef574ff40a2855";
-    hash = "sha256-sx5XiabkJ1/CgQZLbLSAGw5Qe1f1ZUWVnKYPbDXa2hA=";
+    rev = "334ef17887040d0e56fb1caf7cb783d6fc693e44";
+    hash = "sha256-GoMS37nPXrBdXVPyzaE7iuOinYeE3UrmOPoD2ZXReL4=";
   };
   python = python310.withPackages (p: with p; [
     numpy
@@ -15,7 +15,7 @@ in
 buildNpmPackage {
   inherit src;
   pname = "gpt-llama-cpp";
-  version = "0.2.5";
+  version = "0.2.6";
 
   postPatch = ''
     sed -i -E 's#("postinstall": )(.*)#\1"true",#g' ./package.json
@@ -31,7 +31,7 @@ buildNpmPackage {
   nativeBuildInputs = [ python ];
   propagatedBuildInputs = [ python llama-cpp ];
 
-  npmDepsHash = "sha256-iO4h4iqPV96xz3fcxxO0ivMY/ipCUJMhtTPYC3I2x9g=";
+  npmDepsHash = "sha256-IvCplh704Bdma5c5NTy6dvQmf2p6vZuIua0oZ7YskEU=";
 
   postInstall = ''
     cat <<EOF >$out/bin/gpt-llama-cpp
