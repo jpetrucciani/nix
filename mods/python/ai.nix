@@ -808,4 +808,62 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  rwkv-cpp =
+    let
+      inherit (stdenv) isAarch64 isDarwin;
+      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ]) else [ ];
+      ggml-pin = pkgs.fetchFromGitHub {
+        owner = "ggerganov";
+        repo = "ggml";
+        rev = "ff6e03cbcd9bf6e9fa41d49f2495c042efae4dc6";
+        hash = "sha256-cppWo/quVI1YtK7qWPqok9AnqThci9Fsluscaksptcw=";
+      };
+    in
+    buildPythonPackage {
+      pname = "rwkv-cpp";
+      version = "0.0.1";
+
+      format = "pyproject";
+      src = pkgs.fetchFromGitHub {
+        owner = "saharNooby";
+        repo = "rwkv.cpp";
+        # rev = "v${version}";
+        rev = "286c5279301aa3875960ff9ca3b77b37a650cf5e";
+        hash = "sha256-SXSUytx25TYF8RXyMMBwi0Ph/FHx+f/CcRO7CkW8d7I=";
+      };
+
+      preConfigure = ''
+        cp -r ${ggml-pin}/. ./ggml
+        chmod -R +w ./ggml
+      '';
+      preBuild = ''
+        cd ..
+      '';
+      buildInputs = osSpecific;
+
+      nativeBuildInputs = [
+        prev.pkgs.cmake
+        prev.pkgs.ninja
+        poetry-core
+        scikit-build
+        setuptools
+      ];
+
+      propagatedBuildInputs = [
+        numpy
+        tokenizers
+        torch
+        typing-extensions
+      ];
+
+      pythonImportsCheck = [ "rwkv_cpp" ];
+
+      meta = with lib; {
+        description = "";
+        homepage = "https://github.com/saharNooby/rwkv.cpp/";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
 }
