@@ -64,6 +64,14 @@ in
         host all all 192.168.69.0/24 trust
       '';
     };
+    qdrant = {
+      enable = true;
+      settings = {
+        service = {
+          host = "0.0.0.0";
+        };
+      };
+    };
     promtail = common.templates.promtail { inherit hostname; };
     prometheus.exporters = common.templates.prometheus_exporters { };
   } // common.services;
