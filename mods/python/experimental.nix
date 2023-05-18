@@ -67,7 +67,7 @@ final: prev: with prev; rec {
     in
     buildPythonPackage rec {
       pname = "pynecone";
-      version = "0.1.29";
+      version = "0.1.31";
       format = "pyproject";
 
 
@@ -75,7 +75,7 @@ final: prev: with prev; rec {
         owner = "pynecone-io";
         repo = pname;
         rev = "v${version}";
-        sha256 = "sha256-jn8qM8w0Uy4wIS5aXelL0dxGolD6hrfc9fBvFyS9K6s=";
+        sha256 = "sha256-FmyUP2goccFfOxVLtmQyfV/xZPLpWAAOSo7OT7u/AaI=";
       };
 
       propagatedBuildInputs = [
@@ -106,10 +106,9 @@ final: prev: with prev; rec {
         ''
           ${sed} 's#BUN_PATH =.*#BUN_PATH = "${pkgs.bun}/bin/bun"#g' ./pynecone/constants.py
           ${sed} \
-            -e 's#(rich = )"\^12.6.0"#\1"\^13.0.0"#g' \
             -e's#(pydantic = )"1.10.2"#\1">1.10.2"#g' \
+            -e's#(fastapi = )"\^0.92.0"#\1">0.92.0"#g' \
             -e 's#(watchdog = )"\^2.3.1"#\1"\>2.3.1"#g' \
-            -e 's#(fastapi = )"\^0.88.0"#\1"\>0.88.0"#g' \
             -e 's#(python-multipart = )"\^0.0.5"#\1"\>0.0.5"#g' \
             ./pyproject.toml
         '';
