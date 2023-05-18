@@ -25,6 +25,10 @@ in
   users.users.jacobi = {
     name = username;
     home = "/Users/${username}";
+    openssh.authorizedKeys.keys = with common.pubkeys; [
+      galaxyboss
+      milkyway
+    ];
   };
 
   system.stateVersion = 4;
