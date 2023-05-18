@@ -144,6 +144,38 @@ rec {
       '';
     };
 
+  eks_config = pog {
+    name = "eks_config";
+    description = "fetch a kubeconfig for the given EKS cluster";
+    flags = [
+      {
+        name = "profile";
+        description = "the profile to load the cluster from";
+        envVar = "AWS_PROFILE";
+        required = true;
+      }
+      {
+        name = "cluster";
+        description = "the cluster to load a kubeconfig for";
+        envVar = "EKS_CLUSTER";
+        prompt = ''
+          ${_.aws} eks list-clusters --region "$AWS_REGION" | ${_.jq} -r '.clusters[]' |
+          ${_.fzfqm} |
+          ${_.awk} '{print $1}'
+        '';
+      }
+      {
+        name = "region";
+        description = "the region of the cluster to load";
+        envVar = "AWS_REGION";
+      }
+    ];
+    script = helpers: ''
+      debug "getting cluster config for '$cluster' in '$region' from the '$profile' profile"
+      ${_.aws} eks update-kubeconfig --name "$cluster" --profile "$profile" --region "$region"
+    '';
+  };
+
   wasabi = pog {
     name = "wasabi";
     description = "a wrapper for awscli to interact with wasabi";
@@ -188,6 +220,7 @@ rec {
     ecr_login
     ecr_login_public
     ec2_spot_interrupt
+    eks_config
     wasabi
     awslocal
   ];
