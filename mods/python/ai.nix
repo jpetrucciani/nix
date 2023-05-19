@@ -302,14 +302,14 @@ final: prev: with prev; rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.173";
+    version = "0.0.174";
     format = "pyproject";
 
     src = pkgs.fetchFromGitHub {
       owner = "hwchase17";
       repo = pname;
       rev = "refs/tags/v${version}";
-      hash = "sha256-/2FxLAd67lXXA89bNrZd4WRon1gY7Ykpv1/Dv+SCiS0=";
+      hash = "sha256-+nUOUxHJYGqWPj8ZnK7l9ArQQthGgtMG/TZc/5+pneE=";
     };
 
     nativeBuildInputs = [
@@ -866,4 +866,68 @@ final: prev: with prev; rec {
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
+
+  strip-tags = buildPythonPackage rec {
+    pname = "strip-tags";
+    version = "0.3";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-SWTRs/+ueQTzmkAbFa/PGjzml3CIh/nG09TRJogPzoY=";
+    };
+
+    propagatedBuildInputs = [
+      beautifulsoup4
+      click
+      html5lib
+    ];
+
+    passthru.optional-dependencies = {
+      test = [
+        pytest
+      ];
+    };
+
+    pythonImportsCheck = [ "strip_tags" ];
+
+    meta = with lib; {
+      description = "Strip tags from HTML, optionally from areas identified by CSS selectors";
+      homepage = "hhttps://github.com/simonw/strip-tags";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  ttok = buildPythonPackage rec {
+    pname = "ttok";
+    version = "0.1";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-i5Q59xviIuEXOSssizi7lOQWNBzLk4GRpWWJ7DNTlRo=";
+    };
+
+    propagatedBuildInputs = [
+      click
+      tiktoken
+    ];
+
+    passthru.optional-dependencies = {
+      test = [
+        cogapp
+        pytest
+      ];
+    };
+
+    pythonImportsCheck = [ "ttok" ];
+
+    meta = with lib; {
+      description = "Count and truncate text based on tokens";
+      homepage = "https://github.com/simonw/ttok";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
