@@ -402,15 +402,21 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.6.8";
+    version = "0.6.9";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-Ua53pvw0FaW8ko65DnD70jNigr33xPlFXGmBagHzVw8=";
+      hash = "sha256-d6kgWpOsxqNITKJa3CMItlltNl6E8d99GLvUiP+31Hw=";
     };
+
+    postPatch = ''
+      ${pkgs.gnused}/bin/sed -i -E \
+        -e 's#(fsspec>=)2023.5.0#\12023.4.0#g' \
+        setup.py
+    '';
 
     nativeCheckInputs = [
       pytestCheckHook
@@ -420,6 +426,7 @@ final: prev: with prev; rec {
 
     propagatedBuildInputs = [
       faiss
+      fsspec
       langchain
       numpy
       openai
@@ -466,6 +473,7 @@ final: prev: with prev; rec {
       "tests/playground/test_base.py"
       "tests/selectors/test_llm_selectors.py"
       "tests/test_utils.py"
+      "tests/question_gen/test_llm_generators.py"
       "tests/token_predictor/test_base.py"
     ];
 
