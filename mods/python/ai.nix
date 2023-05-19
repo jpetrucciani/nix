@@ -861,7 +861,7 @@ final: prev: with prev; rec {
 
       meta = with lib; {
         description = "";
-        homepage = "https://github.com/saharNooby/rwkv.cpp/";
+        homepage = "https://github.com/saharNooby/rwkv.cpp";
         license = licenses.mit;
         maintainers = with maintainers; [ jpetrucciani ];
       };
