@@ -627,18 +627,18 @@ final: prev: with prev; rec {
   pyllamacpp =
     let
       inherit (stdenv) isAarch64 isDarwin;
-      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ]) else [ ];
+      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate CoreGraphics CoreVideo ] else [ ];
     in
     buildPythonPackage rec {
       pname = "pyllamacpp";
-      version = "2.2.0";
+      version = "2.3.0";
       format = "pyproject";
 
       src = pkgs.fetchFromGitHub {
         owner = "abdeladim-s";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-uVYfiKtBtr+pGqghMAc+YB/S5qV9TmGoGuc+kmCiFTI=";
+        hash = "sha256-4dk7aI94/h4rNvtgvcIrMNKtF7kc0ZDoUEFSr/grU4Y=";
         fetchSubmodules = true;
       };
       buildInputs = osSpecific;
