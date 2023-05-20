@@ -84,4 +84,49 @@ rec {
   tensorboard = prev.tensorboard.overridePythonAttrs (_: {
     disabled = false;
   });
+
+
+  llvmlite =
+    let
+      inherit (prev) pythonOlder;
+      inherit (prev.pkgs) llvm_14;
+      pname = "llvmlite";
+      version = "0.40.0";
+    in
+    (prev.llvmlite.override { llvm = llvm_14; }).overridePythonAttrs (old: {
+      inherit version;
+      format = "setuptools";
+      disabled = pythonOlder "3.8";
+      propagatedBuildInputs = [ ];
+      env.LLVMLITE_CXX_STATIC_LINK = 0;
+      postPatch = ''
+        substituteInPlace llvmlite/tests/test_binding.py --replace "test_linux" "nope"
+      '';
+      checkPhase = ''
+        runHook preCheck
+        ${old.checkPhase}
+        runHook postCheck
+      '';
+      src = prev.fetchPypi {
+        inherit pname version;
+        hash = "sha256-yRC4+/1nuOnQsQ68ASsjzWfL7O8blvANOR3dKY1xZxw=";
+      };
+    });
+  numba =
+    let
+      inherit (prev) lib pythonOlder pythonAtLeast fetchPypi;
+      pname = "numba";
+      version = "0.57.0";
+      pop = l: (lib.lists.remove (builtins.head l) l);
+    in
+    prev.numba.overridePythonAttrs (old: {
+      inherit version;
+      disabled = pythonOlder "3.7" || pythonAtLeast "3.12";
+      src = fetchPypi {
+        inherit pname version;
+        hash = "sha256-KvbYEGelvcE5YMbSUZ26u/TV1ZfPddZAxa6u/UjGQgo=";
+      };
+      postPatch = "";
+      patches = pop (pop old.patches);
+    });
 }
