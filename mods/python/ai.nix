@@ -938,4 +938,55 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  whisper-cpp-py =
+    let
+      name = "whisper-cpp-python";
+      version = "0.2.0";
+      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if stdenv.isDarwin then [ Accelerate CoreGraphics CoreVideo ] else [ ];
+    in
+    buildPythonPackage {
+      inherit version;
+      pname = name;
+      format = "pyproject";
+
+      src = pkgs.fetchFromGitHub {
+        owner = "carloscdias";
+        repo = name;
+        rev = "0744238e10f6b1da3440d43aa3dff43d46b09b30";
+        hash = "sha256-Nj35UwCLD88SF26rqrNiLo1lUQTHAKUVKyMyaA0Cy7Q=";
+        fetchSubmodules = true;
+      };
+
+      postPatch = let sed = "${pkgs.gnused}/bin/sed -i -E"; in ''
+        ${sed} 's#(librosa = )"\^0.10.0.post2"#\1">=0.10.0"#g' ./pyproject.toml
+        ${sed} 's#(librosa>=)0.10.0.post2#\10.10.0#g' ./setup.py
+      '';
+      preBuild = ''
+        cd ..
+      '';
+      buildInputs = osSpecific;
+
+      nativeBuildInputs = [
+        pkgs.cmake
+        pkgs.ninja
+        pycparser
+        scikit-build
+        setuptools
+      ];
+
+      propagatedBuildInputs = [
+        librosa
+      ];
+
+      pythonImportsCheck = [ "whisper_cpp_python" ];
+
+      meta = with lib; {
+        description = "A Python wrapper for whisper.cpp";
+        homepage = "https://github.com/carloscdias/whisper-cpp-python";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
 }
