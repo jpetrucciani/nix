@@ -6,8 +6,8 @@ This is a catch-all directory, for anything that doesn't fit nicely into other d
 
 ## In this directory
 
-### [horcrux.nix](./horcrux.nix)
+### [havn.nix](./havn.nix)
 
-### [killport.nix](./killport.nix)
+### [horcrux.nix](./horcrux.nix)
 
 ### [soulmsg.nix](./soulmsg.nix)
