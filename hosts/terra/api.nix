@@ -17,6 +17,7 @@ let
         praw
         tweepy
         python-dotenv
+        python-multipart
 
         # text
         anybadge
