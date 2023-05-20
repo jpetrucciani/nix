@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, rustPlatform }:
+{ lib, fetchFromGitHub, rustPlatform }:
 let
   pname = "havn";
   version = "0.1.0";
