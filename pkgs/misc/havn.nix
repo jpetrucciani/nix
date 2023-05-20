@@ -18,6 +18,7 @@ rustPlatform.buildRustPackage rec {
   checkFlags = [
     # these tests attempt to bind to local ports
     "--skip=scanner::tests::test_scanner_1000_80_443"
+    "--skip=scanner::tests::test_scanner_1000_empty"
     "--skip=scanner::tests::test_scanner_all_80"
     "--skip=scanner::tests::test_scanner_port_80"
   ];
