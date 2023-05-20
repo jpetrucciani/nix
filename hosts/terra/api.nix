@@ -29,6 +29,10 @@ let
         # automation
         playwright
 
+        # ai
+        llama-cpp-python
+        whisper-cpp-py
+
         # data
         numpy
         pandas
