@@ -989,4 +989,41 @@ final: prev: with prev; rec {
       };
     };
 
+  ctransformers =
+    let
+      name = "ctransformers";
+      version = "0.2.0";
+      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if stdenv.isDarwin then [ Accelerate CoreGraphics CoreVideo ] else [ ];
+    in
+    buildPythonPackage {
+      inherit version;
+      pname = name;
+      format = "setuptools";
+
+      src = pkgs.fetchFromGitHub {
+        owner = "marella";
+        repo = name;
+        rev = "refs/tags/v${version}";
+        hash = "sha256-oVOEew4FcuKJ1ImAg1DeQMEpCPmh6ifsqM5jKFctRf8=";
+        fetchSubmodules = true;
+      };
+
+      propagatedBuildInputs = [
+        huggingface-hub
+      ];
+      dontUseCmakeConfigure = true;
+
+      nativeBuildInputs = [ pkgs.cmake ];
+      buildInputs = osSpecific;
+      nativeCheckInputs = [ pytestCheckHook ];
+      pythonImportsCheck = [ "ctransformers" ];
+      disabledTestPaths = [ "tests/test_model.py" ];
+      pytestFlagsArray = [ "--lib basic" ];
+      meta = with lib; {
+        description = "Python bindings for the Transformer models implemented in C/C++ using GGML library";
+        homepage = "https://github.com/marella/ctransformers";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
 }
