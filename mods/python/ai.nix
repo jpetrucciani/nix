@@ -939,7 +939,7 @@ final: prev: with prev; rec {
     };
   };
 
-  whisper-cpp-py =
+  whisper-cpp-python =
     let
       name = "whisper-cpp-python";
       version = "0.2.0";
@@ -961,7 +961,10 @@ final: prev: with prev; rec {
       postPatch = let sed = "${pkgs.gnused}/bin/sed -i -E"; in ''
         ${sed} 's#(librosa = )"\^0.10.0.post2"#\1">=0.10.0"#g' ./pyproject.toml
         ${sed} 's#(librosa>=)0.10.0.post2#\10.10.0#g' ./setup.py
-      '';
+      '' + (if stdenv.isDarwin then ''
+        ${sed} 's#(_lib_base_name = )"whisper"#\1"libwhisper"#g' ./setup.py
+        ${sed} 's#(lib_ext = )".so"#\1".dylib"#g' ./setup.py
+      '' else "");
       preBuild = ''
         cd ..
       '';
@@ -973,7 +976,7 @@ final: prev: with prev; rec {
         pycparser
         scikit-build
         setuptools
-      ];
+      ] ++ (if stdenv.isDarwin then [ pkgs.gcc ] else [ ]);
 
       propagatedBuildInputs = [
         librosa

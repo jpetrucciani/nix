@@ -32,7 +32,7 @@ let
 
         # ai
         llama-cpp-python
-        whisper-cpp-py
+        whisper-cpp-python
 
         # data
         numpy
