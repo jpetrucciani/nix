@@ -1,4 +1,31 @@
 (final: prev: with prev; {
+  tesla-py = buildPythonPackage rec {
+    pname = "tesla-py";
+    version = "2.8.0";
+    format = "setuptools";
+
+    src = fetchPypi {
+      pname = "TeslaPy";
+      inherit version;
+      hash = "sha256-+LdOKxqFjvhkWzhsKkujt9tYQb8yqi3LgBO48JtT7NM=";
+    };
+
+    propagatedBuildInputs = [
+      requests
+      requests-oauthlib
+      websocket-client
+    ];
+
+    pythonImportsCheck = [ "teslapy" ];
+
+    meta = with lib; {
+      description = "A Python module to use the Tesla Motors Owner API";
+      homepage = "https://github.com/tdorssers/TeslaPy";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
   osrsreboxed = buildPythonPackage {
     pname = "osrsreboxed";
     version = "2.3.5";
