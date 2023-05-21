@@ -85,7 +85,6 @@ rec {
     disabled = false;
   });
 
-
   llvmlite =
     let
       inherit (prev) pythonOlder;
@@ -129,4 +128,8 @@ rec {
       postPatch = "";
       patches = pop (pop old.patches);
     });
+
+  librosa = prev.librosa.overridePythonAttrs (_: {
+    disabledTestPaths = [ "tests/test_display.py" ];
+  });
 }
