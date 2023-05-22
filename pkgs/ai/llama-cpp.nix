@@ -14,7 +14,7 @@ let
       ### Human:
     '';
   };
-  version = "master-7e4ea5b";
+  version = "master-2e6cd4b";
 in
 clangStdenv.mkDerivation rec {
   inherit version;
@@ -23,7 +23,7 @@ clangStdenv.mkDerivation rec {
     owner = "ggerganov";
     repo = name;
     rev = "refs/tags/${version}";
-    hash = "sha256-VHSAegM9d52aGjHy7H1dIn4mvz6fmobIpC5Uzsi9ojM=";
+    hash = "sha256-VzY3e/EJ+LLx55H0wkIVoHfZ0zAShf6Y9Q3fz4xQ0V8=";
   };
 
   cmakeFlags = [
