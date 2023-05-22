@@ -181,4 +181,114 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  empyrical = buildPythonPackage rec {
+    pname = "empyrical";
+    version = "0.5.5";
+    format = "setuptools";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "quantopian";
+      repo = pname;
+      rev = "refs/tags/${version}";
+      hash = "sha256-SrrJZXg8kVOc71whjcyWvZyiAwwpC0LDVhPjeeCjV7I=";
+    };
+
+    propagatedBuildInputs = [
+      numpy
+      pandas
+      pandas-datareader
+      scipy
+    ];
+
+    nativeCheckInputs = [
+      pytestCheckHook
+      parameterized
+      flake8
+    ];
+
+    pythonImportsCheck = [ "empyrical" ];
+
+    doCheck = false;
+
+    meta = with lib; {
+      description = "Empyrical is a Python library with performance and risk statistics commonly used in quantitative finance";
+      homepage = "https://github.com/quantopian/empyrical";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  runipy = buildPythonPackage rec {
+    pname = "runipy";
+    version = "0.1.5";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-IC1rsZy3fiXfhwCxao+ZDx66kQjMelh7Mg62Is2uZ4k=";
+    };
+
+    propagatedBuildInputs = [
+      ipykernel
+      ipython
+      jinja2
+      nbconvert
+      pygments
+      pyzmq
+    ];
+
+    pythonImportsCheck = [ "runipy" ];
+
+    doCheck = false;
+
+    meta = with lib; {
+      description = "Run IPython notebooks from the command line";
+      homepage = "https://github.com/paulgb/runipy";
+      license = licenses.bsd2;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  pyfolio = buildPythonPackage rec {
+    pname = "pyfolio";
+    version = "0.9.2";
+    format = "setuptools";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "quantopian";
+      repo = pname;
+      rev = "refs/tags/${version}";
+      hash = "sha256-Zeonx3W4Te3uv0sZ8yHxYbf5ImLozeyniG+LLxsHLhY=";
+    };
+
+    propagatedBuildInputs = [
+      empyrical
+      ipython
+      matplotlib
+      pandas
+      pytz
+      scikit-learn
+      scipy
+      seaborn
+    ];
+
+    pythonImportsCheck = [ "pyfolio" ];
+
+    nativeCheckInputs = [
+      pytestCheckHook
+      nose
+      parameterized
+      runipy
+    ];
+
+    doCheck = false;
+
+    meta = with lib; {
+      description = "Pyfolio is a Python library for performance and risk analysis of financial portfolios";
+      homepage = "https://github.com/quantopian/pyfolio";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
