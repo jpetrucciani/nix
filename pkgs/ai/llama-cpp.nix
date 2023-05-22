@@ -14,7 +14,7 @@ let
       ### Human:
     '';
   };
-  version = "master-7780e4f";
+  version = "master-7e4ea5b";
 in
 clangStdenv.mkDerivation rec {
   inherit version;
@@ -23,11 +23,14 @@ clangStdenv.mkDerivation rec {
     owner = "ggerganov";
     repo = name;
     rev = "refs/tags/${version}";
-    hash = "sha256-v/suf9LdqcVbSBNM63wNmLkD1nQGPyihAEzq+jNt3Xk=";
+    hash = "sha256-VHSAegM9d52aGjHy7H1dIn4mvz6fmobIpC5Uzsi9ojM=";
   };
-  cmakeFlags = lib.optionals (system == "aarch64-darwin") [
+
+  cmakeFlags = [
+    "-DLLAMA_BUILD_SERVER=ON"
+  ] ++ (lib.optionals (system == "aarch64-darwin") [
     "-DCMAKE_C_FLAGS=-D__ARM_FEATURE_DOTPROD=1"
-  ];
+  ]);
   installPhase = ''
     mkdir -p $out/bin $out/prompts
     cp ${vicunaPrompt} $out/prompts/vicuna.txt
