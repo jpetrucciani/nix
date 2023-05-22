@@ -226,4 +226,37 @@
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  pixoo = buildPythonPackage {
+    pname = "pixoo";
+    version = "0.6.0";
+    format = "setuptools";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "SomethingWithComputers";
+      repo = "pixoo";
+      rev = "dc477493125dd2f57081e997fc1bb95e800dfee8";
+      hash = "sha256-EDdwP8TBaHNbjcXS6QwN4PrtH3+4kWgxfqd0E4dZT8U=";
+    };
+
+    postPatch = let sed = "${pkgs.gnused}/bin/sed -i -E"; in ''
+      ${sed} 's#(requests)\~\=(2.28.1)#\1>=\2#g' ./setup.py
+      ${sed} 's#(Pillow)\~\=(9.2.0)#\1>=\2#g' ./setup.py
+    '';
+
+    propagatedBuildInputs = [
+      pillow
+      requests
+      tkinter
+    ];
+
+    pythonImportsCheck = [ "pixoo" ];
+
+    meta = with lib; {
+      description = "A library to help you make the most out of your Pixoo 64 (and hopefully soon other Wi-Fi enabled Pixoos";
+      homepage = "https://github.com/SomethingWithComputers/pixoo";
+      license = with licenses; [ ];
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 })
