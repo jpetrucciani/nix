@@ -6,20 +6,20 @@ final: prev: with prev; rec {
       llama-cpp-pin = pkgs.fetchFromGitHub {
         owner = "ggerganov";
         repo = "llama.cpp";
-        rev = "7e4ea5beff567f53be92f75f9089e6f11fa5dabd";
-        hash = "sha256-VHSAegM9d52aGjHy7H1dIn4mvz6fmobIpC5Uzsi9ojM=";
+        rev = "2e6cd4b02549e343bef3768e6b946f999c82e823";
+        hash = "sha256-VzY3e/EJ+LLx55H0wkIVoHfZ0zAShf6Y9Q3fz4xQ0V8=";
       };
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
-      version = "0.1.53";
+      version = "0.1.54";
 
       format = "pyproject";
       src = pkgs.fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-jvyAR+5yCjEPQAO2UGBpO/HTMwAM4AOEi5G6WEd9cEw=";
+        hash = "sha256-8YIMbJIMwWJWkXjnjcgR5kvSq4uBd6E/IA2xRm+W5dM=";
       };
 
       preConfigure = ''
