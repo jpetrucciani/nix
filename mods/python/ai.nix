@@ -819,34 +819,48 @@ final: prev: with prev; rec {
 
   rwkv-cpp =
     let
-      inherit (stdenv) isAarch64 isDarwin;
-      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ]) else [ ];
-      ggml-pin = pkgs.fetchFromGitHub {
-        owner = "ggerganov";
-        repo = "ggml";
-        rev = "ff6e03cbcd9bf6e9fa41d49f2495c042efae4dc6";
-        hash = "sha256-cppWo/quVI1YtK7qWPqok9AnqThci9Fsluscaksptcw=";
+      inherit (stdenv) isDarwin;
+      osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate CoreGraphics CoreVideo ] else [ ];
+      tag = "master-1c363e6";
+      version = "0.0.1";
+      libFile = if isDarwin then "librwkv.dylib" else "librwkv.so";
+      setup-py = pkgs.writeTextFile {
+        name = "setup.py";
+        text = ''
+          from setuptools import setup
+          setup(
+            name="rwkv_cpp",
+            version="${version}",
+            author="",
+            author_email="",
+            packages=["."],
+            package_data={"":["${libFile}"]},
+            setup_requires=["numpy", "torch", "tokenizers"],
+            install_requires=[],
+          )
+        '';
       };
     in
     buildPythonPackage {
+      inherit version;
       pname = "rwkv-cpp";
-      version = "0.0.1";
-
       format = "pyproject";
       src = pkgs.fetchFromGitHub {
         owner = "saharNooby";
         repo = "rwkv.cpp";
-        # rev = "v${version}";
-        rev = "286c5279301aa3875960ff9ca3b77b37a650cf5e";
-        hash = "sha256-SXSUytx25TYF8RXyMMBwi0Ph/FHx+f/CcRO7CkW8d7I=";
+        rev = "1c363e6d5f4ec7817ceffeeb17bd972b1ce9d9d0";
+        hash = "sha256-IU+3MwIY3NnJPYtxrgpphLOnHAOQAKYd+8BV1tusgC4=";
+        fetchSubmodules = true;
       };
-
-      preConfigure = ''
-        cp -r ${ggml-pin}/. ./ggml
-        chmod -R +w ./ggml
-      '';
       preBuild = ''
         cd ..
+        cp ./rwkv/rwkv_cpp_model.py .
+        cp ./rwkv/rwkv_cpp_shared_library.py .
+        cp ${setup-py} ./setup.py
+        mkdir -p ./bin/Release
+        cmake .
+        cmake --build . --config Release
+        ${pkgs.gnused}/bin/sed -i -E "s#(paths = \[)#\1'$out/${prev.python.sitePackages}/${libFile}',#g" ./rwkv_cpp_shared_library.py
       '';
       buildInputs = osSpecific;
 
@@ -865,7 +879,10 @@ final: prev: with prev; rec {
         typing-extensions
       ];
 
-      pythonImportsCheck = [ "rwkv_cpp" ];
+      pythonImportsCheck = [
+        "rwkv_cpp_model"
+        "rwkv_cpp_shared_library"
+      ];
 
       meta = with lib; {
         description = "";
