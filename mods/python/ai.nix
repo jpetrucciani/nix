@@ -821,7 +821,6 @@ final: prev: with prev; rec {
     let
       inherit (stdenv) isDarwin;
       osSpecific = with pkgs.darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate CoreGraphics CoreVideo ] else [ ];
-      tag = "master-1c363e6";
       version = "0.0.1";
       libFile = if isDarwin then "librwkv.dylib" else "librwkv.so";
       setup-py = pkgs.writeTextFile {
