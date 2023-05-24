@@ -10,6 +10,10 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 [`alpaca.cpp`](https://github.com/antimatter15/alpaca.cpp) is a popular fork of [`llama.cpp`](https://github.com/ggerganov/llama.cpp) that is tuned for specifically running [Alpaca](https://crfm.stanford.edu/2023/03/13/alpaca.html) models.
 
+### [betterchatgpt.nix](./betterchatgpt.nix)
+
+TODO
+
 ### [chatbot-ui.nix](./chatbot-ui.nix)
 
 [`chatbot-ui`](https://github.com/mckaywrigley/chatbot-ui) is a popular frontend for OpenAI compliant APIs. It is designed to look similar to OpenAI's ChatGPT UI. I use this in combination with [`gpt-llama-cpp`](https://github.com/keldenl/gpt-llama.cpp) to run models locally as if they were OpenAI apis!
@@ -25,6 +29,14 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 ### [llm.nix](./llm.nix)
 
 [`llm`](https://github.com/rustformers/llm) is a port of [`llama.cpp`](https://github.com/ggerganov/llama.cpp) in rust!
+
+### [mods.nix](./mods.nix)
+
+[`mods`](https://github.com/charmbracelet/mods) is a CLI tool to interact with AI APIs
+
+### [starcoder-cpp.nix](./starcoder-cpp.nix)
+
+[`starcoder.cpp`](https://github.com/bigcode-project/starcoder.cpp) is a c++ implementation of [Starcoder](https://huggingface.co/blog/starcoder) using [ggml](https://github.com/ggerganov/ggml)
 
 ### [whisper-cpp.nix](./whisper-cpp.nix)
 
