@@ -1,0 +1,7 @@
+(?i)gpt
+(?i)chatgpt
+(?i)openai
+(?i)starcoder
+(?i)ggml
+(?i)llm
+(?i)gradio

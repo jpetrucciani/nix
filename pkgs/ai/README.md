@@ -12,7 +12,7 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 ### [betterchatgpt.nix](./betterchatgpt.nix)
 
-TODO
+[`BetterChatGPT`](https://github.com/ztjhz/BetterChatGPT) is an alternative UI for OpenAI's ChatGPT.
 
 ### [chatbot-ui.nix](./chatbot-ui.nix)
 
