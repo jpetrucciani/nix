@@ -291,4 +291,143 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  alpaca-trade-api =
+    let
+      version = "3.0.0";
+    in
+    buildPythonPackage {
+      inherit version;
+      pname = "alpaca-trade-api";
+      format = "setuptools";
+
+      src = pkgs.fetchFromGitHub {
+        owner = "alpacahq";
+        repo = "alpaca-trade-api-python";
+        rev = "refs/tags/v${version}";
+        hash = "sha256-HcnYDLqyQ3QERX9FrZ5/MmCxxz3Ib4w/ExvgASDySXU=";
+      };
+
+      postPatch = let sed = "${pkgs.gnused}/bin/sed -i -E"; in ''
+        ${sed} '/setup_requires/d' ./setup.py
+        ${sed} \
+          -e 's#(msgpack)==(1.0.3)#\1>=\2#g' \
+          -e 's#(aiohttp)==(3.8.1)#\1>=\2#g' \
+          ./requirements/requirements.txt
+      '';
+
+      propagatedBuildInputs = [
+        aiohttp
+        deprecation
+        msgpack
+        numpy
+        pandas
+        pyyaml
+        requests
+        urllib3
+        websocket-client
+        websockets
+      ];
+
+      nativeCheckInputs = [
+        pytest-cov
+        pytest-mock
+        pytestCheckHook
+        requests-mock
+      ];
+
+      pythonImportsCheck = [ "alpaca_trade_api" ];
+
+      meta = with lib; {
+        description = "Alpaca API python client";
+        homepage = "https://github.com/alpacahq/alpaca-trade-api-python";
+        license = licenses.asl20;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
+  newnewtulipy = buildPythonPackage {
+    pname = "newnewtulipy";
+    version = "0.4.6.5";
+    format = "pyproject";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "blankly-finance";
+      repo = "newnewtulipy";
+      rev = "b26d594cf594e58776a923278cdd091ce2bba9cd";
+      hash = "sha256-P5CX0JF6YjskO5v+5R1+FP+rAx1J7YZ0F6oljul7MJ4=";
+    };
+
+    preBuild = ''
+      export C_INCLUDE_PATH="./libindicators:${numpy}/${prev.python.sitePackages}/numpy/core/include"
+      cythonize --inplace tulipy/lib/__init__.pyx
+    '';
+
+    nativeBuildInputs = [
+      cython
+      numpy
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = [
+      numpy
+    ];
+
+    pythonImportsCheck = [ "tulipy" ];
+
+    meta = with lib; {
+      description = "Financial Technical Analysis Indicator Library";
+      homepage = "https://github.com/blankly-finance/newnewtulipy";
+      license = licenses.lgpl3Only;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  blankly =
+    let
+      pname = "blankly";
+      version = "1.18.0-beta";
+    in
+    buildPythonPackage {
+      inherit pname version;
+      format = "setuptools";
+
+      src = pkgs.fetchFromGitHub {
+        owner = "blankly-finance";
+        repo = pname;
+        rev = "refs/tags/v${version}";
+        hash = "sha256-kvam39rRG9ZBNFfjhtX6jivA2H1BeBDS8dGalO7ub+k=";
+      };
+
+      propagatedBuildInputs = [
+        alpaca-trade-api
+        bokeh
+        dateparser
+        newnewtulipy
+        numpy
+        pandas
+        python-binance
+        questionary
+        requests
+        websocket-client
+        yaspin
+      ];
+
+      pythonImportsCheck = [ "blankly" ];
+
+      nativeCheckInputs = [
+        pytestCheckHook
+      ];
+
+      # tests require credentials
+      doCheck = false;
+
+      meta = with lib; {
+        description = "Rapidly build, backtest & deploy trading bots";
+        homepage = "https://github.com/blankly-finance/blankly";
+        license = with licenses; [ ];
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
 }
