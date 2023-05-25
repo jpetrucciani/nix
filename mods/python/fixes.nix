@@ -132,4 +132,11 @@ rec {
   librosa = prev.librosa.overridePythonAttrs (_: {
     disabledTestPaths = [ "tests/test_display.py" ];
   });
+
+  python-binance = prev.python-binance.overridePythonAttrs (old: {
+    postPatch = ''
+      ${prev.pkgs.gnused}/bin/sed -i -E 's#raise.*#version = "${old.version}"#g' ./setup.py
+    '';
+    propagatedBuildInputs = old.propagatedBuildInputs ++ [ prev.pycryptodome ];
+  });
 }
