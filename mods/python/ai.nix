@@ -400,16 +400,46 @@ final: prev: with prev; rec {
     };
   };
 
+  vellum-ai = buildPythonPackage rec {
+    pname = "vellum-ai";
+    version = "0.0.15";
+    format = "pyproject";
+
+    src = fetchPypi {
+      pname = "vellum_ai";
+      inherit version;
+      hash = "sha256-bZIUe1z05tlmCFOOmXc6MZuZhQR+duXzfH+6YXdrzog=";
+    };
+
+    nativeBuildInputs = [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = [
+      httpx
+      pydantic
+    ];
+
+    pythonImportsCheck = [ "vellum" ];
+
+    meta = with lib; {
+      description = "";
+      homepage = "https://www.vellum.ai/";
+      license = with licenses; [ ];
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.6.10.post1";
+    version = "0.6.11";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-Kw5OeCjXPKWUHXmddsujmvjS3QNMp7T64i4JINFsCyw=";
+      hash = "sha256-Z495BA0e3o/yqbovb3Mz8BW1yG1hB0uIQlgorR4JWsU=";
     };
 
     postPatch = ''
@@ -432,6 +462,7 @@ final: prev: with prev; rec {
       openai
       pandas
       tiktoken
+      vellum-ai
     ];
 
     disabledTestPaths = [
@@ -469,11 +500,13 @@ final: prev: with prev; rec {
       "tests/indices/vector_store/test_retrievers.py"
       "tests/indices/vector_store/test_simple.py"
       "tests/langchain_helpers/test_text_splitter.py"
+      "tests/llm_predictor/vellum/test_predictor.py"
+      "tests/llm_predictor/vellum/test_prompt_registry.py"
       "tests/optimization/test_base.py"
       "tests/playground/test_base.py"
+      "tests/question_gen/test_llm_generators.py"
       "tests/selectors/test_llm_selectors.py"
       "tests/test_utils.py"
-      "tests/question_gen/test_llm_generators.py"
       "tests/token_predictor/test_base.py"
     ];
 
