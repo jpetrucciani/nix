@@ -19,7 +19,7 @@ let
       tailscale_image_base = "ghcr.io/tailscale/tailscale";
       tailscale_image_tag = "v1.42.0";
       cloudsql_image_base = "gcr.io/cloudsql-docker/gce-proxy";
-      cloudsql_image_tag = "1.33.6";
+      cloudsql_image_tag = "1.33.7";
 
       tags = [ "k8s" "proxy" ];
       cidr = "100.64.0.0/10";
