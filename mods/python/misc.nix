@@ -259,4 +259,53 @@
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  kaleido =
+    let
+      pname = "kaleido";
+      version = "0.2.1";
+      format = "wheel";
+      dists = {
+        aarch64-darwin = {
+          dist = "macosx_11_0_arm64";
+          hash = "01bwg2fdlhjbgf0ka2b17r614vcacpv0w97f6badamq3f4gmv6mv";
+        };
+        aarch64-linux = {
+          dist = "manylinux2014_aarch64";
+          hash = "0ajinsc7ylm8r1paiy3y4cmmry7v44kf85wwkm3ck0l09j21jn44";
+        };
+        x86_64-darwin = {
+          dist = "macosx_10_11_x86_64";
+          hash = "19s9a1w1afmqfvz96404yl797qfdpb9z2wrzhkrfpah0zzkp6vya";
+        };
+        x86_64-linux = {
+          dist = "manylinux1_x86_64";
+          hash = "1a63pnalnd5zzdy7c2pysv9pnf1w03hlazcz1ajqz3y7y4dwy8da";
+        };
+      };
+      wheelUrl = dist: "${repo}/releases/download/v${version}/kaleido-${version}-py2.py3-none-${dist}.whl";
+      repo = "https://github.com/plotly/Kaleido";
+      src =
+        let d = dists.${prev.stdenv.hostPlatform.system} or (throw "Unsupported system: ${prev.stdenv.hostPlatform.system}");
+        in
+        builtins.fetchurl {
+          url = wheelUrl d.dist;
+          sha256 = d.hash;
+        };
+    in
+    buildPythonPackage {
+      inherit pname src version format;
+      nativeBuildInputs = [ pkgs.autoPatchelfHook ];
+      propagatedBuildInputs = [ ];
+      pythonImportsCheck = [ "kaleido" ];
+      postInstall = ''
+        ${pkgs.gnused}/bin/sed -i -E '1s#!/bin/bash#!${pkgs.bash}/bin/bash#' $out/${prev.python.sitePackages}/kaleido/executable/kaleido
+      '';
+      meta = with lib; {
+        description = "cross-platform library for generating static images for web-based visualization libraries";
+        homepage = repo;
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
 })
