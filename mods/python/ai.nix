@@ -302,14 +302,14 @@ final: prev: with prev; rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.180";
+    version = "0.0.181";
     format = "pyproject";
 
     src = pkgs.fetchFromGitHub {
       owner = "hwchase17";
       repo = pname;
       rev = "refs/tags/v${version}";
-      hash = "sha256-5ZA5CXS9+NCyOXGbjgGk+iNCF/B2Wm4xRpR6t5uJ+yg=";
+      hash = "sha256-2SapT2U/G6YT7xFgcXoO4Alcr+38CQN4cZ5q/hyvbN4=";
     };
 
     nativeBuildInputs = [
@@ -386,7 +386,7 @@ final: prev: with prev; rec {
 
     # gptcache was added as an optional dep, and it requires many other deps
     postPatch = ''
-      ${pkgs.gnused}/bin/sed -i -E '/gptcache =/d' pyproject.toml
+      sed -i -E '/gptcache =/d' pyproject.toml
     '';
 
     pythonImportsCheck = [ "langchain" ];
@@ -443,7 +443,7 @@ final: prev: with prev; rec {
     };
 
     postPatch = ''
-      ${pkgs.gnused}/bin/sed -i -E \
+      sed -i -E \
         -e 's#(fsspec>=)2023.5.0#\12023.4.0#g' \
         setup.py
     '';
@@ -516,143 +516,6 @@ final: prev: with prev; rec {
       description = "Interface between LLMs and your data";
       homepage = "https://github.com/jerryjliu/llama_index";
       license = licenses.mit;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  accelerate = buildPythonPackage rec {
-    pname = "accelerate";
-    version = "0.18.0";
-    format = "pyproject";
-
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-HdNv2XLeSm0M/+Xk1tMGIv2FN2X3c7VYLPB5be7+EBY=";
-    };
-
-    propagatedBuildInputs = [
-      numpy
-      packaging
-      psutil
-      pyyaml
-      torch
-    ];
-
-    passthru.optional-dependencies = {
-      dev = [
-        black
-        datasets
-        deepspeed
-        evaluate
-        hf-doc-builder
-        parameterized
-        pytest
-        pytest-subtests
-        pytest-xdist
-        rich
-        ruff
-        scikit-learn
-        scipy
-        tqdm
-        transformers
-      ];
-      quality = [
-        black
-        hf-doc-builder
-        ruff
-      ];
-      rich = [
-        rich
-      ];
-      sagemaker = [
-        sagemaker
-      ];
-      test_dev = [
-        datasets
-        deepspeed
-        evaluate
-        scikit-learn
-        scipy
-        tqdm
-        transformers
-      ];
-      test_prod = [
-        parameterized
-        pytest
-        pytest-subtests
-        pytest-xdist
-      ];
-      test_trackers = [
-        comet-ml
-        tensorboard
-        wandb
-      ];
-      testing = [
-        datasets
-        deepspeed
-        evaluate
-        parameterized
-        pytest
-        pytest-subtests
-        pytest-xdist
-        scikit-learn
-        scipy
-        tqdm
-        transformers
-      ];
-    };
-
-    pythonImportsCheck = [ "accelerate" ];
-
-    meta = with lib; {
-      description = "Accelerate";
-      homepage = "https://github.com/huggingface/accelerate";
-      license = licenses.asl20;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  peft = buildPythonPackage rec {
-    pname = "peft";
-    version = "0.2.0";
-    format = "pyproject";
-
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-zjP0hMcDgZBwW2nk0iiSMMfBgZwQhHgUg6yOEY8Kca8=";
-    };
-
-    propagatedBuildInputs = [
-      accelerate
-      numpy
-      packaging
-      psutil
-      pyyaml
-      torch
-      transformers
-    ];
-
-    passthru.optional-dependencies = {
-      dev = [
-        black
-        hf-doc-builder
-        ruff
-      ];
-      docs_specific = [
-        hf-doc-builder
-      ];
-      quality = [
-        black
-        ruff
-      ];
-    };
-
-    pythonImportsCheck = [ "peft" ];
-
-    meta = with lib; {
-      description = "Parameter-Efficient Fine-Tuning (PEFT";
-      homepage = "https://github.com/huggingface/peft";
-      license = licenses.asl20;
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
@@ -819,7 +682,7 @@ final: prev: with prev; rec {
     };
 
     postPatch = ''
-      ${pkgs.gnused}/bin/sed -i -E \
+      sed -i -E \
         -e '/bs4 =/d' \
         -e '/loguru =/d' \
         -e 's#(langchain = )"\^0.0.163"#\1">0.0.163"#g' \
@@ -892,7 +755,7 @@ final: prev: with prev; rec {
         mkdir -p ./bin/Release
         cmake .
         cmake --build . --config Release
-        ${pkgs.gnused}/bin/sed -i -E "s#(paths = \[)#\1'$out/${prev.python.sitePackages}/${libFile}',#g" ./rwkv_cpp_shared_library.py
+        sed -i -E "s#(paths = \[)#\1'$out/${prev.python.sitePackages}/${libFile}',#g" ./rwkv_cpp_shared_library.py
       '';
       buildInputs = osSpecific;
 
@@ -1007,7 +870,7 @@ final: prev: with prev; rec {
         fetchSubmodules = true;
       };
 
-      postPatch = let sed = "${pkgs.gnused}/bin/sed -i -E"; in ''
+      postPatch = let sed = "sed -i -E"; in ''
         ${sed} 's#(librosa = )"\^0.10.0.post2"#\1">=0.10.0"#g' ./pyproject.toml
         ${sed} 's#(librosa>=)0.10.0.post2#\10.10.0#g' ./setup.py
       '' + (if stdenv.isDarwin then ''
@@ -1044,7 +907,7 @@ final: prev: with prev; rec {
   ctransformers =
     let
       name = "ctransformers";
-      version = "0.2.0";
+      version = "0.2.1";
       osSpecific = with pkgs.darwin.apple_sdk.frameworks; if stdenv.isDarwin then [ Accelerate CoreGraphics CoreVideo ] else [ ];
     in
     buildPythonPackage {
@@ -1056,7 +919,7 @@ final: prev: with prev; rec {
         owner = "marella";
         repo = name;
         rev = "refs/tags/v${version}";
-        hash = "sha256-oVOEew4FcuKJ1ImAg1DeQMEpCPmh6ifsqM5jKFctRf8=";
+        hash = "sha256-+jBNK/Cv8O0vmGCuc8Ec+rRDMSufHfG8SToIX2N+exQ=";
         fetchSubmodules = true;
       };
 
@@ -1075,6 +938,453 @@ final: prev: with prev; rec {
         description = "Python bindings for the Transformer models implemented in C/C++ using GGML library";
         homepage = "https://github.com/marella/ctransformers";
         license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
+  diffusers = buildPythonPackage rec {
+    pname = "diffusers";
+    version = "0.16.1";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-TNdAA4LIbYXghCVVDeGxqB1O0DYj+9S82Dd4ZNnEbv4=";
+    };
+
+    propagatedBuildInputs = [
+      filelock
+      huggingface-hub
+      importlib-metadata
+      numpy
+      pillow
+      regex
+      requests
+      setuptools
+    ];
+
+    passthru.optional-dependencies = {
+      dev = [
+        accelerate
+        black
+        compel
+        datasets
+        flax
+        hf-doc-builder
+        isort
+        jax
+        jaxlib
+        jinja2
+        k-diffusion
+        librosa
+        note-seq
+        parameterized
+        protobuf
+        pytest
+        pytest-timeout
+        pytest-xdist
+        requests-mock
+        ruff
+        safetensors
+        scipy
+        sentencepiece
+        tensorboard
+        torch
+        torchvision
+        transformers
+      ];
+      docs = [
+        hf-doc-builder
+      ];
+      flax = [
+        flax
+        jax
+        jaxlib
+      ];
+      quality = [
+        black
+        hf-doc-builder
+        isort
+        ruff
+      ];
+      test = [
+        compel
+        datasets
+        jinja2
+        k-diffusion
+        librosa
+        note-seq
+        parameterized
+        pytest
+        pytest-timeout
+        pytest-xdist
+        requests-mock
+        safetensors
+        scipy
+        sentencepiece
+        torchvision
+        transformers
+      ];
+      torch = [
+        accelerate
+        torch
+      ];
+      training = [
+        accelerate
+        datasets
+        jinja2
+        protobuf
+        tensorboard
+      ];
+    };
+
+    pythonImportsCheck = [ "diffusers" ];
+
+    meta = with lib; {
+      description = "State-of-the-art diffusion models for image and audio generation in PyTorch";
+      homepage = "https://github.com/huggingface/diffusers";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  analytics-python = buildPythonPackage rec {
+    pname = "analytics-python";
+    version = "1.4.0";
+
+    disabled = pythonOlder "3.6";
+
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "plFBq25H2zlvW8Vwix25P/mpmILYH+gIIor9Xrtt/l8=";
+    };
+
+    postPatch = ''
+      substituteInPlace setup.py \
+        --replace '"backoff==1.10.0"' '"backoff>=1.10.0,<3"'
+    '';
+
+    propagatedBuildInputs = [
+      monotonic
+      requests
+      backoff
+      python-dateutil
+    ];
+
+    # Almost all tests run against a hosted API, and the few that are mocked are hard to cherry-pick
+    doCheck = false;
+
+    pythonImportsCheck = [
+      "analytics"
+      "analytics.client"
+      "analytics.consumer"
+      "analytics.request"
+      "analytics.utils"
+      "analytics.version"
+    ];
+
+    meta = with lib; {
+      homepage = "https://segment.com/libraries/python";
+      description = "Hassle-free way to integrate analytics into any python application";
+      license = licenses.mit;
+      maintainers = with maintainers; [ pbsds ];
+    };
+  };
+
+  ffmpy = buildPythonPackage rec {
+    pname = "ffmpy";
+    version = "0.3.0";
+
+    disabled = pythonOlder "3.6";
+
+    # The github repo has no release tags, the pypi distribution has no tests.
+    # This package is quite trivial anyway, and the tests mainly play around with the ffmpeg cli interface.
+    # https://github.com/Ch00k/ffmpy/issues/60
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "dXWRWB7uJbSlCsn/ubWANaJ5RTPbR+BRL1P7LXtvmtw=";
+    };
+
+    propagatedBuildInputs = [
+      pkgs.ffmpeg
+    ];
+
+    pythonImportsCheck = [ "ffmpy" ];
+
+    meta = with lib; {
+      description = "A simple python interface for FFmpeg/FFprobe";
+      homepage = "https://github.com/Ch00k/ffmpy";
+      license = licenses.mit;
+      maintainers = with maintainers; [ pbsds ];
+    };
+  };
+
+  gradio-client = buildPythonPackage rec {
+    pname = "gradio-client";
+    version = "0.2.5";
+    format = "pyproject";
+
+    src = fetchPypi {
+      pname = "gradio_client";
+      inherit version;
+      hash = "sha256-GiTdegmXbbcP0yzbVRK297FcGghPMQtfazAhyXlNkKQ=";
+    };
+
+    nativeBuildInputs = [
+      hatch-fancy-pypi-readme
+      hatch-requirements-txt
+      hatchling
+    ];
+
+    propagatedBuildInputs = [
+      fsspec
+      httpx
+      huggingface-hub
+      packaging
+      requests
+      typing-extensions
+      websockets
+    ];
+
+    pythonImportsCheck = [ "gradio_client" ];
+
+    meta = with lib; {
+      description = "Python library for easily interacting with trained machine learning models";
+      homepage = "https://github.com/gradio-app/gradio";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ ];
+    };
+  };
+
+  gradio = buildPythonPackage rec {
+    pname = "gradio";
+    version = "3.32.0";
+    disabled = pythonOlder "3.7";
+    format = "pyproject";
+
+    # We use the Pypi release, as it provides prebuild webui assets,
+    # and its releases are also more frequent than github tags
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "sha256-vN2XvM/+XdkEV00GDPaFCCrHJhpRFkuwhU6WSPvUXsE=";
+    };
+
+    nativeBuildInputs = [
+      hatchling
+      hatch-requirements-txt
+      hatch-fancy-pypi-readme
+    ];
+    propagatedBuildInputs = [
+      altair
+      aiohttp
+      aiofiles
+      analytics-python
+      fastapi
+      ffmpy
+      gradio-client
+      matplotlib
+      numpy
+      orjson
+      pandas
+      paramiko
+      pillow
+      pycryptodome
+      python-multipart
+      pydub
+      requests
+      uvicorn
+      jinja2
+      fsspec
+      httpx
+      pydantic
+      semantic-version
+      websockets
+      markdown-it-py
+      mdit-py-plugins
+      linkify-it-py
+    ];
+
+    postPatch = ''
+      # Unpin h11, as its version was only pinned to aid dependency resolution.
+      # Basically a revert of https://github.com/gradio-app/gradio/pull/1680
+      substituteInPlace requirements.txt \
+        --replace "h11<0.13,>=0.11" "" \
+        --replace "mdit-py-plugins<=0.3.3" "mdit-py-plugins>=0.3.3"
+    '';
+
+    doCheck = false;
+
+    meta = with lib; {
+      homepage = "https://www.gradio.app/";
+      description = "Python library for easily interacting with trained machine learning models";
+    };
+  };
+
+  flaskwebgui = buildPythonPackage {
+    pname = "flaskwebgui";
+    version = "1.0.6";
+    format = "setuptools";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "ClimenteA";
+      repo = "flaskwebgui";
+      rev = "b77555b9a795dfd7154c5116f7dfde5ce238e99b";
+      hash = "sha256-7+/WAwhY70nXFpK+2EnCkdGBBqTwq60HDcCpC35iSvE=";
+    };
+
+    propagatedBuildInputs = [
+      psutil
+    ];
+
+    pythonImportsCheck = [ "flaskwebgui" ];
+
+    meta = with lib; {
+      description = "Create desktop applications with Flask/Django/FastAPI";
+      homepage = "https://github.com/ClimenteA/flaskwebgui";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  simple-websocket = buildPythonPackage rec {
+    pname = "simple-websocket";
+    version = "0.10.0";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-gsCwsQBtVJDwn/ZjkjlNkN11goVjXtrSQeCT6air0+s=";
+    };
+
+    nativeBuildInputs = [
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = [
+      wsproto
+    ];
+
+    pythonImportsCheck = [ "simple_websocket" ];
+
+    meta = with lib; {
+      description = "Simple WebSocket server and client for Python";
+      homepage = "https://github.com/miguelgrinberg/simple-websocket";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  controlnet-aux = buildPythonPackage rec {
+    pname = "controlnet-aux";
+    version = "0.0.5";
+    format = "setuptools";
+
+    src = fetchPypi {
+      pname = "controlnet_aux";
+      inherit version;
+      hash = "sha256-xtwtVN/afiTblqocThBq7cVj3BQqNHtfOOzS8TuxBOk=";
+    };
+
+    propagatedBuildInputs = [
+      einops
+      filelock
+      huggingface-hub
+      importlib-metadata
+      numpy
+      opencv4
+      pillow
+      scikit-image
+      scipy
+      timm
+      torch
+      torchvision
+    ];
+
+    postPatch = ''
+      sed -i -E \
+        -e '/opencv-python/d' \
+        ./setup.py
+    '';
+
+    pythonImportsCheck = [ "controlnet_aux" ];
+
+    meta = with lib; {
+      description = "Auxillary models for controlnet";
+      homepage = "https://github.com/patrickvonplaten/controlnet_aux";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  lama-cleaner =
+    let
+      name = "lama-cleaner";
+      version = "1.1.2";
+    in
+    buildPythonPackage {
+      inherit version;
+      pname = name;
+      format = "setuptools";
+
+      src = pkgs.fetchFromGitHub {
+        owner = "Sanster";
+        repo = name;
+        rev = "870376e4bf5ea3fc25bda6164e38acd1d1c1ef4c";
+        # rev = "refs/tags/${version}";
+        hash = "sha256-ZX/Rbp+K6FI4OH/IkRsliIr5ALZcRb1LfMUmhuyDvt8=";
+      };
+
+      propagatedBuildInputs = [
+        accelerate
+        # controlnet-aux
+        diffusers
+        flask
+        flask-cors
+        flask-socketio
+        flaskwebgui
+        gradio
+        jinja2
+        loguru
+        markupsafe
+        omegaconf
+        opencv4
+        piexif
+        pydantic
+        pytest
+        rich
+        safetensors
+        scikit-image
+        simple-websocket
+        torch
+        torchvision
+        tqdm
+        transformers
+        yacs
+      ];
+
+      postPatch = ''
+        sed -i -E \
+          -e '/opencv-python/d' \
+          -e '/diffusers\[torch/d' \
+          -e '/controlnet-aux/d' \
+          -e 's#(Jinja2)==(2.11.3)#\1>=\2#g' \
+          -e 's#(flask)==(1.1.4)#\1>=\2#g' \
+          -e 's#(flaskwebgui)==(0.3.5)#\1>=\2#g' \
+          -e 's#(markupsafe)==(2.0.1)#\1>=\2#g' \
+          -e 's#(transformers)==(4.27.4)#\1>=\2#g' \
+          -e 's#(controlnet-aux)==(0.0.3)#\1>=\2#g' \
+          ./requirements.txt
+      '';
+
+      pythonImportsCheck = [ "lama_cleaner" ];
+      doCheck = false;
+
+      meta = with lib; {
+        description = "Image inpainting tool powered by SOTA AI Model";
+        homepage = "https://github.com/Sanster/lama-cleaner";
+        mainProgram = "lama-cleaner";
+        license = licenses.asl20;
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
