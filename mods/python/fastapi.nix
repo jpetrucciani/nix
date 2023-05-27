@@ -19,7 +19,7 @@ final: prev: with prev; rec {
 
     preCheck = ''
       cp ./setup.cfg ./setup.cfg.bak
-      ${pkgs.gnused}/bin/sed '/addopts =/Q' ./setup.cfg.bak >./setup.cfg
+      sed '/addopts =/Q' ./setup.cfg.bak >./setup.cfg
     '';
 
     nativeCheckInputs = [
@@ -54,7 +54,7 @@ final: prev: with prev; rec {
 
     preBuild =
       let
-        sed = "${pkgs.gnused}/bin/sed -i -E";
+        sed = "sed -i -E";
       in
       ''
         ${sed} '/dynamic =/d' ./pyproject.toml
@@ -106,7 +106,7 @@ final: prev: with prev; rec {
 
     preBuild =
       let
-        sed = "${pkgs.gnused}/bin/sed -i -E";
+        sed = "sed -i -E";
       in
       ''
         ${sed} '/asyncio_mode =/d' ./pyproject.toml
@@ -156,7 +156,7 @@ final: prev: with prev; rec {
 
     preBuild =
       let
-        sed = "${pkgs.gnused}/bin/sed -i -E";
+        sed = "sed -i -E";
       in
       ''
         ${sed} '/dynamic =/d' ./pyproject.toml

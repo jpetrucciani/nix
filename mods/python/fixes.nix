@@ -135,7 +135,7 @@ rec {
 
   python-binance = prev.python-binance.overridePythonAttrs (old: {
     postPatch = ''
-      ${prev.pkgs.gnused}/bin/sed -i -E 's#raise.*#version = "${old.version}"#g' ./setup.py
+      sed -i -E 's#raise.*#version = "${old.version}"#g' ./setup.py
     '';
     propagatedBuildInputs = old.propagatedBuildInputs ++ [ prev.pycryptodome ];
   });

@@ -39,7 +39,7 @@
     };
 
     preBuild = ''
-      ${pkgs.gnused}/bin/sed -i '/dataclasses/d' ./pyproject.toml
+      sed -i '/dataclasses/d' ./pyproject.toml
     '';
 
     propagatedBuildInputs = [
@@ -239,7 +239,7 @@
       hash = "sha256-EDdwP8TBaHNbjcXS6QwN4PrtH3+4kWgxfqd0E4dZT8U=";
     };
 
-    postPatch = let sed = "${pkgs.gnused}/bin/sed -i -E"; in ''
+    postPatch = let sed = "sed -i -E"; in ''
       ${sed} 's#(requests)\~\=(2.28.1)#\1>=\2#g' ./setup.py
       ${sed} 's#(Pillow)\~\=(9.2.0)#\1>=\2#g' ./setup.py
     '';
@@ -299,7 +299,7 @@
       propagatedBuildInputs = [ ];
       pythonImportsCheck = [ "kaleido" ];
       postInstall = ''
-        ${pkgs.gnused}/bin/sed -i -E '1s#!/bin/bash#!${pkgs.bash}/bin/bash#' $out/${prev.python.sitePackages}/kaleido/executable/kaleido
+        sed -i -E '1s#!/bin/bash#!${pkgs.bash}/bin/bash#' $out/${prev.python.sitePackages}/kaleido/executable/kaleido
       '';
       meta = with lib; {
         description = "cross-platform library for generating static images for web-based visualization libraries";

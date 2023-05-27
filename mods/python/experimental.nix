@@ -33,7 +33,7 @@ final: prev: with prev; rec {
 
         preBuild =
           let
-            sed = "${pkgs.gnused}/bin/sed -i -E";
+            sed = "sed -i -E";
           in
           ''
             ${sed} 's#,<=1.4.41##g' ./pyproject.toml
@@ -101,7 +101,7 @@ final: prev: with prev; rec {
 
       preBuild =
         let
-          sed = "${pkgs.gnused}/bin/sed -i -E";
+          sed = "sed -i -E";
         in
         ''
           ${sed} 's#BUN_PATH =.*#BUN_PATH = "${pkgs.bun}/bin/bun"#g' ./pynecone/constants.py

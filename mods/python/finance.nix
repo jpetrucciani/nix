@@ -308,7 +308,7 @@ final: prev: with prev; rec {
         hash = "sha256-HcnYDLqyQ3QERX9FrZ5/MmCxxz3Ib4w/ExvgASDySXU=";
       };
 
-      postPatch = let sed = "${pkgs.gnused}/bin/sed -i -E"; in ''
+      postPatch = let sed = "sed -i -E"; in ''
         ${sed} '/setup_requires/d' ./setup.py
         ${sed} \
           -e 's#(msgpack)==(1.0.3)#\1>=\2#g' \
