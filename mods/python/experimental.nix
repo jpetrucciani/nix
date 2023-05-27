@@ -67,7 +67,7 @@ final: prev: with prev; rec {
     in
     buildPythonPackage rec {
       pname = "pynecone";
-      version = "0.1.31";
+      version = "0.1.32";
       format = "pyproject";
 
 
@@ -75,7 +75,7 @@ final: prev: with prev; rec {
         owner = "pynecone-io";
         repo = pname;
         rev = "v${version}";
-        sha256 = "sha256-FmyUP2goccFfOxVLtmQyfV/xZPLpWAAOSo7OT7u/AaI=";
+        sha256 = "sha256-UtCe5tWVrQnV9ZrMK4HHHkG+52LXsLw6BiNwArdNOjk=";
       };
 
       propagatedBuildInputs = [
