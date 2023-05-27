@@ -527,14 +527,14 @@ final: prev: with prev; rec {
     in
     buildPythonPackage rec {
       pname = "pyllamacpp";
-      version = "2.3.0";
+      version = "2.4.0";
       format = "pyproject";
 
       src = pkgs.fetchFromGitHub {
         owner = "abdeladim-s";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-4dk7aI94/h4rNvtgvcIrMNKtF7kc0ZDoUEFSr/grU4Y=";
+        hash = "sha256-EFV9/JNqsUYU76DxaaDpiFcCchXk/nR6TQvn3Z+Z8KE=";
         fetchSubmodules = true;
       };
       buildInputs = osSpecific;
