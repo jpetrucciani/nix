@@ -432,19 +432,20 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.6.11";
+    version = "0.6.12";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-Z495BA0e3o/yqbovb3Mz8BW1yG1hB0uIQlgorR4JWsU=";
+      hash = "sha256-d7unQga4O+eTXxNb2AEy08S5zeTQbFPNSUkSkXd1ggI=";
     };
 
     postPatch = ''
       sed -i -E \
         -e 's#(fsspec>=)2023.5.0#\12023.4.0#g' \
+        -e 's#(sqlalchemy>=)2.0.15#\12.0.0#g' \
         setup.py
     '';
 
@@ -461,6 +462,7 @@ final: prev: with prev; rec {
       numpy
       openai
       pandas
+      sqlalchemy
       tiktoken
       vellum-ai
     ];
