@@ -258,10 +258,13 @@ in
       dbBackend = "postgresql";
       environmentFile = "/etc/default/vaultwarden";
       config = {
-        domain = "https://vault.cobi.dev";
-        enableDbWal = "false";
-        signupsAllowed = false;
-        websocketEnabled = true;
+        DOMAIN = "https://vault.cobi.dev";
+        ENABLE_DB_WAL = false;
+        SENDS_ALLOWED = true;
+        SIGNUPS_ALLOWED = false;
+        WEBSOCKET_ENABLED = true;
+        ROCKET_ADDRESS = "0.0.0.0";
+        ROCKET_PORT = 8222;
       };
     };
     promtail = common.templates.promtail {
