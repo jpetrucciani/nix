@@ -303,14 +303,14 @@ final: prev: with prev; rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.184";
+    version = "0.0.185";
     format = "pyproject";
 
     src = pkgs.fetchFromGitHub {
       owner = "hwchase17";
       repo = pname;
       rev = "refs/tags/v${version}";
-      hash = "sha256-DIPlOsV+s7KQF70stCE7M2UwfvAqp3LskR0UtuOnuCs=";
+      hash = "sha256-y/hF67JwxPQpuqCOJWGPMdPXRcb1YCVa+ZjMyfFCPpY=";
     };
 
     nativeBuildInputs = [
@@ -327,6 +327,7 @@ final: prev: with prev; rec {
       openai
       openapi-schema-pydantic
       pexpect
+      psutil
       pydantic
       pyowm
       pyyaml
