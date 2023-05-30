@@ -12,14 +12,14 @@ final: prev: with prev; rec {
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
-      version = "0.1.55";
+      version = "0.1.56";
 
       format = "pyproject";
       src = pkgs.fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-9Jm1nFPq1HP0e6YhkxqWp+B31gJ4jy/Qy2o/D+73eNw=";
+        hash = "sha256-evpxXjmCqlZVrQyElGZLDo6ej8PHKVor3NXmrv6SHqQ=";
       };
 
       preConfigure = ''
@@ -40,6 +40,7 @@ final: prev: with prev; rec {
       ];
 
       propagatedBuildInputs = [
+        numpy
         typing-extensions
       ];
 
