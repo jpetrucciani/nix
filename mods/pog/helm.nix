@@ -22,15 +22,15 @@ rec {
         
         debug "pulled chart data to $temp_resp"
 
-        <"$temp_resp" ${yq} '.[].${chart_name}.[] | [{"version": .version, "date": .created}]' | \
-            ${coreutils}/bin/head -n ${toString (last * 2)} | \
+        <"$temp_resp" ${yq} '.[].${chart_name}.[] | [{"version": .version, "date": .created}]' |
+            ${coreutils}/bin/head -n ${toString (last * 2)} |
             ${yq} -o=json >"$temp_json"
 
         debug "parsed json into $temp_json"
 
         # form csv, hash in parallel
         echo "version,date,sha256" >>"$temp_csv"
-        ${jq} -r '.[] | (.version + " " + .date)' <"$temp_json" | \
+        ${jq} -r '.[] | (.version + " " + .date)' <"$temp_json" |
             ${parallel} 'echo -n "{1},{=2 uq(); =},"; nix-prefetch-url --unpack "${chart_url}" 2>/dev/null' >>"$temp_csv"
 
         debug "formed json into csv at $temp_csv"

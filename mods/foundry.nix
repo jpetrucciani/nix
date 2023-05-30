@@ -96,8 +96,8 @@ let
               ${foundryImage} | docker load
             '';
             pushToGHCR = writeBashBin "pushToGHCR" ''
-              ${foundryImage} | \
-                ${pkgs.gzip}/bin/gzip --fast | \
+              ${foundryImage} |
+                ${pkgs.gzip}/bin/gzip --fast |
                 ${pkgs.skopeo}/bin/skopeo --insecure-policy copy docker-archive:/dev/stdin "docker://${_date_tag}"
             '';
             tagAsLatest = writeBashBin "tagAsLatest" ''
