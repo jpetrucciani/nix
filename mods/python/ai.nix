@@ -632,12 +632,12 @@ final: prev: with prev; rec {
 
   chromadb = buildPythonPackage rec {
     pname = "chromadb";
-    version = "0.3.23";
+    version = "0.3.25";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-h/qSLJLi6Q+0gjS0NenU8MYWRvvRUmBi9T9jMm/CEig=";
+      hash = "sha256-ePNcZd58IWIt/A/gK222tZuo8E+4uM17Xl+PaPmAboo=";
     };
 
     nativeBuildInputs = [
@@ -652,18 +652,28 @@ final: prev: with prev; rec {
       hnswlib
       httptools
       numpy
+      onnxruntime
+      overrides
       pandas
       posthog
       pydantic
       python-dotenv
       requests
       sentence-transformers
+      tqdm
       typing-extensions
       uvicorn
       uvloop
       watchfiles
       websockets
     ];
+
+    postPatch = ''
+      sed -i -E \
+        -e 's#(onnxruntime) >= (1.14.1)#\1 >= 1.13.1#g' \
+        -e 's#(tqdm) >= (4.65.0)#\1 >= 4.64.1#g' \
+        pyproject.toml
+    '';
 
     pythonImportsCheck = [ "chromadb" ];
 
