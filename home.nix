@@ -104,6 +104,7 @@ in
         nil
         nix
         nix-info
+        nix-init
         nix-output-monitor
         nix-prefetch-github
         nix-prefetch-scripts
