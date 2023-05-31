@@ -7,6 +7,8 @@
       url = "github:edolstra/flake-compat";
     };
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    kwb.url = "github:kwbauson/cfg";
+    nix.url = "nix/2.16.0";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix2container.url = "github:nlewo/nix2container";
     nixos-hardware.flake = true;
@@ -19,7 +21,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     vscode-server.url = "github:msteen/nixos-vscode-server";
-    kwb.url = "github:kwbauson/cfg";
   };
 
   outputs = { self, ... }:
@@ -32,7 +33,7 @@
       packages = forAllSystems
         (system: import self.inputs.nixpkgs {
           inherit system;
-          overlays = import ./overlays.nix;
+          overlays = [ self.inputs.nix.overlays.default ] ++ import ./overlays.nix;
           config = { allowUnfree = true; };
         });
 
