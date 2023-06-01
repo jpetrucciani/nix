@@ -1,13 +1,13 @@
 { lib, buildGo120Module, fetchFromGitHub, installShellFiles }:
 buildGo120Module rec {
   pname = "ov";
-  version = "0.21.0";
+  version = "0.30.0";
 
   src = fetchFromGitHub {
     owner = "noborus";
     repo = "ov";
     rev = "v${version}";
-    sha256 = "sha256-gH7DBk40wB2wnYZX4BNRiUDfnEYYRxHTNh/w4pHbZpw=";
+    sha256 = "sha256-xTnUTtMm986MnQEKgExWfABU8E8C+ZiRZvOpg3FY5cY=";
   };
 
   ldflags = [
@@ -16,7 +16,7 @@ buildGo120Module rec {
     "-X main.Version=${version}"
   ];
 
-  vendorHash = "sha256-9zzJJcq6XrlbLXnpYoSlLMhY6O6QmdNdskXWHkC1u2I=";
+  vendorHash = "sha256-bQREazHu0SQrMKyNPtUvzeKR/zb0FJOLpHBwHml43Hs=";
 
   nativeBuildInputs = [ installShellFiles ];
 
