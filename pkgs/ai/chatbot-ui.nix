@@ -24,15 +24,18 @@ buildNpmPackage {
   ];
 
   buildPhase = ''
+    runHook preBuild
     rm Makefile
     # remove issue with google fonts
     sed -i -E  -e '/next\/font\/google/d' -e '/const inter/d' ./pages/_app.tsx
     substituteInPlace ./pages/_app.tsx --replace "className={inter.className}" ""
     cat ./pages/_app.tsx
     npm --offline run build
+      runHook postBuild
   '';
 
   installPhase = ''
+    runHook preInstall
     mkdir -p $out/bin $out/app
     cp -r ./node_modules $out/app/node_modules
     cp -r ./.next $out/app/.next
@@ -53,5 +56,6 @@ buildNpmPackage {
     ./node_modules/.bin/next start "\$@"
     EOF
     chmod +x $out/bin/chatbot-ui
+    runHook postInstall
   '';
 }
