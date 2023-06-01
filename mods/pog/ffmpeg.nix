@@ -29,13 +29,14 @@ rec {
       scale=""
       ${var.empty "file"} && die "you must specify a source file!" 1
       ${notFlag "horizontal"} && ${notFlag "vertical"} && die "you can only scale in 1 dimension!" 1
-      if ${notFlag "horizontal"}; then
+      if ${notFlag "vertical"}; then
         name="''${horizontal}x"
         scale="$horizontal:-1"
       else
         name="''${vertical}y"
         scale="-1:$vertical"
       fi
+      debug "x=$horizontal y=$vertical scale=$scale"
       ${var.empty "output"} && output="''${file%.*}.$name.''${file##*.}"
       ${_.ffmpeg} -i "$file" -vf scale="$scale" "$output"
     '';
