@@ -7,7 +7,7 @@ let
     hash = "sha256-Lzk8xBEo/kIZAvAQNWOjbGvNsnnyYy704w4bt29gLbg=";
   };
 in
-buildNpmPackage {
+buildNpmPackage rec {
   inherit src;
   pname = "chatbot-ui";
   version = "0.1.0";
@@ -23,15 +23,20 @@ buildNpmPackage {
     })
   ];
 
+  OPENAI_API_HOST = "http://localhost:8420";
+  OPENAI_API_TYPE = "openai";
+  OPENAI_API_VERSION = "2023-05-15";
+  OPENAI_ORGANIZATION = "";
+  AZURE_DEPLOYMENT_ID = "gpt-4";
+
   buildPhase = ''
     runHook preBuild
     rm Makefile
     # remove issue with google fonts
     sed -i -E  -e '/next\/font\/google/d' -e '/const inter/d' ./pages/_app.tsx
     substituteInPlace ./pages/_app.tsx --replace "className={inter.className}" ""
-    cat ./pages/_app.tsx
     npm --offline run build
-      runHook postBuild
+    runHook postBuild
   '';
 
   installPhase = ''
@@ -47,11 +52,11 @@ buildNpmPackage {
     #!${bash}/bin/bash
     export PORT="\''${PORT:-8421}"
     export DEFAULT_SYSTEM_PROMPT="\''${DEFAULT_SYSTEM_PROMPT:-You are ChatGPT, a large language model trained by OpenAI. Follow the user\'s instructions carefully. Respond using markdown.}"
-    export OPENAI_API_HOST="\''${OPENAI_API_HOST:-http://localhost:8420}"
-    export OPENAI_API_TYPE="\''${OPENAI_API_TYPE:-openai}"
-    export OPENAI_API_VERSION="\''${OPENAI_API_VERSION:-2023-05-15}"
-    export OPENAI_ORGANIZATION="\''${OPENAI_ORGANIZATION:-}"
-    export AZURE_DEPLOYMENT_ID="\''${AZURE_DEPLOYMENT_ID:-gpt-4}"
+    export OPENAI_API_HOST="\''${OPENAI_API_HOST:-${OPENAI_API_HOST}}"
+    export OPENAI_API_TYPE="\''${OPENAI_API_TYPE:-${OPENAI_API_TYPE}}"
+    export OPENAI_API_VERSION="\''${OPENAI_API_VERSION:-${OPENAI_API_VERSION}}"
+    export OPENAI_ORGANIZATION="\''${OPENAI_ORGANIZATION:-${OPENAI_ORGANIZATION}}"
+    export AZURE_DEPLOYMENT_ID="\''${AZURE_DEPLOYMENT_ID:-${AZURE_DEPLOYMENT_ID}}"
     cd $out/app
     ./node_modules/.bin/next start "\$@"
     EOF
