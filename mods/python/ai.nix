@@ -434,14 +434,14 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.6.15";
+    version = "0.6.16";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-9MUQSovQ4Tv6Mx54QAh5IjK92oFW+bTllrQPyFuUREQ=";
+      hash = "sha256-RjrgvO24EDgaaD7/UqeGN2MfGNbR2CeQN6cWSKBHVaw=";
     };
 
     postPatch = ''
