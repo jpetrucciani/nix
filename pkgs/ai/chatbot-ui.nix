@@ -45,6 +45,10 @@ buildNpmPackage {
     export PORT="\''${PORT:-8421}"
     export DEFAULT_SYSTEM_PROMPT="\''${DEFAULT_SYSTEM_PROMPT:-You are ChatGPT, a large language model trained by OpenAI. Follow the user\'s instructions carefully. Respond using markdown.}"
     export OPENAI_API_HOST="\''${OPENAI_API_HOST:-http://localhost:8420}"
+    export OPENAI_API_TYPE="\''${OPENAI_API_TYPE:-openai}"
+    export OPENAI_API_VERSION="\''${OPENAI_API_VERSION:-2023-05-15}"
+    export OPENAI_ORGANIZATION="\''${OPENAI_ORGANIZATION:-}"
+    export AZURE_DEPLOYMENT_ID="\''${AZURE_DEPLOYMENT_ID:-gpt-4}"
     cd $out/app
     ./node_modules/.bin/next start "\$@"
     EOF
