@@ -1,16 +1,33 @@
 {
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
-    devenv.url = "github:cachix/devenv/latest";
+    devenv = {
+      url = "github:cachix/devenv/latest";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     flake-compat = {
       flake = false;
       url = "github:edolstra/flake-compat";
     };
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    kwb.url = "github:kwbauson/cfg";
-    nix.url = "nix/2.16.0";
+    kwb = {
+      url = "github:kwbauson/cfg";
+      inputs = {
+        home-manager.follows = "home-manager";
+        nix-darwin.follows = "nix-darwin";
+        nixos-hardware.follows = "nixos-hardware";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
+    nix = {
+      url = "nix/2.16.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-    nix2container.url = "github:nlewo/nix2container";
+    nix2container = {
+      url = "github:nlewo/nix2container";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixos-hardware.flake = true;
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
@@ -20,7 +37,10 @@
       url = "github:nix-community/NixOS-WSL";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    vscode-server.url = "github:msteen/nixos-vscode-server";
+    vscode-server = {
+      url = "github:msteen/nixos-vscode-server";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, ... }:
