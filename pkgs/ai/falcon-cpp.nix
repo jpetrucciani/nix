@@ -1,7 +1,7 @@
 { lib, darwin, stdenv, clangStdenv, fetchFromGitHub }:
 let
-  inherit (stdenv) isAarch64 isDarwin;
-  osSpecific = with darwin.apple_sdk.frameworks; if isDarwin then ([ Accelerate CoreGraphics CoreVideo ]) else [ ];
+  inherit (stdenv) isDarwin;
+  osSpecific = with darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate CoreGraphics CoreVideo ] else [ ];
 in
 clangStdenv.mkDerivation rec {
   name = "falcon.cpp";
