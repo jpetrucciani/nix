@@ -8,16 +8,17 @@ let
         delegator-py
         discordpy
         feedparser
-        geoip2
         gamble
+        geoip2
+        GitPython
         httpx
         paramiko
-        requests
-        GitPython
         praw
-        tweepy
+        pygithub
         python-dotenv
         python-multipart
+        requests
+        tweepy
 
         # text
         anybadge
