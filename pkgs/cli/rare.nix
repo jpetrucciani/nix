@@ -1,16 +1,16 @@
 { lib, buildGo120Module, fetchFromGitHub }:
 buildGo120Module rec {
   pname = "rare";
-  version = "0.3.0";
+  version = "0.3.1";
 
   src = fetchFromGitHub {
     owner = "zix99";
     repo = "rare";
     rev = version;
-    sha256 = "sha256-TL+oqi/q0ObJN08jJur0aaSqey3p/B7bb57vQYYHnF0=";
+    sha256 = "sha256-p/L9OL5Eo98PcT5vvODy2xdSH7fuIZJQIAfqhdO490Q=";
   };
 
-  vendorHash = "sha256-4+yvgOGlJ33RV0WNJlYUFf/8ergTflMhSn13EJUmVSk=";
+  vendorHash = "sha256-wUOtxNjL/4MosACCzPTWKWrnMZhxINfN1ppkRsqDh9M=";
 
   meta = with lib; {
     inherit (src.meta) homepage;
