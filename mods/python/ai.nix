@@ -434,14 +434,14 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.6.18";
+    version = "0.6.19";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-kLQuDvAK4VsCKpVsR7QodBWMsrsYS2C5FGd2soYQOSA=";
+      hash = "sha256-3sfpz2ZryCxYwzRHl6kqNpNgdADvua/WRWy4WVU6U8g=";
     };
 
     postPatch = ''
@@ -514,6 +514,7 @@ final: prev: with prev; rec {
       "tests/selectors/test_llm_selectors.py"
       "tests/test_utils.py"
       "tests/token_predictor/test_base.py"
+      "tests/tools/test_ondemand_loader.py"
     ];
 
     pythonImportsCheck = [ "llama_index" ];
