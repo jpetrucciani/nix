@@ -1,7 +1,7 @@
 { lib, darwin, stdenv, clangStdenv, fetchFromGitHub }:
 let
-  inherit (stdenv) isAarch64 isDarwin;
-  osSpecific = with darwin.apple_sdk_11_0.frameworks; if isDarwin then ([ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ])) else [ ];
+  inherit (stdenv) isDarwin;
+  osSpecific = with darwin.apple_sdk_11_0.frameworks; if isDarwin then [ Accelerate ] else [ ];
 in
 clangStdenv.mkDerivation rec {
   name = "alpaca.cpp";

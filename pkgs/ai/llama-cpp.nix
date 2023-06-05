@@ -15,6 +15,11 @@ clangStdenv.mkDerivation rec {
     hash = "sha256-nkHb8UjxpCStLBW4Y1gmQRG+4nPB19V+Co6Cydgaq3Q=";
   };
 
+  postPatch =
+    if apple_gpu then ''
+      substituteInPlace ./ggml-metal.m --replace '[[NSBundle mainBundle] pathForResource:@"ggml-metal" ofType:@"metal"];' "@\"$out/ggml-metal.metal\";"
+    '' else "";
+
   cmakeFlags = [
     "-DLLAMA_BUILD_SERVER=ON"
   ] ++ (lib.optionals (system == "aarch64-darwin") [
@@ -23,6 +28,7 @@ clangStdenv.mkDerivation rec {
   ]);
   installPhase = ''
     mkdir -p $out/bin
+    cp ../ggml-metal.metal $out/.
     mv ./bin/main $out/bin/llama
     mv ./bin/perplexity $out/bin/llama-perplexity
     mv ./bin/quantize $out/bin/llama-quantize

@@ -1,7 +1,7 @@
 { lib, stdenv, darwin, fetchFromGitHub, rustPlatform }:
 let
-  inherit (stdenv) isAarch64 isDarwin;
-  osSpecific = with darwin.apple_sdk_11_0.frameworks; if isDarwin then ([ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ])) else [ ];
+  inherit (stdenv) isDarwin;
+  osSpecific = with darwin.apple_sdk_11_0.frameworks; if isDarwin then [ Accelerate ] else [ ];
   pname = "llm";
   version = "0.1.1";
 in
