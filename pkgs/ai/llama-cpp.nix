@@ -1,7 +1,7 @@
 { lib, system, darwin, stdenv, clangStdenv, fetchFromGitHub, cmake }:
 let
   inherit (stdenv) isAarch64 isDarwin;
-  osSpecific = with darwin.apple_sdk.frameworks; if isDarwin then ([ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ])) else [ ];
+  osSpecific = with darwin.apple_sdk_11_0.frameworks; if isDarwin then ([ Accelerate CoreML MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ])) else [ ];
   version = "master-5220a99";
 in
 clangStdenv.mkDerivation rec {
