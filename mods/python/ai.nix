@@ -434,14 +434,14 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.6.19";
+    version = "0.6.20";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-3sfpz2ZryCxYwzRHl6kqNpNgdADvua/WRWy4WVU6U8g=";
+      hash = "sha256-C2HJ7bp1aM9KZPQIYqpEJlDCpmMTaqC8mxfO6TOZTBU=";
     };
 
     postPatch = ''
@@ -491,6 +491,7 @@ final: prev: with prev; rec {
       "tests/indices/query/test_query_bundle.py"
       "tests/indices/response/test_response_builder.py"
       "tests/indices/struct_store/test_base.py"
+      "tests/indices/struct_store/test_json_query.py"
       "tests/indices/struct_store/test_pandas.py"
       "tests/indices/struct_store/test_sql_query.py"
       "tests/indices/test_loading_graph.py"
