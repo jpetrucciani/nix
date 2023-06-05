@@ -2,7 +2,7 @@
 let
   inherit (stdenv) isAarch64 isDarwin;
   version = "1.4.0";
-  osSpecific = with darwin.apple_sdk.frameworks; if isDarwin then ([ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ])) else [ ];
+  osSpecific = with darwin.apple_sdk_11_0.frameworks; if isDarwin then ([ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ])) else [ ];
 in
 clangStdenv.mkDerivation rec {
   name = "whisper.cpp";

@@ -3,7 +3,7 @@ let
   inherit (stdenv) isDarwin;
   name = "starcoder.cpp";
   version = "0.0.0";
-  osSpecific = with darwin.apple_sdk.frameworks; if isDarwin then [ Accelerate CoreGraphics CoreVideo ] else [ ];
+  osSpecific = with darwin.apple_sdk_11_0.frameworks; if isDarwin then [ Accelerate CoreGraphics CoreVideo ] else [ ];
 in
 clangStdenv.mkDerivation {
   inherit name version;

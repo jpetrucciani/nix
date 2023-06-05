@@ -52,7 +52,7 @@ in
           sha256 = "sha256-s8MuSUC+TbzfadoiqW11Eh7ZTirFjEtVbIMofD0xRc8=";
         };
 
-        nativeBuildInputs = [ cmake ] ++ lib.optional isDarwin darwin.apple_sdk.frameworks.AppKit;
+        nativeBuildInputs = [ cmake ] ++ lib.optional isDarwin darwin.apple_sdk_11_0.frameworks.AppKit;
 
         preConfigure = ''
           cd build/in
