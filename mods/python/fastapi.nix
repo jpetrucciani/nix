@@ -315,12 +315,12 @@ final: prev: with prev; rec {
 
   nicegui = buildPythonPackage rec {
     pname = "nicegui";
-    version = "1.2.16";
+    version = "1.2.17";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-mooh7FvTEGdfpSQVqxHHJgXOjgfqWp1MdKMCfp7SrgY=";
+      hash = "sha256-aOCOY2A+l2i706hHgS5bjBGUsl2GrfG30JxJM5frKgo=";
     };
 
     postPatch = ''
@@ -334,6 +334,7 @@ final: prev: with prev; rec {
     ];
 
     propagatedBuildInputs = [
+      aiofiles
       fastapi
       fastapi-socketio
       httptools
