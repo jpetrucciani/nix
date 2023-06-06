@@ -71,7 +71,7 @@ rec {
         fi
         py=""
         if [ "$with_python" = "1" ]; then
-          py="python = [(python311.withPackages ( p: with p; [${"\n"}requests]))];"
+          py="python = [ruff${"\n"}(python311.withPackages ( p: with p; [${"\n"}black]))];"
         fi
         ruby=""
         if [ "$with_ruby" = "1" ]; then
