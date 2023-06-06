@@ -111,12 +111,12 @@ rec {
         
       start_sec="$(echo "$start" | ${fn.ts_to_seconds})"
       if ${notFlag "duration"}; then
-        end_sec="$(echo "$start_sec" "$duration" | ${fn.add})"
-      else
         end_sec="$(echo "$end" | ${fn.ts_to_seconds})"
+      else
+        end_sec="$(echo "$start_sec" "$duration" | ${fn.add})"
       fi
 
-      ${_.ffmpeg} -ss "$start_sec" -to "$end_sec" -i "$file" -c:v copy -c:a copy "$output"
+      ${_.ffmpeg} -ss "$start_sec" -to "$end_sec" -i "$file" -c:v libx264 -c:a aac "$output"
     '';
   };
 
