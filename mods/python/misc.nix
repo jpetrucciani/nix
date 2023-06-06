@@ -308,4 +308,24 @@
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
+
+  coolname = buildPythonPackage rec {
+    pname = "coolname";
+    version = "2.2.0";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-bF1XMXWRBEeefKGVqbZPeQCsW+rUAYPAkyPH0L6edcc=";
+    };
+
+    pythonImportsCheck = [ "coolname" ];
+
+    meta = with lib; {
+      description = "Random name and slug generator";
+      homepage = "https://github.com/alexanderlukanin13/coolname";
+      license = licenses.bsd2;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 })
