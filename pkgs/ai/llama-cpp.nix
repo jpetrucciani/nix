@@ -3,7 +3,7 @@ let
   inherit (stdenv) isAarch64 isDarwin;
   apple_gpu = isDarwin && isAarch64;
   osSpecific = with darwin.apple_sdk_11_0.frameworks; if isDarwin then ([ Accelerate ] ++ (if apple_gpu then [ CoreML MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ] else [ ])) else [ ];
-  version = "master-44f906e";
+  version = "master-2d7bf11";
 in
 clangStdenv.mkDerivation rec {
   inherit version;
@@ -12,7 +12,7 @@ clangStdenv.mkDerivation rec {
     owner = "ggerganov";
     repo = name;
     rev = "refs/tags/${version}";
-    hash = "sha256-KM3gvKiKC7xJh7S2E4X7rIm7SPp8A/POPR7xreaqRI0=";
+    hash = "sha256-CSP1oYc1lhmj8vC2I6tiLfZ25BdUCeNJX3StINIGHew=";
   };
 
   postPatch =
