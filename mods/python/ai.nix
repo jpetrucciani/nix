@@ -1,8 +1,15 @@
-final: prev: with prev; rec {
+final: prev: with prev; let
+  inherit (stdenv) isAarch64 isDarwin;
+  inherit (prev.pkgs) darwin;
+  isM1 = isDarwin && isAarch64;
+in
+rec {
   llama-cpp-python =
     let
-      inherit (stdenv) isDarwin;
-      osSpecific = with pkgs.darwin.apple_sdk_11_0.frameworks; if isDarwin then [ Accelerate CoreGraphics CoreVideo ] else [ ];
+      osSpecific =
+        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
+        else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
+        else [ ];
       llama-cpp-pin = pkgs.fetchFromGitHub {
         owner = "ggerganov";
         repo = "llama.cpp";
@@ -530,8 +537,10 @@ final: prev: with prev; rec {
 
   pyllamacpp =
     let
-      inherit (stdenv) isDarwin;
-      osSpecific = with pkgs.darwin.apple_sdk_11_0.frameworks; if isDarwin then [ Accelerate CoreGraphics CoreVideo ] else [ ];
+      osSpecific =
+        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
+        else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
+        else [ ];
     in
     buildPythonPackage rec {
       pname = "pyllamacpp";
@@ -567,7 +576,11 @@ final: prev: with prev; rec {
   pygptj =
     let
       inherit (stdenv) isAarch64 isDarwin;
-      osSpecific = with pkgs.darwin.apple_sdk_11_0.frameworks; if isDarwin then [ Accelerate ] ++ (if !isAarch64 then [ CoreGraphics CoreVideo ] else [ ]) else [ ];
+      isM1 = isDarwin && isAarch64;
+      osSpecific =
+        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
+        else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
+        else [ ];
     in
     buildPythonPackage rec {
       pname = "pygptj";
@@ -740,8 +753,10 @@ final: prev: with prev; rec {
 
   rwkv-cpp =
     let
-      inherit (stdenv) isDarwin;
-      osSpecific = with pkgs.darwin.apple_sdk_11_0.frameworks; if isDarwin then [ Accelerate CoreGraphics CoreVideo ] else [ ];
+      osSpecific =
+        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
+        else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
+        else [ ];
       version = "0.0.1";
       libFile = if isDarwin then "librwkv.dylib" else "librwkv.so";
       setup-py = pkgs.writeTextFile {
@@ -880,7 +895,10 @@ final: prev: with prev; rec {
     let
       name = "whisper-cpp-python";
       version = "0.2.0";
-      osSpecific = with pkgs.darwin.apple_sdk_11_0.frameworks; if stdenv.isDarwin then [ Accelerate CoreGraphics CoreVideo ] else [ ];
+      osSpecific =
+        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
+        else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
+        else [ ];
     in
     buildPythonPackage {
       inherit version;
@@ -933,7 +951,10 @@ final: prev: with prev; rec {
     let
       name = "ctransformers";
       version = "0.2.1";
-      osSpecific = with pkgs.darwin.apple_sdk_11_0.frameworks; if stdenv.isDarwin then [ Accelerate CoreGraphics CoreVideo ] else [ ];
+      osSpecific =
+        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
+        else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
+        else [ ];
     in
     buildPythonPackage {
       inherit version;
