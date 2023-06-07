@@ -1183,7 +1183,7 @@ final: prev: with prev; rec {
 
   gradio = buildPythonPackage rec {
     pname = "gradio";
-    version = "3.32.0";
+    version = "3.33.1";
     disabled = pythonOlder "3.7";
     format = "pyproject";
 
@@ -1191,7 +1191,7 @@ final: prev: with prev; rec {
     # and its releases are also more frequent than github tags
     src = fetchPypi {
       inherit pname version;
-      sha256 = "sha256-vN2XvM/+XdkEV00GDPaFCCrHJhpRFkuwhU6WSPvUXsE=";
+      sha256 = "sha256-55AzaSYGuUXcwryPOKPNLDoazTcIc2UhXBuwCtf3aqM=";
     };
 
     nativeBuildInputs = [
