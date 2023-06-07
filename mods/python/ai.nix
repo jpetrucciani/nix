@@ -1345,7 +1345,7 @@ final: prev: with prev; rec {
   lama-cleaner =
     let
       name = "lama-cleaner";
-      version = "1.1.2";
+      version = "1.2.0";
     in
     buildPythonPackage {
       inherit version;
