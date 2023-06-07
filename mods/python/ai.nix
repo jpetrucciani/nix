@@ -308,16 +308,48 @@ rec {
   #   };
   # };
 
+  langchainplus-sdk = buildPythonPackage
+    rec {
+      pname = "langchainplus-sdk";
+      version = "0.0.4";
+      format = "pyproject";
+
+      src = fetchPypi {
+        pname = "langchainplus_sdk";
+        inherit version;
+        hash = "sha256-DAmvYugZdeM1YcZVupsyd315g0IYyTd9KFeKlVh0AEQ=";
+      };
+
+      nativeBuildInputs = [
+        poetry-core
+      ];
+
+      propagatedBuildInputs = [
+        pydantic
+        requests
+        tenacity
+      ];
+
+      pythonImportsCheck = [ "langchainplus_sdk" ];
+
+      meta = with lib; {
+        description = "Client library to connect to the LangChainPlus LLM Tracing and Evaluation Platform";
+        homepage = "https://www.langchain.plus";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.191";
+    version = "0.0.192";
     format = "pyproject";
 
     src = pkgs.fetchFromGitHub {
       owner = "hwchase17";
       repo = pname;
       rev = "refs/tags/v${version}";
-      hash = "sha256-C1ad6tXBpot6YzsBoJ6CdNqie8OqTr4fj/WOkJVKAHM=";
+      hash = "sha256-QiAytImsSoUgTv9tMFl/kPJnoiVqZLWyItdjrLlxihQ=";
     };
 
     nativeBuildInputs = [
@@ -329,6 +361,7 @@ rec {
       aiohttp
       dataclasses-json
       jinja2
+      langchainplus-sdk
       numexpr
       numpy
       openai
