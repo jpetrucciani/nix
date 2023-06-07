@@ -1,9 +1,13 @@
-{ lib, system, darwin, stdenv, clangStdenv, fetchFromGitHub, cmake }:
+{ lib, darwin, stdenv, clangStdenv, fetchFromGitHub, cmake }:
 let
+  inherit (lib) optionals;
   inherit (stdenv) isAarch64 isDarwin;
-  apple_gpu = isDarwin && isAarch64;
-  osSpecific = with darwin.apple_sdk_11_0.frameworks; if isDarwin then ([ Accelerate ] ++ (if apple_gpu then [ CoreML MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ] else [ ])) else [ ];
-  version = "master-2d7bf11";
+  isM1 = isDarwin && isAarch64;
+  osSpecific =
+    if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
+    else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
+    else [ ];
+  version = "master-35a8491";
 in
 clangStdenv.mkDerivation rec {
   inherit version;
@@ -12,17 +16,17 @@ clangStdenv.mkDerivation rec {
     owner = "ggerganov";
     repo = name;
     rev = "refs/tags/${version}";
-    hash = "sha256-CSP1oYc1lhmj8vC2I6tiLfZ25BdUCeNJX3StINIGHew=";
+    hash = "sha256-7Rf4l+iFewpnD15dGQwrESuqT5z5uoF069vCC6DlDOg=";
   };
 
   postPatch =
-    if apple_gpu then ''
+    if isM1 then ''
       substituteInPlace ./ggml-metal.m --replace '[[NSBundle mainBundle] pathForResource:@"ggml-metal" ofType:@"metal"];' "@\"$out/ggml-metal.metal\";"
     '' else "";
 
   cmakeFlags = [
     "-DLLAMA_BUILD_SERVER=ON"
-  ] ++ (lib.optionals (system == "aarch64-darwin") [
+  ] ++ (optionals isM1 [
     "-DCMAKE_C_FLAGS=-D__ARM_FEATURE_DOTPROD=1"
     "-DLLAMA_METAL=ON"
   ]);
