@@ -1,4 +1,4 @@
-{ lib, system, darwin, stdenv, clangStdenv, fetchFromGitHub, cmake }:
+{ lib, darwin, stdenv, clangStdenv, fetchFromGitHub, cmake }:
 let
   inherit (lib) optionals;
   inherit (stdenv) isAarch64 isDarwin;
