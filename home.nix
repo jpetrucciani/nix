@@ -169,7 +169,7 @@ in
           dockerfile-language-server-nodejs
           vscode-json-languageserver
           yaml-language-server
-          vlang
+          # vlang
         ])
 
         (optList (!isBarebones) [
