@@ -7,7 +7,8 @@ let
   firstName = "jacobi";
   lastName = "petrucciani";
   personalEmail = "j@cobi.dev";
-  workEmail = "jacobi.petrucciani@medable.com";
+  workEmail = "jpetrucciani@blackedge.com";
+  medableEmail = "jacobi.petrucciani@medable.com";
 
   onAws = builtins.getEnv "USER" == "ubuntu";
   promptChar = if isDarwin then "ᛗ" else "ᛥ";
@@ -72,6 +73,7 @@ in
         dos2unix
         dyff
         ed
+        erdtree
         exa
         fd
         figlet
@@ -104,7 +106,6 @@ in
         nil
         nix
         nix-info
-        nix-init
         nix-output-monitor
         nix-prefetch-github
         nix-prefetch-scripts
@@ -229,23 +230,10 @@ in
             ]
             ++ (optList (!isM1) [ ])
             ++ (optList isLinux [
-              bpython
+              nix-init
             ])
             )
           )
-
-          # my packages
-          cgapp
-          cyclonus
-          erdtree
-          goldilocks
-          horcrux
-          hunt
-          ov
-          poglets
-          rare
-          regula
-          s3-edit
 
           # keef's stuff
           hax.comma
@@ -742,7 +730,10 @@ in
       enable = true;
       package = pkgs.gitAndTools.gitFull;
       userName = "${firstName} ${lastName}";
-      userEmail = if isDarwin then workEmail else personalEmail;
+      userEmail =
+        if machine-name == "m1max" then medableEmail
+        else if machine-name == "edge" then workEmail
+        else personalEmail;
       aliases = {
         A = "add -A";
         pu = "pull";
