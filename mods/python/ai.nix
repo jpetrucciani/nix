@@ -750,19 +750,23 @@ rec {
       owner = "msoedov";
       repo = pname;
       rev = "refs/tags/${version}";
-      hash = "sha256-Oo8yVVLnlq/uOkWorqgbMMwmwIbiGTNIVFb1HUm9GTE=";
+      hash = "sha256-hTRufGDaTPwPiGp3CFwGNTyP/QbICM0Cv+jmuIJwHEg";
     };
 
     postPatch = ''
       sed -i -E \
         -e '/bs4 =/d' \
         -e '/loguru =/d' \
-        -e 's#(langchain = )"\^0.0.163"#\1">0.0.163"#g' \
-        -e 's#(uvicorn = )"\^0.22.0"#\1">=0.20.0"#g' \
         pyproject.toml
     '';
 
+    pythonRelaxDeps = [
+      "langchain"
+      "uvicorn"
+    ];
+
     nativeBuildInputs = [
+      pythonRelaxDepsHook
       poetry-core
     ];
 
