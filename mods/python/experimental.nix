@@ -67,7 +67,7 @@ final: prev: with prev; rec {
     in
     buildPythonPackage rec {
       pname = "pynecone";
-      version = "0.1.32";
+      version = "0.1.33";
       format = "pyproject";
 
 
@@ -75,9 +75,11 @@ final: prev: with prev; rec {
         owner = "pynecone-io";
         repo = pname;
         rev = "v${version}";
-        sha256 = "sha256-UtCe5tWVrQnV9ZrMK4HHHkG+52LXsLw6BiNwArdNOjk=";
+        sha256 = "sha256-zDDkEaY6bHbsi3gkegcTl8BC6RwxIv1S8KNPYZOxqZg=";
       };
-
+      nativeBuildInputs = [
+        pythonRelaxDepsHook
+      ];
       propagatedBuildInputs = [
         pkgs.nodejs_20
         cloudpickle
@@ -88,6 +90,7 @@ final: prev: with prev; rec {
         poetry-core
         psutil
         pydantic
+        python-dotenv
         python-socketio
         redis
         rich
@@ -96,22 +99,20 @@ final: prev: with prev; rec {
         websockets
         # special
         sqlmodel
+        starlette-admin
         typer
       ];
 
-      preBuild =
-        let
-          sed = "sed -i -E";
-        in
-        ''
-          ${sed} 's#BUN_PATH =.*#BUN_PATH = "${pkgs.bun}/bin/bun"#g' ./pynecone/constants.py
-          ${sed} \
-            -e's#(pydantic = )"1.10.2"#\1">1.10.2"#g' \
-            -e's#(fastapi = )"\^0.92.0"#\1">0.92.0"#g' \
-            -e 's#(watchdog = )"\^2.3.1"#\1"\>2.3.1"#g' \
-            -e 's#(python-multipart = )"\^0.0.5"#\1"\>0.0.5"#g' \
-            ./pyproject.toml
-        '';
+      pythonRelaxDeps = [
+        "fastapi"
+        "python-dotenv"
+        "python-multipart"
+        "watchdog"
+      ];
+
+      preBuild = ''
+        sed -i -E 's#BUN_PATH =.*#BUN_PATH = "${pkgs.bun}/bin/bun"#g' ./pynecone/constants.py
+      '';
 
       pythonImportsCheck = [
         "pynecone"
@@ -124,6 +125,81 @@ final: prev: with prev; rec {
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
+
+  starlette-admin = buildPythonPackage rec {
+    pname = "starlette-admin";
+    version = "0.9.0";
+    format = "pyproject";
+
+    src = fetchPypi {
+      pname = "starlette_admin";
+      inherit version;
+      hash = "sha256-BIE1XaH7VHzaIW64Pz228Pe4MCWPWwCitKC4rXD/hiU=";
+    };
+
+    nativeBuildInputs = [
+      hatchling
+    ];
+
+    propagatedBuildInputs = [
+      jinja2
+      python-multipart
+      starlette
+    ];
+
+    passthru.optional-dependencies = {
+      dev = [
+        pre-commit
+        uvicorn
+      ];
+      doc = [
+        mkdocs
+        mkdocs-material
+        mkdocs-static-i18n
+        mkdocstrings
+      ];
+      i18n = [
+        babel
+      ];
+      test = [
+        aiomysql
+        aiosqlite
+        arrow
+        asyncpg
+        backports-zoneinfo
+        black
+        colour
+        coverage
+        fasteners
+        httpx
+        itsdangerous
+        mongoengine
+        mypy
+        odmantic
+        passlib
+        phonenumbers
+        pillow
+        psycopg2-binary
+        pydantic
+        pymysql
+        pytest
+        pytest-asyncio
+        ruff
+        sqlalchemy-file
+        sqlalchemy-utils
+        tinydb
+      ];
+    };
+
+    pythonImportsCheck = [ "starlette_admin" ];
+
+    meta = with lib; {
+      description = "Fast, beautiful and extensible administrative interface framework for Starlette/FastApi applications";
+      homepage = "https://github.com/jowilf/starlette-admin";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 
   # emmett
   emmett-rest = buildPythonPackage rec {
