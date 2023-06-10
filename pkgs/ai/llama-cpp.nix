@@ -19,10 +19,10 @@ clangStdenv.mkDerivation rec {
     hash = "sha256-h7tbYuNb4dbW6r4YDmcFLQk+Gdc2zbtZWIPvSBkHbU4=";
   };
 
-  # postPatch =
-  #   if isM1 then ''
-  #     substituteInPlace ./ggml-metal.m --replace '[[NSBundle mainBundle] pathForResource:@"ggml-metal" ofType:@"metal"];' "@\"$out/ggml-metal.metal\";"
-  #   '' else "";
+  postPatch =
+    if isM1 then ''
+      substituteInPlace ./ggml-metal.m --replace '[bundle pathForResource:@"ggml-metal" ofType:@"metal"];' "@\"$out/ggml-metal.metal\";"
+    '' else "";
 
   cmakeFlags = [
     "-DLLAMA_BUILD_SERVER=ON"
