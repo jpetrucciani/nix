@@ -486,17 +486,16 @@ rec {
       hash = "sha256-Yf7D1iAfTATwcnVa0YKlmcnVzoxyMit6wsWUJBiU0e4=";
     };
 
-    postPatch = ''
-      sed -i -E \
-        -e 's#(fsspec>=)2023.5.0#\12023.4.0#g' \
-        -e 's#(sqlalchemy>=)2.0.15#\12.0.0#g' \
-        setup.py
-    '';
-
     nativeCheckInputs = [
       pytestCheckHook
+      pythonRelaxDepsHook
       nltk
       pillow
+    ];
+
+    pythonRelaxDeps = [
+      "fsspec"
+      "sqlalchemy"
     ];
 
     propagatedBuildInputs = [
