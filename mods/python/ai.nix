@@ -13,20 +13,20 @@ rec {
       llama-cpp-pin = pkgs.fetchFromGitHub {
         owner = "ggerganov";
         repo = "llama.cpp";
-        rev = "ffb06a345e3a9e30d39aaa5b46a23201a74be6de";
-        hash = "sha256-tludsc/R841nUUAsGXrMEGMX3vfoG4Lci3MNGOWJTPI=";
+        rev = "98ed16557432d7a5179c57eddcc3a08a7ae6d54d";
+        hash = "sha256-0OUD7ENifCb3/BRtM0Gzx8JRZTYnMuP2t4okgFYzN7o=";
       };
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
-      version = "0.1.57";
+      version = "0.1.61";
 
       format = "pyproject";
       src = pkgs.fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-BrR3N+3KRu96j0MIydyrvFb2BN3COeBPISac+ixq3XM=";
+        hash = "sha256-fMNBHCSMps+a7tq8sYGq/cnAwAlW7Eor3K1dGO5TXMk=";
       };
 
       preConfigure = ''
@@ -39,14 +39,16 @@ rec {
       buildInputs = osSpecific;
 
       nativeBuildInputs = [
+        pythonRelaxDepsHook
         prev.pkgs.cmake
         prev.pkgs.ninja
         poetry-core
         scikit-build
         setuptools
       ];
-
+      pythonRelaxDeps = [ "diskcache" ];
       propagatedBuildInputs = [
+        diskcache
         numpy
         typing-extensions
       ];
