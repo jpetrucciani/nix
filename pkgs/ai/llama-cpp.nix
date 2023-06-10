@@ -7,7 +7,7 @@ let
     if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
     else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
     else [ ];
-  version = "master-98ed165";
+  version = "master-4de0334";
 in
 clangStdenv.mkDerivation rec {
   inherit version;
@@ -16,13 +16,13 @@ clangStdenv.mkDerivation rec {
     owner = "ggerganov";
     repo = name;
     rev = "refs/tags/${version}";
-    hash = "sha256-0OUD7ENifCb3/BRtM0Gzx8JRZTYnMuP2t4okgFYzN7o=";
+    hash = "sha256-h7tbYuNb4dbW6r4YDmcFLQk+Gdc2zbtZWIPvSBkHbU4=";
   };
 
-  postPatch =
-    if isM1 then ''
-      substituteInPlace ./ggml-metal.m --replace '[[NSBundle mainBundle] pathForResource:@"ggml-metal" ofType:@"metal"];' "@\"$out/ggml-metal.metal\";"
-    '' else "";
+  # postPatch =
+  #   if isM1 then ''
+  #     substituteInPlace ./ggml-metal.m --replace '[[NSBundle mainBundle] pathForResource:@"ggml-metal" ofType:@"metal"];' "@\"$out/ggml-metal.metal\";"
+  #   '' else "";
 
   cmakeFlags = [
     "-DLLAMA_BUILD_SERVER=ON"
