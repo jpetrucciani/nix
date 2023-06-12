@@ -1,4 +1,4 @@
-{ config, flake, machine-name, pkgs, ... }:
+{ config, flake, machine-name, pkgs, lib, ... }:
 let
   hostname = "terra";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
@@ -279,11 +279,27 @@ in
       settings = {
         hostname = "hexa.dev";
         federation.enabled = false;
+        email = {
+          smtp_server = "$SMTP_SERVER";
+          smtp_login = "$SMTP_USERNAME";
+          smtp_password = "$SMTP_PASSWORD";
+          smtp_from_address = "jacobi@hexa.dev";
+          tls_type = "tls";
+        };
       };
     };
   } // common.services;
 
   systemd.services.lemmy.serviceConfig.EnvironmentFile = "/etc/default/lemmy";
+  systemd.services.lemmy.serviceConfig.ExecStartPre =
+    let
+      f = "/run/lemmy/config.hjson";
+      settings = (pkgs.formats.json { }).generate "config.hjson" config.services.lemmy.settings;
+    in
+    lib.mkForce (pkgs.writers.writeBash "preLemmy" ''
+      ${pkgs.envsubst}/bin/envsubst -i ${settings} -o ${f}
+      chmod 0600 ${f}
+    '');
 
   virtualisation.docker.enable = true;
 
