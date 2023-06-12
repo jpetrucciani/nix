@@ -272,7 +272,18 @@ in
       extra_scrape_configs = [ (common.templates.promtail_scrapers.caddy { }) ];
     };
     prometheus.exporters = common.templates.prometheus_exporters { };
+    lemmy = {
+      enable = true;
+      caddy.enable = true;
+      database.createLocally = false;
+      settings = {
+        hostname = "hexa.dev";
+        federation.enabled = false;
+      };
+    };
   } // common.services;
+
+  systemd.services.lemmy.serviceConfig.EnvironmentFile = "/etc/default/lemmy";
 
   virtualisation.docker.enable = true;
 
