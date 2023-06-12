@@ -315,22 +315,22 @@ final: prev: with prev; rec {
 
   nicegui = buildPythonPackage rec {
     pname = "nicegui";
-    version = "1.2.17";
+    version = "1.2.18";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-aOCOY2A+l2i706hHgS5bjBGUsl2GrfG30JxJM5frKgo=";
+      hash = "sha256-niPskwC/eMY/nwZVlTuq048qftIThqdUdxPqZLXNKJk=";
     };
 
-    postPatch = ''
-      substituteInPlace ./pyproject.toml \
-        --replace 'watchfiles = "^0.18.1"' 'watchfiles = ">0.18.1"'
-    '';
-
     nativeBuildInputs = [
+      pythonRelaxDepsHook
       poetry-core
       setuptools
+    ];
+
+    pythonRelaxDeps = [
+      "watchfiles"
     ];
 
     propagatedBuildInputs = [
@@ -346,6 +346,7 @@ final: prev: with prev; rec {
       plotly
       pygments
       python-dotenv
+      python-magic
       python-multipart
       pywebview
       typing-extensions
