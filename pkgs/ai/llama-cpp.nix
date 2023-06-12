@@ -7,7 +7,7 @@ let
     if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
     else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
     else [ ];
-  version = "master-fa84c4b";
+  version = "master-58970a4";
 in
 clangStdenv.mkDerivation rec {
   inherit version;
@@ -16,7 +16,7 @@ clangStdenv.mkDerivation rec {
     owner = "ggerganov";
     repo = name;
     rev = "refs/tags/${version}";
-    hash = "sha256-sWbXPnwL3LSaIf5K8aYx0NVbdLzxoFFPXeHJT+q4lxo=";
+    hash = "sha256-lYb+P+czfhqiher3xAs9DXbj1c1ypmtY/iaic37VjO4=";
   };
 
   postPatch =
