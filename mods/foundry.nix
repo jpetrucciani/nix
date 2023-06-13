@@ -18,7 +18,7 @@ let
     nogroup:x:65534:
     nixbld:x:30000:${concatStringsSep "," (genList (i: "nixbld${toString (i+1)}") 32)}
   '';
-  base_pkgs = _pkgs: with _pkgs; [
+  _base_pkgs = _pkgs: with _pkgs; [
     deadnix
     delta
     dockerTools.caCertificates
@@ -45,7 +45,7 @@ let
   foundry =
     { imageName
     , paths
-    , base_pkgs ? base_pkgs
+    , base_pkgs ? _base_pkgs
     , env ? [ ]
     , registry ? "ghcr.io/jpetrucciani"
     , workdir ? "/opt/foundry"
