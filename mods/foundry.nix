@@ -45,6 +45,7 @@ let
   foundry =
     { imageName
     , paths
+    , command ? "bash"
     , base_pkgs ? _base_pkgs
     , env ? [ ]
     , registry ? "ghcr.io/jpetrucciani"
@@ -84,7 +85,7 @@ let
               "org.opencontainers.image.description" = description;
             };
             WorkingDir = workdir;
-            Command = "bash";
+            Command = command;
           };
           enableFakechroot = true;
           fakeRootCommands = ''
