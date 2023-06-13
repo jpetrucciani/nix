@@ -313,13 +313,13 @@ rec {
   langchainplus-sdk = buildPythonPackage
     rec {
       pname = "langchainplus-sdk";
-      version = "0.0.8";
+      version = "0.0.9";
       format = "pyproject";
 
       src = fetchPypi {
         pname = "langchainplus_sdk";
         inherit version;
-        hash = "sha256-xEl/uiJO3AgEUeOLK9uhjZp7VNUwI5zW8SqNSono7uU=";
+        hash = "sha256-u/3FTGTfXKQzQGirLXuJ06iU8xOxKFk5tMRTL+pi7rc=";
       };
 
       nativeBuildInputs = [
@@ -743,7 +743,7 @@ rec {
 
   langcorn = buildPythonPackage rec {
     pname = "langcorn";
-    version = "0.0.8";
+    version = "0.0.9";
     format = "pyproject";
 
     src = pkgs.fetchFromGitHub {
