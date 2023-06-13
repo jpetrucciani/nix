@@ -37,4 +37,7 @@
   (import ./mods/pog/notion.nix)
   (import ./mods/pog/sound.nix)
   (import ./mods/pog/ssh.nix)
+
+  # after all
+  (import ./mods/final.nix)
 ]
