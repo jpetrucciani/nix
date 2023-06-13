@@ -18,7 +18,40 @@ let
     nogroup:x:65534:
     nixbld:x:30000:${concatStringsSep "," (genList (i: "nixbld${toString (i+1)}") 32)}
   '';
-  foundry = { imageName, paths, env ? [ ], registry ? "ghcr.io/jpetrucciani", workdir ? "/opt/foundry", description ? "a foundry docker image built with nix" }:
+  base_pkgs = _pkgs: with _pkgs; [
+    deadnix
+    delta
+    dockerTools.caCertificates
+    dyff
+    fd
+    findutils
+    git
+    gnumake
+    gron
+    hex
+    jq
+    just
+    moreutils
+    nixup
+    nixpkgs-fmt
+    openssh
+    scc
+    skopeo
+    statix
+    wget
+    which
+    yq-go
+  ];
+  foundry =
+    { imageName
+    , paths
+    , base_pkgs ? base_pkgs
+    , env ? [ ]
+    , registry ? "ghcr.io/jpetrucciani"
+    , workdir ? "/opt/foundry"
+    , author ? "j@cobi.dev"
+    , description ? "a foundry docker image built with nix"
+    }:
     let
       name = "foundry-${imageName}";
       deps = paths pkgs;
@@ -28,36 +61,14 @@ let
           architecture = "amd64";
           contents = pkgs.buildEnv {
             inherit name;
-            paths = deps ++ (with pkgs; [
+            paths = deps ++ (base_pkgs pkgs) ++ (with pkgs; [
               bashInteractive
               coreutils
               curl
-              deadnix
-              delta
-              dockerTools.caCertificates
-              dyff
-              fd
-              findutils
-              git
               gnugrep
-              gnumake
               gnused
-              gron
-              hex
-              jq
-              just
-              moreutils
               nix
-              nixup
-              nixpkgs-fmt
-              openssh
-              scc
-              skopeo
-              statix
               util-linux
-              wget
-              which
-              yq-go
             ]);
           };
           config = {
@@ -69,7 +80,7 @@ let
               "HOME=${workdir}"
             ] ++ env;
             Labels = {
-              "org.opencontainers.image.authors" = "j@cobi.dev";
+              "org.opencontainers.image.authors" = author;
               "org.opencontainers.image.description" = description;
             };
             WorkingDir = workdir;
@@ -140,6 +151,7 @@ let
   };
 in
 {
+  inherit foundry;
   nix = foundryNix;
   python311 = foundryPython311;
   python312 = foundryPython312;
