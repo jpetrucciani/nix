@@ -120,7 +120,5 @@
             "virtualbox"
             "vmware"
           ]);
-
-      foundry = import ./mods/foundry.nix { pkgs = self.packages.x86_64-linux; };
     };
 }

@@ -1,4 +1,5 @@
-{ nixpkgs ? (import ./flake-compat.nix).inputs.nixpkgs
+{ _compat ? import ./flake-compat.nix
+, nixpkgs ? _compat.inputs.nixpkgs
 , overlays ? [ ]
 , config ? { }
 , system ? builtins.currentSystem

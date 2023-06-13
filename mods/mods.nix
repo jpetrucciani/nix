@@ -50,4 +50,6 @@ rec {
   py-spy = prev.py-spy.overrideAttrs (old: {
     doCheck = false;
   });
+
+  foundry = import ./foundry.nix { pkgs = prev; };
 }
