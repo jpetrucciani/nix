@@ -48,6 +48,7 @@ let
     , command ? "bash"
     , base_pkgs ? _base_pkgs
     , env ? [ ]
+    , extraRootCommands ? ""
     , registry ? "ghcr.io/jpetrucciani"
     , workdir ? "/opt/foundry"
     , author ? "j@cobi.dev"
@@ -85,7 +86,7 @@ let
               "org.opencontainers.image.description" = description;
             };
             WorkingDir = workdir;
-            Command = command;
+            Cmd = if builtins.isString command then [ command ] else command;
           };
           enableFakechroot = true;
           fakeRootCommands = ''
@@ -94,6 +95,7 @@ let
             echo '${nixconf}' >/etc/nix/nix.conf
             echo '${passwd}' >/etc/passwd
             echo '${group}' >/etc/group
+            ${extraRootCommands}
           '';
           passthru = rec {
             _raw_tag = "$(${raw_tag}/bin/raw_tag)";
