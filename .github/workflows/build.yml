@@ -15,6 +15,7 @@ jobs:
       - uses: actions/checkout@v3.5.3
       - uses: cachix/install-nix-action@v21
       - uses: cachix/cachix-action@v12
+        skipAddingSubstituter: runner.os == 'm1'
         with:
           name: jacobi
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
