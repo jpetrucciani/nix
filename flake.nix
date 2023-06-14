@@ -54,7 +54,12 @@
         (system: import self.inputs.nixpkgs {
           inherit system;
           overlays = [ self.inputs.nix.overlays.default ] ++ import ./overlays.nix;
-          config = { allowUnfree = true; };
+          config = {
+            allowUnfree = true;
+            permittedInsecurePackages = [
+              "nodejs-16.20.0"
+            ];
+          };
         });
 
       nixosConfigurations = builtins.listToAttrs
