@@ -1,4 +1,4 @@
-{ lib, darwin, stdenv, clangStdenv, fetchFromGitHub, cmake }:
+{ lib, darwin, stdenv, clangStdenv, fetchFromGitHub, cmake, writeScript }:
 let
   inherit (lib) optionals;
   inherit (stdenv) isAarch64 isDarwin;
@@ -7,7 +7,7 @@ let
     if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
     else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
     else [ ];
-  version = "master-e32089b";
+  version = "master-254a7a7";
 in
 clangStdenv.mkDerivation rec {
   inherit version;
@@ -16,7 +16,7 @@ clangStdenv.mkDerivation rec {
     owner = "ggerganov";
     repo = name;
     rev = "refs/tags/${version}";
-    hash = "sha256-KDK/9X3rUu+7603hGMGIoNHsTY0HwBvQO6mHBv10bxQ=";
+    hash = "sha256-QJ1BojxgXtJLNQkO85F6Ulsr8Pggb7dHb/nKNpnGRoE=";
   };
 
   postPatch =
@@ -41,6 +41,16 @@ clangStdenv.mkDerivation rec {
   '';
   buildInputs = osSpecific;
   nativeBuildInputs = [ cmake ];
+
+  passthru.updateScript = writeScript "llama-cpp-update-script" ''
+    #!/usr/bin/env nix-shell
+    #!nix-shell -i bash -p curl common-updater-scripts nix-prefetch-github jq
+
+    set -eu -o pipefail
+    latest_version="$(curl -s https://api.github.com/repos/ggerganov/llama.cpp/releases/latest | jq --raw-output .tag_name)"
+    latest_sha="$(nix-prefetch-github --rev "refs/tags/$latest_version" ggerganov llama.cpp | jq --raw-output .sha256)"
+    update-source-version llama-cpp "$latest_version" "$latest_sha"
+  '';
 
   meta = with lib; {
     description = "Port of Facebook's LLaMA model in C/C++";
