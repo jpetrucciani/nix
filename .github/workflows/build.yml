@@ -16,7 +16,7 @@ jobs:
       - uses: cachix/install-nix-action@v21
       - uses: cachix/cachix-action@master
         with:
-          skipAddingSubstituter: ${{ runner.os == 'm1' && 'true' || 'false' }}
+          skipAddingSubstituter: ${{ matrix.os == 'm1' && 'true' || 'false' }}
           name: jacobi
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - run: nix --show-trace build -f . custom home-packages
