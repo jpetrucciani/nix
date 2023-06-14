@@ -299,8 +299,18 @@ rec {
       '';
   };
 
+  nupdate = pog {
+    name = "nupdate";
+    arguments = [{ name = "attribute"; }];
+    description = "my lazy helper function to update an attribute in my nix repo";
+    script = ''
+      ${prev.nix-update}/bin/nix-update --build --commit --flake --format --use-update-script "$@"
+    '';
+  };
+
   nix_pog_scripts = [
     nixup
+    nupdate
     y2n
     cache
     nixrender
