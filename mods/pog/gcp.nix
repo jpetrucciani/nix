@@ -81,7 +81,7 @@ rec {
         {
           name = "gversion";
           description = "the version of gcloud we want to check resources for";
-          default = "426.0.0";
+          default = "433.0.1";
         }
       ];
       script = ''
