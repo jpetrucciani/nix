@@ -1,4 +1,4 @@
-{ lib, darwin, stdenv, clangStdenv, fetchFromGitHub, cmake, writeScript }:
+{ lib, darwin, stdenv, clangStdenv, fetchFromGitHub, cmake, common-updater-scripts, coreutils, curl, jq, nix, nix-prefetch-github, writeScript }:
 let
   inherit (lib) optionals;
   inherit (stdenv) isAarch64 isDarwin;
@@ -8,13 +8,14 @@ let
     else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
     else [ ];
   version = "master-254a7a7";
+  owner = "ggerganov";
+  repo = "llama.cpp";
 in
 clangStdenv.mkDerivation rec {
   inherit version;
-  name = "llama.cpp";
+  name = repo;
   src = fetchFromGitHub {
-    owner = "ggerganov";
-    repo = name;
+    inherit owner repo;
     rev = "refs/tags/${version}";
     hash = "sha256-QJ1BojxgXtJLNQkO85F6Ulsr8Pggb7dHb/nKNpnGRoE=";
   };
@@ -42,15 +43,25 @@ clangStdenv.mkDerivation rec {
   buildInputs = osSpecific;
   nativeBuildInputs = [ cmake ];
 
-  passthru.updateScript = writeScript "llama-cpp-update-script" ''
-    #!/usr/bin/env nix-shell
-    #!nix-shell -i bash -p curl common-updater-scripts nix-prefetch-github jq
-
-    set -eu -o pipefail
-    latest_version="$(curl -s https://api.github.com/repos/ggerganov/llama.cpp/releases/latest | jq --raw-output .tag_name)"
-    latest_sha="$(nix-prefetch-github --rev "refs/tags/$latest_version" ggerganov llama.cpp | jq --raw-output .sha256)"
-    update-source-version llama-cpp "$latest_version" "$latest_sha"
-  '';
+  passthru.updateScript =
+    let
+      pkg = "llama-cpp";
+      _jq = lib.getExe jq;
+      _curl = lib.getExe curl;
+      _prefetch = lib.getExe nix-prefetch-github;
+      _tr = "${coreutils}/bin/tr";
+      _update = "${common-updater-scripts}/bin/update-source-version";
+    in
+    writeScript "llama-cpp-update-script" ''
+      current_version="$(${nix}/bin/nix-instantiate --eval -E "with import ./. {}; lib.getVersion ${pkg}" | ${_tr} -d '"')"
+      latest_version="$(${_curl} -s https://api.github.com/repos/${owner}/${repo}/releases/latest | ${_jq} --raw-output .tag_name)"
+      latest_sha="$(${_prefetch} --rev "refs/tags/$latest_version" ${owner} ${repo} | ${_jq} --raw-output .sha256)"
+      if [ ! "$current_version" = "$latest_version" ]; then
+        ${_update} ${pkg} "$latest_version" "$latest_sha"
+      else
+        echo "${pkg} is already up to date as '$current_version'"
+      fi
+    '';
 
   meta = with lib; {
     description = "Port of Facebook's LLaMA model in C/C++";
