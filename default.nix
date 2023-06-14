@@ -7,5 +7,10 @@
 import nixpkgs {
   inherit system;
   overlays = (import ./overlays.nix) ++ overlays;
-  config = { allowUnfree = true; } // config;
+  config = {
+    allowUnfree = true;
+    permittedInsecurePackages = [
+      "nodejs-16.20.0"
+    ];
+  } // config;
 }

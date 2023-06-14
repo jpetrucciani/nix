@@ -3,7 +3,7 @@ let
   inherit (lib.attrsets) mapAttrs' nameValuePair;
   inherit (lib.trivial) flip;
 
-  mapAttrValues = f: builtins.mapAttrs (_: v: f v);
+  mapAttrValues = f: builtins.mapAttrs (_: f);
   forAttrValues = flip mapAttrValues;
 
   hostname = "charon";
