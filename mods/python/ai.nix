@@ -344,14 +344,14 @@ rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.200";
+    version = "0.0.201";
     format = "pyproject";
 
     src = pkgs.fetchFromGitHub {
       owner = "hwchase17";
       repo = pname;
       rev = "refs/tags/v${version}";
-      hash = "sha256-FnjYDn5MUTwwG0UPIgr9bHpXJ9bR45wGSJqPfHeQ7KU=";
+      hash = "sha256-+mS6rKypDrlKFg+c0GPAZ0YX7UYN+mlilnbX2hptLt0=";
     };
 
     nativeBuildInputs = [
