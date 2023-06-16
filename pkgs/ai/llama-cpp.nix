@@ -7,7 +7,7 @@ let
     if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
     else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
     else [ ];
-  version = "master-cf267d1";
+  version = "master-d411968";
   owner = "ggerganov";
   repo = "llama.cpp";
 in
@@ -17,7 +17,7 @@ clangStdenv.mkDerivation rec {
   src = fetchFromGitHub {
     inherit owner repo;
     rev = "refs/tags/${version}";
-    hash = "sha256-yDAtYBi2k0N9zy6izDvyKTR9CoKALnV3F6M75K1rI94=";
+    hash = "sha256-gOGemASqAi+evG09fhO0crBJUP/HK467vfaxuv9Zu2Y=";
   };
 
   postPatch =
