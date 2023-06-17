@@ -17,8 +17,10 @@ buildNpmPackage {
     runHook preBuild
     mkdir -p $out
     npm run build
-    mv ./build $out/dist
     runHook postBuild
+  '';
+  installPhase = ''
+    mv ./build $out/dist
   '';
   makeCacheWritable = true;
   dontFixup = true;
