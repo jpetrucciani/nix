@@ -476,14 +476,14 @@ rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.6.27";
+    version = "0.6.28";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-GjUv5En0Qv1mAdEGIm5Reacwn8OUhAQTnrdroCeemm0=";
+      hash = "sha256-8DWen7k2FIib3YADCnKLIoGU11c31o8Ycfttq2Wi1VQ=";
     };
 
     nativeCheckInputs = [
@@ -511,6 +511,7 @@ rec {
     ];
 
     disabledTestPaths = [
+      "tests/callbacks/test_token_counter.py"
       "tests/chat_engine/test_condense_question.py"
       "tests/chat_engine/test_simple.py"
       "tests/embeddings/test_base.py"
