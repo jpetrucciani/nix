@@ -240,7 +240,6 @@
         boddle
         boto3
         bottle
-        (cherrypy.overridePythonAttrs (_: { doCheck = false; }))
         django
         falcon
         fastapi
@@ -274,6 +273,9 @@
       "tests/scenario_tests/test_authorize.py"
       "tests/slack_bolt_async/oauth/test_async_oauth_flow.py"
       "tests/slack_bolt/oauth/test_oauth_flow.py"
+      # cherrypy broken on newer python
+      "tests/adapter_tests/cherrypy/test_cherrypy.py"
+      "tests/adapter_tests/cherrypy/test_cherrypy_oauth.py"
     ] ++ lib.optionals stdenv.isDarwin [
       # disable tests that test broken things on darwin
       "tests/adapter_tests_async/test_async_sanic.py"
