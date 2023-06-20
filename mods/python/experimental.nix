@@ -67,7 +67,7 @@ final: prev: with prev; rec {
     in
     buildPythonPackage rec {
       pname = "pynecone";
-      version = "0.1.33";
+      version = "0.1.34";
       format = "pyproject";
 
 
@@ -75,7 +75,7 @@ final: prev: with prev; rec {
         owner = "pynecone-io";
         repo = pname;
         rev = "v${version}";
-        sha256 = "sha256-zDDkEaY6bHbsi3gkegcTl8BC6RwxIv1S8KNPYZOxqZg=";
+        sha256 = "sha256-kD33eQ1i5I1BQax5uIvfSPCwnnW6eqBAArZveleIexc=";
       };
       nativeBuildInputs = [
         pythonRelaxDepsHook
