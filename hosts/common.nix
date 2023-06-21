@@ -300,7 +300,7 @@ rec {
   };
   services = {
     tailscale.enable = true;
-    netdata.enable = true;
+    # netdata.enable = true;
     openssh = {
       enable = true;
       settings = {

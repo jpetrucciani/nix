@@ -1,11 +1,14 @@
 final: prev:
+let
+  flags = "--no-link --print-out-paths --extra-experimental-features nix-command --extra-experimental-features flakes";
+in
 rec {
   inherit (prev) _ nvd writeBashBinChecked;
   inherit (prev.hax) isDarwin isLinux;
 
   ### GENERAL STUFF
   _nixos-switch = { host }: writeBashBinChecked "switch" ''
-    toplevel="$(nix build --no-link --print-out-paths ~/cfg#nixosConfigurations.${host}.config.system.build.toplevel)"
+    toplevel="$(nix build ${flags} ~/cfg#nixosConfigurations.${host}.config.system.build.toplevel)"
     if [[ $(realpath /run/current-system) != "$toplevel" || "$POG_FORCE" == "1" ]];then
       ${nvd}/bin/nvd diff /run/current-system "$toplevel"
       sudo nix-env -p /nix/var/nix/profiles/system --set "$toplevel"
@@ -15,7 +18,7 @@ rec {
   _nix-darwin-switch = { host }:
     writeBashBinChecked "switch" ''
       profile=/nix/var/nix/profiles/system
-      toplevel="$(nix build --no-link --print-out-paths ~/cfg#darwinConfigurations.${host}.system)"
+      toplevel="$(nix build ${flags} ~/cfg#darwinConfigurations.${host}.system)"
       if [[ $(realpath "$profile") != "$toplevel" ]];then
         ${nvd}/bin/nvd diff "$profile" "$toplevel"
         sudo -H nix-env -p "$profile" --set "$toplevel"
