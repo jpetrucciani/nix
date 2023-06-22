@@ -278,7 +278,6 @@ in
       database.createLocally = false;
       settings = {
         hostname = "hexa.dev";
-        federation.enabled = false;
         email = {
           smtp_server = "$SMTP_SERVER";
           smtp_login = "$SMTP_USERNAME";
