@@ -54,9 +54,7 @@ in
 
   home = {
     inherit username homeDirectory sessionVariables;
-
     stateVersion = "22.11";
-
     packages = with pkgs;
       lib.flatten [
         bash-completion
@@ -224,9 +222,6 @@ in
               # my types (for nixpkgs)
               boto3-stubs
               botocore-stubs
-
-              # my packages (for nixpkgs)
-              notion-client
             ]
             ++ (optList (!isM1) [ ])
             ++ (optList isLinux [
@@ -273,9 +268,7 @@ in
               rbac-tool
             ]
           )
-
         ])
-
         # overlays
         nix_hash_unstable
         nix_hash_jpetrucciani
