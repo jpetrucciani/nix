@@ -10,7 +10,7 @@ import nixpkgs {
   config = {
     allowUnfree = true;
     permittedInsecurePackages = [
-      "nodejs-16.20.0"
+      "nodejs-16.20.1"
     ];
   } // config;
 }
