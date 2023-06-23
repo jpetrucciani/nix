@@ -344,14 +344,14 @@ rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.211";
+    version = "0.0.212";
     format = "pyproject";
 
     src = pkgs.fetchFromGitHub {
       owner = "hwchase17";
       repo = pname;
       rev = "refs/tags/v${version}";
-      hash = "sha256-arUjez8hc1SRWUlkgsX/JqkiFK2ock82RCqm4JPmzs0=";
+      hash = "sha256-kzm1nax69IeAu+HhQRrTd0a2AhUmEzrVW7yze6wsN3k=";
     };
 
     nativeBuildInputs = [
@@ -359,8 +359,8 @@ rec {
     ];
 
     propagatedBuildInputs = [
-      sqlalchemy
       aiohttp
+      beautifulsoup4
       dataclasses-json
       jinja2
       langchainplus-sdk
@@ -374,6 +374,7 @@ rec {
       pyowm
       pyyaml
       requests
+      sqlalchemy
       tenacity
       tqdm
     ];
