@@ -17,9 +17,8 @@ nix-shell -p git
 git clone git@github.com:jpetrucciani/nix.git ~/cfg
 cd ~/cfg
 
-# initial switch
-export HOSTNAME='titan'
-$(nix-build --no-link --expr 'with import ~/cfg {}; _nixos-switch' --argstr host "$HOSTNAME")/bin/switch
+# initial switch. after this, you can use just `hms` to update!
+$(nix build --no-link --print-out-paths --extra-experimental-features nix-command --extra-experimental-features flakes ~/cfg#hmx.titan)/bin/switch
 ```
 
 ---

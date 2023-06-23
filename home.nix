@@ -279,7 +279,6 @@ in
         # overlays
         nix_hash_unstable
         nix_hash_jpetrucciani
-        nix_hash_kwb
         nix_hash_medable
         nixup
         foo

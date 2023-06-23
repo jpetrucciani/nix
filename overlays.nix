@@ -1,13 +1,13 @@
 [
   (import ./mods/hax.nix)
   (import ./mods/_pkgs.nix)
+  (import ./mods/override.nix)
   (import ./mods/bashbible.nix)
   (import ./mods/fake_platform.nix)
   (import ./mods/hashers.nix)
   (import ./mods/lang.nix)
-  (import ./mods/override.nix)
   (import ./mods/pog.nix)
-  (import ./mods/mods.nix)
+  (import ./mods/hms.nix)
 
   # python sub-overlays
   (import ./mods/python/default.nix)

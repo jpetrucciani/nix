@@ -1,5 +1,8 @@
 final: prev:
-with prev;
+let
+  inherit (prev) concatStringsSep fetchFromGitHub stdenv;
+  inherit (prev) cmake libatomic_ops openssl python311;
+in
 rec {
   nimWithPackages =
     packages:
@@ -55,5 +58,4 @@ rec {
       python311
     ];
   };
-
 }

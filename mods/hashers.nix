@@ -42,7 +42,6 @@ final: prev: {
   );
   nix_hash_unstable = final._nix_hash "NixOS/nixpkgs" "nixpkgs-unstable" "unstable";
   nix_hash_jpetrucciani = final._nix_hash "jpetrucciani/nix" "main" "jpetrucciani";
-  nix_hash_kwb = final._nix_hash "kwbauson/cfg" "main" "kwb";
   nix_hash_medable = final._nix_hash "Medable/nix" "main" "medable";
   home-packages = (import ../home.nix { }).home.packages;
 }

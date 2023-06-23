@@ -1,6 +1,4 @@
 final: prev:
-with prev;
-builtins.mapAttrs (_: hax.fakePlatform) {
-  inherit gixy;
-  inherit brave;
+builtins.mapAttrs (_: prev.hax.fakePlatform) {
+  inherit (prev) gixy brave;
 }

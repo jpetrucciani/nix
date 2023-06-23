@@ -6,7 +6,8 @@ This is my personal M2 Max Macbook, running MacOS and using nix-darwin and home-
 
 ```bash
 # ensure nix is installed, repo is cloned to ~/cfg
-$(nix-build --no-link --expr 'with import ~/cfg {}; _nix-darwin-switch' --argstr host pluto)/bin/switch
+# initial switch. after this, you can use just `hms` to update!
+$(nix build --no-link --print-out-paths --extra-experimental-features nix-command --extra-experimental-features flakes ~/cfg#hmx.pluto)/bin/switch
 ```
 
 ## manual tweaks

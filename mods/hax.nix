@@ -94,7 +94,6 @@ final: prev:
       ];
       script = ''
         exec ${chief_keef.better-comma}/bin/, \
-          --overlay ${./mods.nix} \
           ''${overlay:+--overlay $overlay} \
           ''${unset:+-u} \
           ''${description:+-d} \

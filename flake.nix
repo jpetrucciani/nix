@@ -47,13 +47,33 @@
     let
       inherit (self.inputs.nixpkgs) lib;
       forAllSystems = lib.genAttrs lib.systems.flakeExposed;
+      machines = {
+        nixos = [
+          "andromeda"
+          "bedrock"
+          "edge"
+          "granite"
+          "luna"
+          "milkyway"
+          "neptune"
+          "phobos"
+          "terra"
+          "titan"
+          "ymir"
+        ];
+        darwin = [
+          "charon"
+          "m1max"
+          "pluto"
+        ];
+      };
     in
     {
       pins = self.inputs;
       packages = forAllSystems
         (system: import self.inputs.nixpkgs {
           inherit system;
-          overlays = [ self.inputs.nix.overlays.default ] ++ import ./overlays.nix;
+          overlays = [ (final: prev: { inherit machines; }) self.inputs.nix.overlays.default ] ++ import ./overlays.nix;
           config = {
             allowUnfree = true;
             permittedInsecurePackages = [
@@ -71,19 +91,8 @@
             modules = [ ./hosts/${name}/configuration.nix ];
           };
           })
-          [
-            "andromeda"
-            "bedrock"
-            "edge"
-            "granite"
-            "luna"
-            "milkyway"
-            "neptune"
-            "phobos"
-            "terra"
-            "titan"
-            "ymir"
-          ]);
+          machines.nixos
+        );
 
       darwinConfigurations = builtins.listToAttrs
         (map
@@ -97,11 +106,8 @@
             ];
           };
           })
-          [
-            "charon"
-            "pluto"
-            "m1max"
-          ]);
+          machines.darwin
+        );
 
       osGenerators = builtins.listToAttrs
         (map
