@@ -992,7 +992,7 @@ rec {
   ctransformers =
     let
       name = "ctransformers";
-      version = "0.2.1";
+      version = "0.2.10";
       osSpecific =
         if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
         else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
@@ -1007,7 +1007,7 @@ rec {
         owner = "marella";
         repo = name;
         rev = "refs/tags/v${version}";
-        hash = "sha256-+jBNK/Cv8O0vmGCuc8Ec+rRDMSufHfG8SToIX2N+exQ=";
+        hash = "sha256-a/FM+Heo3ED78xgbJI2dOp3pFz6xyoqbIuGuD6Xmom4=";
         fetchSubmodules = true;
       };
 
@@ -1016,7 +1016,10 @@ rec {
       ];
       dontUseCmakeConfigure = true;
 
-      nativeBuildInputs = [ pkgs.cmake ];
+      nativeBuildInputs = [
+        pkgs.cmake
+        scikit-build
+      ];
       buildInputs = osSpecific;
       nativeCheckInputs = [ pytestCheckHook ];
       pythonImportsCheck = [ "ctransformers" ];
