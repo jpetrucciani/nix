@@ -133,6 +133,13 @@ rec {
     disabledTestPaths = [ "tests/test_display.py" ];
   });
 
+  pydevd = prev.pydevd.overridePythonAttrs (_: {
+    disabledTestPaths = [
+      "tests_python/test_debugger.py"
+      "tests_python/test_debugger_json.py"
+    ];
+  });
+
   python-binance = prev.python-binance.overridePythonAttrs (old: {
     postPatch = ''
       sed -i -E 's#raise.*#version = "${old.version}"#g' ./setup.py

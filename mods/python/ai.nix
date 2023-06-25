@@ -63,47 +63,6 @@ rec {
       };
     };
 
-  geojson = prev.geojson.overridePythonAttrs {
-    version = "2.5.0";
-    src = fetchPypi {
-      version = "2.5.0";
-      pname = "geojson";
-      hash = "sha256-bku3rOQiakXZyMixNIs/xDVAZYNZ+Tw/fgPvqfFfZYo=";
-    };
-    doCheck = false;
-    pythonImportsCheck = [
-      "geojson"
-    ];
-  };
-
-  openapi-schema-pydantic = buildPythonPackage rec {
-    pname = "openapi-schema-pydantic";
-    version = "1.2.4";
-    format = "pyproject";
-
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-PiLPWLdKafdSzH5fFTf25EFkKC2ycAy7zTu5nd0GUZY=";
-    };
-
-    nativeBuildInputs = [
-      setuptools
-    ];
-
-    propagatedBuildInputs = [
-      pydantic
-    ];
-
-    pythonImportsCheck = [ "openapi_schema_pydantic" ];
-
-    meta = with lib; {
-      description = "OpenAPI (v3) specification schema as pydantic class";
-      homepage = "https://pypi.org/project/openapi-schema-pydantic/1.2.4/";
-      license = licenses.mit;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
   hnswlib = buildPythonPackage rec {
     pname = "hnswlib";
     version = "0.7.0";
@@ -133,16 +92,6 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
-
-  pymilvus = prev.pymilvus.overridePythonAttrs (_: rec {
-    pname = "pymilvus";
-    version = "2.2.6";
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-/i3WObwoY6Ffqw+Guij6+uGbKYKET2AJ+d708efmSx0=";
-    };
-    postPatch = "";
-  });
 
   clickhouse-connect = buildPythonPackage rec {
     pname = "clickhouse-connect";
@@ -268,47 +217,6 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
-
-  # gptcache = buildPythonPackage rec {
-  #   pname = "gptcache";
-  #   version = "0.1.10";
-  #   format = "setuptools";
-
-  #   src = pkgs.fetchFromGitHub {
-  #     owner = "zilliztech";
-  #     repo = pname;
-  #     rev = version;
-  #     hash = "sha256-3qwmd+H0ip3Jq1BqixKEBSKMxzYaKmh5rGBsPCo1ri4=";
-  #   };
-
-  #   propagatedBuildInputs = [
-  #     cachetools
-  #     chromadb
-  #     faiss
-  #     final.sqlalchemy_1
-  #     hnswlib
-  #     huggingface-hub
-  #     numpy
-  #     onnxruntime
-  #     openai
-  #     pydantic
-  #     pymilvus
-  #     transformers
-  #   ];
-
-  #   preBuild = ''
-  #     substituteInPlace ./gptcache/utils/__init__.py --replace '_check_library("torch")' 'pass'
-  #   '';
-
-  #   pythonImportsCheck = [ "gptcache" ];
-
-  #   meta = with lib; {
-  #     description = "GPTCache, a powerful caching library for LLMs";
-  #     homepage = "https://github.com/zilliztech/GPTCache";
-  #     license = licenses.mit;
-  #     maintainers = with maintainers; [ jpetrucciani ];
-  #   };
-  # };
 
   langchainplus-sdk = buildPythonPackage
     rec {
@@ -955,19 +863,20 @@ rec {
         fetchSubmodules = true;
       };
 
-      postPatch = let sed = "sed -i -E"; in ''
-        ${sed} 's#(librosa = )"\^0.10.0.post2"#\1">=0.10.0"#g' ./pyproject.toml
-        ${sed} 's#(librosa>=)0.10.0.post2#\10.10.0#g' ./setup.py
-      '' + (if stdenv.isDarwin then ''
-        ${sed} 's#(_lib_base_name = )"whisper"#\1"libwhisper"#g' ./setup.py
-        ${sed} 's#(lib_ext = )".so"#\1".dylib"#g' ./setup.py
-      '' else "");
+      postPatch = let sed = "sed -i -E"; in
+        if stdenv.isDarwin then ''
+          ${sed} 's#(_lib_base_name = )"whisper"#\1"libwhisper"#g' ./setup.py
+          ${sed} 's#(lib_ext = )".so"#\1".dylib"#g' ./setup.py
+        ''
+        else "";
       preBuild = ''
         cd ..
       '';
       buildInputs = osSpecific;
 
+      pythonRelaxDeps = [ "librosa" ];
       nativeBuildInputs = [
+        pythonRelaxDepsHook
         pkgs.cmake
         pkgs.ninja
         pycparser
@@ -1411,7 +1320,7 @@ rec {
   lama-cleaner =
     let
       name = "lama-cleaner";
-      version = "1.2.0";
+      version = "1.2.1";
     in
     buildPythonPackage {
       inherit version;
@@ -1421,9 +1330,9 @@ rec {
       src = pkgs.fetchFromGitHub {
         owner = "Sanster";
         repo = name;
-        rev = "870376e4bf5ea3fc25bda6164e38acd1d1c1ef4c";
+        rev = "203e775e2ed9bda2c55b15bba71a2a107ba7b8d2";
         # rev = "refs/tags/${version}";
-        hash = "sha256-ZX/Rbp+K6FI4OH/IkRsliIr5ALZcRb1LfMUmhuyDvt8=";
+        hash = "sha256-r0ZiHdUdEckqR2TmsJDrH5/4Jp63IZRMNex1iqqDHHQ=";
       };
 
       propagatedBuildInputs = [
@@ -1459,14 +1368,24 @@ rec {
           -e '/opencv-python/d' \
           -e '/diffusers\[torch/d' \
           -e '/controlnet-aux/d' \
-          -e 's#(Jinja2)==(2.11.3)#\1>=\2#g' \
-          -e 's#(flask)==(1.1.4)#\1>=\2#g' \
-          -e 's#(flaskwebgui)==(0.3.5)#\1>=\2#g' \
-          -e 's#(markupsafe)==(2.0.1)#\1>=\2#g' \
-          -e 's#(transformers)==(4.27.4)#\1>=\2#g' \
-          -e 's#(controlnet-aux)==(0.0.3)#\1>=\2#g' \
           ./requirements.txt
       '';
+      # -e 's#(Jinja2)==(2.11.3)#\1>=\2#g' \
+      # -e 's#(flask)==(1.1.4)#\1>=\2#g' \
+      # -e 's#(flaskwebgui)==(0.3.5)#\1>=\2#g' \
+      # -e 's#(markupsafe)==(2.0.1)#\1>=\2#g' \
+      # -e 's#(transformers)==(4.27.4)#\1>=\2#g' \
+
+      pythonRelaxDeps = [
+        "Jinja2"
+        "flask"
+        "flaskwebgui"
+        "markupsafe"
+        "transformers"
+      ];
+      nativeBuildInputs = [
+        pythonRelaxDepsHook
+      ];
 
       pythonImportsCheck = [ "lama_cleaner" ];
       doCheck = false;
