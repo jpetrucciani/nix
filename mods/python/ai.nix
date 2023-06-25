@@ -1331,7 +1331,6 @@ rec {
         owner = "Sanster";
         repo = name;
         rev = "203e775e2ed9bda2c55b15bba71a2a107ba7b8d2";
-        # rev = "refs/tags/${version}";
         hash = "sha256-r0ZiHdUdEckqR2TmsJDrH5/4Jp63IZRMNex1iqqDHHQ=";
       };
 
@@ -1370,11 +1369,6 @@ rec {
           -e '/controlnet-aux/d' \
           ./requirements.txt
       '';
-      # -e 's#(Jinja2)==(2.11.3)#\1>=\2#g' \
-      # -e 's#(flask)==(1.1.4)#\1>=\2#g' \
-      # -e 's#(flaskwebgui)==(0.3.5)#\1>=\2#g' \
-      # -e 's#(markupsafe)==(2.0.1)#\1>=\2#g' \
-      # -e 's#(transformers)==(4.27.4)#\1>=\2#g' \
 
       pythonRelaxDeps = [
         "Jinja2"
@@ -1395,6 +1389,83 @@ rec {
         homepage = "https://github.com/Sanster/lama-cleaner";
         mainProgram = "lama-cleaner";
         license = licenses.asl20;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
+  guidance =
+    let
+      name = "guidance";
+      version = "0.0.64";
+    in
+    buildPythonPackage rec {
+      inherit version;
+      pname = name;
+      format = "setuptools";
+
+      src = pkgs.fetchFromGitHub {
+        owner = "microsoft";
+        repo = name;
+        rev = "refs/tags/${version}";
+        hash = "sha256-tQpDJprxctKI88F+CZ9aSJbVo7tjmI4+VrI+WO4QlxE=";
+      };
+
+      postPatch = ''
+        sed -i -E '/gptcache/d' setup.py
+      '';
+
+      propagatedBuildInputs = [
+        aiohttp
+        diskcache
+        # gptcache
+        msal
+        nest-asyncio
+        numpy
+        openai
+        platformdirs
+        pygtrie
+        pyparsing
+        requests
+        tiktoken
+      ];
+
+      nativeCheckInputs = [
+        pytestCheckHook
+        torch
+        transformers
+      ];
+
+      passthru.optional-dependencies = {
+        docs = [
+          ipython
+          nbsphinx
+          numpydoc
+          sphinx
+          sphinx-rtd-theme
+        ];
+        test = [
+          pytest
+          pytest-cov
+          torch
+          transformers
+        ];
+      };
+
+      disabledTestPaths = [
+        "tests/library/test_gen.py"
+        "tests/library/test_include.py"
+        "tests/library/test_select.py"
+        "tests/llms/caches/test_diskcache.py"
+        "tests/llms/test_transformers.py"
+        "tests/test_program.py"
+      ];
+
+      pythonImportsCheck = [ "guidance" ];
+
+      meta = with lib; {
+        description = "A guidance language for controlling large language models";
+        homepage = "https://github.com/microsoft/guidance";
+        license = licenses.mit;
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
