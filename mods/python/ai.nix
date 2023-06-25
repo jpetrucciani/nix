@@ -385,15 +385,19 @@ rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.6.32";
+    version = "0.6.33";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-BkjceTq9eRrnkoEgmRHDA/SbpNSCjYvyGp5BTE67R2U=";
+      hash = "sha256-7FuwlQox/KCaPogue49AgkEmFjPMPTd04GYK3kiKLuU=";
     };
+
+    postPatch = ''
+      sed -i -E 's#bs4#beautifulsoup4#g' ./setup.py
+    '';
 
     nativeCheckInputs = [
       pytestCheckHook
@@ -408,6 +412,7 @@ rec {
     ];
 
     propagatedBuildInputs = [
+      beautifulsoup4
       faiss
       fsspec
       langchain
