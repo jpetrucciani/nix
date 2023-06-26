@@ -29,6 +29,9 @@ rec {
         hash = "sha256-MwWWxGmnTjbCtcvEy3fWdVXHVF0v4w7wDH+rr63S7V4=";
       };
 
+      CMAKE_ARGS = if isM1 then "-DLLAMA_METAL=on" else null;
+      FORCE_CMAKE = if isM1 then "1" else null;
+
       preConfigure = ''
         cp -r ${llama-cpp-pin}/. ./vendor/llama.cpp
         chmod -R +w ./vendor/llama.cpp
@@ -51,6 +54,11 @@ rec {
         diskcache
         numpy
         typing-extensions
+
+        # server mode
+        fastapi
+        sse-starlette
+        uvicorn
       ];
 
       pythonImportsCheck = [ "llama_cpp" ];
@@ -62,6 +70,37 @@ rec {
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
+
+  sse-starlette = buildPythonPackage rec {
+    pname = "sse-starlette";
+    version = "1.6.1";
+    format = "pyproject";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "sysid";
+      repo = pname;
+      rev = "refs/tags/v${version}";
+      hash = "sha256-b96J+P0X/4oxEZf6X58lUhExF2DapDn1EdxXIUbqrhs=";
+    };
+
+    nativeBuildInputs = [
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = [
+      starlette
+    ];
+
+    pythonImportsCheck = [ "sse_starlette" ];
+
+    meta = with lib; {
+      description = "SSE plugin for Starlette";
+      homepage = "https://github.com/sysid/sse-starlette";
+      license = licenses.bsd3;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 
   hnswlib = buildPythonPackage rec {
     pname = "hnswlib";
