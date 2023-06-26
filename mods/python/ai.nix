@@ -424,19 +424,15 @@ rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.6.33";
+    version = "0.6.34";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-7FuwlQox/KCaPogue49AgkEmFjPMPTd04GYK3kiKLuU=";
+      hash = "sha256-XB2gT5t+ffNdZMrhdJbl++AaiocNU99HiZ6Vdk93U5Y=";
     };
-
-    postPatch = ''
-      sed -i -E 's#bs4#beautifulsoup4#g' ./setup.py
-    '';
 
     nativeCheckInputs = [
       pytestCheckHook
