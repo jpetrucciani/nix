@@ -125,6 +125,7 @@ in
         scc
         scrypt
         shfmt
+        spacer
         statix
         time
         unzip
