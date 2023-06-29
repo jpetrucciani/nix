@@ -57,7 +57,24 @@ in
     openssh.authorizedKeys.keys = with common.pubkeys; [ edgewin hub2 ] ++ usual;
   };
 
-  services = { } // common.services;
+  services = {
+    postgresql = {
+      enable = true;
+      package = pkgs.postgresql_14;
+      enableTCPIP = true;
+      authentication = pkgs.lib.mkOverride 10 ''
+        local all all trust
+        host all all 127.0.0.1/32 trust
+        host all all ::1/128 trust
+        host all all 100.64.0.0/10 trust
+      '';
+    };
+    k3s = {
+      enable = true;
+      role = "server";
+      extraFlags = "--disable traefik";
+    };
+  } // common.services;
   virtualisation.docker.enable = true;
 
   system.stateVersion = "22.11";
