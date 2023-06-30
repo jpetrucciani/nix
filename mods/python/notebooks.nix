@@ -183,6 +183,43 @@ final: prev: with prev; rec {
       };
     };
 
+  jupyterlab-templates =
+    let
+      pname = "jupyterlab-templates";
+      version = "0.4.1";
+      format = "wheel";
+      src = fetchPypi {
+        inherit version;
+        pname = "jupyterlab_templates";
+        format = "wheel";
+        python = "py3";
+        dist = "py3";
+        platform = "any";
+        hash = "sha256-BUURbe7BQCHH0hmygppbsL7+mqju9XV8JSSxntrVd7U=";
+      };
+    in
+    buildPythonPackage {
+      inherit pname src version format;
+
+      nativeBuildInputs = [
+        jupyter-packaging
+        jupyterlab
+      ];
+
+      propagatedBuildInputs = [
+        jupyter-server
+      ];
+
+      pythonImportsCheck = [ "jupyterlab_templates" ];
+
+      meta = with lib; {
+        description = "Support for jupyter notebook templates in jupyterlab";
+        homepage = "https://github.com/finos/jupyterlab_templates";
+        license = licenses.asl20;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
   voila =
     let
       pname = "voila";
