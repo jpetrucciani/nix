@@ -12,6 +12,7 @@
           ./fastapi.nix
           ./finance.nix
           ./hax.nix
+          ./loaders.nix
           ./misc.nix
           ./notebooks.nix
           ./pr.nix
