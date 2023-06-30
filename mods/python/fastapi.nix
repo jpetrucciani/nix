@@ -315,12 +315,12 @@ final: prev: with prev; rec {
 
   nicegui = buildPythonPackage rec {
     pname = "nicegui";
-    version = "1.2.23";
+    version = "1.2.24";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-Rm3M8y6PF1Rs4oJKhVxNB2mfH+A8j2r5Ry957IiLzCY=";
+      hash = "sha256-jTlz7DWcDMJTRxLCW5JEeHjcbtOUy5qaSROWxuBMLb0=";
     };
 
     nativeBuildInputs = [
