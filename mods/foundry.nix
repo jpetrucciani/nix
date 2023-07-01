@@ -54,6 +54,7 @@ let
     , author ? "j@cobi.dev"
     , description ? "a foundry docker image built with nix"
     , hostPkgs ? pkgs
+    , enableNix ? true
     }:
     let
       name = "foundry-${imageName}";
@@ -70,18 +71,18 @@ let
               curl
               gnugrep
               gnused
-              nix
               util-linux
-            ]);
+            ]) ++ (if enableNix then [ pkgs.nix ] else [ ]);
           };
           config = {
             Env = [
               "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
-              "NIX_PAGER=cat"
-              "NIX_PATH=nixpkgs=${pkgs.path}"
               "USER=nobody"
               "HOME=${workdir}"
-            ] ++ env;
+            ] ++ (if enableNix then [
+              "NIX_PAGER=cat"
+              "NIX_PATH=nixpkgs=${pkgs.path}"
+            ] else [ ]) ++ env;
             Labels = {
               "org.opencontainers.image.authors" = author;
               "org.opencontainers.image.description" = description;
@@ -89,15 +90,16 @@ let
             WorkingDir = workdir;
             Cmd = if builtins.isString command then [ command ] else command;
           };
-          enableFakechroot = true;
-          fakeRootCommands = ''
-            mkdir -m 1777 -p /tmp /var/tmp
-            mkdir -p /etc/nix
-            echo '${nixconf}' >/etc/nix/nix.conf
-            echo '${passwd}' >/etc/passwd
-            echo '${group}' >/etc/group
-            ${extraRootCommands}
-          '';
+          enableFakechroot = enableNix;
+          fakeRootCommands =
+            if enableNix then ''
+              mkdir -m 1777 -p /tmp /var/tmp
+              mkdir -p /etc/nix
+              echo '${nixconf}' >/etc/nix/nix.conf
+              echo '${passwd}' >/etc/passwd
+              echo '${group}' >/etc/group
+              ${extraRootCommands}
+            '' else null;
           passthru = rec {
             _raw_tag = "$(${raw_tag}/bin/raw_tag)";
             raw_tag = writeBashBin "raw_tag" ''
