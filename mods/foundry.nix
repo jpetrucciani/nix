@@ -53,12 +53,13 @@ let
     , workdir ? "/opt/foundry"
     , author ? "j@cobi.dev"
     , description ? "a foundry docker image built with nix"
+    , hostPkgs ? pkgs
     }:
     let
       name = "foundry-${imageName}";
       deps = paths pkgs;
       foundryImage =
-        pkgs.dockerTools.streamLayeredImage {
+        hostPkgs.dockerTools.streamLayeredImage {
           inherit name;
           architecture = "amd64";
           contents = pkgs.buildEnv {
