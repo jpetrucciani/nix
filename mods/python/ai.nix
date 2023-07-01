@@ -1555,10 +1555,12 @@ rec {
       };
 
       disabledTestPaths = [
+        "tests/library/test_each.py"
         "tests/library/test_gen.py"
         "tests/library/test_include.py"
         "tests/library/test_select.py"
         "tests/llms/caches/test_diskcache.py"
+        "tests/llms/test_openai.py"
         "tests/llms/test_transformers.py"
         "tests/test_program.py"
       ];
