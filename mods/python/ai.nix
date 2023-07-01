@@ -71,6 +71,69 @@ rec {
       };
     };
 
+  ggml-python =
+    let
+      osSpecific =
+        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
+        else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
+        else [ ];
+    in
+    buildPythonPackage rec {
+      pname = "ggml-python";
+      version = "0.0.1";
+
+      format = "pyproject";
+      src = pkgs.fetchFromGitHub {
+        owner = "abetlen";
+        repo = pname;
+        rev = "c4cb698cd2068addafe0b2b4fd3c63b49061f5c8";
+        # rev = "refs/tags/v${version}";
+        hash = "sha256-jMjkJYXUGA0PL0FoZOXpeHScVS0s2i0izhQbPk4iJsA=";
+        fetchSubmodules = true;
+      };
+
+      CMAKE_ARGS = if isM1 then "-DLLAMA_METAL=on" else null;
+      FORCE_CMAKE = if isM1 then "1" else null;
+
+      # let's remove this - we propagate it below
+      postPatch = ''
+        sed -i -E '/typing_extensions/d' ./pyproject.toml
+      '';
+      preBuild = ''
+        cd ..
+      '';
+      buildInputs = osSpecific;
+
+      nativeBuildInputs = [
+        prev.pkgs.cmake
+        prev.pkgs.ninja
+        pathspec
+        poetry-core
+        pyproject-metadata
+        scikit-build
+        scikit-build-core
+        setuptools
+      ];
+      propagatedBuildInputs = [
+        numpy
+        typing-extensions
+
+        # server mode
+        fastapi
+        sse-starlette
+        uvicorn
+      ];
+
+      pythonImportsCheck = [ "ggml" ];
+
+      meta = with lib; {
+        description = "Python bindings for ggml";
+        homepage = "https://github.com/abetlen/ggml-python";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
   sse-starlette = buildPythonPackage rec {
     pname = "sse-starlette";
     version = "1.6.1";
