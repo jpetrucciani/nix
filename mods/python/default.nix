@@ -7,7 +7,11 @@
       passthru = old.passthru // {
         overlays = map import [
           ./fixes.nix
-          ./ai.nix
+          ./ai/deps.nix
+          ./ai/bindings.nix
+          ./ai/vector.nix
+          ./ai/prompts.nix
+          ./ai/apps.nix
           ./experimental.nix
           ./fastapi.nix
           ./finance.nix

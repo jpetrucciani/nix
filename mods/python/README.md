@@ -6,9 +6,9 @@ This directory provides my composable python package overlays! These are set up 
 
 ## In this directory
 
-### [ai.nix](./ai.nix)
+### [ai/](./ai/)
 
-This overlay contains AI related python packages
+this directory exists to help organize my ai related python package overlays!
 
 ### [default.nix](./default.nix)
 
