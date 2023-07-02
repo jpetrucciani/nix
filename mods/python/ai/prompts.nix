@@ -2,13 +2,13 @@ final: prev: with prev; {
   langchainplus-sdk = buildPythonPackage
     rec {
       pname = "langchainplus-sdk";
-      version = "0.0.17";
+      version = "0.0.19";
       format = "pyproject";
 
       src = fetchPypi {
         pname = "langchainplus_sdk";
         inherit version;
-        hash = "sha256-ZSDIZKI9ytvm+3IzoRc0f2rMMnJal3WOWTVHBMUN4wM=";
+        hash = "sha256-jsEfB8DONbFk6zvXIXv9uffCAmNQh1Gx6eXhLJlgv0U=";
       };
 
       nativeBuildInputs = [
