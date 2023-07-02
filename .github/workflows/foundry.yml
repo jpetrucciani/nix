@@ -19,5 +19,5 @@ jobs:
           name: jacobi
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - run: nix run .#skopeo -- login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-      - run: nix run .#foundry.${{ matrix.image }}.pushToGHCR
+      - run: nix run .#foundry.${{ matrix.image }}.pushToRegistry
       - run: nix run .#foundry.${{ matrix.image }}.tagAsLatest

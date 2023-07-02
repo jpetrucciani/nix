@@ -334,7 +334,7 @@ rec {
 
       # docker images to use in various spots
       images = [
-        "alpine:3.17"
+        "alpine:3.18"
         "ghcr.io/jpetrucciani/foundry-nix:latest"
         "ghcr.io/jpetrucciani/foundry-python311:latest"
         "ghcr.io/jpetrucciani/foundry-python312:latest"

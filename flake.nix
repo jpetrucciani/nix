@@ -67,8 +67,10 @@
           "pluto"
         ];
       };
+      nix2containerPkgs = self.inputs.nix2container.packages.x86_64-linux;
     in
     {
+      inherit (nix2containerPkgs) nix2container;
       pins = self.inputs;
       packages = forAllSystems
         (system: import self.inputs.nixpkgs {

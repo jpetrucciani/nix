@@ -112,7 +112,7 @@ let
             build = writeBashBin "build" ''
               ${foundryImage} | docker load
             '';
-            pushToGHCR = writeBashBin "pushToGHCR" ''
+            pushToRegistry = writeBashBin "pushToRegistry" ''
               ${foundryImage} |
                 ${pkgs.gzip}/bin/gzip --fast |
                 ${pkgs.skopeo}/bin/skopeo --insecure-policy copy docker-archive:/dev/stdin "docker://${_date_tag}"
