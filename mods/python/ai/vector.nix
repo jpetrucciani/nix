@@ -1,9 +1,4 @@
-final: prev: with prev; let
-  inherit (stdenv) isAarch64 isDarwin;
-  inherit (prev.pkgs) darwin;
-  isM1 = isDarwin && isAarch64;
-in
-{
+final: prev: with prev; {
   chromadb =
     let
       inherit (stdenv) isDarwin;
