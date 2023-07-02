@@ -24,4 +24,4 @@ this overlay provides libraries that help us orchestrate prompting
 
 ### [vector.nix](./vector.nix)
 
-this overlay provides native vector dbs and clients for remote vector dbs
+this overlay provides native vector databases and clients for remote vector databases
