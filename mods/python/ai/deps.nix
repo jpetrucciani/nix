@@ -1,4 +1,4 @@
-final: prev: with prev; {
+final: prev: with prev; rec {
   sse-starlette = buildPythonPackage rec {
     pname = "sse-starlette";
     version = "1.6.1";
@@ -650,6 +650,467 @@ final: prev: with prev; {
       description = "Auxillary models for controlnet";
       homepage = "https://github.com/patrickvonplaten/controlnet_aux";
       license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  backports-cached-property = buildPythonPackage rec {
+    pname = "backports-cached-property";
+    version = "1.0.2";
+    format = "pyproject";
+
+    src = fetchPypi {
+      pname = "backports.cached-property";
+      inherit version;
+      hash = "sha256-kwb57tbsVf0Vas5rwQlOLIb65fsr8HtqnAB0XGVudd0=";
+    };
+
+    nativeBuildInputs = [
+      setuptools
+      setuptools-scm
+      wheel
+    ];
+
+    propagatedBuildInputs = [
+      typing
+    ];
+
+    pythonImportsCheck = [ "backports.cached_property" ];
+
+    meta = with lib; {
+      description = "Cached_property() - computed once per instance, cached as attribute";
+      homepage = "https://pypi.org/project/backports.cached-property";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  circus = buildPythonPackage rec {
+    pname = "circus";
+    version = "0.18.0";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-GTzoIk4GjO1mckz0gxBvtmdLUaV1g6waDn7Xp+6Mcas=";
+    };
+
+    nativeBuildInputs = [
+      flit-core
+    ];
+
+    propagatedBuildInputs = [
+      psutil
+      pyzmq
+      tornado
+    ];
+
+    passthru.optional-dependencies = {
+      test = [
+        coverage
+        flake8
+        gevent
+        mock
+        nose2
+        pyyaml
+        tox
+      ];
+    };
+
+    pythonImportsCheck = [ "circus" ];
+
+    meta = with lib; {
+      description = "Circus is a program that will let you run and watch multiple processes and sockets";
+      homepage = "https://pypi.org/project/circus/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  opentelemetry-instrumentation-aiohttp-client = buildPythonPackage rec {
+    pname = "opentelemetry-instrumentation-aiohttp-client";
+    version = "0.39b0";
+    format = "pyproject";
+
+    src = fetchPypi {
+      pname = "opentelemetry_instrumentation_aiohttp_client";
+      inherit version;
+      hash = "sha256-IP1m9Kp1dyjkjvrhNR2e7ZjW41JZWTP0fKBC352D/Hg=";
+    };
+
+    nativeBuildInputs = [
+      hatchling
+    ];
+
+    propagatedBuildInputs = [
+      opentelemetry-api
+      opentelemetry-instrumentation
+      opentelemetry-semantic-conventions
+      opentelemetry-util-http
+      wrapt
+    ];
+
+    passthru.optional-dependencies = {
+      instruments = [
+        aiohttp
+      ];
+      test = [
+        opentelemetry-instrumentation-aiohttp-client
+      ];
+    };
+
+    pythonImportsCheck = [ "opentelemetry" ];
+
+    meta = with lib; {
+      description = "OpenTelemetry aiohttp client instrumentation";
+      homepage = "https://pypi.org/project/opentelemetry-instrumentation-aiohttp-client/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  pickle5 = buildPythonPackage rec {
+    pname = "pickle5";
+    version = "0.0.12";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-gBQ9Tk6p1s1w6EGvh0XbxNUK3vWt+Z5yXSQLy5Lm8eg=";
+    };
+
+    pythonImportsCheck = [ "pickle5" ];
+
+    meta = with lib; {
+      description = "Backport of the pickle 5 protocol (PEP 574) and other pickle changes";
+      homepage = "https://pypi.org/project/pickle5/";
+      license = with licenses; [ ];
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  singledispatchmethod = buildPythonPackage rec {
+    pname = "singledispatchmethod";
+    version = "1.0";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-GDp/vqtTucnRgvi4+cLX4Qmn1Ar6owJh2B3Y3mjNc78=";
+    };
+
+    pythonImportsCheck = [ "singledispatchmethod" ];
+
+    meta = with lib; {
+      description = "Backport of @functools.singledispatchmethod to Python 2.7-3.7";
+      homepage = "https://pypi.org/project/singledispatchmethod/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  bentoml =
+    let
+      pname = "bentoml";
+      version = "1.0.23";
+    in
+    buildPythonPackage rec {
+      inherit pname version;
+      format = "pyproject";
+
+      src = fetchPypi {
+        inherit pname version;
+        hash = "sha256-HyOFUHZ2nxij3lKYuPAoc44+d/Xt1RUsIQ+hvr06BW0=";
+      };
+
+      postPatch = ''
+        sed -i -E '/opentelemetry-/d' ./pyproject.toml
+      '';
+
+      nativeBuildInputs = [
+        setuptools
+        setuptools-scm
+        wheel
+      ];
+
+      propagatedBuildInputs = [
+        aiohttp
+        attrs
+        backports-cached-property
+        # backports-shutil-copytree
+        cattrs
+        circus
+        click
+        click-option-group
+        cloudpickle
+        deepmerge
+        fs
+        importlib-metadata
+        jinja2
+        numpy
+        opentelemetry-api
+        opentelemetry-instrumentation
+        opentelemetry-instrumentation-aiohttp-client
+        opentelemetry-instrumentation-asgi
+        opentelemetry-sdk
+        opentelemetry-semantic-conventions
+        opentelemetry-util-http
+        packaging
+        pathspec
+        # pickle5
+        pip-requirements-parser
+        pip-tools
+        prometheus-client
+        psutil
+        pynvml
+        python-dateutil
+        python-json-logger
+        python-multipart
+        pyyaml
+        requests
+        rich
+        schema
+        simple-di
+        # singledispatchmethod
+        starlette
+        uvicorn
+        watchfiles
+      ];
+
+      passthru.optional-dependencies = {
+        all = [
+          bentoml
+        ];
+        aws = [
+          fs-s3fs
+        ];
+        grpc = [
+          grpcio
+          grpcio-health-checking
+          opentelemetry-instrumentation-grpc
+          protobuf
+        ];
+        grpc-channelz = [
+          bentoml
+          grpcio-channelz
+        ];
+        grpc-reflection = [
+          bentoml
+          grpcio-reflection
+        ];
+        io = [
+          bentoml
+        ];
+        io-file = [
+          filetype
+        ];
+        io-image = [
+          bentoml
+          pillow
+        ];
+        io-json = [
+          pydantic
+        ];
+        io-pandas = [
+          pandas
+          pyarrow
+        ];
+        monitor-otlp = [
+          opentelemetry-exporter-otlp-proto-http
+        ];
+        tracing = [
+          bentoml
+        ];
+        tracing-jaeger = [
+          opentelemetry-exporter-jaeger
+        ];
+        tracing-otlp = [
+          opentelemetry-exporter-otlp
+        ];
+        tracing-zipkin = [
+          opentelemetry-exporter-zipkin
+        ];
+        triton = [
+          tritonclient
+        ];
+      };
+      doCheck = false;
+
+      pythonImportsCheck = [ "bentoml" ];
+
+      meta = with lib; {
+        description = "BentoML: The Unified Model Serving Framework";
+        homepage = "https://pypi.org/project/bentoml/";
+        license = licenses.asl20;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
+  optimum = buildPythonPackage rec {
+    pname = "optimum";
+    version = "1.9.0";
+    format = "pyproject";
+
+    # src = fetchPypi {
+    #   inherit pname version;
+    #   hash = "sha256-VDiuyohuAeSDWHcjxR/UKlRQvE68vITfb/TYLudKasI=";
+    # };
+    src = pkgs.fetchFromGitHub {
+      owner = "huggingface";
+      repo = pname;
+      rev = "refs/tags/v${version}";
+      hash = "sha256-nF6YOyyQ9XdE3Xsm2Z5fg2kDY7iRcMmvjJnhokbx3mw=";
+    };
+
+    postPatch = ''
+      sed -i -E '/protobuf/d' ./setup.py
+      sed -i -E '/transformers\[sentencepiece\]/d' ./setup.py
+    '';
+
+    propagatedBuildInputs = [
+      coloredlogs
+      datasets
+      huggingface-hub
+      numpy
+      packaging
+      protobuf
+      sentencepiece
+      sympy
+      torch
+      transformers
+    ];
+
+    passthru.optional-dependencies = {
+      benchmark = [
+        evaluate
+        optuna
+        scikit-learn
+        seqeval
+        torchvision
+        tqdm
+      ];
+      dev = [
+        black
+        diffusers
+        parameterized
+        pillow
+        pytest
+        pytest-xdist
+        requests
+        ruff
+        sacremoses
+        torchaudio
+        torchvision
+      ];
+      exporters = [
+        onnx
+        onnxruntime
+        timm
+      ];
+      exporters-gpu = [
+        onnx
+        onnxruntime-gpu
+        timm
+      ];
+      exporters-tf = [
+        h5py
+        numpy
+        onnx
+        onnxruntime
+        tensorflow
+        tf2onnx
+        timm
+      ];
+      graphcore = [
+        optimum-graphcore
+      ];
+      habana = [
+        optimum-habana
+        transformers
+      ];
+      intel = [
+        optimum-intel
+      ];
+      neural-compressor = [
+        optimum-intel
+      ];
+      neuron = [
+        optimum-neuron
+      ];
+      neuronx = [
+        optimum-neuron
+      ];
+      nncf = [
+        optimum-intel
+      ];
+      onnxruntime = [
+        datasets
+        evaluate
+        onnx
+        onnxruntime
+        protobuf
+      ];
+      onnxruntime-gpu = [
+        datasets
+        evaluate
+        onnx
+        onnxruntime-gpu
+        protobuf
+      ];
+      openvino = [
+        optimum-intel
+      ];
+      quality = [
+        black
+        ruff
+      ];
+      tests = [
+        diffusers
+        parameterized
+        pillow
+        pytest
+        pytest-xdist
+        requests
+        sacremoses
+        torchaudio
+        torchvision
+      ];
+    };
+
+    pythonImportsCheck = [ "optimum" ];
+
+    meta = with lib; {
+      description = "Optimum Library is an extension of the Hugging Face Transformers library, providing a framework to integrate third-party libraries from Hardware Partners and interface with their specific functionality";
+      homepage = "https://pypi.org/project/optimum/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  grpcio-health-checking = buildPythonPackage rec {
+    pname = "grpcio-health-checking";
+    version = "1.56.0";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-3+J4W0/mFn/eRTr85h5MZJbiLQPkP3deZEyNsaxSpbE=";
+    };
+
+    nativeBuildInputs = [ pythonRelaxDepsHook ];
+    pythonRelaxDeps = [ "grpcio" ];
+
+    propagatedBuildInputs = [
+      grpcio
+      protobuf
+    ];
+
+    doCheck = false;
+
+    meta = with lib; {
+      description = "Standard Health Checking Service for gRPC";
+      homepage = "https://pypi.org/project/grpcio-health-checking/";
+      license = with licenses; [ ];
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };

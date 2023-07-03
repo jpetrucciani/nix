@@ -1,5 +1,7 @@
 final: prev:
 let
+  inherit (prev) fetchPypi;
+  inherit (prev.pkgs) fetchFromGitHub;
   inherit (prev.stdenv) isDarwin;
 in
 rec {
@@ -46,20 +48,10 @@ rec {
     meta.broken = false;
   });
 
-  nbdime = let version = "3.2.1"; in prev.nbdime.overridePythonAttrs (_: {
-    inherit version;
-    src = prev.fetchPypi {
-      inherit version;
-      pname = "nbdime";
-      hash = "sha256-MUCaMPhI/8azJUBpfoLVoKG4TcwycWynTni8xLRXxFM=";
-    };
-    meta.broken = false;
-  });
-
   python-multipart = let version = "0.0.6"; in prev.python-multipart.overridePythonAttrs (_: {
     inherit version;
     format = "pyproject";
-    src = prev.pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "andrew-d";
       repo = "python-multipart";
       rev = "refs/tags/${version}";
@@ -72,7 +64,7 @@ rec {
   });
 
   betterproto = prev.betterproto.overridePythonAttrs (_: {
-    src = prev.pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "danielgtaylor";
       repo = "python-betterproto";
       rev = "0adcc9020cf738489e8b21efc653bd883b12d4af";
@@ -146,4 +138,46 @@ rec {
     '';
     propagatedBuildInputs = old.propagatedBuildInputs ++ [ prev.pycryptodome ];
   });
+
+  cattrs =
+    let
+      pname = "cattrs";
+      version = "23.1.2";
+    in
+    prev.cattrs.overridePythonAttrs (old: {
+      inherit version;
+      src = fetchFromGitHub {
+        owner = "python-attrs";
+        repo = pname;
+        rev = "v${version}";
+        hash = "sha256-YO4Clbo5fmXbysxwwM2qCHJwO5KwDC05VctRVFruJcw=";
+      };
+      disabledTestPaths = old.disabledTestPaths ++ [ "tests/test_typeddicts.py" ];
+      nativeCheckInputs = old.nativeCheckInputs ++ (with prev; [ cbor2 typing-extensions ]);
+    });
+
+  attrs =
+    let
+      pname = "attrs";
+      version = "23.1.0";
+    in
+    prev.attrs.overridePythonAttrs (_: {
+      inherit version;
+      src = fetchPypi {
+        inherit pname version;
+        hash = "sha256-YnmDbVgVE6JvG/I1+azTM7yRFWg/FPfo+uRsmPxQ4BU=";
+      };
+      postPatch = ''
+        sed -i -E '/tool.hatch.metadata.hooks.fancy-pypi-readme.fragments/,/^\"\"\"/d' ./pyproject.toml
+        sed -i -E '/tool.hatch.metadata.hooks.fancy-pypi-readme/,/^content-type/d' ./pyproject.toml
+        sed -i -E '/tool.hatch.version/,/^raw-options/d' ./pyproject.toml
+        sed -i -E 's/(name = \"attrs\")/\1\nversion = \"${version}\"/g' ./pyproject.toml
+        sed -i -E '/dynamic = \[/d' ./pyproject.toml
+      '';
+      nativeBuildInputs = [
+        # prev.hatch-fancy-pypi-readme
+        # prev.hatch-vcs
+        prev.hatchling
+      ];
+    });
 }

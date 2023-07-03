@@ -559,4 +559,98 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  openllm = buildPythonPackage rec {
+    pname = "openllm";
+    version = "0.1.19";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-+7kSlNF/n/FJb0hxII4r3+1fUeSOfku8GAMgmYOxzAA=";
+    };
+
+    postPatch = ''
+      sed -i -E '/transformers\[torch/d' ./pyproject.toml
+      sed -i -E '/cattrs/d' ./pyproject.toml
+    '';
+
+    nativeBuildInputs = [
+      hatchling
+    ];
+
+    propagatedBuildInputs = [
+      accelerate
+      attrs
+      bentoml
+      cattrs
+      filetype
+      grpcio-health-checking
+      httpx
+      inflection
+      optimum
+      orjson
+      pydantic
+      tabulate
+      tokenizers
+      torch
+      transformers
+      typing-extensions
+      wcwidth
+    ];
+
+    passthru.optional-dependencies = {
+      agents = [
+        diffusers
+        soundfile
+        transformers
+      ];
+      all = [
+        openllm
+      ];
+      chatglm = [
+        cpm-kernels
+        sentencepiece
+      ];
+      falcon = [
+        einops
+        safetensors
+        xformers
+      ];
+      fine-tune = [
+        accelerate
+        bitsandbytes
+        datasets
+        deepspeed
+        peft
+        trl
+      ];
+      flan-t5 = [
+        flax
+        jax
+        jaxlib
+        keras
+        tensorflow
+      ];
+      mpt = [
+        triton
+      ];
+      openai = [
+        openai
+        tiktoken
+      ];
+      starcoder = [
+        bitsandbytes
+      ];
+    };
+
+    pythonImportsCheck = [ "openllm" ];
+
+    meta = with lib; {
+      description = "OpenLLM: REST/gRPC API server for running any open Large-Language Model - StableLM, Llama, Alpaca, Dolly, Flan-T5, Custom";
+      homepage = "https://pypi.org/project/openllm";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
