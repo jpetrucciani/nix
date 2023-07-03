@@ -662,24 +662,47 @@ in
   pyobj-core =
     let
       osSpecific =
-        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ CoreServices ]
-        else if isDarwin then with darwin.apple_sdk.frameworks; [ CoreServices ]
+        if isM1 then with darwin.apple_sdk_11_0.frameworks; [
+          AVFoundation
+          GameplayKit
+          CoreServices
+          Foundation
+          CoreFoundation
+          MetalKit
+          MetalPerformanceShaders
+        ]
+        else if isDarwin then with darwin.apple_sdk.frameworks; [ AVFoundation GameplayKit CoreServices Foundation CoreFoundation MetalKit ]
         else [ ];
-    in
-    buildPythonPackage rec {
-      pname = "pyobjc-core";
       version = "9.2";
+    in
+    buildPythonPackage {
+      inherit version;
+      pname = "pyobjc-core";
       format = "pyproject";
 
-      src = fetchPypi {
-        inherit pname version;
-        hash = "sha256-1zS5KR/skf9OOuOLnGg53r8Ct5wHMUR26H2o6QssaMM=";
+      src = pkgs.fetchFromGitHub {
+        owner = "ronaldoussoren";
+        repo = "pyobjc";
+        rev = "refs/tags/v${version}";
+        hash = "sha256-RSSj680k3M0fxGYQCCKxN0+MVx5FS9/0kd4lhhEZ1hk=";
       };
+      postPatch = ''
+        cd ./pyobjc-core
+        sed -i -E 's#("-Wall",)#\1"-Wno-error=unused-command-line-argument",#g' ./setup.py
+        sed -i '#/usr/include/ffi#d' ./setup.py
+        substituteInPlace \
+          ./Modules/objc/selector.h \
+          ./Modules/objc/libffi_extra.h \
+          ./Modules/objc/libffi_support.h \
+          ./Modules/objc/libffi_extra.m \
+          --replace "<ffi/ffi.h>" "<ffi.h>"
+      '';
 
+      buildInputs = [ pkgs.libffi ] ++ osSpecific;
       nativeBuildInputs = [
         setuptools
         wheel
-      ] ++ osSpecific;
+      ];
 
       pythonImportsCheck = [ "pyobjc_core" ];
 
@@ -709,10 +732,11 @@ in
         hash = "sha256-79eAgIctjI3mwrl+Dk6smdYgOl0WN6oTXQcdRk6y21M=";
       };
 
+      buildInputs = osSpecific;
       nativeBuildInputs = [
         setuptools
         wheel
-      ] ++ osSpecific;
+      ];
 
       propagatedBuildInputs = [
         pyobjc-core
@@ -746,10 +770,11 @@ in
         hash = "sha256-9IPDMeB7WH72R3x5rhWjCSl6+poIwHrZ+vxL6CRn0Ag=";
       };
 
+      buildInputs = osSpecific;
       nativeBuildInputs = [
         setuptools
         wheel
-      ] ++ osSpecific;
+      ];
 
       propagatedBuildInputs = [
         pyobjc-core
