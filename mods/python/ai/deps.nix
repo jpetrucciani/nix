@@ -1,4 +1,9 @@
-final: prev: with prev; {
+final: prev: with prev; let
+  inherit (stdenv) isAarch64 isDarwin;
+  inherit (prev.pkgs) darwin;
+  isM1 = isDarwin && isAarch64;
+in
+{
   sse-starlette = buildPythonPackage rec {
     pname = "sse-starlette";
     version = "1.6.1";
@@ -653,4 +658,111 @@ final: prev: with prev; {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  pyobj-core =
+    let
+      osSpecific =
+        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ CoreServices ]
+        else if isDarwin then with darwin.apple_sdk.frameworks; [ CoreServices ]
+        else [ ];
+    in
+    buildPythonPackage rec {
+      pname = "pyobjc-core";
+      version = "9.2";
+      format = "pyproject";
+
+      src = fetchPypi {
+        inherit pname version;
+        hash = "sha256-1zS5KR/skf9OOuOLnGg53r8Ct5wHMUR26H2o6QssaMM=";
+      };
+
+      nativeBuildInputs = [
+        setuptools
+        wheel
+      ] ++ osSpecific;
+
+      pythonImportsCheck = [ "pyobjc_core" ];
+
+      meta = with lib; {
+        description = "Python<->ObjC Interoperability Module";
+        homepage = "https://pypi.org/project/pyobjc-core/";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
+  pyobjc-framework-cocoa =
+    let
+      osSpecific =
+        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ AppKit CoreFoundation ]
+        else if isDarwin then with darwin.apple_sdk.frameworks; [ AppKit CoreFoundation ]
+        else [ ];
+    in
+    buildPythonPackage rec {
+      pname = "pyobjc-framework-cocoa";
+      version = "9.2";
+      format = "pyproject";
+
+      src = fetchPypi {
+        pname = "pyobjc-framework-Cocoa";
+        inherit version;
+        hash = "sha256-79eAgIctjI3mwrl+Dk6smdYgOl0WN6oTXQcdRk6y21M=";
+      };
+
+      nativeBuildInputs = [
+        setuptools
+        wheel
+      ] ++ osSpecific;
+
+      propagatedBuildInputs = [
+        pyobjc-core
+      ];
+
+      pythonImportsCheck = [ "pyobjc_framework_cocoa" ];
+
+      meta = with lib; {
+        description = "Wrappers for the Cocoa frameworks on macOS";
+        homepage = "https://pypi.org/project/pyobjc-framework-Cocoa/";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
+  pyobjc-framework-metal =
+    let
+      osSpecific =
+        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate Metal MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
+        else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate Metal MetalKit CoreGraphics CoreVideo ]
+        else [ ];
+    in
+    buildPythonPackage rec {
+      pname = "pyobjc-framework-metal";
+      version = "9.2";
+      format = "pyproject";
+
+      src = fetchPypi {
+        pname = "pyobjc-framework-Metal";
+        inherit version;
+        hash = "sha256-9IPDMeB7WH72R3x5rhWjCSl6+poIwHrZ+vxL6CRn0Ag=";
+      };
+
+      nativeBuildInputs = [
+        setuptools
+        wheel
+      ] ++ osSpecific;
+
+      propagatedBuildInputs = [
+        pyobjc-core
+        pyobjc-framework-cocoa
+      ];
+
+      pythonImportsCheck = [ "pyobjc_framework_metal" ];
+
+      meta = with lib; {
+        description = "Wrappers for the framework Metal on macOS";
+        homepage = "https://pypi.org/project/pyobjc-framework-Metal/";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
 }

@@ -559,4 +559,66 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+
+  tinygrad = buildPythonPackage
+    rec {
+      pname = "tinygrad";
+      version = "0.6.0";
+      format = "setuptools";
+
+      src = fetchPypi {
+        inherit pname version;
+        hash = "sha256-2iY5wmJXe0T/d1++e+CPAgPm8xMi+Tagum14kHGah40=";
+      };
+
+      propagatedBuildInputs = [
+        networkx
+        numpy
+        pillow
+        pyopencl
+        requests
+        tqdm
+      ];
+
+      passthru.optional-dependencies = {
+        cuda = [
+          pycuda
+        ];
+        linting = [
+          flake8
+          mypy
+          pre-commit
+          pylint
+        ];
+        llvm = [
+          llvmlite
+        ];
+        metal = [
+          pyobjc-framework-cocoa
+          pyobjc-framework-libdispatch
+          pyobjc-framework-metal
+        ];
+        testing = [
+          onnx
+          onnx2torch
+          opencv-python
+          pytest
+          pytest-xdist
+          torch
+        ];
+        triton = [
+          triton
+        ];
+      };
+
+      pythonImportsCheck = [ "tinygrad" ];
+
+      meta = with lib; {
+        description = "You like pytorch? You like micrograd? You love tinygrad! <3";
+        homepage = "https://github.com/geohot/tinygrad";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
 }
