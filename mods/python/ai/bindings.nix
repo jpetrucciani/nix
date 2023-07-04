@@ -6,6 +6,7 @@ in
 rec {
   llama-cpp-python =
     let
+      inherit (lib) optionals;
       osSpecific =
         if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
         else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
@@ -20,7 +21,6 @@ rec {
     buildPythonPackage rec {
       pname = "llama-cpp-python";
       version = "0.1.66";
-
       format = "pyproject";
       src = pkgs.fetchFromGitHub {
         owner = "abetlen";
@@ -29,8 +29,11 @@ rec {
         hash = "sha256-0SZg8UVSdHK/hlZGMIN7FCR5ox0vhR4FDVkKlwO7lQY=";
       };
 
-      CMAKE_ARGS = if isM1 then "-DLLAMA_METAL=on" else null;
-      FORCE_CMAKE = if isM1 then "1" else null;
+      cuda = false;
+
+      _CMAKE_ARGS = [ ] ++ (optionals isM1 [ "-DLLAMA_METAL=on" ]) ++ (optionals cuda [ "-DLLAMA_CUBLAS=on" ]);
+      CMAKE_ARGS = builtins.concatStringsSep " " _CMAKE_ARGS;
+      FORCE_CMAKE = if (isM1 || cuda) then "1" else null;
 
       preConfigure = ''
         cp -r ${llama-cpp-pin}/. ./vendor/llama.cpp
@@ -48,7 +51,7 @@ rec {
         poetry-core
         scikit-build
         setuptools
-      ];
+      ] ++ (optionals cuda [ pkgs.cudatoolkit ]);
       pythonRelaxDeps = [ "diskcache" ];
       propagatedBuildInputs = [
         diskcache
@@ -62,6 +65,12 @@ rec {
       ];
 
       pythonImportsCheck = [ "llama_cpp" ];
+
+      passthru.cuda = llama-cpp-python.overridePythonAttrs (old: {
+        CMAKE_ARGS = "-DLLAMA_CUBLAS=on";
+        FORCE_CMAKE = 1;
+        nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cudatoolkit ];
+      });
 
       meta = with lib; {
         description = "A Python wrapper for llama.cpp";

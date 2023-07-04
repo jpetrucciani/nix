@@ -1,4 +1,4 @@
-{ lib, darwin, stdenv, clangStdenv, fetchFromGitHub, cmake, common-updater-scripts, coreutils, curl, jq, nix, nix-prefetch-github, writeScript }:
+{ lib, darwin, stdenv, clangStdenv, fetchFromGitHub, cmake, common-updater-scripts, coreutils, curl, jq, nix, nix-prefetch-github, writeScript, cudatoolkit, llama-cpp, cuda ? false }:
 let
   inherit (lib) optionals;
   inherit (stdenv) isAarch64 isDarwin;
@@ -7,7 +7,7 @@ let
     if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
     else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
     else [ ];
-  version = "master-d7d2e6a";
+  version = "master-acc111c";
   owner = "ggerganov";
   repo = "llama.cpp";
 in
@@ -17,7 +17,7 @@ clangStdenv.mkDerivation rec {
   src = fetchFromGitHub {
     inherit owner repo;
     rev = "refs/tags/${version}";
-    hash = "sha256-GFew/otWoqW+YrnFCLp14tsyEaVkDxb1s40tdxCIBM0=";
+    hash = "sha256-0WQOe7fy8mZ214WSMIVrouPjISi/5bRdcFbVg2tuQLs=";
   };
 
   postPatch =
@@ -30,6 +30,8 @@ clangStdenv.mkDerivation rec {
   ] ++ (optionals isM1 [
     "-DCMAKE_C_FLAGS=-D__ARM_FEATURE_DOTPROD=1"
     "-DLLAMA_METAL=ON"
+  ]) ++ (optionals cuda [
+    "-DLLAMA_CUBLAS=ON"
   ]);
   installPhase = ''
     mkdir -p $out/bin
@@ -41,7 +43,7 @@ clangStdenv.mkDerivation rec {
     mv ./bin/server $out/bin/llama-server
   '';
   buildInputs = osSpecific;
-  nativeBuildInputs = [ cmake ];
+  nativeBuildInputs = [ cmake ] ++ (optionals cuda [ cudatoolkit ]);
 
   passthru.updateScript =
     let
@@ -62,6 +64,7 @@ clangStdenv.mkDerivation rec {
         echo "${pkg} is already up to date as '$current_version'"
       fi
     '';
+  passthru.cuda = llama-cpp.override { cuda = true; };
 
   meta = with lib; {
     description = "Port of Facebook's LLaMA model in C/C++";
