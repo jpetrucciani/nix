@@ -1,4 +1,4 @@
-{ config, flake, machine-name, pkgs, ... }:
+{ config, flake, machine-name, pkgs, lib, ... }:
 let
   hostname = "edge";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
@@ -7,6 +7,7 @@ in
   imports = [
     "${common.home-manager}/nixos"
     ./hardware-configuration.nix
+    ../modules/conf/blackedge.nix
   ];
 
   inherit (common) zramSwap swapDevices;
@@ -53,9 +54,10 @@ in
     inherit (common) extraGroups;
     isNormalUser = true;
     passwordFile = "/etc/passwordFile-jacobi";
-
     openssh.authorizedKeys.keys = with common.pubkeys; [ edgewin hub2 ] ++ usual;
   };
+
+  conf.blackedge.enable = true;
 
   services = {
     postgresql = {
@@ -75,8 +77,8 @@ in
       extraFlags = "--disable traefik";
     };
   } // common.services;
-  virtualisation.docker.enable = true;
 
+  virtualisation.docker.enable = true;
   system.stateVersion = "22.11";
   security.sudo = common.security.sudo;
   programs.command-not-found.enable = false;
