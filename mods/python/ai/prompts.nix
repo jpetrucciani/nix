@@ -33,14 +33,14 @@ final: prev: with prev; {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.222";
+    version = "0.0.223";
     format = "pyproject";
 
     src = pkgs.fetchFromGitHub {
       owner = "hwchase17";
       repo = pname;
       rev = "refs/tags/v${version}";
-      hash = "sha256-/3R/yeFa3/a8uDw35VYA1vD8Nqbb16X+dmco2rVT+EU=";
+      hash = "sha256-Fzh1kQHoHz713eI+mYOs0xU/ueHnM3v5NQ4Y9sdiaTc=";
     };
 
     nativeBuildInputs = [
@@ -121,6 +121,7 @@ final: prev: with prev; {
     # gptcache was added as an optional dep, and it requires many other deps
     postPatch = ''
       sed -i -E '/gptcache =/d' pyproject.toml
+      sed -i -E '/langchainplus/d' ./pyproject.toml
     '';
 
     pythonImportsCheck = [ "langchain" ];
