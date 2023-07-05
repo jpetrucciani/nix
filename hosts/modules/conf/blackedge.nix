@@ -31,6 +31,10 @@ in
       type = str;
       default = "/etc/default/sssd";
     };
+    caPath = mkOption {
+      type = str;
+      default = "/etc/default/ldap_ca.pem";
+    };
   };
   config = mkIf cfg.enable {
     # hack to get ldap login working
@@ -96,6 +100,8 @@ in
           ldap_search_base = ${suffix}
           ldap_uri = ldap://${cfg.adDomain}
           ldap_user_search_base = ${suffix}
+          ad_use_ldaps = True
+          ldap_tls_cacert = ${cfg.caPath}
           simple_allow_groups = ${concatStringsSep "," cfg.allowedGroups}
         '';
       };
