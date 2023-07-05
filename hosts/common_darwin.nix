@@ -1,10 +1,13 @@
-{ pkgs
-, ...
-}:
+{ pkgs, lib, config, ... }:
 let
-  inherit (pkgs.lib.lists) subtractLists;
+  inherit (lib.lists) subtractLists;
+  inherit (lib) mkEnableOption;
+  work = config.conf.work;
 in
 {
+  options.conf.work = {
+    enable = mkEnableOption "work";
+  };
   system = {
     defaults = {
       NSGlobalDomain = {
@@ -111,7 +114,7 @@ in
         cleanup = "zap";
         upgrade = true;
       };
-      casks = casks.all_personal;
+      casks = if work.enable then casks.all_work else casks.all_personal;
       masApps = {
         Wireguard = 1451685025;
         Poolside = 1514817810;

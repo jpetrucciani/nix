@@ -11,6 +11,8 @@ in
     "${common.nix-darwin}/modules/security/pam.nix"
   ];
 
+  conf.work.enable = true;
+
   home-manager.users.jacobi = common.jacobi;
   documentation.enable = false;
   security.pam.enableSudoTouchIdAuth = true;
