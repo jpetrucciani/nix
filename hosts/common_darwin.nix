@@ -2,7 +2,7 @@
 let
   inherit (lib.lists) subtractLists;
   inherit (lib) mkEnableOption;
-  work = config.conf.work;
+  inherit (config.conf) work;
 in
 {
   options.conf.work = {
