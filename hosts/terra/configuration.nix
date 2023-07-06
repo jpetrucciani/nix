@@ -95,15 +95,15 @@ in
           orbit = "192.168.69.42";
           bedrock = "192.168.69.70";
         };
-        secure = config: {
+        secure = block: {
           extraConfig = ''
             import SECURITY
-            ${config}
+            ${block}
           '';
         };
-        secure_geo = config: ''
+        secure_geo = block: ''
           import GEOBLOCK
-          ${config}
+          ${block}
         '';
       in
       {
