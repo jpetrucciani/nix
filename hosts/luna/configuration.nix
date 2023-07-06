@@ -141,7 +141,7 @@ in
       };
     };
     n8n = {
-      enable = true;
+      enable = false;
     };
     step-ca =
       let
