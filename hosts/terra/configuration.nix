@@ -101,7 +101,7 @@ in
             ${block}
           '';
         };
-        secure_geo = block: ''
+        secure_geo = block: secure ''
           import GEOBLOCK
           ${block}
         '';
