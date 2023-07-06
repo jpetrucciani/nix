@@ -95,6 +95,16 @@ in
           orbit = "192.168.69.42";
           bedrock = "192.168.69.70";
         };
+        secure = block: {
+          extraConfig = ''
+            import SECURITY
+            ${block}
+          '';
+        };
+        secure_geo = block: secure ''
+          import GEOBLOCK
+          ${block}
+        '';
       in
       {
         enable = true;
@@ -158,87 +168,69 @@ in
           "ombi.cobi.dev" = reverse_proxy "neptune:5999";
           "x.hexa.dev" = reverse_proxy "neptune:8421";
           "meme.x.hexa.dev" = reverse_proxy "neptune:8420";
-          "vault.cobi.dev" = {
-            extraConfig = ''
-              import GEOBLOCK
-              import SECURITY
-              reverse_proxy /* {
-                to localhost:8222
+          "edge.be.hexa.dev" = reverse_proxy "edge:10000";
+          "vault.cobi.dev" = secure_geo ''
+            reverse_proxy /* {
+              to localhost:8222
+            }
+            reverse_proxy /notifications/hub {
+              to localhost:3012
+            }
+          '';
+          "cobi.dev" = secure ''
+            route /static/* {
+              s3proxy {
+                bucket "jacobi-static"
+                endpoint "https://s3.wasabisys.com"
+                force_path_style
               }
-              reverse_proxy /notifications/hub {
-                to localhost:3012
+            }
+            route / {
+              redir https://github.com/jpetrucciani/
+            }
+          '';
+          "nix.cobi.dev" = secure ''
+            route / {
+              redir https://github.com/jpetrucciani/nix
+            }
+            route /latest {
+              redir https://github.com/jpetrucciani/nix/archive/main.tar.gz
+            }
+            handle_path /x/* {
+              redir https://github.com/jpetrucciani/nix/archive/{path.0}.tar.gz
+            }
+            handle_path /p/* {
+              hax {
+                enable_tarball
+                tarball_file_name "default.nix"
+                tarball_file_text "\{j?import(fetchTarball\{url=\"https://nix.cobi.dev/latest\";\})\{\}\}:with j;{path.0}"
               }
-            '';
-          };
-          "cobi.dev" = {
-            extraConfig = ''
-              import SECURITY
-              route /static/* {
-                s3proxy {
-                  bucket "jacobi-static"
-                  endpoint "https://s3.wasabisys.com"
-                  force_path_style
-                }
-              }
-              route / {
-                redir https://github.com/jpetrucciani/
-              }
-            '';
-          };
-          "nix.cobi.dev" = {
-            extraConfig = ''
-              import SECURITY
-              route / {
-                redir https://github.com/jpetrucciani/nix
-              }
-              route /latest {
-                redir https://github.com/jpetrucciani/nix/archive/main.tar.gz
-              }
-              handle_path /x/* {
-                redir https://github.com/jpetrucciani/nix/archive/{path.0}.tar.gz
-              }
-              handle_path /p/* {
-                hax {
-                  enable_tarball
-                  tarball_file_name "default.nix"
-                  tarball_file_text "\{j?import(fetchTarball\{url=\"https://nix.cobi.dev/latest\";\})\{\}\}:with j;{path.0}"
-                }
-              }
-              route /up {
-                redir https://raw.githubusercontent.com/jpetrucciani/nix/main/scripts/nixup.sh
-              }
-              route /os-up {
-                redir https://github.com/samuela/nixos-up/archive/main.tar.gz
-              }
-            '';
-          };
-          "gemologic.dev" = {
-            extraConfig = ''
-              import SECURITY
-              route / {
-                header +Content-Type "text/html; charset=utf-8"
-                respond "${landing_page {}}"
-              }
-            '';
-          };
-          "gemologic.cloud" = {
-            extraConfig = ''
-              import SECURITY
-              route / {
-                header +Content-Type "text/html; charset=utf-8"
-                respond "${landing_page {}}"
-              }
-            '';
-          };
-          "broadsword.tech" = {
-            extraConfig = ''
-              import SECURITY
-              route / {
-                header +Content-Type "text/html; charset=utf-8"
-                respond "${landing_page {title = "broadsword";}}"
-              }
-            '';
-          };
+            }
+            route /up {
+              redir https://raw.githubusercontent.com/jpetrucciani/nix/main/scripts/nixup.sh
+            }
+            route /os-up {
+              redir https://github.com/samuela/nixos-up/archive/main.tar.gz
+            }
+          '';
+          "gemologic.dev" = secure ''
+            route / {
+              header +Content-Type "text/html; charset=utf-8"
+              respond "${landing_page {}}"
+            }
+          '';
+          "gemologic.cloud" = secure ''
+            route / {
+              header +Content-Type "text/html; charset=utf-8"
+              respond "${landing_page {}}"
+            }
+          '';
+          "broadsword.tech" = secure ''
+            route / {
+              header +Content-Type "text/html; charset=utf-8"
+              respond "${landing_page {title = "broadsword";}}"
+            }
+          '';
           "vault.ba3digital.com" = {
             extraConfig = ''
               import BA3GEOBLOCK
