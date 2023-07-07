@@ -19,6 +19,7 @@ let
       , command ? null
       , args ? null
       , restartPolicy ? "Never"
+      , extra ? { } # extra escape hatch to use any other options!
       }:
       let
         cron = {
@@ -62,7 +63,7 @@ let
               };
             };
           };
-        };
+        } // extra;
       in
       ''
         ---
