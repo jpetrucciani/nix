@@ -39,5 +39,6 @@
   (import ./mods/pog/ssh.nix)
 
   # after all
+  (import ./mods/containers.nix)
   (import ./mods/final.nix)
 ]

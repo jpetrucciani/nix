@@ -1,14 +1,13 @@
 name: foundry
 on: {workflow_dispatch, push: {branches: [main]}}
 jobs:
-  build:
+  build_v1:
     strategy:
       fail-fast: false
       matrix:
         image:
           - nix
           - python311
-          # - python312
     name: foundry-${{ matrix.image }}
     runs-on: ubuntu-22.04
     steps:
@@ -21,3 +20,26 @@ jobs:
       - run: nix run .#skopeo -- login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
       - run: nix run .#foundry.${{ matrix.image }}.pushToRegistry
       - run: nix run .#foundry.${{ matrix.image }}.tagAsLatest
+  build_v2:
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - k8s_aws
+          - k8s_gcp
+    name: foundry-${{ matrix.image }}
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3.5.3
+      - uses: cachix/install-nix-action@v22
+      - uses: cachix/cachix-action@master
+        with:
+          name: jacobi
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - run: nix run .#skopeo -- login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+      - run: nix run .#foundry.${{ matrix.image }}.copyToRegistry
+      - run: |
+          export IMAGE="docker://$(nix eval --raw .#foundry.${{ matrix.image }}.imageName)"
+          export TAG="$(nix eval --raw .#foundry.${{ matrix.image }}.imageTag)"
+          skopeo --insecure-policy copy "$IMAGE:$TAG" "$IMAGE:$(date + "%F")"
+          skopeo --insecure-policy copy "$IMAGE:$TAG" "$IMAGE:latest"

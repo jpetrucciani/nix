@@ -1,6 +1,6 @@
 { pkgs }:
 let
-  inherit (pkgs.lib) concatStringsSep genList;
+  inherit (pkgs.lib) concatStringsSep genList optionals;
   inherit (pkgs.writers) writeBashBin;
   nixconf = ''
     build-users-group = nixbld
@@ -42,6 +42,56 @@ let
     which
     yq-go
   ];
+
+  foundry_v2 =
+    { name
+    , layers
+    , env ? [ ]
+    , command ? "bash"
+    , registry ? "ghcr.io/jpetrucciani"
+    , author ? "j@cobi.dev"
+    , description ? "a foundry_v2 docker image built with nix"
+    , hostPkgs ? pkgs
+    , enableNix ? false
+    , pathsToLink ? [ "/bin" ]
+    , sysLayer ? true
+    }:
+    let
+      inherit (pkgs) runCommand writeShellScriptBin;
+      inherit (pkgs.nix2container.nix2container) buildLayer;
+      allLayers = [
+        (optionals sysLayer (with pkgs; [
+          bashInteractive
+          coreutils
+          curl
+          gnugrep
+          gnused
+          jq
+          util-linux
+        ] ++ (optionals enableNix [ nix ])))
+      ] ++ layers;
+    in
+    hostPkgs.nix2container.nix2container.buildImage {
+      name = "${registry}/${name}";
+      config = {
+        Cmd = [ command ];
+        Env = env ++ [
+          "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+        ] ++ (optionals enableNix [
+          "NIX_PAGER=cat"
+          "USER=nobody"
+          "HOME=/"
+        ]);
+        Labels = {
+          "org.opencontainers.image.authors" = author;
+          "org.opencontainers.image.description" = description;
+        };
+        entrypoint = [ "${pkgs.bashInteractive}/bin/bash" "-c" ];
+      };
+      layers = map (deps: buildLayer { copyToRoot = [ (pkgs.buildEnv { inherit pathsToLink; name = "layer"; paths = deps; }) ]; }) allLayers;
+      initializeNixDatabase = enableNix;
+    };
+
   foundry =
     { imageName
     , paths
@@ -155,10 +205,28 @@ let
     description = "a baseline python 3.12 image with common tools and a working nix install";
     paths = _python_pkgs pkgs.python312;
   };
+  foundry_k8s_aws = foundry_v2 {
+    name = "k8s-aws";
+    description = "a lightweight image with just bash, kubectl, and awscliv2";
+    layers = [
+      [ pkgs.awscli2 ]
+      [ pkgs.kubectl ]
+    ];
+  };
+  foundry_k8s_gcp = foundry_v2 {
+    name = "k8s-gcp";
+    description = "a lightweight image with just bash, kubectl, and gcloud cli";
+    layers = [
+      [ pkgs.google-cloud-sdk ]
+      [ pkgs.kubectl ]
+    ];
+  };
 in
 {
-  inherit foundry;
+  inherit foundry foundry_v2;
   nix = foundryNix;
   python311 = foundryPython311;
   python312 = foundryPython312;
+  k8s_aws = foundry_k8s_aws;
+  k8s_gcp = foundry_k8s_gcp;
 }
