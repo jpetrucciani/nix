@@ -57,7 +57,6 @@ let
     , sysLayer ? true
     }:
     let
-      inherit (pkgs) runCommand writeShellScriptBin;
       inherit (pkgs.nix2container.nix2container) buildLayer;
       allLayers = [
         (optionals sysLayer (with pkgs; [
