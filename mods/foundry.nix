@@ -47,7 +47,6 @@ let
     { name
     , layers
     , env ? [ ]
-    , command ? "bash"
     , registry ? "ghcr.io/jpetrucciani"
     , author ? "j@cobi.dev"
     , description ? "a foundry_v2 docker image built with nix"
@@ -58,25 +57,26 @@ let
     }:
     let
       inherit (pkgs.nix2container.nix2container) buildLayer;
-      allLayers = [
-        (optionals sysLayer (with pkgs; [
-          bashInteractive
-          coreutils
-          curl
-          gnugrep
-          gnused
-          jq
-          util-linux
-        ] ++ (optionals enableNix [ nix ])))
-      ] ++ layers;
+      baseLayer = (with pkgs.dockerTools; [
+        binSh
+        caCertificates
+        usrBinEnv
+      ]) ++
+      (optionals sysLayer (with pkgs; [
+        bashInteractive
+        coreutils
+        curl
+        gnugrep
+        gnused
+        jq
+        util-linux
+      ] ++ (optionals enableNix [ nix ])));
+      allLayers = [ baseLayer ] ++ layers;
     in
     hostPkgs.nix2container.nix2container.buildImage {
       name = "${registry}/${name}";
       config = {
-        Cmd = [ command ];
-        Env = env ++ [
-          "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
-        ] ++ (optionals enableNix [
+        Env = env ++ (optionals enableNix [
           "NIX_PAGER=cat"
           "USER=nobody"
           "HOME=/"
@@ -85,7 +85,6 @@ let
           "org.opencontainers.image.authors" = author;
           "org.opencontainers.image.description" = description;
         };
-        entrypoint = [ "${pkgs.bashInteractive}/bin/bash" "-c" ];
       };
       layers = map (deps: buildLayer { copyToRoot = [ (pkgs.buildEnv { inherit pathsToLink; name = "layer"; paths = deps; }) ]; }) allLayers;
       initializeNixDatabase = enableNix;
