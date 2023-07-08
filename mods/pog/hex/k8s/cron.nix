@@ -16,6 +16,7 @@ let
       , memoryRequest ? "100Mi"
       , memoryLimit ? null
       , env ? [ ]
+      , envFrom ? [ ]
       , command ? null
       , args ? null
       , restartPolicy ? "Never"
@@ -44,6 +45,7 @@ let
                           pod_ip
                           pod_name
                         ] ++ [{ name = "HEX"; value = "true"; }] ++ env;
+                        ${ifNotEmptyList envFrom "envFrom"} = envFrom;
                         ${ifNotNull command "command"} = [ command ];
                         ${ifNotNull args "args"} = args;
                         resources = {
