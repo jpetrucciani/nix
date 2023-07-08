@@ -13,24 +13,31 @@ in
       , namespace ? "default"
       , interval ? "30s"
       , metricRelabeling ? [ ]
-      }: (toYAML {
-        apiVersion = "monitoring.googleapis.com/v1";
-        kind = "PodMonitoring";
-        metadata = {
-          inherit name namespace;
-        };
-        spec = {
-          endpoints = [
-            {
-              inherit interval port path;
-              ${ifNotEmptyList metricRelabeling "metricRelabeling"} = metricRelabeling;
-              ${ifNotNull timeout "timeout"} = timeout;
-            }
-          ];
-          selector = {
-            inherit matchLabels;
+      }:
+      let
+        monitor = {
+          apiVersion = "monitoring.googleapis.com/v1";
+          kind = "PodMonitoring";
+          metadata = {
+            inherit name namespace;
+          };
+          spec = {
+            endpoints = [
+              {
+                inherit interval port path;
+                ${ifNotEmptyList metricRelabeling "metricRelabeling"} = metricRelabeling;
+                ${ifNotNull timeout "timeout"} = timeout;
+              }
+            ];
+            selector = {
+              inherit matchLabels;
+            };
           };
         };
-      });
+      in
+      ''
+        ---
+        ${toYAML monitor}
+      '';
   };
 }
