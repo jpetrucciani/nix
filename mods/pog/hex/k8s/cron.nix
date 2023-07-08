@@ -16,6 +16,7 @@ let
       , memoryRequest ? "100Mi"
       , memoryLimit ? null
       , env ? [ ]
+      , envAttrs ? { }
       , envFrom ? [ ]
       , command ? null
       , args ? null
@@ -44,7 +45,7 @@ let
                         env = with hex.defaults.env; [
                           pod_ip
                           pod_name
-                        ] ++ [{ name = "HEX"; value = "true"; }] ++ env;
+                        ] ++ [{ name = "HEX"; value = "true"; }] ++ env ++ (hex.envAttrToNVP envAttrs);
                         ${ifNotEmptyList envFrom "envFrom"} = envFrom;
                         ${ifNotNull command "command"} = [ command ];
                         ${ifNotNull args "args"} = args;
