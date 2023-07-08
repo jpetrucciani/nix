@@ -47,7 +47,6 @@ let
     { name
     , layers
     , env ? [ ]
-    , command ? "bash"
     , registry ? "ghcr.io/jpetrucciani"
     , author ? "j@cobi.dev"
     , description ? "a foundry_v2 docker image built with nix"
