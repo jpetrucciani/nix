@@ -18,6 +18,7 @@ let
       , env ? [ ]
       , envAttrs ? { }
       , envFrom ? [ ]
+      , sa ? "default"
       , command ? null
       , args ? null
       , restartPolicy ? "Never"
@@ -38,6 +39,7 @@ let
               spec = {
                 template = {
                   spec = {
+                    serviceAccountName = sa;
                     inherit restartPolicy;
                     containers = [
                       {
