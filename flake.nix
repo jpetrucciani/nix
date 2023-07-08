@@ -86,13 +86,14 @@
 
       nixosConfigurations = builtins.listToAttrs
         (map
-          (name: {
-            inherit name; value = self.inputs.nixpkgs.lib.nixosSystem {
-            pkgs = self.packages.x86_64-linux;
-            specialArgs = { flake = self; machine-name = name; };
-            modules = [ ./hosts/${name}/configuration.nix ];
-          };
-          })
+          (name:
+            let sys = if name == "andromeda" then "aarch64-linux" else "x86_64-linux"; in {
+              inherit name; value = self.inputs.nixpkgs.lib.nixosSystem {
+              pkgs = self.packages.${sys};
+              specialArgs = { flake = self; machine-name = name; };
+              modules = [ ./hosts/${name}/configuration.nix ];
+            };
+            })
           machines.nixos
         );
 
