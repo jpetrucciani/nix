@@ -151,14 +151,14 @@ rec {
     in
     buildPythonPackage rec {
       pname = "pyllamacpp";
-      version = "2.4.0";
+      version = "2.4.1";
       format = "pyproject";
 
       src = pkgs.fetchFromGitHub {
         owner = "abdeladim-s";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-EFV9/JNqsUYU76DxaaDpiFcCchXk/nR6TQvn3Z+Z8KE=";
+        hash = "sha256-b7QMDD0OrSUtEzMX1lMPt7h2oqrLKwfWGxgjAI2LnMM=";
         fetchSubmodules = true;
       };
       buildInputs = osSpecific;
