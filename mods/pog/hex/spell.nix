@@ -2,11 +2,12 @@ nixpkgs: SPELL:
 let
   inherit (builtins) functionArgs isFunction intersectAttrs;
   pkgs = import nixpkgs { };
-  k8s = {
+  k8s = rec {
     addons = import ./k8s/addons.nix params;
     airbyte = import ./k8s/airbyte.nix params;
     argocd = import ./k8s/argocd.nix params;
     authentik = import ./k8s/authentik.nix params;
+    aws = import ./k8s/aws.nix (params // { inherit services; });
     cert-manager = import ./k8s/cert-manager.nix params;
     cron = import ./k8s/cron.nix params;
     datadog = import ./k8s/datadog.nix params;
