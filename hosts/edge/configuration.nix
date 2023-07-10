@@ -38,6 +38,7 @@ in
     NIX_HOST = hostname;
     NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
   };
+  environment.etc."nixpkgs-path".source = common.pkgs.path;
 
   time.timeZone = common.timeZone;
 
