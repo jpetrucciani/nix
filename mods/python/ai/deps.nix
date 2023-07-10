@@ -1,4 +1,4 @@
-final: prev: with prev; {
+final: prev: with prev; rec {
   sse-starlette = buildPythonPackage rec {
     pname = "sse-starlette";
     version = "1.6.1";
