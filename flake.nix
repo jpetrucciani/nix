@@ -100,14 +100,15 @@
       darwinConfigurations = builtins.listToAttrs
         (map
           (name: {
-            inherit name; value = self.inputs.nix-darwin.lib.darwinSystem {
-            pkgs = self.packages.aarch64-darwin;
-            specialArgs = { flake = self; machine-name = name; };
-            modules = [
-              ./hosts/common_darwin.nix
-              ./hosts/${name}/configuration.nix
-            ];
-          };
+            inherit name;
+            value = self.inputs.nix-darwin.lib.darwinSystem {
+              pkgs = self.packages.aarch64-darwin;
+              specialArgs = { flake = self; machine-name = name; };
+              modules = [
+                ./hosts/common_darwin.nix
+                ./hosts/${name}/configuration.nix
+              ];
+            };
           })
           machines.darwin
         );
@@ -115,12 +116,13 @@
       osGenerators = builtins.listToAttrs
         (map
           (name: {
-            inherit name; value = self.inputs.nixos-generators.nixosGenerate {
-            pkgs = self.packages.x86_64-linux;
-            specialArgs = { flake = self; machine-name = name; };
-            modules = [ ./hosts/foundry/configuration.nix ];
-            format = name;
-          };
+            inherit name;
+            value = self.inputs.nixos-generators.nixosGenerate {
+              pkgs = self.packages.x86_64-linux;
+              specialArgs = { flake = self; machine-name = name; };
+              modules = [ ./hosts/foundry/configuration.nix ];
+              format = name;
+            };
           })
           [
             "amazon"
