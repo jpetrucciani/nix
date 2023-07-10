@@ -61,7 +61,7 @@ in
       };
       secret_name = "aws-registry";
       secret_opts = concatStringsSep " " [
-        "--docker-server=https://${account_id}.dkr.ecr.${region}.amazonaws.com}"
+        "--docker-server=https://${account_id}.dkr.ecr.${region}.amazonaws.com"
         "--docker-username=AWS"
         "--docker-password=$(aws ecr get-login-password --region ${region})"
         "--docker-email=no@email.local"
