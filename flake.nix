@@ -91,7 +91,10 @@
               inherit name; value = self.inputs.nixpkgs.lib.nixosSystem {
               pkgs = self.packages.${sys};
               specialArgs = { flake = self; machine-name = name; };
-              modules = [ ./hosts/${name}/configuration.nix ];
+              modules = [
+                ./hosts/global.nix
+                ./hosts/${name}/configuration.nix
+              ];
             };
             })
           machines.nixos
@@ -104,6 +107,7 @@
             pkgs = self.packages.aarch64-darwin;
             specialArgs = { flake = self; machine-name = name; };
             modules = [
+              ./hosts/global.nix
               ./hosts/common_darwin.nix
               ./hosts/${name}/configuration.nix
             ];
