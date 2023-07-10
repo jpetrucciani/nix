@@ -8,7 +8,7 @@ let
   };
 in
 {
-  aws_auth = { account_id, node_role_name, admins ? [ ] }:
+  aws_auth = { account_id, node_role_names ? [ ], admins ? [ ] }:
     let
       admin_entry = user: ''
         - userarn: arn:aws:iam::${account_id}:user/${user}
@@ -16,16 +16,17 @@ in
           groups:
             - system:masters
       '';
+      node_role_entry = node_role: ''
+        - groups:
+            - system:bootstrappers
+            - system:nodes
+          rolearn: arn:aws:iam::${account_id}:role/${node_role}
+          username: system:node:{{EC2PrivateDNSName}}
+      '';
       auth_map = {
         apiVersion = "v1";
         data = {
-          mapRoles = ''
-            - groups:
-              - system:bootstrappers
-              - system:nodes
-              rolearn: arn:aws:iam::${account_id}:role/${node_role_name}
-              username: system:node:{{EC2PrivateDNSName}}
-          '';
+          mapRoles = concatStringsSep "\n" (map node_role_entry node_role_names);
           mapUsers = concatStringsSep "\n" (map admin_entry admins);
         };
         kind = "ConfigMap";
