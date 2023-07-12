@@ -653,4 +653,83 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  pulsar-client =
+    let
+      pname = "pulsar-client";
+      version = "3.2.0";
+      format = "wheel";
+      dists = {
+        aarch64-darwin = {
+          dist = "macosx_10_15_universal2";
+          hash = "sha256-WE9EsDR0ppkGvnEaWXpNUWJjpVvjHkn8B75QPchAaCE=";
+        };
+        aarch64-linux = {
+          dist = "manylinux_2_17_aarch64.manylinux2014_aarch64";
+          hash = "sha256-pje5o7MIYMYeaKe46mUOCYfYnoL3O2o98atmKmQ4/do=";
+        };
+        x86_64-darwin = {
+          dist = "macosx_10_15_universal2";
+          hash = "sha256-WE9EsDR0ppkGvnEaWXpNUWJjpVvjHkn8B75QPchAaCE=";
+        };
+        x86_64-linux = {
+          dist = "manylinux_2_17_x86_64.manylinux2014_x86_64";
+          hash = "sha256-tKGH/cX+vPFvclF53PLEdvMe7r2DU3lNkXVKMgLdUHI=";
+        };
+      };
+      d = dists.${prev.stdenv.hostPlatform.system} or (throw "Unsupported system: ${prev.stdenv.hostPlatform.system}");
+      src = fetchPypi {
+        inherit version format;
+        pname = "pulsar_client";
+        abi = "cp311";
+        python = "cp311";
+        dist = "cp311";
+        platform = d.dist;
+        hash = d.hash;
+      };
+    in
+    buildPythonPackage {
+      inherit pname src version format;
+      nativeBuildInputs = [ pkgs.autoPatchelfHook ];
+      propagatedBuildInputs = [
+        certifi
+      ];
+      pythonImportsCheck = [ "pulsar" ];
+
+      meta = with lib; {
+        description = "Apache Pulsar Python client library";
+        homepage = "https://pulsar.apache.org";
+        license = licenses.asl20;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
+  graphlib-backport = buildPythonPackage rec {
+    pname = "graphlib-backport";
+    version = "1.0.3";
+    format = "pyproject";
+
+    src = fetchPypi {
+      pname = "graphlib_backport";
+      inherit version;
+      hash = "sha256-e7j8d1e4rk5tgACibNSekjKqqaOqV+20eEdLhCS/quI=";
+    };
+
+    postPatch = ''
+      substituteInPlace ./pyproject.toml --replace "poetry.masonry.api" "poetry.core.masonry.api"
+    '';
+
+    nativeBuildInputs = [
+      poetry-core
+    ];
+
+    pythonImportsCheck = [ "graphlib" ];
+
+    meta = with lib; {
+      description = "Backport of the Python 3.9 graphlib module for Python 3.6";
+      homepage = "https://github.com/mariushelf/graphlib_backport";
+      license = with licenses; [ ];
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }

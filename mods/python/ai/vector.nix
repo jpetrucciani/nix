@@ -5,17 +5,24 @@ final: prev: with prev; {
     in
     buildPythonPackage rec {
       pname = "chromadb";
-      version = "0.3.25";
+      version = "0.3.29";
       format = "pyproject";
 
       src = fetchPypi {
         inherit pname version;
-        hash = "sha256-ePNcZd58IWIt/A/gK222tZuo8E+4uM17Xl+PaPmAboo=";
+        hash = "sha256-KdR4NdpJT8G1jaQKuxQ1aJ1Lock99sZGZKXZFSHLgOk=";
       };
 
       nativeBuildInputs = [
+        pythonRelaxDepsHook
         setuptools
         setuptools-scm
+      ];
+
+      pythonRelaxDeps = [
+        "fastapi"
+        "onnxruntime"
+        "tqdm"
       ];
 
       propagatedBuildInputs = [
@@ -28,10 +35,11 @@ final: prev: with prev; {
         overrides
         pandas
         posthog
+        pulsar-client
         pydantic
         python-dotenv
         requests
-        sentence-transformers
+        tokenizers
         tqdm
         typing-extensions
         uvicorn
@@ -42,13 +50,10 @@ final: prev: with prev; {
 
       postPatch =
         let
-          onnx_patch = if isDarwin then "/onnxruntime/d" else "s#(onnxruntime) >= (1.14.1)#\1 >= 1.13.1#g";
+          onnx_patch = if isDarwin then "sed -i -E  '/onnxruntime/d' ./pyproject.toml" else "";
         in
         ''
-          sed -i -E \
-            -e '${onnx_patch}' \
-            -e 's#(tqdm) >= (4.65.0)#\1 >= 4.64.1#g' \
-            pyproject.toml
+          ${onnx_patch}
         '';
 
       pythonImportsCheck = [ "chromadb" ];
