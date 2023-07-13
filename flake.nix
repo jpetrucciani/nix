@@ -131,6 +131,7 @@
             "gce"
             "hyperv"
             "install-iso"
+            "install-iso-hyperv"
             "iso"
             "proxmox"
             "virtualbox"

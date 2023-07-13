@@ -298,7 +298,7 @@ rec {
     openssh = {
       enable = true;
       settings = {
-        PermitRootLogin = "no";
+        PermitRootLogin = pkgs.lib.mkDefault "no";
         PasswordAuthentication = false;
         KexAlgorithms = [
           "curve25519-sha256"

@@ -51,7 +51,6 @@ in
   networking.firewall.enable = false;
   services = {
     inherit (common.services) openssh;
-    netdata.enable = true;
     tailscale.enable = true;
   };
 
