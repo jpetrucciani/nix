@@ -1,5 +1,5 @@
 final: prev: with prev; rec {
-  pynecone =
+  reflex =
     let
       sqlalchemy2-stubs = buildPythonPackage rec {
         pname = "sqlalchemy2-stubs";
@@ -66,16 +66,16 @@ final: prev: with prev; rec {
       };
     in
     buildPythonPackage rec {
-      pname = "pynecone";
-      version = "0.1.34";
+      pname = "reflex";
+      version = "0.2.0";
       format = "pyproject";
 
 
       src = pkgs.fetchFromGitHub {
         owner = "pynecone-io";
         repo = pname;
-        rev = "v${version}";
-        sha256 = "sha256-kD33eQ1i5I1BQax5uIvfSPCwnnW6eqBAArZveleIexc=";
+        rev = "refs/tags/v${version}";
+        sha256 = "sha256-ogQm/U3Y1C3LslxZSU+LG1Ejq44f4DSM0sBvHwLUDNs=";
       };
       nativeBuildInputs = [
         pythonRelaxDepsHook
@@ -96,6 +96,7 @@ final: prev: with prev; rec {
         rich
         uvicorn
         watchdog
+        watchfiles
         websockets
         # special
         sqlmodel
@@ -111,11 +112,11 @@ final: prev: with prev; rec {
       ];
 
       preBuild = ''
-        sed -i -E 's#BUN_PATH =.*#BUN_PATH = "${pkgs.bun}/bin/bun"#g' ./pynecone/constants.py
+        sed -i -E 's#BUN_PATH =.*#BUN_PATH = "${pkgs.bun}/bin/bun"#g' ./reflex/constants.py
       '';
 
       pythonImportsCheck = [
-        "pynecone"
+        "reflex"
       ];
 
       meta = with lib; {
