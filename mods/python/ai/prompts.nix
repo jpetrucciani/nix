@@ -1,46 +1,43 @@
-final: prev: with prev; {
-  langchainplus-sdk = buildPythonPackage
-    rec {
-      pname = "langchainplus-sdk";
-      version = "0.0.20";
-      format = "pyproject";
+final: prev: with prev; rec {
+  langsmith = buildPythonPackage rec {
+    pname = "langsmith";
+    version = "0.0.5";
+    format = "pyproject";
 
-      src = fetchPypi {
-        pname = "langchainplus_sdk";
-        inherit version;
-        hash = "sha256-PTAOLjKQ9ozJ2ELAWflFjeumDndsnnkDCWiMrRv7shk=";
-      };
-
-      nativeBuildInputs = [
-        poetry-core
-      ];
-
-      propagatedBuildInputs = [
-        pydantic
-        requests
-        tenacity
-      ];
-
-      pythonImportsCheck = [ "langchainplus_sdk" ];
-
-      meta = with lib; {
-        description = "Client library to connect to the LangChainPlus LLM Tracing and Evaluation Platform";
-        homepage = "https://www.langchain.plus";
-        license = licenses.mit;
-        maintainers = with maintainers; [ jpetrucciani ];
-      };
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-/60vxjjP7oydJ8nq4vo8P57EI79EOx3ETMgYT6NM1rI=";
     };
+
+    nativeBuildInputs = [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = [
+      pydantic
+      requests
+    ];
+
+    pythonImportsCheck = [ "langsmith" ];
+
+    meta = with lib; {
+      description = "Client library to connect to the LangChainPlus LLM Tracing and Evaluation Platform";
+      homepage = "https://www.langchain.plus";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.231";
+    version = "0.0.232";
     format = "pyproject";
 
     src = pkgs.fetchFromGitHub {
       owner = "hwchase17";
       repo = pname;
       rev = "refs/tags/v${version}";
-      hash = "sha256-nAzT1QHT/mMc12bpTKUBGtK/LDbAvb3OgsJt4vq89jc=";
+      hash = "sha256-DwRDnx7L6DSoJ5CKSVolXmZuMhaxZzYD9O269KbvGGg=";
     };
 
     nativeBuildInputs = [
@@ -52,7 +49,7 @@ final: prev: with prev; {
       beautifulsoup4
       dataclasses-json
       jinja2
-      langchainplus-sdk
+      langsmith
       numexpr
       numpy
       openai
@@ -134,8 +131,6 @@ final: prev: with prev; {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
-
-
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
