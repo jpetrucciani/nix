@@ -19,4 +19,4 @@ jobs:
           skipAddingSubstituter: ${{ matrix.os == 'm1' && 'true' || 'false' }}
           name: jacobi
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-      - run: nix --show-trace build -f . custom home-packages
+      - run: nix --show-trace build -f . custom home-packages hex nix
