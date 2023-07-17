@@ -26,6 +26,9 @@ rec {
     disabledTestPaths = [ "tests/test_tls.py" ];
   });
 
+  maxminddb =
+    if isDarwin then prev.maxminddb.overrideAttrs (_: { doCheck = false; }) else prev.maxminddb;
+
   sqlalchemy_1 =
     let
       version = "1.4.48";
