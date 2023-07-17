@@ -731,4 +731,98 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  _cmake = buildPythonPackage rec {
+    pname = "cmake";
+    version = "3.26.4";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-1Fswuc5ygIKYiMeGUBd6tSXfK2eF4aWz2CtMFH2CjA4=";
+    };
+
+    nativeBuildInputs = [
+      pkgs.cmake
+      pkgs.glibc
+      scikit-build
+      setuptools
+    ];
+
+    pythonImportsCheck = [ "cmake" ];
+
+    meta = with lib; {
+      description = "CMake is an open-source, cross-platform family of tools designed to build, test and package software";
+      homepage = "https://pypi.org/project/cmake/";
+      license = with licenses; [ bsd3 asl20 ];
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  triton =
+    let
+      pname = "triton";
+      version = "2.0.0.post1";
+      format = "wheel";
+      dists = {
+        x86_64-linux = {
+          platform = "manylinux_2_17_x86_64.manylinux2014_x86_64";
+          hash = "sha256-fXVTWbr8uIpE71dFefkLnfu20/HLh8dCT1vI1i0ZRls=";
+        };
+      };
+      d = dists.${prev.stdenv.hostPlatform.system} or (throw "Unsupported system: ${prev.stdenv.hostPlatform.system}");
+      src = fetchPypi {
+        inherit version format;
+        inherit (d) hash platform;
+        pname = "triton";
+        abi = "cp311";
+        python = "cp311";
+        dist = "cp311";
+      };
+    in
+    buildPythonPackage {
+      inherit pname src version format;
+      nativeBuildInputs = [
+        pkgs.autoPatchelfHook
+      ];
+      propagatedBuildInputs = [
+        cmake
+      ];
+      pythonImportsCheck = [ "triton" ];
+
+      meta = with lib; {
+        description = "Development repository for the Triton language and compiler";
+        homepage = "https://github.com/openai/triton/";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
+
+  rouge = buildPythonPackage rec {
+    pname = "rouge";
+    version = "1.0.1";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-ErSDRspH1rzzxFBh8xVFK5zOwGIO6JXshbfvw9VKrjQ=";
+    };
+
+    propagatedBuildInputs = [
+      six
+    ];
+
+    nativeCheckInputs = [
+      nose
+    ];
+
+    pythonImportsCheck = [ "rouge" ];
+
+    meta = with lib; {
+      description = "Full Python ROUGE Score Implementation (not a wrapper)";
+      homepage = "https://pypi.org/project/rouge/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }

@@ -568,4 +568,42 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  auto-gptq = buildPythonPackage rec {
+    pname = "auto-gptq";
+    version = "0.3.0";
+    format = "setuptools";
+
+    src = fetchPypi {
+      pname = "auto_gptq";
+      inherit version;
+      hash = "sha256-wwZRtWUTj4J65B6f5L+KBIC7S3DNW6Rs77cm1fgaa9Y=";
+    };
+
+    propagatedBuildInputs = [
+      accelerate
+      datasets
+      numpy
+      peft
+      rouge
+      safetensors
+      torch
+      transformers
+    ];
+
+    passthru.optional-dependencies = {
+      triton = [
+        triton
+      ];
+    };
+
+    pythonImportsCheck = [ "auto_gptq" ];
+
+    meta = with lib; {
+      description = "An easy-to-use LLMs quantization package with user-friendly apis, based on GPTQ algorithm";
+      homepage = "https://pypi.org/project/auto-gptq/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
