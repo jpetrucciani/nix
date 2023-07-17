@@ -206,9 +206,6 @@ in
               fastapi
               uvicorn
 
-              # 3rd party apis
-              geoip2
-
               # data
               numpy
               pandas
