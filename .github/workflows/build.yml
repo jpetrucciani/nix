@@ -7,8 +7,8 @@ jobs:
       matrix:
         os:
           - ubuntu-22.04
-          - macos-13
           - m1
+          # - macos-13
     name: nix (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
