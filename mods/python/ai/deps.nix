@@ -495,15 +495,13 @@ final: prev: with prev; rec {
 
   gradio = buildPythonPackage rec {
     pname = "gradio";
-    version = "3.35.2";
+    version = "3.37.0";
     disabled = pythonOlder "3.7";
     format = "pyproject";
 
-    # We use the Pypi release, as it provides prebuild webui assets,
-    # and its releases are also more frequent than github tags
     src = fetchPypi {
       inherit pname version;
-      sha256 = "sha256-crr+bgJ44o3wp85ym15K2M2y4H88rIU7CnNGPzjWO7s=";
+      sha256 = "sha256-GDRA1sqLigjzjsZgwkmRc3cZhtdlYtr7I8BQhoDnw9A=";
     };
 
     nativeBuildInputs = [
@@ -545,8 +543,8 @@ final: prev: with prev; rec {
       # Unpin h11, as its version was only pinned to aid dependency resolution.
       # Basically a revert of https://github.com/gradio-app/gradio/pull/1680
       substituteInPlace requirements.txt \
-        --replace "h11<0.13,>=0.11" "" \
-        --replace "mdit-py-plugins<=0.3.3" "mdit-py-plugins>=0.3.3"
+        --replace "mdit-py-plugins<=0.3.3" "mdit-py-plugins>=0.3.3" \
+        --replace "  # required for fastapi forms" ""
     '';
 
     doCheck = false;
