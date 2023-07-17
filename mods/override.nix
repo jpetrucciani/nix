@@ -14,4 +14,6 @@ in
   py-spy = prev.py-spy.overrideAttrs (old: {
     doCheck = false;
   });
+
+  nixos-option = prev.nixos-option.override { nix = prev.nixVersions.nix_2_15; };
 }
