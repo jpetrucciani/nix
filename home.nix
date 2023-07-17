@@ -225,9 +225,7 @@ in
               botocore-stubs
             ]
             ++ (optList (!isM1) [ ])
-            ++ (optList isLinux [
-              nix-init
-            ])
+            ++ (optList isLinux [ ])
             )
           )
 
