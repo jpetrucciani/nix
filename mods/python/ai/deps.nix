@@ -458,13 +458,13 @@ final: prev: with prev; rec {
 
   gradio-client = buildPythonPackage rec {
     pname = "gradio-client";
-    version = "0.2.7";
+    version = "0.2.10";
     format = "pyproject";
 
     src = fetchPypi {
       pname = "gradio_client";
       inherit version;
-      hash = "sha256-yDAI34od0/gaKQwKJMA9CrcDF3QZkbYPcTYg7TmtjxI=";
+      hash = "sha256-1Pk8hmSfdmLsFoYVBq6GTRhmdCLoyOzCJzYPKu3P/ck=";
     };
 
     nativeBuildInputs = [
