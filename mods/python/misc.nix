@@ -328,4 +328,32 @@
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  poetry2setup = buildPythonPackage rec {
+    pname = "poetry2setup";
+    version = "1.1.0";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-h1kVePwLaOFxYmHF8+9+1DbNwOEXTmKaNt5CRMJFvus=";
+    };
+
+    nativeBuildInputs = [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = [
+      poetry-core
+    ];
+
+    pythonImportsCheck = [ "poetry2setup" ];
+
+    meta = with lib; {
+      description = "Convert python-poetry to setup.py";
+      homepage = "https://github.com/abersheeran/poetry2setup";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 })
