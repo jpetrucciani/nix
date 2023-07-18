@@ -68,6 +68,7 @@ in
         cowsay
         curl
         diffutils
+        dogdns
         dos2unix
         dyff
         ed
@@ -117,7 +118,6 @@ in
         pigz
         procps
         pssh
-        q
         ranger
         re2c
         rlwrap
