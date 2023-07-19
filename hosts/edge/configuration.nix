@@ -82,9 +82,9 @@ in
       enable = true;
       localUser = "jacobi";
       remoteHostname = "10.31.155.161";
-      remotePort = 10001;
+      remoteBindPort = 10001;
+      localBindPort = 443;
       remoteUser = "jacobi";
-      bindPort = 443;
     };
   } // common.services;
 

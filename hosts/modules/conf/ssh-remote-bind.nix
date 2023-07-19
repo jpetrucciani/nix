@@ -56,10 +56,17 @@ in
         '';
       };
 
-      bindPort = mkOption {
+      remoteBindPort = mkOption {
         default = 2222;
         description = ''
           The port to bind and listen to on the remote host.
+        '';
+      };
+
+      localBindPort = mkOption {
+        default = 2222;
+        description = ''
+          The port to listen to on the local host.
         '';
       };
     };
@@ -87,7 +94,7 @@ in
         );
 
         script = with cfg;  ''
-          ${openssh}/bin/ssh -NTC -o ServerAliveInterval=30 -o ExitOnForwardFailure=yes -R ${toString bindPort}:localhost:22 -l ${remoteUser} -p ${toString remotePort} ${remoteHostname}
+          ${openssh}/bin/ssh -NTC -o ServerAliveInterval=30 -o ExitOnForwardFailure=yes -R ${toString remoteBindPort}:localhost:${toString localBindPort} -l ${remoteUser} -p ${toString remotePort} ${remoteHostname}
         '';
       };
   };
