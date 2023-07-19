@@ -8,6 +8,7 @@ in
     "${common.home-manager}/nixos"
     ./hardware-configuration.nix
     ../modules/conf/blackedge.nix
+    ../modules/conf/ssh-remote-bind.nix
   ];
 
   inherit (common) zramSwap swapDevices;
@@ -76,6 +77,14 @@ in
       enable = true;
       role = "server";
       extraFlags = "--disable traefik";
+    };
+    ssh-remote-bind = {
+      enable = true;
+      localUser = "jacobi";
+      remoteHostname = "10.31.155.161";
+      remotePort = 10001;
+      remoteUser = "jacobi";
+      bindPort = 443;
     };
   } // common.services;
 
