@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   inherit (pkgs) openssh;
-  inherit (lib) mkIf mkOption types;
+  inherit (lib) mkIf mkOption types optionals;
   cfg = config.services.ssh-remote-bind;
 in
 {
@@ -12,7 +12,14 @@ in
         type = types.bool;
         default = false;
         description = ''
-          Whether to enable a "phone home" reverse SSH proxy.
+          Whether to enable a remote bound port proxy
+        '';
+      };
+      bindAll = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Enable this remote proxy to bind to all interfaces
         '';
       };
 
@@ -94,7 +101,14 @@ in
         );
 
         script = with cfg;  ''
-          ${openssh}/bin/ssh -NTC -o ServerAliveInterval=30 -o ExitOnForwardFailure=yes -R ${toString remoteBindPort}:localhost:${toString localBindPort} -l ${remoteUser} -p ${toString remotePort} ${remoteHostname}
+          ${openssh}/bin/ssh -NTC \
+            ${optionals cfg.bindAll "-o GatewayPorts=true"} \
+            -o ServerAliveInterval=30 \
+            -o ExitOnForwardFailure=yes \
+            -R ${toString remoteBindPort}:${if cfg.bindAll then "0.0.0.0" else "localhost"}:${toString localBindPort} \
+            -l ${remoteUser} \
+            -p ${toString remotePort} \
+            ${remoteHostname}
         '';
       };
   };

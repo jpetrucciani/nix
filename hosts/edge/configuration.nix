@@ -80,6 +80,7 @@ in
     };
     ssh-remote-bind = {
       enable = true;
+      bindAll = true;
       localUser = "jacobi";
       remoteHostname = "10.31.155.161";
       remoteBindPort = 10001;
