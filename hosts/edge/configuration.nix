@@ -78,15 +78,40 @@ in
       role = "server";
       extraFlags = "--disable traefik";
     };
-    ssh-remote-bind = {
-      enable = true;
-      bindAll = true;
-      localUser = "jacobi";
-      remoteHostname = "10.31.155.161";
-      remoteBindPort = 10001;
-      localBindPort = 443;
-      remoteUser = "jpetrucciani";
-    };
+    caddy =
+      let
+        internal_proxy = { port ? 10000, host ? "127.0.0.1" }: {
+          extraConfig = ''
+            import SECURITY
+            tls /opt/crt/bec.crt /opt/crt/bec.key
+            reverse_proxy /* {
+              to ${host}:${toString port}
+            }
+          '';
+          virtualHosts = {
+            "bot.blackedge.capital" = internal_proxy { port = 8088; };
+            "edge.blackedge.capital" = internal_proxy { };
+            "vsc0.blackedge.capital" = internal_proxy { port = 8100; };
+            "vsc1.blackedge.capital" = internal_proxy { port = 8101; };
+          };
+        };
+      in
+      {
+        extraConfig = ''
+          (SECURITY) {
+            encode zstd gzip
+            header {
+              -Server
+              Strict-Transport-Security "max-age=31536000; include-subdomains;"
+              X-XSS-Protection "1; mode=block"
+              X-Frame-Options "DENY"
+              X-Content-Type-Options nosniff
+              Referrer-Policy  no-referrer-when-downgrade
+              X-Robots-Tag "none"
+            }
+          }
+        '';
+      };
   } // common.services;
 
   virtualisation.docker.enable = true;

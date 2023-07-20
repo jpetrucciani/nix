@@ -105,6 +105,16 @@ in
           import GEOBLOCK
           ${block}
         '';
+        reverse_proxy_bot = location: {
+          extraConfig = ''
+            import SECURITY
+            respond /docs* 404
+            respond /openapi.json 404
+            reverse_proxy /* {
+              to ${location}
+            }
+          '';
+        };
       in
       {
         enable = true;
@@ -169,7 +179,8 @@ in
           "x.hexa.dev" = reverse_proxy "neptune:8421";
           "meme.x.hexa.dev" = reverse_proxy "neptune:8420";
           "edge.be.hexa.dev" = reverse_proxy "edge:10000";
-          "bot.be.hexa.dev" = reverse_proxy "edge:8088";
+          "bot-dev.blackedge.capital" = reverse_proxy_bot "edge:10000";
+          "bot-external.blackedge.capital" = reverse_proxy_bot "edge:8088";
           "vault.cobi.dev" = secure_geo ''
             reverse_proxy /* {
               to localhost:8222
