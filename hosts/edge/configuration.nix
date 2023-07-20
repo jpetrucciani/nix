@@ -88,12 +88,6 @@ in
               to ${host}:${toString port}
             }
           '';
-          virtualHosts = {
-            "bot.blackedge.capital" = internal_proxy { port = 8088; };
-            "edge.blackedge.capital" = internal_proxy { };
-            "vsc0.blackedge.capital" = internal_proxy { port = 8100; };
-            "vsc1.blackedge.capital" = internal_proxy { port = 8101; };
-          };
         };
       in
       {
@@ -111,6 +105,12 @@ in
             }
           }
         '';
+        virtualHosts = {
+          "bot.blackedge.capital" = internal_proxy { port = 8088; };
+          "edge.blackedge.capital" = internal_proxy { };
+          "vsc0.blackedge.capital" = internal_proxy { port = 8100; };
+          "vsc1.blackedge.capital" = internal_proxy { port = 8101; };
+        };
       };
   } // common.services;
 
