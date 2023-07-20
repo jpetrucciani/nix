@@ -91,6 +91,7 @@ in
         };
       in
       {
+        enable = true;
         extraConfig = ''
           (SECURITY) {
             encode zstd gzip
