@@ -82,7 +82,6 @@ in
       let
         internal_proxy = { port ? 10000, host ? "127.0.0.1" }: {
           extraConfig = ''
-            import SECURITY
             tls /opt/crt/bec.crt /opt/crt/bec.key
             reverse_proxy /* {
               to ${host}:${toString port}
@@ -92,6 +91,8 @@ in
       in
       {
         enable = true;
+        package = pkgs.zaddy;
+        email = common.emails.personal;
         extraConfig = ''
           (SECURITY) {
             encode zstd gzip
