@@ -106,6 +106,7 @@ in
           "homebrew/services"
         ];
         brews = [
+          "openconnect"
           "readline"
           "sshfs"
           "qemu"
