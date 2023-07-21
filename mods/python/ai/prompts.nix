@@ -30,14 +30,14 @@ final: prev: with prev; rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.235";
+    version = "0.0.238";
     format = "pyproject";
 
     src = pkgs.fetchFromGitHub {
       owner = "hwchase17";
       repo = pname;
       rev = "refs/tags/v${version}";
-      hash = "sha256-wPE4kAG6yveiFfdrog9lv4DGJg8xs/b1O3nUtzCbpMo=";
+      hash = "sha256-BOYRIxcIgty3fccDKFdIWVRjV4VXxN6fjivc4sJ63IQ=";
     };
 
     nativeBuildInputs = [
