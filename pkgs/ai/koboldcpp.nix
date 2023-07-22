@@ -1,4 +1,4 @@
-{ lib, darwin, stdenv, clangStdenv, fetchFromGitHub, writeScript, bash, python311, cudatoolkit, koboldcpp, cuda ? false }:
+{ lib, darwin, stdenv, clangStdenv, fetchFromGitHub, bash, python311, cudatoolkit, koboldcpp, cuda ? false }:
 let
   inherit (lib) optionals;
   inherit (stdenv) isAarch64 isDarwin;
