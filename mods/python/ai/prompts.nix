@@ -30,15 +30,16 @@ final: prev: with prev; rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.239";
+    version = "0.0.2";
     format = "pyproject";
 
     src = pkgs.fetchFromGitHub {
       owner = "hwchase17";
       repo = pname;
       rev = "refs/tags/v${version}";
-      hash = "sha256-IzcghSfji1ttXBiSWXfGM+hYVlO8iW2+Zdo+313ljEw=";
+      hash = "sha256-q+vxzfT9oG/EtXUb8g9gSf67waijMUQdQBWMqE0FtZM=";
     };
+    sourceRoot = "source/libs/langchain";
 
     nativeBuildInputs = [
       poetry-core
@@ -115,10 +116,8 @@ final: prev: with prev; rec {
       ];
     };
 
-    # gptcache was added as an optional dep, and it requires many other deps
     postPatch = ''
-      sed -i -E '/gptcache =/d' pyproject.toml
-      sed -i -E '/langchainplus/d' ./pyproject.toml
+      sed -i -E '/gptcache/d' ./pyproject.toml
     '';
 
     pythonImportsCheck = [ "langchain" ];
