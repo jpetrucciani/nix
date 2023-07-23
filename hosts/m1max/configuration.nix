@@ -35,11 +35,22 @@ in
   };
 
   system.stateVersion = 4;
-  nix = common.nix // {
+  nix = {
+    extraOptions = ''
+      extra-experimental-features = nix-command flakes
+      extra-substituters = https://medable.cachix.org https://jacobi.cachix.org
+      extra-trusted-public-keys = medable.cachix.org-1:FhcOls9dE6to37lWBsKaTImxFxNIxW4NoG1cr/UOLLo= jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=
+      keep-outputs = true
+      builders = ssh://jacobi@neptune x86_64-linux - 8 - big-parallel;
+      builders-use-substitutes = true
+    '';
     useDaemon = true;
     nixPath = [
       "darwin=${common.nix-darwin}"
       "darwin-config=${configPath}"
     ];
+    settings = {
+      trusted-users = [ "root" "jacobi" ];
+    };
   };
 }
