@@ -112,6 +112,7 @@ in
           "edge.blackedge.capital" = internal_proxy { };
           "vsc0.blackedge.capital" = internal_proxy { port = 8100; };
           "vsc1.blackedge.capital" = internal_proxy { port = 8101; };
+          "influx.blackedge.capital" = internal_proxy { host = "aur-devopsdb"; port = 8086; };
         };
       };
   } // common.services;
