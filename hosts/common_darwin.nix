@@ -24,6 +24,7 @@ in
           NSNavPanelExpandedStateForSaveMode = true;
           NSNavPanelExpandedStateForSaveMode2 = true;
           _HIHideMenuBar = false;
+          WebKitDeveloperExtras = true;
         };
 
         screencapture = { location = "/tmp"; };
@@ -43,6 +44,20 @@ in
         trackpad = {
           Clicking = true;
           TrackpadThreeFingerDrag = true;
+        };
+        "com.apple.finder" = {
+          ShowExternalHardDrivesOnDesktop = true;
+          ShowHardDrivesOnDesktop = true;
+          ShowMountedServersOnDesktop = true;
+          ShowRemovableMediaOnDesktop = true;
+          _FXSortFoldersFirst = true;
+          # When performing a search, search the current folder by default
+          FXDefaultSearchScope = "SCcf";
+        };
+        "com.apple.desktopservices" = {
+          # Avoid creating .DS_Store files on network or USB volumes
+          DSDontWriteNetworkStores = true;
+          DSDontWriteUSBStores = true;
         };
       };
 
