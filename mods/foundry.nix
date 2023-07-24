@@ -54,6 +54,7 @@ let
     , trusted-public-keys ? [ "jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=" ]
     , extraCopyToRoot ? [ ]
     , extraPerms ? [ ]
+    , extraMkUser ? ""
     }:
     let
       inherit (pkgs.nix2container.nix2container) buildLayer;
@@ -99,6 +100,7 @@ let
 
         touch $out/etc/login.defs
         mkdir -p $out/home/${user}
+        ${extraMkUser}
       '';
       entrypoint = pkgs.writeShellApplication {
         name = "entrypoint";
