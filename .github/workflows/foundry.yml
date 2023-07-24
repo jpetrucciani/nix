@@ -8,7 +8,7 @@ jobs:
         image:
           - nix
           - python311
-          - python312
+          # - python312
           - k8s_aws
           - k8s_gcp
     name: foundry-${{ matrix.image }}

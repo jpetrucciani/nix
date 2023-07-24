@@ -52,6 +52,8 @@ let
     , gid ? "1000"
     , substituters ? [ "https://jacobi.cachix.org" ]
     , trusted-public-keys ? [ "jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=" ]
+    , extraCopyToRoot ? [ ]
+    , extraPerms ? [ ]
     }:
     let
       inherit (pkgs.nix2container.nix2container) buildLayer;
@@ -125,7 +127,7 @@ let
       copyToRoot = [
         mkUser
         mkFolders
-      ];
+      ] ++ extraCopyToRoot;
       perms = [
         {
           path = mkUser;
@@ -145,7 +147,7 @@ let
           uname = user;
           gname = group;
         }
-      ];
+      ] ++ extraPerms;
       layers = map (deps: buildLayer { copyToRoot = [ (pkgs.buildEnv { inherit pathsToLink; name = "layer"; paths = deps; }) ]; }) allLayers;
       initializeNixDatabase = enableNix;
       nixUid = toInt uid;
