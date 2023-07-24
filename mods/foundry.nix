@@ -82,6 +82,7 @@ let
       mkUser = pkgs.runCommand "mkUser" { } ''
         mkdir -p $out/etc/pam.d $out/etc/nix
         echo '${nixconf {inherit substituters trusted-public-keys; }}' >$out/etc/nix/nix.conf
+        echo '/bin/bash' >$out/etc/shells
 
         echo "${user}:x:${uid}:${gid}::" > $out/etc/passwd
         echo "${user}:!x:::::::" > $out/etc/shadow
