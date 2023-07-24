@@ -6,7 +6,6 @@ let
     , trusted-public-keys ? [ "jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=" ]
     }: ''
       build-users-group = nixbld
-      sandbox = false
       extra-experimental-features = nix-command flakes
       substituters = https://cache.nixos.org/ ${concatStringsSep " " substituters}
       trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= ${concatStringsSep " " trusted-public-keys}
@@ -24,6 +23,7 @@ let
     jq
     just
     moreutils
+    nano
     nixup
     nixpkgs-fmt
     openssh
