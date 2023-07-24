@@ -24,7 +24,6 @@ in
           NSNavPanelExpandedStateForSaveMode = true;
           NSNavPanelExpandedStateForSaveMode2 = true;
           _HIHideMenuBar = false;
-          WebKitDeveloperExtras = true;
         };
 
         screencapture = { location = "/tmp"; };
