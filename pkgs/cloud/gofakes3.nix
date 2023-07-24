@@ -20,6 +20,7 @@ buildGo120Module rec {
   meta = with lib; {
     description = "A simple fake AWS S3 object storage (used for local test-runs against AWS S3 APIs)";
     homepage = "https://github.com/johannesboyne/gofakes3";
+    mainProgram = "gofakes3";
     license = licenses.mit;
     maintainers = with maintainers; [ jpetrucciani ];
   };

@@ -24,6 +24,7 @@ buildGo120Module rec {
   meta = with lib; {
     description = "AWS (SQS/SNS) Clone for Development testing";
     homepage = "https://github.com/Admiral-Piett/goaws";
+    mainProgram = "goaws";
     license = licenses.mit;
     maintainers = with maintainers; [ jpetrucciani ];
   };

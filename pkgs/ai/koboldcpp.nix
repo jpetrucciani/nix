@@ -49,7 +49,7 @@ clangStdenv.mkDerivation rec {
   meta = with lib; {
     description = "A simple one-file way to run various GGML models with KoboldAI's UI";
     homepage = "https://github.com/LostRuins/koboldcpp";
-    mainProgram = "llama";
+    mainProgram = "koboldcpp";
     license = licenses.agpl3;
     maintainers = with maintainers; [ jpetrucciani ];
   };
