@@ -178,7 +178,7 @@ let
     description = "a baseline python 3.11 image with common tools and a working nix install";
     layers = [
       (_base_pkgs pkgs)
-      (_python_pkgs pkgs.python311)
+      (_python_pkgs pkgs.python311 pkgs)
     ];
   };
   foundryPython312 = foundry_v2 {
@@ -186,7 +186,7 @@ let
     description = "a baseline python 3.12 image with common tools and a working nix install";
     layers = [
       (_base_pkgs pkgs)
-      (_python_pkgs pkgs.python312)
+      (_python_pkgs pkgs.python312 pkgs)
     ];
   };
   foundry_k8s_aws = foundry_v2 {
