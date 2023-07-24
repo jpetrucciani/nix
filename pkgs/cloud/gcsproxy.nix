@@ -15,6 +15,7 @@ buildGo120Module rec {
   meta = with lib; {
     inherit (src.meta) homepage;
     description = "Reverse proxy for Google Cloud Storage";
+    mainProgram = "gcsproxy";
     license = licenses.mit;
     maintainers = with maintainers; [ jpetrucciani ];
   };

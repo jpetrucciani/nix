@@ -10,7 +10,27 @@ in
   };
   config = {
     system = {
+      activationScripts.postUserActivation.text = ''
+        # Following line should allow us to avoid a logout/login cycle
+        /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+      '';
       defaults = {
+        CustomSystemPreferences = {
+          "com.apple.finder" = {
+            ShowExternalHardDrivesOnDesktop = true;
+            ShowHardDrivesOnDesktop = true;
+            ShowMountedServersOnDesktop = true;
+            ShowRemovableMediaOnDesktop = true;
+            _FXSortFoldersFirst = true;
+            # When performing a search, search the current folder by default
+            FXDefaultSearchScope = "SCcf";
+          };
+          "com.apple.desktopservices" = {
+            # Avoid creating .DS_Store files on network or USB volumes
+            DSDontWriteNetworkStores = true;
+            DSDontWriteUSBStores = true;
+          };
+        };
         NSGlobalDomain = {
           AppleKeyboardUIMode = 3;
           ApplePressAndHoldEnabled = false;
@@ -25,15 +45,13 @@ in
           NSNavPanelExpandedStateForSaveMode2 = true;
           _HIHideMenuBar = false;
         };
-
-        screencapture = { location = "/tmp"; };
+        screencapture = { location = "/tmp"; type = "png"; };
         dock = {
           autohide = true;
           mru-spaces = false;
           orientation = "left";
           showhidden = true;
         };
-
         finder = {
           AppleShowAllExtensions = true;
           QuitMenuItem = true;
