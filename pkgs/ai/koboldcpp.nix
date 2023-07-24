@@ -7,7 +7,7 @@ let
     if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
     else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
     else [ ];
-  version = "1.36";
+  version = "1.37";
   owner = "LostRuins";
   repo = "koboldcpp";
   python = python311.withPackages (p: with p; [
@@ -22,7 +22,7 @@ clangStdenv.mkDerivation rec {
   src = fetchFromGitHub {
     inherit owner repo;
     rev = "refs/tags/v${version}";
-    hash = "sha256-iWxoTXxLGAzju8EzFbUANzSQNxBUUs3Q7FqytCeoh90=";
+    hash = "sha256-l+MEWdqRHEYrfDiT/XxzV7nAqw1lEmFWuPhlwIZz0zk=";
   };
 
   postPatch = optionals isM1 ''
