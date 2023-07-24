@@ -10,22 +10,12 @@ in
   };
   config = {
     system = {
+      activationScripts.postUserActivation.text = ''
+        # Following line should allow us to avoid a logout/login cycle
+        /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+      '';
       defaults = {
         CustomSystemPreferences = {
-          NSGlobalDomain = {
-            AppleKeyboardUIMode = 3;
-            ApplePressAndHoldEnabled = false;
-            InitialKeyRepeat = 10;
-            KeyRepeat = 1;
-            NSAutomaticCapitalizationEnabled = false;
-            NSAutomaticDashSubstitutionEnabled = false;
-            NSAutomaticPeriodSubstitutionEnabled = false;
-            NSAutomaticQuoteSubstitutionEnabled = false;
-            NSAutomaticSpellingCorrectionEnabled = false;
-            NSNavPanelExpandedStateForSaveMode = true;
-            NSNavPanelExpandedStateForSaveMode2 = true;
-            _HIHideMenuBar = false;
-          };
           "com.apple.finder" = {
             ShowExternalHardDrivesOnDesktop = true;
             ShowHardDrivesOnDesktop = true;
@@ -41,8 +31,21 @@ in
             DSDontWriteUSBStores = true;
           };
         };
-
-        screencapture = { location = "/tmp"; };
+        NSGlobalDomain = {
+          AppleKeyboardUIMode = 3;
+          ApplePressAndHoldEnabled = false;
+          InitialKeyRepeat = 10;
+          KeyRepeat = 1;
+          NSAutomaticCapitalizationEnabled = false;
+          NSAutomaticDashSubstitutionEnabled = false;
+          NSAutomaticPeriodSubstitutionEnabled = false;
+          NSAutomaticQuoteSubstitutionEnabled = false;
+          NSAutomaticSpellingCorrectionEnabled = false;
+          NSNavPanelExpandedStateForSaveMode = true;
+          NSNavPanelExpandedStateForSaveMode2 = true;
+          _HIHideMenuBar = false;
+        };
+        screencapture = { location = "/tmp"; type = "png"; };
         dock = {
           autohide = true;
           mru-spaces = false;
