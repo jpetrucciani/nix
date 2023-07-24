@@ -19,28 +19,28 @@ let
     nixbld:x:30000:${concatStringsSep "," (genList (i: "nixbld${toString (i+1)}") 32)}
   '';
   _base_pkgs = _pkgs: with _pkgs; [
-    deadnix
-    delta
-    dockerTools.caCertificates
-    dyff
-    fd
-    findutils
-    git
-    gnumake
-    gron
-    hex
-    jq
-    just
-    moreutils
-    nixup
-    nixpkgs-fmt
-    openssh
-    scc
-    skopeo
-    statix
-    wget
-    which
-    yq-go
+    # deadnix
+    # delta
+    # dockerTools.caCertificates
+    # dyff
+    # fd
+    # findutils
+    # git
+    # gnumake
+    # gron
+    # hex
+    # jq
+    # just
+    # moreutils
+    # nixup
+    # nixpkgs-fmt
+    # openssh
+    # scc
+    # skopeo
+    # statix
+    # wget
+    # which
+    # yq-go
   ];
 
   foundry_v2 =
@@ -113,23 +113,24 @@ let
           architecture = "amd64";
           contents = pkgs.buildEnv {
             inherit name;
-            paths = deps ++ (base_pkgs pkgs) ++ (with pkgs; [
-              bashInteractive
-              coreutils
-              curl
-              gnugrep
-              gnused
-              util-linux
-            ]) ++ (if enableNix then [ pkgs.nix ] else [ ]);
+            paths = [ pkgs.nix ];
+            # paths = deps ++ (base_pkgs pkgs) ++ (with pkgs; [
+            #   # bashInteractive
+            #   # coreutils
+            #   # curl
+            #   # gnugrep
+            #   # gnused
+            #   # util-linux
+            # ]) ++ (if enableNix then [ pkgs.nix ] else [ ]);
           };
           config = {
             Env = [
-              "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+              # "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
               "USER=nobody"
               "HOME=${workdir}"
             ] ++ (if enableNix then [
               "NIX_PAGER=cat"
-              "NIX_PATH=nixpkgs=${pkgs.path}"
+              # "NIX_PATH=nixpkgs=${pkgs.path}"
             ] else [ ]) ++ env;
             Labels = {
               "org.opencontainers.image.authors" = author;
@@ -138,7 +139,7 @@ let
             WorkingDir = workdir;
             Cmd = if builtins.isString command then [ command ] else command;
           };
-          enableFakechroot = enableNix;
+          enableFakechroot = true;
           fakeRootCommands =
             if enableNix then ''
               mkdir -m 1777 -p /tmp /var/tmp
