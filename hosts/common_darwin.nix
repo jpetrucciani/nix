@@ -11,19 +11,35 @@ in
   config = {
     system = {
       defaults = {
-        NSGlobalDomain = {
-          AppleKeyboardUIMode = 3;
-          ApplePressAndHoldEnabled = false;
-          InitialKeyRepeat = 10;
-          KeyRepeat = 1;
-          NSAutomaticCapitalizationEnabled = false;
-          NSAutomaticDashSubstitutionEnabled = false;
-          NSAutomaticPeriodSubstitutionEnabled = false;
-          NSAutomaticQuoteSubstitutionEnabled = false;
-          NSAutomaticSpellingCorrectionEnabled = false;
-          NSNavPanelExpandedStateForSaveMode = true;
-          NSNavPanelExpandedStateForSaveMode2 = true;
-          _HIHideMenuBar = false;
+        CustomSystemPreferences = {
+          NSGlobalDomain = {
+            AppleKeyboardUIMode = 3;
+            ApplePressAndHoldEnabled = false;
+            InitialKeyRepeat = 10;
+            KeyRepeat = 1;
+            NSAutomaticCapitalizationEnabled = false;
+            NSAutomaticDashSubstitutionEnabled = false;
+            NSAutomaticPeriodSubstitutionEnabled = false;
+            NSAutomaticQuoteSubstitutionEnabled = false;
+            NSAutomaticSpellingCorrectionEnabled = false;
+            NSNavPanelExpandedStateForSaveMode = true;
+            NSNavPanelExpandedStateForSaveMode2 = true;
+            _HIHideMenuBar = false;
+          };
+          "com.apple.finder" = {
+            ShowExternalHardDrivesOnDesktop = true;
+            ShowHardDrivesOnDesktop = true;
+            ShowMountedServersOnDesktop = true;
+            ShowRemovableMediaOnDesktop = true;
+            _FXSortFoldersFirst = true;
+            # When performing a search, search the current folder by default
+            FXDefaultSearchScope = "SCcf";
+          };
+          "com.apple.desktopservices" = {
+            # Avoid creating .DS_Store files on network or USB volumes
+            DSDontWriteNetworkStores = true;
+            DSDontWriteUSBStores = true;
+          };
         };
 
         screencapture = { location = "/tmp"; };
@@ -33,7 +49,6 @@ in
           orientation = "left";
           showhidden = true;
         };
-
         finder = {
           AppleShowAllExtensions = true;
           QuitMenuItem = true;
@@ -43,20 +58,6 @@ in
         trackpad = {
           Clicking = true;
           TrackpadThreeFingerDrag = true;
-        };
-        "com.apple.finder" = {
-          ShowExternalHardDrivesOnDesktop = true;
-          ShowHardDrivesOnDesktop = true;
-          ShowMountedServersOnDesktop = true;
-          ShowRemovableMediaOnDesktop = true;
-          _FXSortFoldersFirst = true;
-          # When performing a search, search the current folder by default
-          FXDefaultSearchScope = "SCcf";
-        };
-        "com.apple.desktopservices" = {
-          # Avoid creating .DS_Store files on network or USB volumes
-          DSDontWriteNetworkStores = true;
-          DSDontWriteUSBStores = true;
         };
       };
 
