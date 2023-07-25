@@ -5,12 +5,12 @@ final: prev: with prev; {
     in
     buildPythonPackage rec {
       pname = "chromadb";
-      version = "0.3.29";
+      version = "0.4.3";
       format = "pyproject";
 
       src = fetchPypi {
         inherit pname version;
-        hash = "sha256-KdR4NdpJT8G1jaQKuxQ1aJ1Lock99sZGZKXZFSHLgOk=";
+        hash = "sha256-2GxhAFsTjRZ2ynljs71Gy78vTYa3wG8CiASOjWaK3pI=";
       };
 
       nativeBuildInputs = [
@@ -26,17 +26,19 @@ final: prev: with prev; {
       ];
 
       propagatedBuildInputs = [
+        chroma-hnswlib
         clickhouse-connect
         duckdb
         fastapi
-        hnswlib
         httptools
+        importlib-resources
         numpy
         overrides
         pandas
         posthog
         pulsar-client
         pydantic
+        pypika
         python-dotenv
         requests
         tokenizers
