@@ -30,14 +30,14 @@ final: prev: with prev; rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.2";
+    version = "0.0.242";
     format = "pyproject";
 
     src = pkgs.fetchFromGitHub {
       owner = "hwchase17";
       repo = pname;
       rev = "refs/tags/v${version}";
-      hash = "sha256-q+vxzfT9oG/EtXUb8g9gSf67waijMUQdQBWMqE0FtZM=";
+      hash = "sha256-YBFfWTx2YmsDmK2wbrXMsDQguQYgD9o7xp9MKGlmyLc=";
     };
     sourceRoot = "source/libs/langchain";
 
