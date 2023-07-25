@@ -16,4 +16,6 @@ in
   });
 
   nixos-option = prev.nixos-option.override { nix = prev.nixVersions.nix_2_15; };
+
+  qdrant = prev.qdrant.overrideAttrs (old: { prePatch = ""; });
 }
