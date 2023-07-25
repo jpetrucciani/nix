@@ -729,4 +729,35 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  chroma-hnswlib = buildPythonPackage rec {
+    pname = "chroma-hnswlib";
+    version = "0.7.1";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-9yWS3H0FIsJcwfiGTbejeB8Xm6mJ8gnMPqAWlMDXZJM=";
+    };
+
+    nativeBuildInputs = [
+      numpy
+      pybind11
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = [
+      numpy
+    ];
+
+    pythonImportsCheck = [ "hnswlib" ];
+
+    meta = with lib; {
+      description = "Chromas fork of hnswlib";
+      homepage = "https://pypi.org/project/chroma-hnswlib/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
