@@ -7,6 +7,7 @@
       passthru = old.passthru // {
         overlays = map import [
           ./fixes.nix
+          ./types.nix
           ./ai/deps.nix
           ./ai/bindings.nix
           ./ai/vector.nix
@@ -20,7 +21,6 @@
           ./misc.nix
           ./notebooks.nix
           ./pr.nix
-          ./types.nix
         ];
       };
     }))

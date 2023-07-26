@@ -1,54 +1,6 @@
 final: prev: with prev; rec {
   reflex =
     let
-      sqlalchemy2-stubs = buildPythonPackage rec {
-        pname = "sqlalchemy2-stubs";
-        version = "0.0.2a32";
-
-        disabled = pythonOlder "3.7";
-        src = fetchPypi {
-          inherit pname version;
-          sha256 = "sha256-Kiz6tx01rGO/Ia2EHYYQzZOjvUxlYoSMU4+pdVhcJzk=";
-        };
-
-        propagatedBuildInputs = [ typing-extensions ];
-        meta = with lib; { };
-      };
-      sqlmodel = buildPythonPackage rec {
-        pname = "sqlmodel";
-        version = "0.0.8";
-        format = "pyproject";
-
-        disabled = pythonOlder "3.7";
-        src = pkgs.fetchFromGitHub {
-          owner = "tiangolo";
-          repo = "sqlmodel";
-          rev = version;
-          sha256 = "sha256-HASWDm64vZsOnK+cL2/G9xiTbsBD2RoILXrigZMQncQ=";
-        };
-
-        pythonImportsCheck = [
-          "sqlmodel"
-        ];
-
-        preBuild =
-          let
-            sed = "sed -i -E";
-          in
-          ''
-            ${sed} 's#,<=1.4.41##g' ./pyproject.toml
-            ${sed} 's#(version = )"0"#\1"${version}"#g' ./pyproject.toml
-          '';
-
-        propagatedBuildInputs = [
-          poetry-core
-          pydantic
-          sqlalchemy_1
-          sqlalchemy2-stubs
-        ];
-
-        meta = with lib; { };
-      };
       typer = buildPythonPackage rec {
         pname = "typer";
         version = "0.4.2";

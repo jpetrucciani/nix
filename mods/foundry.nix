@@ -44,7 +44,7 @@ let
     , description ? "a foundry_v2 docker image built with nix"
     , hostPkgs ? pkgs
     , enableNix ? true
-    , pathsToLink ? [ "/bin" "/etc" "/lib" "/share" ]
+    , pathsToLink ? [ "/bin" "/etc" "/lib" "/share" "/run" ]
     , sysLayer ? true
     , user ? "user"
     , group ? "user"

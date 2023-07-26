@@ -12,9 +12,7 @@
     checkInputs = [
       boto3
     ];
-    pythonImportsCheck = [
-      "boto3-stubs"
-    ];
+    pythonImportsCheck = [ "boto3-stubs" ];
 
     meta = {
       description =
@@ -32,14 +30,32 @@
       sha256 = "093zsj2wk7xw89yvs7w88z9w3811vkpgfv4q3wk9j6gd6n3hr1pw";
     };
 
-    pythonImportsCheck = [
-      "botocore-stubs"
-    ];
+    pythonImportsCheck = [ "botocore-stubs" ];
 
     meta = {
       description =
         "Type annotations for botocore 1.24.6 generated with mypy-boto3-builder 7.1.2";
       homepage = "https://github.com/vemel/mypy_boto3_builder";
+    };
+  };
+
+  types-cachetools = buildPythonPackage rec {
+    pname = "types-cachetools";
+    version = "5.3.0.6";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-WV8DQtJGyLpTT1p2LPTC9g7LYegAK4sid/1c95HU6FE=";
+    };
+
+    pythonImportsCheck = [ "cachetools-stubs" ];
+
+    meta = with lib; {
+      description = "Typing stubs for cachetools";
+      homepage = "https://pypi.org/project/types-cachetools/";
+      license = with licenses; [ ];
+      maintainers = with maintainers; [ jpetrucciani ];
     };
   };
 })

@@ -760,4 +760,169 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  sqlalchemy2-stubs = buildPythonPackage rec {
+    pname = "sqlalchemy2-stubs";
+    version = "0.0.2a32";
+
+    disabled = pythonOlder "3.7";
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "sha256-Kiz6tx01rGO/Ia2EHYYQzZOjvUxlYoSMU4+pdVhcJzk=";
+    };
+
+    propagatedBuildInputs = [ typing-extensions ];
+    meta = with lib; { };
+  };
+
+  sqlmodel = buildPythonPackage rec {
+    pname = "sqlmodel";
+    version = "0.0.8";
+    format = "pyproject";
+
+    disabled = pythonOlder "3.7";
+    # src = pkgs.fetchFromGitHub {
+    #   owner = "tiangolo";
+    #   repo = "sqlmodel";
+    #   rev = version;
+    #   sha256 = "sha256-HASWDm64vZsOnK+cL2/G9xiTbsBD2RoILXrigZMQncQ=";
+    # };
+    src = pkgs.fetchFromGitHub {
+      owner = "farahats9";
+      repo = "sqlmodel";
+      rev = "4ce8d0720e9d76069257e46c35b1219b8ab72142";
+      hash = "sha256-flFrjwkxaqjttvuS5ezgwcbHamy7Qr2COf65Q/AM4Vw=";
+    };
+
+    pythonImportsCheck = [
+      "sqlmodel"
+    ];
+
+    postPatch = ''
+      sed -i -E \
+        -e 's#,<=2.0.11##g' \
+        -e 's#(version = )"0"#\1"${version}"#g' \
+        ./pyproject.toml
+    '';
+
+    propagatedBuildInputs = [
+      poetry-core
+      pydantic
+      sqlalchemy
+    ];
+    meta = with lib; { };
+  };
+
+  unstructured = buildPythonPackage rec {
+    pname = "unstructured";
+    version = "0.8.1";
+    format = "setuptools";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "Unstructured-IO";
+      repo = pname;
+      rev = "refs/tags/${version}";
+      hash = "sha256-I9pRycg3uGn7Xfd4YGxic16SXi8+gslsIVarzDT8X2w=";
+    };
+
+    propagatedBuildInputs = [
+      argilla
+      beautifulsoup4
+      chardet
+      elasticsearch
+      filetype
+      jq
+      langdetect
+      lxml
+      markdown
+      msg-parser
+      nltk
+      openpyxl
+      pandas
+      pdf2image
+      pdfminer-six
+      pillow
+      pypandoc
+      python-docx
+      python-magic
+      python-pptx
+      requests
+      sentencepiece
+      tabulate
+      transformers
+      unstructured-inference
+      xlrd
+    ];
+
+    nativeCheckInputs = [
+      pytestCheckHook
+      freezegun
+      pkgs.libreoffice
+    ];
+
+    disabledTestPaths = [
+      "test_unstructured/staging/test_label_studio.py"
+    ];
+
+    passthru.optional-dependencies = {
+      azure = [
+        adlfs
+        fsspec
+      ];
+      discord = [
+        discord-py
+      ];
+      dropbox = [
+        dropboxdrivefs
+        fsspec
+      ];
+      gcs = [
+        fsspec
+        gcsfs
+      ];
+      github = [
+        pygithub
+      ];
+      gitlab = [
+        python-gitlab
+      ];
+      google-drive = [
+        google-api-python-client
+      ];
+      huggingface = [
+        sacremoses
+        torch
+      ];
+      reddit = [
+        praw
+      ];
+      s3 = [
+        fsspec
+        s3fs
+      ];
+      slack = [
+        slack-sdk
+      ];
+      wikipedia = [
+        wikipedia
+      ];
+    };
+
+    # Tests require some data, the downloading of which is impure. It would
+    # probably make sense to make the data another derivation, but then feeding
+    # that into the tests (given that we need nltk itself to download the data,
+    # unless there's an easy way to download it without nltk's downloader) might
+    # be complicated. For now let's just disable the tests and hope for the
+    # best.
+    doCheck = false;
+
+    pythonImportsCheck = [ "unstructured" ];
+
+    meta = with lib; {
+      description = "A library that prepares raw documents for downstream ML tasks";
+      homepage = "https://github.com/Unstructured-IO/unstructured";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
