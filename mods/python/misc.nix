@@ -1,4 +1,4 @@
-(final: prev: with prev; {
+final: prev: with prev; {
   tesla-py = buildPythonPackage rec {
     pname = "tesla-py";
     version = "2.8.0";
@@ -356,4 +356,41 @@
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
-})
+
+  opentelemetry-distro = buildPythonPackage rec {
+    pname = "opentelemetry-distro";
+    version = "0.39b0";
+    format = "pyproject";
+
+    src = fetchPypi {
+      pname = "opentelemetry_distro";
+      inherit version;
+      hash = "sha256-mUBm3xBOC07oV3CIUVCYBuJGp8/RrTyPh1uNTEv3LpY=";
+    };
+
+    nativeBuildInputs = [
+      hatchling
+    ];
+
+    propagatedBuildInputs = [
+      opentelemetry-api
+      opentelemetry-instrumentation
+      opentelemetry-sdk
+    ];
+
+    passthru.optional-dependencies = {
+      otlp = [
+        opentelemetry-exporter-otlp
+      ];
+    };
+
+    pythonImportsCheck = [ "opentelemetry.distro" ];
+
+    meta = with lib; {
+      description = "OpenTelemetry Python Distro";
+      homepage = "https://pypi.org/project/opentelemetry-distro/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+}
