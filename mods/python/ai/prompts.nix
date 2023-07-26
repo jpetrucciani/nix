@@ -133,14 +133,14 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.7.12";
+    version = "0.7.13";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-w5lNOA0+bsZXtjuuKXAzXj178kAhiB+vxWcloBIyoZE=";
+      hash = "sha256-aZ2FRPpfNmy3gMd2bAu5kLTonISorT4e2x4WzVRdhFc=";
     };
 
     nativeCheckInputs = [
@@ -186,6 +186,7 @@ final: prev: with prev; rec {
       "tests/indices/list/test_retrievers.py"
       "tests/indices/postprocessor/test_base.py"
       "tests/indices/postprocessor/test_llm_rerank.py"
+      "tests/indices/postprocessor/test_optimizer.py"
       "tests/indices/query/query_transform/test_base.py"
       "tests/indices/query/test_compose_vector.py"
       "tests/indices/query/test_compose.py"
@@ -211,7 +212,9 @@ final: prev: with prev; rec {
       "tests/langchain_helpers/test_text_splitter.py"
       "tests/llm_predictor/vellum/test_predictor.py"
       "tests/llm_predictor/vellum/test_prompt_registry.py"
+      "tests/llms/test_openai.py"
       "tests/llms/test_palm.py"
+      "tests/memory/test_chat_memory_buffer.py"
       "tests/objects/test_base.py"
       "tests/playground/test_base.py"
       "tests/query_engine/test_pandas.py"
