@@ -133,14 +133,14 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.6.38";
+    version = "0.7.12";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-yKbA0LGP9YO/V4dUuFvCJeLaEs+42V7ZxXS5agITXFo=";
+      hash = "sha256-w5lNOA0+bsZXtjuuKXAzXj178kAhiB+vxWcloBIyoZE=";
     };
 
     nativeCheckInputs = [
@@ -160,6 +160,7 @@ final: prev: with prev; rec {
       faiss
       fsspec
       langchain
+      nest-asyncio
       numpy
       openai
       pandas
@@ -202,6 +203,7 @@ final: prev: with prev; rec {
       "tests/indices/tree/test_embedding_retriever.py"
       "tests/indices/tree/test_index.py"
       "tests/indices/tree/test_retrievers.py"
+      "tests/indices/vector_store/test_deeplake.py"
       "tests/indices/vector_store/test_faiss.py"
       "tests/indices/vector_store/test_pinecone.py"
       "tests/indices/vector_store/test_retrievers.py"
@@ -209,8 +211,8 @@ final: prev: with prev; rec {
       "tests/langchain_helpers/test_text_splitter.py"
       "tests/llm_predictor/vellum/test_predictor.py"
       "tests/llm_predictor/vellum/test_prompt_registry.py"
+      "tests/llms/test_palm.py"
       "tests/objects/test_base.py"
-      "tests/optimization/test_base.py"
       "tests/playground/test_base.py"
       "tests/query_engine/test_pandas.py"
       "tests/question_gen/test_llm_generators.py"
