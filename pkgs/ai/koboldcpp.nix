@@ -29,7 +29,6 @@ let
       intel-ocl
       mkl
       ocl-icd
-      openblas
       opencl-headers
     ];
   version = "1.37.1";
@@ -54,9 +53,9 @@ clangStdenv.mkDerivation rec {
     substituteInPlace ./ggml-metal.m --replace '[bundle pathForResource:@"ggml-metal" ofType:@"metal"];' "@\"$out/lib/ggml-metal.metal\";"
   '';
 
-  LLAMA_CLBLAST = 1;
-  LLAMA_CUBLAS = optionals cuda "1";
-  LLAMA_METAL = optionals isM1 "1";
+  LLAMA_CLBLAST = optionals (!isM1) 1;
+  LLAMA_CUBLAS = optionals cuda 1;
+  LLAMA_METAL = optionals isM1 1;
   LLAMA_OPENBLAS = 1;
 
   installPhase = ''
@@ -69,7 +68,7 @@ clangStdenv.mkDerivation rec {
     EOF
     chmod +x $out/bin/koboldcpp
   '';
-  buildInputs = osSpecific;
+  buildInputs = [ openblas ] ++ osSpecific;
   nativeBuildInputs = [ ] ++ (optionals cuda [ cudatoolkit ]);
   passthru.cuda = koboldcpp.override { cuda = true; };
 
