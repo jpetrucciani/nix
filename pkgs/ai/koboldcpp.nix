@@ -1,4 +1,21 @@
-{ lib, darwin, stdenv, clangStdenv, fetchFromGitHub, bash, python311, cudatoolkit, koboldcpp, cuda ? false }:
+{ lib
+, darwin
+, stdenv
+, clangStdenv
+, fetchFromGitHub
+, bash
+, python311
+, cudatoolkit
+, koboldcpp
+, clblas
+, clblast
+, intel-ocl
+, mkl
+, ocl-icd
+, openblas
+, opencl-headers
+, cuda ? false
+}:
 let
   inherit (lib) optionals;
   inherit (stdenv) isAarch64 isDarwin;
@@ -6,8 +23,16 @@ let
   osSpecific =
     if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
     else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
-    else [ ];
-  version = "1.37";
+    else [
+      clblas
+      clblast
+      intel-ocl
+      mkl
+      ocl-icd
+      openblas
+      opencl-headers
+    ];
+  version = "1.37.1";
   owner = "LostRuins";
   repo = "koboldcpp";
   python = python311.withPackages (p: with p; [
@@ -22,15 +47,17 @@ clangStdenv.mkDerivation rec {
   src = fetchFromGitHub {
     inherit owner repo;
     rev = "refs/tags/v${version}";
-    hash = "sha256-l+MEWdqRHEYrfDiT/XxzV7nAqw1lEmFWuPhlwIZz0zk=";
+    hash = "sha256-nc7gqG6ZkWQ7FEXVJqIOuwUGSyxsajAZahby2uurv4M=";
   };
 
   postPatch = optionals isM1 ''
     substituteInPlace ./ggml-metal.m --replace '[bundle pathForResource:@"ggml-metal" ofType:@"metal"];' "@\"$out/lib/ggml-metal.metal\";"
   '';
 
-  LLAMA_METAL = optionals isM1 "1";
+  LLAMA_CLBLAST = 1;
   LLAMA_CUBLAS = optionals cuda "1";
+  LLAMA_METAL = optionals isM1 "1";
+  LLAMA_OPENBLAS = 1;
 
   installPhase = ''
     mkdir -p $out/bin $out/lib
