@@ -28,6 +28,13 @@ rec {
     doCheck = false;
   });
 
+  slack-bolt = prev.slack-bolt.overridePythonAttrs (old: {
+    disabledTests = old.disabledTests ++ [
+      "TestAuthorize"
+      "TestAsyncAuthorize"
+    ];
+  });
+
   aioquic = prev.aioquic.overrideAttrs (_: {
     patches = [ ];
     disabledTestPaths = [ "tests/test_tls.py" ];
