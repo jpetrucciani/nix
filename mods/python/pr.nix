@@ -200,14 +200,14 @@
 
   slack-sdk =
     let
-      version = "3.21.2";
+      version = "3.21.3";
     in
-    prev.slack-sdk.overridePythonAttrs (old: sqlalchemy_1.replaceSqlalchemy old // {
+    prev.slack-sdk.overridePythonAttrs (old: {
       inherit version;
       src = prev.fetchPypi {
         inherit version;
         pname = "slack_sdk";
-        hash = "sha256-y3SqdkrjLNYZcbqnRdi99Q/+pK0G5KCiqx6HmuaRhJY=";
+        hash = "sha256-IIKb3BpCPsk9rJA0cJdevzvHb9P9kaTa3A7v/JQOyww=";
       };
       doCheck = false;
     });
