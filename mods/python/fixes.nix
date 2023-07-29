@@ -1,6 +1,8 @@
 final: prev:
 let
+  inherit (prev) pythonAtLeast pythonOlder;
   inherit (prev.stdenv) isDarwin;
+  nonCurrentPython = pythonOlder "3.7" || pythonAtLeast "3.13";
 in
 rec {
   passlib =
@@ -20,6 +22,11 @@ rec {
           doCheck = false;
           doInstallCheck = false;
         }) else prev.curio;
+
+  cherrypy = prev.cherrypy.overridePythonAttrs (old: {
+    disabled = nonCurrentPython;
+    doCheck = false;
+  });
 
   aioquic = prev.aioquic.overrideAttrs (_: {
     patches = [ ];
