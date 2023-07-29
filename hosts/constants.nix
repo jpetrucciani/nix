@@ -141,6 +141,7 @@
 
     usual = [
       galaxyboss
+      milkyway
       pluto
     ] ++ mobile;
     all = desktop ++ server ++ mobile ++ laptop;
@@ -167,5 +168,23 @@
     promtail = 9080;
     netdata = 19999;
     plex = 32400;
+  };
+
+  caddy = {
+    security = ''
+      (SECURITY) {
+        encode zstd gzip
+        header {
+          -Server
+          Strict-Transport-Security "max-age=31536000; include-subdomains;"
+          X-XSS-Protection "1; mode=block"
+          X-Frame-Options "DENY"
+          X-Content-Type-Options nosniff
+          Referrer-Policy  no-referrer-when-downgrade
+          X-Robots-Tag "none"
+        }
+      }
+
+    '';
   };
 }
