@@ -29,6 +29,9 @@ rec {
   });
 
   slack-bolt = prev.slack-bolt.overridePythonAttrs (old: {
+    postPatch = ''
+      sed -i '/pytest-runner/d' ./setup.py
+    '';
     disabledTests = old.disabledTests ++ [
       "TestAuthorize"
       "TestAsyncAuthorize"
