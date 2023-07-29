@@ -19,6 +19,28 @@
     "net.core.rmem_max" = 2500000;
   };
 
+  extraHosts = {
+    proxmox =
+      let
+        terra = "192.168.69.10";
+        ben = "192.168.69.20";
+        bedrock = "192.168.69.70";
+      in
+      ''
+        ${terra} terra
+        ${terra} cobi.dev
+        ${terra} api.cobi.dev
+        ${terra} auth.cobi.dev
+        ${terra} vault.cobi.dev
+        ${terra} nix.cobi.dev
+        ${terra} broadsword.tech
+        ${terra} hexa.dev
+        ${terra} x.hexa.dev
+        ${ben} ben
+        ${bedrock} bedrock
+      '';
+  };
+
   defaultLocale = "en_US.UTF-8";
   extraLocaleSettings = let utf8 = "en_US.UTF-8"; in
     {
