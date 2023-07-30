@@ -1,4 +1,29 @@
-{ lib, darwin, stdenv, clangStdenv, fetchFromGitHub, cmake, common-updater-scripts, coreutils, curl, jq, nix, nix-prefetch-github, writeScript, cudatoolkit, llama-cpp, cuda ? false }:
+{ lib
+, darwin
+, stdenv
+, clangStdenv
+, fetchFromGitHub
+, cmake
+, common-updater-scripts
+, coreutils
+, curl
+, jq
+, nix
+, nix-prefetch-github
+, writeScript
+, llama-cpp
+, cudatoolkit
+, clblas
+, clblast
+, intel-ocl
+, mkl
+, ocl-icd
+, openblas
+, opencl-headers
+, pkg-config
+, cuda ? false
+, opencl ? false
+}:
 let
   inherit (lib) optionals;
   inherit (stdenv) isAarch64 isDarwin;
@@ -6,8 +31,15 @@ let
   osSpecific =
     if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
     else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
-    else [ ];
-  version = "master-a113689";
+    else [
+      clblas
+      clblast
+      intel-ocl
+      mkl
+      ocl-icd
+      opencl-headers
+    ];
+  version = "master-11f3ca0";
   owner = "ggerganov";
   repo = "llama.cpp";
 in
@@ -17,7 +49,7 @@ clangStdenv.mkDerivation rec {
   src = fetchFromGitHub {
     inherit owner repo;
     rev = "refs/tags/${version}";
-    hash = "sha256-tMa6Y0jUMj5xCyxbxTE4cOTnfkoguNkJVm/rzrMG1pI=";
+    hash = "sha256-VtvW6pwpn1R/NNr/tV0MPC/vfLT3WICloJtBk1MKqUU=";
   };
 
   postPatch =
@@ -32,6 +64,9 @@ clangStdenv.mkDerivation rec {
     "-DLLAMA_METAL=ON"
   ]) ++ (optionals cuda [
     "-DLLAMA_CUBLAS=ON"
+  ]) ++ (optionals (!isM1) [
+    "-DLLAMA_BLAS=ON"
+    (if opencl then "-DLLAMA_CLBLAST=ON" else "-DLLAMA_BLAS_VENDOR=OpenBLAS")
   ]);
   installPhase = ''
     mkdir -p $out/bin
@@ -42,7 +77,7 @@ clangStdenv.mkDerivation rec {
     mv ./bin/quantize-stats $out/bin/llama-quantize-stats
     mv ./bin/server $out/bin/llama-server
   '';
-  buildInputs = osSpecific;
+  buildInputs = [ openblas pkg-config ] ++ osSpecific;
   nativeBuildInputs = [ cmake ] ++ (optionals cuda [ cudatoolkit ]);
 
   passthru.updateScript =
@@ -65,6 +100,7 @@ clangStdenv.mkDerivation rec {
       fi
     '';
   passthru.cuda = llama-cpp.override { cuda = true; };
+  passthru.opencl = llama-cpp.override { opencl = true; };
 
   meta = with lib; {
     description = "Port of Facebook's LLaMA model in C/C++";
