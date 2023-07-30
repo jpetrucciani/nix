@@ -50,16 +50,12 @@
       machines = {
         nixos = [
           "andromeda"
-          "bedrock"
           "edge"
-          "granite"
           "luna"
           "milkyway"
           "neptune"
           "phobos"
           "terra"
-          "titan"
-          "ymir"
         ];
         darwin = [
           "charon"

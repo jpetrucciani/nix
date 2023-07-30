@@ -12,6 +12,4 @@
 (?i)phobos
 (?i)pluto
 (?i)terra
-(?i)titan
-(?i)ymir
 (?i)valheim

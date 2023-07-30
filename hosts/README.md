@@ -10,10 +10,6 @@ This directory contains my NixOS configurations for each of my NixOS machines, a
 
 This is an experimental NixOS install inside a VM using the apple virtualization framework.
 
-### [bedrock/](./bedrock)
-
-This is a postgres nixos server
-
 ### [charon/](./charon)
 
 This is my personal M1 Mac Mini server, running MacOS and using nix-darwin and home-manager to manage things.
@@ -21,10 +17,6 @@ This is my personal M1 Mac Mini server, running MacOS and using nix-darwin and h
 ### [foundry/](./foundry/)
 
 this directory contains builders for cloud VM images and isos
-
-### [granite/](./granite/)
-
-This is an NFS store server
 
 ### [luna/](./luna)
 
@@ -57,14 +49,6 @@ This is my personal M1 Pro Macbook, running MacOS and using nix-darwin and home-
 ### [terra/](./terra)
 
 This is my largest NixOS based machine
-
-### [titan/](./titan)
-
-This is an experimental NixOS install inside a VM.
-
-### [ymir/](./ymir)
-
-This is a graphical NixOS install on a physical xps laptop
 
 ### [common.nix](./common.nix)
 

@@ -26,9 +26,9 @@ let
     megaboss = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEhhl/jKYcglH7+tTYgsVRKqVuf7hwF6yOgpdYIQWAyJ jacobi-megaboss";
 
     # servers
-    bedrock = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHyGIL87ScZN4Bir5yxlLendu4Iex2RjrmDRLE3+u7Aq jacobi@bedrock";
-    granite = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN+Ueb5yUyGWNA71L2If6pwy5AORXO3LN4CzREgwWhO2 jacobi@granite";
-    titan = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDKnCuUSP/RbAfUvNkD43wm6w5dhsfdIgSqawj9Z0UQX jacobi@titan";
+    # bedrock = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHyGIL87ScZN4Bir5yxlLendu4Iex2RjrmDRLE3+u7Aq jacobi@bedrock";
+    # granite = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN+Ueb5yUyGWNA71L2If6pwy5AORXO3LN4CzREgwWhO2 jacobi@granite";
+    # titan = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDKnCuUSP/RbAfUvNkD43wm6w5dhsfdIgSqawj9Z0UQX jacobi@titan";
     jupiter = "";
     saturn = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPY2sNJE5ysSTeFzTv2U+zIeIB5LMhbUaP+yC5VDgEHD jacobi@saturn";
     neptune = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPqXt2116T/hpMpdmlh3QquPcF/COXPtJS4BkjwECf++ jacobi@neptune";
@@ -48,7 +48,6 @@ let
 
     # laptops
     pluto = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEgmAVUZdA5QrsCQFYhL0bf+NbXowV9M12PPiwoWRMJK jacobi@pluto";
-    ymir = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJu8erBI/BUNkvQR4OC+1Q8zrpVzI4NyAufuXieWshQk jacobi@ymir";
     m1max = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJnJ2nh4yutW5Xq11Cp4wdJUU+dJxeNZn9SZsHAj9TRg jacobi@m1max";
     andromeda = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBRLoe5SoO2nipGJw6QLRRLOyfiKtmi2lvnlCQtLz7o4 jacobi@andromeda";
     # nix-daemon on laptops
@@ -65,8 +64,6 @@ let
     ];
 
     server = [
-      bedrock
-      titan
       saturn
       neptune
       charon
