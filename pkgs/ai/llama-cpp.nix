@@ -20,6 +20,7 @@
 , ocl-icd
 , openblas
 , opencl-headers
+, pkg-config
 , cuda ? false
 , opencl ? false
 }:
@@ -76,7 +77,7 @@ clangStdenv.mkDerivation rec {
     mv ./bin/quantize-stats $out/bin/llama-quantize-stats
     mv ./bin/server $out/bin/llama-server
   '';
-  buildInputs = [ openblas ] ++ osSpecific;
+  buildInputs = [ openblas pkg-config ] ++ osSpecific;
   nativeBuildInputs = [ cmake ] ++ (optionals cuda [ cudatoolkit ]);
 
   passthru.updateScript =
