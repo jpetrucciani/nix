@@ -76,7 +76,7 @@ clangStdenv.mkDerivation rec {
     mv ./bin/quantize-stats $out/bin/llama-quantize-stats
     mv ./bin/server $out/bin/llama-server
   '';
-  buildInputs = osSpecific;
+  buildInputs = [ openblas ] ++ osSpecific;
   nativeBuildInputs = [ cmake ] ++ (optionals cuda [ cudatoolkit ]);
 
   passthru.updateScript =
