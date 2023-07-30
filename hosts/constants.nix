@@ -1,71 +1,25 @@
-{
-  nix = {
-    extraOptions = ''
-      max-jobs = auto
-      narinfo-cache-negative-ttl = 10
-      extra-experimental-features = nix-command flakes
-      extra-substituters = https://jacobi.cachix.org
-      extra-trusted-public-keys = jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=
-    '';
-    settings = {
-      trusted-users = [ "root" "jacobi" ];
-    };
+let
+  ports = rec {
+    usual = [
+      ssh
+      http
+      https
+    ];
+    ssh = 22;
+    http = 80;
+    https = 443;
+    nfs = 2049;
+    grafana = 3000;
+    loki = 3100;
+    n8n = 5678;
+    jellyfin = 8096;
+    home-assistant = 8123;
+    prometheus = 9001;
+    prometheus_node_exporter = 9002;
+    promtail = 9080;
+    netdata = 19999;
+    plex = 32400;
   };
-
-  sysctl_opts = {
-    "fs.inotify.max_user_watches" = 1048576;
-    "fs.inotify.max_queued_events" = 1048576;
-    "fs.inotify.max_user_instances" = 1048576;
-    "net.core.rmem_max" = 2500000;
-  };
-
-  extraHosts = {
-    proxmox =
-      let
-        terra = "192.168.69.10";
-        ben = "192.168.69.20";
-        bedrock = "192.168.69.70";
-      in
-      ''
-        ${terra} terra
-        ${terra} cobi.dev
-        ${terra} api.cobi.dev
-        ${terra} auth.cobi.dev
-        ${terra} vault.cobi.dev
-        ${terra} nix.cobi.dev
-        ${terra} broadsword.tech
-        ${terra} hexa.dev
-        ${terra} x.hexa.dev
-        ${ben} ben
-        ${bedrock} bedrock
-      '';
-  };
-
-  defaultLocale = "en_US.UTF-8";
-  extraLocaleSettings = let utf8 = "en_US.UTF-8"; in
-    {
-      LC_ADDRESS = utf8;
-      LC_IDENTIFICATION = utf8;
-      LC_MEASUREMENT = utf8;
-      LC_MONETARY = utf8;
-      LC_NAME = utf8;
-      LC_NUMERIC = utf8;
-      LC_PAPER = utf8;
-      LC_TELEPHONE = utf8;
-      LC_TIME = utf8;
-    };
-
-  name = rec {
-    first = "jacobi";
-    last = "petrucciani";
-    full = "${first} ${last}";
-  };
-
-  emails = {
-    personal = "j@cobi.dev";
-    work = "jpetrucciani@medable.com";
-  };
-
   pubkeys = rec {
     # physical
     galaxyboss = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO9u9+khlywG0vSsrTsdjZEhKlKBpXx8RnwESGw+zIKI galaxyboss";
@@ -146,29 +100,77 @@
     ] ++ mobile;
     all = desktop ++ server ++ mobile ++ laptop;
   };
+in
+{
+  inherit ports pubkeys;
+  nix = {
+    extraOptions = ''
+      max-jobs = auto
+      narinfo-cache-negative-ttl = 10
+      extra-experimental-features = nix-command flakes
+      extra-substituters = https://jacobi.cachix.org
+      extra-trusted-public-keys = jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=
+    '';
+    settings = {
+      trusted-users = [ "root" "jacobi" ];
+    };
+  };
+
+  sysctl_opts = {
+    "fs.inotify.max_user_watches" = 1048576;
+    "fs.inotify.max_queued_events" = 1048576;
+    "fs.inotify.max_user_instances" = 1048576;
+    "net.core.rmem_max" = 2500000;
+  };
+
+  extraHosts = {
+    proxmox =
+      let
+        terra = "192.168.69.10";
+        ben = "192.168.69.20";
+        bedrock = "192.168.69.70";
+      in
+      ''
+        ${terra} terra
+        ${terra} cobi.dev
+        ${terra} api.cobi.dev
+        ${terra} auth.cobi.dev
+        ${terra} vault.cobi.dev
+        ${terra} nix.cobi.dev
+        ${terra} broadsword.tech
+        ${terra} hexa.dev
+        ${terra} x.hexa.dev
+        ${ben} ben
+        ${bedrock} bedrock
+      '';
+  };
+
+  defaultLocale = "en_US.UTF-8";
+  extraLocaleSettings = let utf8 = "en_US.UTF-8"; in
+    {
+      LC_ADDRESS = utf8;
+      LC_IDENTIFICATION = utf8;
+      LC_MEASUREMENT = utf8;
+      LC_MONETARY = utf8;
+      LC_NAME = utf8;
+      LC_NUMERIC = utf8;
+      LC_PAPER = utf8;
+      LC_TELEPHONE = utf8;
+      LC_TIME = utf8;
+    };
+
+  name = rec {
+    first = "jacobi";
+    last = "petrucciani";
+    full = "${first} ${last}";
+  };
+
+  emails = {
+    personal = "j@cobi.dev";
+    work = "jpetrucciani@medable.com";
+  };
 
   timeZone = "America/Indiana/Indianapolis";
-  ports = rec {
-    usual = [
-      ssh
-      http
-      https
-    ];
-    ssh = 22;
-    http = 80;
-    https = 443;
-    nfs = 2049;
-    grafana = 3000;
-    loki = 3100;
-    n8n = 5678;
-    jellyfin = 8096;
-    home-assistant = 8123;
-    prometheus = 9001;
-    prometheus_node_exporter = 9002;
-    promtail = 9080;
-    netdata = 19999;
-    plex = 32400;
-  };
 
   caddy = {
     security = ''
@@ -186,5 +188,56 @@
       }
 
     '';
+  };
+
+  templates = {
+    promtail =
+      { hostname
+      , loki_ip ? "100.78.40.10"
+      , promtail_port ? ports.promtail
+      , loki_port ? ports.loki
+      , extra_scrape_configs ? [ ]
+      }: {
+        enable = true;
+        configuration = {
+          server = {
+            http_listen_port = promtail_port;
+            grpc_listen_port = 0;
+          };
+          positions = {
+            filename = "/tmp/positions.yaml";
+          };
+          clients = [{
+            url = "http://${loki_ip}:${toString loki_port}/loki/api/v1/push";
+          }];
+          scrape_configs = [{
+            job_name = "journal";
+            journal = {
+              max_age = "12h";
+              labels = {
+                job = "systemd-journal";
+                host = hostname;
+              };
+            };
+            relabel_configs = [{
+              source_labels = [ "__journal__systemd_unit" ];
+              target_label = "unit";
+            }];
+          }] ++ extra_scrape_configs;
+        };
+      };
+    promtail_scrapers = {
+      caddy = { path ? "/var/log/caddy/*.log" }: {
+        job_name = "caddy";
+        static_configs = [{ targets = [ "localhost" ]; labels = { job = "caddylogs"; __path__ = path; }; }];
+      };
+    };
+    prometheus_exporters = _: {
+      node = {
+        enable = true;
+        enabledCollectors = [ "systemd" ];
+        port = ports.prometheus_node_exporter;
+      };
+    };
   };
 }

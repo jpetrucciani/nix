@@ -20,7 +20,7 @@ let
   inherit (constants) ports;
 in
 {
-  inherit (constants) defaultLocale emails extraHosts extraLocaleSettings name nix ports pubkeys sysctl_opts timeZone;
+  inherit (constants) defaultLocale emails extraHosts extraLocaleSettings name nix ports pubkeys sysctl_opts templates timeZone;
   inherit home-manager jacobi nix-darwin mms pkgs;
 
   extraGroups = [ "wheel" "networkmanager" "docker" "podman" ];
@@ -233,57 +233,6 @@ in
         spawn-protection = 0;
         max-tick-time = 5 * 60 * 1000;
         allow-flight = true;
-      };
-    };
-  };
-
-  templates = {
-    promtail =
-      { hostname
-      , loki_ip ? "100.78.40.10"
-      , promtail_port ? ports.promtail
-      , loki_port ? ports.loki
-      , extra_scrape_configs ? [ ]
-      }: {
-        enable = true;
-        configuration = {
-          server = {
-            http_listen_port = promtail_port;
-            grpc_listen_port = 0;
-          };
-          positions = {
-            filename = "/tmp/positions.yaml";
-          };
-          clients = [{
-            url = "http://${loki_ip}:${toString loki_port}/loki/api/v1/push";
-          }];
-          scrape_configs = [{
-            job_name = "journal";
-            journal = {
-              max_age = "12h";
-              labels = {
-                job = "systemd-journal";
-                host = hostname;
-              };
-            };
-            relabel_configs = [{
-              source_labels = [ "__journal__systemd_unit" ];
-              target_label = "unit";
-            }];
-          }] ++ extra_scrape_configs;
-        };
-      };
-    promtail_scrapers = {
-      caddy = { path ? "/var/log/caddy/*.log" }: {
-        job_name = "caddy";
-        static_configs = [{ targets = [ "localhost" ]; labels = { job = "caddylogs"; __path__ = path; }; }];
-      };
-    };
-    prometheus_exporters = _: {
-      node = {
-        enable = true;
-        enabledCollectors = [ "systemd" ];
-        port = ports.prometheus_node_exporter;
       };
     };
   };
