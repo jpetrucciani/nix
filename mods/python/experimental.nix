@@ -16,24 +16,26 @@ final: prev: with prev; rec {
         ];
         meta = with lib; { };
       };
+      relaxDeps = let _rm = dep: ''-e "/${dep} =/d"''; in deps: ''
+        sed -i -E ${prev.lib.concatStringsSep " " (map _rm deps)} ./pyproject.toml
+      '';
     in
     buildPythonPackage rec {
       pname = "reflex";
-      version = "0.2.0";
+      version = "0.2.3";
       format = "pyproject";
 
 
       src = pkgs.fetchFromGitHub {
-        owner = "pynecone-io";
+        owner = "reflex-dev";
         repo = pname;
         rev = "refs/tags/v${version}";
-        sha256 = "sha256-ogQm/U3Y1C3LslxZSU+LG1Ejq44f4DSM0sBvHwLUDNs=";
+        sha256 = "sha256-P0SKSljLM5iL9vw+MFcoh1lKGWTOZnOlpWmW54PwqX0=";
       };
-      nativeBuildInputs = [
-        pythonRelaxDepsHook
-      ];
+
       propagatedBuildInputs = [
         pkgs.nodejs_20
+        alembic
         cloudpickle
         fastapi
         gunicorn
@@ -56,24 +58,26 @@ final: prev: with prev; rec {
         typer
       ];
 
-      pythonRelaxDeps = [
-        "fastapi"
-        "python-dotenv"
-        "python-multipart"
-        "watchdog"
-      ];
-
-      preBuild = ''
-        sed -i -E 's#BUN_PATH =.*#BUN_PATH = "${pkgs.bun}/bin/bun"#g' ./reflex/constants.py
+      postPatch = ''
+        sed -i -E \
+          -e 's#BUN_PATH =.*#BUN_PATH = "${pkgs.bun}/bin/bun"#g' \
+          -e 's#NODE_BIN_PATH =.*#NODE_BIN_PATH = "${pkgs.nodejs_20}/bin"#g' \
+          ./reflex/constants.py
+        ${relaxDeps [
+          "alembic"
+          "fastapi"
+          "httpx"
+          "python-dotenv"
+          "python-multipart"
+          "watchdog"
+        ]}
       '';
 
-      pythonImportsCheck = [
-        "reflex"
-      ];
+      pythonImportsCheck = [ "reflex" ];
 
       meta = with lib; {
         description = "Web apps in pure Python";
-        homepage = "https://github.com/pynecone-io/pynecone";
+        homepage = "https://github.com/reflex-dev/reflex";
         license = licenses.asl20;
         maintainers = with maintainers; [ jpetrucciani ];
       };
