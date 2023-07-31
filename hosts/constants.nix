@@ -12,6 +12,7 @@ let
     grafana = 3000;
     loki = 3100;
     n8n = 5678;
+    gradio = 7860;
     jellyfin = 8096;
     home-assistant = 8123;
     prometheus = 9001;
