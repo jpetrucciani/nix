@@ -732,12 +732,12 @@ final: prev: with prev; rec {
 
   chroma-hnswlib = buildPythonPackage rec {
     pname = "chroma-hnswlib";
-    version = "0.7.1";
+    version = "0.7.2";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-9yWS3H0FIsJcwfiGTbejeB8Xm6mJ8gnMPqAWlMDXZJM=";
+      hash = "sha256-h8agztnlKsfIygHe0lu3DEp/Y/WHEYHrGL6pERznhsQ=";
     };
 
     nativeBuildInputs = [
