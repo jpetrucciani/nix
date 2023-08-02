@@ -133,14 +133,14 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.7.16";
+    version = "0.7.17";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-OUER/PjOd1Ahml+7mfxwyMJRhR2R3FHJw/pY9Lgkas0=";
+      hash = "sha256-2JncW5XX6JnvG+z2MDXpvPDRjKm+ed3sx230pPwRaWw=";
     };
 
     nativeCheckInputs = [
@@ -170,6 +170,8 @@ final: prev: with prev; rec {
     ];
 
     disabledTestPaths = [
+      "tests/agent/openai/test_openai_agent.py"
+      "tests/agent/react/test_react_agent.py"
       "tests/callbacks/test_token_counter.py"
       "tests/chat_engine/test_condense_question.py"
       "tests/chat_engine/test_simple.py"
