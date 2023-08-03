@@ -315,12 +315,12 @@ final: prev: with prev; rec {
 
   nicegui = buildPythonPackage rec {
     pname = "nicegui";
-    version = "1.2.24";
+    version = "1.3.7";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-jTlz7DWcDMJTRxLCW5JEeHjcbtOUy5qaSROWxuBMLb0=";
+      hash = "sha256-Oc2Q6Ti3d9C/tXzSIOmkmUa+Yteepq4nZOTrDMLqqiI=";
     };
 
     nativeBuildInputs = [
@@ -330,11 +330,14 @@ final: prev: with prev; rec {
     ];
 
     pythonRelaxDeps = [
+      "httpx"
+      "uvicorn"
       "watchfiles"
     ];
 
     propagatedBuildInputs = [
       aiofiles
+      colorama
       fastapi
       fastapi-socketio
       httptools
