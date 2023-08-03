@@ -107,6 +107,7 @@ in
             "raycast"
             "rectangle"
             "utm"
+            "vlc"
           ];
           all = fonts ++ fun ++ work ++ comms ++ util;
           all_personal = subtractLists work all;
