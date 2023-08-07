@@ -31,7 +31,7 @@ let
       ocl-icd
       opencl-headers
     ];
-  version = "1.38";
+  version = "1.39.1";
   owner = "LostRuins";
   repo = "koboldcpp";
   python = python311.withPackages (p: with p; [
@@ -46,7 +46,7 @@ clangStdenv.mkDerivation rec {
   src = fetchFromGitHub {
     inherit owner repo;
     rev = "refs/tags/v${version}";
-    hash = "sha256-gXMaTvL1YMiyf049sI7lv1+MmUFCYDhJcEoG4fZlXEg=";
+    hash = "sha256-R87nm5+lm5LE0CQUs3HqloZA6vzSPVxc3IXELhXWKHc=";
   };
 
   postPatch = optionals isM1 ''
