@@ -177,7 +177,6 @@ in
           google-cloud-sdk
           ripgrep
           shellcheck
-          sqlfluff
           step-cli
           talosctl
           terraform-ls
