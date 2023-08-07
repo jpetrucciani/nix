@@ -795,6 +795,10 @@ rec {
         shellcheck $completionPath
         installShellCompletion --bash --name ${name} $completionPath
       '';
+      meta = {
+        inherit description;
+        mainProgram = name;
+      };
     };
 
   flag =
