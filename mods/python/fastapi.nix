@@ -250,12 +250,12 @@ final: prev: with prev; rec {
 
   vbuild = buildPythonPackage rec {
     pname = "vbuild";
-    version = "0.8.1";
+    version = "0.8.2";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-uf+QcfphAJVj6TXt3qT98UlMcZQShfBf1XZI9z3Bnsw=";
+      hash = "sha256-JwzZB4NJ2QffrmwOY2SlpedMuGGDu1CTYT8SoYtDX6k=";
     };
 
     postPatch = ''
