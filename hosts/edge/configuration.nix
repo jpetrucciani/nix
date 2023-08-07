@@ -40,6 +40,9 @@ in
     NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
   };
   environment.etc."nixpkgs-path".source = common.pkgs.path;
+  environment.systemPackages = with pkgs; [
+    amazon-ecr-credential-helper
+  ];
 
   time.timeZone = common.timeZone;
 
