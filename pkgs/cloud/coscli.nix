@@ -23,6 +23,7 @@ buildGo120Module rec {
     description = "";
     homepage = "https://github.com/tencentyun/coscli";
     license = licenses.asl20;
+    mainProgram = "coscli";
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }

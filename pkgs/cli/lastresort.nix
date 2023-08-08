@@ -18,6 +18,7 @@ rustPlatform.buildRustPackage rec {
   meta = with lib; {
     description = "Encode and decode data in base 256 easily typed words";
     license = licenses.isc;
+    mainProgram = "lastresort";
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }

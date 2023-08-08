@@ -16,6 +16,7 @@ buildGo120Module rec {
     inherit (src.meta) homepage;
     description = "Split your file into encrypted fragments so that you don't need to remember a passcode";
     license = licenses.mit;
+    mainProgram = "horcrux";
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }

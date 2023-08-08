@@ -31,6 +31,7 @@ buildGo120Module rec {
     inherit (src.meta) homepage;
     description = "TLSH lib in Golang";
     license = licenses.asl20;
+    mainProgram = "tlsh";
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }

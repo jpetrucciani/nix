@@ -31,6 +31,7 @@ buildGo120Module rec {
     inherit (src.meta) homepage;
     description = "Feature-rich terminal-based text viewer";
     license = licenses.mit;
+    mainProgram = "ov";
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }

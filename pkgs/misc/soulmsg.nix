@@ -21,6 +21,7 @@ buildGo120Module rec {
     description = "";
     homepage = "https://github.com/derricw/soulmsg";
     license = licenses.mit;
+    mainProgram = "soulmsg";
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }

@@ -22,6 +22,7 @@ buildGo120Module rec {
     inherit (src.meta) homepage;
     description = "Edit directly a file on Amazon S3 in CLI";
     license = licenses.mit;
+    mainProgram = "s3-edit";
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }

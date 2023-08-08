@@ -20,6 +20,7 @@ rustPlatform.buildRustPackage rec {
     description = "The blazingly fast touch alternative with a sprinkle of mkdir written in rust";
     homepage = "https://github.com/elliot40404/bonk";
     license = licenses.mit;
+    mainProgram = "bonk";
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }

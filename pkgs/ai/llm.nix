@@ -30,6 +30,7 @@ rustPlatform.buildRustPackage rec {
     description = "Run inference for Large Language Models on CPU, with Rust";
     homepage = "https://github.com/rustformers/llm";
     license = licenses.mit;
+    mainProgram = "llm";
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }

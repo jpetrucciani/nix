@@ -20,6 +20,7 @@ buildGo120Module rec {
     inherit (src.meta) homepage;
     description = "Simulating shitty network connections so you can build better systems";
     license = licenses.asl20;
+    mainProgram = "comcast";
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }

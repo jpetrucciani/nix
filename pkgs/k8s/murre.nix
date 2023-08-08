@@ -21,6 +21,7 @@ buildGo120Module rec {
     inherit (src.meta) homepage;
     description = "on-demand, scaleable source of container resource metrics for K8s";
     license = licenses.asl20;
+    mainProgram = "murre";
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }

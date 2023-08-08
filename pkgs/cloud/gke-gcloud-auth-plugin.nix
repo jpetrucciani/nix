@@ -48,4 +48,5 @@ stdenvNoCC.mkDerivation rec {
     mkdir -p $out/bin
     mv ./bin/gke-gcloud-auth-plugin $out/bin/gke-gcloud-auth-plugin
   '';
+  meta = { };
 }

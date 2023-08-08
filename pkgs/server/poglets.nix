@@ -33,6 +33,7 @@ buildGo120Module rec {
     inherit (src.meta) homepage;
     description = "";
     license = licenses.mit;
+    mainProgram = "poglets";
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }

@@ -57,5 +57,6 @@ stdenvNoCC.mkDerivation rec {
 
   meta = with lib; {
     license = licenses.mit;
+    mainProgram = "kubeshark";
   };
 }

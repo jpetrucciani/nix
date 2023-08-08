@@ -22,6 +22,7 @@ buildGo120Module rec {
     inherit (src.meta) homepage;
     description = "Dump, or continuously backup Kubernetes objects as yaml files in git";
     license = licenses.mit;
+    mainProgram = "katafygio";
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }

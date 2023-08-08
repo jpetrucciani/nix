@@ -16,6 +16,8 @@ This directory contains tooling related to various cloud providers
 
 ### [gofakes3.nix](./gofakes3.nix)
 
+### [headscale-ui.nix](./headscale-ui.nix)
+
 ### [s3-edit.nix](./s3-edit.nix)
 
 ### [terraform-cloud-exporter.nix](./terraform-cloud-exporter.nix)

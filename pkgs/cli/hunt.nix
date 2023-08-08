@@ -18,6 +18,7 @@ rustPlatform.buildRustPackage rec {
   meta = with lib; {
     description = "simplified find command made with rust";
     license = licenses.mit;
+    mainProgram = "hunt";
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }

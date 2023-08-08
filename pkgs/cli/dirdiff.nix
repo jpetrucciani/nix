@@ -19,6 +19,7 @@ rustPlatform.buildRustPackage rec {
     description = "Efficiently compute the differences between two directories";
     homepage = "https://github.com/ocamlpro/dirdiff";
     license = licenses.mit;
+    mainProgram = "dirdiff";
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }
