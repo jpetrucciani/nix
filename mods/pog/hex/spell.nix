@@ -15,6 +15,7 @@ let
     gitlab-runner = import ./k8s/gitlab-runner.nix params;
     helm = import ./k8s/helm.nix params;
     infisical = import ./k8s/infisical.nix params;
+    linkerd = import ./k8s/linkerd.nix params;
     nginx-ingress = import ./k8s/nginx-ingress.nix params;
     prometheus = import ./k8s/prometheus.nix params;
     rancher = import ./k8s/rancher.nix params;
