@@ -609,201 +609,199 @@ rec {
       flag = var.notEmpty;
       notFlag = var.empty;
     };
-    __functor = _: pogFn;
-  };
-  pogFn =
-    { name
-    , version ? "0.0.0"
-    , script
-    , description ? "a helpful bash script with flags, created through nix + pog!"
-    , flags ? [ ]
-    , parsedFlags ? map flag flags
-    , arguments ? [ ]
-    , argumentCompletion ? "files"
-    , bashBible ? false
-    , beforeExit ? ""
-    , strict ? false
-    , flagPadding ? 20
-    , showDefaultFlags ? false
-    , shortDefaultFlags ? true
-    }:
-    let
-      inherit (pog) helpers;
-      filterBlank = filter (x: x != "");
-      shortHelp = if shortDefaultFlags then "-h|" else "";
-      shortVerbose = if shortDefaultFlags then "-v|" else "";
-      shortHelpDoc = if shortDefaultFlags then "-h, " else "";
-      shortVerboseDoc = if shortDefaultFlags then "-v, " else "";
-      defaultFlagHelp = if showDefaultFlags then "[${shortHelp}--help] [${shortVerbose}--verbose] [--no-color] " else "";
-    in
-    prev.stdenv.mkDerivation {
-      inherit version;
-      pname = name;
-      dontUnpack = true;
-      nativeBuildInputs = [ prev.installShellFiles prev.shellcheck ];
-      passAsFile = [
-        "text"
-        "completion"
-      ];
-      text = ''
-        # shellcheck disable=SC2317
-        ${if strict then "set -o errexit -o pipefail -o noclobber" else ""}
-        VERBOSE="''${POG_VERBOSE-}"
-        NO_COLOR="''${POG_NO_COLOR-}"
-
-        help() {
-          cat <<EOF
-          Usage: ${name} ${defaultFlagHelp}${concatStringsSep " " (map (x: x.ex) parsedFlags)} ${concatStringsSep " " (map (x: upper x.name) arguments)}
-
-          ${description}
-
-          Flags:
-        ${ind (concatStringsSep "\n" (map (x: x.helpDoc) parsedFlags))}
-          ${rightPad flagPadding "${shortHelpDoc}--help"}${"\t"}print this help and exit
-          ${rightPad flagPadding "${shortVerboseDoc}--verbose"}${"\t"}enable verbose logging and info
-          ${rightPad flagPadding "--no-color"}${"\t"}disable color and other formatting
-        EOF
-          exit 0
-        }
-      
-        setup_colors() {
-          if [[ -t 2 ]] && [[ -z "''$NO_COLOR" ]] && [[ "''$TERM" != "dumb" ]]; then
-            ${concatStringsSep " " (map (x: ''${upper x.name}="${x.code}"'') bashColors)}
-          else
-            ${concatStringsSep " " (map (x: ''${upper x.name}=""'') bashColors)}
-          fi
-        }
-
-        OPTIONS="${if shortDefaultFlags then "h,v," else ""}${concatStringsSep "," (map (x: x.shortOpt) parsedFlags)}"
-        LONGOPTS="help,no-color,verbose,${concatStringsSep "," (map (x: x.longOpt) parsedFlags)}"
-
-        # shellcheck disable=SC2251
-        ! PARSED=$(${_.getopt} --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
-        if [[ ''${PIPESTATUS[0]} -ne 0 ]]; then
-            exit 2
-        fi
-        eval set -- "$PARSED"
-
-        # defaults
-        ${concatStringsSep "\n" (map (x: x.flagDefault) parsedFlags)}
-
-        while true; do
-          case "$1" in
-            ${shortHelp}--help)
-                help
-                ;;
-            ${shortVerbose}--verbose)
-                VERBOSE=1
-                shift
-                ;;
-            --no-color)
-                NO_COLOR=1
-                shift
-                ;;
-        ${ind (ind (concatStringsSep "\n" (map (x: x.definition) parsedFlags)))}
-            --)
-                shift
-                break
-                ;;
-            *)
-                echo "unknown flag passed"
-                exit 3
-                ;;
-          esac
-        done
-        debug() {
-          if [ -n "$VERBOSE" ]; then
-            echo -e "''${PURPLE}$1''${RESET}" >&2
-          fi
-        }
-        cleanup() {
-          trap - SIGINT SIGTERM ERR EXIT
-        ${ind beforeExit}
-        }
-        trap cleanup SIGINT SIGTERM ERR EXIT
-
-        ${concatStringsSep "\n" (map (x: ''
-          ${x.name}(){
-            echo -e "''${${upper x.name}}$1''${RESET}"
-          }
-        '') bashColors)}
-
-        die() {
-          local msg=$1
-          local code=''${2-1}
-          echo >&2 -e "''${RED}$msg''${RESET}"
-          exit "$code"
-        }
-        setup_colors
-        ${if bashBible then prev.bashbible.bible else ""}
-        ${concatStringsSep "\n" (filterBlank (map (x: x.flagPrompt) parsedFlags))}
-        # script
-        ${if builtins.isFunction script then script helpers else script}
-      '';
-      completion =
-        let
-          argCompletion =
-            if argumentCompletion == "files" then ''
-              compopt -o default
-              COMPREPLY=()
-            '' else ''
-              completions=$(${argumentCompletion} "$current")
-              # shellcheck disable=SC2207
-              COMPREPLY=( $(compgen -W "$completions" -- "$current") )
-            '';
-        in
-        ''
-          #!/bin/bash
+    __functor = _: { name
+                   , version ? "0.0.0"
+                   , script
+                   , description ? "a helpful bash script with flags, created through nix + pog!"
+                   , flags ? [ ]
+                   , parsedFlags ? map flag flags
+                   , arguments ? [ ]
+                   , argumentCompletion ? "files"
+                   , bashBible ? false
+                   , beforeExit ? ""
+                   , strict ? false
+                   , flagPadding ? 20
+                   , showDefaultFlags ? false
+                   , shortDefaultFlags ? true
+                   }:
+      let
+        inherit (pog) helpers;
+        filterBlank = filter (x: x != "");
+        shortHelp = if shortDefaultFlags then "-h|" else "";
+        shortVerbose = if shortDefaultFlags then "-v|" else "";
+        shortHelpDoc = if shortDefaultFlags then "-h, " else "";
+        shortVerboseDoc = if shortDefaultFlags then "-v, " else "";
+        defaultFlagHelp = if showDefaultFlags then "[${shortHelp}--help] [${shortVerbose}--verbose] [--no-color] " else "";
+      in
+      prev.stdenv.mkDerivation {
+        inherit version;
+        pname = name;
+        dontUnpack = true;
+        nativeBuildInputs = [ prev.installShellFiles prev.shellcheck ];
+        passAsFile = [
+          "text"
+          "completion"
+        ];
+        text = ''
           # shellcheck disable=SC2317
-          _${name}()
-          {
-            local current previous completions
-            compopt +o default
+          ${if strict then "set -o errexit -o pipefail -o noclobber" else ""}
+          VERBOSE="''${POG_VERBOSE-}"
+          NO_COLOR="''${POG_NO_COLOR-}"
 
-            flags(){
-              echo "\
-                ${if shortDefaultFlags then "-h -v " else ""}${concatStringsSep " " (map (x: "-${x.short}") (filter (x: x.short != "") parsedFlags))} \
-                --help --verbose --no-color ${concatStringsSep " " (map (x: "--${x.name}") parsedFlags)}"
-            }
-            executables(){
-              echo -n "$PATH" |
-                ${_.xargs} -d: -I{} -r -- find -L {} -maxdepth 1 -mindepth 1 -type f -executable -printf '%P\n' 2>/dev/null |
-                ${_.sort} -u
-            }
+          help() {
+            cat <<EOF
+            Usage: ${name} ${defaultFlagHelp}${concatStringsSep " " (map (x: x.ex) parsedFlags)} ${concatStringsSep " " (map (x: upper x.name) arguments)}
 
-            COMPREPLY=()
-            current="''${COMP_WORDS[COMP_CWORD]}"
-            previous="''${COMP_WORDS[COMP_CWORD-1]}"
+            ${description}
 
-            if [[ $current = -* ]]; then
-              completions=$(flags)
-              # shellcheck disable=SC2207
-              COMPREPLY=( $(compgen -W "$completions" -- "$current") )
-            ${concatStringsSep "\n" (map (x: x.completionBlock) parsedFlags)}
-            elif [[ $COMP_CWORD = 1 ]] || [[ $previous = -* && $COMP_CWORD = 2 ]]; then
-              ${argCompletion}
-            else
-              compopt -o default
-              COMPREPLY=()
-            fi
-            return 0
+            Flags:
+          ${ind (concatStringsSep "\n" (map (x: x.helpDoc) parsedFlags))}
+            ${rightPad flagPadding "${shortHelpDoc}--help"}${"\t"}print this help and exit
+            ${rightPad flagPadding "${shortVerboseDoc}--verbose"}${"\t"}enable verbose logging and info
+            ${rightPad flagPadding "--no-color"}${"\t"}disable color and other formatting
+          EOF
+            exit 0
           }
-          complete -F _${name} ${name}
+
+          setup_colors() {
+            if [[ -t 2 ]] && [[ -z "''$NO_COLOR" ]] && [[ "''$TERM" != "dumb" ]]; then
+              ${concatStringsSep " " (map (x: ''${upper x.name}="${x.code}"'') bashColors)}
+            else
+              ${concatStringsSep " " (map (x: ''${upper x.name}=""'') bashColors)}
+            fi
+          }
+
+          OPTIONS="${if shortDefaultFlags then "h,v," else ""}${concatStringsSep "," (map (x: x.shortOpt) parsedFlags)}"
+          LONGOPTS="help,no-color,verbose,${concatStringsSep "," (map (x: x.longOpt) parsedFlags)}"
+
+          # shellcheck disable=SC2251
+          ! PARSED=$(${_.getopt} --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
+          if [[ ''${PIPESTATUS[0]} -ne 0 ]]; then
+              exit 2
+          fi
+          eval set -- "$PARSED"
+
+          # defaults
+          ${concatStringsSep "\n" (map (x: x.flagDefault) parsedFlags)}
+
+          while true; do
+            case "$1" in
+              ${shortHelp}--help)
+                  help
+                  ;;
+              ${shortVerbose}--verbose)
+                  VERBOSE=1
+                  shift
+                  ;;
+              --no-color)
+                  NO_COLOR=1
+                  shift
+                  ;;
+          ${ind (ind (concatStringsSep "\n" (map (x: x.definition) parsedFlags)))}
+              --)
+                  shift
+                  break
+                  ;;
+              *)
+                  echo "unknown flag passed"
+                  exit 3
+                  ;;
+            esac
+          done
+          debug() {
+            if [ -n "$VERBOSE" ]; then
+              echo -e "''${PURPLE}$1''${RESET}" >&2
+            fi
+          }
+          cleanup() {
+            trap - SIGINT SIGTERM ERR EXIT
+          ${ind beforeExit}
+          }
+          trap cleanup SIGINT SIGTERM ERR EXIT
+
+          ${concatStringsSep "\n" (map (x: ''
+            ${x.name}(){
+              echo -e "''${${upper x.name}}$1''${RESET}"
+            }
+          '') bashColors)}
+
+          die() {
+            local msg=$1
+            local code=''${2-1}
+            echo >&2 -e "''${RED}$msg''${RESET}"
+            exit "$code"
+          }
+          setup_colors
+          ${if bashBible then prev.bashbible.bible else ""}
+          ${concatStringsSep "\n" (filterBlank (map (x: x.flagPrompt) parsedFlags))}
+          # script
+          ${if builtins.isFunction script then script helpers else script}
         '';
-      installPhase = ''
-        mkdir -p $out/bin
-        echo '#!/bin/bash' >$out/bin/${name}
-        cat $textPath >>$out/bin/${name}
-        chmod +x $out/bin/${name}
-        shellcheck $out/bin/${name}
-        shellcheck $completionPath
-        installShellCompletion --bash --name ${name} $completionPath
-      '';
-      meta = {
-        inherit description;
-        mainProgram = name;
+        completion =
+          let
+            argCompletion =
+              if argumentCompletion == "files" then ''
+                compopt -o default
+                COMPREPLY=()
+              '' else ''
+                completions=$(${argumentCompletion} "$current")
+                # shellcheck disable=SC2207
+                COMPREPLY=( $(compgen -W "$completions" -- "$current") )
+              '';
+          in
+          ''
+            #!/bin/bash
+            # shellcheck disable=SC2317
+            _${name}()
+            {
+              local current previous completions
+              compopt +o default
+
+              flags(){
+                echo "\
+                  ${if shortDefaultFlags then "-h -v " else ""}${concatStringsSep " " (map (x: "-${x.short}") (filter (x: x.short != "") parsedFlags))} \
+                  --help --verbose --no-color ${concatStringsSep " " (map (x: "--${x.name}") parsedFlags)}"
+              }
+              executables(){
+                echo -n "$PATH" |
+                  ${_.xargs} -d: -I{} -r -- find -L {} -maxdepth 1 -mindepth 1 -type f -executable -printf '%P\n' 2>/dev/null |
+                  ${_.sort} -u
+              }
+
+              COMPREPLY=()
+              current="''${COMP_WORDS[COMP_CWORD]}"
+              previous="''${COMP_WORDS[COMP_CWORD-1]}"
+
+              if [[ $current = -* ]]; then
+                completions=$(flags)
+                # shellcheck disable=SC2207
+                COMPREPLY=( $(compgen -W "$completions" -- "$current") )
+              ${concatStringsSep "\n" (map (x: x.completionBlock) parsedFlags)}
+              elif [[ $COMP_CWORD = 1 ]] || [[ $previous = -* && $COMP_CWORD = 2 ]]; then
+                ${argCompletion}
+              else
+                compopt -o default
+                COMPREPLY=()
+              fi
+              return 0
+            }
+            complete -F _${name} ${name}
+          '';
+        installPhase = ''
+          mkdir -p $out/bin
+          echo '#!/bin/bash' >$out/bin/${name}
+          cat $textPath >>$out/bin/${name}
+          chmod +x $out/bin/${name}
+          shellcheck $out/bin/${name}
+          shellcheck $completionPath
+          installShellCompletion --bash --name ${name} $completionPath
+        '';
+        meta = {
+          inherit description;
+          mainProgram = name;
+        };
       };
-    };
+  };
 
   flag =
     { name
