@@ -22,7 +22,7 @@ final: prev: with prev; rec {
     in
     buildPythonPackage rec {
       pname = "reflex";
-      version = "0.2.3";
+      version = "0.2.4";
       format = "pyproject";
 
 
@@ -30,7 +30,7 @@ final: prev: with prev; rec {
         owner = "reflex-dev";
         repo = pname;
         rev = "refs/tags/v${version}";
-        sha256 = "sha256-P0SKSljLM5iL9vw+MFcoh1lKGWTOZnOlpWmW54PwqX0=";
+        sha256 = "sha256-tHr3R9+445WRFY9nM2W1SwdfhTCDwyhn63smZhwC12o=";
       };
 
       propagatedBuildInputs = [
@@ -384,7 +384,7 @@ final: prev: with prev; rec {
 
   granian = buildPythonPackage rec {
     pname = "granian";
-    version = "0.2.3";
+    version = "0.2.4";
 
     format = "pyproject";
     src = pkgs.fetchFromGitHub {
