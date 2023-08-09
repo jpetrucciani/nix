@@ -561,7 +561,57 @@ rec {
   bashColorsList = concatStringsSep " " (map (x: x.name) (filter (x: x.name != "reset") bashColors));
 
   writeBashBinCheckedWithFlags = pog;
-  pog =
+  pog = {
+    helpers = rec {
+      fn = {
+        add = "${_.awk} '{print $1 + $2}'";
+        sub = "${_.awk} '{print $1 - $2}'";
+        ts_to_seconds = "${_.awk} -F\: '{ for(k=NF;k>0;k--) sum+=($k*(60^(NF-k))); print sum }'";
+      };
+      var = {
+        empty = name: ''[ -z "''${${name}}" ]'';
+        notEmpty = name: ''[ -n "''${${name}}" ]'';
+      };
+      file = {
+        exists = name: ''[ -f "''${${name}}" ]'';
+        notExists = name: ''[ ! -f "''${${name}}" ]'';
+        empty = name: ''[ ! -s "''${${name}}" ]'';
+        notEmpty = name: ''[ -s "''${${name}}" ]'';
+      };
+      timer = {
+        start = name: ''_pog_start_${name}="$(${_.date} +%s.%N)"'';
+        stop = name: ''"$(echo "$(${_.date} +%s.%N) - $_pog_start_${name}" | ${prev.pkgs.bc}/bin/bc -l)"'';
+        round = places: ''${prev.pkgs.coreutils}/bin/printf '%.*f\n' ${toString places}'';
+      };
+      confirm = yesno;
+      yesno = { prompt ? "Would you like to continue?", exit_code ? 0 }: ''
+        ${_.gum} confirm "${prompt}" || exit ${toString exit_code}
+      '';
+
+      spinner = { command, spinner ? "dot", align ? "left", title ? "processing..." }: ''
+        ${_.gum} spin --spinner="${spinner}" --align="${align}" --title="${title}" ${command}
+      '';
+      spinners = [
+        "line"
+        "dot"
+        "minidot"
+        "jump"
+        "pulse"
+        "points"
+        "globe"
+        "moon"
+        "monkey"
+        "meter"
+        "hamburger"
+      ];
+
+      # shorthands
+      flag = var.notEmpty;
+      notFlag = var.empty;
+    };
+    __functor = _: pogFn;
+  };
+  pogFn =
     { name
     , version ? "0.0.0"
     , script
@@ -578,53 +628,7 @@ rec {
     , shortDefaultFlags ? true
     }:
     let
-      helpers = rec {
-        fn = {
-          add = "${_.awk} '{print $1 + $2}'";
-          sub = "${_.awk} '{print $1 - $2}'";
-          ts_to_seconds = "${_.awk} -F\: '{ for(k=NF;k>0;k--) sum+=($k*(60^(NF-k))); print sum }'";
-        };
-        var = {
-          empty = name: ''[ -z "''${${name}}" ]'';
-          notEmpty = name: ''[ -n "''${${name}}" ]'';
-        };
-        file = {
-          exists = name: ''[ -f "''${${name}}" ]'';
-          notExists = name: ''[ ! -f "''${${name}}" ]'';
-          empty = name: ''[ ! -s "''${${name}}" ]'';
-          notEmpty = name: ''[ -s "''${${name}}" ]'';
-        };
-        timer = {
-          start = name: ''_pog_start_${name}="$(${_.date} +%s.%N)"'';
-          stop = name: ''"$(echo "$(${_.date} +%s.%N) - $_pog_start_${name}" | ${prev.pkgs.bc}/bin/bc -l)"'';
-          round = places: ''${prev.pkgs.coreutils}/bin/printf '%.*f\n' ${toString places}'';
-        };
-        confirm = yesno;
-        yesno = { prompt ? "Would you like to continue?", exit_code ? 0 }: ''
-          ${_.gum} confirm "${prompt}" || exit ${toString exit_code}
-        '';
-
-        spinner = { command, spinner ? "dot", align ? "left", title ? "processing..." }: ''
-          ${_.gum} spin --spinner="${spinner}" --align="${align}" --title="${title}" ${command}
-        '';
-        spinners = [
-          "line"
-          "dot"
-          "minidot"
-          "jump"
-          "pulse"
-          "points"
-          "globe"
-          "moon"
-          "monkey"
-          "meter"
-          "hamburger"
-        ];
-
-        # shorthands
-        flag = var.notEmpty;
-        notFlag = var.empty;
-      };
+      inherit (pog) helpers;
       filterBlank = filter (x: x != "");
       shortHelp = if shortDefaultFlags then "-h|" else "";
       shortVerbose = if shortDefaultFlags then "-v|" else "";
