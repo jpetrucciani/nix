@@ -1,6 +1,6 @@
 { hex, ... }:
 let
-  repo_url = "https://opensource.zalando.com/postgres-operator/charts";
+  repo_url = "https://opensource.zalando.com/postgres-operator/charts/postgres-operator";
   postgres = {
     operator = rec {
       defaults = {
@@ -42,7 +42,7 @@ let
         latest = v1-10-0;
         v1-10-0 = _v defaults.version defaults.sha256;
       };
-      chart_url = version: "${repo_url}/${defaults.name}-${version}.tgz";
+      chart_url = version: "${repo_url}-ui/${defaults.name}-${version}.tgz";
       chart =
         { name ? defaults.name
         , namespace ? defaults.namespace
