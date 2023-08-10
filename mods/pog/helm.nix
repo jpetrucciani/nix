@@ -142,6 +142,20 @@ rec {
       chart_url = "${base}/${name}-{1}.tgz";
     };
 
+  chart_scan_postgres-operator = let base = "https://opensource.zalando.com/postgres-operator/charts/postgres-operator"; in
+    _chart_scan rec {
+      name = "postgres-operator";
+      index_url = "${base}/index.yaml";
+      chart_url = "${base}/${name}-{1}.tgz";
+    };
+
+  chart_scan_postgres-operator-ui = let base = "https://opensource.zalando.com/postgres-operator/charts/postgres-operator-ui"; in
+    _chart_scan rec {
+      name = "postgres-operator-ui";
+      index_url = "${base}/index.yaml";
+      chart_url = "${base}/${name}-{1}.tgz";
+    };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
@@ -149,7 +163,11 @@ rec {
     chart_scan_external-secrets
     chart_scan_gitlab-runner
     chart_scan_infisical
+    chart_scan_linkerd-crds
+    chart_scan_linkerd-control-plane
     chart_scan_nfs
+    chart_scan_postgres-operator
+    chart_scan_postgres-operator-ui
     chart_scan_robusta
     chart_scan_sentry
     chart_scan_signoz
