@@ -117,7 +117,7 @@ let
       };
     in
     {
-      inherit _layers;
+      inherit _layers drvs fn;
       __functor = _:
         { name
         , layers
