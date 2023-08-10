@@ -35,129 +35,157 @@ let
     yq-go
   ];
 
-  foundry_v2 =
-    { name
-    , layers
-    , env ? [ ]
-    , registry ? "ghcr.io/jpetrucciani"
-    , author ? "j@cobi.dev"
-    , description ? "a foundry_v2 docker image built with nix"
-    , hostPkgs ? pkgs
-    , enableNix ? true
-    , pathsToLink ? [ "/bin" "/etc" "/lib" "/share" "/run" ]
-    , sysLayer ? true
-    , user ? "user"
-    , group ? "user"
-    , uid ? "1000"
-    , gid ? "1000"
-    , substituters ? [ "https://jacobi.cachix.org" ]
-    , trusted-public-keys ? [ "jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=" ]
-    , extraCopyToRoot ? [ ]
-    , extraPerms ? [ ]
-    , extraMkUser ? ""
-    }:
+  foundry =
     let
-      inherit (pkgs.nix2container.nix2container) buildLayer;
       inherit (pkgs.lib) toInt;
-      baseLayer = (with pkgs.dockerTools; [
-        binSh
-        caCertificates
-        fakeNss
-        usrBinEnv
-      ]) ++
-      (optionals sysLayer (with pkgs; [
-        bashInteractive
-        coreutils
-        curl
-        gnugrep
-        gnused
-        jq
-        util-linux
-      ] ++ (optionals enableNix [ nix ])));
-      allLayers = [ baseLayer ] ++ layers;
-
-      mkFolders = pkgs.runCommand "folders" { } ''
-        mkdir -p $out/tmp
-      '';
-
-      mkUser = pkgs.runCommand "mkUser" { } ''
-        mkdir -p $out/etc/pam.d $out/etc/nix
-        echo '${nixconf {inherit substituters trusted-public-keys; }}' >$out/etc/nix/nix.conf
-        echo '/bin/bash' >$out/etc/shells
-
-        echo "${user}:x:${uid}:${gid}::" > $out/etc/passwd
-        echo "${user}:!x:::::::" > $out/etc/shadow
-
-        echo "${group}:x:${gid}:" > $out/etc/group
-        echo "${group}:x::" > $out/etc/gshadow
-
-        cat > $out/etc/pam.d/other <<EOF
-        account sufficient pam_unix.so
-        auth sufficient pam_rootok.so
-        password requisite pam_unix.so nullok sha512
-        session required pam_unix.so
-        EOF
-
-        touch $out/etc/login.defs
-        mkdir -p $out/home/${user}
-        ${extraMkUser}
-      '';
-      entrypoint = pkgs.writeShellApplication {
-        name = "entrypoint";
-        text = ''
-          (nix doctor && ls -la /nix) >/tmp/setup 2>&1
-          exec "$@"
+      _layers = {
+        baseLayer = with pkgs.dockerTools; [
+          binSh
+          caCertificates
+          fakeNss
+          usrBinEnv
+        ];
+        coreLayer = with pkgs; [
+          bashInteractive
+          coreutils
+          curl
+          gnugrep
+          gnused
+          jq
+          util-linux
+        ];
+        nixLayer = with pkgs; [ nix ];
+      };
+      fn = {
+        perm =
+          { path
+          , user ? "user"
+          , group ? "user"
+          , uid ? "1000"
+          , gid ? "1000"
+          , regex ? ".*"
+          , mode ? "0744"
+          }: {
+            inherit mode path regex;
+            uname = user;
+            gname = group;
+            uid = toInt uid;
+            gid = toInt gid;
+          };
+      };
+      drvs = {
+        mkFolders = pkgs.runCommand "folders" { } ''
+          mkdir -p $out/tmp
         '';
+        mkUser =
+          { user ? "user"
+          , group ? "user"
+          , uid ? "1000"
+          , gid ? "1000"
+          , extraMkUser ? ""
+          , substituters ? [ "https://jacobi.cachix.org" ]
+          , trusted-public-keys ? [ "jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=" ]
+          }: (pkgs.runCommand "mkUser" { } ''
+            mkdir -p $out/etc/pam.d $out/etc/nix
+            echo '${nixconf {inherit substituters trusted-public-keys; }}' >$out/etc/nix/nix.conf
+            echo '/bin/bash' >$out/etc/shells
+
+            echo "${user}:x:${uid}:${gid}::" >$out/etc/passwd
+            echo "${user}:!x:::::::" >$out/etc/shadow
+
+            echo "${group}:x:${gid}:" >$out/etc/group
+            echo "${group}:x::" >$out/etc/gshadow
+
+            cat >$out/etc/pam.d/other <<EOF
+            account sufficient pam_unix.so
+            auth sufficient pam_rootok.so
+            password requisite pam_unix.so nullok sha512
+            session required pam_unix.so
+            EOF
+
+            touch $out/etc/login.defs
+            mkdir -p $out/home/${user}
+            ${extraMkUser}
+          '');
+        entrypoint = pkgs.writeShellApplication {
+          name = "entrypoint";
+          text = ''
+            (nix doctor && ls -la /nix) >/tmp/setup 2>&1
+            exec "$@"
+          '';
+        };
       };
     in
-    hostPkgs.nix2container.nix2container.buildImage {
-      name = "${registry}/${name}";
-      config = {
-        Entrypoint = [ "${entrypoint}/bin/entrypoint" ];
-        Env = env ++ (optionals enableNix [
-          "NIX_PAGER=cat"
-          "USER=${user}"
-          "HOME=/home/${user}"
-          "NIX_PATH=nixpkgs=${pkgs.path}"
-        ]);
-        Labels = {
-          "org.opencontainers.image.authors" = author;
-          "org.opencontainers.image.description" = description;
+    {
+      inherit _layers;
+      __functor = _:
+        { name
+        , layers
+        , env ? [ ]
+        , registry ? "ghcr.io/jpetrucciani"
+        , author ? "j@cobi.dev"
+        , description ? "a foundry_v2 docker image built with nix"
+        , hostPkgs ? pkgs
+        , enableNix ? true
+        , pathsToLink ? [ "/bin" "/etc" "/lib" "/share" "/run" ]
+        , sysLayer ? true
+        , user ? "user"
+        , group ? "user"
+        , uid ? "1000"
+        , gid ? "1000"
+        , substituters ? [ "https://jacobi.cachix.org" ]
+        , trusted-public-keys ? [ "jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=" ]
+        , extraCopyToRoot ? [ ]
+        , extraPerms ? [ ]
+        , extraMkUser ? ""
+        }:
+        let
+          inherit (pkgs.nix2container.nix2container) buildLayer;
+          allLayers = with _layers; [ baseLayer [ mkUser drvs.mkFolders ] ] ++ (optionals sysLayer [ coreLayer ]) ++ (optionals enableNix [ nixLayer ]) ++ layers;
+          mkUser = drvs.mkUser { inherit user group uid gid extraMkUser substituters trusted-public-keys; };
+        in
+        hostPkgs.nix2container.nix2container.buildImage {
+          name = "${registry}/${name}";
+          config = {
+            Entrypoint = [ "${drvs.entrypoint}/bin/entrypoint" ];
+            Env = env ++ (optionals enableNix [
+              "NIX_PAGER=cat"
+              "USER=${user}"
+              "HOME=/home/${user}"
+              "NIX_PATH=nixpkgs=${pkgs.path}"
+            ]);
+            Labels = {
+              "org.opencontainers.image.authors" = author;
+              "org.opencontainers.image.description" = description;
+            };
+            User = user;
+            WorkingDir = "/home/${user}";
+          };
+          copyToRoot = [
+            mkUser
+            drvs.mkFolders
+          ] ++ extraCopyToRoot;
+          perms = [
+            (fn.perm {
+              inherit uid gid user group;
+              path = mkUser;
+              regex = "/home/${user}";
+            })
+            (fn.perm {
+              inherit uid gid user group;
+              path = drvs.mkFolders;
+              regex = "/tmp";
+              mode = "1777";
+            })
+          ] ++ extraPerms;
+          layers = map (deps: buildLayer { copyToRoot = [ (pkgs.buildEnv { inherit pathsToLink; name = "layer"; paths = deps; }) ]; }) allLayers;
+          initializeNixDatabase = enableNix;
+          nixUid = toInt uid;
+          nixGid = toInt gid;
         };
-        User = user;
-        WorkingDir = "/home/${user}";
-      };
-      copyToRoot = [
-        mkUser
-        mkFolders
-      ] ++ extraCopyToRoot;
-      perms = [
-        {
-          path = mkUser;
-          regex = "/home/${user}";
-          mode = "0744";
-          uid = toInt uid;
-          gid = toInt gid;
-          uname = user;
-          gname = group;
-        }
-        {
-          path = mkFolders;
-          regex = "/tmp";
-          mode = "1777";
-          uid = toInt uid;
-          gid = toInt gid;
-          uname = user;
-          gname = group;
-        }
-      ] ++ extraPerms;
-      layers = map (deps: buildLayer { copyToRoot = [ (pkgs.buildEnv { inherit pathsToLink; name = "layer"; paths = deps; }) ]; }) allLayers;
-      initializeNixDatabase = enableNix;
-      nixUid = toInt uid;
-      nixGid = toInt gid;
     };
 
-  foundryNix = foundry_v2 {
+  foundryNix = foundry {
     name = "nix";
     description = "a baseline image with common tools and a working nix install";
     layers = with pkgs; [
@@ -178,7 +206,7 @@ let
       ])
     )
   ]);
-  foundryPython311 = foundry_v2 {
+  foundryPython311 = foundry {
     name = "python-3.11";
     description = "a baseline python 3.11 image with common tools and a working nix install";
     layers = [
@@ -186,7 +214,7 @@ let
       (_python_pkgs pkgs.python311 pkgs)
     ];
   };
-  foundryPython312 = foundry_v2 {
+  foundryPython312 = foundry {
     name = "python-3.12";
     description = "a baseline python 3.12 image with common tools and a working nix install";
     layers = [
@@ -194,7 +222,7 @@ let
       (_python_pkgs pkgs.python312 pkgs)
     ];
   };
-  foundry_k8s_aws = foundry_v2 {
+  foundry_k8s_aws = foundry {
     name = "k8s-aws";
     description = "a lightweight image with just bash, kubectl, and awscliv2";
     layers = [
@@ -202,7 +230,7 @@ let
       [ pkgs.kubectl ]
     ];
   };
-  foundry_k8s_gcp = foundry_v2 {
+  foundry_k8s_gcp = foundry {
     name = "k8s-gcp";
     description = "a lightweight image with just bash, kubectl, and gcloud cli";
     layers = [
@@ -212,7 +240,8 @@ let
   };
 in
 {
-  inherit foundry_v2;
+  inherit foundry;
+  foundry_v2 = foundry;
   nix = foundryNix;
   python311 = foundryPython311;
   python312 = foundryPython312;
