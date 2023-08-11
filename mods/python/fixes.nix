@@ -23,6 +23,13 @@ rec {
           doInstallCheck = false;
         }) else prev.curio;
 
+  twisted =
+    if isDarwin then
+      prev.twisted.overrideAttrs
+        (_: {
+          doCheck = false;
+        }) else prev.twisted;
+
   cherrypy = prev.cherrypy.overridePythonAttrs (old: {
     disabled = nonCurrentPython;
     doCheck = false;
