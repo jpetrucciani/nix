@@ -1,12 +1,12 @@
 final: prev: with prev; rec {
   langsmith = buildPythonPackage rec {
     pname = "langsmith";
-    version = "0.0.21";
+    version = "0.0.22";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-7JDdq2vu5sNEzw7Yrn1olIdAz5jhGd2XxXHzGQVVZE4=";
+      hash = "sha256-VybHhBKU2yqeWGPiBxiHjRbihyK9rzFponj/O9ovC+c=";
     };
 
     nativeBuildInputs = [
@@ -30,14 +30,14 @@ final: prev: with prev; rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.262";
+    version = "0.0.263";
     format = "pyproject";
 
     src = pkgs.fetchFromGitHub {
       owner = "hwchase17";
       repo = pname;
       rev = "refs/tags/v${version}";
-      hash = "sha256-a4wSmWm3wldDZazxntNRVn1cCjZDyGMp08OF6P6l/4U=";
+      hash = "sha256-/ReuUVSVO/JqfXFmGU/Yk5GAzmSuJvnr8zOTw3qLZvQ=";
     };
     sourceRoot = "source/libs/langchain";
 
