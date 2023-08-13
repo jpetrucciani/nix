@@ -199,7 +199,6 @@ in
               anybadge
               tabulate
               beautifulsoup4
-              praw
 
               # api
               fastapi
