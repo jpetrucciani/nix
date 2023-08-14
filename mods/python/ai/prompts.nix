@@ -133,19 +133,21 @@ final: prev: with prev; rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.7.17";
+    version = "0.8.1";
     format = "setuptools";
 
     src = prev.pkgs.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-2JncW5XX6JnvG+z2MDXpvPDRjKm+ed3sx230pPwRaWw=";
+      hash = "sha256-c7wSoqkbZ0eecfXbw6w5vgLA2piltqy/aUIV7I7ZC3U=";
     };
 
+    nativeBuildInputs = [
+      pythonRelaxDepsHook
+    ];
     nativeCheckInputs = [
       pytestCheckHook
-      pythonRelaxDepsHook
       nltk
       pillow
     ];
@@ -176,6 +178,7 @@ final: prev: with prev; rec {
       "tests/chat_engine/test_condense_question.py"
       "tests/chat_engine/test_simple.py"
       "tests/embeddings/test_base.py"
+      "tests/embeddings/test_utils.py"
       "tests/indices/document_summary/test_index.py"
       "tests/indices/document_summary/test_retrievers.py"
       "tests/indices/empty/test_base.py"
@@ -211,7 +214,6 @@ final: prev: with prev; rec {
       "tests/indices/vector_store/test_pinecone.py"
       "tests/indices/vector_store/test_retrievers.py"
       "tests/indices/vector_store/test_simple.py"
-      "tests/langchain_helpers/test_text_splitter.py"
       "tests/llm_predictor/vellum/test_predictor.py"
       "tests/llm_predictor/vellum/test_prompt_registry.py"
       "tests/llms/test_openai.py"
@@ -223,6 +225,8 @@ final: prev: with prev; rec {
       "tests/question_gen/test_llm_generators.py"
       "tests/selectors/test_llm_selectors.py"
       "tests/test_utils.py"
+      "tests/text_splitter/test_code_splitter.py"
+      "tests/text_splitter/test_sentence_splitter.py"
       "tests/token_predictor/test_base.py"
       "tests/tools/test_ondemand_loader.py"
     ];
