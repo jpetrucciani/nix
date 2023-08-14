@@ -1,12 +1,13 @@
 final: prev:
 with prev;
 rec {
-  _chart_scan = { name, index_url, chart_url, chart_name ? name, last ? 10 }:
+  _chart_scan = { name, index_url, chart_url, chart_name ? name, last ? 10, filter_out ? "" }:
     let
       mktemp = "${pkgs.coreutils}/bin/mktemp";
       jq = "${pkgs.jq}/bin/jq";
       yq = "${yq-go}/bin/yq";
       parallel = "${pkgs.parallel}/bin/parallel --will-cite --keep-order -j0 --colsep ' '";
+      _filter = if (builtins.stringLength filter_out) > 0 then ''${prev.gnused}/bin/sed -E -e '/${filter_out}/,+1d' | '' else "";
     in
     pog {
       name = "chart_scan_${name}";
@@ -22,7 +23,7 @@ rec {
         
         debug "pulled chart data to $temp_resp"
 
-        <"$temp_resp" ${yq} '.[].${chart_name}.[] | [{"version": .version, "date": .created}]' |
+        <"$temp_resp" ${yq} '.[].${chart_name}.[] | [{"version": .version, "date": .created}]' | ${_filter}
             ${coreutils}/bin/head -n ${toString (last * 2)} |
             ${yq} -o=json >"$temp_json"
 
@@ -156,6 +157,14 @@ rec {
       chart_url = "${base}/${name}-{1}.tgz";
     };
 
+  chart_scan_jupyterhub = let base = "https://hub.jupyter.org/helm-chart/"; in
+    _chart_scan rec {
+      name = "jupyterhub";
+      index_url = "${base}/index.yaml";
+      chart_url = "${base}/${name}-{1}.tgz";
+      filter_out = "alpha|beta|dev";
+    };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
@@ -163,6 +172,7 @@ rec {
     chart_scan_external-secrets
     chart_scan_gitlab-runner
     chart_scan_infisical
+    chart_scan_jupyterhub
     chart_scan_linkerd-crds
     chart_scan_linkerd-control-plane
     chart_scan_nfs

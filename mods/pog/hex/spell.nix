@@ -16,6 +16,7 @@ let
     gitlab-runner = import ./k8s/gitlab-runner.nix params;
     helm = import ./k8s/helm.nix params;
     infisical = import ./k8s/infisical.nix params;
+    jupyterhub = import ./k8s/jupyterhub.nix params;
     linkerd = import ./k8s/linkerd.nix params;
     nginx-ingress = import ./k8s/nginx-ingress.nix params;
     postgres = import ./k8s/postgres.nix params;

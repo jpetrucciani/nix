@@ -169,6 +169,7 @@ rec {
         mktemp = "${pkgs.coreutils}/bin/mktemp --suffix=.yaml";
         realpath = "${pkgs.coreutils}/bin/realpath";
         nix = "${pkgs.nix}/bin/nix";
+        sed = "${pkgs.gnused}/bin/sed";
       };
     in
     pog {
@@ -190,8 +191,11 @@ rec {
         fullpath="$(${_.realpath} "$spell")"
         debug "casting $fullpath - hex files at ${./hex}"
         ${_.nix} eval --raw --impure --expr "import ${./hex}/spell.nix ${prev.path} \"$fullpath\"" >"$spell_render"
-        debug "formatting $fullpath"
+        debug "formatting $spell_render"
         ${_.prettier} --parser "$format" "$spell_render" &>/dev/null
+        debug "removing blank docs in $spell_render"
+        # remove empty docs
+        ${_.sed} -E -z -i 's#---(\n+---)*#---#g' "$spell_render"
         cat "$spell_render"
       '';
     };
