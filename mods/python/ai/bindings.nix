@@ -387,7 +387,7 @@ rec {
   ctransformers =
     let
       name = "ctransformers";
-      version = "0.2.10";
+      version = "0.2.22";
       osSpecific =
         if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
         else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
@@ -402,12 +402,13 @@ rec {
         owner = "marella";
         repo = name;
         rev = "refs/tags/v${version}";
-        hash = "sha256-a/FM+Heo3ED78xgbJI2dOp3pFz6xyoqbIuGuD6Xmom4=";
+        hash = "sha256-6Mw8BDnFrgiBKUAwSbzyIl5UjW5g43xCKJv3sLTw+rE=";
         fetchSubmodules = true;
       };
 
       propagatedBuildInputs = [
         huggingface-hub
+        py-cpuinfo
       ];
       dontUseCmakeConfigure = true;
 
