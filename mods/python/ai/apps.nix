@@ -74,4 +74,46 @@ final: prev: with prev; {
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
+
+  chainforge = buildPythonPackage rec {
+    pname = "chainforge";
+    version = "0.2.5.3";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-zOSflYxezkqhGDXrw3ttbNqx3zU0rUYNWGLzSJizurc=";
+    };
+
+    propagatedBuildInputs = [
+      (anthropic.overridePythonAttrs (_: { doCheck = false; }))
+      asgiref
+      dalaipy
+      flask
+      flask-cors
+      google-generativeai
+      mistune
+      openai
+      requests
+      urllib3
+    ];
+
+    pythonRelaxDeps = [
+      "urllib3"
+    ];
+
+    nativeBuildInputs = [
+      pythonRelaxDepsHook
+    ];
+
+    pythonImportsCheck = [ "chainforge" ];
+
+    meta = with lib; {
+      description = "A Visual Programming Environment for Prompt Engineering";
+      homepage = "https://github.com/ianarawjo/ChainForge";
+      license = licenses.mit;
+      mainProgram = "chainforge";
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }

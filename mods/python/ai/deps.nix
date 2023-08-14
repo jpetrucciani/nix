@@ -925,4 +925,36 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  dalaipy = buildPythonPackage rec {
+    pname = "dalaipy";
+    version = "2.0.2";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-STGHZD73sNA6beogNP2de1tB8CCmK3Ty0rAOPFn5gjY=";
+    };
+
+    postPatch = ''
+      mv src/ dalaipy/
+    '';
+
+    nativeBuildInputs = [
+      setuptools
+    ];
+
+    propagatedBuildInputs = [
+      python-socketio
+    ];
+
+    pythonImportsCheck = [ "dalaipy" ];
+
+    meta = with lib; {
+      description = "A Python Wrapper for Dalai";
+      homepage = "https://github.com/wastella/dalaipy";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
