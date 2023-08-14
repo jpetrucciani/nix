@@ -85,6 +85,10 @@ final: prev: with prev; {
       hash = "sha256-zOSflYxezkqhGDXrw3ttbNqx3zU0rUYNWGLzSJizurc=";
     };
 
+    postPatch = ''
+      sed -i -E '/urllib3/d' ./setup.py
+    '';
+
     propagatedBuildInputs = [
       (anthropic.overridePythonAttrs (_: { doCheck = false; }))
       asgiref
