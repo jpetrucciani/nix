@@ -77,7 +77,7 @@ final: prev: with prev; rec {
         faiss-cpu
         google-api-python-client
         google-search-results
-        # gptcache
+        gptcache
         huggingface-hub
         jina
         jinja2
@@ -115,10 +115,6 @@ final: prev: with prev; rec {
         transformers
       ];
     };
-
-    postPatch = ''
-      sed -i -E '/gptcache/d' ./pyproject.toml
-    '';
 
     pythonImportsCheck = [ "langchain" ];
 
@@ -258,14 +254,10 @@ final: prev: with prev; rec {
         hash = "sha256-tQpDJprxctKI88F+CZ9aSJbVo7tjmI4+VrI+WO4QlxE=";
       };
 
-      postPatch = ''
-        sed -i -E '/gptcache/d' setup.py
-      '';
-
       propagatedBuildInputs = [
         aiohttp
         diskcache
-        # gptcache
+        gptcache
         msal
         nest-asyncio
         numpy
