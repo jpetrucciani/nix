@@ -6,15 +6,17 @@ let
     defaults = {
       name = "external-secrets";
       namespace = "external-secrets";
-      version = "0.9.2";
-      sha256 = "0ay81mbz2rj5mj3rpnnh9fx2cfl8ydal2850gq5jd502rgxv5rnq";
+      version = "0.9.3";
+      sha256 = "03sgvx2d67qw43k57ks7z7jgycm18m78r2sp8n0frrn8iv8zv5pc";
       store_name = "gsm";
     };
     version = rec {
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
-      latest = v0-9-2;
-      v0-9-2 = _v defaults.version defaults.sha256;
+      latest = v0-9-3;
+      v0-9-3 = _v defaults.version defaults.sha256;
+      v0-9-2 = _v "0.9.2" "0ay81mbz2rj5mj3rpnnh9fx2cfl8ydal2850gq5jd502rgxv5rnq";
       v0-9-1 = _v "0.9.1" "07xcshz6mm2avpfnp806r5bla0aypld0i38kc2ckarqclqwkkvqr";
+      v0-8-7 = _v "0.8.7" "0q8pzcxix151b3jsiszz1la6fl98nkwxi7bimhm2zyy0ws532lc0";
       v0-8-6 = _v "0.8.6" "1kimv1kha5614j0aspnk191yzwcbij2p4sw5xvhdxffc5vs3zkc0";
       v0-8-5 = _v "0.8.5" "1hgm886856ijk46spz8pcdks4wpnjg9wn39sw6y6ib26qhl4bn1r";
       v0-8-4 = _v "0.8.4" "1r22vpxrz4skgk14ixlkfyaphyk71wnzpjk989hknzywqysshxb3";
