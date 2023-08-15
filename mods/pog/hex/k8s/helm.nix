@@ -54,37 +54,32 @@ let
         };
         preRenderText = if isFunction preRender then preRender hookParams else preRender;
         postRenderText = if isFunction postRender then postRender hookParams else postRender;
-        template =
-          let
-            temp = "./rendered.yaml";
-          in
-          pkgs.runCommand "${name}-${version}-rendered.yaml" { } ''
-            cp -r ${chartFiles}/* .
-            ${preRenderText}
-            ${pkgs.kubernetes-helm}/bin/helm template \
-              --namespace '${namespace}' \
-              --kube-version '${kubeVersion}' \
-              ${_if includeCRDs "--include-crds"} \
-              ${name} \
-              ${concatMapStrings (x: "--values ${x} ") values} \
-              ${concatMapStrings (x: "--set '${x}' ") sets} \
-              ${concatMapStrings (x: "${x} ") extraFlags} \
-              . >${temp}
+        template = pkgs.runCommand "${name}-${version}-rendered.yaml" { } ''
+          cp -r ${chartFiles}/* .
+          ${preRenderText}
+          ${pkgs.kubernetes-helm}/bin/helm template \
+            --namespace '${namespace}' \
+            --kube-version '${kubeVersion}' \
+            ${_if includeCRDs "--include-crds"} \
+            ${name} \
+            ${concatMapStrings (x: "--values ${x} ") values} \
+            ${concatMapStrings (x: "--set '${x}' ") sets} \
+            ${concatMapStrings (x: "${x} ") extraFlags} \
+            . >$out
 
-            # remove empty docs
-            ${sed} -E -z -i 's#---(\n+---)*#---#g' ${temp}
+          # remove empty docs
+          ${sed} -E -z -i 's#---(\n+---)*#---#g' $out
 
-            # force namespace (optional)
-            ${_if forceNamespace ''${yq} e -i '(select (tag == "!!map" or tag== "!!seq") | .metadata.namespace) = "${namespace}"' ${temp}''}
-            ${_if forceNamespace ''${yq} e -i 'with (.items[]; .metadata.namespace = "${namespace}")' ${temp}''}
-            ${_if forceNamespace ''${yq} e -i 'del(.items | select(length==0))' ${temp}''}
-            ${_if forceNamespace ''${sed} -E -z -i 's#---(\n+\{\}\n+---)*#---#g' ${temp}''}
-            ${postRenderText}
-            ${_if sortYaml ''${yaml_sort} <${temp} >${temp}.tmp''}
-            ${_if sortYaml ''mv ${temp}.tmp ${temp}''}
-            ${_if prettify ''${prettier} --parser yaml ${temp}''}
-            cp ${temp} $out
-          '';
+          # force namespace (optional)
+          ${_if forceNamespace ''${yq} e -i '(select (tag == "!!map" or tag== "!!seq") | .metadata.namespace) = "${namespace}"' $out''}
+          ${_if forceNamespace ''${yq} e -i 'with (.items[]; .metadata.namespace = "${namespace}")' $out''}
+          ${_if forceNamespace ''${yq} e -i 'del(.items | select(length==0))' $out''}
+          ${_if forceNamespace ''${sed} -E -z -i 's#---(\n+\{\}\n+---)*#---#g' $out''}
+          ${postRenderText}
+          ${_if sortYaml ''${yaml_sort} <$out >$out.tmp''}
+          ${_if sortYaml ''mv $out.tmp $out''}
+          ${_if prettify ''${prettier} --parser yaml $out''}
+        '';
       };
   };
 in
