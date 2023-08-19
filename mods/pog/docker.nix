@@ -99,7 +99,7 @@ rec {
     drm
     drmi
     dshell
-    dlint
+    # dlint
     _dex
   ];
 }
