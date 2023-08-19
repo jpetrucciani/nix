@@ -253,7 +253,7 @@ rec {
       in
       helpers: with helpers; ''
         export USE_GKE_GCLOUD_AUTH_PLUGIN=True
-        ${file.notExists "$target"} && die "the file to render ('$target') does not exist!"
+        ${file.notExists "target"} && die "the file to render ('$target') does not exist!"
         rendered=$(${_.mktemp})
         diffed=$(${_.mktemp})
         debug "''${GREEN}render to '$rendered'"
