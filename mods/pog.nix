@@ -578,6 +578,12 @@ rec {
         empty = name: ''[ ! -s "''${${name}}" ]'';
         notEmpty = name: ''[ -s "''${${name}}" ]'';
       };
+      dir = {
+        exists = name: ''[ -d "''${${name}}" ]'';
+        notExists = name: ''[ ! -d "''${${name}}" ]'';
+        empty = name: ''[ -z "$(ls -A '${name}')" ]'';
+        notEmpty = name: ''[ ! -z "$(ls -A '${name}')" ]'';
+      };
       timer = {
         start = name: ''_pog_start_${name}="$(${_.date} +%s.%N)"'';
         stop = name: ''"$(echo "$(${_.date} +%s.%N) - $_pog_start_${name}" | ${prev.pkgs.bc}/bin/bc -l)"'';
