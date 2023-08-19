@@ -104,8 +104,8 @@ rec {
     ];
     script = helpers: with helpers; ''
       file="$1"
-      ${var.empty "$file"} && die "you must specify a source file!" 1
-      ${file.notExists "$file"} && die "the file '$file' does not exist!" 2
+      ${var.empty "file"} && die "you must specify a source file!" 1
+      ${file.notExists "file"} && die "the file '$file' does not exist!" 2
       ${var.empty "end"} && ${var.empty "duration"} && die "you must specify an end (-e|--end) or duration (-d|--duration)!" 3
       ${var.empty "output"} && output="''${file%.*}.cut.''${file##*.}"
         
