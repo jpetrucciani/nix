@@ -573,14 +573,14 @@ rec {
         notEmpty = name: ''[ -n "''${${name}}" ]'';
       };
       file = {
-        exists = name: ''[ -f "''${${name}}" ]'';
-        notExists = name: ''[ ! -f "''${${name}}" ]'';
-        empty = name: ''[ ! -s "''${${name}}" ]'';
-        notEmpty = name: ''[ -s "''${${name}}" ]'';
+        exists = name: ''[ -f "${name}" ]'';
+        notExists = name: ''[ ! -f "${name}" ]'';
+        empty = name: ''[ ! -s "${name}" ]'';
+        notEmpty = name: ''[ -s "${name}" ]'';
       };
       dir = {
-        exists = name: ''[ -d "''${${name}}" ]'';
-        notExists = name: ''[ ! -d "''${${name}}" ]'';
+        exists = name: ''[ -d "${name}" ]'';
+        notExists = name: ''[ ! -d "${name}" ]'';
         empty = name: ''[ -z "$(ls -A '${name}')" ]'';
         notEmpty = name: ''[ ! -z "$(ls -A '${name}')" ]'';
       };
