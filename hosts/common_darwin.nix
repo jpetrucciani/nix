@@ -81,6 +81,7 @@ in
             "font-hasklug-nerd-font"
           ];
           fun = [
+            "mgba"
             "spotify"
             "steam"
           ];
