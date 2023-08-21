@@ -693,6 +693,7 @@ in
 
       # disabled plugins
       aws.disabled = true;
+      battery.disabled = true;
       cmd_duration.disabled = false;
       gcloud.disabled = true;
       package.disabled = true;
