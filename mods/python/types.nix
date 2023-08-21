@@ -58,4 +58,44 @@
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  types-croniter = buildPythonPackage rec {
+    pname = "types-croniter";
+    version = "1.4.0.1";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-WCFojJO4dFALaGO4oWSo28Se/c7ZhdAMvd3AKbgQZ7g=";
+    };
+
+    pythonImportsCheck = [ "croniter-stubs" ];
+
+    meta = with lib; {
+      description = "Typing stubs for croniter";
+      homepage = "https://pypi.org/project/types-croniter/";
+      license = with licenses; [ ];
+      maintainers = with maintainers; [ ];
+    };
+  };
+
+  types-python-dateutil = buildPythonPackage rec {
+    pname = "types-python-dateutil";
+    version = "2.8.19.14";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-H08QrJi7ixat6dvuNRjZrOAXgh2UsFekJbBp+DRzf0s=";
+    };
+
+    pythonImportsCheck = [ "dateutil-stubs" ];
+
+    meta = with lib; {
+      description = "Typing stubs for python-dateutil";
+      homepage = "https://pypi.org/project/types-python-dateutil/";
+      license = with licenses; [ ];
+      maintainers = with maintainers; [ ];
+    };
+  };
 })
