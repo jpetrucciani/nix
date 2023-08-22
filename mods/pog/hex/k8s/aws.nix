@@ -40,10 +40,8 @@ in
       ---
       ${toYAML auth_map}
     '';
-  ecr_cron = { account_id, region ? defaults.region, image ? defaults.image, image_tag ? "latest", aws_secret ? "aws-ecr-creds", schedule ? "0 */8 * * *" }:
+  ecr_cron = { account_id, name ? "ecr-login", namespace ? "default", region ? defaults.region, image ? defaults.image, image_tag ? "latest", aws_secret ? "aws-ecr-creds", schedule ? "0 */8 * * *" }:
     let
-      name = "ecr-login";
-      namespace = "default";
       sa = components.service-account { inherit name; };
       role = components.role { inherit name; rules = [{ apiGroups = [ "" ]; resources = [ "secrets" ]; verbs = [ "get" "list" "create" "patch" "update" "delete" ]; }]; };
       rb = {
