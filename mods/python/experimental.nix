@@ -85,13 +85,13 @@ final: prev: with prev; rec {
 
   starlette-admin = buildPythonPackage rec {
     pname = "starlette-admin";
-    version = "0.9.0";
+    version = "0.11.1";
     format = "pyproject";
 
     src = fetchPypi {
       pname = "starlette_admin";
       inherit version;
-      hash = "sha256-BIE1XaH7VHzaIW64Pz228Pe4MCWPWwCitKC4rXD/hiU=";
+      hash = "sha256-VgihoOi3P7oLMgmwVA+9G+gWH9XoC7z9FoJ5Y/c+rFA=";
     };
 
     nativeBuildInputs = [
