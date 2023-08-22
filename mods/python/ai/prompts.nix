@@ -34,7 +34,7 @@ final: prev: with prev; rec {
     format = "pyproject";
 
     src = pkgs.fetchFromGitHub {
-      owner = "hwchase17";
+      owner = "langchain-ai";
       repo = pname;
       rev = "refs/tags/v${version}";
       hash = "sha256-rcpVQ36YVE8avdQ0OhYw4/1EQIItzHQ9rpiJ08abmHk=";
