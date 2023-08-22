@@ -40,7 +40,18 @@ in
       ---
       ${toYAML auth_map}
     '';
-  ecr_cron = { account_id, name ? "ecr-login", namespace ? "default", region ? defaults.region, image ? defaults.image, image_tag ? "latest", aws_secret ? "aws-ecr-creds", schedule ? "0 */8 * * *" }:
+  ecr_cron =
+    { account_id
+    , name ? "ecr-login"
+    , namespace ? "default"
+    , region ? defaults.region
+    , image ? defaults.image
+    , image_tag ? "latest"
+    , aws_secret ? "aws-ecr-creds"
+    , schedule ? "0 */8 * * *"
+    , failedJobsHistoryLimit ? 1
+    , successfulJobsHistoryLimit ? 1
+    }:
     let
       sa = components.service-account { inherit name namespace; };
       role = components.role { inherit name namespace; rules = [{ apiGroups = [ "" ]; resources = [ "secrets" ]; verbs = [ "get" "list" "create" "patch" "update" "delete" ]; }]; };
@@ -69,7 +80,7 @@ in
         "kubectl create secret docker-registry ${secret_name} ${secret_opts}"
       ];
       cron = hex.k8s.cron.build {
-        inherit name namespace schedule;
+        inherit name namespace schedule failedJobsHistoryLimit successfulJobsHistoryLimit;
         image = "${image}:${image_tag}";
         sa = "${name}-sa";
         command = "/bin/bash";
