@@ -51,7 +51,7 @@ in
           inherit name namespace;
         };
         roleRef = {
-          inherit name namespace;
+          inherit name;
           apiGroup = "rbac.authorization.k8s.io";
           kind = "Role";
         };
