@@ -22,7 +22,7 @@ final: prev: with prev; rec {
     in
     buildPythonPackage rec {
       pname = "reflex";
-      version = "0.2.4";
+      version = "0.2.5";
       format = "pyproject";
 
 
@@ -30,7 +30,7 @@ final: prev: with prev; rec {
         owner = "reflex-dev";
         repo = pname;
         rev = "refs/tags/v${version}";
-        sha256 = "sha256-tHr3R9+445WRFY9nM2W1SwdfhTCDwyhn63smZhwC12o=";
+        sha256 = "sha256-CIq4letaa0FUqQr856eo+b1dBvM4hvrIp62j3XLG/G4=";
       };
 
       propagatedBuildInputs = [
@@ -40,6 +40,7 @@ final: prev: with prev; rec {
         fastapi
         gunicorn
         httpx
+        platformdirs
         plotly
         poetry-core
         psutil
@@ -59,16 +60,18 @@ final: prev: with prev; rec {
       ];
 
       postPatch = ''
-        sed -i -E \
-          -e 's#BUN_PATH =.*#BUN_PATH = "${pkgs.bun}/bin/bun"#g' \
-          -e 's#NODE_BIN_PATH =.*#NODE_BIN_PATH = "${pkgs.nodejs_20}/bin"#g' \
-          ./reflex/constants.py
+        sed -i -E 's#DEFAULT_BUN_PATH =.*#DEFAULT_BUN_PATH = "${pkgs.bun}/bin/bun"#g' ./reflex/constants.py
+        sed -i -E -z 's#(NODE_BIN_PATH)(.*)\n\)#\1 = "${pkgs.nodejs_20}/bin"#g' ./reflex/constants.py
         ${relaxDeps [
           "alembic"
           "fastapi"
+          "gunicorn"
           "httpx"
+          "platformdirs"
           "python-dotenv"
           "python-multipart"
+          "starlette-admin"
+          "uvicorn"
           "watchdog"
         ]}
       '';
@@ -384,7 +387,7 @@ final: prev: with prev; rec {
 
   granian = buildPythonPackage rec {
     pname = "granian";
-    version = "0.2.4";
+    version = "0.2.5";
 
     format = "pyproject";
     src = pkgs.fetchFromGitHub {
