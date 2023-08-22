@@ -43,7 +43,7 @@ in
   ecr_cron = { account_id, name ? "ecr-login", namespace ? "default", region ? defaults.region, image ? defaults.image, image_tag ? "latest", aws_secret ? "aws-ecr-creds", schedule ? "0 */8 * * *" }:
     let
       sa = components.service-account { inherit name namespace; };
-      role = components.role { inherit name; rules = [{ apiGroups = [ "" ]; resources = [ "secrets" ]; verbs = [ "get" "list" "create" "patch" "update" "delete" ]; }]; };
+      role = components.role { inherit name namespace; rules = [{ apiGroups = [ "" ]; resources = [ "secrets" ]; verbs = [ "get" "list" "create" "patch" "update" "delete" ]; }]; };
       rb = {
         apiVersion = "rbac.authorization.k8s.io/v1";
         kind = "RoleBinding";
@@ -51,7 +51,7 @@ in
           inherit name namespace;
         };
         roleRef = {
-          inherit name;
+          inherit name namespace;
           apiGroup = "rbac.authorization.k8s.io";
           kind = "Role";
         };
