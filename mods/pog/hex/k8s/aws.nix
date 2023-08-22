@@ -69,7 +69,7 @@ in
         "kubectl create secret docker-registry ${secret_name} ${secret_opts}"
       ];
       cron = hex.k8s.cron.build {
-        inherit name schedule;
+        inherit name namespace schedule;
         image = "${image}:${image_tag}";
         sa = "${name}-sa";
         command = "/bin/bash";
