@@ -240,15 +240,15 @@ let
         };
         ${ifNotEmptyList imagePullSecrets "imagePullSecrets"} = imagePullSecrets;
       };
-      role = { name, rules, namespace ? "default" }: {
+      role = { name, rules, namespace ? "default", extraConfig ? { } }: {
         inherit rules;
         apiVersion = "rbac.authorization.k8s.io/v1";
         kind = "Role";
         metadata = {
           inherit name namespace;
         };
-      };
-      role-binding = { name, namespace ? "default", rbSuffix ? "-rb-view", saSuffix ? "-sa" }: {
+      } // extraConfig;
+      role-binding = { name, namespace ? "default", rbSuffix ? "-rb-view", saSuffix ? "-sa", extraConfig ? { } }: {
         apiVersion = "rbac.authorization.k8s.io/v1";
         kind = "RoleBinding";
         metadata = {
@@ -268,28 +268,36 @@ let
             name = "${name}${saSuffix}";
           }
         ];
-      };
-      network-policy = { name, labels, egress ? defaults.egressPolicy, ingress ? defaults.ingressPolicy, namespace ? "default", npSuffix ? "-np" }: {
-        apiVersion = "networking.k8s.io/v1";
-        kind = "NetworkPolicy";
-        metadata = {
-          inherit namespace;
-          name = "${name}${npSuffix}";
-          annotations = { } // hex.annotations;
-        };
-        spec = {
-          inherit egress ingress;
-          podSelector = {
-            matchLabels = labels;
+      } // extraConfig;
+      network-policy =
+        { name
+        , labels
+        , egress ? defaults.egressPolicy
+        , ingress ? defaults.ingressPolicy
+        , namespace ? "default"
+        , npSuffix ? "-np"
+        , extraConfig ? { }
+        }: {
+          apiVersion = "networking.k8s.io/v1";
+          kind = "NetworkPolicy";
+          metadata = {
+            inherit namespace;
+            name = "${name}${npSuffix}";
+            annotations = { } // hex.annotations;
           };
-          policyTypes = [
-            "Ingress"
-            "Egress"
-          ];
-        };
-      };
+          spec = {
+            inherit egress ingress;
+            podSelector = {
+              matchLabels = labels;
+            };
+            policyTypes = [
+              "Ingress"
+              "Egress"
+            ];
+          };
+        } // extraConfig;
 
-      hpa = { name, labels, namespace ? "default", min ? 2, max ? 4, cpuUtilization ? 80, hpaSuffix ? "-hpa" }: {
+      hpa = { name, labels, namespace ? "default", min ? 2, max ? 4, cpuUtilization ? 80, hpaSuffix ? "-hpa", extraConfig ? { } }: {
         apiVersion = "autoscaling/v1";
         kind = "HorizontalPodAutoscaler";
         metadata = {
@@ -307,95 +315,122 @@ let
           };
           targetCPUUtilizationPercentage = cpuUtilization;
         };
-      };
+      } // extraConfig;
 
-      service = { name, labels, port ? 443, altPort ? null, namespace ? "default", serviceSuffix ? "-service", extraServiceAnnotations ? { } }: {
-        apiVersion = "v1";
-        kind = "Service";
-        metadata = {
-          inherit namespace;
-          labels = {
+      service =
+        { name
+        , labels
+        , port ? 443
+        , altPort ? null
+        , namespace ? "default"
+        , serviceSuffix ? "-service"
+        , extraServiceAnnotations ? { }
+        , extraConfig ? { }
+        }: {
+          apiVersion = "v1";
+          kind = "Service";
+          metadata = {
+            inherit namespace;
+            labels = {
+              name = "${name}${serviceSuffix}";
+            };
             name = "${name}${serviceSuffix}";
+            annotations = { } // hex.annotations // extraServiceAnnotations;
           };
-          name = "${name}${serviceSuffix}";
-          annotations = { } // hex.annotations // extraServiceAnnotations;
-        };
-        spec = {
-          ports = [
-            {
-              inherit port;
-              name = "application";
-              targetPort = port;
+          spec = {
+            ports = [
+              {
+                inherit port;
+                name = "application";
+                targetPort = port;
+                protocol = "TCP";
+              }
+            ] ++ (if altPort != null then [{
+              port = altPort;
+              name = "application-alt";
+              targetPort = altPort;
               protocol = "TCP";
-            }
-          ] ++ (if altPort != null then [{
-            port = altPort;
-            name = "application-alt";
-            targetPort = altPort;
-            protocol = "TCP";
-          }] else [ ]);
-          selector = labels;
-          type = "ClusterIP";
-        };
-      };
+            }] else [ ]);
+            selector = labels;
+            type = "ClusterIP";
+          };
+        } // extraConfig;
 
-      nodeport-service = { name, labels, port ? 8080, namespace ? "default", serviceSuffix ? "-service", extraServiceAnnotations ? { } }: {
-        apiVersion = "v1";
-        kind = "Service";
-        metadata = {
-          inherit namespace;
-          labels = {
+      nodeport-service =
+        { name
+        , labels
+        , port ? 8080
+        , namespace ? "default"
+        , serviceSuffix ? "-service"
+        , extraServiceAnnotations ? { }
+        , extraConfig ? { }
+        }: {
+          apiVersion = "v1";
+          kind = "Service";
+          metadata = {
+            inherit namespace;
+            labels = {
+              name = "${name}${serviceSuffix}";
+            };
             name = "${name}${serviceSuffix}";
+            annotations = { } // hex.annotations // extraServiceAnnotations;
           };
-          name = "${name}${serviceSuffix}";
-          annotations = { } // hex.annotations // extraServiceAnnotations;
-        };
-        spec = {
-          ports = [
-            {
-              inherit port;
-              name = "application";
-              targetPort = port;
-              protocol = "TCP";
-            }
-          ];
-          selector = labels;
-          type = "NodePort";
-        };
-      };
+          spec = {
+            ports = [
+              {
+                inherit port;
+                name = "application";
+                targetPort = port;
+                protocol = "TCP";
+              }
+            ];
+            selector = labels;
+            type = "NodePort";
+          };
+        } // extraConfig;
 
-      lb-service = { name, labels, ip, port ? 443, altPort ? null, namespace ? "default", serviceSuffix ? "-service", extraServiceAnnotations ? { } }: {
-        apiVersion = "v1";
-        kind = "Service";
-        metadata = {
-          inherit namespace;
-          labels = {
+      lb-service =
+        { name
+        , labels
+        , ip
+        , port ? 443
+        , altPort ? null
+        , namespace ? "default"
+        , serviceSuffix ? "-service"
+        , extraServiceAnnotations ? { }
+        , extraConfig ? { }
+        }: {
+          apiVersion = "v1";
+          kind = "Service";
+          metadata = {
+            inherit namespace;
+            labels = {
+              name = "${name}${serviceSuffix}";
+            };
             name = "${name}${serviceSuffix}";
+            annotations = { } // hex.annotations // extraServiceAnnotations;
           };
-          name = "${name}${serviceSuffix}";
-          annotations = { } // hex.annotations // extraServiceAnnotations;
-        };
-        spec = {
-          ports = [
-            {
-              inherit port;
-              name = "application";
-              targetPort = port;
+          spec = {
+            ports = [
+              {
+                inherit port;
+                name = "application";
+                targetPort = port;
+                protocol = "TCP";
+              }
+            ] ++ (if altPort != null then [{
+              port = altPort;
+              name = "application-alt";
+              targetPort = altPort;
               protocol = "TCP";
-            }
-          ] ++ (if altPort != null then [{
-            port = altPort;
-            name = "application-alt";
-            targetPort = altPort;
-            protocol = "TCP";
-          }] else [ ]);
-          selector = labels;
-          type = "LoadBalancer";
-          loadBalancerIP = ip;
-          externalTrafficPolicy = "Local";
-          externalIPs = [ ip ];
-        };
-      };
+            }] else [ ]);
+            selector = labels;
+            type = "LoadBalancer";
+            loadBalancerIP = ip;
+            externalTrafficPolicy = "Local";
+            externalIPs = [ ip ];
+          };
+        } // extraConfig;
 
       deployment =
         let

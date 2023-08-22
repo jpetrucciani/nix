@@ -24,30 +24,30 @@ let
       tags = [ "k8s" "proxy" ];
       cidr = "100.64.0.0/10";
     };
-    sa = name: {
+    sa = { name, namespace ? "default", extraConfig ? { } }: {
       apiVersion = "v1";
       kind = "ServiceAccount";
       metadata = {
-        inherit name;
+        inherit name namespace;
         annotations = { } // hex.annotations;
       };
-    };
-    secret = name: {
+    } // extraConfig;
+    secret = { name, namespace ? "default", extraConfig ? { } }: {
       apiVersion = "v1";
       kind = "Secret";
       metadata = {
-        inherit name;
+        inherit name namespace;
         annotations = { } // hex.annotations;
       };
       stringData = {
         nop = "nop";
       };
-    };
-    role = name: {
+    } // extraConfig;
+    role = { name, namespace ? "default", extraConfig ? { } }: {
       apiVersion = "rbac.authorization.k8s.io/v1";
       kind = "Role";
       metadata = {
-        inherit name;
+        inherit name namespace;
         annotations = { } // hex.annotations;
       };
       rules = [
@@ -63,12 +63,12 @@ let
           verbs = [ "get" "update" "patch" ];
         }
       ];
-    };
-    role-binding = name: {
+    } // extraConfig;
+    role-binding = { name, namespace ? "default", extraConfig ? { } }: {
       apiVersion = "rbac.authorization.k8s.io/v1";
       kind = "RoleBinding";
       metadata = {
-        inherit name;
+        inherit name namespace;
         annotations = { } // hex.annotations;
       };
       subjects = [
@@ -82,13 +82,12 @@ let
         kind = "Role";
         apiGroup = "rbac.authorization.k8s.io";
       };
-
-    };
-    network-policy = { name, cidr ? defaults.cidr }: {
+    } // extraConfig;
+    network-policy = { name, namespace ? "default", cidr ? defaults.cidr, extraConfig ? { } }: {
       apiVersion = "networking.k8s.io/v1";
       kind = "NetworkPolicy";
       metadata = {
-        inherit name;
+        inherit name namespace;
         annotations = { } // hex.annotations;
       };
       spec = {
@@ -100,11 +99,12 @@ let
           "Egress"
         ];
       };
-    };
+    } // extraConfig;
 
     proxy = rec {
       build =
         { name
+        , namespace ? "default"
         , destination_ip ? null
         , cidr ? defaults.cidr
         , tailscale_image ? "${tailscale_image_base}:${tailscale_image_tag}"
@@ -122,20 +122,21 @@ let
         , hostAliases ? [ ]
         }: ''
           ---
-          ${toYAML (sa name)}
+          ${toYAML (sa {inherit name namespace;})}
           ---
-          ${toYAML (secret name)}
+          ${toYAML (secret {inherit name namespace;})}
           ---
-          ${toYAML (role name)}
+          ${toYAML (role {inherit name namespace;})}
           ---
-          ${toYAML (role-binding name)}
+          ${toYAML (role-binding {inherit name namespace;})}
           ---
-          ${toYAML (network-policy {inherit name cidr;})}
+          ${toYAML (network-policy {inherit name namespace cidr;})}
           ---
-          ${toYAML (deployment {inherit name destination_ip tailscale_image all_tags cpu memory userspace exit_node subnet_router_cidr bind_local hostAliases;})}
+          ${toYAML (deployment {inherit name namespace destination_ip tailscale_image all_tags cpu memory userspace exit_node subnet_router_cidr bind_local hostAliases;})}
         '';
       deployment =
         { name
+        , namespace
         , destination_ip
         , tailscale_image
         , all_tags
@@ -156,7 +157,7 @@ let
           apiVersion = "apps/v1";
           kind = "Deployment";
           metadata = {
-            inherit name;
+            inherit name namespace;
             annotations = { } // hex.annotations;
           };
           spec = {
@@ -228,6 +229,7 @@ let
         { name
         , gcp_project
         , cloudsql_instance
+        , namespace ? "default"
         , gcp_region ? "us-west1"
         , cidr ? defaults.cidr
         , tailscale_image ? "${tailscale_image_base}:${tailscale_image_tag}"
@@ -250,20 +252,21 @@ let
         , hostAliases ? [ ]
         }: ''
           ---
-          ${toYAML (sa name)}
+          ${toYAML (sa {inherit name namespace;})}
           ---
-          ${toYAML (secret name)}
+          ${toYAML (secret {inherit name namespace;})}
           ---
-          ${toYAML (role name)}
+          ${toYAML (role {inherit name namespace;})}
           ---
-          ${toYAML (role-binding name)}
+          ${toYAML (role-binding {inherit name namespace;})}
           ---
-          ${toYAML (network-policy {inherit name cidr;})}
+          ${toYAML (network-policy {inherit name namespace cidr;})}
           ---
-          ${toYAML (deployment {inherit name tailscale_image cloudsql_image memory cpu gcp_project gcp_region cloudsql_instance secret_name port all_tags tailscale_cpu tailscale_memory userspace exit_node hostAliases;})}
+          ${toYAML (deployment {inherit name namespace tailscale_image cloudsql_image memory cpu gcp_project gcp_region cloudsql_instance secret_name port all_tags tailscale_cpu tailscale_memory userspace exit_node hostAliases;})}
         '';
       deployment =
         { name
+        , namespace
         , tailscale_image
         , cloudsql_image
         , memory
@@ -289,7 +292,7 @@ let
           apiVersion = "apps/v1";
           kind = "Deployment";
           metadata = {
-            inherit name;
+            inherit name namespace;
             annotations = { } // hex.annotations;
           };
           spec = {
