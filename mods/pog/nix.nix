@@ -3,9 +3,10 @@ with prev;
 rec {
   nixup = pog {
     name = "nixup";
-    version = "0.0.3";
-    description = "a quick tool to create a base nix environment!";
+    version = "0.0.4";
+    description = "a quick tool to create/update a base default.nix environment!";
     flags = [
+      { name = "update"; bool = true; description = "update the pin to jpetrucciani in the given file (argument 1) [default: ./default.nix]"; }
       _.flags.nix.with_crystal
       _.flags.nix.with_db_pg
       _.flags.nix.with_db_redis
@@ -25,7 +26,7 @@ rec {
     script = h:
       ''
         directory="$(pwd | ${_.sed} 's#.*/##')"
-        jacobi=$(${nix_hash_jpetrucciani}/bin/nix_hash_jpetrucciani);
+        jacobi=$(${nix_hash_jpetrucciani}/bin/nix_hash_jpetrucciani 2>/dev/null);
         rev=$(echo "$jacobi" | ${_.jq} -r '.rev')
         sha=$(echo "$jacobi" | ${_.jq} -r '.sha256')
         toplevel=""
@@ -89,14 +90,18 @@ rec {
         if [ "$with_vlang" = "1" ]; then
           vlang="vlang = [(vlang.withPackages (p: with p; []))];"
         fi
+        ftb="fetchTarball { \nname = \"jacobi-$(date '+%F')\"; url = \"https://github.com/jpetrucciani/nix/archive/$rev.tar.gz\"; sha256 = \"$sha\"; }"
+        if ${h.flag "update"}; then
+          default_nix="''${1:-./default.nix}"
+          ${h.file.notExists "default_nix"} && die "the nix file to update ('$default_nix') does not exist!"
+          echo "updating '$default_nix' to '$rev'"
+          ${_.sed} -i -E -z 's#(fetchTarball[\s]*).*(jpetrucciani|nix\.cobi\.dev).*\}[\s]*\)#'"$ftb"')#g' "$default_nix"
+          ${_.nixpkgs-fmt} "$default_nix" 2>/dev/null
+          exit 0
+        fi
         ${prev.coreutils}/bin/cat -s <<EOF | ${_.nixpkgs-fmt}
           { pkgs ? import
-              (fetchTarball {
-                  name = "jacobi-$(date '+%F')";
-                  url = "https://nix.cobi.dev/x/$rev";
-                  sha256 = "$sha";
-              })
-              {}
+              ($ftb) {}
           }:
           let
             name = "$directory";

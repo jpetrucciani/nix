@@ -34,17 +34,21 @@ This overlay contains fixes for current broken python packages in nixpkgs
 
 This overlay contains interesting hax related to python packages
 
+### [loaders.nix](./loaders.nix)
+
+This overlay contains libraries that help in loading/parsing various file types
+
 ### [misc.nix](./misc.nix)
 
 This overlay is for random python libraries I want in nixpkgs
 
-### [notebook.nix](./notebook.nix)
+### [notebooks.nix](./notebooks.nix)
 
 This overlay is for jupyter notebook specific packages
 
 ### [pr.nix](./pr.nix)
 
-This overlay is specifically for python packages [I have active PRs out for in nixpkgs proper](https://github.com/NixOS/nixpkgs/pulls?q=is%3Apr+is%3Aopen+sort%3Aupdated-desc+author%3Ajpetrucciani)
+This overlay is specifically for python packages [I used to have active PRs out for in nixpkgs proper](https://github.com/NixOS/nixpkgs/pulls?q=is%3Apr+is%3Aopen+sort%3Aupdated-desc+author%3Ajpetrucciani)
 
 ### [types.nix](./types.nix)
 
