@@ -18,6 +18,7 @@ let
         python-dotenv
         python-multipart
         requests
+        transformers
         tweepy
 
         # text
