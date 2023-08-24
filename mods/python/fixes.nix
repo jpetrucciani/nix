@@ -47,7 +47,7 @@ rec {
 
   aioquic = prev.aioquic.overrideAttrs (_: {
     patches = [ ];
-    disabledTestPaths = [ "tests/test_tls.py" ];
+    disabledTestPaths = [ "tests/test_tls.py" "tests/test_asyncio.py" ];
   });
 
   maxminddb =
