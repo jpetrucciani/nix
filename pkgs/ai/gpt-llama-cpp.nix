@@ -1,4 +1,4 @@
-{ fetchFromGitHub, buildNpmPackage, bash, nodejs_20, python310, llama-cpp }:
+{ fetchFromGitHub, buildNpmPackage, bash, nodejs_20, python311, llama-cpp }:
 let
   src = fetchFromGitHub {
     owner = "keldenl";
@@ -6,7 +6,7 @@ let
     rev = "1c8b1c1ae85a80c343a8979046d95d0abc5ec377";
     hash = "sha256-r2u4edbkpBM70GwmvEQV4MhaBBpF0Aic1uMYwyNGZ4U=";
   };
-  python = python310.withPackages (p: with p; [
+  python = python311.withPackages (p: with p; [
     numpy
     sentence-transformers
     sentencepiece
