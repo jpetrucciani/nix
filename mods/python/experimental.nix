@@ -22,7 +22,7 @@ final: prev: with prev; rec {
     in
     buildPythonPackage rec {
       pname = "reflex";
-      version = "0.2.5";
+      version = "0.2.6";
       format = "pyproject";
 
 
@@ -30,7 +30,7 @@ final: prev: with prev; rec {
         owner = "reflex-dev";
         repo = pname;
         rev = "refs/tags/v${version}";
-        sha256 = "sha256-CIq4letaa0FUqQr856eo+b1dBvM4hvrIp62j3XLG/G4=";
+        sha256 = "sha256-t6pBy37AtliEAlWuKdO7w0cehpHRbRyzmZQAJzwaB4k=";
       };
 
       propagatedBuildInputs = [
@@ -57,7 +57,7 @@ final: prev: with prev; rec {
         sqlmodel
         starlette-admin
         typer
-      ];
+      ] ++ (lib.optionals stdenv.isLinux [ distro ]);
 
       postPatch = ''
         sed -i -E 's#DEFAULT_BUN_PATH =.*#DEFAULT_BUN_PATH = "${pkgs.bun}/bin/bun"#g' ./reflex/constants.py
@@ -387,7 +387,7 @@ final: prev: with prev; rec {
 
   granian = buildPythonPackage rec {
     pname = "granian";
-    version = "0.2.5";
+    version = "0.2.6";
 
     format = "pyproject";
     src = pkgs.fetchFromGitHub {
