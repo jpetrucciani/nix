@@ -90,7 +90,7 @@ rec {
         if [ "$with_vlang" = "1" ]; then
           vlang="vlang = [(vlang.withPackages (p: with p; []))];"
         fi
-        ftb="fetchTarball { \nname = \"jacobi-$(date '+%F')\"; url = \"https://github.com/jpetrucciani/nix/archive/$rev.tar.gz\"; sha256 = \"$sha\";"
+        ftb="fetchTarball { \nname = \"jpetrucciani-$(date '+%F')\"; url = \"https://github.com/jpetrucciani/nix/archive/$rev.tar.gz\"; sha256 = \"$sha\";"
         if ${h.flag "update"}; then
           default_nix="''${1:-./default.nix}"
           ${h.file.notExists "default_nix"} && die "the nix file to update ('$default_nix') does not exist!"
