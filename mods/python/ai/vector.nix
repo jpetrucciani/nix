@@ -5,12 +5,12 @@ final: prev: with prev; {
     in
     buildPythonPackage rec {
       pname = "chromadb";
-      version = "0.4.6";
+      version = "0.4.7";
       format = "pyproject";
 
       src = fetchPypi {
         inherit pname version;
-        hash = "sha256-gX+Lt5FXQXA5FuUnVWGEqyEy88qoQRMH4gFcrX0cewM=";
+        hash = "sha256-coKquP18+B8L9V9aBWvcOsoVv1aje3EexT+rFEC15vc=";
       };
 
       nativeBuildInputs = [
@@ -26,6 +26,7 @@ final: prev: with prev; {
       ];
 
       propagatedBuildInputs = [
+        bcrypt
         chroma-hnswlib
         clickhouse-connect
         duckdb
