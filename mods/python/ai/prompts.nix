@@ -30,14 +30,14 @@ final: prev: with prev; rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.271";
+    version = "0.0.272";
     format = "pyproject";
 
     src = pkgs.fetchFromGitHub {
       owner = "langchain-ai";
       repo = pname;
       rev = "refs/tags/v${version}";
-      hash = "sha256-JUPfCc9k++4nAJ1TMPQ2QlHFCYsRr6s2wsFV5bDHb/4=";
+      hash = "sha256-OckE67LaVAvN6mtK3MrFUmMY4qQHXmCLq2Sl8uuptOQ=";
     };
     sourceRoot = "source/libs/langchain";
 
@@ -49,6 +49,7 @@ final: prev: with prev; rec {
       aiohttp
       beautifulsoup4
       dataclasses-json
+      google-api-core
       jinja2
       langsmith
       numexpr
