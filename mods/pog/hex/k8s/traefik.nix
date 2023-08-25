@@ -241,7 +241,7 @@ let
             ];
             routes = [
               {
-                inherit middlewares;
+                ${ifNotEmptyList middlewares "middlewares"} = middlewares;
                 kind = "Rule";
                 match = "Host(`${domain}`)";
                 services = [
