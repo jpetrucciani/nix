@@ -51,26 +51,26 @@ rec {
 
   chart_scan_argo-cd = _chart_scan {
     name = "argo-cd";
-    index_url = "https://argoproj.github.io/argo-helm/index.yaml";
+    base_url = "https://argoproj.github.io/argo-helm";
     chart_url = "https://github.com/argoproj/argo-helm/releases/download/argo-cd-{1}/argo-cd-{1}.tgz";
     last = 100;
   };
 
   chart_scan_authentik = _chart_scan {
     name = "authentik";
-    index_url = "https://charts.goauthentik.io/index.yaml";
+    base_url = "https://charts.goauthentik.io";
     chart_url = "https://github.com/goauthentik/helm/releases/download/authentik-{1}/authentik-{1}.tgz";
   };
 
   chart_scan_datadog = _chart_scan {
     name = "datadog";
-    index_url = "https://helm.datadoghq.com/index.yaml";
+    base_url = "https://helm.datadoghq.com";
     chart_url = "https://github.com/DataDog/helm-charts/releases/download/datadog-{1}/datadog-{1}.tgz";
   };
 
   chart_scan_external-secrets = _chart_scan {
     name = "external-secrets";
-    index_url = "https://charts.external-secrets.io/index.yaml";
+    base_url = "https://charts.external-secrets.io";
     chart_url = "https://github.com/external-secrets/external-secrets/releases/download/helm-chart-{1}/external-secrets-{1}.tgz";
   };
 
@@ -82,20 +82,19 @@ rec {
   chart_scan_traefik = let base = "https://traefik.github.io/charts"; in
     _chart_scan {
       name = "traefik";
-      index_url = "${base}/index.yaml";
+      base_url = base;
       chart_url = "${base}/traefik/traefik-{1}.tgz";
     };
 
   chart_scan_stackstorm = _chart_scan {
     name = "stackstorm";
     chart_name = "stackstorm-ha";
-    index_url = "https://helm.stackstorm.com/index.yaml";
-    chart_url = "https://helm.stackstorm.com/stackstorm-ha-{1}.tgz";
+    base_url = "https://helm.stackstorm.com";
   };
 
   chart_scan_signoz = _chart_scan {
     name = "signoz";
-    index_url = "https://charts.signoz.io/index.yaml";
+    base_url = "https://charts.signoz.io";
     chart_url = "https://github.com/SigNoz/charts/releases/download/signoz-{1}/signoz-{1}.tgz";
   };
 
@@ -108,7 +107,7 @@ rec {
     _chart_scan {
       name = "nfs";
       chart_name = chart;
-      index_url = "https://kubernetes-sigs.github.io/${chart}/index.yaml";
+      base_url = "https://kubernetes-sigs.github.io/${chart}";
       chart_url = "https://github.com/kubernetes-sigs/${chart}/releases/download/${chart}-{1}/${chart}-{1}.tgz";
     };
 
