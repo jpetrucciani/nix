@@ -175,15 +175,23 @@ rec {
         realpath = "${pkgs.coreutils}/bin/realpath";
         nix = "${pkgs.nix}/bin/nix";
         sed = "${pkgs.gnused}/bin/sed";
+        yq = lib.getExe pkgs.yq-go;
       };
     in
     pog {
       name = "hexrender";
+      version = "0.0.2";
       description = "a quick and easy way to use nix to render various other types of config files!";
       flags = [
         {
           name = "format";
+          description = "the output format to use";
           default = "yaml";
+        }
+        {
+          name = "crds";
+          description = "filter to only the crds";
+          bool = true;
         }
       ];
       arguments = [
@@ -201,12 +209,14 @@ rec {
         debug "removing blank docs in $spell_render"
         # remove empty docs
         ${_.sed} -E -z -i 's#---(\n+---)*#---#g' "$spell_render"
+        ${flag "crds"} && ${_.yq} e -i '. | select(.kind == "CustomResourceDefinition")' "$spell_render"
         cat "$spell_render"
       '';
     };
 
   hex = pog {
     name = "hex";
+    version = "0.0.2";
     description = "a quick and easy way to render full kubespecs from nix files";
     flags = [
       {
@@ -230,6 +240,16 @@ rec {
       #   bool = true;
       # }
       {
+        name = "crds";
+        description = "filter down to just the CRDs (useful for initial deployments)";
+        bool = true;
+      }
+      {
+        name = "clientside";
+        short = "";
+        bool = true;
+      }
+      {
         name = "prettify";
         description = "whether to run prettier on the hex output yaml";
         bool = true;
@@ -249,21 +269,23 @@ rec {
           apply = "apply";
         };
         _ = {
-          k = "${pkgs.kubectl}/bin/kubectl";
-          hr = "${hexrender}/bin/hexrender";
-          delta = "${pkgs.delta}/bin/delta";
+          k = lib.getExe' pkgs.kubectl "kubectl";
+          hr = lib.getExe hexrender;
+          delta = lib.getExe' delta "delta";
           mktemp = "${pkgs.coreutils}/bin/mktemp";
           prettier = "${pkgs.nodePackages.prettier}/bin/prettier --write --config ${../../.prettierrc.js}";
         };
       in
       helpers: with helpers; ''
         export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+        side="true"
+        ${flag "clientside"} && side="false"
         ${file.notExists "target"} && die "the file to render ('$target') does not exist!"
         rendered=$(${_.mktemp})
         diffed=$(${_.mktemp})
         debug "''${GREEN}render to '$rendered'"
         ${timer.start steps.render}
-        ${_.hr} "$target" >"$rendered"
+        ${_.hr} ''${crds:+--crds} "$target" >"$rendered"
         render_exit_code=$?
         render_runtime=${timer.stop steps.render}
         debug "''${GREEN}rendered to '$rendered' in $render_runtime''${RESET}"
@@ -277,13 +299,13 @@ rec {
         fi
         if ${flag "force"}; then
           ${timer.start steps.apply}
-          ${pkgs.kubectl}/bin/kubectl apply -f "$rendered"
+          ${_.k} apply --server-side="$side" -f "$rendered"
           apply_runtime=${timer.stop steps.apply}
           debug "''${GREEN}force applied '$rendered' in $apply_runtime''${RESET}"
           exit 0
         fi
         ${timer.start steps.diff}
-        ${_.k} diff -f "$rendered" >"$diffed"
+        ${_.k} diff --server-side="$side" -f "$rendered" >"$diffed"
         diff_exit_code=$?
         diff_runtime=${timer.stop steps.diff}
         debug "''${GREEN}diffed '$rendered' to '$diffed' in $diff_runtime [exit code $diff_exit_code]''${RESET}"
@@ -302,7 +324,7 @@ rec {
         ${confirm {prompt="Would you like to apply these changes?";}}
         echo "---"
         ${timer.start steps.apply}
-        ${_.k} apply -f "$rendered"
+        ${_.k} apply --server-side="$side" -f "$rendered"
         apply_runtime=${timer.stop steps.apply}
         debug "''${GREEN}applied '$rendered' in $apply_runtime''${RESET}"
       '';
