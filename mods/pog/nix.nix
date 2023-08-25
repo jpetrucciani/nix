@@ -299,13 +299,13 @@ rec {
         fi
         if ${flag "force"}; then
           ${timer.start steps.apply}
-          ${_.k} apply --server-side="$side" -f "$rendered"
+          ${_.k} apply --force-conflicts --server-side="$side" -f "$rendered"
           apply_runtime=${timer.stop steps.apply}
           debug "''${GREEN}force applied '$rendered' in $apply_runtime''${RESET}"
           exit 0
         fi
         ${timer.start steps.diff}
-        ${_.k} diff --server-side="$side" -f "$rendered" >"$diffed"
+        ${_.k} diff --force-conflicts --server-side="$side" -f "$rendered" >"$diffed"
         diff_exit_code=$?
         diff_runtime=${timer.stop steps.diff}
         debug "''${GREEN}diffed '$rendered' to '$diffed' in $diff_runtime [exit code $diff_exit_code]''${RESET}"
@@ -324,7 +324,7 @@ rec {
         ${confirm {prompt="Would you like to apply these changes?";}}
         echo "---"
         ${timer.start steps.apply}
-        ${_.k} apply --server-side="$side" -f "$rendered"
+        ${_.k} apply --force-conflicts --server-side="$side" -f "$rendered"
         apply_runtime=${timer.stop steps.apply}
         debug "''${GREEN}applied '$rendered' in $apply_runtime''${RESET}"
       '';
