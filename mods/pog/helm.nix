@@ -1,7 +1,15 @@
 final: prev:
 with prev;
 rec {
-  _chart_scan = { name, index_url, chart_url, chart_name ? name, last ? 10, filter_out ? "" }:
+  _chart_scan =
+    { name
+    , base_url
+    , index_url ? "${base_url}/index.yaml"
+    , chart_url ? "${base_url}/${name}-{1}.tgz"
+    , chart_name ? name
+    , last ? 10
+    , filter_out ? ""
+    }:
     let
       mktemp = "${pkgs.coreutils}/bin/mktemp";
       jq = "${pkgs.jq}/bin/jq";
@@ -66,12 +74,10 @@ rec {
     chart_url = "https://github.com/external-secrets/external-secrets/releases/download/helm-chart-{1}/external-secrets-{1}.tgz";
   };
 
-  chart_scan_gitlab-runner = let base = "https://gitlab-charts.s3.amazonaws.com"; in
-    _chart_scan {
-      name = "gitlab-runner";
-      index_url = "${base}/index.yaml";
-      chart_url = "${base}/gitlab-runner-{1}.tgz";
-    };
+  chart_scan_gitlab-runner = _chart_scan {
+    name = "gitlab-runner";
+    base_url = "https://gitlab-charts.s3.amazonaws.com";
+  };
 
   chart_scan_traefik = let base = "https://traefik.github.io/charts"; in
     _chart_scan {
@@ -93,12 +99,10 @@ rec {
     chart_url = "https://github.com/SigNoz/charts/releases/download/signoz-{1}/signoz-{1}.tgz";
   };
 
-  chart_scan_infisical = let base = "https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts"; in
-    _chart_scan {
-      name = "infisical";
-      index_url = "${base}/index.yaml";
-      chart_url = "${base}/infisical-{1}.tgz";
-    };
+  chart_scan_infisical = _chart_scan {
+    name = "infisical";
+    base_url = "https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts";
+  };
 
   chart_scan_nfs = let chart = "nfs-subdir-external-provisioner"; in
     _chart_scan {
@@ -108,62 +112,52 @@ rec {
       chart_url = "https://github.com/kubernetes-sigs/${chart}/releases/download/${chart}-{1}/${chart}-{1}.tgz";
     };
 
-  chart_scan_robusta = let base = "https://robusta-charts.storage.googleapis.com"; in
-    _chart_scan {
-      name = "robusta";
-      index_url = "${base}/index.yaml";
-      chart_url = "${base}/robusta-{1}.tgz";
-    };
+  chart_scan_robusta = _chart_scan {
+    name = "robusta";
+    base_url = "https://robusta-charts.storage.googleapis.com";
+  };
 
-  chart_scan_airbyte = let base = "https://airbytehq.github.io/helm-charts"; in
-    _chart_scan {
-      name = "airbyte";
-      index_url = "${base}/index.yaml";
-      chart_url = "${base}/airbyte-{1}.tgz";
-    };
+  chart_scan_airbyte = _chart_scan {
+    name = "airbyte";
+    base_url = "https://airbytehq.github.io/helm-charts";
+  };
 
-  chart_scan_sentry = let base = "https://sentry-kubernetes.github.io/charts"; in
-    _chart_scan rec {
-      name = "sentry";
-      index_url = "${base}/index.yaml";
-      chart_url = "${base}/${name}-{1}.tgz";
-    };
+  chart_scan_sentry = _chart_scan {
+    name = "sentry";
+    base_url = "https://sentry-kubernetes.github.io/charts";
+  };
 
-  chart_scan_linkerd-crds = let base = "https://helm.linkerd.io/stable"; in
-    _chart_scan rec {
-      name = "linkerd-crds";
-      index_url = "${base}/index.yaml";
-      chart_url = "${base}/${name}-{1}.tgz";
-    };
+  chart_scan_linkerd-crds = _chart_scan {
+    name = "linkerd-crds";
+    base_url = "https://helm.linkerd.io/stable";
+  };
 
-  chart_scan_linkerd-control-plane = let base = "https://helm.linkerd.io/stable"; in
-    _chart_scan rec {
-      name = "linkerd-control-plane";
-      index_url = "${base}/index.yaml";
-      chart_url = "${base}/${name}-{1}.tgz";
-    };
+  chart_scan_linkerd-control-plane = _chart_scan {
+    name = "linkerd-control-plane";
+    base_url = "https://helm.linkerd.io/stable";
+  };
 
-  chart_scan_postgres-operator = let base = "https://opensource.zalando.com/postgres-operator/charts/postgres-operator"; in
-    _chart_scan rec {
-      name = "postgres-operator";
-      index_url = "${base}/index.yaml";
-      chart_url = "${base}/${name}-{1}.tgz";
-    };
+  chart_scan_postgres-operator = _chart_scan {
+    name = "postgres-operator";
+    base_url = "https://opensource.zalando.com/postgres-operator/charts/postgres-operator";
+  };
 
-  chart_scan_postgres-operator-ui = let base = "https://opensource.zalando.com/postgres-operator/charts/postgres-operator-ui"; in
-    _chart_scan rec {
-      name = "postgres-operator-ui";
-      index_url = "${base}/index.yaml";
-      chart_url = "${base}/${name}-{1}.tgz";
-    };
+  chart_scan_postgres-operator-ui = _chart_scan {
+    name = "postgres-operator-ui";
+    base_url = "https://opensource.zalando.com/postgres-operator/charts/postgres-operator-ui";
+  };
 
-  chart_scan_jupyterhub = let base = "https://hub.jupyter.org/helm-chart/"; in
-    _chart_scan rec {
-      name = "jupyterhub";
-      index_url = "${base}/index.yaml";
-      chart_url = "${base}/${name}-{1}.tgz";
-      filter_out = "alpha|beta|dev";
-    };
+  chart_scan_jupyterhub = _chart_scan {
+    name = "jupyterhub";
+    base_url = "https://hub.jupyter.org/helm-chart";
+    filter_out = "alpha|beta|dev";
+  };
+
+  chart_scan_kube-prometheus-stack = _chart_scan rec {
+    name = "kube-prometheus-stack";
+    base_url = "https://prometheus-community.github.io/helm-charts";
+    chart_url = "https://github.com/prometheus-community/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
+  };
 
   helm_pog_scripts = [
     chart_scan_argo-cd
@@ -173,6 +167,7 @@ rec {
     chart_scan_gitlab-runner
     chart_scan_infisical
     chart_scan_jupyterhub
+    chart_scan_kube-prometheus-stack
     chart_scan_linkerd-crds
     chart_scan_linkerd-control-plane
     chart_scan_nfs
