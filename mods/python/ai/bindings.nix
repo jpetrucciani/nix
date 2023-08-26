@@ -387,7 +387,7 @@ rec {
   ctransformers =
     let
       name = "ctransformers";
-      version = "0.2.22";
+      version = "0.2.24";
       osSpecific =
         if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
         else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
@@ -402,7 +402,7 @@ rec {
         owner = "marella";
         repo = name;
         rev = "refs/tags/v${version}";
-        hash = "sha256-6Mw8BDnFrgiBKUAwSbzyIl5UjW5g43xCKJv3sLTw+rE=";
+        hash = "sha256-Ub+1z7A4kabQiuL+E2UlHzwY6dFZHSYR4VuFk9ancTY=";
         fetchSubmodules = true;
       };
 
