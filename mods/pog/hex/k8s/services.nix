@@ -165,12 +165,13 @@ let
         rb = (components.role-binding {
           inherit name namespace rbSuffix saSuffix;
         }) // extraRB;
-        ts_r = hex.k8s.tailscale.role "${name}${tsSuffix}";
+        ts_r = hex.k8s.tailscale.role { inherit namespace; name = "${name}${tsSuffix}"; };
         ts_rb = {
           apiVersion = "rbac.authorization.k8s.io/v1";
           kind = "RoleBinding";
           metadata = {
             name = "${name}-tailscale";
+            inherit namespace;
           };
           roleRef = {
             apiGroup = "rbac.authorization.k8s.io";
@@ -184,7 +185,7 @@ let
             }
           ];
         };
-        ts_secret = hex.k8s.tailscale.secret "${name}${tsSuffix}";
+        ts_secret = hex.k8s.tailscale.secret { inherit namespace; name = "${name}${tsSuffix}"; };
         np = (components.network-policy {
           inherit name namespace labels npSuffix;
           egress = egressPolicy;
