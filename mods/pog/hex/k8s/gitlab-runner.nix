@@ -4,23 +4,19 @@ let
     defaults = {
       name = "gitlab-runner";
       namespace = "gitlab";
-      version = "0.54.0";
-      sha256 = "0pmikfklgw68ryngkyjj2swcr13fjjq6iaxf4gvq5pvl9w13q9dm";
+      version = "0.56.0";
+      sha256 = "061i3cmklm0d4v6h92mci0i072ak7f31zb86i6sg92gflwadvpgj";
     };
     version = rec {
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
       latest = v0-54-0;
+      v0-56-0 = _v "0.56.0" "061i3cmklm0d4v6h92mci0i072ak7f31zb86i6sg92gflwadvpgj";
+      v0-55-0 = _v "0.55.0" "18nfn57b6hwd3px43qjpnhf4hz9a13266z32wpi7vv3drmhfvmb0";
       v0-54-0 = _v "0.54.0" "0pmikfklgw68ryngkyjj2swcr13fjjq6iaxf4gvq5pvl9w13q9dm";
       v0-53-2 = _v "0.53.2" "0nr2ikp5xgrd5hi4vhsfbfm91lx66yr61brh4rijk4v6ci4lqk4w";
       v0-52-1 = _v "0.52.1" "0wwn77rj47g2scs2byrmnlk68vhmmq00721ai1mzrzx0i5smd307";
       v0-51-1 = _v "0.51.1" "1si0w6nj1hacanq8hjjjbfgqp9c7wal1mic08m7n4mszg8fl9n05";
       v0-50-1 = _v "0.50.1" "1i80asaxdpm2pdvya924lix1qwxq9zn89vr19a6jw42fyr74rvyf";
-      v0-49-2 = _v "0.49.3" "122ybk10bfmk613ira789zhmqqpcq8pba6nm2pc1ld5sadylf8d3";
-      v0-48-2 = _v "0.48.3" "1n82lknri9amlj8h1z12kzc004zrfcwif2ch1xrqa7rxzgzrhr4x";
-      v0-47-3 = _v "0.47.3" "1cinfqyizbdi5na0av4vdgax4j3czaf4rywxf4npryhw6z5dlybj";
-      v0-46-1 = _v "0.46.1" "065hhf1z5kgv9vidyq0zld19qm3rgqhppkzlyy0nsyz4vl1cik56";
-      v0-45-1 = _v "0.45.1" "0pzgpa29f7lxcsf3jd11jib6fb65f5yj76jn2np8a2nlip58v3lz";
-      v0-44-3 = _v "0.44.3" "1mgqswh98bg13a0ng1m2wh26vrkcmpk7vxfi8bjknb58z1ndncvq";
     };
     chart_url = version: "https://gitlab-charts.s3.amazonaws.com/gitlab-runner-${version}.tgz";
     chart =
