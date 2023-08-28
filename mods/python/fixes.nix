@@ -128,4 +128,39 @@ rec {
     '';
     propagatedBuildInputs = old.propagatedBuildInputs ++ [ prev.pycryptodome ];
   });
+
+  emoji_1 = prev.buildPythonPackage rec {
+    pname = "emoji";
+    version = "1.7.0";
+    format = "setuptools";
+
+    disabled = pythonOlder "3.7";
+
+    src = prev.pkgs.fetchFromGitHub {
+      owner = "carpedm20";
+      repo = pname;
+      rev = "refs/tags/v${version}";
+      hash = "sha256-vKQ51RP7uy57vP3dOnHZRSp/Wz+YDzeLUR8JnIELE/I=";
+    };
+
+    nativeCheckInputs = [
+      prev.pytestCheckHook
+    ];
+
+    disabledTests = [
+      "test_emojize_name_only"
+    ];
+
+    pythonImportsCheck = [
+      "emoji"
+    ];
+
+    meta = with prev.pkgs.lib; {
+      description = "Emoji for Python";
+      homepage = "https://github.com/carpedm20/emoji/";
+      changelog = "https://github.com/carpedm20/emoji/blob/v${version}/CHANGES.md";
+      license = licenses.bsd3;
+      maintainers = with maintainers; [ joachifm ];
+    };
+  };
 }

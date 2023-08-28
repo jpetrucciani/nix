@@ -962,4 +962,116 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  clean-text = buildPythonPackage rec {
+    pname = "clean-text";
+    version = "0.6.0";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-g3SzhfwqJuBjg/Yq7Qdvpr4RXlgyI54qf9izRPqNKrI=";
+    };
+
+    postPatch = ''
+      substituteInPlace ./pyproject.toml --replace "poetry.masonry.api" "poetry.core.masonry.api"
+    '';
+
+    nativeBuildInputs = [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = [
+      emoji_1
+      ftfy
+    ];
+
+    passthru.optional-dependencies = {
+      gpl = [
+        unidecode
+      ];
+      sklearn = [
+        pandas
+        scikit-learn
+      ];
+    };
+
+    pythonImportsCheck = [ "cleantext" ];
+
+    meta = with lib; {
+      description = "Functions to preprocess and normalize text";
+      homepage = "https://pypi.org/project/clean-text/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  textsum = buildPythonPackage rec {
+    pname = "textsum";
+    version = "0.2.0";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-WjoPyCAci9teBB2X2I0Ckz8ZPuVvV3a5bbxV4zcXfBQ=";
+    };
+
+    nativeBuildInputs = [
+      setuptools
+      setuptools-scm
+    ];
+
+    propagatedBuildInputs = [
+      accelerate
+      clean-text
+      fire
+      importlib-metadata
+      natsort
+      nltk
+      torch
+      tqdm
+      transformers
+    ];
+
+    passthru.optional-dependencies = {
+      all = [
+        bitsandbytes
+        gradio
+        optimum
+        pyspellchecker
+        python-doctr
+        rapidfuzz
+      ];
+      app = [
+        gradio
+        pyspellchecker
+        python-doctr
+        rapidfuzz
+      ];
+      optimum = [
+        optimum
+      ];
+      pdf = [
+        pyspellchecker
+        python-doctr
+      ];
+      testing = [
+        pytest
+        pytest-cov
+        setuptools
+      ];
+      unidecode = [
+        unidecode
+      ];
+    };
+
+    pythonImportsCheck = [ "textsum" ];
+
+    meta = with lib; {
+      description = "Utility for using transformers summarization models on text docs";
+      homepage = "https://pypi.org/project/textsum/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
