@@ -1,12 +1,12 @@
 final: prev: with prev; rec {
   langsmith = buildPythonPackage rec {
     pname = "langsmith";
-    version = "0.0.26";
+    version = "0.0.27";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-gKTvG2Y6JKRg0luZhqsgEMXQa2Bhxlvkc6uvwGR9GRo=";
+      hash = "sha256-xN9oDui/iNN/VroZYEg0GEfEi1CuVhcZxVQu9kiBcOU=";
     };
 
     nativeBuildInputs = [
