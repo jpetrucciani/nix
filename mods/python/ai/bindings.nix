@@ -14,19 +14,19 @@ rec {
       llama-cpp-pin = pkgs.fetchFromGitHub {
         owner = "ggerganov";
         repo = "llama.cpp";
-        rev = "3af6b86301ddfb11bb68e91dfc030b611b0d8426";
-        hash = "sha256-72vFK1D+8HluNxBbVWwhlOST7ccDjjl5b5lIXWRz50Y=";
+        rev = "06abf8eebabe086ca4003dee2754ab45032cd3fd";
+        hash = "sha256-w04LlhXlYZwjgGcH73OBP53ds1jPESWtBLTbwenNHQo=";
       };
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
-      version = "0.1.82";
+      version = "0.1.83";
       format = "pyproject";
       src = pkgs.fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-842wQbUYFXLVm3UpGGWKBnoy49MeiR6+ZwrmuJkJLH8=";
+        hash = "sha256-IaE1vKqhDpVLHnRx0RcZOkcAUI4apAtNf+i9Hz8eCQI=";
       };
 
       cuda = false;
@@ -41,13 +41,18 @@ rec {
       '';
       preBuild = ''
         cd ..
+        sed -E -i \
+          -e '/"ninja/d' \
+          -e '/"cmake/d' \
+          ./pyproject.toml
       '';
       buildInputs = osSpecific;
 
-      nativeBuildInputs = [
+      nativeBuildInputs = (with prev.pkgs; [
+        cmake
+        ninja
+      ]) ++ [
         pythonRelaxDepsHook
-        prev.pkgs.cmake
-        prev.pkgs.ninja
         poetry-core
         scikit-build
         setuptools
