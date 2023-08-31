@@ -314,4 +314,47 @@ final: prev: with prev; rec {
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
+
+  nemoguardrails =
+    let
+      pname = "nemoguardrails";
+      version = "0.4.0";
+      format = "wheel";
+      src = fetchPypi {
+        inherit version;
+        pname = "nemoguardrails";
+        format = "wheel";
+        python = "py3";
+        dist = "py3";
+        platform = "any";
+        hash = "sha256-quTVk5uebggIT9qnude5PYHNwzA+XGq6AtSHdZyfD6A=";
+      };
+    in
+    buildPythonPackage {
+      inherit pname src version format;
+
+      propagatedBuildInputs = with prev; [
+        aiohttp
+        annoy
+        httpx
+        langchain
+        pydantic
+        requests
+        sentence-transformers
+        simpleeval
+        starlette
+        transformers
+        typer
+        typing-extensions
+        uvicorn
+      ];
+
+      pythonImportsCheck = [ "nemoguardrails" ];
+
+      meta = {
+        description = "open-source toolkit for easily adding programmable guardrails to LLM-based conversational systems";
+        homepage = "https://github.com/NVIDIA/NeMo-Guardrails";
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
 }
