@@ -17,6 +17,9 @@ rec {
   nim = prev.nim.overrideAttrs (_: {
     passthru.withPackages = nimWithPackages;
   });
+  nim2 = prev.nim2.overrideAttrs (_: {
+    passthru.withPackages = nimWithPackages;
+  });
 
   vWithPackages =
     packages:
