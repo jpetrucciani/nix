@@ -1,4 +1,10 @@
-final: prev: with prev; {
+final: prev:
+let
+  inherit (prev) buildPythonPackage fetchPypi;
+  inherit (prev.lib) licenses maintainers;
+  inherit (prev.pkgs) fetchFromGitHub;
+in
+{
   lama-cleaner =
     let
       name = "lama-cleaner";
@@ -9,14 +15,14 @@ final: prev: with prev; {
       pname = name;
       format = "setuptools";
 
-      src = pkgs.fetchFromGitHub {
+      src = fetchFromGitHub {
         owner = "Sanster";
         repo = name;
         rev = "203e775e2ed9bda2c55b15bba71a2a107ba7b8d2";
         hash = "sha256-r0ZiHdUdEckqR2TmsJDrH5/4Jp63IZRMNex1iqqDHHQ=";
       };
 
-      propagatedBuildInputs = [
+      propagatedBuildInputs = with prev; [
         accelerate
         # controlnet-aux
         diffusers
@@ -59,14 +65,14 @@ final: prev: with prev; {
         "markupsafe"
         "transformers"
       ];
-      nativeBuildInputs = [
+      nativeBuildInputs = with prev; [
         pythonRelaxDepsHook
       ];
 
       pythonImportsCheck = [ "lama_cleaner" ];
       doCheck = false;
 
-      meta = with lib; {
+      meta = {
         description = "Image inpainting tool powered by SOTA AI Model";
         homepage = "https://github.com/Sanster/lama-cleaner";
         mainProgram = "lama-cleaner";
@@ -89,7 +95,7 @@ final: prev: with prev; {
       sed -i -E '/urllib3/d' ./setup.py
     '';
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       (anthropic.overridePythonAttrs (_: { doCheck = false; }))
       asgiref
       dalaipy
@@ -106,13 +112,13 @@ final: prev: with prev; {
       "urllib3"
     ];
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       pythonRelaxDepsHook
     ];
 
     pythonImportsCheck = [ "chainforge" ];
 
-    meta = with lib; {
+    meta = {
       description = "A Visual Programming Environment for Prompt Engineering";
       homepage = "https://github.com/ianarawjo/ChainForge";
       license = licenses.mit;

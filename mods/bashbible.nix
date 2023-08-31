@@ -1,5 +1,7 @@
 final: prev:
-with prev;
+let
+  inherit (prev.lib) attrValues concatStrings;
+in
 {
   # bash bible functions implemented as a set of attribute sets in nix
   # https://github.com/dylanaraps/pure-bash-bible
@@ -343,7 +345,7 @@ with prev;
       };
     };
 
-    bible = with lib; ''
+    bible = ''
       ## bash bible
       ### strings
       ${concatStrings (attrValues functions.strings)}

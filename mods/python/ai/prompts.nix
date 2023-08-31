@@ -1,4 +1,10 @@
-final: prev: with prev; rec {
+final: prev:
+let
+  inherit (prev) buildPythonPackage fetchPypi;
+  inherit (prev.lib) licenses maintainers;
+  inherit (prev.pkgs) fetchFromGitHub;
+in
+rec {
   langsmith = buildPythonPackage rec {
     pname = "langsmith";
     version = "0.0.30";
@@ -9,18 +15,18 @@ final: prev: with prev; rec {
       hash = "sha256-RYC8LO0vb2ObJDeAToLIVlNcCRWL/h1oWuPwYIb0ACk=";
     };
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       poetry-core
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       pydantic
       requests
     ];
 
     pythonImportsCheck = [ "langsmith" ];
 
-    meta = with lib; {
+    meta = {
       description = "Client library to connect to the LangChainPlus LLM Tracing and Evaluation Platform";
       homepage = "https://www.langchain.plus";
       license = licenses.mit;
@@ -33,7 +39,7 @@ final: prev: with prev; rec {
     version = "0.0.278";
     format = "pyproject";
 
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "langchain-ai";
       repo = pname;
       rev = "refs/tags/v${version}";
@@ -41,11 +47,11 @@ final: prev: with prev; rec {
     };
     sourceRoot = "source/libs/langchain";
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       poetry-core
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       aiohttp
       beautifulsoup4
       dataclasses-json
@@ -67,7 +73,7 @@ final: prev: with prev; rec {
       tqdm
     ];
 
-    passthru.optional-dependencies = {
+    passthru.optional-dependencies = with prev; {
       all = [
         aleph-alpha-client
         anthropic
@@ -119,7 +125,7 @@ final: prev: with prev; rec {
 
     pythonImportsCheck = [ "langchain" ];
 
-    meta = with lib; {
+    meta = {
       description = "Building applications with LLMs through composability";
       homepage = "https://github.com/hwchase17/langchain";
       changelog = "https://github.com/hwchase17/langchain/releases/tag/v${version}";
@@ -133,17 +139,17 @@ final: prev: with prev; rec {
     version = "0.8.15";
     format = "setuptools";
 
-    src = prev.pkgs.fetchFromGitHub {
+    src = prev.fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
       hash = "sha256-rIDyoiF+pw4s/Zix3rqiYM78ojvVkb/Gl/qqDRPqD6s=";
     };
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       pythonRelaxDepsHook
     ];
-    nativeCheckInputs = [
+    nativeCheckInputs = with prev; [
       pytestCheckHook
       nltk
       pillow
@@ -155,7 +161,7 @@ final: prev: with prev; rec {
       "sqlalchemy"
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       beautifulsoup4
       faiss
       fsspec
@@ -232,7 +238,7 @@ final: prev: with prev; rec {
     # pythonImportsCheck = [ "llama_index" ];
     doCheck = false;
 
-    meta = with lib; {
+    meta = {
       description = "Interface between LLMs and your data";
       homepage = "https://github.com/jerryjliu/llama_index";
       license = licenses.mit;
@@ -250,14 +256,14 @@ final: prev: with prev; rec {
       pname = name;
       format = "setuptools";
 
-      src = pkgs.fetchFromGitHub {
+      src = fetchFromGitHub {
         owner = "microsoft";
         repo = name;
         rev = "refs/tags/${version}";
         hash = "sha256-tQpDJprxctKI88F+CZ9aSJbVo7tjmI4+VrI+WO4QlxE=";
       };
 
-      propagatedBuildInputs = [
+      propagatedBuildInputs = with prev; [
         aiohttp
         diskcache
         gptcache
@@ -272,13 +278,13 @@ final: prev: with prev; rec {
         tiktoken
       ];
 
-      nativeCheckInputs = [
+      nativeCheckInputs = with prev; [
         pytestCheckHook
         torch
         transformers
       ];
 
-      passthru.optional-dependencies = {
+      passthru.optional-dependencies = with prev; {
         docs = [
           ipython
           nbsphinx
@@ -307,7 +313,7 @@ final: prev: with prev; rec {
 
       pythonImportsCheck = [ "guidance" ];
 
-      meta = with lib; {
+      meta = {
         description = "A guidance language for controlling large language models";
         homepage = "https://github.com/microsoft/guidance";
         license = licenses.mit;

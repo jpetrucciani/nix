@@ -1,4 +1,9 @@
-final: prev: with prev; {
+final: prev:
+let
+  inherit (prev) buildPythonPackage fetchPypi;
+  inherit (prev.lib) licenses maintainers;
+in
+{
   argilla = buildPythonPackage rec {
     pname = "argilla";
     version = "1.13.3";
@@ -9,7 +14,7 @@ final: prev: with prev; {
       hash = "sha256-NXv8UGbPN/ExCwW6q3pvb0ntAowxLnnJGuSIVpu2Y34=";
     };
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       setuptools
       pythonRelaxDepsHook
     ];
@@ -19,7 +24,7 @@ final: prev: with prev; {
       "typer"
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       backoff
       deprecated
       httpx
@@ -34,7 +39,7 @@ final: prev: with prev; {
       wrapt
     ];
 
-    passthru.optional-dependencies = {
+    passthru.optional-dependencies = with prev; {
       integrations = [
         cleanlab
         datasets
@@ -97,7 +102,7 @@ final: prev: with prev; {
 
     pythonImportsCheck = [ "argilla" ];
 
-    meta = with lib; {
+    meta = {
       description = "Open-source tool for exploring, labeling, and monitoring data for NLP projects";
       homepage = "https://github.com/argilla-io/argilla";
       license = licenses.asl20;

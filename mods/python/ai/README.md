@@ -14,6 +14,10 @@ this overlay contains full AI-related applications like [lama-cleaner](https://g
 
 this overlay contains native and api bindings for AI/LLM tooling
 
+### [dataset.nix](./dataset.nix)
+
+this overlay contains dataset and evaluation related packages.
+
 ### [deps.nix](./deps.nix)
 
 this overlay contains random dependencies we need to add for the other libraries in this directory

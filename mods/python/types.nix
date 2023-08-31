@@ -1,4 +1,9 @@
-(final: prev: with prev; rec {
+final: prev:
+let
+  inherit (prev) buildPythonPackage fetchPypi;
+  inherit (prev.lib) maintainers;
+in
+rec {
   boto3-stubs = buildPythonPackage rec {
     pname = "boto3-stubs";
     version = "1.20.35";
@@ -9,7 +14,7 @@
     };
 
     propagatedBuildInputs = [ botocore-stubs ];
-    checkInputs = [
+    checkInputs = with prev; [
       boto3
     ];
     pythonImportsCheck = [ "boto3-stubs" ];
@@ -51,10 +56,10 @@
 
     pythonImportsCheck = [ "cachetools-stubs" ];
 
-    meta = with lib; {
+    meta = {
       description = "Typing stubs for cachetools";
       homepage = "https://pypi.org/project/types-cachetools/";
-      license = with licenses; [ ];
+      license = [ ];
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
@@ -71,11 +76,11 @@
 
     pythonImportsCheck = [ "croniter-stubs" ];
 
-    meta = with lib; {
+    meta = {
       description = "Typing stubs for croniter";
       homepage = "https://pypi.org/project/types-croniter/";
-      license = with licenses; [ ];
-      maintainers = with maintainers; [ ];
+      license = [ ];
+      maintainers = [ ];
     };
   };
 
@@ -91,11 +96,11 @@
 
     pythonImportsCheck = [ "dateutil-stubs" ];
 
-    meta = with lib; {
+    meta = {
       description = "Typing stubs for python-dateutil";
       homepage = "https://pypi.org/project/types-python-dateutil/";
-      license = with licenses; [ ];
-      maintainers = with maintainers; [ ];
+      license = [ ];
+      maintainers = [ ];
     };
   };
-})
+}

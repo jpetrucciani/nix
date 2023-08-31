@@ -1,11 +1,16 @@
-final: prev: with prev; rec {
-
+final: prev:
+let
+  inherit (prev) buildPythonPackage fetchPypi;
+  inherit (prev.lib) licenses maintainers;
+  inherit (prev.pkgs) fetchFromGitHub;
+in
+rec {
   asgi-lifespan = buildPythonPackage rec {
     pname = "asgi-lifespan";
     version = "2.0.0";
 
     format = "setuptools";
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "florimondmanca";
       repo = pname;
       rev = version;
@@ -22,18 +27,18 @@ final: prev: with prev; rec {
       sed '/addopts =/Q' ./setup.cfg.bak >./setup.cfg
     '';
 
-    nativeCheckInputs = [
+    nativeCheckInputs = with prev; [
       pytestCheckHook
       pytest-asyncio
       starlette
       trio
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       sniffio
     ];
 
-    meta = with lib; {
+    meta = {
       description = "Programmatic startup/shutdown of ASGI apps";
       homepage = "https://github.com/florimondmanca/asgi-lifespan-db";
       license = licenses.mit;
@@ -45,7 +50,7 @@ final: prev: with prev; rec {
     version = "0.11.0";
 
     format = "pyproject";
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "frankie567";
       repo = pname;
       rev = "v${version}";
@@ -66,12 +71,12 @@ final: prev: with prev; rec {
       "httpx_oauth"
     ];
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       hatch-vcs
       hatchling
     ];
 
-    nativeCheckInputs = [
+    nativeCheckInputs = with prev; [
       pytestCheckHook
       pytest-asyncio
       pytest-mock
@@ -79,11 +84,11 @@ final: prev: with prev; rec {
       respx
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       httpx
     ];
 
-    meta = with lib; {
+    meta = {
       description = "";
       homepage = "https://github.com/frankie567/httpx-oauth";
       license = licenses.mit;
@@ -97,7 +102,7 @@ final: prev: with prev; rec {
     version = "6.0.0";
 
     format = "pyproject";
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "trallnag";
       repo = pname;
       rev = "v${version}";
@@ -116,11 +121,11 @@ final: prev: with prev; rec {
       "prometheus_fastapi_instrumentator"
     ];
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       poetry-core
     ];
 
-    nativeCheckInputs = [
+    nativeCheckInputs = with prev; [
       pytestCheckHook
       requests
     ];
@@ -129,12 +134,12 @@ final: prev: with prev; rec {
       "tests/test_instrumentator_multiple_apps.py"
     ] ++ (if prev.stdenv.isDarwin then [ "tests/test_instrumentation.py" ] else [ ]);
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       fastapi
       prometheus-client
     ];
 
-    meta = with lib; {
+    meta = {
       description = "Instrument your FastAPI app";
       homepage = "https://github.com/trallnag/prometheus-fastapi-instrumentator";
       license = licenses.isc;
@@ -147,7 +152,7 @@ final: prev: with prev; rec {
     version = "10.4.0";
 
     format = "pyproject";
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "fastapi-users";
       repo = pname;
       rev = "v${version}";
@@ -167,12 +172,12 @@ final: prev: with prev; rec {
       "fastapi_users"
     ];
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       hatch-vcs
       hatchling
     ];
 
-    nativeCheckInputs = [
+    nativeCheckInputs = with prev; [
       pytestCheckHook
       asgi-lifespan
       pytest-asyncio
@@ -180,7 +185,7 @@ final: prev: with prev; rec {
       redis
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       bcrypt
       cryptography
       fastapi
@@ -192,7 +197,7 @@ final: prev: with prev; rec {
       typing-extensions
     ];
 
-    meta = with lib; {
+    meta = {
       description = "Ready-to-use and customizable users management for FastAPI";
       homepage = "https://github.com/fastapi-users/fastapi-users";
       license = licenses.mit;
@@ -205,7 +210,7 @@ final: prev: with prev; rec {
     version = "2.3.0";
 
     format = "setuptools";
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "tophat";
       repo = pname;
       rev = "v${version}";
@@ -222,16 +227,16 @@ final: prev: with prev; rec {
 
     SETUPTOOLS_SCM_PRETEND_VERSION = version;
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       setuptools-scm
     ];
 
-    nativeCheckInputs = [
+    nativeCheckInputs = with prev; [
       pytestCheckHook
       pytest-asyncio
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       asyncpg
       ormar
       psycopg2
@@ -241,7 +246,7 @@ final: prev: with prev; rec {
 
     doCheck = false;
 
-    meta = with lib; {
+    meta = {
       description = "Extensions to the Ormar ORM to support PostgreSQL specific types";
       homepage = "https://github.com/tophat/ormar-postgres-extensions";
       license = licenses.asl20;
@@ -263,17 +268,17 @@ final: prev: with prev; rec {
       substituteInPlace ./pyproject.toml --replace "poetry.masonry.api" "poetry.core.masonry.api"
     '';
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       poetry-core
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       pscript
     ];
 
     pythonImportsCheck = [ "vbuild" ];
 
-    meta = with lib; {
+    meta = {
       description = "A simple module to extract html/script/style from a vuejs '.vue' file (can minimize/es2015 compliant js) ... just py2 or py3, NO nodejs";
       homepage = "https://github.com/manatlan/vbuild";
       license = licenses.mit;
@@ -291,12 +296,12 @@ final: prev: with prev; rec {
       hash = "sha256-IC+bMZ8BAAHL0RFOySoNnrX1ypMW6uX9QaYIjaCBJyc=";
     };
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       fastapi
       python-socketio
     ];
 
-    passthru.optional-dependencies = {
+    passthru.optional-dependencies = with prev; {
       test = [
         pytest
       ];
@@ -306,7 +311,7 @@ final: prev: with prev; rec {
 
     pythonImportsCheck = [ "fastapi_socketio" ];
 
-    meta = with lib; {
+    meta = {
       description = "Easily integrate socket.io with your FastAPI app";
       homepage = "https://github.com/pyropy/fastapi-socketio";
       license = licenses.asl20;
@@ -328,7 +333,7 @@ final: prev: with prev; rec {
       sed -i -E 's#(setuptools)>=30.3.0,<50#\1#g' ./pyproject.toml
     '';
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       pythonRelaxDepsHook
       poetry-core
       setuptools
@@ -341,7 +346,7 @@ final: prev: with prev; rec {
       "watchfiles"
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       aiohttp
       aiofiles
       colorama
@@ -369,7 +374,7 @@ final: prev: with prev; rec {
 
     pythonImportsCheck = [ "nicegui" ];
 
-    meta = with lib; {
+    meta = {
       description = "Create web-based interfaces with Python. The nice way";
       homepage = "https://github.com/zauberzeug/nicegui";
       license = licenses.mit;

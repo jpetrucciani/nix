@@ -1,17 +1,19 @@
-final: prev: with prev; let
-  inherit (stdenv) isAarch64 isDarwin;
-  inherit (prev.pkgs) darwin;
+final: prev:
+let
+  inherit (prev) buildPythonPackage;
+  inherit (prev.stdenv) isAarch64 isDarwin;
+  inherit (prev.pkgs) fetchFromGitHub darwin cudatoolkit writeTextFile;
+  inherit (prev.lib) licenses maintainers optionals;
   isM1 = isDarwin && isAarch64;
 in
 rec {
   llama-cpp-python =
     let
-      inherit (lib) optionals;
       osSpecific =
         if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
         else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
         else [ ];
-      llama-cpp-pin = pkgs.fetchFromGitHub {
+      llama-cpp-pin = fetchFromGitHub {
         owner = "ggerganov";
         repo = "llama.cpp";
         rev = "06abf8eebabe086ca4003dee2754ab45032cd3fd";
@@ -22,7 +24,7 @@ rec {
       pname = "llama-cpp-python";
       version = "0.1.83";
       format = "pyproject";
-      src = pkgs.fetchFromGitHub {
+      src = fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "refs/tags/v${version}";
@@ -51,14 +53,14 @@ rec {
       nativeBuildInputs = (with prev.pkgs; [
         cmake
         ninja
-      ]) ++ [
+      ]) ++ (with prev; [
         pythonRelaxDepsHook
         poetry-core
         scikit-build
         setuptools
-      ] ++ (optionals cuda [ pkgs.cudatoolkit ]);
+      ]) ++ (optionals cuda [ cudatoolkit ]);
       pythonRelaxDeps = [ "diskcache" ];
-      propagatedBuildInputs = [
+      propagatedBuildInputs = with prev; [
         diskcache
         numpy
         typing-extensions
@@ -74,10 +76,10 @@ rec {
       passthru.cuda = llama-cpp-python.overridePythonAttrs (old: {
         CMAKE_ARGS = "-DLLAMA_CUBLAS=on";
         FORCE_CMAKE = 1;
-        nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cudatoolkit ];
+        nativeBuildInputs = old.nativeBuildInputs ++ [ cudatoolkit ];
       });
 
-      meta = with lib; {
+      meta = {
         description = "A Python wrapper for llama.cpp";
         homepage = "https://github.com/abetlen/llama-cpp-python";
         license = licenses.mit;
@@ -97,7 +99,7 @@ rec {
       version = "0.0.1";
 
       format = "pyproject";
-      src = pkgs.fetchFromGitHub {
+      src = fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "c4cb698cd2068addafe0b2b4fd3c63b49061f5c8";
@@ -118,9 +120,9 @@ rec {
       '';
       buildInputs = osSpecific;
 
-      nativeBuildInputs = [
-        prev.pkgs.cmake
-        prev.pkgs.ninja
+      nativeBuildInputs = with prev; [
+        pkgs.cmake
+        pkgs.ninja
         pathspec
         poetry-core
         pyproject-metadata
@@ -128,7 +130,7 @@ rec {
         scikit-build-core
         setuptools
       ];
-      propagatedBuildInputs = [
+      propagatedBuildInputs = with prev; [
         numpy
         typing-extensions
 
@@ -140,7 +142,7 @@ rec {
 
       pythonImportsCheck = [ "ggml" ];
 
-      meta = with lib; {
+      meta = {
         description = "Python bindings for ggml";
         homepage = "https://github.com/abetlen/ggml-python";
         license = licenses.mit;
@@ -159,7 +161,7 @@ rec {
       version = "2.4.1";
       format = "pyproject";
 
-      src = pkgs.fetchFromGitHub {
+      src = fetchFromGitHub {
         owner = "abdeladim-s";
         repo = pname;
         rev = "refs/tags/v${version}";
@@ -167,7 +169,7 @@ rec {
         fetchSubmodules = true;
       };
       buildInputs = osSpecific;
-      nativeBuildInputs = [
+      nativeBuildInputs = with prev; [
         pkgs.cmake
         pkgs.ninja
         setuptools
@@ -177,7 +179,7 @@ rec {
       pythonImportsCheck = [ "pyllamacpp" ];
       dontUseCmakeConfigure = true;
 
-      meta = with lib; {
+      meta = {
         description = "Python bindings for llama.cpp";
         homepage = "https://github.com/abdeladim-s/pyllamacpp";
         license = licenses.mit;
@@ -197,7 +199,7 @@ rec {
       version = "2.0.3";
       format = "pyproject";
 
-      src = pkgs.fetchFromGitHub {
+      src = fetchFromGitHub {
         owner = "abdeladim-s";
         repo = pname;
         rev = "refs/tags/v${version}";
@@ -206,7 +208,7 @@ rec {
       };
 
       buildInputs = osSpecific;
-      nativeBuildInputs = [
+      nativeBuildInputs = with prev; [
         pkgs.cmake
         pkgs.ninja
         setuptools
@@ -215,13 +217,13 @@ rec {
 
       dontUseCmakeConfigure = true;
 
-      propagatedBuildInputs = [
+      propagatedBuildInputs = with prev; [
         numpy
       ];
 
       pythonImportsCheck = [ "pygptj" ];
 
-      meta = with lib; {
+      meta = {
         description = "Python bindings for the GGML GPT-J Laguage model";
         homepage = "https://github.com/abdeladim-s/pygptj";
         license = licenses.mit;
@@ -234,7 +236,7 @@ rec {
     version = "1.1.0";
     format = "setuptools";
 
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "nomic-ai";
       repo = pname;
       rev = "refs/tags/v${version}";
@@ -247,7 +249,7 @@ rec {
       pygptj
     ];
 
-    meta = with lib; {
+    meta = {
       description = "Official Python CPU inference for GPT4All language models based on llama.cpp and ggml";
       homepage = "https://github.com/nomic-ai/pygpt4all";
       license = licenses.mit;
@@ -262,7 +264,7 @@ rec {
         else [ ];
       version = "0.0.1";
       libFile = if isDarwin then "librwkv.dylib" else "librwkv.so";
-      setup-py = pkgs.writeTextFile {
+      setup-py = writeTextFile {
         name = "setup.py";
         text = ''
           from setuptools import setup
@@ -283,7 +285,7 @@ rec {
       inherit version;
       pname = "rwkv-cpp";
       format = "pyproject";
-      src = pkgs.fetchFromGitHub {
+      src = fetchFromGitHub {
         owner = "saharNooby";
         repo = "rwkv.cpp";
         rev = "1c363e6d5f4ec7817ceffeeb17bd972b1ce9d9d0";
@@ -302,15 +304,15 @@ rec {
       '';
       buildInputs = osSpecific;
 
-      nativeBuildInputs = [
-        prev.pkgs.cmake
-        prev.pkgs.ninja
+      nativeBuildInputs = with prev; [
+        pkgs.cmake
+        pkgs.ninja
         poetry-core
         scikit-build
         setuptools
       ];
 
-      propagatedBuildInputs = [
+      propagatedBuildInputs = with prev; [
         numpy
         tokenizers
         torch
@@ -322,7 +324,7 @@ rec {
         "rwkv_cpp_shared_library"
       ];
 
-      meta = with lib; {
+      meta = {
         description = "";
         homepage = "https://github.com/saharNooby/rwkv.cpp";
         license = licenses.mit;
@@ -346,7 +348,7 @@ rec {
       pname = name;
       format = "pyproject";
 
-      src = pkgs.fetchFromGitHub {
+      src = fetchFromGitHub {
         owner = "carloscdias";
         repo = name;
         rev = "0744238e10f6b1da3440d43aa3dff43d46b09b30";
@@ -355,7 +357,7 @@ rec {
       };
 
       postPatch = let sed = "sed -i -E"; in
-        if stdenv.isDarwin then ''
+        if isDarwin then ''
           ${sed} 's#(_lib_base_name = )"whisper"#\1"libwhisper"#g' ./setup.py
           ${sed} 's#(lib_ext = )".so"#\1".dylib"#g' ./setup.py
         ''
@@ -366,22 +368,22 @@ rec {
       buildInputs = osSpecific;
 
       pythonRelaxDeps = [ "librosa" ];
-      nativeBuildInputs = [
+      nativeBuildInputs = with prev; [
         pythonRelaxDepsHook
         pkgs.cmake
         pkgs.ninja
         pycparser
         scikit-build
         setuptools
-      ] ++ (if stdenv.isDarwin then [ pkgs.gcc ] else [ ]);
+      ] ++ (if isDarwin then [ prev.pkgs.gcc ] else [ ]);
 
-      propagatedBuildInputs = [
+      propagatedBuildInputs = with prev; [
         librosa
       ];
 
       pythonImportsCheck = [ "whisper_cpp_python" ];
 
-      meta = with lib; {
+      meta = {
         description = "A Python wrapper for whisper.cpp";
         homepage = "https://github.com/carloscdias/whisper-cpp-python";
         license = licenses.mit;
@@ -403,7 +405,7 @@ rec {
       pname = name;
       format = "setuptools";
 
-      src = pkgs.fetchFromGitHub {
+      src = fetchFromGitHub {
         owner = "marella";
         repo = name;
         rev = "refs/tags/v${version}";
@@ -411,22 +413,22 @@ rec {
         fetchSubmodules = true;
       };
 
-      propagatedBuildInputs = [
+      propagatedBuildInputs = with prev; [
         huggingface-hub
         py-cpuinfo
       ];
       dontUseCmakeConfigure = true;
 
-      nativeBuildInputs = [
+      nativeBuildInputs = with prev; [
         pkgs.cmake
         scikit-build
       ];
       buildInputs = osSpecific;
-      nativeCheckInputs = [ pytestCheckHook ];
+      nativeCheckInputs = with prev; [ pytestCheckHook ];
       pythonImportsCheck = [ "ctransformers" ];
       disabledTestPaths = [ "tests/test_model.py" ];
       pytestFlagsArray = [ "--lib basic" ];
-      meta = with lib; {
+      meta = {
         description = "Python bindings for the Transformer models implemented in C/C++ using GGML library";
         homepage = "https://github.com/marella/ctransformers";
         license = licenses.mit;
@@ -439,7 +441,7 @@ rec {
     version = "1.27.0";
     format = "setuptools";
 
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "googleapis";
       repo = "python-aiplatform";
       rev = "refs/tags/v${version}";
@@ -455,7 +457,7 @@ rec {
     # the tests require a variety of deps, and credentials
     doCheck = false;
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       google-api-core
       google-cloud-bigquery
       google-cloud-resource-manager
@@ -466,12 +468,12 @@ rec {
       shapely
     ];
 
-    nativeCheckInputs = [
+    nativeCheckInputs = with prev; [
       pytestCheckHook
       pytest-asyncio
     ];
 
-    passthru.optional-dependencies = {
+    passthru.optional-dependencies = with prev; {
       autologging = [
         mlflow
       ];
@@ -567,7 +569,7 @@ rec {
 
     pythonImportsCheck = [ "google.cloud.aiplatform" ];
 
-    meta = with lib; {
+    meta = {
       description = "Vertex AI API client library";
       homepage = "https://github.com/googleapis/python-aiplatform";
       license = licenses.asl20;

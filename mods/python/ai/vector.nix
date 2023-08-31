@@ -1,7 +1,12 @@
-final: prev: with prev; {
+final: prev:
+let
+  inherit (prev) buildPythonPackage fetchPypi;
+  inherit (prev.lib) licenses maintainers;
+in
+{
   chromadb =
     let
-      inherit (stdenv) isDarwin;
+      inherit (prev.pkgs.stdenv) isDarwin;
     in
     buildPythonPackage rec {
       pname = "chromadb";
@@ -13,7 +18,7 @@ final: prev: with prev; {
         hash = "sha256-RB9Tq0dLaEB13oXmN93PaRlGodugbqe4hZuRSrTNnqA=";
       };
 
-      nativeBuildInputs = [
+      nativeBuildInputs = with prev; [
         pythonRelaxDepsHook
         setuptools
         setuptools-scm
@@ -25,7 +30,7 @@ final: prev: with prev; {
         "tqdm"
       ];
 
-      propagatedBuildInputs = [
+      propagatedBuildInputs = with prev; [
         bcrypt
         chroma-hnswlib
         clickhouse-connect
@@ -61,7 +66,7 @@ final: prev: with prev; {
 
       pythonImportsCheck = [ "chromadb" ];
 
-      meta = with lib; {
+      meta = {
         description = "the AI-native open-source embedding database ";
         homepage = "https://github.com/chroma-core/chroma";
         license = licenses.asl20;
