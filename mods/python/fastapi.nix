@@ -259,6 +259,7 @@ final: prev: with prev; rec {
     };
 
     postPatch = ''
+      sed -i -E 's#(poetry)>=0.12#\1-core#g' ./pyproject.toml
       substituteInPlace ./pyproject.toml --replace "poetry.masonry.api" "poetry.core.masonry.api"
     '';
 
@@ -315,13 +316,17 @@ final: prev: with prev; rec {
 
   nicegui = buildPythonPackage rec {
     pname = "nicegui";
-    version = "1.3.9";
+    version = "1.3.13";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-706ZQyPvH4uC9tDRL2WLuAB0SP6a8Cg0cpR77r3jXwQ=";
+      hash = "sha256-Q+N9ssDPhuolMol05u1+B6Bv61pbOzZoQFMzafzONkg=";
     };
+
+    postPatch = ''
+      sed -i -E 's#(setuptools)>=30.3.0,<50#\1#g' ./pyproject.toml
+    '';
 
     nativeBuildInputs = [
       pythonRelaxDepsHook
