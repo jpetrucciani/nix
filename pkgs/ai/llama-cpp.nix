@@ -60,7 +60,6 @@ clangStdenv.mkDerivation rec {
   cmakeFlags = [
     "-DLLAMA_BUILD_SERVER=ON"
     "-DLLAMA_MPI=ON"
-    "-DBUILD_SHARED_LIBS=ON"
     "-DCMAKE_SKIP_BUILD_RPATH=ON"
   ] ++ (optionals isM1 [
     "-DCMAKE_C_FLAGS=-D__ARM_FEATURE_DOTPROD=1"
