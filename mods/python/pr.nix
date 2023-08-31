@@ -158,14 +158,14 @@ rec {
 
   looker-sdk = buildPythonPackage rec {
     pname = "looker-sdk";
-    version = "22.20.0";
+    version = "23.14.1";
     disabled = pythonOlder "3.7";
 
     src = fetchFromGitHub {
       owner = "looker-open-source";
       repo = "sdk-codegen";
       rev = "sdk-v${version}";
-      hash = "sha256-S5s88FequBLbgz+zbEcBFi/N2pCgC0zdwyrcd7SP+no=";
+      hash = "sha256-rZ99gsN2d9HGjgGZErS+KPuAgZk6oy3RDBzfHrA8gfc=";
     };
     sourceRoot = "source/python";
 
