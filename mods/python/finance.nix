@@ -1,4 +1,10 @@
-final: prev: with prev; rec {
+final: prev:
+let
+  inherit (prev) buildPythonPackage fetchPypi;
+  inherit (prev.lib) licenses maintainers;
+  inherit (prev.pkgs) fetchFromGitHub;
+in
+rec {
   py-lets-be-quickly-rational = buildPythonPackage rec {
     pname = "py-lets-be-quickly-rational";
     version = "1.0.1";
@@ -10,14 +16,14 @@ final: prev: with prev; rec {
       hash = "sha256-NjT3q9DdAsRLnATNYGszn4A7cjBZ1/xflUD7Zgk9wqE=";
     };
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       numba
       numpy
     ];
 
     pythonImportsCheck = [ "py_lets_be_quickly_rational" ];
 
-    meta = with lib; {
+    meta = {
       description = "Numba accelerated python library to calculate various black scholes equations";
       homepage = "https://github.com/tmcnitt/py_lets_be_quickly_rational";
       license = licenses.mit;
@@ -36,14 +42,14 @@ final: prev: with prev; rec {
       hash = "sha256-DgeIpBCeECpmbybWcnbA08L+uKBZ54g1SpDlZfLbDtI=";
     };
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       numba
       numpy
     ];
 
     pythonImportsCheck = [ "py_lets_be_rational" ];
 
-    meta = with lib; {
+    meta = {
       description = "Pure python implementation of Peter Jaeckel's LetsBeRational";
       homepage = "https://pypi.org/project/py_lets_be_rational/1.0.1/";
       license = licenses.mit;
@@ -78,7 +84,7 @@ final: prev: with prev; rec {
       sed -i -E -e 's#\.ix\[#\.loc\[#g' tests/test_utils.py
     '';
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       numba
       pandas
       py-lets-be-quickly-rational
@@ -86,7 +92,7 @@ final: prev: with prev; rec {
       simplejson
     ];
 
-    nativeCheckInputs = [
+    nativeCheckInputs = with prev; [
       pytestCheckHook
     ];
 
@@ -94,7 +100,7 @@ final: prev: with prev; rec {
 
     pythonImportsCheck = [ "py_vollib" ];
 
-    meta = with lib; {
+    meta = {
       description = "";
       homepage = "https://vollib.org/";
       license = licenses.mit;
@@ -125,7 +131,7 @@ final: prev: with prev; rec {
       cp ./tests/fake_data.csv ./
     '';
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       numba
       numpy
       pandas
@@ -134,7 +140,7 @@ final: prev: with prev; rec {
       scipy
     ];
 
-    nativeCheckInputs = [
+    nativeCheckInputs = with prev; [
       pytestCheckHook
     ];
 
@@ -142,7 +148,7 @@ final: prev: with prev; rec {
 
     pythonImportsCheck = [ "py_vollib_vectorized" ];
 
-    meta = with lib; {
+    meta = {
       description = "A fast, vectorized approach to calculating Implied Volatility and Greeks using the Black, Black-Scholes and Black-Scholes-Merton pricing";
       homepage = "https://github.com/marcdemers/py_vollib_vectorized";
       license = licenses.mit;
@@ -160,7 +166,7 @@ final: prev: with prev; rec {
       hash = "sha256-Ysh6IMTfr805Q82EVeYU66EdA82k/6IEZbMur6Vx9L0=";
     };
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       bleach
       cloudpickle
       dask
@@ -174,7 +180,7 @@ final: prev: with prev; rec {
 
     pythonImportsCheck = [ "swifter" ];
 
-    meta = with lib; {
+    meta = {
       description = "A package which efficiently applies any function to a pandas dataframe or series in the fastest available manner";
       homepage = "https://github.com/jmcarpenter2/swifter";
       license = licenses.mit;
@@ -187,21 +193,21 @@ final: prev: with prev; rec {
     version = "0.5.5";
     format = "setuptools";
 
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "quantopian";
       repo = pname;
       rev = "refs/tags/${version}";
       hash = "sha256-SrrJZXg8kVOc71whjcyWvZyiAwwpC0LDVhPjeeCjV7I=";
     };
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       numpy
       pandas
       pandas-datareader
       scipy
     ];
 
-    nativeCheckInputs = [
+    nativeCheckInputs = with prev; [
       pytestCheckHook
       parameterized
       flake8
@@ -211,7 +217,7 @@ final: prev: with prev; rec {
 
     doCheck = false;
 
-    meta = with lib; {
+    meta = {
       description = "Empyrical is a Python library with performance and risk statistics commonly used in quantitative finance";
       homepage = "https://github.com/quantopian/empyrical";
       license = licenses.asl20;
@@ -229,7 +235,7 @@ final: prev: with prev; rec {
       hash = "sha256-IC1rsZy3fiXfhwCxao+ZDx66kQjMelh7Mg62Is2uZ4k=";
     };
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       ipykernel
       ipython
       jinja2
@@ -242,7 +248,7 @@ final: prev: with prev; rec {
 
     doCheck = false;
 
-    meta = with lib; {
+    meta = {
       description = "Run IPython notebooks from the command line";
       homepage = "https://github.com/paulgb/runipy";
       license = licenses.bsd2;
@@ -255,14 +261,14 @@ final: prev: with prev; rec {
     version = "0.9.2";
     format = "setuptools";
 
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "quantopian";
       repo = pname;
       rev = "refs/tags/${version}";
       hash = "sha256-Zeonx3W4Te3uv0sZ8yHxYbf5ImLozeyniG+LLxsHLhY=";
     };
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       empyrical
       ipython
       matplotlib
@@ -275,7 +281,7 @@ final: prev: with prev; rec {
 
     pythonImportsCheck = [ "pyfolio" ];
 
-    nativeCheckInputs = [
+    nativeCheckInputs = with prev; [
       pytestCheckHook
       nose
       parameterized
@@ -284,7 +290,7 @@ final: prev: with prev; rec {
 
     doCheck = false;
 
-    meta = with lib; {
+    meta = {
       description = "Pyfolio is a Python library for performance and risk analysis of financial portfolios";
       homepage = "https://github.com/quantopian/pyfolio";
       license = licenses.asl20;
@@ -301,7 +307,7 @@ final: prev: with prev; rec {
       pname = "alpaca-trade-api";
       format = "setuptools";
 
-      src = pkgs.fetchFromGitHub {
+      src = fetchFromGitHub {
         owner = "alpacahq";
         repo = "alpaca-trade-api-python";
         rev = "refs/tags/v${version}";
@@ -316,7 +322,7 @@ final: prev: with prev; rec {
           ./requirements/requirements.txt
       '';
 
-      propagatedBuildInputs = [
+      propagatedBuildInputs = with prev; [
         aiohttp
         deprecation
         msgpack
@@ -329,7 +335,7 @@ final: prev: with prev; rec {
         websockets
       ];
 
-      nativeCheckInputs = [
+      nativeCheckInputs = with prev; [
         pytest-cov
         pytest-mock
         pytestCheckHook
@@ -338,7 +344,7 @@ final: prev: with prev; rec {
 
       pythonImportsCheck = [ "alpaca_trade_api" ];
 
-      meta = with lib; {
+      meta = {
         description = "Alpaca API python client";
         homepage = "https://github.com/alpacahq/alpaca-trade-api-python";
         license = licenses.asl20;
@@ -351,7 +357,7 @@ final: prev: with prev; rec {
     version = "0.4.6.5";
     format = "pyproject";
 
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "blankly-finance";
       repo = "newnewtulipy";
       rev = "b26d594cf594e58776a923278cdd091ce2bba9cd";
@@ -359,24 +365,24 @@ final: prev: with prev; rec {
     };
 
     preBuild = ''
-      export C_INCLUDE_PATH="./libindicators:${numpy}/${prev.python.sitePackages}/numpy/core/include"
+      export C_INCLUDE_PATH="./libindicators:${prev.pkgs.numpy}/${prev.python.sitePackages}/numpy/core/include"
       cythonize --inplace tulipy/lib/__init__.pyx
     '';
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       cython
       numpy
       setuptools
       wheel
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       numpy
     ];
 
     pythonImportsCheck = [ "tulipy" ];
 
-    meta = with lib; {
+    meta = {
       description = "Financial Technical Analysis Indicator Library";
       homepage = "https://github.com/blankly-finance/newnewtulipy";
       license = licenses.lgpl3Only;
@@ -393,14 +399,14 @@ final: prev: with prev; rec {
       inherit pname version;
       format = "setuptools";
 
-      src = pkgs.fetchFromGitHub {
+      src = fetchFromGitHub {
         owner = "blankly-finance";
         repo = pname;
         rev = "refs/tags/v${version}";
         hash = "sha256-kvam39rRG9ZBNFfjhtX6jivA2H1BeBDS8dGalO7ub+k=";
       };
 
-      propagatedBuildInputs = [
+      propagatedBuildInputs = with prev; [
         alpaca-trade-api
         bokeh
         dateparser
@@ -416,14 +422,14 @@ final: prev: with prev; rec {
 
       pythonImportsCheck = [ "blankly" ];
 
-      nativeCheckInputs = [
+      nativeCheckInputs = with prev; [
         pytestCheckHook
       ];
 
       # tests require credentials
       doCheck = false;
 
-      meta = with lib; {
+      meta = {
         description = "Rapidly build, backtest & deploy trading bots";
         homepage = "https://github.com/blankly-finance/blankly";
         license = with licenses; [ ];

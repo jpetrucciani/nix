@@ -1,6 +1,7 @@
 final: prev:
 let
-  inherit (prev) buildPythonPackage fetchPypi lib;
+  inherit (prev) buildPythonPackage fetchPypi;
+  inherit (prev.lib) licenses maintainers;
 in
 {
   docx2txt = buildPythonPackage
@@ -16,7 +17,7 @@ in
 
       pythonImportsCheck = [ "docx2txt" ];
 
-      meta = with lib; {
+      meta = {
         description = "A pure python-based utility to extract text and images from docx files";
         homepage = "https://github.com/ankushshah89/python-docx2txt";
         license = licenses.mit;

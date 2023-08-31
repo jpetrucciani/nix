@@ -1,8 +1,15 @@
-final: prev: with prev; rec {
+final: prev:
+let
+  inherit (prev) buildPythonPackage fetchPypi;
+  inherit (prev) poetry-core pytestCheckHook;
+  inherit (prev.lib) licenses maintainers;
+  inherit (prev.pkgs) fetchFromGitHub texlive;
+in
+rec {
   dataframe-image =
     let
-      tex = pkgs.texlive.combine {
-        inherit (pkgs.texlive) scheme-small latex-bin;
+      tex = texlive.combine {
+        inherit (texlive) scheme-small latex-bin;
       };
     in
     buildPythonPackage rec {
@@ -10,7 +17,7 @@ final: prev: with prev; rec {
       version = "0.1.11";
       format = "setuptools";
 
-      src = pkgs.fetchFromGitHub {
+      src = fetchFromGitHub {
         owner = "dexplo";
         repo = "dataframe_image";
         rev = "refs/tags/v${version}";
@@ -23,7 +30,7 @@ final: prev: with prev; rec {
           --replace 'setup_requires=["setuptools_scm"],' ""
       '';
 
-      propagatedBuildInputs = [
+      propagatedBuildInputs = with prev; [
         aiohttp
         beautifulsoup4
         cssutils
@@ -48,7 +55,7 @@ final: prev: with prev; rec {
 
       pythonImportsCheck = [ "dataframe_image" ];
 
-      meta = with lib; {
+      meta = {
         description = "Embed pandas DataFrames as images in pdf and markdown files when converting from Jupyter Notebooks";
         homepage = "https://github.com/dexplo/dataframe_image";
         license = licenses.mit;
@@ -76,7 +83,7 @@ final: prev: with prev; rec {
 
     pythonImportsCheck = [ "html2image" ];
 
-    meta = with lib; {
+    meta = {
       description = "Generate images from URLs and from HTML+CSS strings or files";
       homepage = "https://github.com/vgalin/html2image";
       license = licenses.mit;
@@ -95,14 +102,14 @@ final: prev: with prev; rec {
         hash = "sha256-unwV+xjQ8X8pjb/IK1DRJ4Ks9SzsDT9+aWqTgc8+XQM=";
       };
 
-      nativeBuildInputs = [
+      nativeBuildInputs = with prev; [
         jupyter-packaging
         jupyterlab
         setuptools
         wheel
       ];
 
-      propagatedBuildInputs = [
+      propagatedBuildInputs = with prev; [
         ipywidgets
         pandas
         simplejson
@@ -110,7 +117,7 @@ final: prev: with prev; rec {
 
       pythonImportsCheck = [ "ipyaggrid" ];
 
-      meta = with lib; {
+      meta = {
         description = "Jupyter widget - ag-grid in the notebook";
         homepage = "https://gitlab.com/DGothrek/ipyaggrid";
         license = licenses.mit;
@@ -129,7 +136,7 @@ final: prev: with prev; rec {
       hash = "sha256-3fCEODKSzs7dyq4EP0xiuT0nqFhQV4ooD4/e2aG5OjI=";
     };
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       jupyter-packaging
       jupyterlab
       setuptools
@@ -138,7 +145,7 @@ final: prev: with prev; rec {
 
     pythonImportsCheck = [ "jupyterlab_code_formatter" ];
 
-    meta = with lib; {
+    meta = {
       description = "Code formatter for JupyterLab";
       homepage = "https://github.com/ryantam626/jupyterlab_code_formatter";
       license = licenses.mit;
@@ -164,18 +171,18 @@ final: prev: with prev; rec {
     buildPythonPackage {
       inherit pname src version format;
 
-      nativeBuildInputs = [
+      nativeBuildInputs = with prev; [
         jupyter-packaging
         jupyterlab
       ];
 
-      propagatedBuildInputs = [
+      propagatedBuildInputs = with prev; [
         jupyter-server
       ];
 
       pythonImportsCheck = [ "jupyterlab_execute_time" ];
 
-      meta = with lib; {
+      meta = {
         description = "Display cell timings in Jupyter Lab";
         homepage = "https://github.com/deshaw/jupyterlab-execute-time";
         license = licenses.bsd3;
@@ -201,18 +208,18 @@ final: prev: with prev; rec {
     buildPythonPackage {
       inherit pname src version format;
 
-      nativeBuildInputs = [
+      nativeBuildInputs = with prev; [
         jupyter-packaging
         jupyterlab
       ];
 
-      propagatedBuildInputs = [
+      propagatedBuildInputs = with prev; [
         jupyter-server
       ];
 
       pythonImportsCheck = [ "jupyterlab_templates" ];
 
-      meta = with lib; {
+      meta = {
         description = "Support for jupyter notebook templates in jupyterlab";
         homepage = "https://github.com/finos/jupyterlab_templates";
         license = licenses.asl20;
@@ -237,14 +244,14 @@ final: prev: with prev; rec {
     buildPythonPackage {
       inherit pname src version format;
 
-      nativeBuildInputs = [
+      nativeBuildInputs = with prev; [
         hatchling
         hatch-jupyter-builder
         jupyter-core
         jupyterlab
       ];
 
-      propagatedBuildInputs = [
+      propagatedBuildInputs = with prev; [
         jupyter-client
         jupyter-core
         jupyter-server
@@ -255,7 +262,7 @@ final: prev: with prev; rec {
         websockets
       ];
 
-      passthru.optional-dependencies = {
+      passthru.optional-dependencies = with prev; {
         dev = [
           black
           hatch
@@ -277,7 +284,7 @@ final: prev: with prev; rec {
 
       pythonImportsCheck = [ "voila" ];
 
-      meta = with lib; {
+      meta = {
         description = "Turn Jupyter notebooks into standalone web applications";
         homepage = "https://github.com/voila-dashboards/voila";
         license = licenses.bsd3;
@@ -297,7 +304,7 @@ final: prev: with prev; rec {
 
     pythonImportsCheck = [ "xalglib" ];
 
-    meta = with lib; {
+    meta = {
       description = "ALGLIB is a cross-platform numerical analysis and data processing library";
       homepage = "https://www.alglib.net/";
       license = with licenses; [ ];

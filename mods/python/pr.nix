@@ -1,5 +1,11 @@
 # this overlay is for python packages that i've tried to open PRs to nixpkgs for
-final: prev: with prev; rec {
+final: prev:
+let
+  inherit (prev) buildPythonPackage fetchPypi pythonOlder;
+  inherit (prev.lib) licenses maintainers;
+  inherit (prev.pkgs) fetchFromGitHub;
+in
+rec {
   boddle = buildPythonPackage rec {
     pname = "boddle";
     version = "0.2.9";
@@ -9,9 +15,9 @@ final: prev: with prev; rec {
       sha256 = "0p3bfb2n0v3w27f5ji0na5pchjprklalddxsjd1bdbdi585naldn";
     };
 
-    propagatedBuildInputs = [ bottle ];
+    propagatedBuildInputs = with prev; [ bottle ];
 
-    meta = with lib; {
+    meta = {
       description = "Unit testing tool for Python's bottle library";
       homepage = "https://github.com/keredson/boddle";
       license = licenses.lgpl21Only;
@@ -24,7 +30,7 @@ final: prev: with prev; rec {
     version = "0.27.0";
 
     format = "pyproject";
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "procrastinate-org";
       repo = pname;
       rev = version;
@@ -36,7 +42,7 @@ final: prev: with prev; rec {
       substituteInPlace ./poetry.lock --replace 'psycopg2-binary' 'psycopg2'
     '';
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       aiopg
       attrs
       click
@@ -46,7 +52,7 @@ final: prev: with prev; rec {
       python-dateutil
     ];
 
-    meta = with lib; {
+    meta = {
       description = "Postgres-based distributed task processing library";
       homepage = "https://github.com/procrastinate-org/procrastinate";
       changelog = "https://procrastinate.readthedocs.io/en/latest/changelog.html";
@@ -65,11 +71,11 @@ final: prev: with prev; rec {
       sha256 = "1vmf56zsf3paa1jadjcjghiv2kxwiismyayq42ggnqpqwm98f7fb";
     };
 
-    propagatedBuildInputs = [ mando colorama future ];
+    propagatedBuildInputs = with prev; [ mando colorama future ];
 
     doCheck = false;
 
-    meta = with lib; {
+    meta = {
       description = "Code Metrics in Python";
       homepage = "https://radon.readthedocs.org/";
       license = licenses.mit;
@@ -86,11 +92,11 @@ final: prev: with prev; rec {
       sha256 = "0q6rl085q1hw1wic52pqfndr0x3nirbxnhqj9akdm5zhq2fv3zkr";
     };
 
-    propagatedBuildInputs = [ six ];
+    propagatedBuildInputs = with prev; [ six ];
 
     doCheck = false;
 
-    meta = with lib; {
+    meta = {
       description = "Create Python CLI apps with little to no effort at all";
       homepage = "https://mando.readthedocs.org/";
       license = licenses.mit;
@@ -103,7 +109,7 @@ final: prev: with prev; rec {
     version = "0.11.0";
     disabled = pythonOlder "3.7";
 
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "BrianPugh";
       repo = pname;
       rev = "v${version}";
@@ -121,18 +127,18 @@ final: prev: with prev; rec {
       "doc"
     ];
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       sphinxHook
       sphinx-rtd-theme
     ];
 
-    checkInputs = [
+    checkInputs = with prev; [
       pytestCheckHook
       pytest-benchmark
       pytest-mock
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       pathos
       tqdm
     ];
@@ -141,7 +147,7 @@ final: prev: with prev; rec {
       "lox"
     ];
 
-    meta = with lib; {
+    meta = {
       description = "Threading and Multiprocessing made easy";
       homepage = "https://github.com/BrianPugh/lox";
       changelog = "https://github.com/BrianPugh/lox/releases/tag/v${version}";
@@ -155,7 +161,7 @@ final: prev: with prev; rec {
     version = "22.20.0";
     disabled = pythonOlder "3.7";
 
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "looker-open-source";
       repo = "sdk-codegen";
       rev = "sdk-v${version}";
@@ -163,7 +169,7 @@ final: prev: with prev; rec {
     };
     sourceRoot = "source/python";
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       attrs
       cattrs
       exceptiongroup
@@ -175,7 +181,7 @@ final: prev: with prev; rec {
       "looker_sdk"
     ];
 
-    checkInputs = [
+    checkInputs = with prev; [
       pytestCheckHook
       pillow
       pytest-mock
@@ -189,7 +195,7 @@ final: prev: with prev; rec {
       "tests/rtl/test_api_methods.py"
     ];
 
-    meta = with lib; {
+    meta = {
       description = "Looker REST API SDK for Python";
       homepage = "https://github.com/looker-open-source/sdk-codegen/tree/main/python";
       changelog = "https://github.com/looker-open-source/sdk-codegen/blob/main/python/CHANGELOG.md";

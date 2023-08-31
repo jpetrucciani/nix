@@ -1,4 +1,11 @@
-final: prev: with prev; {
+final: prev:
+let
+  inherit (prev) buildPythonPackage fetchPypi;
+  inherit (prev) poetry-core;
+  inherit (prev.lib) licenses maintainers;
+  inherit (prev.pkgs) fetchFromGitHub rustPlatform autoPatchelfHook bash;
+in
+rec {
   tesla-py = buildPythonPackage rec {
     pname = "tesla-py";
     version = "2.8.0";
@@ -10,7 +17,7 @@ final: prev: with prev; {
       hash = "sha256-+LdOKxqFjvhkWzhsKkujt9tYQb8yqi3LgBO48JtT7NM=";
     };
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       requests
       requests-oauthlib
       websocket-client
@@ -18,7 +25,7 @@ final: prev: with prev; {
 
     pythonImportsCheck = [ "teslapy" ];
 
-    meta = with lib; {
+    meta = {
       description = "A Python module to use the Tesla Motors Owner API";
       homepage = "https://github.com/tdorssers/TeslaPy";
       license = licenses.mit;
@@ -31,7 +38,7 @@ final: prev: with prev; {
     version = "2.3.5";
 
     format = "pyproject";
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "0xNeffarion";
       repo = "osrsreboxed-db";
       rev = "93346b7678d1cf741a00a67f9ed802eb88639dc2";
@@ -56,16 +63,14 @@ final: prev: with prev; {
     pname = "falconn";
     version = "1.3.1";
 
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "falconn-lib";
       repo = pname;
       rev = "v${version}";
       hash = "sha256-kz4w3uW3Y45ov7g86MPA3x2WlvBP8EKLVhqeHDKiemk=";
     };
-    nativeBuildInputs = [ pkgs.eigen ];
-    propagatedBuildInputs = [
-      numpy
-    ];
+    nativeBuildInputs = with prev; [ pkgs.eigen ];
+    propagatedBuildInputs = with prev; [ numpy ];
     postPatch = ''
       sed -i -E 's#(cd FALCONN\-\*)#\1\/#g' ./Makefile
       make python_package
@@ -76,7 +81,7 @@ final: prev: with prev; {
     pythonImportsCheck = [
       "falconn"
     ];
-    meta = with lib; {
+    meta = {
       description = "";
       homepage = "https://github.com/FALCONN-LIB/FALCONN";
       changelog = "https://github.com/FALCONN-LIB/FALCONN/releases/tag/v${version}";
@@ -90,14 +95,14 @@ final: prev: with prev; {
     version = "4.2.0";
 
     format = "pyproject";
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "maguowei";
       repo = pname;
       rev = "v${version}";
       hash = "sha256-ugseXFiDQXLCg9wImpLCPmRJp31/OI8VuxxYD4JJ8mg=";
     };
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       aiohttp
       click
       github3_py
@@ -110,7 +115,7 @@ final: prev: with prev; {
       "starred"
     ];
 
-    meta = with lib; {
+    meta = {
       description = "Create your own Awesome List by GitHub stars";
       homepage = "https://github.com/maguowei/starred";
       license = licenses.mit;
@@ -123,7 +128,7 @@ final: prev: with prev; {
     version = "1.1.1";
 
     format = "pyproject";
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "AlexAltea";
       repo = "milli-py";
       rev = "v${version}";
@@ -131,7 +136,7 @@ final: prev: with prev; {
       fetchSubmodules = true;
     };
 
-    cargoDeps = pkgs.rustPlatform.importCargoLock {
+    cargoDeps = rustPlatform.importCargoLock {
       lockFile = "${src}/Cargo.lock";
       outputHashes = {
         "heed-0.12.5" = "sha256-atkKiK8rzqji47tJvUzbIXMw8U1uddHkHakPuEUvmFg=";
@@ -144,20 +149,20 @@ final: prev: with prev; {
       "milli"
     ];
 
-    buildInputs = [
+    buildInputs = with prev; [
       pkgs.libiconv
     ];
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       setuptools-rust
-    ] ++ (with pkgs.rustPlatform; [
+    ] ++ (with rustPlatform; [
       cargoSetupHook
       maturinBuildHook
       rust.cargo
       rust.rustc
     ]);
 
-    meta = with lib; {
+    meta = {
       description = "Python bindings for Milli, the embeddable Rust-based search engine powering Meilisearch";
       homepage = "https://github.com/AlexAltea/milli-py";
       license = licenses.mit;
@@ -170,7 +175,7 @@ final: prev: with prev; {
     version = "3.9.0";
 
     format = "setuptools";
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "Uberi";
       repo = pname;
       rev = version;
@@ -178,7 +183,7 @@ final: prev: with prev; {
     };
 
     doCheck = false;
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       requests
       soundfile
       google-cloud-speech
@@ -190,7 +195,7 @@ final: prev: with prev; {
       "speech_recognition"
     ];
 
-    meta = with lib; {
+    meta = {
       description = "Speech recognition module for Python, supporting several engines and APIs, online and offline";
       homepage = "https://github.com/Uberi/speech_recognition";
       license = licenses.bsd3;
@@ -208,18 +213,18 @@ final: prev: with prev; {
       hash = "sha256-Sb3gomE5LDrxRM1U/QkrSQ2IemJ5Xhab4l4Ty6grNyM=";
     };
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       setuptools
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       pillow
       python-dateutil
     ];
 
     pythonImportsCheck = [ "roadmapper" ];
 
-    meta = with lib; {
+    meta = {
       description = "Roadmapper. A Roadmap-as-Code (RaC) python library for generating a roadmap by using python code";
       homepage = "https://github.com/csgoh/roadmapper";
       license = licenses.mit;
@@ -232,7 +237,7 @@ final: prev: with prev; {
     version = "0.6.0";
     format = "setuptools";
 
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "SomethingWithComputers";
       repo = "pixoo";
       rev = "dc477493125dd2f57081e997fc1bb95e800dfee8";
@@ -244,7 +249,7 @@ final: prev: with prev; {
       ${sed} 's#(Pillow)\~\=(9.2.0)#\1>=\2#g' ./setup.py
     '';
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       pillow
       requests
       tkinter
@@ -252,7 +257,7 @@ final: prev: with prev; {
 
     pythonImportsCheck = [ "pixoo" ];
 
-    meta = with lib; {
+    meta = {
       description = "A library to help you make the most out of your Pixoo 64 (and hopefully soon other Wi-Fi enabled Pixoos";
       homepage = "https://github.com/SomethingWithComputers/pixoo";
       license = with licenses; [ ];
@@ -295,13 +300,13 @@ final: prev: with prev; {
     in
     buildPythonPackage {
       inherit pname src version format;
-      nativeBuildInputs = [ pkgs.autoPatchelfHook ];
+      nativeBuildInputs = [ autoPatchelfHook ];
       propagatedBuildInputs = [ ];
       pythonImportsCheck = [ "kaleido" ];
       postInstall = ''
-        sed -i -E '1s#!/bin/bash#!${pkgs.bash}/bin/bash#' $out/${prev.python.sitePackages}/kaleido/executable/kaleido
+        sed -i -E '1s#!/bin/bash#!${bash}/bin/bash#' $out/${prev.python.sitePackages}/kaleido/executable/kaleido
       '';
-      meta = with lib; {
+      meta = {
         description = "cross-platform library for generating static images for web-based visualization libraries";
         homepage = repo;
         license = licenses.mit;
@@ -321,7 +326,7 @@ final: prev: with prev; {
 
     pythonImportsCheck = [ "coolname" ];
 
-    meta = with lib; {
+    meta = {
       description = "Random name and slug generator";
       homepage = "https://github.com/alexanderlukanin13/coolname";
       license = licenses.bsd2;
@@ -349,7 +354,7 @@ final: prev: with prev; {
 
     pythonImportsCheck = [ "poetry2setup" ];
 
-    meta = with lib; {
+    meta = {
       description = "Convert python-poetry to setup.py";
       homepage = "https://github.com/abersheeran/poetry2setup";
       license = licenses.mit;
@@ -368,17 +373,17 @@ final: prev: with prev; {
       hash = "sha256-mUBm3xBOC07oV3CIUVCYBuJGp8/RrTyPh1uNTEv3LpY=";
     };
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with prev; [
       hatchling
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       opentelemetry-api
       opentelemetry-instrumentation
       opentelemetry-sdk
     ];
 
-    passthru.optional-dependencies = {
+    passthru.optional-dependencies = with prev; {
       otlp = [
         opentelemetry-exporter-otlp
       ];
@@ -386,10 +391,63 @@ final: prev: with prev; {
 
     pythonImportsCheck = [ "opentelemetry.distro" ];
 
-    meta = with lib; {
+    meta = {
       description = "OpenTelemetry Python Distro";
       homepage = "https://pypi.org/project/opentelemetry-distro/";
       license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  gaffe = buildPythonPackage rec {
+    pname = "gaffe";
+    version = "0.2.0";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-GUiwERbRfjgcQEFcfc1nmcSJS9uA/382vqrVD8aY89A=";
+    };
+
+    nativeBuildInputs = with prev; [
+      setuptools
+    ];
+
+    pythonImportsCheck = [ "gaffe" ];
+
+    meta = {
+      description = "Simple structured exceptions for python";
+      homepage = "https://github.com/kodemore/gaffe";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  chili = buildPythonPackage rec {
+    pname = "chili";
+    version = "2.4.0";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-9wLfVoihy299YIUsTQL2uZojqjwzY9puI1EgUN8GBZ8=";
+    };
+
+    nativeBuildInputs = with prev; [
+      setuptools
+    ];
+
+    propagatedBuildInputs = with prev; [
+      gaffe
+      typing-extensions
+    ];
+
+    pythonImportsCheck = [ "chili" ];
+
+    meta = {
+      description = "Serialise/deserialise almost any object";
+      homepage = "https://github.com/kodemore/chili";
+      license = licenses.mit;
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };

@@ -1,50 +1,8 @@
-(final: prev: with prev; {
-  # mitmproxy2swagger = buildPythonPackage rec {
-  #   pname = "mitmproxy2swagger";
-  #   version = "0.4.2";
-
-  #   src = fetchPypi {
-  #     inherit version;
-  #     pname = "mitmproxy2swagger";
-  #     sha256 = "sha256-VTbHa+Dv0DD6t/xjYXGFnc4lA78XCUdYpVRIhWETqe4=";
-  #   };
-
-  #   propagatedBuildInputs = [
-  #     setuptools
-  #     asgiref
-  #     blinker
-  #     brotli
-  #     certifi
-  #     click
-  #     cryptography
-  #     flask
-  #     h11
-  #     h2
-  #     hyperframe
-  #     kaitaistruct
-  #     ldap3
-  #     msgpack
-  #     passlib
-  #     protobuf
-  #     publicsuffix2
-  #     pyopenssl
-  #     pyparsing
-  #     pyperclip
-  #     ruamel-yaml
-  #     sortedcontainers
-  #     tornado
-  #     urwid
-  #     wsproto
-  #     zstandard
-  #     colorama
-  #     flask
-  #     mitmproxy
-  #     markupsafe
-  #   ];
-
-  #   doCheck = false;
-  # };
-
+final: prev:
+let
+  inherit (prev) buildPythonPackage fetchPypi;
+in
+{
   uncompyle6 = buildPythonPackage rec {
     pname = "uncompyle6";
     version = "3.8.0";
@@ -54,7 +12,7 @@
       sha256 = "053hh6mmllzwl7ndlf8fkiizr3yp6h4j4zhqg0z1zz3dixhk61k2";
     };
 
-    propagatedBuildInputs = [ spark_parser xdis ];
+    propagatedBuildInputs = with prev; [ spark_parser xdis ];
 
     doCheck = false;
     pythonImportsCheck = [ "uncompyle6" ];
@@ -74,7 +32,7 @@
       sha256 = "0c55zm1d7bi1lpvw1z0vvdvfkaqhfkcf40494khd2kcv23wcnji2";
     };
 
-    propagatedBuildInputs = [ click spark_parser xdis ];
+    propagatedBuildInputs = with prev; [ click spark_parser xdis ];
 
     doCheck = false;
 
@@ -110,7 +68,7 @@
       inherit pname version;
       sha256 = "1dypgw9qax9bs8rfsybysp2fk3rfgq3wqxxl4d5xbr06k1kd8wfy";
     };
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with prev; [
       (buildPythonPackage rec {
         pname = "altgraph";
         version = "0.17.2";
@@ -149,4 +107,4 @@
 
     meta = { };
   };
-})
+}
