@@ -13,6 +13,7 @@ jobs:
         id: pr
         with:
           delete-branch: true
+          author: jacobi petrucciani <j@cobi.dev>
           title: automatic update
           commit-message: automatic update
           branch: automatic-update
