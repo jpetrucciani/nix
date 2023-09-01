@@ -364,6 +364,7 @@ rec {
         else "";
       preBuild = ''
         cd ..
+        sed -E -i 's#(requires =).*#\1["scikit-build"]#g' ./pyproject.toml
       '';
       buildInputs = osSpecific;
 
