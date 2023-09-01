@@ -92,39 +92,41 @@ rec {
     };
   };
 
-  ipyaggrid = buildPythonPackage
-    rec {
-      pname = "ipyaggrid";
-      version = "0.4.0";
-      format = "pyproject";
+  ipyaggrid = buildPythonPackage rec {
+    pname = "ipyaggrid";
+    version = "0.4.0";
+    format = "pyproject";
 
-      src = fetchPypi {
-        inherit pname version;
-        hash = "sha256-unwV+xjQ8X8pjb/IK1DRJ4Ks9SzsDT9+aWqTgc8+XQM=";
-      };
-
-      nativeBuildInputs = with prev; [
-        jupyter-packaging
-        jupyterlab
-        setuptools
-        wheel
-      ];
-
-      propagatedBuildInputs = with prev; [
-        ipywidgets
-        pandas
-        simplejson
-      ];
-
-      pythonImportsCheck = [ "ipyaggrid" ];
-
-      meta = {
-        description = "Jupyter widget - ag-grid in the notebook";
-        homepage = "https://gitlab.com/DGothrek/ipyaggrid";
-        license = licenses.mit;
-        maintainers = with maintainers; [ jpetrucciani ];
-      };
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-unwV+xjQ8X8pjb/IK1DRJ4Ks9SzsDT9+aWqTgc8+XQM=";
     };
+    postPatch = ''
+      sed -i -E 's#(requires =).*#\1["jupyterlab"]#g' ./pyproject.toml
+    '';
+
+    nativeBuildInputs = with prev; [
+      jupyter-packaging
+      jupyterlab
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = with prev; [
+      ipywidgets
+      pandas
+      simplejson
+    ];
+
+    pythonImportsCheck = [ "ipyaggrid" ];
+
+    meta = {
+      description = "Jupyter widget - ag-grid in the notebook";
+      homepage = "https://github.com/widgetti/ipyaggrid";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 
   jupyterlab-code-formatter = buildPythonPackage rec {
     pname = "jupyterlab-code-formatter";
@@ -136,6 +138,9 @@ rec {
       inherit version;
       hash = "sha256-3fCEODKSzs7dyq4EP0xiuT0nqFhQV4ooD4/e2aG5OjI=";
     };
+    postPatch = ''
+      sed -i -E 's#(requires =).*#\1["jupyterlab"]#g' ./pyproject.toml
+    '';
 
     nativeBuildInputs = with prev; [
       jupyter-packaging
