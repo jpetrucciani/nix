@@ -718,6 +718,7 @@ final: prev: with prev; rec {
     };
 
     postPatch = ''
+      sed -i -E 's#(poetry)>=1.0#\1-core#g' ./pyproject.toml
       substituteInPlace ./pyproject.toml --replace "poetry.masonry.api" "poetry.core.masonry.api"
     '';
 
@@ -974,6 +975,7 @@ final: prev: with prev; rec {
     };
 
     postPatch = ''
+      sed -i -E 's#(poetry)>=0.12#\1-core#g' ./pyproject.toml
       substituteInPlace ./pyproject.toml --replace "poetry.masonry.api" "poetry.core.masonry.api"
     '';
 

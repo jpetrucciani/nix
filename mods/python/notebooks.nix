@@ -78,6 +78,7 @@ rec {
     ];
 
     postPatch = ''
+      sed -i -E 's#(poetry)>=0.12#\1-core#g' ./pyproject.toml
       substituteInPlace ./pyproject.toml --replace "poetry.masonry" "poetry.core.masonry"
     '';
 
