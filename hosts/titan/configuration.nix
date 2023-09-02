@@ -1,5 +1,6 @@
 { config, flake, machine-name, pkgs, ... }:
 let
+  inherit (flake.inputs) nixos-hardware;
   hostname = "titan";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
 in
@@ -7,7 +8,10 @@ in
   imports = [
     "${common.home-manager}/nixos"
     ./hardware-configuration.nix
-  ];
+  ] ++ (with nixos-hardware.nixosModules; [
+    common-gpu-nvidia
+    common-cpu-amd
+  ]);
 
   inherit (common) zramSwap swapDevices;
 
@@ -55,9 +59,17 @@ in
     promtail = common.templates.promtail { inherit hostname; };
     prometheus.exporters = common.templates.prometheus_exporters { };
   } // common.services;
-  virtualisation.docker.enable = true;
 
-  system.stateVersion = "22.11";
+  system.stateVersion = "23.11";
   security.sudo = common.security.sudo;
   programs.command-not-found.enable = false;
+
+  # nvidia setup?
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+  virtualisation.docker = {
+    enable = true;
+    enableNvidia = true;
+  };
+  hardware.opengl.enable = true;
+  hardware.opengl.driSupport32Bit = true;
 }

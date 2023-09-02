@@ -115,8 +115,8 @@ in
           filterUnmappedTypes = true;
           mapping = {
             "cobi" = "192.168.1.44";
-            "milkyway.cobi" = "192.168.1.40";
-            "titan.cobi" = "192.168.1.41";
+            "milkyway.cobi" = "192.168.1.92";
+            "titan.cobi" = "192.168.1.40";
             "luna.cobi" = "192.168.1.44";
             "jupiter.cobi" = "192.168.1.69";
             "charon.cobi" = "192.168.1.71";
