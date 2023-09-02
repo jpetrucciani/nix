@@ -9,7 +9,6 @@ in
     "${common.home-manager}/nixos"
     ./hardware-configuration.nix
   ] ++ (with nixos-hardware.nixosModules; [
-    common-gpu-nvidia
     common-cpu-amd
   ]);
 
