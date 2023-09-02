@@ -1,6 +1,6 @@
 # hosts
 
-This directory contains my NixOS configurations for each of my NixOS machines, as well as a `common.nix` file that contains shared configurations for all of my NixOS machines.
+This directory contains my nixos configurations for each of my nixos machines, as well as a `common.nix` file that contains shared configurations for all of my nixos machines.
 
 ---
 
@@ -8,7 +8,7 @@ This directory contains my NixOS configurations for each of my NixOS machines, a
 
 ### [andromeda/](./andromeda)
 
-This is an experimental NixOS install inside a VM using the apple virtualization framework.
+This is an experimental nixos install inside a VM using the apple virtualization framework.
 
 ### [charon/](./charon)
 
@@ -36,20 +36,24 @@ additional modules for use in the various host configurations for nixos and nix-
 
 ### [neptune/](./neptune)
 
-This is a bare-metal server.
+This is a bare-metal nixos server.
 
 ### [phobos/](./phobos)
 
-This is an experimental NixOS install inside a VM.
+This is an experimental nixos install inside a VM.
 
 ### [pluto/](./pluto)
 
-This is my personal M1 Pro Macbook, running MacOS and using nix-darwin and home-manager to manage things.
+This is my personal M2 Max Macbook, running MacOS and using nix-darwin and home-manager to manage things.
+
+### [titan/](./titan)
+
+This is a bare-metal nixos server with a modern dedicated GPU!
 
 ### [terra/](./terra)
 
-This is my largest NixOS based machine
+This is my second largest nixos based machine
 
 ### [common.nix](./common.nix)
 
-This file serves as a nice way to reduce duplication across NixOS configurations. It contains all my common env setup and services.
+This file serves as a nice way to reduce duplication across nixos configurations. It contains all my common env setup and services.
