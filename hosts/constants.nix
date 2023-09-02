@@ -25,7 +25,7 @@ let
     # physical
     galaxyboss = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO9u9+khlywG0vSsrTsdjZEhKlKBpXx8RnwESGw+zIKI galaxyboss";
     megaboss = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEhhl/jKYcglH7+tTYgsVRKqVuf7hwF6yOgpdYIQWAyJ jacobi-megaboss";
-    titan = "";
+    titan = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKNU+ZU3kZNtBPGZ0v8XB8eN491OBsgSY+pDCtUFI4Y8 jacobi@titan";
 
     # servers
     jupiter = "";
@@ -107,6 +107,18 @@ in
       extra-experimental-features = nix-command flakes
       extra-substituters = https://jacobi.cachix.org
       extra-trusted-public-keys = jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=
+    '';
+    settings = {
+      trusted-users = [ "root" "jacobi" ];
+    };
+  };
+  nix-cuda = {
+    extraOptions = ''
+      max-jobs = auto
+      narinfo-cache-negative-ttl = 10
+      extra-experimental-features = nix-command flakes
+      extra-substituters = https://jacobi.cachix.org https://cuda-maintainers.cachix.org
+      extra-trusted-public-keys = jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU= cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E=
     '';
     settings = {
       trusted-users = [ "root" "jacobi" ];
