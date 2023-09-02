@@ -37,12 +37,17 @@ in
     NIX_HOST = hostname;
     NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
   };
+  environment.systemPackages = with pkgs; [
+    cudaPackages.cudatoolkit
+    cudaPackages.cudnn
+    nvidia-docker
+  ];
 
   time.timeZone = common.timeZone;
 
   networking.hostName = hostname;
-  networking.useDHCP = false;
-  networking.interfaces.eth0.useDHCP = true;
+  networking.useDHCP = true;
+  networking.interfaces.enp5s0.useDHCP = true;
   networking.firewall.enable = false;
 
   users.users.root.hashedPassword = "!";
