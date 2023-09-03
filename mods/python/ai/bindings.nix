@@ -577,4 +577,37 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  exllama = buildPythonPackage rec {
+    pname = "exllama";
+    version = "0.0.15";
+    format = "setuptools";
+
+    src = fetchFromGitHub {
+      owner = "jllllll";
+      repo = "exllama";
+      rev = version;
+      hash = "sha256-0WVrINaMZYe+Zmhs0V6TT3oHB7F77IrM8euuiAUUUF4=";
+    };
+
+    CUDA_HOME = prev.pkgs.cudatoolkit;
+
+    propagatedBuildInputs = with prev; [
+      pkgs.ninja
+      flask
+      safetensors
+      sentencepiece
+      torch-bin
+      waitress
+    ];
+
+    pythonImportsCheck = [ "exllama" ];
+
+    meta = {
+      description = "A more memory-efficient rewrite of the HF transformers implementation of Llama for use with quantized weights";
+      homepage = "https://github.com/jllllll/exllama";
+      license = licenses.mit;
+      maintainers = with maintainers; [ ];
+    };
+  };
 }
