@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3.6.0
-      - uses: cachix/install-nix-action@v22
+      - uses: cachix/install-nix-action@v23
       - uses: cachix/cachix-action@master
         with:
           name: jacobi
