@@ -8,27 +8,27 @@ let
     else [ ];
 in
 clangStdenv.mkDerivation rec {
-  name = "falcon.cpp";
+  name = "bark.cpp";
   src = fetchFromGitHub {
-    owner = "nikisalli";
+    owner = "PABannier";
     repo = name;
-    rev = "fcb95afe6a38366f6d1c7c4741cde5cead77107b";
-    hash = "sha256-Rdb9KPnNeQFH7NhcesvNZPDsLpzsfaBl7w/+c3QByzw=";
+    rev = "79b2cbeb4e2e877c85f7b6d7978e1901c86e3793";
+    hash = "sha256-kpL2cPjx65xe08wcIiFG03lr6m+RO3+jOXg8xGcG6VI=";
   };
   buildPhase = ''
     make
   '';
   installPhase = ''
     mkdir -p $out/bin
-    cp ./main $out/bin/falcon
-    mv ./quantize $out/bin/falcon-quantize
+    cp ./main $out/bin/bark
+    mv ./quantize $out/bin/bark-quantize
   '';
   buildInputs = osSpecific;
 
   meta = with lib; {
-    description = "c++ implementation of falcon";
-    homepage = "https://github.com/nikisalli/falcon.cpp";
-    mainProgram = "falcon";
+    description = "Port of Suno AI's Bark in C/C++ for fast inference ";
+    homepage = "https://github.com/PABannier/bark.cpp";
+    mainProgram = "bark";
     license = licenses.mit;
     maintainers = with maintainers; [ jpetrucciani ];
   };
