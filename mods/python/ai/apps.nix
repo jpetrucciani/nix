@@ -126,4 +126,62 @@ in
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  bark = buildPythonPackage rec {
+    pname = "bark";
+    version = "unstable-2023-08-31";
+    format = "pyproject";
+
+    src = fetchFromGitHub {
+      owner = "suno-ai";
+      repo = pname;
+      rev = "cb89688307c28cbd2d8bbfc78e534b9812673a26";
+      hash = "sha256-hpM+m4cMymFsy8GJQQ29LoLoZx3i6PxIfASU49VSuk8=";
+    };
+
+    nativeBuildInputs = with prev; [
+      setuptools
+    ];
+
+    propagatedBuildInputs = with prev; [
+      boto3
+      encodec
+      funcy
+      huggingface-hub
+      numpy
+      scipy
+      tokenizers
+      torch-bin
+      tqdm
+      transformers
+    ];
+
+    passthru.optional-dependencies = with prev; {
+      dev = [
+        bandit
+        black
+        codecov
+        flake8
+        hypothesis
+        isort
+        jupyter
+        mypy
+        nbconvert
+        nbformat
+        pydocstyle
+        pylint
+        pytest
+        pytest-cov
+      ];
+    };
+
+    pythonImportsCheck = [ "bark" ];
+
+    meta = {
+      description = "Text-Prompted Generative Audio Model";
+      homepage = "https://github.com/suno-ai/bark";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
