@@ -44,7 +44,7 @@ in
     amazon-ecr-credential-helper
   ];
 
-  time.timeZone = common.timeZone;
+  time.timeZone = common.tz.work;
 
   networking.hostName = hostname;
   networking.nameservers = [ "10.31.65.200" "1.1.1.1" ];

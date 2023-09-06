@@ -182,6 +182,10 @@ in
   };
 
   timeZone = "America/Indiana/Indianapolis";
+  tz = {
+    home = "America/Indiana/Indianapolis";
+    work = "America/Chicago";
+  };
 
   caddy = {
     security = ''
