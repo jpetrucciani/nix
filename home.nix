@@ -73,7 +73,6 @@ in
         dyff
         ed
         erdtree
-        exa
         fd
         figlet
         file
@@ -274,6 +273,7 @@ in
 
   programs.less.enable = true;
   programs.lesspipe.enable = true;
+  programs.lsd.enable = true;
 
   programs.yt-dlp = {
     enable = true;
@@ -294,7 +294,7 @@ in
     historySize = -1;
     shellAliases = {
       ls = "ls --color=auto";
-      l = "${pkgs.exa}/bin/exa -alFT -L 1";
+      l = "lsd -lA --permission octal";
       ll = "ls -ahlFG";
       mkdir = "mkdir -pv";
       fzfp = "${pkgs.fzf}/bin/fzf --preview 'bat --style=numbers --color=always {}'";
