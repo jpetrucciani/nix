@@ -12,12 +12,6 @@ jobs:
     name: nix (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
-      - name: clear space
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /opt/ghc
-          sudo rm -rf "/usr/local/share/boost"
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
       - uses: actions/checkout@v4.0.0
       - uses: cachix/install-nix-action@v23
       - uses: cachix/cachix-action@master
