@@ -16,19 +16,19 @@ rec {
       llama-cpp-pin = fetchFromGitHub {
         owner = "ggerganov";
         repo = "llama.cpp";
-        rev = "06abf8eebabe086ca4003dee2754ab45032cd3fd";
-        hash = "sha256-w04LlhXlYZwjgGcH73OBP53ds1jPESWtBLTbwenNHQo=";
+        rev = "21ac3a1503001020122db5dce6adf34b761675f5";
+        hash = "sha256-DnQjLkgVc5vqMPeoLJwRft7sXgAduDvLcZbvI/faZRA=";
       };
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
-      version = "0.1.83";
+      version = "0.1.84";
       format = "pyproject";
       src = fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-IaE1vKqhDpVLHnRx0RcZOkcAUI4apAtNf+i9Hz8eCQI=";
+        hash = "sha256-x9NT131/m3d5wnANQ7y/u8JBFDfjhIx5hVDdb2+okJQ=";
       };
 
       cuda = false;
