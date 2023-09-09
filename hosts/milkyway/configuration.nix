@@ -89,12 +89,7 @@ in
 
   virtualisation.docker = {
     enable = true;
-    enableNvidia = true;
   };
-
-  systemd.services.docker.serviceConfig.EnvironmentFile = "/etc/default/docker";
-  systemd.services.docker.environment.CUDA_PATH = CUDA_PATH;
-  systemd.services.docker.environment.LD_LIBRARY_PATH = CUDA_LDPATH;
   hardware.opengl.enable = true;
   hardware.opengl.driSupport32Bit = true;
   hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;

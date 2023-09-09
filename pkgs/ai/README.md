@@ -16,15 +16,11 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 ### [chatbot-ui.nix](./chatbot-ui.nix)
 
-[`chatbot-ui`](https://github.com/mckaywrigley/chatbot-ui) is a popular frontend for OpenAI compliant APIs. It is designed to look similar to OpenAI's ChatGPT UI. I use this in combination with [`gpt-llama-cpp`](https://github.com/keldenl/gpt-llama.cpp) to run models locally as if they were OpenAI apis!
+[`chatbot-ui`](https://github.com/mckaywrigley/chatbot-ui) is a popular frontend for OpenAI compliant APIs. It is designed to look similar to OpenAI's ChatGPT UI.
 
 ### [falcon-cpp.nix](./falcon-cpp.nix)
 
 [`falcon.cpp`](https://github.com/nikisalli/falcon.cpp) is a port of llama-cpp that works with falcon models
-
-### [gpt-llama-cpp.nix](./gpt-llama-cpp.nix)
-
-[`gpt-llama-cpp`](https://github.com/keldenl/gpt-llama.cpp) is a llama.cpp drop-in replacement for OpenAI's GPT endpoints, allowing GPT-powered apps to run off local llama.cpp models instead of OpenAI. I use this and the above [`chatbot-ui`](https://github.com/mckaywrigley/chatbot-ui) to self host a ChatGPT alternative with local LLM models!
 
 ### [llama-cpp.nix](./llama-cpp.nix)
 
