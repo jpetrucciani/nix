@@ -219,6 +219,14 @@ let
         ${if ingress then "---\n${toYAML ing}" else ""}
       '';
     components = {
+      volumes = {
+        tmp = {
+          name = "tmp";
+          mountPath = "/tmp";
+          emptyDir = true;
+          readOnly = false;
+        };
+      };
       service-account-token = { name, namespace ? "default", saSuffix ? "-sa" }: {
         apiVersion = "v1";
         kind = "Secret";
