@@ -10,6 +10,10 @@ in
     ./hardware-configuration.nix
   ] ++ (with nixos-hardware.nixosModules; [
     common-cpu-amd
+    common-cpu-amd-pstate
+    common-gpu-nvidia
+    common-pc
+    common-pc-ssd
   ]);
 
   inherit (common) zramSwap swapDevices;
@@ -41,6 +45,7 @@ in
     cudaPackages.cudatoolkit
     cudaPackages.cudnn
     nvidia-docker
+    nvtop-nvidia
   ];
 
   time.timeZone = common.timeZone;
