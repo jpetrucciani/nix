@@ -14,6 +14,7 @@
           ./ai/vector.nix
           ./ai/prompts.nix
           ./ai/apps.nix
+          ./ai/auto.nix
           ./ai/eval.nix
           ./experimental.nix
           ./fastapi.nix

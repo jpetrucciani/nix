@@ -33,7 +33,7 @@ in
       description = "A client library for accessing langfuse";
       homepage = "https://pypi.org/project/langfuse/";
       license = licenses.mit;
-      maintainers = with maintainers; [ ];
+      maintainers = with maintainers; [ jpetrucciani ];
     };
   };
 }

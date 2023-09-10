@@ -494,7 +494,7 @@ final: prev: with prev; rec {
       description = "Python library for easily interacting with trained machine learning models";
       homepage = "https://github.com/gradio-app/gradio";
       license = licenses.asl20;
-      maintainers = with maintainers; [ ];
+      maintainers = with maintainers; [ jpetrucciani ];
     };
   };
 
@@ -1072,6 +1072,360 @@ final: prev: with prev; rec {
     meta = with lib; {
       description = "Utility for using transformers summarization models on text docs";
       homepage = "https://pypi.org/project/textsum/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  nlpaug = buildPythonPackage rec {
+    pname = "nlpaug";
+    version = "0.0.15";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-ceFQgRkV0LHK64zXQCHSAWgmLOOMbHLZnZzTnWsWrm4=";
+    };
+
+    propagatedBuildInputs = [
+      gdown
+      numpy
+      pandas
+      requests
+    ];
+
+    nativeCheckInputs = [
+      python-dotenv
+      librosa
+      torch
+      transformers
+    ];
+
+    doCheck = false;
+
+    pythonImportsCheck = [ "nlpaug" ];
+
+    meta = with lib; {
+      description = "Natural language processing augmentation library for deep neural networks";
+      homepage = "https://pypi.org/project/nlpaug/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  gluonts = buildPythonPackage rec {
+    pname = "gluonts";
+    version = "0.13.4";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-50+tRpzajpTZYL0KGj+hoxPZZajQiGwsTGglEIb/AuA=";
+    };
+
+    nativeBuildInputs = [
+      setuptools
+    ];
+
+    propagatedBuildInputs = [
+      numpy
+      pandas
+      pydantic
+      toolz
+      tqdm
+      typing-extensions
+    ];
+
+    pythonImportsCheck = [ "gluonts" ];
+
+    meta = with lib; {
+      description = "Probabilistic time series modeling in Python";
+      homepage = "https://pypi.org/project/gluonts/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  triad = buildPythonPackage rec {
+    pname = "triad";
+    version = "0.9.1";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-r8P9nyJSR5dP0RcPl0SNgRHvAR0tjLF6NQPD/Hlc9ZQ=";
+    };
+
+    propagatedBuildInputs = [
+      fs
+      fsspec
+      importlib-metadata
+      numpy
+      pandas
+      pyarrow
+      six
+    ];
+
+    passthru.optional-dependencies = {
+      ciso8601 = [
+        ciso8601
+      ];
+    };
+
+    pythonImportsCheck = [ "triad" ];
+
+    meta = with lib; {
+      description = "A collection of python utils for Fugue projects";
+      homepage = "https://pypi.org/project/triad/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  adagio = buildPythonPackage rec {
+    pname = "adagio";
+    version = "0.2.4";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-5Yq8RTkYSmX6+ZVpV9N4dha+3rEwOsXJsaIB2K9rh9c=";
+    };
+
+    propagatedBuildInputs = [
+      triad
+    ];
+
+    pythonImportsCheck = [ "adagio" ];
+
+    doCheck = false;
+
+    meta = with lib; {
+      description = "The Dag IO Framework for Fugue projects";
+      homepage = "https://pypi.org/project/adagio/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  fugue-sql-antlr = buildPythonPackage rec {
+    pname = "fugue-sql-antlr";
+    version = "0.1.6";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-d4e7Do+p4TM80Jpv7pE8rh4C7Cb5HKuunoIa30zKT14=";
+    };
+
+    preBuild = ''
+      sed -i -E \
+        -e '/jinja2/d' \
+        -e '/antlr4-python3-runtime/d' \
+        -e '/triad>=/d' \
+        ./setup.py
+    '';
+
+    propagatedBuildInputs = [
+      antlr4-python3-runtime
+    ];
+
+    pythonImportsCheck = [ "fugue_sql_antlr" ];
+
+    meta = with lib; {
+      description = "Fugue SQL Antlr Parser";
+      homepage = "https://pypi.org/project/fugue-sql-antlr/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  fugue = buildPythonPackage rec {
+    pname = "fugue";
+    version = "0.8.6";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-TjDE7bruMadouaCX5g0ps51zagMC07YRB13j+nMWLQk=";
+    };
+
+    propagatedBuildInputs = [
+      adagio
+      fugue-sql-antlr
+      jinja2
+      pandas
+      pyarrow
+      qpd
+      sqlglot
+      triad
+    ];
+
+    pythonImportsCheck = [ "fugue" ];
+
+    doCheck = false;
+
+    meta = with lib; {
+      description = "An abstraction layer for distributed computation";
+      homepage = "https://pypi.org/project/fugue/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  qpd = buildPythonPackage rec {
+    pname = "qpd";
+    version = "0.4.4";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-4O0FuI4yHqmTWHQ3e9oRM5yQ8UafNDROm0HRa4CI4TY=";
+    };
+
+    preBuild = ''
+      sed -i -E \
+        -e '/antlr4-python3-runtime/d' \
+        ./setup.py
+    '';
+
+    doCheck = false;
+
+    propagatedBuildInputs = [
+      adagio
+      antlr4-python3-runtime
+      pandas
+      triad
+    ];
+
+    passthru.optional-dependencies = {
+      all = [
+        cloudpickle
+        dask
+      ];
+      dask = [
+        cloudpickle
+        dask
+      ];
+    };
+
+    pythonImportsCheck = [ "qpd" ];
+
+    meta = with lib; {
+      description = "Query Pandas Using SQL";
+      homepage = "https://pypi.org/project/qpd/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  statsforecast = buildPythonPackage rec {
+    pname = "statsforecast";
+    version = "1.6.0";
+    format = "setuptools";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-23PsIbyB8k1eItNQiwoghKRRFxmyQKkigj2yg9uhLFI=";
+    };
+
+    propagatedBuildInputs = [
+      fugue
+      matplotlib
+      numba
+      numpy
+      pandas
+      polars
+      prophet
+      scipy
+      statsmodels
+      tqdm
+    ];
+
+    nativeCheckInputs = [
+      pytestCheckHook
+      ray
+      dask
+      pyspark
+    ];
+
+    pythonImportsCheck = [ "statsforecast" ];
+
+    disabledTests = [
+      "test_dask_flow"
+      "test_dask_flow_with_level"
+      "test_ray_flow"
+      "test_ray_flow_with_level"
+      "test_spark_flow"
+      "test_spark_flow_with_level"
+    ];
+
+    meta = with lib; {
+      description = "Time series forecasting suite using statistical models";
+      homepage = "https://pypi.org/project/statsforecast/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  window-ops = buildPythonPackage rec {
+    pname = "window-ops";
+    version = "0.0.14";
+    format = "setuptools";
+
+    src = fetchPypi {
+      pname = "window_ops";
+      inherit version;
+      hash = "sha256-TA1GhsULofwd59Qdpwa1cRjY+0VTHloj8GEE+AR4jB0=";
+    };
+
+    propagatedBuildInputs = [
+      numba
+      numpy
+    ];
+
+    passthru.optional-dependencies = {
+      dev = [
+        pandas
+      ];
+    };
+
+    pythonImportsCheck = [ "window_ops" ];
+
+    meta = with lib; {
+      description = "Implementations of window operations such as rolling and expanding";
+      homepage = "https://pypi.org/project/window-ops/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  mlforecast = buildPythonPackage rec {
+    pname = "mlforecast";
+    version = "0.9.2";
+    format = "pyproject";
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-ZUW8jn9rg/F4JE8d2Xc/oEJxebEY7+aYD/7gxQl9y5s=";
+    };
+
+    nativeBuildInputs = [
+      setuptools
+    ];
+
+    propagatedBuildInputs = [
+      numba
+      pandas
+      scikit-learn
+      window-ops
+    ];
+
+    pythonImportsCheck = [ "mlforecast" ];
+
+    meta = with lib; {
+      description = "Scalable machine learning based time series forecasting";
+      homepage = "https://pypi.org/project/mlforecast/";
       license = licenses.asl20;
       maintainers = with maintainers; [ jpetrucciani ];
     };
