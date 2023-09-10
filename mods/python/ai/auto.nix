@@ -251,17 +251,17 @@ rec {
       pandas
       scikit-learn
       scipy
+    ] ++ [
+      autogluon-core
+      # catboost
+      # fastai
+      lightgbm
+      torch
+      xgboost
+      vowpalwabbit
     ];
 
     passthru.optional-dependencies = with prev; {
-      all = [
-        autogluon-core
-        catboost
-        fastai
-        lightgbm
-        torch
-        xgboost
-      ];
       catboost = [
         catboost
       ];
