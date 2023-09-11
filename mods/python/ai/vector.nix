@@ -10,12 +10,12 @@ in
     in
     buildPythonPackage rec {
       pname = "chromadb";
-      version = "0.4.9";
+      version = "0.4.10";
       format = "pyproject";
 
       src = fetchPypi {
         inherit pname version;
-        hash = "sha256-W/gA8GTNAVjyc2iFCJfEF5E2UPHByd7KrTyza6GVCoc=";
+        hash = "sha256-G7ty9fabeg+px/HXTGymGX0pkaQzNZiql/2Q2JqL0RI=";
       };
 
       nativeBuildInputs = with prev; [
