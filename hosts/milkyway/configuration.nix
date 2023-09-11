@@ -93,4 +93,15 @@ in
   hardware.opengl.enable = true;
   hardware.opengl.driSupport32Bit = true;
   hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+
+  fileSystems."/mnt/jupiter" = {
+    device = "100.84.224.73:/volume1/network";
+    fsType = "nfs";
+    options = [
+      "nfsvers=4.1"
+      "noauto"
+      "x-systemd.automount"
+      "x-systemd.idle-timeout=600"
+    ];
+  };
 }
