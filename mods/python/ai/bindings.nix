@@ -16,19 +16,19 @@ rec {
       llama-cpp-pin = fetchFromGitHub {
         owner = "ggerganov";
         repo = "llama.cpp";
-        rev = "89e89599fd095172f8d67903b5e227467420f036";
-        hash = "sha256-LDH+9G2wJhmz4k+7AOSgf0HC7y2Q6G4TOHUOJ9tLNg0=";
+        rev = "71ca2fad7d6c0ef95ef9944fb3a1a843e481f314";
+        hash = "sha256-qd6UCjtRY4h/zgJKF/tkmHNCJ6O/SYFW6V+AlYoy0Lc=";
       };
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
-      version = "0.1.85";
+      version = "0.2.3";
       format = "pyproject";
       src = fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-cyPTOVb8wLJD6AzFfMkawWWKg9T3pLhrrtcT3PPVnjE=";
+        hash = "sha256-snageBKo5mGetEpM6zbxbDgRlKzX8GSRJdnD5jB6dBA=";
       };
 
       cuda = false;
@@ -55,9 +55,16 @@ rec {
         ninja
       ]) ++ (with prev; [
         pythonRelaxDepsHook
-        poetry-core
-        scikit-build
-        setuptools
+        (scikit-build-core.overridePythonAttrs (_: rec {
+          version = "0.5.0";
+          src = fetchPypi {
+            pname = "scikit_build_core";
+            inherit version;
+            hash = "sha256-pCqVAps0tc+JKFU0LZuURcd0y3l/yyTI/EwvtCsY38o=";
+          };
+        }))
+        pathspec
+        pyproject-metadata
       ]) ++ (optionals cuda [ cudatoolkit ]);
       pythonRelaxDeps = [ "diskcache" ];
       propagatedBuildInputs = with prev; [
