@@ -38,31 +38,36 @@ in
 
   time.timeZone = common.timeZone;
 
-  networking.hostName = hostname;
-  networking.useDHCP = false;
-  networking.interfaces.enp9s0.useDHCP = true;
-  networking.firewall = {
-    enable = true;
-    trustedInterfaces = [ "tailscale0" ];
-    allowedTCPPorts = with common.ports; [
-      # k3s?
-      6443
-    ] ++ usual;
-    allowedUDPPorts = [ ];
-    checkReversePath = "loose";
+  networking = {
+    hostName = hostname;
+    useDHCP = false;
+    interfaces.enp9s0.useDHCP = true;
+    firewall = {
+      enable = true;
+      trustedInterfaces = [ "tailscale0" ];
+      allowedTCPPorts = with common.ports; [
+        # k3s?
+        6443
+      ] ++ usual;
+      allowedUDPPorts = [ ];
+      checkReversePath = "loose";
+    };
   };
 
-  users.mutableUsers = false;
-  users.users.root.hashedPassword = "!";
-  users.users.jacobi = {
-    inherit (common) extraGroups;
-    isNormalUser = true;
-    passwordFile = "/etc/passwordFile-jacobi";
-
-    openssh.authorizedKeys.keys = with common.pubkeys; [
-      m1max
-      nix-m1max
-    ] ++ usual;
+  users = {
+    mutableUsers = false;
+    users = {
+      root.hashedPassword = "!";
+      jacobi = {
+        inherit (common) extraGroups;
+        isNormalUser = true;
+        passwordFile = "/etc/passwordFile-jacobi";
+        openssh.authorizedKeys.keys = with common.pubkeys; [
+          m1max
+          nix-m1max
+        ] ++ usual;
+      };
+    };
   };
 
   environment.systemPackages = [ pkgs.k3s ];

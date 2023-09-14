@@ -69,7 +69,7 @@ clangStdenv.mkDerivation rec {
     chmod +x $out/bin/koboldcpp
   '';
   buildInputs = [ openblas ] ++ osSpecific;
-  nativeBuildInputs = [ ] ++ (optionals cuda [ cudatoolkit ]);
+  nativeBuildInputs = optionals cuda [ cudatoolkit ];
   passthru.cuda = koboldcpp.override { cuda = true; };
 
   meta = with lib; {

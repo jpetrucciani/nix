@@ -68,11 +68,15 @@ in
         rdns = false;
       };
     };
-    services.openssh.settings.PasswordAuthentication = lib.mkForce true;
-    services.openssh.settings.X11Forwarding = lib.mkForce false;
-    services.openssh.extraConfig = ''
-      AllowGroups wheel ${concatStringsSep " " cfg.allowedGroups}
-    '';
+    services.openssh = {
+      settings = {
+        PasswordAuthentication = lib.mkForce true;
+        X11Forwarding = lib.mkForce false;
+      };
+      extraConfig = ''
+        AllowGroups wheel ${concatStringsSep " " cfg.allowedGroups}
+      '';
+    };
     services = {
       sssd = {
         enable = true;

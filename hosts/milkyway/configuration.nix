@@ -27,23 +27,25 @@ in
 
   boot.tmp.useTmpfs = true;
 
-  environment.etc."nixpkgs-path".source = common.pkgs.path;
 
-  # cuda stuff?
-  environment.noXlibs = false;
-  environment.systemPackages = with pkgs; [
-    cudaPackages.cudatoolkit
-    cudaPackages.cudnn
-    nvidia-docker
-  ];
-  environment.variables = {
-    NIX_HOST = hostname;
-    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
-    _CUDA_PATH = CUDA_PATH;
-    _CUDA_LDPATH = CUDA_LDPATH;
-    XLA_FLAGS = "--xla_gpu_cuda_data_dir=${CUDA_PATH}";
-    XLA_TARGET = cudaTarget;
-    EXLA_TARGET = cudaTarget;
+  environment = {
+    etc."nixpkgs-path".source = common.pkgs.path;
+    # cuda stuff?
+    noXlibs = false;
+    systemPackages = with pkgs; [
+      cudaPackages.cudatoolkit
+      cudaPackages.cudnn
+      nvidia-docker
+    ];
+    variables = {
+      NIX_HOST = hostname;
+      NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
+      _CUDA_PATH = CUDA_PATH;
+      _CUDA_LDPATH = CUDA_LDPATH;
+      XLA_FLAGS = "--xla_gpu_cuda_data_dir=${CUDA_PATH}";
+      XLA_TARGET = cudaTarget;
+      EXLA_TARGET = cudaTarget;
+    };
   };
 
   home-manager.users.jacobi = common.jacobi;
@@ -65,12 +67,14 @@ in
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
   };
-  nixpkgs.config.allowUnfree = true;
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  nixpkgs = {
+    config.allowUnfree = true;
+    hostPlatform = lib.mkDefault "x86_64-linux";
+  };
   programs.command-not-found.enable = false;
 
   security.sudo = common.security.sudo;
-  system.stateVersion = "22.05";
+  system.stateVersion = "23.11";
   time.timeZone = common.timeZone;
 
   users.users.jacobi = {
@@ -90,9 +94,14 @@ in
   virtualisation.docker = {
     enable = true;
   };
-  hardware.opengl.enable = true;
-  hardware.opengl.driSupport32Bit = true;
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+
+  hardware = {
+    opengl = {
+      enable = true;
+      driSupport32Bit = true;
+    };
+    nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+  };
 
   fileSystems."/mnt/jupiter" = {
     device = "100.84.224.73:/volume1/network";

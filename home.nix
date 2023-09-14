@@ -42,12 +42,13 @@ in
   nixpkgs.overlays = import ./overlays.nix;
   nixpkgs.config = { allowUnfree = true; };
 
-  programs.home-manager.enable = true;
-  programs.home-manager.path = "${home-manager}";
-
-  programs.btop.enable = true;
-  programs.htop.enable = true;
-  programs.dircolors.enable = true;
+  programs = {
+    home-manager.enable = true;
+    home-manager.path = "${home-manager}";
+    btop.enable = true;
+    htop.enable = true;
+    dircolors.enable = true;
+  };
 
   # broken manpages upstream, see: https://github.com/nix-community/home-manager/issues/3342
   manual.manpages.enable = false;
@@ -442,9 +443,11 @@ in
         };
       };
       keys.normal = {
-        space.space = "file_picker";
-        space.w = ":w";
-        space.q = ":q";
+        space = {
+          space = "file_picker";
+          w = ":w";
+          q = ":q";
+        };
       };
     };
   };
