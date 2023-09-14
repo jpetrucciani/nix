@@ -22,13 +22,13 @@ rec {
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
-      version = "0.2.3";
+      version = "0.2.4";
       format = "pyproject";
       src = fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-snageBKo5mGetEpM6zbxbDgRlKzX8GSRJdnD5jB6dBA=";
+        hash = "sha256-A0K7Y7QYiAfmX6lhKwWfdas1jh2ovMFSrprFC3oBJno=";
       };
 
       cuda = false;
