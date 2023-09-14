@@ -38,32 +38,39 @@ in
 
   time.timeZone = common.timeZone;
 
-  networking.hostName = hostname;
-  networking.extraHosts = common.extraHosts.proxmox;
-  networking.useDHCP = false;
-  networking.interfaces.ens18.useDHCP = false;
-  networking.interfaces.ens18.ipv4.addresses = [{
-    address = "192.168.69.10";
-    prefixLength = 24;
-  }];
-  networking.defaultGateway = "192.168.69.1";
-  networking.nameservers = [ "1.1.1.1" ];
-  networking.firewall = {
-    enable = true;
-    trustedInterfaces = [ "tailscale0" ];
-    allowedTCPPorts = with common.ports; [ ] ++ usual;
-    allowedUDPPorts = [ ];
-    checkReversePath = "loose";
+  networking = {
+    hostName = hostname;
+    extraHosts = common.extraHosts.proxmox;
+    useDHCP = false;
+    interfaces.ens18 = {
+      useDHCP = false;
+      ipv4.addresses = [{
+        address = "192.168.69.10";
+        prefixLength = 24;
+      }];
+    };
+    defaultGateway = "192.168.69.1";
+    nameservers = [ "1.1.1.1" ];
+    firewall = {
+      enable = true;
+      trustedInterfaces = [ "tailscale0" ];
+      allowedTCPPorts = with common.ports; usual;
+      allowedUDPPorts = [ ];
+      checkReversePath = "loose";
+    };
   };
 
-  users.mutableUsers = false;
-  users.users.root.hashedPassword = "!";
-  users.users.jacobi = {
-    inherit (common) extraGroups;
-    isNormalUser = true;
-    passwordFile = "/etc/passwordFile-jacobi";
-
-    openssh.authorizedKeys.keys = with common.pubkeys; [ m1max ] ++ usual;
+  users = {
+    mutableUsers = false;
+    users = {
+      root.hashedPassword = "!";
+      jacobi = {
+        inherit (common) extraGroups;
+        isNormalUser = true;
+        passwordFile = "/etc/passwordFile-jacobi";
+        openssh.authorizedKeys.keys = with common.pubkeys; [ m1max ] ++ usual;
+      };
+    };
   };
 
   services = {

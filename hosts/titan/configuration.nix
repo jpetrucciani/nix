@@ -36,31 +36,39 @@ in
     tmp.useTmpfs = true;
   };
 
-  environment.variables = {
-    NIX_HOST = hostname;
-    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
+  environment = {
+    variables = {
+      NIX_HOST = hostname;
+      NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
+    };
+    systemPackages = with pkgs; [
+      cudaPackages.cudatoolkit
+      cudaPackages.cudnn
+      nvidia-docker
+      nvtop-nvidia
+    ];
   };
-  environment.systemPackages = with pkgs; [
-    cudaPackages.cudatoolkit
-    cudaPackages.cudnn
-    nvidia-docker
-    nvtop-nvidia
-  ];
 
   time.timeZone = common.timeZone;
 
-  networking.hostName = hostname;
-  networking.useDHCP = true;
-  networking.interfaces.enp5s0.useDHCP = true;
-  networking.firewall.enable = false;
+  networking = {
+    hostName = hostname;
+    useDHCP = true;
+    interfaces.enp5s0.useDHCP = true;
+    firewall.enable = false;
+  };
 
-  users.users.root.hashedPassword = "!";
-  users.mutableUsers = false;
-  users.users.jacobi = {
-    inherit (common) extraGroups;
-    isNormalUser = true;
-    passwordFile = "/etc/passwordFile-jacobi";
-    openssh.authorizedKeys.keys = with common.pubkeys; [ ] ++ usual;
+  users = {
+    mutableUsers = false;
+    users = {
+      root.hashedPassword = "!";
+      jacobi = {
+        inherit (common) extraGroups;
+        isNormalUser = true;
+        passwordFile = "/etc/passwordFile-jacobi";
+        openssh.authorizedKeys.keys = with common.pubkeys; usual;
+      };
+    };
   };
 
   services = {
@@ -74,12 +82,16 @@ in
   programs.command-not-found.enable = false;
 
   # nvidia setup?
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
   virtualisation.docker = {
     enable = true;
     enableNvidia = true;
   };
-  hardware.opengl.enable = true;
-  hardware.opengl.driSupport = true;
-  hardware.opengl.driSupport32Bit = true;
+  hardware = {
+    nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+    opengl = {
+      enable = true;
+      driSupport = true;
+      driSupport32Bit = true;
+    };
+  };
 }

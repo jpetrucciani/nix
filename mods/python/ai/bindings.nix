@@ -33,7 +33,7 @@ rec {
 
       cuda = false;
 
-      _CMAKE_ARGS = [ ] ++ (optionals isM1 [ "-DLLAMA_METAL=on" ]) ++ (optionals cuda [ "-DLLAMA_CUBLAS=on" ]);
+      _CMAKE_ARGS = (optionals isM1 [ "-DLLAMA_METAL=on" ]) ++ (optionals cuda [ "-DLLAMA_CUBLAS=on" ]);
       CMAKE_ARGS = builtins.concatStringsSep " " _CMAKE_ARGS;
       FORCE_CMAKE = if (isM1 || cuda) then "1" else null;
 

@@ -35,31 +35,39 @@ in
     tmp.useTmpfs = true;
   };
 
-  environment.variables = {
-    NIX_HOST = hostname;
-    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
+  environment = {
+    variables = {
+      NIX_HOST = hostname;
+      NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
+    };
+    etc."nixpkgs-path".source = common.pkgs.path;
+    systemPackages = with pkgs; [
+      amazon-ecr-credential-helper
+    ];
   };
-  environment.etc."nixpkgs-path".source = common.pkgs.path;
-  environment.systemPackages = with pkgs; [
-    amazon-ecr-credential-helper
-  ];
 
   time.timeZone = common.tz.work;
 
-  networking.hostName = hostname;
-  networking.nameservers = [ "10.31.65.200" "1.1.1.1" ];
-  networking.search = [ "blackedge.local" ];
-  networking.useDHCP = false;
-  networking.interfaces.eth0.useDHCP = true;
-  networking.firewall.enable = false;
+  networking = {
+    hostName = hostname;
+    nameservers = [ "10.31.65.200" "1.1.1.1" ];
+    search = [ "blackedge.local" ];
+    useDHCP = false;
+    interfaces.eth0.useDHCP = true;
+    firewall.enable = false;
+  };
 
-  users.users.root.hashedPassword = "!";
-  users.mutableUsers = false;
-  users.users.jacobi = {
-    inherit (common) extraGroups;
-    isNormalUser = true;
-    passwordFile = "/etc/passwordFile-jacobi";
-    openssh.authorizedKeys.keys = with common.pubkeys; [ edgewin hub2 ] ++ usual;
+  users = {
+    mutableUsers = false;
+    users = {
+      root.hashedPassword = "!";
+      jacobi = {
+        inherit (common) extraGroups;
+        isNormalUser = true;
+        passwordFile = "/etc/passwordFile-jacobi";
+        openssh.authorizedKeys.keys = with common.pubkeys; [ edgewin hub2 ] ++ usual;
+      };
+    };
   };
 
   conf.blackedge.enable = true;
@@ -121,7 +129,7 @@ in
   } // common.services;
 
   virtualisation.docker.enable = true;
-  system.stateVersion = "22.11";
+  system.stateVersion = "23.11";
   security.sudo = common.security.sudo;
   programs.command-not-found.enable = false;
 }

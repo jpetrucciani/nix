@@ -3,10 +3,14 @@
 {
   imports = [ ];
 
-  boot.initrd.availableKernelModules = [ "virtiofs" "virtio_pci" "xhci_pci" "usb_storage" "usbhid" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ ];
-  boot.extraModulePackages = [ ];
+  boot = {
+    initrd = {
+      availableKernelModules = [ "virtiofs" "virtio_pci" "xhci_pci" "usb_storage" "usbhid" ];
+      kernelModules = [ ];
+    };
+    kernelModules = [ ];
+    extraModulePackages = [ ];
+  };
 
   fileSystems."/" =
     {

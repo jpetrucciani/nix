@@ -24,22 +24,32 @@ in
   home-manager.users.jacobi = common.jacobi;
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
-  boot.kernel.sysctl = { } // common.sysctl_opts;
-  boot.tmp.useTmpfs = true;
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot/efi";
+      };
+    };
+    kernel.sysctl = { } // common.sysctl_opts;
+    tmp.useTmpfs = true;
+  };
 
-  environment.etc."nixpkgs-path".source = common.pkgs.path;
-  environment.variables = {
-    NIX_HOST = hostname;
-    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
+  environment = {
+    etc."nixpkgs-path".source = common.pkgs.path;
+    variables = {
+      NIX_HOST = hostname;
+      NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
+    };
   };
 
   time.timeZone = common.timeZone;
 
-  networking.hostName = hostname;
-  networking.networkmanager.enable = true;
+  networking = {
+    hostName = hostname;
+    networkmanager.enable = true;
+  };
 
   i18n.defaultLocale = common.defaultLocale;
   i18n.extraLocaleSettings = common.extraLocaleSettings;
@@ -394,7 +404,7 @@ in
   systemd.services.n8n.serviceConfig.EnvironmentFile = "/etc/default/n8n";
 
   virtualisation.docker.enable = true;
-  system.stateVersion = "22.11";
+  system.stateVersion = "23.11";
   security.sudo = common.security.sudo;
   programs.command-not-found.enable = false;
 }

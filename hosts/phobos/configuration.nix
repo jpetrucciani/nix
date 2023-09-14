@@ -38,19 +38,24 @@ in
 
   time.timeZone = common.timeZone;
 
-  networking.hostName = hostname;
-  networking.useDHCP = false;
-  networking.interfaces.eth0.useDHCP = true;
-  networking.firewall.enable = false;
+  networking = {
+    hostName = hostname;
+    useDHCP = false;
+    interfaces.eth0.useDHCP = true;
+    firewall.enable = false;
+  };
 
-  users.users.root.hashedPassword = "!";
-  users.mutableUsers = false;
-  users.users.jacobi = {
-    inherit (common) extraGroups;
-    isNormalUser = true;
-    passwordFile = "/etc/passwordFile-jacobi";
-
-    openssh.authorizedKeys.keys = with common.pubkeys; [ charon mars ] ++ usual;
+  users = {
+    mutableUsers = false;
+    users = {
+      root.hashedPassword = "!";
+      jacobi = {
+        inherit (common) extraGroups;
+        isNormalUser = true;
+        passwordFile = "/etc/passwordFile-jacobi";
+        openssh.authorizedKeys.keys = with common.pubkeys; [ charon mars ] ++ usual;
+      };
+    };
   };
 
   services = {
@@ -67,11 +72,7 @@ in
   } // common.services;
   virtualisation.docker.enable = true;
 
-  # https://github.com/NixOS/nixpkgs/issues/103158
-  systemd.services.k3s.after = [ "network-online.service" "firewall.service" ];
-  systemd.services.k3s.serviceConfig.KillMode = pkgs.lib.mkForce "control-group";
-
-  system.stateVersion = "22.11";
+  system.stateVersion = "23.11";
   security.sudo = common.security.sudo;
   programs.command-not-found.enable = false;
 }

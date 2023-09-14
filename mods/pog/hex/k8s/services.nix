@@ -537,7 +537,7 @@ let
                 containers = [
                   {
                     inherit image name;
-                    env = [ ] ++ env ++ (hex.envAttrToNVP envAttrs);
+                    env = env ++ (hex.envAttrToNVP envAttrs);
                     ${ifNotEmptyList envFrom "envFrom"} = envFrom;
                     ${ifNotNull command "command"} = if __init then [ "tail" ] else if builtins.isString command then [ command ] else command;
                     ${ifNotNull args "args"} = if __init then [ "-f" "/dev/null" ] else args;

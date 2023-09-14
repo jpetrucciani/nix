@@ -15,14 +15,18 @@ in
     device = "rosetta";
     fsType = "virtiofs";
   };
-  nix.extraOptions = common.nix.extraOptions;
-  nix.settings.extra-platforms = [ "x86_64-linux" ];
-  nix.settings.extra-sandbox-paths = [ "/run/rosetta" "/run/binfmt" ];
-  nix.nixPath = [
-    "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-    "nixos-config=/home/jacobi/cfg/hosts/${hostname}/configuration.nix"
-    "/nix/var/nix/profiles/per-user/root/channels"
-  ];
+  nix = {
+    inherit (common.nix) extraOptions;
+    settings = {
+      extra-platforms = [ "x86_64-linux" ];
+      extra-sandbox-paths = [ "/run/rosetta" "/run/binfmt" ];
+    };
+    nixPath = [
+      "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
+      "nixos-config=/home/jacobi/cfg/hosts/${hostname}/configuration.nix"
+      "/nix/var/nix/profiles/per-user/root/channels"
+    ];
+  };
   boot.binfmt.registrations."rosetta" = {
     # based on https://developer.apple.com/documentation/virtualization/running_intel_binaries_in_linux_vms_with_rosetta#3978495
     interpreter = "/run/rosetta/rosetta";
@@ -52,19 +56,24 @@ in
 
   time.timeZone = common.timeZone;
 
-  networking.hostName = hostname;
-  networking.useDHCP = false;
-  networking.interfaces.eth0.useDHCP = true;
-  networking.firewall.enable = false;
+  networking = {
+    hostName = hostname;
+    useDHCP = false;
+    interfaces.eth0.useDHCP = true;
+    firewall.enable = false;
+  };
 
-  users.users.root.hashedPassword = "!";
-  users.mutableUsers = false;
-  users.users.jacobi = {
-    inherit (common) extraGroups;
-    isNormalUser = true;
-    passwordFile = "/etc/passwordFile-jacobi";
-
-    openssh.authorizedKeys.keys = with common.pubkeys; [ m1max nix-m1max ] ++ usual;
+  users = {
+    mutableUsers = false;
+    users = {
+      root.hashedPassword = "!";
+      jacobi = {
+        inherit (common) extraGroups;
+        isNormalUser = true;
+        passwordFile = "/etc/passwordFile-jacobi";
+        openssh.authorizedKeys.keys = with common.pubkeys; [ m1max nix-m1max ] ++ usual;
+      };
+    };
   };
 
   services = { } // common.services;
