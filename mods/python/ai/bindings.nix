@@ -5,20 +5,46 @@ let
   inherit (prev.pkgs) fetchFromGitHub darwin cudatoolkit writeTextFile;
   inherit (prev.lib) licenses maintainers optionals;
   isM1 = isDarwin && isAarch64;
+  llama-cpp-pin = fetchFromGitHub {
+    owner = "ggerganov";
+    repo = "llama.cpp";
+    rev = "71ca2fad7d6c0ef95ef9944fb3a1a843e481f314";
+    hash = "sha256-qd6UCjtRY4h/zgJKF/tkmHNCJ6O/SYFW6V+AlYoy0Lc=";
+  };
 in
 rec {
+  gguf = buildPythonPackage {
+    pname = "gguf";
+    version = "0.0.1";
+    format = "pyproject";
+    src = llama-cpp-pin;
+    postPatch = ''
+      cd ./gguf-py
+    '';
+
+    propagatedBuildInputs = with prev; [ numpy ];
+
+    nativeBuildInputs = with prev; [
+      poetry-core
+    ];
+
+    pythonImportsCheck = [ "gguf" ];
+
+    meta = {
+      description = "package for writing binary files in the GGUF (GGML Universal File) format";
+      homepage = "https://github.com/ggerganov/llama.cpp/tree/master/gguf-py";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+
+  };
+
   llama-cpp-python =
     let
       osSpecific =
         if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
         else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
         else [ ];
-      llama-cpp-pin = fetchFromGitHub {
-        owner = "ggerganov";
-        repo = "llama.cpp";
-        rev = "71ca2fad7d6c0ef95ef9944fb3a1a843e481f314";
-        hash = "sha256-qd6UCjtRY4h/zgJKF/tkmHNCJ6O/SYFW6V+AlYoy0Lc=";
-      };
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
