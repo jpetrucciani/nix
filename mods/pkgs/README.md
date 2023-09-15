@@ -10,10 +10,6 @@ This directory contains nix packages that I've built that are not yet ready for 
 
 This overlay provides AI related binaries, such as [llama.cpp](https://github.com/ggerganov/llama.cpp), [whisper.cpp](https://github.com/ggerganov/whisper.cpp), and [alpaca.cpp](https://github.com/antimatter15/alpaca.cpp)
 
-### [caddy.nix](./caddy.nix)
-
-This overlay provides a [caddy web server](https://caddyserver.com/v2) builder function called `_zaddy` and a set of default plugins that you can use to build any flavor of caddy that you'd like!
-
 ### [cli.nix](./cli.nix)
 
 This overlay provides general CLI tools for use in text transformation and other use cases.
@@ -73,3 +69,7 @@ This package provides [rbac-tool](https://github.com/alcideio/rbac-tool) in nixp
 ### [server.nix](./server.nix)
 
 This overlay provides some servers/services as nix derivations, such as specific versions of [haproxy](http://www.haproxy.org/), and stuff like [pocketbase](https://github.com/pocketbase/pocketbase/).
+
+### [zaddy.nix](./zaddy.nix)
+
+This overlay provides a [caddy web server](https://caddyserver.com/v2) builder function called `_zaddy` and a set of default plugins that you can use to build any flavor of caddy that you'd like!

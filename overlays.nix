@@ -13,13 +13,13 @@
   (import ./mods/python/default.nix)
 
   # sub-overlays
-  (import ./mods/pkgs/caddy.nix)
   (import ./mods/pkgs/cli.nix)
   (import ./mods/pkgs/cloud.nix)
   (import ./mods/pkgs/experimental.nix)
   (import ./mods/pkgs/k8s.nix)
   (import ./mods/pkgs/server.nix)
   (import ./mods/pkgs/webapp.nix)
+  (import ./mods/pkgs/zaddy.nix)
 
   # pog sub-overlays
   (import ./mods/pog/aws.nix)
