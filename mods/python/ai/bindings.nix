@@ -191,16 +191,22 @@ rec {
     in
     buildPythonPackage rec {
       pname = "pyllamacpp";
-      version = "2.4.1";
+      version = "2.4.2";
       format = "pyproject";
 
       src = fetchFromGitHub {
         owner = "abdeladim-s";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-b7QMDD0OrSUtEzMX1lMPt7h2oqrLKwfWGxgjAI2LnMM=";
+        hash = "sha256-+P+KK50WtMDUKK6tl3yZ3rEZ3/3P2kKqb7bi+vgDBGQ=";
         fetchSubmodules = true;
       };
+      preBuild = ''
+        sed -E -i \
+          -e '/"ninja/d' \
+          -e '/"cmake/d' \
+          ./pyproject.toml
+      '';
       buildInputs = osSpecific;
       nativeBuildInputs = with prev; [
         pkgs.cmake
