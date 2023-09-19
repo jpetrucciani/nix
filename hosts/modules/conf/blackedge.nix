@@ -17,7 +17,7 @@ in
     };
     adDomain = mkOption {
       type = str;
-      default = "be-dc.blackedge.local";
+      default = "cy1-dc-01.blackedge.local";
     };
     krbDomain = mkOption {
       type = str;
