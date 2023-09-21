@@ -238,6 +238,11 @@ let
       [ pkgs.kubectl ]
     ];
   };
+  foundry_zaddy = foundry {
+    name = "zaddy";
+    description = "a base image with the custom zaddy build with caddy-security, s3proxy and s3browser";
+    layers = [ [ pkgs.zaddy ] ];
+  };
 in
 {
   inherit foundry;
@@ -247,4 +252,5 @@ in
   python312 = foundryPython312;
   k8s_aws = foundry_k8s_aws;
   k8s_gcp = foundry_k8s_gcp;
+  zaddy = foundry_zaddy;
 }

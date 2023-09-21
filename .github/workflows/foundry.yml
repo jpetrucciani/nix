@@ -11,6 +11,7 @@ jobs:
           # - python312
           - k8s_aws
           - k8s_gcp
+          - zaddy
     name: foundry-${{ matrix.image }}
     runs-on: ubuntu-22.04
     steps:
