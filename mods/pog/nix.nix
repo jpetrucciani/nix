@@ -90,12 +90,13 @@ rec {
         if [ "$with_vlang" = "1" ]; then
           vlang="vlang = [(vlang.withPackages (p: with p; []))];"
         fi
-        ftb="fetchTarball { ${"\n"}name = \"jpetrucciani-$(date '+%F')\"; url = \"https://github.com/jpetrucciani/nix/archive/$rev.tar.gz\"; sha256 = \"$sha\";}"
+        ftb="fetchTarball { name = \"jpetrucciani-$(date '+%F')\"; url = \"https://github.com/jpetrucciani/nix/archive/$rev.tar.gz\"; sha256 = \"$sha\";}"
         if ${h.flag "update"}; then
           default_nix="''${1:-./default.nix}"
           ${h.file.notExists "default_nix"} && die "the nix file to update ('$default_nix') does not exist!"
           echo "updating '$default_nix' to '$rev'"
-          ${_.sed} -i -E -z 's#(fetchTarball[\s]*).*(jpetrucciani|nix\.cobi\.dev)[^\}]*\}#'"$ftb"'#g' "$default_nix"
+          ${_.sed} -i -E -z "s#(fetchTarball[\s]*).*(jpetrucciani|nix\.cobi\.dev)[^\}]*\}#$ftb#g" "$default_nix"
+          ${_.sed} -i -E 's#(fetchTarball \{) (name)#\1\n\2#' "$default_nix"
           ${_.nixpkgs-fmt} "$default_nix" 2>/dev/null
           exit 0
         fi
