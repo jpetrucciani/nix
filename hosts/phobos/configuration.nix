@@ -52,7 +52,7 @@ in
       jacobi = {
         inherit (common) extraGroups;
         isNormalUser = true;
-        passwordFile = "/etc/passwordFile-jacobi";
+        hashedPasswordFile = "/etc/passwordFile-jacobi";
         openssh.authorizedKeys.keys = with common.pubkeys; [ charon mars ] ++ usual;
       };
     };
