@@ -36,14 +36,14 @@ rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.298";
+    version = "0.0.299";
     format = "pyproject";
 
     src = fetchFromGitHub {
       owner = "langchain-ai";
       repo = pname;
       rev = "refs/tags/v${version}";
-      hash = "sha256-d6hpufkSQza5QbLNqdwI0mZT1MofsinC2EwyKirghF4=";
+      hash = "sha256-tiQnRXO8e6MXR7s1YyJMAgwMMYoBpbXUW1+QwaCM4Mg=";
     };
     sourceRoot = "source/libs/langchain";
 
@@ -53,10 +53,12 @@ rec {
 
     propagatedBuildInputs = with prev; [
       aiohttp
+      anyio
       beautifulsoup4
       dataclasses-json
       google-api-core
       jinja2
+      jsonpatch
       langsmith
       numexpr
       numpy
