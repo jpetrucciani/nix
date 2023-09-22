@@ -16,6 +16,7 @@
           ./ai/apps.nix
           ./ai/auto.nix
           ./ai/eval.nix
+          ./ai/kagi.nix
           ./experimental.nix
           ./fastapi.nix
           ./finance.nix
