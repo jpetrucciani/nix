@@ -1,27 +1,42 @@
-{ lib, buildGo120Module, fetchFromGitHub }:
-buildGo120Module rec {
+{ lib
+, buildGoModule
+, fetchFromGitHub
+, gitUpdater
+, testers
+, mods
+}:
+
+buildGoModule rec {
   pname = "mods";
-  version = "0.1.1";
+  version = "1.0.0";
 
   src = fetchFromGitHub {
     owner = "charmbracelet";
-    repo = pname;
+    repo = "mods";
     rev = "v${version}";
-    hash = "sha256-r7j7iMkfkFsohguu2vkhyxUbaMwJQURfUJrnC6yUCFI=";
+    hash = "sha256-0PykG19DAVVziRAefQ0LENMuTfTJSVFvs0bMJXdDkrE=";
   };
 
-  vendorHash = "sha256-+0yGFCGd/9bIBjXYp8UPGqKum2di5O1ALMyDSxcVujg=";
+  vendorHash = "sha256-DfIXW5cfTnXPgl9IC5+wTFJ04qWX4RlVoDIYM5gooks=";
 
-  ldflags = [
-    "-s"
-    "-w"
-  ];
+  ldflags = [ "-s" "-w" "-X=main.version=${version}" ];
+
+  passthru = {
+    updateScript = gitUpdater {
+      rev-prefix = "v";
+      ignoredVersions = ".(rc|beta).*";
+    };
+
+    tests.version = testers.testVersion {
+      package = mods;
+      command = "HOME=$(mktemp -d) mods -v";
+    };
+  };
 
   meta = with lib; {
     description = "AI on the command line";
     homepage = "https://github.com/charmbracelet/mods";
-    mainProgram = "mods";
     license = licenses.mit;
-    maintainers = with maintainers; [ jpetrucciani ];
+    maintainers = with maintainers; [ ];
   };
 }
