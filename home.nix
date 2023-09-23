@@ -81,6 +81,7 @@ in
         gawk
         genpass
         gitAndTools.delta
+        glow
         gnugrep
         gnumake
         gnupg
@@ -98,6 +99,7 @@ in
         lsof
         man-pages
         manix
+        mods
         moreutils
         nano
         nanorc
