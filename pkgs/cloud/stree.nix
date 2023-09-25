@@ -5,13 +5,13 @@
 
 buildGoModule rec {
   pname = "stree";
-  version = "0.0.8";
+  version = "0.0.10";
 
   src = fetchFromGitHub {
     owner = "orangekame3";
     repo = "stree";
     rev = "v${version}";
-    hash = "sha256-I71vheGf9ZoCwysEMuElXfU60xqwH6nw7XRlLTtOcbk=";
+    hash = "sha256-Emq2klhSxf6Gd2MYkrLR7AcQcPlWgkv/VV7W2den8cM=";
   };
 
   vendorHash = "sha256-Hf2ovkt0pBW4fILIVmRh6I8Q2loE+BoA26SBH7wicz0=";
