@@ -1,13 +1,13 @@
 { lib, buildGo120Module, fetchFromGitHub }:
 buildGo120Module rec {
   pname = "goaws";
-  version = "0.4.1";
+  version = "0.4.2";
 
   src = fetchFromGitHub {
     owner = "Admiral-Piett";
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-f0iEz/V/bnTxuXDo7X6yxQCBAhRyAEFzQoTC9ZB/9pM=";
+    hash = "sha256-lnDmLBJS7DE0BclwNzuS3zWdZsUCWEIsd0hubgkn5As=";
   };
 
   vendorHash = "sha256-VqRRCQKtqhRtxG8uJrf332vXr1Lo0ivu8UNWf6y/K2s=";
