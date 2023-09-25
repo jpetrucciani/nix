@@ -8,8 +8,8 @@ let
   llama-cpp-pin = fetchFromGitHub {
     owner = "ggerganov";
     repo = "llama.cpp";
-    rev = "80291a1d02a07f7f66666fb576c5b1e75aa48b46";
-    hash = "sha256-cTZa9wr916iCdNBWfOwefA6a7zIKji6cVMQG0QYno2s=";
+    rev = "a98b1633d5a94d0aa84c7c16e1f8df5ac21fc850";
+    hash = "sha256-HNwyPJXsUL41zLA+90Yu7kCpihW0HBOeW2jDs8sw7qs=";
   };
 in
 rec {
@@ -48,13 +48,13 @@ rec {
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
-      version = "0.2.6";
+      version = "0.2.7";
       format = "pyproject";
       src = fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-4tJ2GDIizOm0h3Du11A+o3dL5URbnH2mLW0/S6nK63k=";
+        hash = "sha256-jL2jVTKwmTx6pSnoN5n4NtQ3hs3weXiQTKFQdjL172U=";
       };
 
       cuda = false;
@@ -82,11 +82,11 @@ rec {
       ]) ++ (with prev; [
         pythonRelaxDepsHook
         (scikit-build-core.overridePythonAttrs (_: rec {
-          version = "0.5.0";
+          version = "0.5.1";
           src = fetchPypi {
             pname = "scikit_build_core";
             inherit version;
-            hash = "sha256-pCqVAps0tc+JKFU0LZuURcd0y3l/yyTI/EwvtCsY38o=";
+            hash = "sha256-xtrVpRJ7Kr+qI8uR0jrCEFn9d83fcSKzP9B3kQJNz78=";
           };
         }))
         pathspec
