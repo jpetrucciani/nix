@@ -91,6 +91,7 @@ in
         gum
         gzip
         htmlq
+        ivy
         jq
         just
         libarchive
