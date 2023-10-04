@@ -8,8 +8,8 @@ let
   llama-cpp-pin = fetchFromGitHub {
     owner = "ggerganov";
     repo = "llama.cpp";
-    rev = "a98b1633d5a94d0aa84c7c16e1f8df5ac21fc850";
-    hash = "sha256-HNwyPJXsUL41zLA+90Yu7kCpihW0HBOeW2jDs8sw7qs=";
+    rev = "40e07a60f9ce06e79f3ccd4c903eba300fb31b5e";
+    hash = "sha256-u4Y7X7RtrN17yB9Q6Yj6BBJADc4e2IF0tGazXTvpwiM=";
   };
 in
 rec {
@@ -48,13 +48,13 @@ rec {
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
-      version = "0.2.7";
+      version = "0.2.11";
       format = "pyproject";
       src = fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-jL2jVTKwmTx6pSnoN5n4NtQ3hs3weXiQTKFQdjL172U=";
+        hash = "sha256-tZN771XhUq+P6REG0n2hd+9CyK3KG+lC26OdavJNWnk=";
       };
 
       cuda = false;
