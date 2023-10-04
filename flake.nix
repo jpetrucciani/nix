@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-unstable";
+    nixpkgs.url = "nixpkgs/nixpkgs-unstable";
     devenv = {
       url = "github:cachix/devenv/latest";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -20,7 +20,7 @@
       };
     };
     nix = {
-      url = "nix/2.17.0";
+      url = "nix/2.18.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
