@@ -108,7 +108,7 @@ rec {
   });
 
   numba = prev.numba.overridePythonAttrs (old: {
-    disabled = pythonOlder "3.7" || pythonAtLeast "3.12";
+    disabled = nonCurrentPython;
   });
 
   librosa = prev.librosa.overridePythonAttrs (_: {
