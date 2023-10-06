@@ -2,6 +2,7 @@ final: prev:
 let
   inherit (prev) pythonAtLeast pythonOlder;
   inherit (prev.stdenv) isDarwin;
+  inherit (prev.pkgs) fetchFromGitHub;
   nonCurrentPython = pythonOlder "3.7" || pythonAtLeast "3.13";
 in
 rec {
@@ -163,4 +164,14 @@ rec {
       maintainers = with maintainers; [ joachifm ];
     };
   };
+
+  greenlet = let version = "3.0.0"; in prev.greenlet.overridePythonAttrs (_: {
+    inherit version;
+    src = fetchFromGitHub {
+      owner = "python-greenlet";
+      repo = "greenlet";
+      rev = version;
+      hash = "sha256-71kbxwIwkNKngoejvjXlx+kG28VDMKOKBB79UA5kg1w=";
+    };
+  });
 }
