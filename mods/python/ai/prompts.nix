@@ -138,14 +138,14 @@ rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.8.38";
+    version = "0.8.40";
     format = "setuptools";
 
     src = fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-yR24FnyUlb89qEfQ9bpo8Hakn4OjLPVxW18iYgQOKaE=";
+      hash = "sha256-uhICcGCayud/krCkZt6uAxKuGjfhON/q1bx7jHlO5gY=";
     };
 
     nativeBuildInputs = with prev; [
