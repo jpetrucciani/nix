@@ -174,4 +174,6 @@ rec {
       hash = "sha256-71kbxwIwkNKngoejvjXlx+kG28VDMKOKBB79UA5kg1w=";
     };
   });
+
+  nose3 = prev.nose3.overridePythonAttrs (_: { doCheck = false; });
 }

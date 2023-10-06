@@ -20,7 +20,7 @@ final: prev:
     ifIsDarwin = attrIf isDarwin;
     ifIsM1 = attrIf isM1;
 
-    chief_keef = import (import ../flake-compat.nix).inputs.kwb { inherit (pkgs) system; };
+    chief_keef = flake.inputs.kwb.packages.${pkgs.system};
 
     pythonPackageOverlay =
       overlay: attr: self: super:

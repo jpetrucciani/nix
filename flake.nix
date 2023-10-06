@@ -72,7 +72,7 @@
       packages = forAllSystems
         (system: import self.inputs.nixpkgs {
           inherit system;
-          overlays = [ (final: prev: { inherit machines; }) self.inputs.nix.overlays.default ] ++ import ./overlays.nix;
+          overlays = [ (final: prev: { inherit machines; flake = self; }) self.inputs.nix.overlays.default ] ++ import ./overlays.nix;
           config = {
             allowUnfree = true;
             permittedInsecurePackages = [
@@ -85,11 +85,12 @@
         (map
           (name:
             let sys = if name == "andromeda" then "aarch64-linux" else "x86_64-linux"; in {
-              inherit name; value = self.inputs.nixpkgs.lib.nixosSystem {
-              pkgs = self.packages.${sys};
-              specialArgs = { flake = self; machine-name = name; };
-              modules = [ ./hosts/${name}/configuration.nix ];
-            };
+              inherit name;
+              value = self.inputs.nixpkgs.lib.nixosSystem {
+                pkgs = self.packages.${sys};
+                specialArgs = { flake = self; machine-name = name; };
+                modules = [ ./hosts/${name}/configuration.nix ];
+              };
             })
           machines.nixos
         );
