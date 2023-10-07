@@ -88,7 +88,7 @@ rec {
     yq = "${pkgs.yq-go}/bin/yq";
     prettier = "${pkgs.nodePackages.prettier}/bin/prettier --write --config ${_files.prettier_config}";
 
-    _yaml_py = pkgs.python312.withPackages (p: with p; [ pyaml ]);
+    _yaml_py = pkgs.python311.withPackages (p: with p; [ pyaml ]);
     yaml_sort = "${_yaml_py} ${_files.yaml_sort}";
     yaml_crds = "${_yaml_py} ${_files.yaml_crds}";
 
