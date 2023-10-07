@@ -182,51 +182,10 @@ in
           ripgrep
           shellcheck
           step-cli
-          talosctl
           terraform-ls
 
           # python
-          (python311.withPackages
-            (pkgs: with pkgs; [
-              # linting
-              black
-              mypy
-
-              # common use case
-              python-lsp-server
-              gamble
-              httpx
-              requests
-              cryptography
-
-              # text
-              anybadge
-              tabulate
-              beautifulsoup4
-
-              # api
-              fastapi
-              uvicorn
-
-              # data
-              numpy
-              pandas
-              scipy
-
-              # type annotations (from nixpkgs)
-              types-requests
-              types-tabulate
-              types-enum34
-              types-ipaddress
-
-              # my types (for nixpkgs)
-              boto3-stubs
-              botocore-stubs
-            ]
-            ++ (optList (!isM1) [ ])
-            ++ (optList isLinux [ ])
-            )
-          )
+          (python311.withPackages pkgs.hax.basePythonPackages)
 
           # keef's stuff
           hax.comma

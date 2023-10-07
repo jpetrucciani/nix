@@ -2,8 +2,11 @@ final: prev:
 let
   inherit (prev) pythonAtLeast pythonOlder;
   inherit (prev.stdenv) isDarwin;
-  inherit (prev.pkgs) fetchFromGitHub;
+  inherit (prev.pkgs) fetchFromGitHub fetchhg;
   nonCurrentPython = pythonOlder "3.7" || pythonAtLeast "3.13";
+  disableCheckPython312 = pkg:
+    if (pythonAtLeast "3.12") then
+      prev.${pkg}.overridePythonAttrs (_: { doCheck = false; }) else prev.${pkg};
 in
 rec {
   passlib =
@@ -165,6 +168,7 @@ rec {
     };
   };
 
+  # PYTHON 3.12 FIXES!
   greenlet = let version = "3.0.0"; in prev.greenlet.overridePythonAttrs (_: {
     inherit version;
     src = fetchFromGitHub {
@@ -174,6 +178,88 @@ rec {
       hash = "sha256-71kbxwIwkNKngoejvjXlx+kG28VDMKOKBB79UA5kg1w=";
     };
   });
+  autoflake = disableCheckPython312 "autoflake";
+  nose3 = disableCheckPython312 "nose3";
+  nosexcover = disableCheckPython312 "nosexcover";
+  itsdangerous = disableCheckPython312 "itsdangerous";
+  async-generator = disableCheckPython312 "async-generator";
+  parameterized = disableCheckPython312 "parameterized";
+  pycryptodome = let version = "3.19.0"; in prev.pycryptodome.overridePythonAttrs (_: {
+    inherit version;
+    src = fetchFromGitHub {
+      owner = "Legrandin";
+      repo = "pycryptodome";
+      rev = "refs/tags/v${version}";
+      hash = "sha256-WD+OEjePVtqlmn7h1CIfraLuEQlodkvjmYQ8q7nNoGU=";
+    };
+  });
+  setuptools-rust =
+    let
+      pname = "setuptools-rust";
+      version = "1.7.0";
+    in
+    if (pythonAtLeast "3.12") then
+      prev.setuptools-rust.overridePythonAttrs
+        (_: {
+          inherit version;
+          format = "pyproject";
+          src = prev.fetchPypi {
+            inherit pname version;
+            hash = "sha256-xxAJmZSCNaOK5+VV/hmapmwlPcOEsSX12FRzv4Hq46M=";
+          };
+        }) else prev.setuptools-rust;
+  cffi =
+    let
+      pname = "cffi";
+      version = "1.16.0";
+    in
+    if (pythonAtLeast "3.12") then
+      prev.cffi.overridePythonAttrs
+        (_: {
+          inherit version;
+          src = prev.fetchPypi {
+            inherit pname version;
+            hash = "sha256-vLPvQ+WGZbvaL7GYaY/K5ndkg+DEpjGqVkeAbCXgLMA=";
+          };
+          patches = [ ];
+        }) else prev.cffi;
+  pyflakes =
+    let
+      pname = "pyflakes";
+      version = "3.1.0";
+    in
+    if (pythonAtLeast "3.12") then
+      prev.pyflakes.overridePythonAttrs
+        (_: {
+          inherit version;
+          src = prev.fetchPypi {
+            inherit pname version;
+            hash = "sha256-oKrgNMRE2wBxqgd5crpHaNQMgw2VOf1Fv0zT+PaZLvw=";
+          };
+        }) else prev.pyflakes;
+  # need to use this commit for python 3.12 to work
+  ruamel-yaml-clib =
+    if (pythonAtLeast "3.12") then
+      prev.ruamel-yaml-clib.overridePythonAttrs
+        (_: {
+          version = "0.2.8";
+          src = fetchhg {
+            url = "http://hg.code.sf.net/p/ruamel-yaml-clib/code";
+            rev = "5f8ccce2f70b3a5d27c47ce19fe33e5bdd815571";
+            sha256 = "sha256-6AizGQLpn887R8D9qbLOc0z514oSArBOkDJ3cabFV2M=";
+          };
+        }) else prev.ruamel-yaml-clib;
 
-  nose3 = prev.nose3.overridePythonAttrs (_: { doCheck = false; });
+  tokenize-rt = let version = "5.2.0"; in
+    if (pythonAtLeast "3.12") then
+      prev.tokenize-rt.overridePythonAttrs
+        (_: {
+          inherit version;
+          src = fetchFromGitHub {
+            owner = "asottile";
+            repo = "tokenize-rt";
+            rev = "refs/tags/v${version}";
+            hash = "sha256-G4Dn6iZLVOovzfEt9eMzp93mTX+bo0tHI5cCbaJLxBQ=";
+          };
+        }) else prev.tokenize-rt;
 }

@@ -38,7 +38,7 @@ rec {
 
   ec2_spot_interrupt =
     let
-      python = pkgs.python311.withPackages (p: with p; [ requests tabulate ]);
+      python = pkgs.python312.withPackages (p: with p; [ requests tabulate ]);
       spots.py = writeTextFile {
         name = "spots.py";
         text = ''

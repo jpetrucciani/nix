@@ -111,6 +111,7 @@ final: prev:
         }
       );
     prefixIf = b: x: y: if b then x + y else y;
+    optList = conditional: list: if conditional then list else [ ];
     mapLines = f: s:
       concatMapStringsSep "\n" (l: if l != "" then f l else l)
         (splitString "\n" s);
@@ -190,6 +191,45 @@ final: prev:
       kx = "kubectx";
       ka = "kubectl get pods";
     };
+
+    basePythonPackages = (p: with p; [
+      # linting
+      black
+      mypy
+
+      # common use case
+      gamble
+      httpx
+      requests
+      cryptography
+
+      # text
+      anybadge
+      tabulate
+      beautifulsoup4
+
+      # api
+      fastapi
+      uvicorn
+
+      # data
+      numpy
+      pandas
+      scipy
+
+      # type annotations (from nixpkgs)
+      types-requests
+      types-tabulate
+      types-enum34
+      types-ipaddress
+
+      # my types (for nixpkgs)
+      boto3-stubs
+      botocore-stubs
+    ]
+    ++ (optList (!isM1) [ ])
+    ++ (optList isLinux [ ])
+    );
   }
 )
   
