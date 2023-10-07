@@ -192,7 +192,7 @@ final: prev:
       ka = "kubectl get pods";
     };
 
-    basePythonPackages = (p: with p; [
+    basePythonPackages = p: with p; [
       # linting
       black
       mypy
@@ -229,7 +229,7 @@ final: prev:
     ]
     ++ (optList (!isM1) [ ])
     ++ (optList isLinux [ ])
-    );
+    ;
   }
 )
   
