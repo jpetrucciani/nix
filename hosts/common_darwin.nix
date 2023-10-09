@@ -96,7 +96,7 @@ in
             "discord"
           ];
           util = [
-            "alfred"
+            "dbeaver-community"
             "docker"
             "insomnia"
             "karabiner-elements"

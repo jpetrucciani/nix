@@ -1,6 +1,6 @@
 .history/
 .vscode/
-secrets
+# secrets
 result*
 .old/
 node_modules/

@@ -60,6 +60,11 @@ in
     };
   };
 
+  age.secrets = {
+    miniflux.file = ../../secrets/miniflux.age;
+    vaultwarden.file = ../../secrets/vaultwarden.age;
+  };
+
   users = {
     mutableUsers = false;
     users = {
@@ -267,7 +272,7 @@ in
     vaultwarden = {
       enable = true;
       dbBackend = "postgresql";
-      environmentFile = "/etc/default/vaultwarden";
+      environmentFile = config.age.secrets.vaultwarden.path;
       config = {
         DOMAIN = "https://vault.cobi.dev";
         ENABLE_DB_WAL = false;
@@ -283,8 +288,15 @@ in
       extra_scrape_configs = [ (common.templates.promtail_scrapers.caddy { }) ];
     };
     prometheus.exporters = common.templates.prometheus_exporters { };
-    lemmy = {
+    minifluxng = {
       enable = true;
+      dbhost = "jupiter:54321";
+      envFilePath = config.age.secrets.miniflux.path;
+      listenAddress = "127.0.0.1:8099";
+      metrics-enable = true;
+    };
+    lemmy = {
+      enable = false;
       caddy.enable = true;
       database.createLocally = false;
       settings = {

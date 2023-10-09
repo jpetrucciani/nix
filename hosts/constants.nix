@@ -28,7 +28,7 @@ let
     titan = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKNU+ZU3kZNtBPGZ0v8XB8eN491OBsgSY+pDCtUFI4Y8 jacobi@titan";
 
     # servers
-    jupiter = "";
+    # jupiter = "";
     saturn = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPY2sNJE5ysSTeFzTv2U+zIeIB5LMhbUaP+yC5VDgEHD jacobi@saturn";
     neptune = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPqXt2116T/hpMpdmlh3QquPcF/COXPtJS4BkjwECf++ jacobi@neptune";
     charon = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIQf/+Cw19PwfLGRs7VyJR9rqwglDG/ZwBbwJY1Aagxo jacobi@charon";

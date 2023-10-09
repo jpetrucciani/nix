@@ -1,6 +1,10 @@
 {
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     devenv = {
       url = "github:cachix/devenv/latest";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -89,7 +93,10 @@
               value = self.inputs.nixpkgs.lib.nixosSystem {
                 pkgs = self.packages.${sys};
                 specialArgs = { flake = self; machine-name = name; };
-                modules = [ ./hosts/${name}/configuration.nix ];
+                modules = [
+                  ./hosts/${name}/configuration.nix
+                  self.inputs.agenix.nixosModules.default
+                ];
               };
             })
           machines.nixos

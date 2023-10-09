@@ -148,6 +148,9 @@ in
         ## thanks google
         gke-gcloud-auth-plugin
 
+        # secrets
+        flake.inputs.agenix.packages.${pkgs.system}.default
+
         # load in my custom checked pog scripts
         (
           writeBashBinChecked "machine-name" ''
