@@ -1,4 +1,4 @@
-{ config, lib, pkgs }:
+{ config, lib, pkgs, ... }:
 
 # FROM: https://git.sr.ht/~bwolf/miniflux.nix
 # Database preparation:
