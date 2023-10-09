@@ -121,16 +121,6 @@ in
           import GEOBLOCK
           ${block}
         '';
-        reverse_proxy_bot = location: {
-          extraConfig = ''
-            import SECURITY
-            respond /docs* 404
-            respond /openapi.json 404
-            reverse_proxy /* {
-              to ${location}
-            }
-          '';
-        };
       in
       {
         enable = true;
@@ -293,6 +283,7 @@ in
     prometheus.exporters = common.templates.prometheus_exporters { };
     minifluxng = {
       enable = true;
+      baseUrl = "https://rss.cobi.dev/";
       dbHost = "jupiter";
       dbPort = 54321;
       envFilePath = config.age.secrets.miniflux.path;
