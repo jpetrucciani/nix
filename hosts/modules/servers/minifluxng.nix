@@ -23,10 +23,9 @@
 with lib;
 let
   cfg = config.services.minifluxng;
-  inherit (lib.types) str;
 
   database-url =
-    "host=${cfg.dbHost} user=${cfg.dbUser} dbname=${cfg.dbName} sslmode=${cfg.dbSslMode}";
+    "host=${cfg.dbHost} port=${toString cfg.dbPort} user=${cfg.dbUser} dbname=${cfg.dbName} sslmode=${cfg.dbSslMode}";
 
   miniflux-migrate = pkgs.writeShellScriptBin "miniflux-migrate" ''
     ${cfg.package}/bin/miniflux -migrate
@@ -76,7 +75,7 @@ in
   options.services.minifluxng = {
     enable = mkEnableOption "Miniflux NG";
     envFilePath = mkOption {
-      type = str;
+      type = types.str;
       default = "/etc/default/miniflux";
     };
     enableDebugMode =
@@ -95,6 +94,11 @@ in
       type = types.str;
       default = "localhost";
       description = "The PostgreSQL hostname or IP.";
+    };
+    dbPort = mkOption {
+      type = types.int;
+      default = 5432;
+      description = "the PostgreSQL db port.";
     };
 
     dbUser = mkOption {
