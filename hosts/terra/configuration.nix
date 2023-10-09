@@ -294,7 +294,7 @@ in
     prometheus.exporters = common.templates.prometheus_exporters { };
     minifluxng = {
       enable = true;
-      dbhost = "jupiter:54321";
+      dbHost = "jupiter:54321";
       envFilePath = config.age.secrets.miniflux.path;
       listenAddress = "127.0.0.1:8099";
       metrics-enable = true;
