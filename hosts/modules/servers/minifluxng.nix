@@ -201,85 +201,87 @@ in
 
   ### Implementation
   config = mkIf cfg.enable {
-    systemd.services.minifluxng-migrate = {
-      description = "Miniflux migrate database";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" ];
-      environment.DATABASE_URL = database-url;
-      # TODO max runtime, if over then kill
-      serviceConfig = {
-        Type = "oneshot";
-        DynamicUser = true;
-        RuntimeDirectory = "miniflux"; # Creates /run/miniflux.
-        EnvironmentFile = cfg.envFilePath;
-        ExecStart = ''
-          ${miniflux-migrate}/bin/miniflux-migrate
-        '';
-      } // hardening_config;
-    };
+    systemd.services = {
+      minifluxng-migrate = {
+        description = "Miniflux migrate database";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "network.target" ];
+        environment.DATABASE_URL = database-url;
+        # TODO max runtime, if over then kill
+        serviceConfig = {
+          Type = "oneshot";
+          DynamicUser = true;
+          RuntimeDirectory = "miniflux"; # Creates /run/miniflux.
+          EnvironmentFile = cfg.envFilePath;
+          ExecStart = ''
+            ${miniflux-migrate}/bin/miniflux-migrate
+          '';
+        } // hardening_config;
+      };
 
-    systemd.services.minifluxng-create-admin = {
-      description = "Miniflux create admin";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" "minifluxng-migrate.service" ];
-      environment.DATABASE_URL = database-url;
-      # TODO max runtime, if over then kill
-      serviceConfig = {
-        Type = "oneshot";
-        DynamicUser = true;
-        RuntimeDirectory = "miniflux"; # Creates /run/miniflux.
-        EnvironmentFile = cfg.envFilePath;
-        ExecStart = ''
-          ${miniflux-create-admin}/bin/miniflux-create-admin
-        '';
-      } // hardening_config;
-    };
+      minifluxng-create-admin = {
+        description = "Miniflux create admin";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "network.target" "minifluxng-migrate.service" ];
+        environment.DATABASE_URL = database-url;
+        # TODO max runtime, if over then kill
+        serviceConfig = {
+          Type = "oneshot";
+          DynamicUser = true;
+          RuntimeDirectory = "miniflux"; # Creates /run/miniflux.
+          EnvironmentFile = cfg.envFilePath;
+          ExecStart = ''
+            ${miniflux-create-admin}/bin/miniflux-create-admin
+          '';
+        } // hardening_config;
+      };
 
-    systemd.services.minifluxng = {
-      description = "Miniflux";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" "minifluxng-create-admin.service" ];
-      environment = {
-        DATABASE_URL = database-url;
-        DEBUG = optionalString cfg.enableDebugMode "1";
-        LISTEN_ADDR = cfg.listenAddress;
-        METRICS_COLLECTOR = if cfg.enableMetrics then "1" else "0";
-        METRICS_ALLOWED_NETWORKS = cfg.metricsAllowedNetworks;
-        OAUTH2_CLIENT_ID = optionalString cfg.enableOidc cfg.oidcClientId;
-        OAUTH2_PROVIDER = optionalString cfg.enableOidc "oidc";
-        OAUTH2_OIDC_DISCOVERY_ENDPOINT =
-          optionalString cfg.enableOidc cfg.oidcDiscoveryEndpoint;
-        OAUTH2_REDIRECT_URL = optionalString cfg.enableOidc cfg.oidcRedirectUrl;
-        OAUTH2_USER_CREATION = if cfg.enableOidcUserCreation then "1" else "0";
-      } // lib.optionalAttrs (cfg.baseUrl != null) { BASE_URL = cfg.baseUrl; };
-      # TODO automatic restart on failure
-      serviceConfig = {
-        Type = "simple";
-        DynamicUser = true;
-        RuntimeDirectory = "miniflux"; # Creates /run/miniflux.
-        EnvironmentFile = cfg.envFilePath;
-        ExecStart = ''
-          ${miniflux}/bin/miniflux
-        '';
+      minifluxng = {
+        description = "Miniflux";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "network.target" "minifluxng-create-admin.service" ];
+        environment = {
+          DATABASE_URL = database-url;
+          DEBUG = optionalString cfg.enableDebugMode "1";
+          LISTEN_ADDR = cfg.listenAddress;
+          METRICS_COLLECTOR = if cfg.enableMetrics then "1" else "0";
+          METRICS_ALLOWED_NETWORKS = cfg.metricsAllowedNetworks;
+          OAUTH2_CLIENT_ID = optionalString cfg.enableOidc cfg.oidcClientId;
+          OAUTH2_PROVIDER = optionalString cfg.enableOidc "oidc";
+          OAUTH2_OIDC_DISCOVERY_ENDPOINT =
+            optionalString cfg.enableOidc cfg.oidcDiscoveryEndpoint;
+          OAUTH2_REDIRECT_URL = optionalString cfg.enableOidc cfg.oidcRedirectUrl;
+          OAUTH2_USER_CREATION = if cfg.enableOidcUserCreation then "1" else "0";
+        } // lib.optionalAttrs (cfg.baseUrl != null) { BASE_URL = cfg.baseUrl; };
+        # TODO automatic restart on failure
+        serviceConfig = {
+          Type = "simple";
+          DynamicUser = true;
+          RuntimeDirectory = "miniflux"; # Creates /run/miniflux.
+          EnvironmentFile = cfg.envFilePath;
+          ExecStart = ''
+            ${miniflux}/bin/miniflux
+          '';
 
-      } // hardening_config;
-    };
+        } // hardening_config;
+      };
 
-    systemd.services.minifluxng-reset-feed-erros = {
-      description = "Miniflux reset feed errors";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" "minifluxng.service" ];
-      environment.DATABASE_URL = database-url;
-      startAt = "00/4:00"; # Every four hours.
-      serviceConfig = {
-        Type = "oneshot";
-        DynamicUser = true;
-        RuntimeDirectory = "miniflux"; # Creates /run/miniflux.
-        EnvironmentFile = cfg.envFilePath;
-        ExecStart = ''
-          ${miniflux-reset-feed-errors}/bin/miniflux-reset-feed-errors
-        '';
-      } // hardening_config;
+      minifluxng-reset-feed-errors = {
+        description = "Miniflux reset feed errors";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "network.target" "minifluxng.service" ];
+        environment.DATABASE_URL = database-url;
+        startAt = "00/4:00"; # Every four hours.
+        serviceConfig = {
+          Type = "oneshot";
+          DynamicUser = true;
+          RuntimeDirectory = "miniflux"; # Creates /run/miniflux.
+          EnvironmentFile = cfg.envFilePath;
+          ExecStart = ''
+            ${miniflux-reset-feed-errors}/bin/miniflux-reset-feed-errors
+          '';
+        } // hardening_config;
+      };
     };
   };
 }

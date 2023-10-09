@@ -5,5 +5,3 @@ this directory contains encrypted secrets that use [agenix](https://github.com/r
 ---
 
 ## In this directory
-
-TODO
