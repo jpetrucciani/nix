@@ -32,6 +32,7 @@ rec {
         caddy-hax = { name = "github.com/jpetrucciani/caddy-hax"; version = "v0.0.2"; };
         caddy-troll = { name = "github.com/jpetrucciani/caddy-troll"; version = "v0.0.1"; };
         ## other
+        caddy-bandwidth = { name = "github.com/mediafoundation/caddy-bandwidth"; version = "v1.0.10"; };
         caddy-git = { name = "github.com/greenpau/caddy-git"; version = "v1.0.7"; };
         caddy-json-parse = { name = "github.com/abiosoft/caddy-json-parse"; version = "c57039f26567f4b4120e35b4dc1a9bbd20a4f37f"; };
         caddy-ratelimit = { name = "github.com/mholt/caddy-ratelimit"; version = "2dc0d586f0b87e983757c403bc0929ddeb84a537"; };
