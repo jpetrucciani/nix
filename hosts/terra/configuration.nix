@@ -60,9 +60,12 @@ in
     };
   };
 
-  age.secrets = {
-    miniflux.file = ../../secrets/miniflux.age;
-    vaultwarden.file = ../../secrets/vaultwarden.age;
+  age = {
+    identityPaths = [ "/home/jacobi/.ssh/id_ed25519" ];
+    secrets = {
+      miniflux.file = ../../secrets/miniflux.age;
+      vaultwarden.file = ../../secrets/vaultwarden.age;
+    };
   };
 
   users = {
