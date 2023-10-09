@@ -21,9 +21,9 @@
 # CREATE EXTENSION hstore;
 
 with lib;
-
 let
   cfg = config.services.minifluxng;
+  inherit (lib.types) str;
 
   database-url =
     "host=${cfg.dbHost} user=${cfg.dbUser} dbname=${cfg.dbName} sslmode=${cfg.dbSslMode}";
