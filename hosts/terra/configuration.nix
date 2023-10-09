@@ -297,7 +297,6 @@ in
       dbHost = "jupiter:54321";
       envFilePath = config.age.secrets.miniflux.path;
       listenAddress = "127.0.0.1:8099";
-      metrics-enable = true;
     };
     lemmy = {
       enable = false;
