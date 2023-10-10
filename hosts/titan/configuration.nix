@@ -75,6 +75,14 @@ in
     xserver.videoDrivers = [ "nvidia" ];
     promtail = common.templates.promtail { inherit hostname; };
     prometheus.exporters = common.templates.prometheus_exporters { };
+    qdrant = {
+      enable = true;
+      settings = {
+        service = {
+          host = "0.0.0.0";
+        };
+      };
+    };
   } // common.services;
 
   system.stateVersion = "23.11";
