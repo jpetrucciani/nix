@@ -136,6 +136,35 @@ rec {
     };
   };
 
+  langchainhub = buildPythonPackage rec {
+    pname = "langchainhub";
+    version = "0.1.13";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-2lEgqctohfH9+vILhdTnxuUlNpo4nnCNIEF8P3YNySo=";
+    };
+
+    nativeBuildInputs = with prev; [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = with prev; [
+      requests
+      types-requests
+    ];
+
+    pythonImportsCheck = [ "langchainhub" ];
+
+    meta = {
+      description = "";
+      homepage = "https://pypi.org/project/langchainhub/";
+      license = licenses.unfree;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
     version = "0.8.41";
