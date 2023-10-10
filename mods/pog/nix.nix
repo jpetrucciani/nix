@@ -80,7 +80,7 @@ rec {
         fi
         rust=""
         if [ "$with_rust" = "1" ]; then
-          rust="rust = [cargo${"\n"}rust-analyzer rustc rustfmt];"
+          rust="rust = [cargo${"\n"}clang rust-analyzer rustc rustfmt];"
         fi
         terraform=""
         if [ "$with_terraform" = "1" ]; then
