@@ -65,6 +65,19 @@ rec {
     };
   };
 
+  yq_filters = {
+    docs_eq = key: values:
+      let
+        _filter = pkgs.lib.concatStringsSep " or " (map (x: ''${key} == "${x}"'') values);
+      in
+      ''${_.yq} e -i '. | select(${_filter})' '';
+    docs_ne = key: values:
+      let
+        _filter = pkgs.lib.concatStringsSep " and " (map (x: ''${key} != "${x}"'') values);
+      in
+      ''${_.yq} e -i '. | select(${_filter})' '';
+  };
+
   patchYAML =
     { url
     , sha256
