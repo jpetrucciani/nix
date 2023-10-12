@@ -78,6 +78,7 @@ clangStdenv.mkDerivation rec {
     mv ./bin/quantize $out/bin/llama-quantize
     mv ./bin/quantize-stats $out/bin/llama-quantize-stats
     mv ./bin/server $out/bin/llama-server
+    mv ./bin/llava $out/bin/llava
   '';
   buildInputs = [ openblas pkg-config ] ++ osSpecific;
   nativeBuildInputs = [ cmake ] ++ (optionals cuda [ cudatoolkit ]);
