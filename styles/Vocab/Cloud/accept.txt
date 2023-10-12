@@ -8,3 +8,4 @@
 (?i)iam
 (?i)gcloud
 (?i)awscli
+(?i)parseable

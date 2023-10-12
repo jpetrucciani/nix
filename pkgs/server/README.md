@@ -8,7 +8,7 @@ This directory contains specific servers
 
 ### [obligator.nix](./obligator.nix)
 
-[Obligator](https://github.com/anderspitman/obligator) is a simple and opinionated OpenID Connect server designed for self-hosters
+[Obligator](https://github.com/anderspitman/obligator) is an opinionated OpenID Connect server designed for self-hosters
 
 ### [parseable.nix](./parseable.nix)
 
