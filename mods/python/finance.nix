@@ -436,4 +436,73 @@ rec {
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
+
+  statsforecast = buildPythonPackage rec {
+    pname = "statsforecast";
+    version = "1.6.0";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-23PsIbyB8k1eItNQiwoghKRRFxmyQKkigj2yg9uhLFI=";
+    };
+
+    nativeBuildInputs = with prev; [
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = with prev; [
+      fugue
+      matplotlib
+      numba
+      numpy
+      pandas
+      polars
+      scipy
+      statsmodels
+      tqdm
+    ];
+
+    passthru.optional-dependencies = with prev; {
+      dask = [
+        fugue
+      ];
+      dev = [
+        black
+        datasetsforecast
+        flake8
+        fugue
+        matplotlib
+        mypy
+        nbdev
+        pmdarima
+        prophet
+        protobuf
+        ray
+        scikit-learn
+        supersmoother
+      ];
+      plotly = [
+        plotly
+        plotly-resampler
+      ];
+      ray = [
+        fugue
+        protobuf
+      ];
+      spark = [
+        fugue
+      ];
+    };
+
+    pythonImportsCheck = [ "statsforecast" ];
+
+    meta = {
+      description = "Time series forecasting suite using statistical models";
+      homepage = "https://pypi.org/project/statsforecast/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
