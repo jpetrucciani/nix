@@ -451,4 +451,23 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  yagmail = buildPythonPackage rec {
+    pname = "yagmail";
+    version = "0.15.293";
+
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "15jjb00z89ck82q50g82xl6gv5r1snb91k0296hj4gpnlk6x1s24";
+    };
+
+    propagatedBuildInputs = with prev; [ premailer ];
+
+    meta = {
+      description = "Yet Another GMAIL client";
+      homepage = "https://github.com/kootenpv/yagmail";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
