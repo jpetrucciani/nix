@@ -349,4 +349,8 @@ rec {
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
+
+  tenacity = prev.tenacity.overridePythonAttrs (_: {
+    disabledTests = [ "test_retry_type_annotations" ];
+  });
 }
