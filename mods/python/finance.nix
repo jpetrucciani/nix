@@ -505,4 +505,99 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  pandera = buildPythonPackage rec {
+    pname = "pandera";
+    version = "0.17.2";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-Z1FZhPhVuhTRJEP4k7X/kK5nlvYT1fPfQ6utQGpIw3M=";
+    };
+
+    nativeBuildInputs = with prev; [
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = with prev; [
+      multimethod
+      numpy
+      packaging
+      pandas
+      pydantic
+      typeguard
+      typing-extensions
+      typing-inspect
+      wrapt
+    ];
+
+    passthru.optional-dependencies = with prev; {
+      all = [
+        black
+        dask
+        fastapi
+        frictionless
+        geopandas
+        hypothesis
+        modin
+        pandas-stubs
+        pyspark
+        pyyaml
+        ray
+        scipy
+        shapely
+      ];
+      dask = [
+        dask
+      ];
+      fastapi = [
+        fastapi
+      ];
+      geopandas = [
+        geopandas
+        shapely
+      ];
+      hypotheses = [
+        scipy
+      ];
+      io = [
+        black
+        frictionless
+        pyyaml
+      ];
+      modin = [
+        dask
+        modin
+        ray
+      ];
+      modin-dask = [
+        dask
+        modin
+      ];
+      modin-ray = [
+        modin
+        ray
+      ];
+      mypy = [
+        pandas-stubs
+      ];
+      pyspark = [
+        pyspark
+      ];
+      strategies = [
+        hypothesis
+      ];
+    };
+
+    pythonImportsCheck = [ "pandera" ];
+
+    meta = {
+      description = "A light-weight and flexible data validation and testing tool for statistical data objects";
+      homepage = "https://pypi.org/project/pandera/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }

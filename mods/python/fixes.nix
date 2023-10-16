@@ -262,4 +262,91 @@ rec {
             hash = "sha256-G4Dn6iZLVOovzfEt9eMzp93mTX+bo0tHI5cCbaJLxBQ=";
           };
         }) else prev.tokenize-rt;
+
+  typeguard = prev.buildPythonPackage rec {
+    pname = "typeguard";
+    version = "4.1.5";
+    pyproject = true;
+
+    src = prev.fetchPypi {
+      inherit pname version;
+      hash = "sha256-6goRO7wRG8/8kHieuyFWJcljQR9wlqfpBi1ORjDBVf0=";
+    };
+
+    nativeBuildInputs = with prev; [
+      setuptools
+      setuptools-scm
+      wheel
+    ];
+
+    propagatedBuildInputs = with prev;[
+      importlib-metadata
+      typing-extensions
+    ];
+
+    passthru.optional-dependencies = with prev; {
+      doc = [
+        packaging
+        sphinx
+        sphinx-autodoc-typehints
+      ];
+      test = [
+        coverage
+        pytest
+      ];
+    };
+
+    pythonImportsCheck = [ "typeguard" ];
+
+    meta = with prev.pkgs.lib; {
+      description = "Run-time type checker for Python";
+      homepage = "https://pypi.org/project/typeguard";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  stack-data = prev.buildPythonPackage
+    rec {
+      pname = "stack-data";
+      version = "0.6.3";
+      pyproject = true;
+
+      src = prev.fetchPypi {
+        pname = "stack_data";
+        inherit version;
+        hash = "sha256-g2p3jeT+xNzR3Nie2Kv/iiIfWDCEYuHEqio88wFI8Lk=";
+      };
+
+      nativeBuildInputs = with prev; [
+        setuptools
+        setuptools-scm
+        wheel
+      ];
+
+      propagatedBuildInputs = with prev; [
+        asttokens
+        executing
+        pure-eval
+      ];
+
+      passthru.optional-dependencies = with prev; {
+        tests = [
+          cython
+          littleutils
+          pygments
+          pytest
+          typeguard
+        ];
+      };
+
+      pythonImportsCheck = [ "stack_data" ];
+
+      meta = with prev.pkgs.lib; {
+        description = "Extract data from python stack frames and tracebacks for informative displays";
+        homepage = "https://pypi.org/project/stack-data/";
+        license = licenses.mit;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
 }
