@@ -2,17 +2,19 @@ final: prev:
 let
   inherit (prev) buildPythonPackage fetchPypi;
   inherit (prev.lib) licenses maintainers;
+  inherit (prev.pkgs) fetchFromGitHub;
 in
 {
   vllm-client = buildPythonPackage rec {
     pname = "vllm-client";
-    version = "0.1.7";
+    version = "0.2.0";
     pyproject = true;
 
-    src = fetchPypi {
-      pname = "vllm_client";
-      inherit version;
-      hash = "sha256-bGPevAT/DJiDLUOJLuRnlPAi462uCxWocLWQaDwNUZQ=";
+    src = fetchFromGitHub {
+      owner = "viktor-ferenczi";
+      repo = pname;
+      rev = "refs/tags/${version}";
+      hash = "sha256-JUoGM0lR1lWTurfREI5fdJl7KGaXePQ9OXBWXcIb1ZE=";
     };
 
     nativeBuildInputs = with prev; [
@@ -30,9 +32,10 @@ in
 
     meta = {
       description = "Client for the vLLM API with minimal dependencies";
-      homepage = "https://pypi.org/project/vllm-client/";
+      homepage = "https://github.com/viktor-ferenczi/vllm-client";
       license = licenses.asl20;
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
 }
