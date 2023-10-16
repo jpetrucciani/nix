@@ -1,6 +1,6 @@
 # m1max
 
-This is my work M1 Max Macbook, running MacOS and using nix-darwin and home-manager to manage things.
+This is my M1 Max Macbook, running MacOS and using nix-darwin and home-manager to manage things.
 
 ## setup
 

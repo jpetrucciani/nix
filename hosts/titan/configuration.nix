@@ -83,6 +83,35 @@ in
         };
       };
     };
+    caddy =
+      let
+        reverse_proxy = location: {
+          extraConfig = ''
+            # import TAILSCALE
+            reverse_proxy /* {
+              to ${location}
+            }
+          '';
+        };
+        m1max = "192.168.1.101";
+      in
+      {
+        enable = true;
+        package = pkgs.zaddy;
+        email = common.emails.personal;
+        extraConfig = ''
+          (TAILSCALE) {
+            @tailscale not remote_ip 127.0.0.1 100.64.0.0/10
+            respond @tailscale "Kek" 403
+          }
+        '';
+        virtualHosts = {
+          "http://zephyr.llm.cobi.dev:80" = reverse_proxy "${m1max}:8100";
+          "http://dolphin.llm.cobi.dev:80" = reverse_proxy "${m1max}:8101";
+          "http://airoboros.llm.cobi.dev:80" = reverse_proxy "${m1max}:8102";
+          "http://v.llm.cobi.dev:80" = reverse_proxy "localhost:8000";
+        };
+      };
     postgresql = {
       enable = true;
       package = pkgs.postgresql_16;
