@@ -277,6 +277,45 @@ rec {
     };
   };
 
+  llama-hub = buildPythonPackage rec {
+    pname = "llama-hub";
+    version = "0.0.38";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "run-llama";
+      repo = pname;
+      rev = "refs/tags/v${version}";
+      hash = "sha256-e0TbuVjgimDj/7BYYOZ7gsUBSF9m+zHgaO/PPA6Fq5Y=";
+    };
+
+    postPatch = ''
+      sed -i -E 's#(poetry)>=0.12#\1-core#g' ./pyproject.toml
+      substituteInPlace ./pyproject.toml --replace "poetry.masonry.api" "poetry.core.masonry.api"
+    '';
+
+    nativeBuildInputs = with prev; [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = with prev; [
+      atlassian-python-api
+      html2text
+      llama-index
+      psutil
+      retrying
+    ];
+
+    pythonImportsCheck = [ "llama_hub" ];
+
+    meta = {
+      description = "A library of community-driven data loaders for LLMs. Use with LlamaIndex and/or LangChain";
+      homepage = "https://github.com/run-llama/llama-hub";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
   guidance =
     let
       name = "guidance";

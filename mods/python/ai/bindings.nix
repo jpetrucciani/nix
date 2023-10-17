@@ -182,6 +182,7 @@ rec {
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
+
   pyllamacpp =
     let
       osSpecific =
@@ -295,6 +296,7 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
   rwkv-cpp =
     let
       osSpecific =
@@ -370,8 +372,6 @@ rec {
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
-
-
 
   whisper-cpp-python =
     let

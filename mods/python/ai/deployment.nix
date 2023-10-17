@@ -37,5 +37,4 @@ in
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
-
 }
