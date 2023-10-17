@@ -5,3 +5,8 @@
 (?i)ggml
 (?i)llm
 (?i)gradio
+(?i)autogluon
+(?i)langfuse
+(?i)langchain
+(?i)langflow
+(?i)kagi
