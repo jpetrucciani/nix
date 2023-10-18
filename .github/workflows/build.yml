@@ -12,7 +12,7 @@ jobs:
     name: nix (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4.1.0
+      - uses: actions/checkout@v4.1.1
       - uses: cachix/install-nix-action@v23
       - uses: cachix/cachix-action@master
         with:
