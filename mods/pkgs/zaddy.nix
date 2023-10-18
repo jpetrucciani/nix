@@ -88,7 +88,7 @@ rec {
       caddy-hax
       caddy-troll
     ];
-    vendorHash = "sha256-AvnlAtMr1S4K7b7Fh5D4nTAxCrEUi92Koe6E21JqKuw=";
+    vendorHash = "sha256-A9RLaXe+Na/dv7dRTiPf5Hl+8wENeAM+fTlhEw6i47s=";
   };
 
   # caddy with s3-browser plugin
@@ -98,6 +98,6 @@ rec {
       s3-proxy
       s3-browser
     ];
-    vendorHash = "sha256-BF9a6mn6OhO+iaJT9A1Hfzn/8ooLzphRAwxIcs8b2gk=";
+    vendorHash = "sha256-I0dFXswsgImECJ3Hgj8WuZqqN4eCXBo8JPNo4o+HeuQ=";
   };
 }
