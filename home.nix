@@ -40,7 +40,6 @@ let
 in
 {
   nixpkgs.overlays = import ./overlays.nix;
-  nixpkgs.config = { allowUnfree = true; };
 
   programs = {
     home-manager.enable = true;

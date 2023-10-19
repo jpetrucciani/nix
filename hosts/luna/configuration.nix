@@ -71,7 +71,6 @@ in
     ] ++ usual;
   };
 
-  nixpkgs.config.allowUnfree = true;
   environment.systemPackages = [ ];
 
   networking.firewall.enable = false;

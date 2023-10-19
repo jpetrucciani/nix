@@ -67,10 +67,6 @@ in
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
   };
-  nixpkgs = {
-    config.allowUnfree = true;
-    hostPlatform = lib.mkDefault "x86_64-linux";
-  };
   programs.command-not-found.enable = false;
 
   security.sudo = common.security.sudo;
