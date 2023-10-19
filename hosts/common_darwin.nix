@@ -102,6 +102,7 @@ in
             "karabiner-elements"
             "keybase"
             "macfuse"
+            "modular"
             "notion"
             "parsec"
             "qlvideo"
