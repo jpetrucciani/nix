@@ -77,8 +77,10 @@ in
         casks = rec {
           fonts = [
             "font-caskaydia-cove-nerd-font"
+            "font-fantasque-sans-mono-nerd-font"
             "font-fira-code-nerd-font"
             "font-hasklug-nerd-font"
+            "font-victor-mono-nerd-font"
           ];
           fun = [
             "mgba"
