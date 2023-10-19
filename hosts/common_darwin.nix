@@ -109,7 +109,6 @@ in
             "rectangle"
             "utm"
             "vlc"
-            "modularml/packages/modular"
           ];
           all = fonts ++ fun ++ work ++ comms ++ util;
           all_personal = subtractLists work all;
@@ -131,6 +130,7 @@ in
           "readline"
           "sshfs"
           "qemu"
+          "modularml/packages/modular"
         ];
         onActivation = {
           autoUpdate = true;
