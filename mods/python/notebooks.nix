@@ -236,7 +236,7 @@ rec {
   voila =
     let
       pname = "voila";
-      version = "0.5.0a4";
+      version = "0.5.4";
       format = "wheel";
       src = fetchPypi {
         inherit pname version;
@@ -244,7 +244,7 @@ rec {
         python = "py3";
         dist = "py3";
         platform = "any";
-        hash = "sha256-Lo0yK7dd11yiGFPHZprqrN/dV6FKwMDsWoFXFQdjEZE=";
+        hash = "sha256-98rEqUgh3kDSg0Rz5tO/0gAJJ0B8U4VIaWZDSi4fbZg=";
       };
     in
     buildPythonPackage {
