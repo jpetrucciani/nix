@@ -140,7 +140,6 @@ in
         casks = if work.enable then casks.all_work else casks.all_personal;
         masApps = {
           Wireguard = 1451685025;
-          Poolside = 1514817810;
         };
         extraConfig = "";
       };
