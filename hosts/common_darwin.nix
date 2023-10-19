@@ -102,7 +102,6 @@ in
             "karabiner-elements"
             "keybase"
             "macfuse"
-            "modular"
             "notion"
             "parsec"
             "qlvideo"
@@ -110,6 +109,7 @@ in
             "rectangle"
             "utm"
             "vlc"
+            "modularml/packages/modular"
           ];
           all = fonts ++ fun ++ work ++ comms ++ util;
           all_personal = subtractLists work all;
