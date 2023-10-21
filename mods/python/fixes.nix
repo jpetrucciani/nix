@@ -39,6 +39,10 @@ rec {
     doCheck = false;
   });
 
+  watchfiles = prev.watchfiles.overridePythonAttrs (_: {
+    doCheck = false;
+  });
+
   slack-bolt = prev.slack-bolt.overridePythonAttrs (old: {
     postPatch = ''
       sed -i '/pytest-runner/d' ./setup.py
