@@ -340,13 +340,29 @@ rec {
     '';
   };
 
+  ndiff = pog {
+    name = "ndiff";
+    arguments = [{ name = "attribute"; }];
+    flags = [
+      { name = "nixpkgs"; default = prev.flake.inputs.nixpkgs.rev; }
+    ];
+    script = helpers: with helpers; ''
+      attribute="$1"
+      ${var.empty "attribute"} && die "no attribute specified to diff!"
+      ${prev.nvd}/bin/nvd diff \
+        "$(${prev.nix}/bin/nix eval --raw "github:NixOS/nixpkgs/$nixpkgs#$attribute.drvPath")" \
+        "$(${prev.nix}/bin/nix eval --raw "github:jpetrucciani/nix#$attribute.drvPath")"
+    '';
+  };
+
   nix_pog_scripts = [
+    cache
+    hex
+    hexrender
+    ndiff
+    nixrender
     nixup
     nupdate
     y2n
-    cache
-    nixrender
-    hex
-    hexrender
   ];
 }
