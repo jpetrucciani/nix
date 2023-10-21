@@ -1,28 +1,13 @@
 final: prev: with prev; rec {
   reflex =
     let
-      typer = buildPythonPackage rec {
-        pname = "typer";
-        version = "0.4.2";
-
-        format = "flit";
-        src = fetchPypi {
-          inherit pname version;
-          sha256 = "00zcc8gk37q7j5y0ycawf6699mp5fyk6paavid3p7paj05n1q9mq";
-        };
-
-        propagatedBuildInputs = [
-          click
-        ];
-        meta = with lib; { };
-      };
       relaxDeps = let _rm = dep: ''-e "/${dep} =/d"''; in deps: ''
         sed -i -E ${prev.lib.concatStringsSep " " (map _rm deps)} ./pyproject.toml
       '';
     in
     buildPythonPackage rec {
       pname = "reflex";
-      version = "0.2.8";
+      version = "0.2.9";
       format = "pyproject";
 
 
@@ -30,7 +15,7 @@ final: prev: with prev; rec {
         owner = "reflex-dev";
         repo = pname;
         rev = "refs/tags/v${version}";
-        sha256 = "sha256-LJNN++SNsmnbUOvLEF/bc7pN0mu9e2FvuhGA0w4xXT8=";
+        sha256 = "sha256-7VFvvZwzO+6qOwgY6u+p9eR0j82666LNyeZg8o7CKx4=";
       };
 
       propagatedBuildInputs = [
@@ -60,8 +45,8 @@ final: prev: with prev; rec {
       ] ++ (lib.optionals stdenv.isLinux [ distro ]);
 
       postPatch = ''
-        sed -i -E 's#DEFAULT_BUN_PATH =.*#DEFAULT_BUN_PATH = "${pkgs.bun}/bin/bun"#g' ./reflex/constants.py
-        sed -i -E -z 's#(NODE_BIN_PATH)(.*)\n\)#\1 = "${pkgs.nodejs_20}/bin"#g' ./reflex/constants.py
+        sed -i -E 's#(DEFAULT_PATH) =.*#\1 = "${pkgs.bun}/bin/bun"#g' ./reflex/constants/installer.py
+        sed -i -E -z 's#(BIN_PATH)(.*)\n\)#\1 = "${pkgs.nodejs_20}/bin"#g' ./reflex/constants/installer.py
         ${relaxDeps [
           "alembic"
           "fastapi"
@@ -387,7 +372,7 @@ final: prev: with prev; rec {
 
   granian = buildPythonPackage rec {
     pname = "granian";
-    version = "0.2.8";
+    version = "0.2.9";
 
     format = "pyproject";
     src = pkgs.fetchFromGitHub {
