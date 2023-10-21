@@ -167,18 +167,19 @@ rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.8.42";
-    format = "setuptools";
+    version = "0.8.48";
+    pyproject = true;
 
     src = fetchFromGitHub {
       owner = "jerryjliu";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-/xTnOZMQiRUA8jSp5QeebY0ERuiAhO5zaqsCGXiQloA=";
+      hash = "sha256-grxoZ9dOl9OX6fRZ8igk5JF8eOPIvtyL8qXg5YPCGG0=";
     };
 
     nativeBuildInputs = with prev; [
       pythonRelaxDepsHook
+      poetry-core
     ];
     nativeCheckInputs = with prev; [
       pytestCheckHook
