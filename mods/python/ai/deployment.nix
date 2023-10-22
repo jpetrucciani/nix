@@ -5,6 +5,40 @@ let
   inherit (prev.pkgs) fetchFromGitHub;
 in
 {
+  fastembed = buildPythonPackage rec {
+    pname = "fastembed";
+    version = "0.1.1";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "qdrant";
+      repo = pname;
+      rev = "refs/tags/v${version}";
+      hash = "sha256-6bLINktZLJWWdno0wJVh/IdubiLH8Ge6Km8LwfHCIg4=";
+    };
+
+    nativeBuildInputs = with prev; [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = with prev; [
+      onnx
+      onnxruntime
+      requests
+      tokenizers
+      tqdm
+    ];
+
+    pythonImportsCheck = [ "fastembed" ];
+
+    meta = {
+      description = "Fast, light, accurate library built for retrieval embedding generation";
+      homepage = "https://github.com/qdrant/fastembed";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
   vllm-client = buildPythonPackage rec {
     pname = "vllm-client";
     version = "0.2.0";
