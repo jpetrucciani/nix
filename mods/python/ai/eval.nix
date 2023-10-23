@@ -6,12 +6,12 @@ in
 {
   langfuse = buildPythonPackage rec {
     pname = "langfuse";
-    version = "1.0.17";
+    version = "1.0.41";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-wt2rmnXkgX5t03S0gJLc0xflTZoLrTsJK9fb/kUrRqs=";
+      hash = "sha256-OM7wmLo9dcrh2SEjPDtOQclfJwPc9q1LIax/4qYujPo=";
     };
 
     nativeBuildInputs = with prev; [
@@ -20,6 +20,7 @@ in
 
     propagatedBuildInputs = with prev; [
       attrs
+      backoff
       httpx
       langchain
       pydantic
