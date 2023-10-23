@@ -321,12 +321,12 @@ rec {
 
   nicegui = buildPythonPackage rec {
     pname = "nicegui";
-    version = "1.3.18";
+    version = "1.4.0";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-RuDy03aywxVuerwcZ5JNFLrw70jY5HTSLRgP5vIvh5Y=";
+      hash = "sha256-hMe5MyjRWZUT8Q4ZdkIGhthcZoZdX1bGw5Nr5/oEvrE=";
     };
 
     postPatch = ''
@@ -353,6 +353,7 @@ rec {
       fastapi
       fastapi-socketio
       httptools
+      ifaddr
       importlib-metadata
       jinja2
       markdown2
