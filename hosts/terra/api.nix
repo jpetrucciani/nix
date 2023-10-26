@@ -25,8 +25,7 @@ let
         anybadge
         beautifulsoup4
         qrcode
-        tabulate
-        # stylecloud
+        lxml
         icon-image
 
         # automation
@@ -35,6 +34,14 @@ let
         # ai
         llama-cpp-python
         whisper-cpp-python
+        langchain
+        langchainhub
+        langfuse
+        pdf2image
+        qdrant-client
+        sentence-transformers
+        transformers
+        tokenizers
 
         # data
         numpy
@@ -52,6 +59,7 @@ let
         uvicorn
 
         # testing
+        ptpython
         black
         freezegun
         pytest
