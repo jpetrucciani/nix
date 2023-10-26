@@ -470,4 +470,36 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  itomate = buildPythonPackage rec {
+    pname = "itomate";
+    version = "0.3.9";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "kamranahmedse";
+      repo = pname;
+      rev = "refs/tags/${version}";
+      hash = "sha256-kZyYfZ8x/mDtYM8+7H3outrgdomCilMDRbf7jFmPkz0=";
+    };
+
+    nativeBuildInputs = with prev;[
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = with prev;[
+      iterm2
+      pyyaml
+    ];
+
+    pythonImportsCheck = [ "itomate" ];
+
+    meta = {
+      description = "Automate your iTerm layouts and workflows";
+      homepage = "https://github.com/kamranahmedse/itomate";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
