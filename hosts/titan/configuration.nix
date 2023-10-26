@@ -113,6 +113,7 @@ in
             ${m1max}:6910 ${m1max}:6911 ${m1max}:6912 ${m1max}:6913
             lb_policy round_robin
           '';
+          "http://llava.llm.cobi.dev:80" = reverse_proxy "${m1max}:8080";
           "http://v.llm.cobi.dev:80" = reverse_proxy "localhost:8000";
         };
       };
