@@ -1,9 +1,9 @@
 final: prev:
 with prev;
 rec {
-  nixup = pog {
+  nixup = let version = "0.0.5"; in pog {
+    inherit version;
     name = "nixup";
-    version = "0.0.4";
     description = "a quick tool to create/update a base default.nix environment!";
     flags = [
       { name = "update"; bool = true; description = "update the pin to jpetrucciani in the given file (argument 1) [default: ./default.nix]"; }
@@ -117,11 +117,14 @@ rec {
             };
 
           paths = pkgs.lib.flatten [ (builtins.attrValues tools) ];
-          in
-          pkgs.buildEnv {
+          env = pkgs.buildEnv {
             inherit name paths;
             buildInputs = paths;
-          }
+          };
+          in
+          env.overrideAttrs (_: {
+            NIXUP = "${version}";
+          })
         EOF
       '';
   };
