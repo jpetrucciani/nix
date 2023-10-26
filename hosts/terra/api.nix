@@ -18,7 +18,6 @@ let
         python-dotenv
         python-multipart
         requests
-        transformers
         tweepy
 
         # text
@@ -27,6 +26,7 @@ let
         qrcode
         lxml
         icon-image
+        tabulate
 
         # automation
         playwright
