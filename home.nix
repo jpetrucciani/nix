@@ -593,6 +593,7 @@ in
             "zircon.shell": "${nix-bin}/bash",
             "shellformat.path": "${nix-bin}/shfmt",
             "terminal.integrated.allowChords": false,
+            "autoDocstring.docstringFormat": "google-notypes",
             "files.exclude": {
               ".git": true,
               "**/.terraform": true,
