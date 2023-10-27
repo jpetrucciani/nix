@@ -17,7 +17,6 @@ let
         pygithub
         python-dotenv
         python-multipart
-        requests
         tweepy
 
         # text
@@ -68,7 +67,6 @@ let
 
         # types
         types-freezegun
-        types-requests
         types-tabulate
       ]))
     ];
