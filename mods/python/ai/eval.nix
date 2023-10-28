@@ -6,12 +6,12 @@ in
 {
   langfuse = buildPythonPackage rec {
     pname = "langfuse";
-    version = "1.0.41";
+    version = "1.1.6";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-OM7wmLo9dcrh2SEjPDtOQclfJwPc9q1LIax/4qYujPo=";
+      hash = "sha256-VxhgvheQvCqcTQnaHY4OGjG0lYmNOrB8PKwbB/Y0EEQ=";
     };
 
     nativeBuildInputs = with prev; [
