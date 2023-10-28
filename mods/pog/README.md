@@ -14,6 +14,10 @@ Hex is a nix module system that allows us to create powerful abstractions of oth
 
 This module makes some AWS related tools with `pog`.
 
+### [curl.nix](./curl.nix)
+
+### [db.nix](./db.nix)
+
 ### [docker.nix](./docker.nix)
 
 This module creates some `pog` tools that help make you more productive in Docker!
@@ -42,6 +46,8 @@ This module provides some hacky `pog` tools!
 
 This module provides some tools for analyzing helm repos and charts!
 
+### [ignore.nix](./ignore.nix)
+
 ### [k8s.nix](./k8s.nix)
 
 This module creates some `pog` tools that help make you more productive in Kubernetes!
@@ -54,6 +60,10 @@ This module configures some helper tools for creating new nix environments!
 
 This module configures some helper tools for interacting with python and pip!
 
+### [notion.nix](./notion.nix)
+
 ### [sound.nix](./sound.nix)
 
 This module contains a `soundScript` wrapper that uses `pog` to create command line sound bites!
+
+### [ssh.nix](./ssh.nix)

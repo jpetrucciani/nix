@@ -6,27 +6,13 @@ This directory contains nix packages that I've built that are not yet ready for 
 
 ## In this directory
 
-### [ai.nix](./ai.nix)
-
-This overlay provides AI related binaries, such as [llama.cpp](https://github.com/ggerganov/llama.cpp), [whisper.cpp](https://github.com/ggerganov/whisper.cpp), and [alpaca.cpp](https://github.com/antimatter15/alpaca.cpp)
-
 ### [cli.nix](./cli.nix)
 
 This overlay provides general CLI tools for use in text transformation and other use cases.
 
-##### rare
-
-[![built in go](https://img.shields.io/badge/built%20in-go-%2301ADD8)](https://go.dev/)
-
-This package provides [rare](https://github.com/zix99/rare) in nixpkgs, a tool that allows regex-extraction and aggregation into common formats such as histograms, bar graphs, numerical summaries, tables, and more.
-
 ### [cloud.nix](./cloud.nix)
 
-##### aliyun-cli
-
-[![built in go](https://img.shields.io/badge/built%20in-go-%2301ADD8)](https://go.dev/)
-
-This package provides the [Alibaba Cloud CLI](https://github.com/aliyun/aliyun-cli) in nixpkgs, a CLI tool for the Alibaba Cloud platform. Written in Go.
+### [experimental.nix](./experimental.nix)
 
 ### [k8s.nix](./k8s.nix)
 
@@ -38,37 +24,9 @@ This overlay provides a handful of kubernetes related tools, like below:
 
 [Goldilocks](https://github.com/FairwindsOps/goldilocks) is a utility that can help you identify a starting point for resource requests and limits.
 
-##### katafygio
-
-[![built in go](https://img.shields.io/badge/built%20in-go-%2301ADD8)](https://go.dev/)
-
-##### kube-linter
-
-[![built in go](https://img.shields.io/badge/built%20in-go-%2301ADD8)](https://go.dev/)
-
-This package provides [kube-linter](https://github.com/stackrox/kube-linter) in nixpkgs, a static analysis tool that checks Kubernetes YAML files and Helm charts to ensure the applications represented in them adhere to best practices
-
-##### pluto
-
-[![built in go](https://img.shields.io/badge/built%20in-go-%2301ADD8)](https://go.dev/)
-
-This package provides [pluto](https://github.com/FairwindsOps/Pluto) in nixpkgs, a cli tool to help discover deprecated apiVersions in Kubernetes.
-
-##### polaris
-
-[![built in go](https://img.shields.io/badge/built%20in-go-%2301ADD8)](https://go.dev/)
-
-[Polaris](https://github.com/FairwindsOps/polaris/) keeps your clusters sailing. It runs a variety of checks to ensure that Kubernetes pods and controllers are configured using best practices, helping you avoid problems in the future.
-
-##### rbac-tool
-
-[![built in go](https://img.shields.io/badge/built%20in-go-%2301ADD8)](https://go.dev/)
-
-This package provides [rbac-tool](https://github.com/alcideio/rbac-tool) in nixpkgs, a tool that simplifies querying and creation of RBAC policies.
-
 ### [server.nix](./server.nix)
 
-This overlay provides some servers/services as nix derivations, such as specific versions of [haproxy](http://www.haproxy.org/), and stuff like [pocketbase](https://github.com/pocketbase/pocketbase/).
+This overlay provides some servers/services as nix derivations, such as specific versions of [haproxy](http://www.haproxy.org/).
 
 ### [zaddy.nix](./zaddy.nix)
 

@@ -2,7 +2,7 @@
 
 [![uses nix](https://img.shields.io/badge/uses-nix-%237EBAE4)](https://nixos.org/)
 
-_my nixpkgs setup and modules/overlays/examples!_
+_nixpkgs configurations, overlays, and info_
 
 ## In this repo
 
@@ -30,13 +30,17 @@ This directory contains nix packages that I've built that might not be yet ready
 
 This directory contains various random scripts that I use in this repo, or in packages created by this repo.
 
-### [sources/](./sources/)
+### [secrets/](./secrets/)
 
-This directory contains rev/sha256 combos for any of the other repos that I track and pin in this repo. These automatically update with GitHub actions!
+This directory contains encrypted secrets for my nixos machines, using [agenix](https://github.com/ryantm/agenix).
 
 ### [default.nix](./default.nix)
 
 This file acts as the entrypoint for nix to pin my nixpkgs version to the rev and sha256 found [in the flake.lock](./flake.lock).
+
+### [flake.nix](./flake.nix)
+
+My main flake file
 
 ### [home.nix](./home.nix)
 
