@@ -502,4 +502,35 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  recurrent = buildPythonPackage {
+    pname = "recurrent";
+    version = "0.4.1";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "kvh";
+      repo = "recurrent";
+      rev = "13fb7ac7e0060937e5f7e4e13a644a3e2b6f7021";
+      hash = "sha256-I1FRmyJjs6We7qeCcyJlcFlUVQfjYUNHKj80KO0E7tk=";
+    };
+
+    propagatedBuildInputs = with prev; [
+      parsedatetime
+    ];
+
+    nativeBuildInputs = with prev; [
+      setuptools
+      wheel
+    ];
+
+    pythonImportsCheck = [ "recurrent" ];
+
+    meta = {
+      description = "Natural language parsing of dates and recurring events";
+      homepage = "https://github.com/kvh/recurrent";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
