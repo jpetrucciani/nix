@@ -208,6 +208,8 @@ let
         , port ? 80
         , namespace ? "default"
         , service ? name
+        , serviceScheme ? if port == 443 then "https" else "http"
+        , extraService ? { }
         , internal ? true
         , secretName ? ""
         , labels ? [ ]
@@ -246,11 +248,12 @@ let
                 kind = "Rule";
                 match = "Host(`${domain}`)";
                 services = [
-                  {
+                  ({
                     inherit namespace port;
                     name = service;
                     passHostHeader = true;
-                  }
+                    scheme = serviceScheme;
+                  } // extraService)
                 ];
               }
             ] ++ extraRoutes;
