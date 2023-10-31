@@ -172,6 +172,9 @@ rec {
     };
   };
 
+  # wat?
+  accelerate = if isDarwin then prev.accelerate.overridePythonAttrs (_: { doCheck = false; }) else prev.accelerate;
+
   # PYTHON 3.12 FIXES!
   autoflake = disableCheckPython312 "autoflake";
   nose3 = disableCheckPython312 "nose3";
