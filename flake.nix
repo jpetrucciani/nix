@@ -76,7 +76,7 @@
       packages = forAllSystems
         (system: import self.inputs.nixpkgs {
           inherit system;
-          overlays = [ (final: prev: { inherit machines; nixpkgsRev = self.inputs.nixpkgs.rev; }) self.inputs.nix.overlays.default ] ++ import ./overlays.nix;
+          overlays = [ (final: prev: { inherit machines; flake = self; nixpkgsRev = self.inputs.nixpkgs.rev; }) self.inputs.nix.overlays.default ] ++ import ./overlays.nix;
           config = {
             allowUnfree = true;
             permittedInsecurePackages = [
