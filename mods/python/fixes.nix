@@ -172,16 +172,10 @@ rec {
     };
   };
 
+  # wat?
+  accelerate = if isDarwin then prev.accelerate.overridePythonAttrs (_: { doCheck = false; }) else prev.accelerate;
+
   # PYTHON 3.12 FIXES!
-  greenlet = let version = "3.0.0"; in prev.greenlet.overridePythonAttrs (_: {
-    inherit version;
-    src = fetchFromGitHub {
-      owner = "python-greenlet";
-      repo = "greenlet";
-      rev = version;
-      hash = "sha256-71kbxwIwkNKngoejvjXlx+kG28VDMKOKBB79UA5kg1w=";
-    };
-  });
   autoflake = disableCheckPython312 "autoflake";
   nose3 = disableCheckPython312 "nose3";
   nosexcover = disableCheckPython312 "nosexcover";
