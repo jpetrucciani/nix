@@ -21,4 +21,6 @@ in
     });
     nodeRuntimes = [ "node16" "node20" ];
   };
+
+  k3s = prev.k3s.override (_: { buildGoModule = prev.buildGo120Module; });
 }

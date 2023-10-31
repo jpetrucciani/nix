@@ -2,16 +2,19 @@ final: prev:
 let
   inherit (builtins) isString;
   inherit (builtins) concatStringsSep filter replaceStrings split stringLength substring;
-  inherit (prev.lib) stringToCharacters;
-  inherit (prev.lib.lists) reverseList;
-  inherit (prev.lib.strings) fixedWidthString toUpper;
+  inherit (final.lib) stringToCharacters;
+  inherit (final.lib.lists) reverseList;
+  inherit (final.lib.strings) fixedWidthString toUpper;
   upper = toUpper;
   reverse = x: concatStringsSep "" (reverseList (stringToCharacters x));
   rightPad = num: text: reverse (fixedWidthString num " " (reverse text));
   ind = text: concatStringsSep "\n" (map (x: "  ${x}") (filter isString (split "\n" text)));
 in
 rec {
-  _ = with prev; rec {
+  _ = with final; let
+    core = "${pkgs.coreutils}/bin";
+  in
+  rec {
     # binaries
     ## text
     awk = "${pkgs.gawk}/bin/awk";
@@ -26,13 +29,13 @@ rec {
     sed = "${pkgs.gnused}/bin/sed";
     grep = "${pkgs.gnugrep}/bin/grep";
     shfmt = "${pkgs.shfmt}/bin/shfmt";
-    cut = "${pkgs.coreutils}/bin/cut";
-    head = "${pkgs.coreutils}/bin/head";
-    mktemp = "${pkgs.coreutils}/bin/mktemp";
-    sort = "${pkgs.coreutils}/bin/sort";
-    tail = "${pkgs.coreutils}/bin/tail";
-    tr = "${pkgs.coreutils}/bin/tr";
-    uniq = "${pkgs.coreutils}/bin/uniq";
+    cut = "${core}/cut";
+    head = "${core}/head";
+    mktemp = "${core}/mktemp";
+    sort = "${core}/sort";
+    tail = "${core}/tail";
+    tr = "${core}/tr";
+    uniq = "${core}/uniq";
     uuid = "${pkgs.libossp_uuid}/bin/uuid";
     yq = "${pkgs.yq-go}/bin/yq";
     y2j = "${pkgs.remarshal}/bin/yaml2json";
@@ -42,8 +45,8 @@ rec {
     nixpkgs-fmt = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
 
     ## common
-    ls = "${pkgs.coreutils}/bin/ls";
-    date = "${pkgs.coreutils}/bin/date";
+    ls = "${core}/ls";
+    date = "${core}/date";
     xargs = "${pkgs.findutils}/bin/xargs";
     getopt = "${pkgs.getopt}/bin/getopt";
     fzf = "${pkgs.fzf}/bin/fzf";
@@ -57,7 +60,7 @@ rec {
     k = "${pkgs.kubectl}/bin/kubectl";
 
     ## clouds
-    aws = "${prev.awscli2}/bin/aws";
+    aws = "${pkgs.awscli2}/bin/aws";
     gcloud = "${pkgs.google-cloud-sdk}/bin/gcloud";
 
     # fzf partials
@@ -425,11 +428,11 @@ rec {
   };
 
   writeBashBinChecked = name: text:
-    prev.stdenv.mkDerivation {
+    final.stdenv.mkDerivation {
       inherit name text;
       dontUnpack = true;
       passAsFile = "text";
-      nativeBuildInputs = [ prev.pkgs.shellcheck ];
+      nativeBuildInputs = [ final.pkgs.shellcheck ];
       installPhase = ''
         mkdir -p $out/bin
         echo '#!/bin/bash' > $out/bin/${name}
@@ -443,21 +446,21 @@ rec {
   enviro =
     { name
     , tools
-    , packages ? prev.lib.flatten [ (builtins.attrValues tools) ]
+    , packages ? final.lib.flatten [ (builtins.attrValues tools) ]
     , mkDerivation ? false
     }:
     if mkDerivation then
-      prev.stdenv.mkDerivation
+      final.stdenv.mkDerivation
         {
           inherit name;
           buildInputs = packages;
         } else
-      prev.buildEnv {
+      final.buildEnv {
         inherit name;
         buildInputs = packages;
         paths = packages;
       };
-  _toolset = tools: prev.lib.flatten [ (builtins.attrValues tools) ];
+  _toolset = tools: final.lib.flatten [ (builtins.attrValues tools) ];
 
   bashEsc = ''\033'';
   bashColors = [
@@ -586,8 +589,8 @@ rec {
       };
       timer = {
         start = name: ''_pog_start_${name}="$(${_.date} +%s.%N)"'';
-        stop = name: ''"$(echo "$(${_.date} +%s.%N) - $_pog_start_${name}" | ${prev.pkgs.bc}/bin/bc -l)"'';
-        round = places: ''${prev.pkgs.coreutils}/bin/printf '%.*f\n' ${toString places}'';
+        stop = name: ''"$(echo "$(${_.date} +%s.%N) - $_pog_start_${name}" | ${final.pkgs.bc}/bin/bc -l)"'';
+        round = places: ''${final.pkgs.coreutils}/bin/printf '%.*f\n' ${toString places}'';
       };
       confirm = yesno;
       yesno = { prompt ? "Would you like to continue?", exit_code ? 0 }: ''
@@ -642,11 +645,11 @@ rec {
       shortVerboseDoc = if shortDefaultFlags then "-v, " else "";
       defaultFlagHelp = if showDefaultFlags then "[${shortHelp}--help] [${shortVerbose}--verbose] [--no-color] " else "";
     in
-    prev.stdenv.mkDerivation {
+    final.stdenv.mkDerivation {
       inherit version;
       pname = name;
       dontUnpack = true;
-      nativeBuildInputs = [ prev.installShellFiles prev.shellcheck ];
+      nativeBuildInputs = [ final.installShellFiles final.shellcheck ];
       passAsFile = [
         "text"
         "completion"
@@ -741,7 +744,7 @@ rec {
           exit "$code"
         }
         setup_colors
-        ${if bashBible then prev.bashbible.bible else ""}
+        ${if bashBible then final.bashbible.bible else ""}
         ${concatStringsSep "\n" (filterBlank (map (x: x.flagPrompt) parsedFlags))}
         # script
         ${if builtins.isFunction script then script helpers else script}
