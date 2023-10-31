@@ -6,7 +6,7 @@
 }:
 import nixpkgs {
   inherit system;
-  overlays = (import ./overlays.nix) ++ overlays;
+  overlays = [ (_: _: { nixpkgsRev = nixpkgs.rev; }) ] ++ (import ./overlays.nix) ++ overlays;
   config = {
     allowUnfree = true;
     permittedInsecurePackages = [

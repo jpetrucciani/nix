@@ -347,7 +347,7 @@ rec {
     name = "ndiff";
     arguments = [{ name = "attribute"; }];
     flags = [
-      { name = "nixpkgs"; default = prev.flake.inputs.nixpkgs.rev; }
+      { name = "nixpkgs"; default = final.nixpkgsRev; }
     ];
     script = helpers: with helpers; ''
       attribute="$1"
