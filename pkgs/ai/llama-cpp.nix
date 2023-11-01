@@ -39,7 +39,7 @@ let
       ocl-icd
       opencl-headers
     ];
-  version = "b1448";
+  version = "b1450";
   owner = "ggerganov";
   repo = "llama.cpp";
 in
@@ -49,7 +49,7 @@ clangStdenv.mkDerivation rec {
   src = fetchFromGitHub {
     inherit owner repo;
     rev = "refs/tags/${version}";
-    hash = "sha256-5VPJZgBSnZA8cdU+Oi54sJg/kDob1Z5VsOS01ukcERY=";
+    hash = "sha256-EUQ1bTCSZN0aQqYlF7d7hCBT58HtfZlJffJLU645tao=";
   };
 
   postPatch =
