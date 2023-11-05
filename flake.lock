@@ -296,11 +296,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1699050439,
-        "narHash": "sha256-7nJ5sr6jTWR78ChOVgY+bMEqwQK1RCl5WCBITqA52uE=",
+        "lastModified": 1699081985,
+        "narHash": "sha256-RATb/4Y+q2U1s2jtgThFrJH8Hv7kbK3UyM3W0DnSirA=",
         "owner": "kwbauson",
         "repo": "cfg",
-        "rev": "454659ddae7d6329e1dad8dc3dc2f7a7b41bd7b7",
+        "rev": "af61c3f770af0770ab85ad3e7bff20f30efd8124",
         "type": "github"
       },
       "original": {
