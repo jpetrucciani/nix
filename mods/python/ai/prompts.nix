@@ -63,7 +63,6 @@ rec {
       numexpr
       numpy
       openai
-      openapi-schema-pydantic
       pexpect
       psutil
       pydantic
@@ -167,14 +166,14 @@ rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.8.59";
+    version = "0.8.61";
     pyproject = true;
 
     src = fetchFromGitHub {
       owner = "run-llama";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-48zqySrZVeHiVtFdGG+afZ2VOM5tpCS8JUTaMz4ZeBM=";
+      hash = "sha256-lhxS0pWawsOzawJiNNn2aJI/4J5zsKAPXFJ7pz6twoc=";
     };
 
     nativeBuildInputs = with prev; [
