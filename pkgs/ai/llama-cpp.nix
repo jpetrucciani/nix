@@ -39,7 +39,7 @@ let
       ocl-icd
       opencl-headers
     ];
-  version = "b1492";
+  version = "b1493";
   owner = "ggerganov";
   repo = "llama.cpp";
 in
@@ -49,7 +49,7 @@ clangStdenv.mkDerivation rec {
   src = fetchFromGitHub {
     inherit owner repo;
     rev = "refs/tags/${version}";
-    hash = "sha256-yOryVcJ+j0R/D9WQ2XlreC91Vm2kFxlnB8IQKwOGsug=";
+    hash = "sha256-MYJusIoTqyr6Y6WzYHOBjp7MSY4Df/HVkFcZkhYEE+4=";
   };
 
   postPatch =
@@ -78,7 +78,7 @@ clangStdenv.mkDerivation rec {
     mv ./bin/quantize $out/bin/llama-quantize
     mv ./bin/quantize-stats $out/bin/llama-quantize-stats
     mv ./bin/server $out/bin/llama-server
-    mv ./bin/llava $out/bin/llava
+    mv ./bin/llava-cli $out/bin/llava
   '';
   buildInputs = [ openblas pkg-config ] ++ osSpecific;
   nativeBuildInputs = [ cmake ] ++ (optionals cuda [ cudatoolkit ]);
