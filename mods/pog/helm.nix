@@ -12,7 +12,7 @@ rec {
     }:
     let
       mktemp = "${pkgs.coreutils}/bin/mktemp";
-      jq = "${pkgs.jq}/bin/jq";
+      jq = lib.getExe jaq;
       yq = "${yq-go}/bin/yq";
       parallel = "${pkgs.parallel}/bin/parallel --will-cite --keep-order -j0 --colsep ' '";
       _filter = if (builtins.stringLength filter_out) > 0 then ''${prev.gnused}/bin/sed -E -e '/${filter_out}/,+1d' | '' else "";

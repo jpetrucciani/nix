@@ -27,8 +27,8 @@ rec {
       ''
         directory="$(pwd | ${_.sed} 's#.*/##')"
         jacobi=$(${nix_hash_jpetrucciani}/bin/nix_hash_jpetrucciani 2>/dev/null);
-        rev=$(echo "$jacobi" | ${_.jq} -r '.rev')
-        sha=$(echo "$jacobi" | ${_.jq} -r '.sha256')
+        rev=$(echo "$jacobi" | ${lib.getExe jaq} -r '.rev')
+        sha=$(echo "$jacobi" | ${lib.getExe jaq} -r '.sha256')
         toplevel=""
         crystal=""
         if [ "$with_crystal" = "1" ]; then
@@ -100,7 +100,7 @@ rec {
           ${_.nixpkgs-fmt} "$default_nix" 2>/dev/null
           exit 0
         fi
-        ${prev.coreutils}/bin/cat -s <<EOF | ${_.nixpkgs-fmt}
+        ${prev.coreutils}/bin/cat -s <<EOF | ${_.sed} -E 's#(fetchTarball \{) (name)#\1\n\2#' | ${_.nixpkgs-fmt}
           { pkgs ? import
               (''${ftb}) {}
           }:

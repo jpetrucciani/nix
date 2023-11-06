@@ -15,7 +15,7 @@ rec {
     ];
     script = ''
       tags="$(${_.curl} -Ls "https://api.github.com/repos/''${owner}/''${repo}/tags" |
-        ${_.jq} -r '.[].name')"
+        ${lib.getExe jaq} -r '.[].name')"
       if [ -n "''${latest}" ]; then
         echo "$tags" | ${_.head} -n 1
       else
