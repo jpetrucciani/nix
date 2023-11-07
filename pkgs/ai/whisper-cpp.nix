@@ -3,7 +3,7 @@ let
   inherit (stdenv) isAarch64 isDarwin;
   isM1 = isDarwin && isAarch64;
   osSpecific =
-    if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
+    if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
     else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
     else [ ];
   version = "1.4.3";
