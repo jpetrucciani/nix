@@ -13,11 +13,9 @@ let
         GitPython
         httpx
         paramiko
-        praw
         pygithub
         python-dotenv
         python-multipart
-        tweepy
 
         # text
         anybadge
