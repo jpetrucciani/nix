@@ -6,7 +6,7 @@ let
     if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
     else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
     else [ ];
-  version = "1.4.0";
+  version = "1.4.3";
 in
 clangStdenv.mkDerivation rec {
   name = "whisper.cpp";
@@ -14,7 +14,7 @@ clangStdenv.mkDerivation rec {
     owner = "ggerganov";
     repo = name;
     rev = "v${version}";
-    hash = "sha256-176MpooVQrq1dXC62h8Yyyhw6IjCA50tp1J4DQPSePQ=";
+    hash = "sha256-C9t6dPImpySfr1GF728eOnGtGFXf6g0wb4+3UtwiO/Q=";
   };
   postBuild = ''
     make stream
