@@ -341,6 +341,8 @@ rec {
         "ghcr.io/jpetrucciani/foundry-nix:latest"
         "ghcr.io/jpetrucciani/foundry-python311:latest"
         "ghcr.io/jpetrucciani/foundry-python312:latest"
+        "ghcr.io/jpetrucciani/k8s-aws:latest"
+        "ghcr.io/jpetrucciani/k8s-gcp:latest"
         "nicolaka/netshoot:latest"
         "node:16"
         "node:20"
