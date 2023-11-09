@@ -84,11 +84,20 @@ in
         host all all 100.64.0.0/10 trust
       '';
     };
-    k3s = {
-      enable = true;
-      role = "server";
-      extraFlags = "--disable traefik";
-    };
+    k3s =
+      let
+        oidc_flags = builtins.concatStringsSep " " [
+          "--kube-apiserver-arg=oidc-issuer-url=https://accounts.google.com"
+          "--kube-apiserver-arg=oidc-client-id=356820992289-89b30uojlrkqkm79g6hb0216d7j9ru9s.apps.googleusercontent.com"
+          "--kube-apiserver-arg=oidc-username-claim=email"
+          "--kube-apiserver-arg=oidc-groups-claim=groups"
+        ];
+      in
+      {
+        enable = true;
+        role = "server";
+        extraFlags = "--disable traefik ${oidc_flags}";
+      };
     caddy =
       let
         internal_proxy = { port ? 10000, host ? "127.0.0.1" }: {
