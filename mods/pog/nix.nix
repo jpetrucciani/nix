@@ -1,5 +1,7 @@
 final: prev:
-with prev;
+let
+  inherit (final) _ pog lib;
+in
 rec {
   nixup = let version = "0.0.5"; in pog {
     inherit version;
@@ -26,9 +28,9 @@ rec {
     script = h:
       ''
         directory="$(pwd | ${_.sed} 's#.*/##')"
-        jacobi=$(${nix_hash_jpetrucciani}/bin/nix_hash_jpetrucciani 2>/dev/null);
-        rev=$(echo "$jacobi" | ${lib.getExe jaq} -r '.rev')
-        sha=$(echo "$jacobi" | ${lib.getExe jaq} -r '.sha256')
+        jacobi=$(${final.nix_hash_jpetrucciani}/bin/nix_hash_jpetrucciani 2>/dev/null);
+        rev=$(echo "$jacobi" | ${lib.getExe final.jaq} -r '.rev')
+        sha=$(echo "$jacobi" | ${lib.getExe final.jaq} -r '.sha256')
         toplevel=""
         crystal=""
         if [ "$with_crystal" = "1" ]; then
@@ -129,14 +131,14 @@ rec {
       '';
   };
 
-  y2n = writeBashBinChecked "y2n" ''
+  y2n = final.writeBashBinChecked "y2n" ''
     yaml="$1"
     json=$(${_.y2j} "$yaml") \
       nix eval --raw --impure --expr \
-      'with import ${pkgs.path} {}; lib.generators.toPretty {} (builtins.fromJSON (builtins.getEnv "json"))'
+      'with import ${final.pkgs.path} {}; lib.generators.toPretty {} (builtins.fromJSON (builtins.getEnv "json"))'
   '';
 
-  cache = writeBashBinCheckedWithFlags {
+  cache = pog {
     name = "cache";
     description = "an easy tool to build nix configs and cache them to cachix!";
     flags = [
@@ -152,7 +154,7 @@ rec {
       }
     ];
     script = ''
-      ${pkgs.nix}/bin/nix-build ''${oldmac:+--system x86_64-darwin} | ${_.cachix} push "$cache_name"
+      ${final.nix}/bin/nix-build ''${oldmac:+--system x86_64-darwin} | ${_.cachix} push "$cache_name"
     '';
   };
 
@@ -166,7 +168,7 @@ rec {
       ];
       script = ''
         template="$1"
-        rendered="$(${pkgs.nix}/bin/nix eval --raw -f "$template")"
+        rendered="$(${final.nix}/bin/nix eval --raw -f "$template")"
         echo "$rendered"
       '';
     };
@@ -174,17 +176,17 @@ rec {
   hexrender =
     let
       _ = {
-        prettier = "${pkgs.nodePackages.prettier}/bin/prettier --write --config ${../../.prettierrc.js}";
-        mktemp = "${pkgs.coreutils}/bin/mktemp --suffix=.yaml";
-        realpath = "${pkgs.coreutils}/bin/realpath";
-        nix = "${pkgs.nix}/bin/nix";
-        sed = "${pkgs.gnused}/bin/sed";
-        yq = lib.getExe pkgs.yq-go;
+        prettier = "${final.nodePackages.prettier}/bin/prettier --write --config ${../../.prettierrc.js}";
+        mktemp = "${final.coreutils}/bin/mktemp --suffix=.yaml";
+        realpath = "${final.coreutils}/bin/realpath";
+        nix = "${final.nix}/bin/nix";
+        sed = "${final.gnused}/bin/sed";
+        yq = lib.getExe final.yq-go;
       };
     in
     pog {
       name = "hexrender";
-      version = "0.0.2";
+      version = "0.0.3";
       description = "a quick and easy way to use nix to render various other types of config files!";
       flags = [
         {
@@ -250,6 +252,7 @@ rec {
       }
       {
         name = "clientside";
+        description = "run the diff on the clientside instead of serverside";
         short = "";
         bool = true;
       }
@@ -273,11 +276,11 @@ rec {
           apply = "apply";
         };
         _ = {
-          k = lib.getExe' pkgs.kubectl "kubectl";
+          k = lib.getExe' final.kubectl "kubectl";
           hr = lib.getExe hexrender;
-          delta = lib.getExe' delta "delta";
-          mktemp = "${pkgs.coreutils}/bin/mktemp";
-          prettier = "${pkgs.nodePackages.prettier}/bin/prettier --write --config ${../../.prettierrc.js}";
+          delta = lib.getExe' final.delta "delta";
+          mktemp = "${final.coreutils}/bin/mktemp";
+          prettier = "${final.nodePackages.prettier}/bin/prettier --write --config ${../../.prettierrc.js}";
         };
       in
       helpers: with helpers; ''

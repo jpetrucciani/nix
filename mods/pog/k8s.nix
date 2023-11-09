@@ -1,5 +1,7 @@
 final: prev:
-with prev;
+let
+  inherit (final) _ pog;
+in
 rec {
   kex = pog {
     name = "kex";
@@ -167,12 +169,35 @@ rec {
       container_regex="($(echo "$containers" | tr '\n' '|' | ${_.sed} 's#.$##'))"
       debug "stern ''${all_namespaces:+-A} --namespace $namespace --timestamps $container_regex"
       # shellcheck disable=SC2046
-      ${prev.stern}/bin/stern ''${all_namespaces:+-A} --namespace "$namespace" --since "$since" --timestamps "$container_regex"
+      ${final.stern}/bin/stern ''${all_namespaces:+-A} --namespace "$namespace" --since "$since" --timestamps "$container_regex"
+    '';
+  };
+
+  kdiff = pog {
+    name = "kdiff";
+    description = "view a pretty diff of the file against the live cluster";
+    arguments = [{ name = "KUBESPEC"; }];
+    flags = [
+      _.flags.k8s.namespace
+      {
+        name = "clientside";
+        description = "run the diff on the clientside instead of serverside";
+        short = "";
+        bool = true;
+      }
+    ];
+    script = helpers: with helpers; ''
+      spec="$1"
+      ${file.notExists "spec"} && die "the file to render ('$spec') does not exist!"
+      side="true"
+      ${flag "clientside"} && side="false"
+      ${_.k} diff --namespace "$namespace" --server-side="$side" -f "$spec" | ${final.delta}/bin/delta
     '';
   };
 
   k8s_pog_scripts = [
     kdesc
+    kdiff
     kdrain
     kedit
     kex
