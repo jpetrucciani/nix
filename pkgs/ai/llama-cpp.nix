@@ -1,4 +1,6 @@
 { lib
+, system
+, symlinkJoin
 , darwin
 , stdenv
 , clangStdenv
@@ -39,7 +41,17 @@ let
       ocl-icd
       opencl-headers
     ];
-  version = "b1505";
+
+  cudatoolkit_joined = symlinkJoin {
+    name = "${cudatoolkit.name}-merged";
+    paths = [
+      cudatoolkit.lib
+      cudatoolkit.out
+    ] ++ lib.optionals (lib.versionOlder cudatoolkit.version "11") [
+      "${cudatoolkit}/targets/${system}"
+    ];
+  };
+  version = "b1510";
   owner = "ggerganov";
   repo = "llama.cpp";
 in
@@ -49,7 +61,7 @@ clangStdenv.mkDerivation rec {
   src = fetchFromGitHub {
     inherit owner repo;
     rev = "refs/tags/${version}";
-    hash = "sha256-STRqFE/WGS2w+VT4QLKbSzn91ul7gE1SA29FnE0qxWc=";
+    hash = "sha256-p4VjQUJFQwjOM3BZKVpNdxFr1nPDqYNj1dWT3AY5RAA=";
   };
 
   postPatch =
@@ -81,7 +93,7 @@ clangStdenv.mkDerivation rec {
     mv ./bin/llava-cli $out/bin/llava
   '';
   buildInputs = [ openblas pkg-config ] ++ osSpecific;
-  nativeBuildInputs = [ cmake ] ++ (optionals cuda [ cudatoolkit ]);
+  nativeBuildInputs = [ cmake ] ++ (optionals cuda [ cudatoolkit_joined ]);
 
   passthru.updateScript =
     let
