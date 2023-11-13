@@ -138,6 +138,7 @@ in
   } // common.services;
 
   virtualisation.docker.enable = true;
+  virtualisation.vmware.guest.enable = true;
   system.stateVersion = "23.11";
   security.sudo = common.security.sudo;
   programs.command-not-found.enable = false;
