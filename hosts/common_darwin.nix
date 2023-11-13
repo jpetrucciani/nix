@@ -81,6 +81,7 @@ in
             "font-fira-code-nerd-font"
             "font-hasklug-nerd-font"
             "font-victor-mono-nerd-font"
+            "font-monaspace"
           ];
           fun = [
             "mgba"
