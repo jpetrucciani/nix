@@ -1,6 +1,10 @@
 final: prev:
-with prev;
-rec {
+let
+  grafana_chart = { name, filter_out ? "" }: _chart_scan {
+    inherit name filter_out;
+    base_url = "https://grafana.github.io/helm-charts";
+    chart_url = "https://github.com/grafana/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
+  };
   _chart_scan =
     { name
     , base_url
@@ -11,13 +15,13 @@ rec {
     , filter_out ? ""
     }:
     let
-      mktemp = "${pkgs.coreutils}/bin/mktemp";
-      jq = lib.getExe jaq;
-      yq = "${yq-go}/bin/yq";
-      parallel = "${pkgs.parallel}/bin/parallel --will-cite --keep-order -j0 --colsep ' '";
-      _filter = if (builtins.stringLength filter_out) > 0 then ''${prev.gnused}/bin/sed -E -e '/${filter_out}/,+1d' | '' else "";
+      mktemp = "${final.coreutils}/bin/mktemp";
+      jq = final.lib.getExe final.jaq;
+      yq = "${final.yq-go}/bin/yq";
+      parallel = "${final.parallel}/bin/parallel --will-cite --keep-order -j0 --colsep ' '";
+      _filter = if (builtins.stringLength filter_out) > 0 then ''${final.gnused}/bin/sed -E -e '/${filter_out}/,+1d' | '' else "";
     in
-    pog {
+    final.pog {
       name = "chart_scan_${name}";
       description = "a quick and easy way to get the latest x releases of the '${name}' chart!";
       script = ''
@@ -27,12 +31,12 @@ rec {
         temp_csv="$(${mktemp} --suffix=.csv)"
 
         # grab index for this chart
-        ${curl}/bin/curl -L -s '${index_url}' >"$temp_resp"
+        ${final.curl}/bin/curl -L -s '${index_url}' >"$temp_resp"
         
         debug "pulled chart data to $temp_resp"
 
         <"$temp_resp" ${yq} '.[].${chart_name}.[] | [{"version": .version, "date": .created}]' | ${_filter}
-            ${coreutils}/bin/head -n ${toString (last * 2)} |
+            ${final.coreutils}/bin/head -n ${toString (last * 2)} |
             ${yq} -o=json >"$temp_json"
 
         debug "parsed json into $temp_json"
@@ -48,6 +52,9 @@ rec {
         ${yq} "$temp_csv" -p=csv -o=json
       '';
     };
+in
+rec {
+  inherit _chart_scan;
 
   chart_scan_argo-cd = _chart_scan {
     name = "argo-cd";
@@ -158,6 +165,10 @@ rec {
     chart_url = "https://github.com/prometheus-community/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
   };
 
+  chart_scan_loki = grafana_chart { name = "loki-simple-scalable"; };
+  chart_scan_mimir = grafana_chart { name = "mimir-distributed"; filter_out = "weekly|rc"; };
+  chart_scan_oncall = grafana_chart { name = "oncall"; };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
@@ -169,7 +180,10 @@ rec {
     chart_scan_kube-prometheus-stack
     chart_scan_linkerd-crds
     chart_scan_linkerd-control-plane
+    chart_scan_loki
+    chart_scan_mimir
     chart_scan_nfs
+    chart_scan_oncall
     chart_scan_postgres-operator
     chart_scan_postgres-operator-ui
     chart_scan_robusta
