@@ -1,10 +1,10 @@
 final: prev:
-with prev;
 let
+  inherit (final) fetchFromGitHub lib isLinux isDarwin;
   shardsDerivation = shards: builtins.toFile "shards.nix" (lib.generators.toPretty { } shards);
 in
 {
-  memzoom = prev.callPackage
+  memzoom = final.callPackage
     ({ stdenv, lib }: stdenv.mkDerivation rec {
       pname = "memzoom";
       version = "1.0";
@@ -36,7 +36,7 @@ in
     })
     { };
 
-  watcher = prev.callPackage
+  watcher = final.callPackage
     ({ stdenv, clang13Stdenv, lib, fetchFromGitHub }:
       let
         name = "watcher";
@@ -52,7 +52,7 @@ in
           sha256 = "sha256-s8MuSUC+TbzfadoiqW11Eh7ZTirFjEtVbIMofD0xRc8=";
         };
 
-        nativeBuildInputs = [ cmake ] ++ lib.optional isDarwin darwin.apple_sdk_11_0.frameworks.AppKit;
+        nativeBuildInputs = [ final.cmake ] ++ lib.optional isDarwin final.darwin.apple_sdk_11_0.frameworks.AppKit;
 
         preConfigure = ''
           cd build/in
@@ -69,7 +69,7 @@ in
       })
     { };
 
-  cgapp = prev.callPackage
+  cgapp = final.callPackage
     ({ lib, buildGo120Module, fetchFromGitHub }:
       buildGo120Module rec {
         pname = "cgapp";
@@ -89,7 +89,7 @@ in
 
         vendorHash = "sha256-clAeO/J6dN6M2AT5agp2OCruApBIX7byBaUeEeusN4c=";
 
-        nativeBuildInputs = [ installShellFiles ];
+        nativeBuildInputs = [ final.installShellFiles ];
 
         postInstall = ''
           installShellCompletion --cmd cgapp \
@@ -110,7 +110,7 @@ in
     )
     { };
 
-  migrate-go = prev.callPackage
+  migrate-go = final.callPackage
     ({ lib, buildGo120Module, fetchFromGitHub }:
       buildGo120Module rec {
         pname = "migrate";
@@ -155,7 +155,7 @@ in
     )
     { };
 
-  buffalo = prev.callPackage
+  buffalo = final.callPackage
     ({ lib, buildGo120Module, fetchFromGitHub }:
       buildGo120Module rec {
         pname = "buffalo";
@@ -175,7 +175,7 @@ in
 
         vendorHash = "sha256-7AZ78upxTn3wqsHlbyyhQfYqIcW/Op5sLUgqv4AkG9Y=";
 
-        nativeBuildInputs = [ installShellFiles ];
+        nativeBuildInputs = [ final.installShellFiles ];
 
         postInstall = ''
           installShellCompletion --cmd buffalo \
@@ -194,7 +194,7 @@ in
     )
     { };
 
-  miniss = crystal.buildCrystalPackage rec {
+  miniss = final.crystal.buildCrystalPackage rec {
     pname = "miniss";
     version = "0.0.2";
 
