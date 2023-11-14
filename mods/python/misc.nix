@@ -1,9 +1,9 @@
 final: prev:
 let
-  inherit (prev) buildPythonPackage fetchPypi;
-  inherit (prev) poetry-core;
-  inherit (prev.lib) licenses maintainers;
-  inherit (prev.pkgs) fetchFromGitHub rustPlatform autoPatchelfHook bash;
+  inherit (final) buildPythonPackage fetchPypi;
+  inherit (final) poetry-core;
+  inherit (final.lib) licenses maintainers;
+  inherit (final.pkgs) fetchFromGitHub rustPlatform autoPatchelfHook bash;
 in
 rec {
   tesla-py = buildPythonPackage rec {
@@ -17,7 +17,7 @@ rec {
       hash = "sha256-+LdOKxqFjvhkWzhsKkujt9tYQb8yqi3LgBO48JtT7NM=";
     };
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       requests
       requests-oauthlib
       websocket-client
@@ -69,8 +69,8 @@ rec {
       rev = "v${version}";
       hash = "sha256-kz4w3uW3Y45ov7g86MPA3x2WlvBP8EKLVhqeHDKiemk=";
     };
-    nativeBuildInputs = with prev; [ pkgs.eigen ];
-    propagatedBuildInputs = with prev; [ numpy ];
+    nativeBuildInputs = with final; [ pkgs.eigen ];
+    propagatedBuildInputs = with final; [ numpy ];
     postPatch = ''
       sed -i -E 's#(cd FALCONN\-\*)#\1\/#g' ./Makefile
       make python_package
@@ -102,7 +102,7 @@ rec {
       hash = "sha256-ugseXFiDQXLCg9wImpLCPmRJp31/OI8VuxxYD4JJ8mg=";
     };
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       aiohttp
       click
       github3_py
@@ -149,11 +149,11 @@ rec {
       "milli"
     ];
 
-    buildInputs = with prev; [
+    buildInputs = with final; [
       pkgs.libiconv
     ];
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       setuptools-rust
     ] ++ (with rustPlatform; [
       cargoSetupHook
@@ -183,7 +183,7 @@ rec {
     };
 
     doCheck = false;
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       requests
       soundfile
       google-cloud-speech
@@ -213,11 +213,11 @@ rec {
       hash = "sha256-Sb3gomE5LDrxRM1U/QkrSQ2IemJ5Xhab4l4Ty6grNyM=";
     };
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       setuptools
     ];
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       pillow
       python-dateutil
     ];
@@ -249,7 +249,7 @@ rec {
       ${sed} 's#(Pillow)\~\=(9.2.0)#\1>=\2#g' ./setup.py
     '';
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       pillow
       requests
       tkinter
@@ -291,7 +291,7 @@ rec {
       wheelUrl = dist: "${repo}/releases/download/v${version}/kaleido-${version}-py2.py3-none-${dist}.whl";
       repo = "https://github.com/plotly/Kaleido";
       src =
-        let d = dists.${prev.stdenv.hostPlatform.system} or (throw "Unsupported system: ${prev.stdenv.hostPlatform.system}");
+        let d = dists.${final.stdenv.hostPlatform.system} or (throw "Unsupported system: ${final.stdenv.hostPlatform.system}");
         in
         builtins.fetchurl {
           url = wheelUrl d.dist;
@@ -304,7 +304,7 @@ rec {
       propagatedBuildInputs = [ ];
       pythonImportsCheck = [ "kaleido" ];
       postInstall = ''
-        sed -i -E '1s#!/bin/bash#!${bash}/bin/bash#' $out/${prev.python.sitePackages}/kaleido/executable/kaleido
+        sed -i -E '1s#!/bin/bash#!${bash}/bin/bash#' $out/${final.python.sitePackages}/kaleido/executable/kaleido
       '';
       meta = {
         description = "cross-platform library for generating static images for web-based visualization libraries";
@@ -373,17 +373,17 @@ rec {
       hash = "sha256-mUBm3xBOC07oV3CIUVCYBuJGp8/RrTyPh1uNTEv3LpY=";
     };
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       hatchling
     ];
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       opentelemetry-api
       opentelemetry-instrumentation
       opentelemetry-sdk
     ];
 
-    passthru.optional-dependencies = with prev; {
+    passthru.optional-dependencies = with final; {
       otlp = [
         opentelemetry-exporter-otlp
       ];
@@ -409,7 +409,7 @@ rec {
       hash = "sha256-GUiwERbRfjgcQEFcfc1nmcSJS9uA/382vqrVD8aY89A=";
     };
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       setuptools
     ];
 
@@ -433,11 +433,11 @@ rec {
       hash = "sha256-9wLfVoihy299YIUsTQL2uZojqjwzY9puI1EgUN8GBZ8=";
     };
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       setuptools
     ];
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       gaffe
       typing-extensions
     ];
@@ -461,7 +461,7 @@ rec {
       sha256 = "15jjb00z89ck82q50g82xl6gv5r1snb91k0296hj4gpnlk6x1s24";
     };
 
-    propagatedBuildInputs = with prev; [ premailer ];
+    propagatedBuildInputs = with final; [ premailer ];
 
     meta = {
       description = "Yet Another GMAIL client";
@@ -483,12 +483,12 @@ rec {
       hash = "sha256-kZyYfZ8x/mDtYM8+7H3outrgdomCilMDRbf7jFmPkz0=";
     };
 
-    nativeBuildInputs = with prev;[
+    nativeBuildInputs = with final;[
       setuptools
       wheel
     ];
 
-    propagatedBuildInputs = with prev;[
+    propagatedBuildInputs = with final;[
       iterm2
       pyyaml
     ];
@@ -515,11 +515,11 @@ rec {
       hash = "sha256-I1FRmyJjs6We7qeCcyJlcFlUVQfjYUNHKj80KO0E7tk=";
     };
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       parsedatetime
     ];
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       setuptools
       wheel
     ];

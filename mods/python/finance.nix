@@ -1,8 +1,8 @@
 final: prev:
 let
-  inherit (prev) buildPythonPackage fetchPypi;
-  inherit (prev.lib) licenses maintainers;
-  inherit (prev.pkgs) fetchFromGitHub;
+  inherit (final) buildPythonPackage fetchPypi;
+  inherit (final.lib) licenses maintainers;
+  inherit (final.pkgs) fetchFromGitHub;
 in
 rec {
   py-lets-be-quickly-rational = buildPythonPackage rec {
@@ -16,7 +16,7 @@ rec {
       hash = "sha256-NjT3q9DdAsRLnATNYGszn4A7cjBZ1/xflUD7Zgk9wqE=";
     };
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       numba
       numpy
     ];
@@ -42,7 +42,7 @@ rec {
       hash = "sha256-DgeIpBCeECpmbybWcnbA08L+uKBZ54g1SpDlZfLbDtI=";
     };
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       numba
       numpy
     ];
@@ -62,7 +62,7 @@ rec {
     version = "1.0.1";
     format = "setuptools";
 
-    src = prev.pkgs.fetchFromGitHub {
+    src = final.pkgs.fetchFromGitHub {
       owner = "vollib";
       repo = "py_vollib";
       rev = "f5f3a1ecec73c0ae98a5e5ec9f17a8e65a4dc476";
@@ -84,7 +84,7 @@ rec {
       sed -i -E -e 's#\.ix\[#\.loc\[#g' tests/test_utils.py
     '';
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       numba
       pandas
       py-lets-be-quickly-rational
@@ -92,7 +92,7 @@ rec {
       simplejson
     ];
 
-    nativeCheckInputs = with prev; [
+    nativeCheckInputs = with final; [
       pytestCheckHook
     ];
 
@@ -113,7 +113,7 @@ rec {
     version = "0.1.1";
     format = "setuptools";
 
-    src = prev.pkgs.fetchFromGitHub {
+    src = final.pkgs.fetchFromGitHub {
       owner = "marcdemers";
       repo = "py_vollib_vectorized";
       rev = "0c2519ff58e3caf2caee37ca37d878e6e5e1eefd";
@@ -131,7 +131,7 @@ rec {
       cp ./tests/fake_data.csv ./
     '';
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       numba
       numpy
       pandas
@@ -140,7 +140,7 @@ rec {
       scipy
     ];
 
-    nativeCheckInputs = with prev; [
+    nativeCheckInputs = with final; [
       pytestCheckHook
     ];
 
@@ -166,7 +166,7 @@ rec {
       hash = "sha256-Ysh6IMTfr805Q82EVeYU66EdA82k/6IEZbMur6Vx9L0=";
     };
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       bleach
       cloudpickle
       dask
@@ -200,14 +200,14 @@ rec {
       hash = "sha256-SrrJZXg8kVOc71whjcyWvZyiAwwpC0LDVhPjeeCjV7I=";
     };
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       numpy
       pandas
       pandas-datareader
       scipy
     ];
 
-    nativeCheckInputs = with prev; [
+    nativeCheckInputs = with final; [
       pytestCheckHook
       parameterized
       flake8
@@ -235,7 +235,7 @@ rec {
       hash = "sha256-IC1rsZy3fiXfhwCxao+ZDx66kQjMelh7Mg62Is2uZ4k=";
     };
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       ipykernel
       ipython
       jinja2
@@ -268,7 +268,7 @@ rec {
       hash = "sha256-Zeonx3W4Te3uv0sZ8yHxYbf5ImLozeyniG+LLxsHLhY=";
     };
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       empyrical
       ipython
       matplotlib
@@ -281,7 +281,7 @@ rec {
 
     pythonImportsCheck = [ "pyfolio" ];
 
-    nativeCheckInputs = with prev; [
+    nativeCheckInputs = with final; [
       pytestCheckHook
       nose
       parameterized
@@ -322,7 +322,7 @@ rec {
           ./requirements/requirements.txt
       '';
 
-      propagatedBuildInputs = with prev; [
+      propagatedBuildInputs = with final; [
         aiohttp
         deprecation
         msgpack
@@ -335,7 +335,7 @@ rec {
         websockets
       ];
 
-      nativeCheckInputs = with prev; [
+      nativeCheckInputs = with final; [
         pytest-cov
         pytest-mock
         pytestCheckHook
@@ -365,18 +365,18 @@ rec {
     };
 
     preBuild = ''
-      export C_INCLUDE_PATH="./libindicators:${prev.pkgs.numpy}/${prev.python.sitePackages}/numpy/core/include"
+      export C_INCLUDE_PATH="./libindicators:${final.pkgs.numpy}/${final.python.sitePackages}/numpy/core/include"
       cythonize --inplace tulipy/lib/__init__.pyx
     '';
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       cython
       numpy
       setuptools
       wheel
     ];
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       numpy
     ];
 
@@ -406,7 +406,7 @@ rec {
         hash = "sha256-kvam39rRG9ZBNFfjhtX6jivA2H1BeBDS8dGalO7ub+k=";
       };
 
-      propagatedBuildInputs = with prev; [
+      propagatedBuildInputs = with final; [
         alpaca-trade-api
         bokeh
         dateparser
@@ -422,7 +422,7 @@ rec {
 
       pythonImportsCheck = [ "blankly" ];
 
-      nativeCheckInputs = with prev; [
+      nativeCheckInputs = with final; [
         pytestCheckHook
       ];
 
@@ -447,12 +447,12 @@ rec {
       hash = "sha256-23PsIbyB8k1eItNQiwoghKRRFxmyQKkigj2yg9uhLFI=";
     };
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       setuptools
       wheel
     ];
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       fugue
       matplotlib
       numba
@@ -464,7 +464,7 @@ rec {
       tqdm
     ];
 
-    passthru.optional-dependencies = with prev; {
+    passthru.optional-dependencies = with final; {
       dask = [
         fugue
       ];
@@ -516,12 +516,12 @@ rec {
       hash = "sha256-Z1FZhPhVuhTRJEP4k7X/kK5nlvYT1fPfQ6utQGpIw3M=";
     };
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       setuptools
       wheel
     ];
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       multimethod
       numpy
       packaging
@@ -533,7 +533,7 @@ rec {
       wrapt
     ];
 
-    passthru.optional-dependencies = with prev; {
+    passthru.optional-dependencies = with final; {
       all = [
         black
         dask

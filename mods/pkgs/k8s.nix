@@ -1,7 +1,9 @@
 final: prev:
-with prev;
+let
+  inherit (final) callPackage;
+in
 {
-  goldilocks = prev.callPackage
+  goldilocks = callPackage
     ({ lib, buildGo120Module, fetchFromGitHub }:
       buildGo120Module rec {
         pname = "goldilocks";
@@ -26,7 +28,7 @@ with prev;
     )
     { };
 
-  cyclonus = prev.callPackage
+  cyclonus = callPackage
     ({ lib, buildGo120Module, fetchFromGitHub }:
       buildGo120Module rec {
         pname = "cyclonus";
@@ -51,7 +53,7 @@ with prev;
     )
     { };
 
-  rbac-tool = prev.callPackage
+  rbac-tool = callPackage
     ({ lib, buildGo120Module, fetchFromGitHub }:
       buildGo120Module rec {
         pname = "rbac-tool";

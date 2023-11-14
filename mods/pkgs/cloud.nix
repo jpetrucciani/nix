@@ -1,7 +1,9 @@
 final: prev:
-with prev;
+let
+  inherit (final) callPackage;
+in
 {
-  regula = prev.callPackage
+  regula = callPackage
     ({ lib, buildGo120Module, fetchFromGitHub }:
       buildGo120Module rec {
         pname = "regula";
@@ -49,5 +51,4 @@ with prev;
       }
     )
     { };
-
 }

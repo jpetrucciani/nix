@@ -1,7 +1,7 @@
 final: prev:
 let
-  inherit (prev) buildPythonPackage fetchPypi;
-  inherit (prev.lib) licenses maintainers;
+  inherit (final) buildPythonPackage fetchPypi;
+  inherit (final.lib) licenses maintainers;
 in
 {
   docx2txt = buildPythonPackage

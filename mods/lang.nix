@@ -1,23 +1,23 @@
 final: prev:
 let
-  inherit (prev) concatStringsSep fetchFromGitHub stdenv;
-  inherit (prev) cmake libatomic_ops openssl python311;
+  inherit (final) concatStringsSep fetchFromGitHub stdenv;
+  inherit (final) cmake libatomic_ops openssl python311;
 in
 rec {
   nimWithPackages =
     packages:
     let
-      nimPackages = prev.callPackage ./lang/nim-packages.nix { };
+      nimPackages = final.callPackage ./lang/nim-packages.nix { };
       addPath = { src, sub ? "", ... }: ''--add-flags "--path:${src}${sub}"'';
       additionalPaths = map addPath (packages nimPackages);
     in
-    prev.nim.overrideAttrs (old: {
+    final.nim.overrideAttrs (old: {
       wrapperArgs = old.wrapperArgs ++ additionalPaths;
     });
-  nim = prev.nim.overrideAttrs (_: {
+  nim = final.nim.overrideAttrs (_: {
     passthru.withPackages = nimWithPackages;
   });
-  nim2 = prev.nim2.overrideAttrs (_: {
+  nim2 = final.nim2.overrideAttrs (_: {
     passthru.withPackages = nimWithPackages;
   });
 
@@ -28,25 +28,25 @@ rec {
       setVCache = "--set VCACHE /tmp/test";
 
       lnPackage = { src, name, sub ? "", ... }: "ln -s ${src}${sub} $out/.vmod/${name}";
-      lnPackages = concatStringsSep "\n" (map lnPackage (packages (prev.callPackage ./lang/v-packages.nix { })));
+      lnPackages = concatStringsSep "\n" (map lnPackage (packages (final.callPackage ./lang/v-packages.nix { })));
     in
-    prev.stdenv.mkDerivation {
-      inherit (prev.vlang) pname version;
+    final.stdenv.mkDerivation {
+      inherit (final.vlang) pname version;
       dontUnpack = true;
 
       propagatedNativeBuildInputs = [
         openssl
         libatomic_ops
       ];
-      nativeBuildInputs = [ prev.makeWrapper ];
+      nativeBuildInputs = [ final.makeWrapper ];
 
       installPhase = ''
         mkdir -p $out/{.vmod,bin}
         ${lnPackages}
-        makeWrapper ${prev.vlang}/bin/v $out/bin/v ${setVModules} ${setVCache}
+        makeWrapper ${final.vlang}/bin/v $out/bin/v ${setVModules} ${setVCache}
       '';
     };
-  vlang = prev.vlang.overrideAttrs (_: { passthru.withPackages = vWithPackages; });
+  vlang = final.vlang.overrideAttrs (_: { passthru.withPackages = vWithPackages; });
 
   pycdc = stdenv.mkDerivation {
     name = "pycdc";

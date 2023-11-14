@@ -1,6 +1,6 @@
 final: prev:
 let
-  inherit (prev.stdenv) isDarwin;
+  inherit (final.stdenv) isDarwin;
 in
 {
   # fix for getting yank working on darwin

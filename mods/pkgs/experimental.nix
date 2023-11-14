@@ -1,7 +1,9 @@
 final: prev:
-with prev;
+let
+  inherit (final) callPackage;
+in
 {
-  ggml = prev.callPackage
+  ggml = callPackage
     ({ lib, system, darwin, stdenv, clangStdenv, fetchFromGitHub, cmake, git }:
       let
         inherit (stdenv) isAarch64 isDarwin;

@@ -1,6 +1,6 @@
 final: prev:
 let
-  inherit (prev.lib) attrValues concatStrings;
+  inherit (final.lib) attrValues concatStrings;
 in
 {
   # bash bible functions implemented as a set of attribute sets in nix

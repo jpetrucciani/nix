@@ -1,8 +1,8 @@
 final: prev:
 let
-  inherit (prev) buildPythonPackage fetchPypi;
-  inherit (prev.lib) licenses maintainers;
-  inherit (prev.pkgs) fetchFromGitHub;
+  inherit (final) buildPythonPackage fetchPypi;
+  inherit (final.lib) licenses maintainers;
+  inherit (final.pkgs) fetchFromGitHub;
 in
 rec {
   asgi-lifespan = buildPythonPackage rec {
@@ -27,14 +27,14 @@ rec {
       sed '/addopts =/Q' ./setup.cfg.bak >./setup.cfg
     '';
 
-    nativeCheckInputs = with prev; [
+    nativeCheckInputs = with final; [
       pytestCheckHook
       pytest-asyncio
       starlette
       trio
     ];
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       sniffio
     ];
 
@@ -71,12 +71,12 @@ rec {
       "httpx_oauth"
     ];
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       hatch-vcs
       hatchling
     ];
 
-    nativeCheckInputs = with prev; [
+    nativeCheckInputs = with final; [
       pytestCheckHook
       pytest-asyncio
       pytest-mock
@@ -84,7 +84,7 @@ rec {
       respx
     ];
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       httpx
     ];
 
@@ -121,11 +121,11 @@ rec {
       "prometheus_fastapi_instrumentator"
     ];
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       poetry-core
     ];
 
-    nativeCheckInputs = with prev; [
+    nativeCheckInputs = with final; [
       pytestCheckHook
       requests
     ];
@@ -134,7 +134,7 @@ rec {
       "tests/test_instrumentator_multiple_apps.py"
     ] ++ (if prev.stdenv.isDarwin then [ "tests/test_instrumentation.py" ] else [ ]);
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       fastapi
       prometheus-client
     ];
@@ -172,12 +172,12 @@ rec {
       "fastapi_users"
     ];
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       hatch-vcs
       hatchling
     ];
 
-    nativeCheckInputs = with prev; [
+    nativeCheckInputs = with final; [
       pytestCheckHook
       asgi-lifespan
       pytest-asyncio
@@ -185,7 +185,7 @@ rec {
       redis
     ];
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       bcrypt
       cryptography
       fastapi
@@ -227,16 +227,16 @@ rec {
 
     SETUPTOOLS_SCM_PRETEND_VERSION = version;
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       setuptools-scm
     ];
 
-    nativeCheckInputs = with prev; [
+    nativeCheckInputs = with final; [
       pytestCheckHook
       pytest-asyncio
     ];
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       asyncpg
       ormar
       psycopg2
@@ -268,11 +268,11 @@ rec {
       substituteInPlace ./pyproject.toml --replace "poetry.masonry.api" "poetry.core.masonry.api"
     '';
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       poetry-core
     ];
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       pscript
     ];
 
@@ -296,12 +296,12 @@ rec {
       hash = "sha256-IC+bMZ8BAAHL0RFOySoNnrX1ypMW6uX9QaYIjaCBJyc=";
     };
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       fastapi
       python-socketio
     ];
 
-    passthru.optional-dependencies = with prev; {
+    passthru.optional-dependencies = with final; {
       test = [
         pytest
       ];
@@ -333,7 +333,7 @@ rec {
       sed -i -E 's#(setuptools)>=30.3.0,<50#\1#g' ./pyproject.toml
     '';
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       pythonRelaxDepsHook
       poetry-core
       setuptools
@@ -346,7 +346,7 @@ rec {
       "watchfiles"
     ];
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       aiohttp
       aiofiles
       colorama
