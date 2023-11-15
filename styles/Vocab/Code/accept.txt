@@ -68,3 +68,7 @@
 (?i)polaris
 (?i)pocketbase
 (?i)jupyter
+(?i)grafana
+(?i)loki
+(?i)mimir
+(?i)oncall
