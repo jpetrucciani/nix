@@ -1,9 +1,9 @@
 final: prev:
 let
-  grafana_chart = { name, filter_out ? "" }: _chart_scan {
+  grafana_chart = { name, prefix ? "", filter_out ? "" }: _chart_scan {
     inherit name filter_out;
     base_url = "https://grafana.github.io/helm-charts";
-    chart_url = "https://github.com/grafana/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
+    chart_url = "https://github.com/grafana/helm-charts/releases/download/${prefix}${name}-{1}/${name}-{1}.tgz";
   };
   _chart_scan =
     { name
@@ -165,7 +165,7 @@ rec {
     chart_url = "https://github.com/prometheus-community/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
   };
 
-  chart_scan_loki = grafana_chart { name = "loki-simple-scalable"; };
+  chart_scan_loki = grafana_chart { name = "loki"; prefix = "helm-"; };
   chart_scan_mimir = grafana_chart { name = "mimir-distributed"; filter_out = "weekly|rc"; };
   chart_scan_oncall = grafana_chart { name = "oncall"; };
 

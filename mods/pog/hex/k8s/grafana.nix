@@ -1,6 +1,6 @@
 { hex, ... }:
 let
-  _chart_url = { name, version }: "https://github.com/grafana/helm-charts/releases/download/${name}-${version}/${name}-${version}.tgz";
+  _chart_url = { name, version, prefix ? "" }: "https://github.com/grafana/helm-charts/releases/download/${prefix}${name}-${version}/${name}-${version}.tgz";
   _chart = { defaults }:
     { name ? defaults.name
     , chart_name ? defaults.chart_name
@@ -11,23 +11,24 @@ let
     , sha256 ? defaults.sha256
     , forceNamespace ? true
     , extraFlags ? [ hex.k8s.helm.constants.flags.create-namespace ]
+    , prefix ? ""
     }: hex.k8s.helm.build {
       inherit name namespace sha256 values version forceNamespace sets extraFlags;
-      url = _chart_url { inherit version; name = chart_name; };
+      url = _chart_url { inherit prefix version; name = chart_name; };
     };
   loki = rec {
     defaults = {
       name = "loki";
-      chart_name = "loki-simple-scalable";
+      chart_name = "loki";
       namespace = "loki";
-      version = "1.8.11";
-      sha256 = "0h9nzls8g9gbh371y2z41lpc4v2yyd515dccqbrczd2dlziqzsm8";
+      version = "5.36.3";
+      sha256 = "15441r0k0mjn3hc9276pi6ijrs5czpy7p69610v3fi8dz8h1fnvk";
     };
-    chart = _chart { inherit defaults; };
+    chart = _chart { inherit defaults; prefix = "helm-"; };
     version = rec {
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
-      latest = v1-8-11;
-      v1-8-11 = _v "1.8.11" "0v0gd492670d659d8x2m66n1vxpjh48fjapc6zhcl6qncmw0grxx";
+      latest = v5-36-3;
+      v5-36-3 = _v "5.36.3" "15441r0k0mjn3hc9276pi6ijrs5czpy7p69610v3fi8dz8h1fnvk";
     };
   };
   mimir = rec {
