@@ -533,4 +533,35 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  python-logging-loki = buildPythonPackage rec {
+    pname = "python-logging-loki";
+    version = "0.3.1";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "GreyZmeem";
+      repo = "python-logging-loki";
+      rev = "v${version}";
+      hash = "sha256-1qHuv+xzATo11au+QAhD1lHcLJtnVKZDdQDGohHUhiI=";
+    };
+
+    nativeBuildInputs = with final; [
+      setuptools
+      wheel
+    ];
+    propagatedBuildInputs = with final; [
+      requests
+      rfc3339
+    ];
+
+    pythonImportsCheck = [ "logging_loki" ];
+
+    meta = {
+      description = "Python logging handler for Loki";
+      homepage = "https://github.com/GreyZmeem/python-logging-loki";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
