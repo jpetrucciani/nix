@@ -77,6 +77,7 @@ rec {
         _filter = pkgs.lib.concatStringsSep " and " (map (x: ''${key} != "${x}"'') values);
       in
       ''${_.yq} e -i '. | select(${_filter})' '';
+    empty = ''${_.yq} e -i 'del(. | select(tag == "!!map" and length == 0))' '';
   };
 
   patchYAML =

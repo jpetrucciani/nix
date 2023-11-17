@@ -11,8 +11,10 @@ let
     , sha256 ? defaults.sha256
     , forceNamespace ? true
     , extraFlags ? [ hex.k8s.helm.constants.flags.create-namespace ]
+    , preRender ? ""
+    , postRender ? ""
     }: hex.k8s.helm.build {
-      inherit name namespace sha256 values version forceNamespace sets extraFlags;
+      inherit name namespace sha256 values version forceNamespace sets extraFlags preRender postRender;
       url = _chart_url { inherit prefix version; name = chart_name; };
     };
   loki = rec {
