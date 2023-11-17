@@ -1,7 +1,7 @@
 { hex, ... }:
 let
   _chart_url = { name, version, prefix ? "" }: "https://github.com/grafana/helm-charts/releases/download/${prefix}${name}-${version}/${name}-${version}.tgz";
-  _chart = { defaults }:
+  _chart = { defaults, prefix ? "" }:
     { name ? defaults.name
     , chart_name ? defaults.chart_name
     , namespace ? defaults.namespace
@@ -11,7 +11,6 @@ let
     , sha256 ? defaults.sha256
     , forceNamespace ? true
     , extraFlags ? [ hex.k8s.helm.constants.flags.create-namespace ]
-    , prefix ? ""
     }: hex.k8s.helm.build {
       inherit name namespace sha256 values version forceNamespace sets extraFlags;
       url = _chart_url { inherit prefix version; name = chart_name; };
