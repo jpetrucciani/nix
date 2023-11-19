@@ -500,13 +500,13 @@ final: prev: with prev; rec {
 
   gradio = buildPythonPackage rec {
     pname = "gradio";
-    version = "3.37.0";
+    version = "4.4.1";
     disabled = pythonOlder "3.7";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      sha256 = "sha256-GDRA1sqLigjzjsZgwkmRc3cZhtdlYtr7I8BQhoDnw9A=";
+      sha256 = "sha256-jMMYGKjT5eVd1rXv0dSjvgYlot+fnHblO6WPryxzq3Q=";
     };
 
     nativeBuildInputs = [
