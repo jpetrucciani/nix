@@ -74,12 +74,12 @@ in
 
   diffusers = buildPythonPackage rec {
     pname = "diffusers";
-    version = "0.21.4";
+    version = "0.23.1";
     pyproject = true;
 
     src = prev.fetchPypi {
       inherit pname version;
-      hash = "sha256-P6w4gzF5Qn8WfGdd2nHue09eYnIARXqNUn5Aza+XJog=";
+      hash = "sha256-ospWvOU8f4/Cnn46rgrx2/XXdtmvx8k3+wHJXBeJ2gM=";
     };
 
     nativeBuildInputs = with prev; [
