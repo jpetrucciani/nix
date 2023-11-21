@@ -20,6 +20,7 @@ let
     jupyterhub = import ./k8s/jupyterhub.nix params;
     linkerd = import ./k8s/linkerd.nix params;
     nginx-ingress = import ./k8s/nginx-ingress.nix params;
+    otf = import ./k8s/otf.nix params;
     postgres = import ./k8s/postgres.nix params;
     prometheus = import ./k8s/prometheus.nix params;
     rancher = import ./k8s/rancher.nix params;

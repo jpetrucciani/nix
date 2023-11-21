@@ -175,6 +175,12 @@ rec {
     chart_url = "https://github.com/AzBuilder/terrakube-helm-chart/releases/download/${name}-{1}/${name}-{1}.tgz";
   };
 
+  chart_scan_otf = _chart_scan rec {
+    name = "otf";
+    base_url = "https://leg100.github.io/otf-charts";
+    chart_url = "https://github.com/leg100/otf-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
+  };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
@@ -190,6 +196,7 @@ rec {
     chart_scan_mimir
     chart_scan_nfs
     chart_scan_oncall
+    chart_scan_otf
     chart_scan_postgres-operator
     chart_scan_postgres-operator-ui
     chart_scan_robusta
