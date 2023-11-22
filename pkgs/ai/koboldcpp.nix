@@ -9,7 +9,6 @@
 , koboldcpp
 , clblas
 , clblast
-, mkl
 , ocl-icd
 , openblas
 , opencl-headers
@@ -25,7 +24,6 @@ let
     else [
       clblas
       clblast
-      mkl
       ocl-icd
       opencl-headers
     ];
