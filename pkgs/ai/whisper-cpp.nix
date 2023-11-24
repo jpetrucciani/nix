@@ -7,7 +7,7 @@ let
     if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
     else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
     else [ ];
-  version = "1.5.0";
+  version = "1.5.1";
   ifCuda = value: if cuda then value else null;
   cudatoolkit_joined = symlinkJoin {
     name = "${cudatoolkit.name}-merged";
@@ -25,19 +25,21 @@ clangStdenv.mkDerivation rec {
     owner = "ggerganov";
     repo = name;
     rev = "refs/tags/v${version}";
-    hash = "sha256-V6mK4bE8wbNRV+v/BilXWToDQPg34dyOcV0kqqcymc8=";
+    hash = "sha256-TXB5cQ32HA96i7ciJheuGrr5yxj/tBB8/KcaOTGO/HQ=";
   };
 
   # flags
   WHISPER_CUBLAS = ifCuda "1";
 
   postBuild = ''
+    make server
     make stream
   '';
   installPhase = ''
     mkdir -p $out/bin
     mv ./main $out/bin/whisper
     mv ./stream $out/bin/whisper-stream
+    mv ./server $out/bin/whisper-server
   '';
 
   buildInputs = [
