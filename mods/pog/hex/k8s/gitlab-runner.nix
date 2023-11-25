@@ -4,12 +4,13 @@ let
     defaults = {
       name = "gitlab-runner";
       namespace = "gitlab";
-      version = "0.58.2";
-      sha256 = "0h9nzls8g9gbh371y2z41lpc4v2yyd515dccqbrczd2dlziqzsm8";
+      version = "0.59.2";
+      sha256 = "0qj4kbkdk5g4ck9kh672lxs436a83fwc34hccq3mv00c16m23fx4";
     };
     version = rec {
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
-      latest = v0-58-2;
+      latest = v0-59-2;
+      v0-59-2 = _v "0.59.2" "0qj4kbkdk5g4ck9kh672lxs436a83fwc34hccq3mv00c16m23fx4";
       v0-58-2 = _v "0.58.2" "0h9nzls8g9gbh371y2z41lpc4v2yyd515dccqbrczd2dlziqzsm8";
       v0-57-2 = _v "0.57.2" "0wy2l0cpqj9nmzfk6gy5yw55dgkc03lq5mwzkw8g0f1yz43p4f3g";
       v0-56-1 = _v "0.56.1" "1pvyckvx9345z5lawgnaaa4w6dj6j65f2l1m6dycvb22sbkghcqc";
