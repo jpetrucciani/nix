@@ -34,16 +34,48 @@ rec {
     };
   };
 
+  langchain-core = buildPythonPackage rec {
+    pname = "langchain-core";
+    version = "0.0.6";
+    pyproject = true;
+
+    src = fetchPypi {
+      pname = "langchain_core";
+      inherit version;
+      hash = "sha256-z/0QMXZNg4rSovP2RHe3EJI92tWOuf4xMP+Us2aejdg=";
+    };
+
+    nativeBuildInputs = with prev; [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = with prev; [
+      jsonpatch
+      langsmith
+      pydantic
+      tenacity
+    ];
+
+    pythonImportsCheck = [ "langchain_core" ];
+
+    meta = {
+      description = "Building applications with LLMs through composability";
+      homepage = "https://pypi.org/project/langchain-core/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.0.339";
+    version = "0.0.341";
     format = "pyproject";
 
     src = fetchFromGitHub {
       owner = "langchain-ai";
       repo = pname;
       rev = "refs/tags/v${version}";
-      hash = "sha256-PzTYaWlBsgkBjvmNAo76P874QaHRLDnUMHBJ32lDe3w=";
+      hash = "sha256-sNMXtUR2JRMXZFq3wOQFI+lEj2RX1wXTnV5mspFsCqQ=";
     };
     sourceRoot = "source/libs/langchain";
 
@@ -59,6 +91,7 @@ rec {
       google-api-core
       jinja2
       jsonpatch
+      langchain-core
       langsmith
       numexpr
       numpy
