@@ -83,7 +83,6 @@ in
         };
       };
     };
-    mongodb.enable = true;
     caddy =
       let
         reverse_proxy = location: {
@@ -108,7 +107,7 @@ in
         '';
         virtualHosts = {
           "http://zephyr.llm.cobi.dev:80" = reverse_proxy "${m1max}:8100";
-          "http://dolphin.llm.cobi.dev:80" = reverse_proxy "${m1max}:8101";
+          "http://starling.llm.cobi.dev:80" = reverse_proxy "${m1max}:8101";
           "http://airoboros.llm.cobi.dev:80" = reverse_proxy "${m1max}:8102";
           "http://hermes.llm.cobi.dev:80" = reverse_proxy ''
             ${m1max}:6910 ${m1max}:6911 ${m1max}:6912 ${m1max}:6913
