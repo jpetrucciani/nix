@@ -110,7 +110,7 @@ in
           "http://starling.llm.cobi.dev:80" = reverse_proxy "${m1max}:8101";
           "http://airoboros.llm.cobi.dev:80" = reverse_proxy "${m1max}:8102";
           "http://hermes.llm.cobi.dev:80" = reverse_proxy ''
-            ${m1max}:6910 ${m1max}:6911 ${m1max}:6912 ${m1max}:6913
+            ${m1max}:6910 ${m1max}:6911
             lb_policy round_robin
           '';
           "http://llava.llm.cobi.dev:80" = reverse_proxy "${m1max}:8080";
