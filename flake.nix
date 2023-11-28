@@ -23,10 +23,6 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-    nix = {
-      url = "nix/2.19.1";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix2container = {
       url = "github:nlewo/nix2container";
@@ -76,7 +72,7 @@
       packages = forAllSystems
         (system: import self.inputs.nixpkgs {
           inherit system;
-          overlays = [ (final: prev: { inherit machines; flake = self; nixpkgsRev = self.inputs.nixpkgs.rev; }) self.inputs.nix.overlays.default ] ++ import ./overlays.nix;
+          overlays = [ (final: prev: { inherit machines; flake = self; nixpkgsRev = self.inputs.nixpkgs.rev; }) ] ++ import ./overlays.nix;
           config = {
             allowUnfree = true;
             permittedInsecurePackages = [
