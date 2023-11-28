@@ -24,7 +24,7 @@
       };
     };
     nix = {
-      url = "nix/2.18.1";
+      url = "nix/2.19.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
