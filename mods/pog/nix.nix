@@ -176,7 +176,7 @@ rec {
   hexrender =
     let
       _ = {
-        prettier = "${final.nodePackages.prettier}/bin/prettier --write --config ${../../.prettierrc.js}";
+        prettier = "${final.nodePackages.prettier}/bin/prettier --write --config ${../../prettierrc.js}";
         mktemp = "${final.coreutils}/bin/mktemp --suffix=.yaml";
         realpath = "${final.coreutils}/bin/realpath";
         nix = "${final.nix}/bin/nix";
@@ -280,7 +280,7 @@ rec {
           hr = lib.getExe hexrender;
           delta = lib.getExe' final.delta "delta";
           mktemp = "${final.coreutils}/bin/mktemp";
-          prettier = "${final.nodePackages.prettier}/bin/prettier --write --config ${../../.prettierrc.js}";
+          prettier = "${final.nodePackages.prettier}/bin/prettier --write --config ${../../prettierrc.js}";
         };
       in
       helpers: with helpers; ''

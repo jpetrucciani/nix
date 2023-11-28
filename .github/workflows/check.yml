@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.1.1
       - uses: cachix/install-nix-action@v23
-      - run: nix run .#nodePackages.prettier -- --check .
+      - run: nix run .#nodePackages.prettier -- --config ./prettierrc.js --check .
   nixpkgs-fmt:
     runs-on: ubuntu-22.04
     steps:

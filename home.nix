@@ -481,7 +481,7 @@ in
     };
     prettierrc = {
       target = ".prettierrc.js";
-      text = builtins.readFile ./.prettierrc.js;
+      text = builtins.readFile ./prettierrc.js;
     };
     ${attrIf isLinux "gpgconf"} = {
       target = ".gnupg/gpg.conf";
