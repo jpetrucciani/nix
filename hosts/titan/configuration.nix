@@ -83,6 +83,7 @@ in
         };
       };
     };
+    ferretdb.enable = true;
     caddy =
       let
         reverse_proxy = location: {
