@@ -1,7 +1,7 @@
 { lib
 , darwin
 , stdenv
-, clangStdenv
+, llvmPackages_14
 , fetchFromGitHub
 , bash
 , python311
@@ -39,7 +39,7 @@ let
     sentencepiece
   ]);
 in
-clangStdenv.mkDerivation rec {
+llvmPackages_14.stdenv.mkDerivation rec {
   inherit version;
   name = repo;
   src = fetchFromGitHub {
