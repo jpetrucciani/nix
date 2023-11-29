@@ -12,14 +12,16 @@
 , jq
 , nix
 , nix-prefetch-github
+, ninja
 , writeScript
 , llama-cpp
 , cudatoolkit
 , clblas
 , clblast
 , ocl-icd
-, openblas
+, blas
 , opencl-headers
+, openmpi
 , pkg-config
 , cuda ? false
 , opencl ? false
@@ -36,6 +38,7 @@ let
       clblast
       ocl-icd
       opencl-headers
+      blas
     ];
 
   cudatoolkit_joined = symlinkJoin {
@@ -88,8 +91,8 @@ clangStdenv.mkDerivation rec {
     mv ./bin/server $out/bin/llama-server
     mv ./bin/llava-cli $out/bin/llava
   '';
-  buildInputs = [ openblas pkg-config ] ++ osSpecific;
-  nativeBuildInputs = [ cmake ] ++ (optionals cuda [ cudatoolkit_joined ]);
+  buildInputs = [ openmpi ] ++ osSpecific;
+  nativeBuildInputs = [ cmake ninja pkg-config ] ++ (optionals cuda [ cudatoolkit_joined ]);
 
   passthru.updateScript =
     let

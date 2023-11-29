@@ -7,6 +7,7 @@
 , python311
 , cudatoolkit
 , koboldcpp
+, blas
 , clblas
 , clblast
 , ocl-icd
@@ -26,6 +27,8 @@ let
       clblast
       ocl-icd
       opencl-headers
+      blas
+      openblas
     ];
   version = "1.50.1";
   owner = "LostRuins";
@@ -64,7 +67,7 @@ clangStdenv.mkDerivation rec {
     EOF
     chmod +x $out/bin/koboldcpp
   '';
-  buildInputs = [ openblas ] ++ osSpecific;
+  buildInputs = [ blas ] ++ osSpecific;
   nativeBuildInputs = optionals cuda [ cudatoolkit ];
   passthru.cuda = koboldcpp.override { cuda = true; };
 
