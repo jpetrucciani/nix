@@ -27,8 +27,6 @@ let
       clblast
       ocl-icd
       opencl-headers
-      blas
-      openblas
     ];
   version = "1.50.1";
   owner = "LostRuins";
@@ -67,7 +65,7 @@ llvmPackages_14.stdenv.mkDerivation rec {
     EOF
     chmod +x $out/bin/koboldcpp
   '';
-  buildInputs = [ blas ] ++ osSpecific;
+  buildInputs = [ blas openblas ] ++ osSpecific;
   nativeBuildInputs = optionals cuda [ cudatoolkit ];
   passthru.cuda = koboldcpp.override { cuda = true; };
 
