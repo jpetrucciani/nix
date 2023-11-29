@@ -1,12 +1,13 @@
 { lib
 , darwin
 , stdenv
-, clangStdenv
+, llvmPackages_14
 , fetchFromGitHub
 , bash
 , python311
 , cudatoolkit
 , koboldcpp
+, blas
 , clblas
 , clblast
 , ocl-icd
@@ -36,7 +37,7 @@ let
     sentencepiece
   ]);
 in
-clangStdenv.mkDerivation rec {
+llvmPackages_14.stdenv.mkDerivation rec {
   inherit version;
   name = repo;
   src = fetchFromGitHub {
@@ -64,7 +65,7 @@ clangStdenv.mkDerivation rec {
     EOF
     chmod +x $out/bin/koboldcpp
   '';
-  buildInputs = [ openblas ] ++ osSpecific;
+  buildInputs = [ blas openblas ] ++ osSpecific;
   nativeBuildInputs = optionals cuda [ cudatoolkit ];
   passthru.cuda = koboldcpp.override { cuda = true; };
 
