@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4.1.1
-      - uses: cachix/install-nix-action@v23
+      - uses: cachix/install-nix-action@v24
       - uses: cachix/cachix-action@master
         with:
           skipAddingSubstituter: ${{ matrix.os == 'm1' && 'true' || 'false' }}
