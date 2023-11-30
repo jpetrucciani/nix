@@ -26,7 +26,6 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix2container = {
       url = "github:nlewo/nix2container";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-hardware.flake = true;
     nixos-generators = {
