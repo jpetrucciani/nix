@@ -178,7 +178,7 @@ rec {
 
   wasabi = pog {
     name = "wasabi";
-    description = "a wrapper for awscli to interact with wasabi";
+    description = "a wrapper for awscli s3 subcommand to interact with wasabi";
     flags = [
       {
         name = "profile";
@@ -190,10 +190,11 @@ rec {
         name = "region";
         envVar = "WASABI_REGION";
         default = "s3.wasabisys.com";
+        description = "the s3 api endpoint to use";
       }
     ];
     script = ''
-      ${awscli2}/bin/aws --endpoint-url="https://$region" --profile "$profile" "$@"
+      ${awscli2}/bin/aws --endpoint-url="https://$region" --profile "$profile" s3 "$@"
     '';
   };
 
