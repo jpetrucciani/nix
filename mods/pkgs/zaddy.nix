@@ -6,7 +6,7 @@ rec {
       builtins = {
         caddy-cgi = { name = "github.com/aksdb/caddy-cgi"; version = "7cf2523251ffeef310868d8ed03e17a929236f2e"; };
         caddy-exec = { name = "github.com/abiosoft/caddy-exec"; version = "06d4f7218eb886ab9664e63c3f56010992e93fb9"; };
-        caddy-security = { name = "github.com/greenpau/caddy-security"; version = "v1.1.20"; };
+        caddy-security = { name = "github.com/greenpau/caddy-security"; version = "v1.1.21"; };
         caddy-webhook = { name = "github.com/WingLim/caddy-webhook"; version = "v1.0.8"; };
         certmagic-storage-dynamodb = { name = "github.com/silinternational/certmagic-storage-dynamodb"; version = "3.0.0"; };
 
@@ -33,11 +33,11 @@ rec {
         caddy-troll = { name = "github.com/jpetrucciani/caddy-troll"; version = "v0.0.1"; };
         ## other
         caddy-bandwidth = { name = "github.com/mediafoundation/caddy-bandwidth"; version = "v1.0.10"; };
-        caddy-git = { name = "github.com/greenpau/caddy-git"; version = "v1.0.7"; };
+        caddy-git = { name = "github.com/greenpau/caddy-git"; version = "v1.0.9"; };
         caddy-json-parse = { name = "github.com/abiosoft/caddy-json-parse"; version = "c57039f26567f4b4120e35b4dc1a9bbd20a4f37f"; };
         caddy-ratelimit = { name = "github.com/mholt/caddy-ratelimit"; version = "2dc0d586f0b87e983757c403bc0929ddeb84a537"; };
-        caddy-trace = { name = "github.com/greenpau/caddy-trace"; version = "v1.1.10"; };
-        geolocation = { name = "github.com/jpetrucciani/caddy-maxmind-geolocation"; version = "65f8416054495107983d1c5fe128658f35b5e60a"; };
+        caddy-trace = { name = "github.com/greenpau/caddy-trace"; version = "v1.1.13"; };
+        geolocation = { name = "github.com/jpetrucciani/caddy-maxmind-geolocation"; version = "456a3bae9dbd0fe882eb806e8fb0d21bf5e11610"; };
         replace_response = { name = "github.com/caddyserver/replace-response"; version = "d32dc3ffff0c07a3c935ef33092803f90c55ba19"; };
         user_agent_parse = { name = "github.com/neodyme-labs/user_agent_parse"; version = "450380e8b6d048d71937014932ba6d4d56dd611d"; };
       };
@@ -88,7 +88,7 @@ rec {
       caddy-hax
       caddy-troll
     ];
-    vendorHash = "sha256-A9RLaXe+Na/dv7dRTiPf5Hl+8wENeAM+fTlhEw6i47s=";
+    vendorHash = "sha256-tYXF6gJeYIjJeRseVPe3peNxR5A6FxENaaabsOI9dDE=";
   };
 
   # caddy with s3-browser plugin
@@ -98,6 +98,6 @@ rec {
       s3-proxy
       s3-browser
     ];
-    vendorHash = "sha256-I0dFXswsgImECJ3Hgj8WuZqqN4eCXBo8JPNo4o+HeuQ=";
+    vendorHash = "sha256-vH1crCKp79WdY7Z9PYTx6gWX+07HSTpvKQqsTCFmxXs=";
   };
 }
