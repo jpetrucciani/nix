@@ -6,13 +6,14 @@ let
       defaults = {
         name = "postgres-operator";
         namespace = "default";
-        version = "1.10.0";
-        sha256 = "1hjv747i0awgcgq095gjilk5fmy8ibcc86p0mlz8imygfd6g792z";
+        version = "1.10.1";
+        sha256 = "04wpirx90j7jvnkv1pr99pyhn3jhp3mcp8529qhkfmpjjl76w0kk";
       };
       version = rec {
         _v = v: s: args: chart (args // { version = v; sha256 = s; });
-        latest = v1-10-0;
-        v1-10-0 = _v defaults.version defaults.sha256;
+        latest = v1-10-1;
+        v1-10-1 = _v defaults.version defaults.sha256;
+        v1-10-0 = _v "1.10.0" "1hjv747i0awgcgq095gjilk5fmy8ibcc86p0mlz8imygfd6g792z";
       };
       chart_url = version: "${repo_url}/${defaults.name}-${version}.tgz";
       chart =
