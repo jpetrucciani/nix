@@ -26,8 +26,9 @@ let
         , forceNamespace ? true
         , extraFlags ? [ hex.k8s.helm.constants.flags.create-namespace ]
         , sortYaml ? false
+        , postRender ? ""
         }: hex.k8s.helm.build {
-          inherit name namespace values sets version sha256 extraFlags forceNamespace sortYaml;
+          inherit name namespace values sets version sha256 extraFlags forceNamespace sortYaml postRender;
           url = chart_url version;
         };
     };
@@ -55,8 +56,9 @@ let
         , forceNamespace ? true
         , extraFlags ? [ hex.k8s.helm.constants.flags.create-namespace ]
         , sortYaml ? false
+        , postRender ? ""
         }: hex.k8s.helm.build {
-          inherit name namespace values sets version sha256 extraFlags forceNamespace sortYaml;
+          inherit name namespace values sets version sha256 extraFlags forceNamespace sortYaml postRender;
           url = chart_url version;
         };
     };
