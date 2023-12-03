@@ -35,13 +35,14 @@ let
       defaults = {
         name = "postgres-operator-ui";
         namespace = "default";
-        version = "1.10.0";
-        sha256 = "18x16v75rzl7d2rrl455ilr3n8sz83n0n5vwkpl9sz7jnva66g4f";
+        version = "1.10.1";
+        sha256 = "04sfk6habw9w1laci5rynzhxqvgpkxmadcxzabk98v03dds9gjl8";
       };
       version = rec {
         _v = v: s: args: chart (args // { version = v; sha256 = s; });
-        latest = v1-10-0;
-        v1-10-0 = _v defaults.version defaults.sha256;
+        latest = v1-10-1;
+        v1-10-1 = _v defaults.version defaults.sha256;
+        v1-10-0 = _v "1.10.0" "18x16v75rzl7d2rrl455ilr3n8sz83n0n5vwkpl9sz7jnva66g4f";
       };
       chart_url = version: "${repo_url}-ui/${defaults.name}-${version}.tgz";
       chart =
