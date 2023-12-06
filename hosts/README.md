@@ -46,6 +46,10 @@ This is an experimental nixos install inside a VM.
 
 This is my personal M2 Max Macbook, running MacOS and using nix-darwin and home-manager to manage things.
 
+### [styx/](./styx)
+
+This is a M2 Ultra Mac Studio server
+
 ### [titan/](./titan)
 
 This is a bare-metal nixos server with a modern dedicated GPU!

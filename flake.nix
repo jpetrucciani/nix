@@ -61,6 +61,7 @@
           "charon"
           "m1max"
           "pluto"
+          "styx"
         ];
       };
       nix2containerPkgs = self.inputs.nix2container.packages.x86_64-linux;
