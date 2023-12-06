@@ -1,8 +1,9 @@
 let
   inherit (constants) pubkeys;
   constants = import ../hosts/constants.nix;
+  default = with pubkeys; [ milkyway terra ];
 in
 {
-  "vaultwarden.age".publicKeys = with pubkeys; [ pluto terra ];
-  "miniflux.age".publicKeys = with pubkeys; [ pluto terra ];
+  "vaultwarden.age".publicKeys = default;
+  "miniflux.age".publicKeys = default;
 }

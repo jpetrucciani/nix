@@ -13,3 +13,4 @@
 (?i)pluto
 (?i)terra
 (?i)valheim
+(?i)styx

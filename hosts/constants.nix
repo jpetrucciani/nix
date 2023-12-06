@@ -37,6 +37,7 @@ let
     luna = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINOoY9vE2hPcBtoI/sE9pmk4ocO+QWZv2lvtxcPs9oha jacobi@luna";
     milkyway = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII2VPpmvMVt+5LHJfgmsTSdWy5SIM2gBvgpyuT3iMt1a jacobi@milkyway";
     terra = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFWWDYzXHtB3hd/5sWeg+kz+COGxCEWalspwCNnZNOZz jacobi@terra";
+    styx = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3gO1YSpzqJ5aheyC/gx53lK9Wu21dA88+VrvPqMoRD jacobi@styx";
 
     # android
     s21 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICLuqazOtTUHVkywIMHWXizCLmSaEl2C8Oyb9t5LmslD jacobi@s21";
@@ -69,6 +70,7 @@ let
       phobos
       luna
       milkyway
+      styx
       terra
       titan
     ];
