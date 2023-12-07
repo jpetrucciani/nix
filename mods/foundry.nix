@@ -142,7 +142,14 @@ let
         let
           inherit (pkgs.nix2container.nix2container) buildLayer;
           allLayers = with _layers; [ baseLayer [ mkUser drvs.mkFolders ] ] ++ (optionals sysLayer [ coreLayer ]) ++ (optionals enableNix [ nixLayer ]) ++ layers;
-          mkUser = drvs.mkUser { inherit user group uid gid extraMkUser substituters trusted-public-keys; };
+          mkUser = drvs.mkUser {
+            inherit user group uid gid substituters trusted-public-keys;
+            extraMkUser = (if enableNix then ''
+              mkdir -p $out/home/${user}/.nix-defexpr/channels
+              ln -s ${pkgs.path} $out/home/${user}/.nix-defexpr/channels/nixpkgs
+              ${extraMkUser}
+            '' else extraMkUser);
+          };
         in
         hostPkgs.nix2container.nix2container.buildImage {
           name = "${registry}/${name}";
@@ -153,6 +160,8 @@ let
               "USER=${user}"
               "HOME=/home/${user}"
               "NIX_PATH=nixpkgs=${pkgs.path}"
+              "PATH=/home/user/.local/state/nix/profiles/profile/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+              "FOUNDRY=3"
             ]);
             Labels = {
               "org.opencontainers.image.authors" = author;
