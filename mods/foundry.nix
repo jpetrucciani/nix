@@ -144,11 +144,12 @@ let
           allLayers = with _layers; [ baseLayer [ mkUser drvs.mkFolders ] ] ++ (optionals sysLayer [ coreLayer ]) ++ (optionals enableNix [ nixLayer ]) ++ layers;
           mkUser = drvs.mkUser {
             inherit user group uid gid substituters trusted-public-keys;
-            extraMkUser = (if enableNix then ''
-              mkdir -p $out/home/${user}/.nix-defexpr/channels
-              ln -s ${pkgs.path} $out/home/${user}/.nix-defexpr/channels/nixpkgs
-              ${extraMkUser}
-            '' else extraMkUser);
+            extraMkUser =
+              if enableNix then ''
+                mkdir -p $out/home/${user}/.nix-defexpr/channels
+                ln -s ${pkgs.path} $out/home/${user}/.nix-defexpr/channels/nixpkgs
+                ${extraMkUser}
+              '' else extraMkUser;
           };
         in
         hostPkgs.nix2container.nix2container.buildImage {
