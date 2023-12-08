@@ -148,7 +148,7 @@ rec {
         '';
       };
       prettier_config = pkgs.writeTextFile {
-        name = "prettierrc.js";
+        name = "prettier.config.js";
         text = ''
           const config = {
             printWidth: 100,

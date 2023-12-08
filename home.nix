@@ -479,9 +479,9 @@ in
         .output stdout
       '';
     };
-    prettierrc = {
-      target = ".prettierrc.js";
-      text = builtins.readFile ./prettierrc.js;
+    prettier_config = {
+      target = "prettier.config.js";
+      text = builtins.readFile ./prettier.config.js;
     };
     ${attrIf isLinux "gpgconf"} = {
       target = ".gnupg/gpg.conf";
@@ -540,7 +540,7 @@ in
             },
             "python.formatting.provider": "black",
             "ruff.path": ["${nix-bin}/ruff"],
-            "prettier.configPath": "${homeDirectory}/.prettierrc.js",
+            "prettier.configPath": "${homeDirectory}/prettier.config.js",
             "nix.enableLanguageServer": true,
             "nix.serverPath": "${nix-bin}/nil",
             "nix.serverSettings": {
