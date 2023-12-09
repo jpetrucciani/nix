@@ -564,4 +564,30 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  uhttp = buildPythonPackage {
+    pname = "uhttp";
+    version = "unstable-2023-12-09";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "0x67757300";
+      repo = "uHTTP";
+      rev = "312fc01049c6795a3684516f7e9418c2f11e7157";
+      hash = "sha256-V8WiZVV7oGVj6bi1lPZ2fixZuqnGIdF8EZ3QZBDFZMk=";
+    };
+
+    nativeBuildInputs = with final; [
+      poetry-core
+    ];
+
+    pythonImportsCheck = [ "uhttp" ];
+
+    meta = {
+      description = "Pythonic web development";
+      homepage = "https://github.com/0x67757300/uHTTP";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
