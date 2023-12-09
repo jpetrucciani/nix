@@ -373,6 +373,35 @@ rec {
       };
     };
 
+  rwkv = buildPythonPackage rec {
+    pname = "rwkv";
+    version = "0.8.22";
+    pyproject = true;
+
+    src = final.fetchPypi {
+      inherit pname version;
+      hash = "sha256-7kSOmP4r2ZLh1l5JB19Z/vf4opskX2u5ahS9ugerR1o=";
+    };
+
+    nativeBuildInputs = with final; [
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = with final; [
+      tokenizers
+    ];
+
+    pythonImportsCheck = [ "rwkv" ];
+
+    meta = {
+      description = "The RWKV Language Model";
+      homepage = "https://pypi.org/project/rwkv/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
   whisper-cpp-python =
     let
       name = "whisper-cpp-python";
