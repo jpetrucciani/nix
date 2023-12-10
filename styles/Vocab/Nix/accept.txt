@@ -10,3 +10,6 @@ declaratively
 (?i)devenv
 (?i)darwin
 (?i)x86_64
+(?i)ktools
+(?i)dtools
+(?i)kubectl
