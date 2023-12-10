@@ -616,4 +616,51 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  mlx = buildPythonPackage rec {
+    pname = "mlx";
+    version = "0.0.4";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "ml-explore";
+      repo = "mlx";
+      rev = "v${version}";
+      hash = "sha256-VAbHsNlo/HKIzO+UHjL5W2V4ZhVIxGecur8E5zZhnrM=";
+    };
+
+    postPatch = ''
+      sed -i -E 's/zsh/bash/g' ./CMakeLists.txt
+      sed -i -E 's#\/usr\/bin\/xcrun#${final.pkgs.xcbuild}/bin/xcrun#g' ./CMakeLists.txt
+    '';
+
+    nativeBuildInputs = with final; [
+      pybind11
+      setuptools
+      wheel
+    ] ++
+    (with pkgs; [
+      procps
+      xcbuild
+      cmake
+    ])
+    ++ (with pkgs.darwin.apple_sdk_11_0.frameworks; [
+      Accelerate
+      CoreFoundation
+      CoreServices
+      MetalKit
+      MetalPerformanceShaders
+      MetalPerformanceShadersGraph
+      Quartz
+    ]);
+
+    pythonImportsCheck = [ "mlx" ];
+
+    meta = {
+      description = "MLX: An array framework for Apple silicon";
+      homepage = "https://github.com/ml-explore/mlx";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
