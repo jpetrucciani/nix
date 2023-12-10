@@ -133,6 +133,7 @@ in
           "readline"
           "sshfs"
           "qemu"
+          "unixodbc"
           "modularml/packages/modular"
         ];
         onActivation = {
