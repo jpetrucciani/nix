@@ -1,8 +1,8 @@
 { pkgs ? import
     (fetchTarball {
-      name = "jpetrucciani-2023-05-02";
-      url = "https://github.com/jpetrucciani/nix/archive/a20807028f42fdc062d42227bd2e7c1c09ea37e1.tar.gz";
-      sha256 = "0asbkxf2gzrzmfj6296kkg2lc2bzzsn79nk0k4in84yai0nfc9h4";
+      name = "jpetrucciani-2023-12-10";
+      url = "https://github.com/jpetrucciani/nix/archive/32dce848190345e4362d134cdb27577118168791.tar.gz";
+      sha256 = "104vdvbykws9fsdzkiha9n4awysv6qd8whaf26ikslw0vdfq676r";
     })
     { }
 }:
@@ -16,8 +16,6 @@ let
       curl
       delta
       direnv
-      dyff
-      fif
       figlet
       git
       gron
@@ -27,7 +25,6 @@ let
       nodePackages.prettier
       scc
       yq-go
-      hax.comma
       (writeShellScriptBin "hms" ''
         nix-env -i -f ~/cfg.nix
       '')
@@ -35,12 +32,11 @@ let
     k8s = [
       kubectl
       kubectx
-      gke-gcloud-auth-plugin
     ];
     nix = [
+      nix-direnv
       nixpkgs-fmt
       nixup
-      nix-direnv
     ];
     python = [
       ruff
@@ -53,8 +49,11 @@ let
   };
 
   paths = pkgs.lib.flatten [ (builtins.attrValues tools) ];
+  env = pkgs.buildEnv {
+    inherit name paths;
+    buildInputs = paths;
+  };
 in
-pkgs.buildEnv {
-  inherit name paths;
-  buildInputs = paths;
-}
+env.overrideAttrs (_: {
+  NIXUP = "0.0.5";
+})
