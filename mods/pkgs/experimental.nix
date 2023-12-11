@@ -60,14 +60,7 @@ in
      , clangStdenv
      , fetchFromGitHub
      , cmake
-     , common-updater-scripts
-     , coreutils
-     , curl
-     , jq
-     , nix
-     , nix-prefetch-github
      , ninja
-     , writeScript
      , llama-cpp-moe
      , cudatoolkit
      , clblas
@@ -75,7 +68,6 @@ in
      , ocl-icd
      , blas
      , opencl-headers
-     , openmpi
      , pkg-config
      , cuda ? false
      , opencl ? false
@@ -124,7 +116,6 @@ in
 
         cmakeFlags = [
           "-DLLAMA_BUILD_SERVER=ON"
-          # "-DLLAMA_MPI=ON"
           "-DCMAKE_SKIP_BUILD_RPATH=ON"
         ] ++ (optionals isM1 [
           "-DCMAKE_C_FLAGS=-D__ARM_FEATURE_DOTPROD=1"
@@ -145,7 +136,7 @@ in
           mv ./bin/server $out/bin/llama-server
           mv ./bin/llava-cli $out/bin/llava
         '';
-        buildInputs = [ openmpi ] ++ osSpecific;
+        buildInputs = [ ] ++ osSpecific;
         nativeBuildInputs = [ cmake ninja pkg-config ] ++ (optionals cuda [ cudatoolkit_joined ]);
 
         passthru.cuda = llama-cpp-moe.override { cuda = true; };
