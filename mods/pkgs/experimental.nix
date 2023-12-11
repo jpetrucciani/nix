@@ -136,7 +136,7 @@ in
           mv ./bin/server $out/bin/llama-server
           mv ./bin/llava-cli $out/bin/llava
         '';
-        buildInputs = [ ] ++ osSpecific;
+        buildInputs = osSpecific;
         nativeBuildInputs = [ cmake ninja pkg-config ] ++ (optionals cuda [ cudatoolkit_joined ]);
 
         passthru.cuda = llama-cpp-moe.override { cuda = true; };
