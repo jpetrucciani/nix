@@ -14,7 +14,7 @@
 , nix-prefetch-github
 , ninja
 , writeScript
-, llama-cpp
+, llama-cpp-moe
 , cudatoolkit
 , clblas
 , clblast
@@ -94,27 +94,8 @@ clangStdenv.mkDerivation {
   buildInputs = [ openmpi ] ++ osSpecific;
   nativeBuildInputs = [ cmake ninja pkg-config ] ++ (optionals cuda [ cudatoolkit_joined ]);
 
-  passthru.updateScript =
-    let
-      pkg = "llama-cpp";
-      _jq = lib.getExe jq;
-      _curl = lib.getExe curl;
-      _prefetch = lib.getExe nix-prefetch-github;
-      _tr = "${coreutils}/bin/tr";
-      _update = "${common-updater-scripts}/bin/update-source-version";
-    in
-    writeScript "llama-cpp-update-script" ''
-      current_version="$(${nix}/bin/nix-instantiate --eval -E "with import ./. {}; lib.getVersion ${pkg}" | ${_tr} -d '"')"
-      latest_version="$(${_curl} -s https://api.github.com/repos/${owner}/${repo}/releases/latest | ${_jq} --raw-output .tag_name)"
-      latest_sha="$(${_prefetch} --rev "refs/tags/$latest_version" ${owner} ${repo} | ${_jq} --raw-output .sha256)"
-      if [ ! "$current_version" = "$latest_version" ]; then
-        ${_update} ${pkg} "$latest_version" "$latest_sha"
-      else
-        echo "${pkg} is already up to date as '$current_version'"
-      fi
-    '';
-  passthru.cuda = llama-cpp.override { cuda = true; };
-  passthru.opencl = llama-cpp.override { opencl = true; };
+  passthru.cuda = llama-cpp-moe.override { cuda = true; };
+  passthru.opencl = llama-cpp-moe.override { opencl = true; };
 
   meta = with lib; {
     description = "Port of Facebook's LLaMA model in C/C++";
