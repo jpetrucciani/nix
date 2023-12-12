@@ -5,20 +5,21 @@ let
 in
 rec {
   nimWithPackages =
+    nim:
     packages:
     let
       nimPackages = final.callPackage ./lang/nim-packages.nix { };
       addPath = { src, sub ? "", ... }: ''--add-flags "--path:${src}${sub}"'';
       additionalPaths = map addPath (packages nimPackages);
     in
-    final.nim.overrideAttrs (old: {
+    nim.overrideAttrs (old: {
       wrapperArgs = old.wrapperArgs ++ additionalPaths;
     });
-  nim = final.nim.overrideAttrs (_: {
-    passthru.withPackages = nimWithPackages;
+  nim = prev.nim.overrideAttrs (_: {
+    passthru.withPackages = nimWithPackages prev.nim;
   });
-  nim2 = final.nim2.overrideAttrs (_: {
-    passthru.withPackages = nimWithPackages;
+  nim2 = prev.nim2.overrideAttrs (_: {
+    passthru.withPackages = nimWithPackages prev.nim2;
   });
 
   vWithPackages =
