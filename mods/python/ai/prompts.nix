@@ -34,6 +34,43 @@ rec {
     };
   };
 
+  langchain-community = buildPythonPackage rec {
+    pname = "langchain-community";
+    version = "0.0.1";
+    pyproject = true;
+
+    src = fetchPypi {
+      pname = "langchain_community";
+      inherit version;
+      hash = "sha256-JxqVnLOg78Ppr7YnmViP9s13T6MzxtUUqb4dWAn7ESs=";
+    };
+
+    nativeBuildInputs = with final; [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = with final; [
+      aiohttp
+      dataclasses-json
+      langchain-core
+      langsmith
+      numpy
+      pyyaml
+      requests
+      sqlalchemy
+      tenacity
+    ];
+
+    pythonImportsCheck = [ "langchain_community" ];
+
+    meta = {
+      description = "Community contributed LangChain integrations";
+      homepage = "https://pypi.org/project/langchain-community/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
   langchain-core = buildPythonPackage rec {
     pname = "langchain-core";
     version = "0.0.13";
@@ -45,11 +82,11 @@ rec {
       hash = "sha256-/PwT0sMUwEQcjx+LeTlTFt9Yc8HHpofIxcVTs4JIQLY=";
     };
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       poetry-core
     ];
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       jsonpatch
       langsmith
       pydantic
@@ -91,6 +128,7 @@ rec {
       google-api-core
       jinja2
       jsonpatch
+      langchain-community
       langchain-core
       langsmith
       numexpr
