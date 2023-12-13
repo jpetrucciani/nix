@@ -10,12 +10,12 @@ in
     in
     buildPythonPackage rec {
       pname = "chromadb";
-      version = "0.4.18";
+      version = "0.4.19";
       format = "pyproject";
 
       src = fetchPypi {
         inherit pname version;
-        hash = "sha256-QvHo8/SIhKv7Q/u7EylA0LeMD2M7r4iNJSXJcGeLiGw=";
+        hash = "sha256-N4lIvixMcqX9OKLndli2aFgVtKBa7JlvJ7ShFwXkeB4=";
       };
 
       nativeBuildInputs = with prev; [
@@ -40,6 +40,10 @@ in
         importlib-resources
         numpy
         overrides
+        opentelemetry-api
+        opentelemetry-exporter-otlp-proto-common
+        opentelemetry-exporter-otlp-proto-grpc
+        opentelemetry-sdk
         pandas
         posthog
         pulsar-client
