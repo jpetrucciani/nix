@@ -7,7 +7,7 @@ let
     if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
     else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
     else [ ];
-  version = "1.5.1";
+  version = "1.5.2";
   ifCuda = value: if cuda then value else null;
   cudatoolkit_joined = symlinkJoin {
     name = "${cudatoolkit.name}-merged";
@@ -25,7 +25,7 @@ clangStdenv.mkDerivation rec {
     owner = "ggerganov";
     repo = name;
     rev = "refs/tags/v${version}";
-    hash = "sha256-TXB5cQ32HA96i7ciJheuGrr5yxj/tBB8/KcaOTGO/HQ=";
+    hash = "sha256-7pJbROifDajBJUE07Nz8tARB901fWCB+TS4okcnEsvc";
   };
 
   # flags
