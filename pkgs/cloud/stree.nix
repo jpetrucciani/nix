@@ -5,16 +5,16 @@
 
 buildGoModule rec {
   pname = "stree";
-  version = "0.0.10";
+  version = "0.0.12";
 
   src = fetchFromGitHub {
     owner = "orangekame3";
     repo = "stree";
     rev = "v${version}";
-    hash = "sha256-Emq2klhSxf6Gd2MYkrLR7AcQcPlWgkv/VV7W2den8cM=";
+    hash = "sha256-qqzdonQXrFFu/jvgwhaBL/gDEtjM9DFhn138SAAHwaY=";
   };
 
-  vendorHash = "sha256-Hf2ovkt0pBW4fILIVmRh6I8Q2loE+BoA26SBH7wicz0=";
+  vendorHash = "sha256-H1WPIYw9KXDd8Z1/gRi3hCfe63RdMMBh26hhLfnniqk=";
 
   ldflags = [ "-s" "-w" ];
 
