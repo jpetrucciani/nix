@@ -7,6 +7,7 @@ let
   };
   _chart_scan =
     { name
+    , exe_name ? name
     , base_url
     , index_url ? "${base_url}/index.yaml"
     , chart_url ? "${base_url}/${name}-{1}.tgz"
@@ -22,8 +23,8 @@ let
       _filter = if (builtins.stringLength filter_out) > 0 then ''${final.gnused}/bin/sed -E -e '/${filter_out}/,+1d' | '' else "";
     in
     final.pog {
-      name = "chart_scan_${name}";
-      description = "a quick and easy way to get the latest x releases of the '${name}' chart!";
+      name = "chart_scan_${exe_name}";
+      description = "a quick and easy way to get the latest x releases of the '${exe_name}' chart!";
       script = ''
         # temp files
         temp_resp="$(${mktemp} --suffix=.yaml)"
@@ -181,6 +182,19 @@ rec {
     chart_url = "https://github.com/leg100/otf-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
   };
 
+  chart_scan_mongo-operator = _chart_scan rec {
+    name = "community-operator";
+    exe_name = "mongo-operator";
+    base_url = "https://mongodb.github.io/helm-charts";
+    chart_url = "https://github.com/mongodb/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
+  };
+
+  chart_scan_redis-operator = _chart_scan rec {
+    name = "redis-operator";
+    base_url = "https://spotahome.github.io/redis-operator";
+    chart_url = "https://github.com/spotahome/${name}/releases/download/Chart-{1}/${name}-{1}.tgz";
+  };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
@@ -194,11 +208,13 @@ rec {
     chart_scan_linkerd-control-plane
     chart_scan_loki
     chart_scan_mimir
+    chart_scan_mongo-operator
     chart_scan_nfs
     chart_scan_oncall
     chart_scan_otf
     chart_scan_postgres-operator
     chart_scan_postgres-operator-ui
+    chart_scan_redis-operator
     chart_scan_robusta
     chart_scan_sentry
     chart_scan_signoz
