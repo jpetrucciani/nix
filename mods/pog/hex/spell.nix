@@ -19,11 +19,13 @@ let
     infisical = import ./k8s/infisical.nix params;
     jupyterhub = import ./k8s/jupyterhub.nix params;
     linkerd = import ./k8s/linkerd.nix params;
+    mongo = import ./k8s/mongo.nix params;
     nginx-ingress = import ./k8s/nginx-ingress.nix params;
     otf = import ./k8s/otf.nix params;
     postgres = import ./k8s/postgres.nix params;
     prometheus = import ./k8s/prometheus.nix params;
     rancher = import ./k8s/rancher.nix params;
+    redis = import ./k8s/redis.nix params;
     robusta = import ./k8s/robusta.nix params;
     sentry = import ./k8s/sentry.nix params;
     services = import ./k8s/services.nix params;
