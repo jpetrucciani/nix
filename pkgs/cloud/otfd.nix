@@ -4,13 +4,13 @@
 }:
 buildGoModule rec {
   pname = "otfd";
-  version = "0.2.3";
+  version = "0.2.4";
 
   src = fetchFromGitHub {
     owner = "leg100";
     repo = "otf";
     rev = "refs/tags/v${version}";
-    hash = "sha256-y3Uo/7NI/dIxd2NBJEGwuLflspXiyCYHBr2g4r91+f0=";
+    hash = "sha256-GlqtrCKDAnIU1KUWjYq22u7V8XLZeUQPEVLKAKx9tog=";
   };
 
   vendorHash = "sha256-+5Y2sZJEo3s9WfzJOACsjnH3sCtmCoqTkr2+i1hyR6Y=";
