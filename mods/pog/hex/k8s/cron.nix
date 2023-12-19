@@ -5,7 +5,7 @@ let
   cron = {
     build =
       { name
-      , image ? "curlimages/curl:7.85.0"
+      , image ? "curlimages/curl:8.5.0"
       , schedule ? "0 * * * *"  # hourly at :00
       , labels ? [ ]
       , namespace ? "default"
@@ -49,7 +49,7 @@ let
                           pod_name
                         ] ++ [{ name = "HEX"; value = "true"; }] ++ env ++ (hex.envAttrToNVP envAttrs);
                         ${ifNotEmptyList envFrom "envFrom"} = envFrom;
-                        ${ifNotNull command "command"} = [ command ];
+                        ${ifNotNull command "command"} = if builtins.isString command then [ command ] else command;
                         ${ifNotNull args "args"} = args;
                         resources = {
                           ${if (memoryLimit != null || cpuLimit != null) then "limits" else null} = {
