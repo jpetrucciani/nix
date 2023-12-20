@@ -38,6 +38,10 @@ This module contains an elastic operator
 
 [external-secrets](https://github.com/external-secrets/external-secrets) reads information from a third-party service like AWS Secrets Manager and automatically injects the values as Kubernetes Secrets.
 
+### [fission.nix](./fission.nix)
+
+[fission](https://github.com/fission/fission) is a serverless function platform for k8s
+
 ### [gitlab-runner.nix](./gitlab-runner.nix)
 
 This module contains the helm chart for the [GitLab Kubernetes Executor](https://docs.gitlab.com/runner/executors/kubernetes.html).
