@@ -9,3 +9,4 @@
 (?i)gcloud
 (?i)awscli
 (?i)parseable
+(?i)serverless
