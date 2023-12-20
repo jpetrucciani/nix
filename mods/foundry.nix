@@ -216,6 +216,19 @@ let
       ])
     )
   ]);
+  foundryPypi = foundry {
+    name = "pypi";
+    description = "a lightweight pypi server with a few backends";
+    layers = [
+      [
+        (pkgs.python311.withPackages (p: with p; [
+          passlib
+          pypiserver-backend-s3
+          pypiserver-pluggable-backends
+        ]))
+      ]
+    ];
+  };
   foundryPython311 = foundry {
     name = "python-3.11";
     description = "a baseline python 3.11 image with common tools and a working nix install";
@@ -260,6 +273,7 @@ in
   nix = foundryNix;
   python311 = foundryPython311;
   python312 = foundryPython312;
+  pypi = foundryPypi;
   k8s_aws = foundry_k8s_aws;
   k8s_gcp = foundry_k8s_gcp;
   zaddy = foundry_zaddy;

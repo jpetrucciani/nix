@@ -590,4 +590,114 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  pypiserver-pluggable-backends = buildPythonPackage rec {
+    pname = "pypiserver";
+    version = "2.0.1";
+    format = "setuptools";
+
+    disabled = final.pythonOlder "3.7";
+
+    src = fetchFromGitHub {
+      owner = "estheruary";
+      repo = "pypiserver-pluggable-backends";
+      rev = "14f8182a5647437b72f6fd874d85b46ff099de44";
+      hash = "sha256-EzkcJB7OtcaZDkzzvAbHKQohx98nhGrStgJVylD+G+0=";
+    };
+
+    nativeBuildInputs = with final; [
+      setuptools
+      setuptools-git
+      wheel
+    ];
+
+    propagatedBuildInputs = with final; [
+      pip
+      setuptools
+    ];
+
+    passthru.optional-dependencies = with final; {
+      passlib = [
+        passlib
+      ];
+      cache = [
+        watchdog
+      ];
+    };
+
+    __darwinAllowLocalNetworking = true;
+
+    # Tests need these permissions in order to use the FSEvents API on macOS.
+    sandboxProfile = ''
+      (allow mach-lookup (global-name "com.apple.FSEvents"))
+    '';
+
+    preCheck = ''
+      export HOME=$TMPDIR
+    '';
+
+    nativeCheckInputs = with final; [
+      pip
+      pytestCheckHook
+      setuptools
+      twine
+      webtest
+    ] ++ lib.flatten (builtins.attrValues passthru.optional-dependencies);
+
+    disabledTests = [
+      # Fails to install the package
+      "test_hash_algos"
+      "test_pip_install_authed_succeeds"
+      "test_pip_install_open_succeeds"
+    ];
+
+    disabledTestPaths = [
+      # Test requires docker service running
+      "docker/test_docker.py"
+    ];
+
+    pythonImportsCheck = [
+      "pypiserver"
+    ];
+
+    meta = {
+      description = "fork of a Minimal PyPI server for use with pip/easy_install";
+      homepage = "https://github.com/estheruary/pypiserver-pluggable-backends";
+      changelog = "https://github.com/estheruary/pypiserver-pluggable-backends/releases/tag/v${version}";
+      license = with licenses; [ mit zlib ];
+      maintainers = with maintainers; [ austinbutler ];
+    };
+  };
+
+  pypiserver-backend-s3 = buildPythonPackage {
+    pname = "pypiserver-backend-s3";
+    version = "unstable-2023-08-24";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "estheruary";
+      repo = "pypiserver-backend-s3";
+      rev = "c7331c0df40c8881a2ffb3b9755e378c91b436c1";
+      hash = "sha256-elItLLeN/v8ooDk8qedlqSGDHyZbwEr3Ze2e6idmDCM=";
+    };
+
+    nativeBuildInputs = with final; [
+      setuptools
+      setuptools-scm
+      wheel
+    ];
+
+    propagatedBuildInputs = with final; [
+      boto3
+    ];
+
+    pythonImportsCheck = [ "pypiserver_backend_s3" ];
+
+    meta = {
+      description = "A pypiserver backend for storing packages directly to S3 (using boto3";
+      homepage = "https://github.com/estheruary/pypiserver-backend-s3";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }

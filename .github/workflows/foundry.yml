@@ -8,6 +8,7 @@ jobs:
         image:
           - nix
           - python311
+          - pypi
           # - python312
           - k8s_aws
           - k8s_gcp
