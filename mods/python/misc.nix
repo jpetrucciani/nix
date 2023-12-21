@@ -700,4 +700,31 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  horology = buildPythonPackage rec {
+    pname = "horology";
+    version = "1.4.0";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "mjmikulski";
+      repo = "horology";
+      rev = "v${version}";
+      hash = "sha256-ZUcJax+cV9Lyn6oEGLqDRM2SAo/81BncH4KfT1+K9dw=";
+    };
+
+    nativeBuildInputs = with final; [
+      poetry-core
+    ];
+
+    pythonImportsCheck = [ "horology" ];
+
+    meta = {
+      description = "Timing functions, contexts and for-loops";
+      homepage = "https://github.com/mjmikulski/horology";
+      changelog = "https://github.com/mjmikulski/horology/blob/${src.rev}/CHANGELOG.md";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
