@@ -10,12 +10,12 @@ in
     in
     buildPythonPackage rec {
       pname = "chromadb";
-      version = "0.4.19";
+      version = "0.4.21";
       format = "pyproject";
 
       src = fetchPypi {
         inherit pname version;
-        hash = "sha256-N4lIvixMcqX9OKLndli2aFgVtKBa7JlvJ7ShFwXkeB4=";
+        hash = "sha256-f6ZsKQji4fBNqQuXA58KpxBe9HUQQcPd9zOHul7e+d8=";
       };
 
       nativeBuildInputs = with prev; [
@@ -51,6 +51,7 @@ in
         pypika
         python-dotenv
         requests
+        tenacity
         tokenizers
         tqdm
         typing-extensions
