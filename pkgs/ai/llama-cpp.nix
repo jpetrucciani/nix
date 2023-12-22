@@ -50,7 +50,7 @@ let
       "${cudatoolkit}/targets/${system}"
     ];
   };
-  version = "b1690";
+  version = "b1691";
   owner = "ggerganov";
   repo = "llama.cpp";
 in
@@ -60,7 +60,7 @@ clangStdenv.mkDerivation rec {
   src = fetchFromGitHub {
     inherit owner repo;
     rev = "refs/tags/${version}";
-    hash = "sha256-eVj8XyhxYu1xKH18a7vjFqx/6uOz6GySDhLBocZm8Hw=";
+    hash = "sha256-WqnlZ3kgla7/+JxV10pTVRUDZUJ3POLoZHMo0ZEW6MI=";
   };
 
   postPatch =
