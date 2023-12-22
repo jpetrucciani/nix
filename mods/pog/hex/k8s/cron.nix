@@ -15,6 +15,7 @@ let
       , cpuLimit ? null
       , memoryRequest ? "100Mi"
       , memoryLimit ? null
+      , ephemeralStorageLimit ? null
       , env ? [ ]
       , envAttrs ? { }
       , envFrom ? [ ]
@@ -55,6 +56,7 @@ let
                           ${if (memoryLimit != null || cpuLimit != null) then "limits" else null} = {
                             ${ifNotNull memoryLimit "memory"} = memoryLimit;
                             ${ifNotNull cpuLimit "cpu"} = cpuLimit;
+                            ${ifNotNull ephemeralStorageLimit "ephemeral-storage"} = ephemeralStorageLimit;
                           };
                           requests = {
                             cpu = cpuRequest;

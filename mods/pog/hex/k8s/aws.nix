@@ -81,6 +81,9 @@ in
       ];
       cron = hex.k8s.cron.build {
         inherit name namespace schedule failedJobsHistoryLimit successfulJobsHistoryLimit;
+        cpuLimit = "500m";
+        memoryLimit = "512Mi";
+        ephemeralStorageLimit = "100Mi";
         image = "${image}:${image_tag}";
         sa = "${name}-sa";
         command = "/bin/bash";
