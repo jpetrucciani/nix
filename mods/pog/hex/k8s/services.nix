@@ -98,6 +98,8 @@ let
       , cpuLimit ? null
       , memoryRequest ? "1Gi"
       , memoryLimit ? null
+      , ephemeralStorageRequest ? null
+      , ephemeralStorageLimit ? null
       , command ? null
       , args ? null
       , env ? [ ]
@@ -193,7 +195,7 @@ let
         }) // extraNP;
         dep = (components.deployment {
           inherit name namespace labels image replicas revisionHistoryLimit maxSurge maxUnavailable depSuffix saSuffix daemonSet lifecycle imagePullSecrets affinity;
-          inherit cpuRequest memoryRequest cpuLimit memoryLimit command args volumes subdomain nodeSelector livenessProbe readinessProbe securityContext;
+          inherit cpuRequest memoryRequest ephemeralStorageRequest cpuLimit memoryLimit ephemeralStorageLimit command args volumes subdomain nodeSelector livenessProbe readinessProbe securityContext;
           inherit env envAttrs envFrom extraPodAnnotations appArmor tailscaleSidecar tailscale_image_base tailscale_image_tag tsSuffix hostAliases __init;
         }) // extraDep;
         hpa = (components.hpa { inherit name namespace labels min max cpuUtilization hpaSuffix; }) // extraHPA;
@@ -471,6 +473,8 @@ let
         , cpuLimit ? null
         , memoryRequest ? "1Gi"
         , memoryLimit ? null
+        , ephemeralStorageRequest ? null
+        , ephemeralStorageLimit ? null
         , namespace ? "default"
         , depSuffix ? ""
         , saSuffix ? "-sa"
@@ -548,13 +552,15 @@ let
 
                     imagePullPolicy = "Always";
                     resources = {
-                      requests = {
-                        cpu = cpuRequest;
-                        memory = memoryRequest;
+                      ${if (memoryRequest != null || cpuRequest != null || ephemeralStorageRequest != null) then "requests" else null} = {
+                        ${ifNotNull cpuRequest "cpu"} = cpuRequest;
+                        ${ifNotNull memoryRequest "memory"} = memoryRequest;
+                        ${ifNotNull ephemeralStorageRequest "ephemeral-storage"} = ephemeralStorageRequest;
                       };
-                      ${if (memoryLimit != null || cpuLimit != null) then "limits" else null} = {
+                      ${if (memoryLimit != null || cpuLimit != null || ephemeralStorageLimit != null) then "limits" else null} = {
                         ${ifNotNull memoryLimit "memory"} = memoryLimit;
                         ${ifNotNull cpuLimit "cpu"} = cpuLimit;
+                        ${ifNotNull ephemeralStorageLimit "ephemeral-storage"} = ephemeralStorageLimit;
                       };
                     };
                     ${ifNotEmptyList volumes "volumeMounts"} = map volumeMountDef volumes;

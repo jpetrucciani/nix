@@ -15,6 +15,7 @@ let
       , cpuLimit ? null
       , memoryRequest ? "100Mi"
       , memoryLimit ? null
+      , ephemeralStorageRequest ? null
       , ephemeralStorageLimit ? null
       , env ? [ ]
       , envAttrs ? { }
@@ -53,14 +54,15 @@ let
                         ${ifNotNull command "command"} = if builtins.isString command then [ command ] else command;
                         ${ifNotNull args "args"} = args;
                         resources = {
-                          ${if (memoryLimit != null || cpuLimit != null) then "limits" else null} = {
+                          ${if (memoryLimit != null || cpuLimit != null || ephemeralStorageLimit != null) then "limits" else null} = {
                             ${ifNotNull memoryLimit "memory"} = memoryLimit;
                             ${ifNotNull cpuLimit "cpu"} = cpuLimit;
                             ${ifNotNull ephemeralStorageLimit "ephemeral-storage"} = ephemeralStorageLimit;
                           };
-                          requests = {
-                            cpu = cpuRequest;
-                            memory = memoryRequest;
+                          ${if (memoryRequest != null || cpuRequest != null || ephemeralStorageRequest != null) then "requests" else null} = {
+                            ${ifNotNull cpuRequest "cpu"} = cpuRequest;
+                            ${ifNotNull memoryRequest "memory"} = memoryRequest;
+                            ${ifNotNull ephemeralStorageRequest "ephemeral-storage"} = ephemeralStorageRequest;
                           };
                         };
                       }
