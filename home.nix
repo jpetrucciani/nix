@@ -577,6 +577,9 @@ in
               "${formatter}": "haskell.haskell",
               "${formatOnSave}": true
             },
+            "[go]": {
+              "editor.defaultFormatter": "golang.go"
+            },
             "[dockerfile]": { "${formatter}": "${extensions.prettier}" },
             "[elixir]": {"${formatter}": "${extensions.elixir-ls}"},
             "[ignore]": { "${formatter}": "${extensions.shell-format}" },
