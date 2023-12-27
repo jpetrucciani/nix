@@ -320,6 +320,14 @@ in
       settings = {
         ExternalDomain = "z.cobi.dev";
         ExternalPort = 443;
+        DefaultInstance = {
+          LoginPolicy = {
+            AllowRegister = false;
+          };
+          Restrictions = {
+            DisallowPublicOrgRegistration = true;
+          };
+        };
       };
       extraSettingsPaths = [ config.age.secrets.zitadel.path ];
     };
