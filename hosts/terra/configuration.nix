@@ -66,7 +66,10 @@ in
     secrets = {
       miniflux.file = ../../secrets/miniflux.age;
       vaultwarden.file = ../../secrets/vaultwarden.age;
-      zitadel.file = ../../secrets/zitadel.age;
+      zitadel = {
+        file = ../../secrets/zitadel.age;
+        owner = "zitadel";
+      };
     };
   };
 
