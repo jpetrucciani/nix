@@ -22,5 +22,10 @@ in
     nodeRuntimes = [ "node16" "node20" ];
   };
 
-  k3s = prev.k3s.override (_: { buildGoModule = prev.buildGo120Module; });
+  zitadel = (import
+    (builtins.fetchTarball {
+      url = "https://github.com/jpetrucciani/nixpkgs/archive/535a908c603f65a6ceed636221a3148465cfb716.tar.gz";
+      sha256 = "13jgyc0b9l6j80dzsk1bwia4vsyh7q7kwxjl5fv402gypycij275";
+    })
+    { system = "x86_64-linux"; }).zitadel;
 }
