@@ -6,4 +6,5 @@ in
 {
   "vaultwarden.age".publicKeys = default;
   "miniflux.age".publicKeys = default;
+  "zitadel.age".publicKeys = default;
 }

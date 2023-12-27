@@ -66,6 +66,7 @@ in
     secrets = {
       miniflux.file = ../../secrets/miniflux.age;
       vaultwarden.file = ../../secrets/vaultwarden.age;
+      zitadel.file = ../../secrets/zitadel.age;
     };
   };
 
@@ -175,6 +176,7 @@ in
         '';
         virtualHosts = {
           "api.cobi.dev" = reverse_proxy "localhost:10000";
+          "z.cobi.dev" = reverse_proxy "localhost:8080";
           "auth.cobi.dev" = reverse_proxy neptune_traefik;
           "search.cobi.dev" = reverse_proxy neptune_traefik;
           "recipe.cobi.dev" = reverse_proxy orbit_traefik;
@@ -308,6 +310,15 @@ in
       enable = true;
       role = "server";
       extraFlags = "--disable traefik";
+    };
+    zitadel = {
+      enable = true;
+      masterKeyFile = "/etc/default/zitadel";
+      settings = {
+        ExternalDomain = "z.cobi.dev";
+        ExternalPort = 443;
+      };
+      extraSettingsPaths = [ config.age.secrets.zitadel.path ];
     };
   } // common.services;
 
