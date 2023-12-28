@@ -55,7 +55,7 @@ in
     firewall = {
       enable = true;
       trustedInterfaces = [ "tailscale0" "cni+" ];
-      allowedTCPPorts = with common.ports; [ 6443 ] ++ usual;
+      allowedTCPPorts = with common.ports; usual;
       allowedUDPPorts = [ ];
       checkReversePath = "loose";
     };
