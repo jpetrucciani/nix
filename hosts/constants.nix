@@ -147,7 +147,9 @@ in
         ${terra} cobi.dev
         ${terra} api.cobi.dev
         ${terra} auth.cobi.dev
+        ${terra} otf.cobi.dev
         ${terra} vault.cobi.dev
+        ${terra} z.cobi.dev
         ${terra} nix.cobi.dev
         ${terra} broadsword.tech
         ${terra} hexa.dev
