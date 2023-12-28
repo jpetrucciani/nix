@@ -326,9 +326,6 @@ in
     };
   } // common.services;
 
-  # https://github.com/NixOS/nixpkgs/issues/103158
-  systemd.services.k3s.after = [ "network-online.service" "firewall.service" ];
-  systemd.services.k3s.serviceConfig.KillMode = pkgs.lib.mkForce "control-group";
 
   # https://github.com/NixOS/nixpkgs/issues/98766
   boot.kernelModules = [ "br_netfilter" "ip_conntrack" "ip_vs" "ip_vs_rr" "ip_vs_wrr" "ip_vs_sh" "overlay" ];
@@ -336,16 +333,25 @@ in
     iptables -A INPUT -i cni+ -j ACCEPT
   '';
 
-  systemd.services.lemmy.serviceConfig.EnvironmentFile = "/etc/default/lemmy";
-  systemd.services.lemmy.serviceConfig.ExecStartPre =
-    let
-      f = "/run/lemmy/config.hjson";
-      settings = (pkgs.formats.json { }).generate "config.hjson" config.services.lemmy.settings;
-    in
-    lib.mkForce (pkgs.writers.writeBash "preLemmy" ''
-      ${pkgs.envsubst}/bin/envsubst -i ${settings} -o ${f}
-      chmod 0600 ${f}
-    '');
+  # https://github.com/NixOS/nixpkgs/issues/103158
+  systemd.services = {
+    k3s = {
+      after = [ "network-online.service" "firewall.service" ];
+      serviceConfig.KillMode = pkgs.lib.mkForce "control-group";
+    };
+    lemmy.serviceConfig = {
+      EnvironmentFile = "/etc/default/lemmy";
+      ExecStartPre =
+        let
+          f = "/run/lemmy/config.hjson";
+          settings = (pkgs.formats.json { }).generate "config.hjson" config.services.lemmy.settings;
+        in
+        lib.mkForce (pkgs.writers.writeBash "preLemmy" ''
+          ${pkgs.envsubst}/bin/envsubst -i ${settings} -o ${f}
+          chmod 0600 ${f}
+        '');
+    };
+  };
 
   virtualisation.docker.enable = true;
 
