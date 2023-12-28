@@ -51,7 +51,7 @@ in
       }];
     };
     defaultGateway = "192.168.69.1";
-    nameservers = [ "100.100.100.100" "1.1.1.1" ];
+    nameservers = [ "1.1.1.1" ];
     firewall = {
       enable = true;
       trustedInterfaces = [ "tailscale0" "cni+" ];
@@ -329,9 +329,6 @@ in
 
   # https://github.com/NixOS/nixpkgs/issues/98766
   boot.kernelModules = [ "br_netfilter" "ip_conntrack" "ip_vs" "ip_vs_rr" "ip_vs_wrr" "ip_vs_sh" "overlay" ];
-  # networking.firewall.extraCommands = ''
-  #   iptables -A INPUT -i cni+ -j ACCEPT
-  # '';
 
   systemd.services = {
     # https://github.com/NixOS/nixpkgs/issues/103158
