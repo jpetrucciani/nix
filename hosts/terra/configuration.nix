@@ -51,7 +51,7 @@ in
       }];
     };
     defaultGateway = "192.168.69.1";
-    nameservers = [ "1.1.1.1" ];
+    nameservers = [ "100.100.100.100" "1.1.1.1" ];
     firewall = {
       enable = true;
       trustedInterfaces = [ "tailscale0" ];
