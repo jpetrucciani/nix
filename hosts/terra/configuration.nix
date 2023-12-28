@@ -148,7 +148,7 @@ in
                 db_path {env.GEOIP_DB}
                 allow_countries US
               }
-              not remote_ip 127.0.0.1 192.168.69.0/24 100.64.0.0/10
+              not remote_ip 127.0.0.1 192.168.69.0/24 100.64.0.0/10 10.0.0.0/8
             }
             respond @geoblock "乃尺ㄩ卄" 403
           }
