@@ -131,6 +131,7 @@ let
       , tsSuffix ? "-ts${suffix}"
       , pre1_18 ? false
       , host ? null
+      , extraContainer ? { }
       , extraServiceAnnotations ? { }
       , extraIngressAnnotations ? { }
       , extraPodAnnotations ? { }
@@ -196,7 +197,7 @@ let
         dep = (components.deployment {
           inherit name namespace labels image replicas revisionHistoryLimit maxSurge maxUnavailable depSuffix saSuffix daemonSet lifecycle imagePullSecrets affinity;
           inherit cpuRequest memoryRequest ephemeralStorageRequest cpuLimit memoryLimit ephemeralStorageLimit command args volumes subdomain nodeSelector livenessProbe readinessProbe securityContext;
-          inherit env envAttrs envFrom extraPodAnnotations appArmor tailscaleSidecar tailscale_image_base tailscale_image_tag tsSuffix hostAliases __init;
+          inherit env envAttrs envFrom extraContainer extraPodAnnotations appArmor tailscaleSidecar tailscale_image_base tailscale_image_tag tsSuffix hostAliases __init;
         }) // extraDep;
         hpa = (components.hpa { inherit name namespace labels min max cpuUtilization hpaSuffix; }) // extraHPA;
         svc =
@@ -494,6 +495,7 @@ let
         , daemonSet ? false
         , imagePullSecrets ? [ ]
         , affinity ? { }
+        , extraContainer ? { }
         , extraPodAnnotations ? { }
         , appArmor ? "unconfined"
         , tailscaleSidecar ? false
@@ -539,7 +541,7 @@ let
                 ${ifNotNull subdomain "subdomain"} = subdomain;
                 ${ifNotNull nodeSelector "nodeSelector"} = nodeSelector;
                 containers = [
-                  {
+                  ({
                     inherit image name;
                     env = env ++ (hex.envAttrToNVP envAttrs);
                     ${ifNotEmptyList envFrom "envFrom"} = envFrom;
@@ -564,7 +566,7 @@ let
                       };
                     };
                     ${ifNotEmptyList volumes "volumeMounts"} = map volumeMountDef volumes;
-                  }
+                  } // extraContainer)
                 ] ++ (if tailscaleSidecar then [{
                   name = "ts";
                   image = "${tailscale_image_base}:${tailscale_image_tag}";
