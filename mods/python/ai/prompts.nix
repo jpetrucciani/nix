@@ -73,13 +73,13 @@ rec {
 
   langchain-core = buildPythonPackage rec {
     pname = "langchain-core";
-    version = "0.1.2";
+    version = "0.1.4";
     pyproject = true;
 
     src = fetchPypi {
       pname = "langchain_core";
       inherit version;
-      hash = "sha256-b9ZByndpdNCt60qjkOuxcxONdek6HGkouwWyH16Byx8=";
+      hash = "sha256-9wAThonJAU4j08KXlqiS3M9/KkKQHLiBdnGCPhokckw=";
     };
 
     nativeBuildInputs = with final; [
