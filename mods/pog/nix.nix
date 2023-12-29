@@ -80,7 +80,7 @@ rec {
         fi
         poetry=""
         if [ "$with_poetry" = "1" ]; then
-          py="python = [ruff${"\n"}black poetry python];"
+          py="python = [ruff${"\n"}black poetry];"
           poetry="python = (pkgs.poetry2nix.mkPoetryEnv { ${"\n"}projectDir = ./.; python = pkgs.python312; overrides = pkgs.poetry2nix.overrides.withDefaults (final: prev: { }); preferWheels = true; }).overrideAttrs (old: { buildInputs = with pkgs; [ libcxx ]; });${"\n"}"
           _env="python.env.overrideAttrs (_: {${"\n"} buildInputs = paths; });"
         fi
