@@ -36,6 +36,10 @@
       url = "github:nix-community/NixOS-WSL";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    poetry2nix = {
+      url = "github:nix-community/poetry2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     vscode-server = {
       url = "github:msteen/nixos-vscode-server";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -72,7 +76,7 @@
       packages = forAllSystems
         (system: import self.inputs.nixpkgs {
           inherit system;
-          overlays = [ (final: prev: { inherit machines; flake = self; nixpkgsRev = self.inputs.nixpkgs.rev; }) ] ++ import ./overlays.nix;
+          overlays = [ (final: prev: { inherit machines; flake = self; nixpkgsRev = self.inputs.nixpkgs.rev; }) self.inputs.poetry2nix.overlays.default ] ++ import ./overlays.nix;
           config = {
             allowUnfree = true;
             permittedInsecurePackages = [
