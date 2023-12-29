@@ -7,12 +7,12 @@ in
 rec {
   langsmith = buildPythonPackage rec {
     pname = "langsmith";
-    version = "0.0.72";
+    version = "0.0.75";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-UF9Rfi5ng2pOgxkX2CI6GMxZ1Rva4eQpX8bf8iZrq10=";
+      hash = "sha256-P9RMWL1Ty5Nmrz3hKcfxG2lHkU8btZilhSQN8OLFZus=";
     };
 
     nativeBuildInputs = with prev; [
@@ -390,7 +390,7 @@ rec {
   guidance =
     let
       name = "guidance";
-      version = "0.0.72";
+      version = "0.0.75";
     in
     buildPythonPackage rec {
       inherit version;
