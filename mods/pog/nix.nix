@@ -3,7 +3,7 @@ let
   inherit (final) _ pog lib;
 in
 rec {
-  nixup = let version = "0.0.5"; in pog {
+  nixup = let version = "0.0.6"; in pog {
     inherit version;
     name = "nixup";
     description = "a quick tool to create/update a base default.nix environment!";
@@ -17,6 +17,7 @@ rec {
       _.flags.nix.with_nim
       _.flags.nix.with_node
       _.flags.nix.with_php
+      _.flags.nix.with_poetry
       _.flags.nix.with_pulumi
       _.flags.nix.with_python
       _.flags.nix.with_ruby
@@ -32,18 +33,19 @@ rec {
         rev=$(echo "$jacobi" | ${lib.getExe final.jaq} -r '.rev')
         sha=$(echo "$jacobi" | ${lib.getExe final.jaq} -r '.sha256')
         toplevel=""
+        _env="pkgs.buildEnv {${"\n"} inherit name paths; buildInputs = paths; };"
         crystal=""
         if [ "$with_crystal" = "1" ]; then
           crystal="crystal = [crystal_1_2${"\n"}shards];"
         fi
         pg=""
         if [ "$with_db_pg" = "1" ]; then
-          pg="(__pg { postgres = pg; })${"\n"}(__pg_bootstrap { inherit name; postgres = pg; })${"\n"}(__pg_shell { inherit name; postgres = pg; })"
+          pg="pg = __pg { postgres = pg; };${"\n"}pg_bootstrap = __pg_bootstrap { inherit name; postgres = pg; };${"\n"}pg_shell = __pg_shell { inherit name; postgres = pg; };"
           toplevel="pg = pkgs.postgresql_15;${"\n"}$toplevel"
         fi
         redis=""
         if [ "$with_db_redis" = "1" ]; then
-          redis="__rd${"\n"}__rd_shell"
+          redis="rd = __rd;${"\n"}rd_shell = __rd_shell;"
         fi
         elixir=""
         if [ "$with_elixir" = "1" ]; then
@@ -75,6 +77,12 @@ rec {
         py=""
         if [ "$with_python" = "1" ]; then
           py="python = [ruff${"\n"}(python311.withPackages ( p: with p; [${"\n"}black]))];"
+        fi
+        poetry=""
+        if [ "$with_poetry" = "1" ]; then
+          py="python = [ruff${"\n"}black poetry python];"
+          poetry="python = (pkgs.poetry2nix.mkPoetryEnv { ${"\n"}projectDir = ./.; python = pkgs.python312; overrides = pkgs.poetry2nix.overrides.withDefaults (final: prev: { }); preferWheels = true; }).overrideAttrs (old: { buildInputs = with pkgs; [ libcxx ]; });${"\n"}"
+          _env="python.env.overrideAttrs (_: {${"\n"} buildInputs = paths; });"
         fi
         ruby=""
         if [ "$with_ruby" = "1" ]; then
@@ -109,24 +117,24 @@ rec {
           let
             name = "$directory";
             ''${toplevel}
+            ''${poetry}
             tools = with pkgs; {
               cli = [
                 coreutils
                 nixpkgs-fmt
               ];
               ''${crystal} ''${elixir} ''${golang} ''${nim} ''${node} ''${php} ''${pulumi} ''${py} ''${ruby} ''${rust} ''${terraform} ''${vlang}
-              scripts = [''${pg} ''${redis}];
+              scripts = pkgs.lib.attrsets.attrValues scripts;
             };
 
+          scripts = with pkgs; {''${pg} ''${redis}};
           paths = pkgs.lib.flatten [ (builtins.attrValues tools) ];
-          env = pkgs.buildEnv {
-            inherit name paths;
-            buildInputs = paths;
-          };
+          env = ''${_env}
           in
-          env.overrideAttrs (_: {
+          (env.overrideAttrs (_: {
+            inherit name;
             NIXUP = "${version}";
-          })
+          })) // {inherit scripts;}
         EOF
       '';
   };

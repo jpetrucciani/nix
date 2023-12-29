@@ -235,6 +235,12 @@ rec {
           bool = true;
           description = "include a python with packages";
         };
+        with_poetry = {
+          name = "with_poetry";
+          short = "";
+          bool = true;
+          description = "include python using poetry2nix";
+        };
         with_golang = {
           name = "with_golang";
           short = "g";
