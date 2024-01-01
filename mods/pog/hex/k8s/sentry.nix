@@ -4,13 +4,13 @@ let
     defaults = {
       name = "sentry";
       namespace = "sentry";
-      version = "20.12.0";
-      sha256 = "1pc2fmlbjpr7rvmg1j5z16156rw1ms4kklhc5b3052ybm6k5j7h9";
+      version = "20.12.1";
+      sha256 = "1jvhi18yp88lvqg3ppwknhjv1gwda3kn55pzibf1jlg09ygk412z";
     };
     version = rec {
       _v = v: s: args: chart (args // { version = v; sha256 = s; });
-      latest = v20-12-0;
-      v20-12-0 = _v defaults.version defaults.sha256;
+      latest = v20-12-1;
+      v20-12-1 = _v defaults.version defaults.sha256;
       v20-11-0 = _v "20.11.0" "1hdj512c69ja4rsff44c93zq9imlij3ky7w2k0g3qycljghas4zb";
       v20-10-1 = _v "20.10.1" "11l4fqg5l38n5kp68xj1ls3153m3bdzjks9j3w29p1j7ygn80vz3";
       v20-9-3 = _v "20.9.3" "0k2mf96kpjrfnjwqz21nal6pgx2bfv8ma5nik42ma0kbwisdb4yj";
