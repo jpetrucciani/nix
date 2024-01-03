@@ -208,9 +208,7 @@ rec {
           bool = true;
         }
       ];
-      arguments = [
-        { name = "nix_file"; }
-      ];
+      arguments = [{ name = "nix_file"; }];
       script = helpers: with helpers; ''
         ${var.notEmpty "1"} && spell="$1"
         ${var.empty "spell"} && spell="$(${_.mktemp})" && cp /dev/stdin "$spell"
@@ -230,7 +228,7 @@ rec {
 
   hex = pog {
     name = "hex";
-    version = "0.0.3";
+    version = "0.0.4";
     description = "a quick and easy way to render full kubespecs from nix files";
     flags = [
       {
@@ -274,6 +272,10 @@ rec {
         description = "force apply the resulting hex without a diff (WARNING - BE CAREFUL)";
         bool = true;
       }
+      {
+        name = "evaluate";
+        description = "evaluate an in-line hex script";
+      }
     ];
     script =
       let
@@ -293,6 +295,13 @@ rec {
       in
       helpers: with helpers; ''
         export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+        if ${var.notEmpty "evaluate"}; then
+          target=$(${_.mktemp})
+          cat <<EOF >"$target"
+          {hex, pkgs}:
+          $evaluate
+        EOF
+        fi
         side="true"
         ${flag "clientside"} && side="false"
         ${file.notExists "target"} && die "the file to render ('$target') does not exist!"
