@@ -7,25 +7,25 @@ let
     if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
     else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
     else [ ];
-  version = "1.5.2";
   ifCuda = value: if cuda then value else null;
   cudatoolkit_joined = symlinkJoin {
     name = "${cudatoolkit.name}-merged";
     paths = [
       cudatoolkit.lib
       cudatoolkit.out
-    ] ++ lib.optionals (lib.versionOlder cudatoolkit.version "11") [
-      "${cudatoolkit}/targets/${system}"
     ];
   };
+  version = "1.5.3";
+  owner = "ggerganov";
+  repo = "whisper.cpp";
 in
-clangStdenv.mkDerivation rec {
-  name = "whisper.cpp";
+clangStdenv.mkDerivation {
+  inherit version;
+  name = repo;
   src = fetchFromGitHub {
-    owner = "ggerganov";
-    repo = name;
+    inherit owner repo;
     rev = "refs/tags/v${version}";
-    hash = "sha256-7pJbROifDajBJUE07Nz8tARB901fWCB+TS4okcnEsvc";
+    hash = "sha256-ox9kED4FJcmat/P4NEwf7HKuSC2ZP66yOZz4BG4e9Ps=";
   };
 
   # flags
