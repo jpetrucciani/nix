@@ -73,6 +73,10 @@ in
   conf.blackedge.enable = true;
 
   services = {
+    resolved = {
+      enable = true;
+      fallbackDns = [ "10.31.65.200" "10.31.155.10" "1.1.1.1" ];
+    };
     postgresql = {
       enable = true;
       package = pkgs.postgresql_14;
