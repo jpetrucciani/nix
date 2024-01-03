@@ -1,4 +1,15 @@
-{ lib, system, symlinkJoin, darwin, gnumake, stdenv, whisper-cpp, clangStdenv, cudatoolkit, fetchFromGitHub, SDL2, cuda ? false }:
+{ lib
+, symlinkJoin
+, darwin
+, gnumake
+, stdenv
+, whisper-cpp
+, clangStdenv
+, cudatoolkit
+, fetchFromGitHub
+, SDL2
+, cuda ? false
+}:
 let
   inherit (lib) optionals;
   inherit (stdenv) isAarch64 isDarwin;
