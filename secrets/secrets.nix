@@ -4,7 +4,8 @@ let
   default = with pubkeys; [ milkyway pluto terra ];
 in
 {
-  "vaultwarden.age".publicKeys = default;
+  "authelia.age".publicKeys = default;
   "miniflux.age".publicKeys = default;
+  "vaultwarden.age".publicKeys = default;
   "zitadel.age".publicKeys = default;
 }
