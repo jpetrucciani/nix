@@ -206,6 +206,7 @@ let
       setup =
         { name
         , domain
+        , regex ? false
         , port ? 80
         , namespace ? "default"
         , service ? name
@@ -247,7 +248,7 @@ let
               {
                 ${ifNotEmptyList middlewares "middlewares"} = middlewares;
                 kind = "Rule";
-                match = "Host(`${domain}`)";
+                match = "Host${if regex then "Regexp" else ""}(`${domain}`)";
                 services = [
                   ({
                     inherit namespace port;
