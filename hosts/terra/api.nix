@@ -29,7 +29,7 @@ let
         playwright
 
         # ai
-        llama-cpp-python
+        # llama-cpp-python
         whisper-cpp-python
         langchain
         langchainhub
