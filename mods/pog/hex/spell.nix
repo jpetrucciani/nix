@@ -33,7 +33,6 @@ let
     signoz = import ./k8s/signoz.nix params;
     stackstorm = import ./k8s/stackstorm.nix params;
     tailscale = import ./k8s/tailscale.nix params;
-    terrakube = import ./k8s/terrakube.nix params;
     traefik = import ./k8s/traefik.nix params;
     whoogle = import ./k8s/whoogle.nix params;
     woodpecker = import ./k8s/woodpecker.nix params;
