@@ -26,7 +26,7 @@ let
       cudatoolkit.out
     ];
   };
-  version = "1.5.3";
+  version = "1.5.4";
   owner = "ggerganov";
   repo = "whisper.cpp";
 in
@@ -36,7 +36,7 @@ clangStdenv.mkDerivation {
   src = fetchFromGitHub {
     inherit owner repo;
     rev = "refs/tags/v${version}";
-    hash = "sha256-ox9kED4FJcmat/P4NEwf7HKuSC2ZP66yOZz4BG4e9Ps=";
+    hash = "sha256-9H2Mlua5zx2WNXbz2C5foxIteuBgeCNALdq5bWyhQCk=";
   };
 
   # flags
