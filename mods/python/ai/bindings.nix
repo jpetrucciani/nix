@@ -8,8 +8,8 @@ let
   llama-cpp-pin = fetchFromGitHub {
     owner = "ggerganov";
     repo = "llama.cpp";
-    rev = "f6793491b5af6da75edad34d6f503ef86d31b09f";
-    hash = "sha256-24XdtabSfCmSHc3G5D5OaRe7Ouh9EOrAYFsRPnVQhyE=";
+    rev = "b3a7c20b5c035250257d2b62851c379b159c899a";
+    hash = "sha256-QWgJbxdW5LI/77MvHg2tFllwXR6xfIm/0gRuA2f34ss=";
   };
 in
 rec {
@@ -48,13 +48,13 @@ rec {
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
-      version = "0.2.26";
+      version = "0.2.27";
       format = "pyproject";
       src = fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-Jhgb7E6ncyu6T06FSLiw+G6trFJSVx48acZ0tNDzZ74=";
+        hash = "sha256-hlxUA3Ln3AyD7ijFPWdvWS3MND0Fgjv/h/dQ1t/BY9Q=";
       };
 
       cuda = false;
@@ -81,14 +81,7 @@ rec {
         ninja
       ]) ++ (with prev; [
         pythonRelaxDepsHook
-        (scikit-build-core.overridePythonAttrs (_: rec {
-          version = "0.5.1";
-          src = fetchPypi {
-            pname = "scikit_build_core";
-            inherit version;
-            hash = "sha256-xtrVpRJ7Kr+qI8uR0jrCEFn9d83fcSKzP9B3kQJNz78=";
-          };
-        }))
+        scikit-build-core
         pathspec
         pyproject-metadata
       ]) ++ (optionals cuda [ cudatoolkit ]);
@@ -463,7 +456,7 @@ rec {
   ctransformers =
     let
       name = "ctransformers";
-      version = "0.2.26";
+      version = "0.2.27";
       osSpecific =
         if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
         else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
