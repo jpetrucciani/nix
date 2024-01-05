@@ -90,10 +90,6 @@ K8s Helm module for running a [StackStorm](https://stackstorm.com) cluster in HA
 
 This module contains useful shorthands for using [tailscale](https://tailscale.com/) within kubernetes
 
-### [terrakube.nix](./terrakube.nix)
-
-this module contains [terrakube](https://github.com/AzBuilder/terrakube)
-
 ### [traefik.nix](./traefik.nix)
 
 [Traefik](https://github.com/traefik/traefik-helm-chart) is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease.

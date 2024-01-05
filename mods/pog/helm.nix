@@ -170,12 +170,6 @@ rec {
   chart_scan_mimir = grafana_chart { name = "mimir-distributed"; filter_out = "weekly|rc"; };
   chart_scan_oncall = grafana_chart { name = "oncall"; };
 
-  chart_scan_terrakube = _chart_scan rec {
-    name = "terrakube";
-    base_url = "https://azbuilder.github.io/terrakube-helm-chart";
-    chart_url = "https://github.com/AzBuilder/terrakube-helm-chart/releases/download/${name}-{1}/${name}-{1}.tgz";
-  };
-
   chart_scan_otf = _chart_scan rec {
     name = "otf";
     base_url = "https://jpetrucciani.github.io/otf-charts";
@@ -227,7 +221,6 @@ rec {
     chart_scan_sentry
     chart_scan_signoz
     chart_scan_stackstorm
-    chart_scan_terrakube
     chart_scan_traefik
   ];
 }
