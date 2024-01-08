@@ -7,7 +7,7 @@ final: prev: with prev; rec {
     in
     buildPythonPackage rec {
       pname = "reflex";
-      version = "0.3.7";
+      version = "0.3.8";
       format = "pyproject";
 
 
@@ -15,7 +15,7 @@ final: prev: with prev; rec {
         owner = "reflex-dev";
         repo = pname;
         rev = "refs/tags/v${version}";
-        sha256 = "sha256-+oEzmxnCjWP+b42m/MSNOmYQOCJQoAfDpzySdCghbzQ=";
+        sha256 = "sha256-gm33iruB0McmfgIfUo0UfX0b9qrMpAOv42imk9wbVNE=";
       };
 
       propagatedBuildInputs = [
@@ -330,7 +330,7 @@ final: prev: with prev; rec {
 
   emmett-crypto = buildPythonPackage rec {
     pname = "emmett-crypto";
-    version = "0.3.7";
+    version = "0.3.8";
 
     format = "pyproject";
     src = pkgs.fetchFromGitHub {
@@ -371,7 +371,7 @@ final: prev: with prev; rec {
 
   granian = buildPythonPackage rec {
     pname = "granian";
-    version = "0.3.7";
+    version = "0.3.8";
 
     format = "pyproject";
     src = pkgs.fetchFromGitHub {
