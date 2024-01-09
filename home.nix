@@ -770,6 +770,7 @@ in
         push = {
           autoSetupRemote = true;
         };
+        trim.bases = "main,master";
       };
       ${attrIf (!isLinux) "signing"} = {
         key = "03C0CBEA6EAB9258";
