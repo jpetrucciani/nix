@@ -403,6 +403,17 @@ in
   systemd.services.n8n.serviceConfig.EnvironmentFile = "/etc/default/n8n";
 
   virtualisation.docker.enable = true;
+  virtualisation.oci-containers = {
+    backend = "podman";
+    containers.homeassistant = {
+      volumes = [ "home-assistant:/config" ];
+      environment.TZ = "US/Eastern";
+      image = "ghcr.io/home-assistant/home-assistant:2024.1";
+      extraOptions = [
+        "--network=host"
+      ];
+    };
+  };
   system.stateVersion = "23.11";
   security.sudo = common.security.sudo;
   programs.command-not-found.enable = false;
