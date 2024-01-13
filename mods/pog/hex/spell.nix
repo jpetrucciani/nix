@@ -14,6 +14,7 @@ let
     elastic = import ./k8s/elastic.nix params;
     external-secrets = import ./k8s/external-secrets.nix params;
     fission = import ./k8s/fission.nix params;
+    flipt = import ./k8s/flipt.nix params;
     gitlab-runner = import ./k8s/gitlab-runner.nix params;
     grafana = import ./k8s/grafana.nix params;
     helm = import ./k8s/helm.nix params;

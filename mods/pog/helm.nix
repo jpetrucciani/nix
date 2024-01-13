@@ -196,12 +196,19 @@ rec {
     chart_url = "https://github.com/fission/fission-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
   };
 
+  chart_scan_flipt = _chart_scan rec {
+    name = "flipt";
+    base_url = "https://helm.flipt.io";
+    chart_url = "https://github.com/flipt-io/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
+  };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
     chart_scan_datadog
     chart_scan_external-secrets
     chart_scan_fission
+    chart_scan_flipt
     chart_scan_gitlab-runner
     chart_scan_infisical
     chart_scan_jupyterhub
