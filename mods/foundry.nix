@@ -164,9 +164,11 @@ let
               "PATH=/home/user/.local/state/nix/profiles/profile/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
               "FOUNDRY=3"
             ]);
-            Labels = {
-              "org.opencontainers.image.authors" = author;
-              "org.opencontainers.image.description" = description;
+            Labels = let _base = "org.opencontainers.image"; in {
+              "${_base}.source" = "https://github.com/jpetrucciani/nix";
+              "${_base}.title" = name;
+              "${_base}.authors" = author;
+              "${_base}.description" = description;
             };
             User = user;
             WorkingDir = "/home/${user}";
