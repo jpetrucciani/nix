@@ -141,7 +141,7 @@ let
         }:
         let
           inherit (pkgs.nix2container.nix2container) buildLayer;
-          allLayers = with _layers; [ baseLayer [ mkUser drvs.mkFolders ] ] ++ (optionals sysLayer [ coreLayer ]) ++ (optionals enableNix [ nixLayer ]) ++ layers;
+          allLayers = with _layers; [ baseLayer ] ++ (optionals sysLayer [ coreLayer ]) ++ (optionals enableNix [ nixLayer ]) ++ layers;
           mkUser = drvs.mkUser {
             inherit user group uid gid substituters trusted-public-keys;
             extraMkUser =
@@ -195,7 +195,7 @@ let
         };
     };
 
-  foundryNix = foundry {
+  foundry_nix = foundry {
     name = "nix";
     description = "a baseline image with common tools and a working nix install";
     layers = with pkgs; [
@@ -216,7 +216,7 @@ let
       ])
     )
   ]);
-  foundryPypi = foundry {
+  foundry_pypi = foundry {
     name = "pypi";
     description = "a lightweight pypi server with a few backends";
     layers = [
@@ -229,7 +229,7 @@ let
       ]
     ];
   };
-  foundryPython311 = foundry {
+  foundry_python_311 = foundry {
     name = "python-3.11";
     description = "a baseline python 3.11 image with common tools and a working nix install";
     layers = [
@@ -237,7 +237,7 @@ let
       (_python_pkgs pkgs.python311 pkgs)
     ];
   };
-  foundryPython312 = foundry {
+  foundry_python_312 = foundry {
     name = "python-3.12";
     description = "a baseline python 3.12 image with common tools and a working nix install";
     layers = [
@@ -266,15 +266,22 @@ let
     description = "a base image with the custom zaddy build with caddy-security, s3proxy and s3browser";
     layers = [ [ pkgs.zaddy ] ];
   };
+  foundry_curl = foundry {
+    name = "curl";
+    description = "a base image with just curl and basic requirements. does not include nix!";
+    layers = [ [ pkgs.curl ] ];
+    enableNix = false;
+  };
 in
 {
   inherit foundry;
   foundry_v2 = foundry;
-  nix = foundryNix;
-  python311 = foundryPython311;
-  python312 = foundryPython312;
-  pypi = foundryPypi;
+  nix = foundry_nix;
+  python311 = foundry_python_311;
+  python312 = foundry_python_312;
+  pypi = foundry_pypi;
   k8s_aws = foundry_k8s_aws;
   k8s_gcp = foundry_k8s_gcp;
   zaddy = foundry_zaddy;
+  curl = foundry_curl;
 }
