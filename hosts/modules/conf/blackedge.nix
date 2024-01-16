@@ -41,28 +41,30 @@ in
     systemd.tmpfiles.rules = [
       "L /bin/bash - - - - /run/current-system/sw/bin/bash"
     ];
-    security.pam.services.systemd-user.makeHomeDir = true;
-    security.sudo.extraRules = [
-      { groups = cfg.allowedGroups; commands = [{ command = "ALL"; options = [ "NOPASSWD" ]; }]; }
-    ];
-    security.krb5 = {
-      enable = true;
-      settings = {
-        realms = {
-          ${cfg.krbDomain} = { };
-        };
-        domain_realm = {
-          ${cfg.domain} = cfg.krbDomain;
-          ".${cfg.domain}" = cfg.krbDomain;
-        };
-        libdefaults = {
-          default_realm = cfg.krbDomain;
-          dns_lookup_realm = false;
-          ticket_lifetime = "24h";
-          renew_lifetime = "7d";
-          forwardable = true;
-          default_ccache_name = "KEYRING:persistent:%{uid}";
-          rdns = false;
+    security = {
+      pam.services.systemd-user.makeHomeDir = true;
+      sudo.extraRules = [
+        { groups = cfg.allowedGroups; commands = [{ command = "ALL"; options = [ "NOPASSWD" ]; }]; }
+      ];
+      krb5 = {
+        enable = true;
+        settings = {
+          realms = {
+            ${cfg.krbDomain} = { };
+          };
+          domain_realm = {
+            ${cfg.domain} = cfg.krbDomain;
+            ".${cfg.domain}" = cfg.krbDomain;
+          };
+          libdefaults = {
+            default_realm = cfg.krbDomain;
+            dns_lookup_realm = false;
+            ticket_lifetime = "24h";
+            renew_lifetime = "7d";
+            forwardable = true;
+            default_ccache_name = "KEYRING:persistent:%{uid}";
+            rdns = false;
+          };
         };
       };
     };
