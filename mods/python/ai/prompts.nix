@@ -36,13 +36,13 @@ rec {
 
   langchain-community = buildPythonPackage rec {
     pname = "langchain-community";
-    version = "0.0.9";
+    version = "0.0.13";
     pyproject = true;
 
     src = fetchPypi {
       pname = "langchain_community";
       inherit version;
-      hash = "sha256-sU8Qskn9YbC449KJb4XC1XfrSl4q4BKR4qTrvhuzw3A=";
+      hash = "sha256-z2bG/3/L61gvXojuAN7Op/3spczd2nJQRvKO/Gl8Qac=";
     };
 
     nativeBuildInputs = with final; [
