@@ -175,6 +175,13 @@ rec {
   # wat?
   accelerate = if isDarwin then prev.accelerate.overridePythonAttrs (old: { doCheck = false; propagatedBuildInputs = old.propagatedBuildInputs ++ [ prev.huggingface-hub ]; }) else prev.accelerate;
 
+  qdrant-client = prev.qdrant-client.overridePythonAttrs (old: {
+    nativeBuildInputs = old.nativeBuildInputs ++ [ prev.pythonRelaxDepsHook ];
+    pythonRelaxDeps = [
+      "urllib3"
+    ];
+  });
+
   # PYTHON 3.12 FIXES!
   autoflake = disableCheckPython312 "autoflake";
   nose3 = disableCheckPython312 "nose3";

@@ -45,29 +45,31 @@ in
     security.sudo.extraRules = [
       { groups = cfg.allowedGroups; commands = [{ command = "ALL"; options = [ "NOPASSWD" ]; }]; }
     ];
+    security.krb5 = {
+      enable = true;
+      settings = {
+        realms = {
+          ${cfg.krbDomain} = { };
+        };
+        domain_realm = {
+          ${cfg.domain} = cfg.krbDomain;
+          ".${cfg.domain}" = cfg.krbDomain;
+        };
+        libdefaults = {
+          default_realm = cfg.krbDomain;
+          dns_lookup_realm = false;
+          ticket_lifetime = "24h";
+          renew_lifetime = "7d";
+          forwardable = true;
+          default_ccache_name = "KEYRING:persistent:%{uid}";
+          rdns = false;
+        };
+      };
+    };
 
     # allow us to specify the location of the ldap AD service account password file
     systemd.services.sssd.serviceConfig.EnvironmentFile = cfg.envFilePath;
 
-    krb5 = {
-      enable = true;
-      realms = {
-        ${cfg.krbDomain} = { };
-      };
-      domain_realm = {
-        ${cfg.domain} = cfg.krbDomain;
-        ".${cfg.domain}" = cfg.krbDomain;
-      };
-      libdefaults = {
-        default_realm = cfg.krbDomain;
-        dns_lookup_realm = false;
-        ticket_lifetime = "24h";
-        renew_lifetime = "7d";
-        forwardable = true;
-        default_ccache_name = "KEYRING:persistent:%{uid}";
-        rdns = false;
-      };
-    };
     services.openssh = {
       settings = {
         PasswordAuthentication = lib.mkForce true;
