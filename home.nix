@@ -763,15 +763,15 @@ in
           autoSetupRemote = true;
         };
         trim.bases = "main,master";
+        delta = {
+          navigate = true;
+          line-numbers = true;
+          side-by-side = true;
+          line-numbers-left-format = "";
+          line-numbers-right-format = "│ ";
+        };
       };
       lfs.enable = true;
-      delta = {
-        navigate = true;
-        line-numbers = true;
-        side-by-side = true;
-        line-numbers-left-format = "";
-        line-numbers-right-format = "│ ";
-      };
       ${attrIf (!isLinux) "signing"} = {
         key = "03C0CBEA6EAB9258";
         gpgPath = "gpg";
