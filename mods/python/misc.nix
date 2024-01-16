@@ -682,9 +682,14 @@ rec {
     };
 
     nativeBuildInputs = with final; [
+      pythonRelaxDepsHook
       setuptools
       setuptools-scm
       wheel
+    ];
+
+    pythonRelaxDeps = [
+      "boto3"
     ];
 
     propagatedBuildInputs = with final; [

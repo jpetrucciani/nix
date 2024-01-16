@@ -44,7 +44,6 @@ in
   programs = {
     home-manager.enable = true;
     home-manager.path = "${home-manager}";
-    btop.enable = true;
     htop.enable = true;
     dircolors.enable = true;
   };
