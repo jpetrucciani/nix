@@ -173,7 +173,7 @@ rec {
   };
 
   # wat?
-  accelerate = if isDarwin then prev.accelerate.overridePythonAttrs (_: { doCheck = false; }) else prev.accelerate;
+  accelerate = if isDarwin then prev.accelerate.overridePythonAttrs (old: { doCheck = false; propagatedBuildInputs = old.propagatedBuildInputs ++ [ prev.huggingface-hub ]; }) else prev.accelerate;
 
   # PYTHON 3.12 FIXES!
   autoflake = disableCheckPython312 "autoflake";

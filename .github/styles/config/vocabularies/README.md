@@ -1,4 +1,4 @@
-# Vocab
+# vocabularies
 
 This directory contains vocabulary to give to [vale](https://vale.sh/)
 
