@@ -6,26 +6,35 @@ in
 {
   langfuse = buildPythonPackage rec {
     pname = "langfuse";
-    version = "1.1.6";
+    version = "2.6.0";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-VxhgvheQvCqcTQnaHY4OGjG0lYmNOrB8PKwbB/Y0EEQ=";
+      hash = "sha256-JCxvtL55OJbaYdqGjT72O3tzRtiSP9ogISp4Zl2hI+k=";
     };
 
     nativeBuildInputs = with prev; [
+      pythonRelaxDepsHook
       poetry-core
+    ];
+
+    pythonRelaxDeps = [
+      "chevron"
+      "wrapt"
     ];
 
     propagatedBuildInputs = with prev; [
       attrs
       backoff
+      chevron
       httpx
       langchain
+      monotonic
       pydantic
       python-dateutil
       pytz
+      wrapt
     ];
 
     pythonImportsCheck = [ "langfuse" ];
