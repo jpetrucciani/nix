@@ -87,9 +87,11 @@ rec {
     ];
 
     propagatedBuildInputs = with final; [
+      anyio
       jsonpatch
       langsmith
       pydantic
+      pyyaml
       tenacity
     ];
 
