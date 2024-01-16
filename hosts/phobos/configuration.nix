@@ -66,6 +66,7 @@ in
     };
     valheim = {
       enable = true;
+      worldName = "trello_gold";
     };
     promtail = common.templates.promtail { inherit hostname; };
     prometheus.exporters = common.templates.prometheus_exporters { };
