@@ -759,17 +759,18 @@ in
           autocrlf = "input";
           hooksPath = "/dev/null";
         };
-        delta = {
-          navigate = true;
-          line-numbers = true;
-          side-by-side = true;
-          line-numbers-left-format = "";
-          line-numbers-right-format = "│ ";
-        };
         push = {
           autoSetupRemote = true;
         };
         trim.bases = "main,master";
+      };
+      lfs.enable = true;
+      delta = {
+        navigate = true;
+        line-numbers = true;
+        side-by-side = true;
+        line-numbers-left-format = "";
+        line-numbers-right-format = "│ ";
       };
       ${attrIf (!isLinux) "signing"} = {
         key = "03C0CBEA6EAB9258";
