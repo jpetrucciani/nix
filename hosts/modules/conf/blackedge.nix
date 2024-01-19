@@ -84,6 +84,7 @@ in
     services = {
       sssd = {
         enable = true;
+        sshAuthorizedKeysIntegration = true;
         config = let suffix = "ou=Users,ou=blackedge,dc=blackedge,dc=local"; in ''
           [sssd]
           config_file_version = 2
