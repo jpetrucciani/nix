@@ -87,7 +87,7 @@ in
         config = let suffix = "ou=Users,ou=blackedge,dc=blackedge,dc=local"; in ''
           [sssd]
           config_file_version = 2
-          services = nss, pam, ssh
+          services = nss, pam, ssh, sudo
           domains = ${cfg.domain}
 
           [domain/${cfg.domain}]
@@ -111,6 +111,10 @@ in
           ad_use_ldaps = True
           ldap_tls_cacert = ${cfg.caPath}
           simple_allow_groups = ${concatStringsSep "," cfg.allowedGroups}
+          ldap_user_name = sAMAccountName
+          ldap_user_extra_attrs = altSecurityIdentities:altSecurityIdentities
+          ldap_user_ssh_public_key = altSecurityIdentities
+          ldap_use_tokengroups = True
         '';
       };
       nscd.config = ''
