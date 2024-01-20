@@ -13,4 +13,6 @@
 (?i)pluto
 (?i)terra
 (?i)valheim
+(?i)palworld
+(?i)stationeers
 (?i)styx
