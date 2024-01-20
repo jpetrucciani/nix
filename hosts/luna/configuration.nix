@@ -49,7 +49,7 @@ in
 
   networking = {
     hostName = hostname;
-    networkmanager.enable = true;
+    # networkmanager.enable = true;
   };
 
   i18n.defaultLocale = common.defaultLocale;
@@ -95,7 +95,7 @@ in
       enable = false;
       worldName = "memeworld";
     };
-
+    palworld.enable = true;
     modded-minecraft-servers = with common.minecraft; {
       eula = true;
       instances = {
