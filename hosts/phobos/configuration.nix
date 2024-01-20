@@ -7,6 +7,7 @@ in
   imports = [
     "${common.home-manager}/nixos"
     ./hardware-configuration.nix
+    ../modules/games/palworld.nix
     ../modules/games/valheim.nix
   ];
 
