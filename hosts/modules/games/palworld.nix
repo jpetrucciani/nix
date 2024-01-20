@@ -3,6 +3,7 @@ let
   inherit (lib) mdDoc mkIf mkEnableOption mkOption;
   inherit (lib.types) path port str number;
   cfg = config.services.palworld;
+  join = builtins.concatStringsSep " ";
 in
 {
   imports = [ ];
@@ -54,20 +55,21 @@ in
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         # EnvironmentFile = cfg.secretFile;
-        ExecStartPre = ''
-          ${pkgs.steamcmd}/bin/steamcmd \
-            +force_install_dir ${cfg.dataDir} \
-            +login anonymous \
-            +app_update 2394010 \
-            +quit
-          cp -r ./linux64 ./sdk64
-        '';
-        ExecStart = ''
-          ${pkgs.steam-run}/bin/steam-run ./Pal/Binaries/Linux/PalServer-Linux-Test Pal \
-            --port "${toString cfg.port}" \
-            --players ${toString cfg.maxPlayers} \
-            --useperfthreads -NoAsyncLoadingThread -UseMultithreadForDS
-        '';
+        ExecStartPre = join [
+          "${pkgs.steamcmd}/bin/steamcmd"
+          "+force_install_dir ${cfg.dataDir}"
+          "+login anonymous"
+          "+app_update 2394010"
+          "+quit"
+        ];
+        ExecStart = join [
+          "${pkgs.steam-run}/bin/steam-run ${cfg.dataDir}/Pal/Binaries/Linux/PalServer-Linux-Test Pal"
+          "--port ${toString cfg.port}"
+          "--players ${toString cfg.maxPlayers}"
+          "--useperfthreads"
+          "-NoAsyncLoadingThread"
+          "-UseMultithreadForDS"
+        ];
         Nice = "-5";
         Restart = "always";
         StateDirectory = "palworld";
