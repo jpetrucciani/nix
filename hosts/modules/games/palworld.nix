@@ -62,7 +62,7 @@ in
             +quit
         '';
         ExecStart = ''
-          ${pkgs.steam-run}/bin/steam-run ./PalServer.sh \
+          ${pkgs.steam-run}/bin/steam-run ./Pal/Binaries/Linux/PalServer-Linux-Test Pal \
             --port "${toString cfg.port}" \
             --players ${toString cfg.maxPlayers} \
             --useperfthreads -NoAsyncLoadingThread -UseMultithreadForDS
