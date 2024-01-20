@@ -68,6 +68,7 @@ in
       enable = true;
       worldName = "trello_gold";
     };
+    palworld.enable = true;
     promtail = common.templates.promtail { inherit hostname; };
     prometheus.exporters = common.templates.prometheus_exporters { };
   } // common.services;
