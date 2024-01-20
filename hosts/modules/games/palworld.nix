@@ -60,6 +60,7 @@ in
             +login anonymous \
             +app_update 2394010 \
             +quit
+          cp -r ./linux64 ./sdk64
         '';
         ExecStart = ''
           ${pkgs.steam-run}/bin/steam-run ./Pal/Binaries/Linux/PalServer-Linux-Test Pal \
