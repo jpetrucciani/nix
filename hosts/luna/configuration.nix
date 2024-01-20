@@ -8,6 +8,7 @@ in
     "${common.home-manager}/nixos"
     "${common.mms}/nixos/modules/services/games/minecraft-servers"
     ./hardware-configuration.nix
+    ../modules/games/palworld.nix
     ../modules/games/stationeers.nix
   ];
 
@@ -91,9 +92,10 @@ in
       xkbVariant = "";
     };
     stationeers = {
-      enable = true;
+      enable = false;
       worldName = "memeworld";
     };
+
     modded-minecraft-servers = with common.minecraft; {
       eula = true;
       instances = {

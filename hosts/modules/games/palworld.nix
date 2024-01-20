@@ -35,11 +35,6 @@ in
       default = 32;
       description = "the amount of players to support";
     };
-    # secretFile = mkOption {
-    #   type = path;
-    #   default = "/etc/default/palworld";
-    #   description = "the secret file";
-    # };
   };
 
   config = mkIf cfg.enable {
@@ -51,19 +46,20 @@ in
     };
     users.groups.${cfg.group} = { };
 
-    systemd.services.palworld = {
+    systemd.services.palworld = let dir = cfg.dataDir; in {
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        # EnvironmentFile = cfg.secretFile;
         ExecStartPre = join [
           "${pkgs.steamcmd}/bin/steamcmd"
-          "+force_install_dir ${cfg.dataDir}"
+          "+force_install_dir ${dir}"
           "+login anonymous"
           "+app_update 2394010"
           "+quit"
+          "&& mkdir -p ${dir}/.steam/sdk64"
+          "&& cp ${dir}/linux64/steamclient.so ${dir}/.steam/sdk64/."
         ];
         ExecStart = join [
-          "${pkgs.steam-run}/bin/steam-run ${cfg.dataDir}/Pal/Binaries/Linux/PalServer-Linux-Test Pal"
+          "${pkgs.steam-run}/bin/steam-run ${dir}/Pal/Binaries/Linux/PalServer-Linux-Test Pal"
           "--port ${toString cfg.port}"
           "--players ${toString cfg.maxPlayers}"
           "--useperfthreads"
