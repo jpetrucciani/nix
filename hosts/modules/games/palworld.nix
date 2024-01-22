@@ -345,10 +345,10 @@ in
       };
       users.groups.${cfg.group} = { };
 
-      systemd.services.palworld = let dir = cfg.dataDir; in {
-        wantedBy = [ "multi-user.target" ];
-        serviceConfig = {
-          ExecStartPre = join [
+      systemd.services.palworld =
+        let
+          dir = cfg.dataDir;
+          pre_command = join [
             "${pkgs.steamcmd}/bin/steamcmd"
             "+force_install_dir ${dir}"
             "+login anonymous"
@@ -359,23 +359,28 @@ in
             "&& ls -alF ${world_settings_file}"
             "&& cp ${world_settings_file} ${dir}/Pal/Saved/Config/LinuxServer/PalWorldSettings2.ini"
           ];
-          ExecStart = join [
-            "${pkgs.steam-run}/bin/steam-run ${dir}/Pal/Binaries/Linux/PalServer-Linux-Test Pal"
-            "--port ${toString cfg.port}"
-            "--players ${toString cfg.maxPlayers}"
-            "--useperfthreads"
-            "-NoAsyncLoadingThread"
-            "-UseMultithreadForDS"
-          ];
-          Nice = "-5";
-          Restart = "always";
-          StateDirectory = "palworld";
-          User = cfg.user;
-          WorkingDirectory = cfg.dataDir;
+        in
+        {
+          wantedBy = [ "multi-user.target" ];
+          serviceConfig = {
+            ExecStartPre = "${pkgs.bash}/bin/bash -c '${pre_command}'";
+            ExecStart = join [
+              "${pkgs.steam-run}/bin/steam-run ${dir}/Pal/Binaries/Linux/PalServer-Linux-Test Pal"
+              "--port ${toString cfg.port}"
+              "--players ${toString cfg.maxPlayers}"
+              "--useperfthreads"
+              "-NoAsyncLoadingThread"
+              "-UseMultithreadForDS"
+            ];
+            Nice = "-5";
+            Restart = "always";
+            StateDirectory = "palworld";
+            User = cfg.user;
+            WorkingDirectory = cfg.dataDir;
+          };
+          environment = {
+            LD_LIBRARY_PATH = "linux64:${pkgs.glibc}/lib";
+          };
         };
-        environment = {
-          LD_LIBRARY_PATH = "linux64:${pkgs.glibc}/lib";
-        };
-      };
     };
 }
