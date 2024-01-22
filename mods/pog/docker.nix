@@ -58,10 +58,14 @@ rec {
         description = "mount the /nix store as readonly in the container";
         bool = true;
       }
+      {
+        name = "user";
+        description = "user to run as inside the container";
+      }
     ];
     script = ''
       debug "''${GREEN}running image '$image' docker!''${RESET}"
-      pod_name="$(echo "''${USER:-user}-dshell-''$(${_.uuid} | ${_.head} -c 8)" | tr -cd '[:alnum:]-')"
+      container_name="$(echo "''${USER:-user}-dshell-''$(${_.uuid} | ${_.head} -c 8)" | tr -cd '[:alnum:]-')"
       # shellcheck disable=SC2086
       ${_.d} run \
         --interactive \
@@ -69,7 +73,8 @@ rec {
         --rm \
         ''${port:+--publish $port:$port} \
         ''${nix:+--volume /nix:/nix:ro} \
-        --name "$pod_name" \
+        ''${user:+--user $user} \
+        --name "$container_name" \
         "$image" \
         sh -c "$command"
     '';
