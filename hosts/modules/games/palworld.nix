@@ -265,7 +265,7 @@ in
       # server settings
       ws = cfg.worldSettings;
       world_settings = lib.concatStringsSep "," [
-        "Difficulty${ws.Difficulty}"
+        "Difficulty=${ws.Difficulty}"
         "DayTimeSpeedRate=${ws.DayTimeSpeedRate}"
         "NightTimeSpeedRate=${ws.NightTimeSpeedRate}"
         "ExpRate=${ws.ExpRate}"
@@ -357,7 +357,7 @@ in
             "&& mkdir -p ${dir}/.steam/sdk64"
             "&& cp ${dir}/linux64/steamclient.so ${dir}/.steam/sdk64/."
             "&& ls -alF ${world_settings_file}"
-            "&& cp ${world_settings_file} ${dir}/Pal/Saved/Config/LinuxServer/PalWorldSettings2.ini"
+            "&& cp ${world_settings_file} ${dir}/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini"
           ];
         in
         {
