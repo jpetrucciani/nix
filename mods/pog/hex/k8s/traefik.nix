@@ -57,6 +57,7 @@ let
       , portHttps ? 8443
       , exposeMetrics ? false
       , portMetrics ? 9100
+      , allowExternalNameServices ? false
       , extraValues ? { }
       }:
       let
@@ -85,6 +86,9 @@ let
             "--entrypoints.web.http.redirections.entryPoint.scheme=https"
             "--entrypoints.web.http.redirections.entrypoint.permanent=true"
             "--entrypoints.web.http.redirections.entryPoint.to=:443"
+          ] else [ ]) ++ (if allowExternalNameServices then [
+            "--providers.kubernetescrd.allowexternalnameservices=true"
+            "--providers.kubernetesingress.allowexternalnameservices=true"
           ] else [ ]);
           deployment = {
             inherit replicas;
