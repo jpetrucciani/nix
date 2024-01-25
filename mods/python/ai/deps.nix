@@ -187,13 +187,13 @@ final: prev: with prev; rec {
 
   vellum-ai = buildPythonPackage rec {
     pname = "vellum-ai";
-    version = "0.0.30";
+    version = "0.2.2";
     format = "pyproject";
 
     src = fetchPypi {
       pname = "vellum_ai";
       inherit version;
-      hash = "sha256-iWJtl4WDeXqrCFjDHBBEgkG/PcqLfiJ9QkA92QPlQrY=";
+      hash = "sha256-Dlap6p7LbU2MyvJj/2suoGOaKeynW7XFK4EJJ8GNNNY=";
     };
 
     nativeBuildInputs = [
@@ -203,6 +203,7 @@ final: prev: with prev; rec {
 
     pythonRelaxDeps = [
       "httpx"
+      "pydantic"
     ];
 
     propagatedBuildInputs = [
