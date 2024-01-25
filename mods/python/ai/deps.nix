@@ -136,12 +136,12 @@ final: prev: with prev; rec {
 
   posthog = buildPythonPackage rec {
     pname = "posthog";
-    version = "2.5.0";
+    version = "3.3.2";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-dgHvdbSD62emIpyv7ALaliT21G32EGZ3HKnj+YYoT8M=";
+      hash = "sha256-c0v4nzw3JgWou/Kwf2AIhShyCRRddHsJzNAExZg0dQ4=";
     };
 
     propagatedBuildInputs = [
