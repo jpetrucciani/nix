@@ -12,7 +12,7 @@ let
     , index_url ? "${base_url}/index.yaml"
     , chart_url ? "${base_url}/${name}-{1}.tgz"
     , chart_name ? name
-    , last ? 10
+    , last ? 20
     , filter_out ? ""
     }:
     let
@@ -164,6 +164,7 @@ rec {
     name = "kube-prometheus-stack";
     base_url = "https://prometheus-community.github.io/helm-charts";
     chart_url = "https://github.com/prometheus-community/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
+    last = 80;
   };
 
   chart_scan_loki = grafana_chart { name = "loki"; prefix = "helm-"; };
