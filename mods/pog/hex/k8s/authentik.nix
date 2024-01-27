@@ -8,7 +8,7 @@ let
       sha256 = "1pfjbz5ll3fgqw4qh4axri8fb11kjcf771zi09lxj2jxki6c9m36";
     };
     version = rec {
-      _v = v: s: args: chart (args // { version = v; sha256 = s; });
+      _v = hex.k8s._.version chart;
       latest = v2023-10-6;
       v2023-10-6 = _v defaults.version defaults.sha256;
       v2023-8-3 = _v "2023.8.3" "1n0pqzmnypls3s9gggnsnyapi2b96isyd8p3x0cvzrysx5ah9ql1";
@@ -25,19 +25,7 @@ let
       v2022-7-3 = _v "2022.7.3" "05vv6wjyf1vkfy2qmp4yshb4pxyg246fkpc6v6gp3b5h5y55ds30";
     };
     chart_url = version: "https://github.com/goauthentik/helm/releases/download/authentik-${version}/authentik-${version}.tgz";
-    chart =
-      { name ? defaults.name
-      , namespace ? defaults.namespace
-      , values ? [ ]
-      , sets ? [ ]
-      , version ? defaults.version
-      , sha256 ? defaults.sha256
-      , forceNamespace ? true
-      , extraFlags ? [ hex.k8s.helm.constants.flags.create-namespace ]
-      }: hex.k8s.helm.build {
-        inherit name namespace sha256 values version forceNamespace sets extraFlags;
-        url = chart_url version;
-      };
+    chart = hex.k8s._.chart { inherit defaults chart_url; };
   };
 in
 authentik

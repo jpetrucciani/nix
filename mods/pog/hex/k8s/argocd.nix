@@ -8,7 +8,7 @@ let
       sha256 = "1illqq069qzd7xf66zvyjkiy7xr1x0d1k9hy0w2svmv9q9ffiars";
     };
     version = rec {
-      _v = v: s: args: chart (args // { version = v; sha256 = s; });
+      _v = hex.k8s._.version chart;
       latest = v5-19-6;
       v5-19-6 = _v defaults.version defaults.sha256;
       v5-18-1 = _v "5.18.1" "1dqa8vpsxql3kyfraysdpfignji12f3nzaazv0s6k1s0fwbc2d3m";
@@ -19,20 +19,7 @@ let
       v4-10-6 = _v "4.10.6" "15bmai7k9bih5v3l29s5pvzgdqcbd4ff9302vz9xrgkdbbwm8bfp";
     };
     chart_url = version: "https://github.com/argoproj/argo-helm/releases/download/argo-cd-${version}/argo-cd-${version}.tgz";
-    chart =
-      { name ? defaults.name
-      , namespace ? defaults.namespace
-      , values ? [ ]
-      , sets ? [ ]
-      , version ? defaults.version
-      , sha256 ? defaults.sha256
-      , forceNamespace ? true
-      , extraFlags ? [ hex.k8s.helm.constants.flags.create-namespace ]
-      , sortYaml ? false
-      }: hex.k8s.helm.build {
-        inherit name namespace values sets version sha256 extraFlags forceNamespace sortYaml;
-        url = chart_url version;
-      };
+    chart = hex.k8s._.chart { inherit defaults chart_url; };
   };
 in
 argocd

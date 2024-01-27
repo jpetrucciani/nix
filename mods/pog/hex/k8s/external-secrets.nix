@@ -11,7 +11,7 @@ let
       store_name = "gsm";
     };
     version = rec {
-      _v = v: s: args: chart (args // { version = v; sha256 = s; });
+      _v = hex.k8s._.version chart;
       latest = v0-9-11;
       v0-9-11 = _v defaults.version defaults.sha256;
       v0-9-10 = _v "0.9.10" "1c6qvzmwqndyw5wqs9zkndgl5r269vgi1chw8y9px1fqcywy8j77";

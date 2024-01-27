@@ -10,7 +10,7 @@ let
       sha256 = "14crjr25zanrcq4mji9c01rfrcdqciz8nxw7yf169h2iljbp380r";
     };
     version = rec {
-      _v = v: s: args: chart (args // { version = v; sha256 = s; });
+      _v = hex.k8s._.version chart;
       latest = v26-0-0;
       v26-0-0 = _v defaults.version defaults.sha256;
       v25-0-0 = _v "25.0.0" "0lwix9b6yr7mnlyljqn3530qn8r9i8vazazs00xiccvs82fhmbxr";

@@ -625,6 +625,20 @@ rec {
       # shorthands
       flag = var.notEmpty;
       notFlag = var.empty;
+
+      # tmp stuff
+      tmp =
+        let
+          mktmp = "${final.coreutils}/bin/mktemp";
+          ext = extension: ''"$(${mktmp} --suffix=.${extension})"'';
+        in
+        {
+          _mktemp = mktmp;
+          json = ext "json";
+          yaml = ext "yaml";
+          csv = ext "csv";
+          txt = ext "txt";
+        };
     };
     __functor = _: pogFn;
   };

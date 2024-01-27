@@ -4,13 +4,15 @@ let
     defaults = {
       name = "sentry";
       namespace = "sentry";
-      version = "20.12.1";
-      sha256 = "1jvhi18yp88lvqg3ppwknhjv1gwda3kn55pzibf1jlg09ygk412z";
+      version = "21.0.0";
+      sha256 = "0csjqlhf2x0vd9bxdv2kwji03bx2z27g3vnyhds9m0h4fmiclsbw";
     };
     version = rec {
-      _v = v: s: args: chart (args // { version = v; sha256 = s; });
-      latest = v20-12-1;
-      v20-12-1 = _v defaults.version defaults.sha256;
+      _v = hex.k8s._.version chart;
+      latest = v21-0-0;
+      v21-0-0 = _v "21.0.0" "0csjqlhf2x0vd9bxdv2kwji03bx2z27g3vnyhds9m0h4fmiclsbw"; # 2024-01-17
+      v20-12-2 = _v "20.12.2" "145r75rlxwk4xlhxdlf8lidmi9z8ljxrdi7mqjp72qgm35qc26n1"; # 2024-01-17
+      v20-12-1 = _v "20.12.1" "1jvhi18yp88lvqg3ppwknhjv1gwda3kn55pzibf1jlg09ygk412z";
       v20-11-0 = _v "20.11.0" "1hdj512c69ja4rsff44c93zq9imlij3ky7w2k0g3qycljghas4zb";
       v20-10-1 = _v "20.10.1" "11l4fqg5l38n5kp68xj1ls3153m3bdzjks9j3w29p1j7ygn80vz3";
       v20-9-3 = _v "20.9.3" "0k2mf96kpjrfnjwqz21nal6pgx2bfv8ma5nik42ma0kbwisdb4yj";
@@ -20,21 +22,7 @@ let
       v20-3-0 = _v "20.3.0" "0f09rlq6m98n9jjlk42rrkhyf39jh4ppz5rmx2ngx5nipkvrjkj9";
     };
     chart_url = version: "https://sentry-kubernetes.github.io/charts/sentry-${version}.tgz";
-    chart =
-      { name ? defaults.name
-      , namespace ? defaults.namespace
-      , values ? [ ]
-      , sets ? [ ]
-      , version ? defaults.version
-      , sha256 ? defaults.sha256
-      , forceNamespace ? true
-      , extraFlags ? [ hex.k8s.helm.constants.flags.create-namespace ]
-      , sortYaml ? false
-      , postRender ? ""
-      }: hex.k8s.helm.build {
-        inherit name namespace values sets version sha256 extraFlags forceNamespace sortYaml postRender;
-        url = chart_url version;
-      };
+    chart = hex.k8s._.chart { inherit defaults chart_url; };
   };
 in
 sentry

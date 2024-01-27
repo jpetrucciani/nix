@@ -1,7 +1,7 @@
 pkgs:
 rec {
-  inherit (builtins) isList isAttrs isInt isBool isFloat;
-  inherit (builtins) attrNames concatMap concatStringsSep substring replaceStrings stringLength;
+  inherit (pkgs.lib) isList isAttrs isInt isBool isFloat;
+  inherit (pkgs.lib) attrNames concatMap concatStringsSep substring replaceStrings stringLength;
   inherit (pkgs.lib.strings) toJSON toLower;
   inherit (pkgs.lib.trivial) isFunction;
   annotations = {

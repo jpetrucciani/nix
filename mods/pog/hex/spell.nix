@@ -37,6 +37,26 @@ let
     traefik = import ./k8s/traefik.nix params;
     whoogle = import ./k8s/whoogle.nix params;
     woodpecker = import ./k8s/woodpecker.nix params;
+    _ = {
+      version = chart_url_fn: v: s: args: chart_url_fn (args // { version = v; sha256 = s; });
+      chart = { defaults, chart_url, extraSets ? [ ] }:
+        { name ? defaults.name
+        , namespace ? defaults.namespace
+        , values ? [ ]
+        , sets ? [ ] ++ extraSets
+        , version ? defaults.version
+        , sha256 ? defaults.sha256
+        , forceNamespace ? true
+        , extraFlags ? [ ]
+        , sortYaml ? false
+        , preRender ? ""
+        , postRender ? ""
+        }: hex.k8s.helm.build {
+          inherit name namespace values sets version sha256 forceNamespace sortYaml preRender postRender;
+          extraFlags = extraFlags ++ [ "--version=${version}" ];
+          url = chart_url version;
+        };
+    };
   };
   hex = (import ./hex.nix pkgs) // { inherit k8s; };
   params = { inherit hex pkgs; };

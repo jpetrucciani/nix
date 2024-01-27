@@ -1,6 +1,7 @@
 { hex, ... }:
 let
   inherit (hex) ifNotEmptyList ifNotNull toYAML;
+  prom_chart = name: version: "https://github.com/prometheus-community/helm-charts/releases/download/${name}-${version}/${name}-${version}.tgz";
 in
 {
   gmp = {
@@ -44,12 +45,13 @@ in
     defaults = {
       name = "prometheus";
       namespace = "default";
-      version = "56.1.0";
-      sha256 = "18vhd3455pq894gnanczkns6mw18byk9hhvyn8iz1ss17wyqcaif";
+      version = "56.2.0";
+      sha256 = "0halhmdxyrn5drimyx1hp9sgxyh1qcz9gsb5vn3jmbsx0grv94yn";
     };
     version = rec {
-      _v = v: s: args: chart (args // { version = v; sha256 = s; });
-      latest = v56-1-0;
+      _v = hex.k8s._.version chart;
+      latest = v56-2-0;
+      v56-2-0 = _v "56.2.0" "0halhmdxyrn5drimyx1hp9sgxyh1qcz9gsb5vn3jmbsx0grv94yn";
       v56-1-0 = _v "56.1.0" "18vhd3455pq894gnanczkns6mw18byk9hhvyn8iz1ss17wyqcaif";
       v55-11-0 = _v "55.11.0" "06l4bn25illfwm2k0jlibxz2ndqbl09xg7mim2ym0rim0m0rljfl";
       v54-2-2 = _v "54.2.2" "051mdacf2z442qqmj4gp62h8xx0wjm4k5jh8sxnd8ar5nr24jyhs";
@@ -61,24 +63,51 @@ in
       v48-6-0 = _v "48.6.0" "0xsfvnl9vfh7skjlim0xgw6dxfp393lr0001sv1icmpfq8fkvlrr";
       v48-4-0 = _v "48.4.0" "0wvl3n2ds3jgfb0cbwp1dq59xh7zyqh7mvhw6ndiyzsyssipg573";
     };
-    chart_url = version:
-      let name = "kube-prometheus-stack"; in
-      "https://github.com/prometheus-community/helm-charts/releases/download/${name}-${version}/${name}-${version}.tgz";
-    chart =
-      { name ? defaults.name
-      , namespace ? defaults.namespace
-      , values ? [ ]
-      , sets ? [ ]
-      , version ? defaults.version
-      , sha256 ? defaults.sha256
-      , forceNamespace ? false
-      , extraFlags ? [
-          "--version=${version}"
-        ]
-      , sortYaml ? false
-      }: hex.k8s.helm.build {
-        inherit name namespace values sets version sha256 extraFlags forceNamespace sortYaml;
-        url = chart_url version;
+    chart_url = prom_chart "kube-prometheus-stack";
+    chart = hex.k8s._.chart { inherit defaults chart_url; };
+  };
+  exporters = {
+    elasticsearch = rec {
+      defaults = {
+        name = "prometheus-elasticsearch-exporter";
+        namespace = "default";
+        version = "5.4.0";
+        sha256 = "0rbrq4k0rqvpxx4xhb7sf6m4jdz2giwv6kfmsizbk7fjw05yiilx";
       };
+      version = rec {
+        _v = hex.k8s._.version chart;
+        v5-4-0 = _v "5.4.0" "0rbrq4k0rqvpxx4xhb7sf6m4jdz2giwv6kfmsizbk7fjw05yiilx"; # 2023-12-25
+      };
+      chart_url = prom_chart "prometheus-elasticsearch-exporter";
+      chart = hex.k8s._.chart { inherit defaults chart_url; };
+    };
+    mongodb = rec {
+      defaults = {
+        name = "prometheus-mongodb-exporter";
+        namespace = "default";
+        version = "3.5.0";
+        sha256 = "08sg78nqld5h7ynfznf3zn185s9nxsj278xh5p1waw6hxk8993gk";
+      };
+      version = rec {
+        _v = hex.k8s._.version chart;
+        v3-5-0 = _v "3.5.0" "08sg78nqld5h7ynfznf3zn185s9nxsj278xh5p1waw6hxk8993gk"; # 2023-12-14
+      };
+      chart_url = prom_chart "prometheus-mongodb-exporter";
+      chart = hex.k8s._.chart { inherit defaults chart_url; };
+    };
+    postgres = rec {
+      defaults = {
+        name = "prometheus-postgres-exporter";
+        namespace = "default";
+        version = "5.3.0";
+        sha256 = "0zimga6ya5f2cf736yc0svmd8bs7v7nhrahsm56xzj26r89cwrh9";
+      };
+      version = rec {
+        _v = hex.k8s._.version chart;
+        v5-3-0 = _v "5.3.0" "0zimga6ya5f2cf736yc0svmd8bs7v7nhrahsm56xzj26r89cwrh9";
+      };
+      chart_url = prom_chart "prometheus-postgres-exporter";
+      chart = hex.k8s._.chart { inherit defaults chart_url; };
+    };
   };
 }

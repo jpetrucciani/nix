@@ -1,9 +1,14 @@
 final: prev:
 let
-  grafana_chart = { name, prefix ? "", filter_out ? "" }: _chart_scan {
-    inherit name filter_out;
+  grafana_chart = { name, prefix ? "", filter_out ? "", last ? 20 }: _chart_scan {
+    inherit name filter_out last;
     base_url = "https://grafana.github.io/helm-charts";
     chart_url = "https://github.com/grafana/helm-charts/releases/download/${prefix}${name}-{1}/${name}-{1}.tgz";
+  };
+  prometheus_chart = { name, prefix ? "", filter_out ? "", last ? 40 }: _chart_scan {
+    inherit name filter_out last;
+    base_url = "https://prometheus-community.github.io/helm-charts";
+    chart_url = "https://github.com/prometheus-community/helm-charts/releases/download/${prefix}${name}-{1}/${name}-{1}.tgz";
   };
   _chart_scan =
     { name
@@ -21,15 +26,48 @@ let
       yq = "${final.yq-go}/bin/yq";
       parallel = "${final.parallel}/bin/parallel --will-cite --keep-order -j0 --colsep ' '";
       _filter = if (builtins.stringLength filter_out) > 0 then ''${final.gnused}/bin/sed -E -e '/${filter_out}/,+1d' | '' else "";
+      v_format = final.writeTextFile {
+        name = "v_format.py";
+        text = ''
+          import json
+          import sys
+          from datetime import datetime
+
+          data = json.load(open(sys.argv[1]))
+          def _format(entry: dict[str, str]) -> str:
+              version = entry["version"]
+              sha256 = entry["sha256"]
+              date = datetime.fromisoformat(entry["date"]).strftime("%Y-%m-%d")
+              attr = version.replace(".", "-").strip()
+              return f'v{attr} = _v "{version}" "{sha256}"; # {date}'
+
+          print("\n".join(_format(x) for x in data))
+        '';
+      };
     in
     final.pog {
       name = "chart_scan_${exe_name}";
       description = "a quick and easy way to get the latest x releases of the '${exe_name}' chart!";
-      script = ''
+      flags = [
+        {
+          name = "last";
+          description = "the number of chart versions to load and hash";
+          default = toString last;
+        }
+        {
+          name = "vformat";
+          description = "print in v format for updating the hex source";
+          bool = true;
+        }
+      ];
+      shortDefaultFlags = false;
+      script = helpers: with helpers; ''
         # temp files
-        temp_resp="$(${mktemp} --suffix=.yaml)"
-        temp_json="$(${mktemp} --suffix=.json)"
-        temp_csv="$(${mktemp} --suffix=.csv)"
+        temp_resp=${tmp.yaml}
+        temp_json=${tmp.json}
+        temp_csv=${tmp.csv}
+        final_json=${tmp.json}
+        count="$((last*2))"
 
         # grab index for this chart
         ${final.curl}/bin/curl -L -s '${index_url}' >"$temp_resp"
@@ -37,7 +75,7 @@ let
         debug "pulled chart data to $temp_resp"
 
         <"$temp_resp" ${yq} '.[].${chart_name}.[] | [{"version": .version, "date": .created}]' | ${_filter}
-            ${final.coreutils}/bin/head -n ${toString (last * 2)} |
+            ${final.coreutils}/bin/head -n "$count" |
             ${yq} -o=json >"$temp_json"
 
         debug "parsed json into $temp_json"
@@ -50,7 +88,13 @@ let
         debug "formed json into csv at $temp_csv"
 
         # format as json
-        ${yq} "$temp_csv" -p=csv -o=json
+        ${yq} "$temp_csv" -p=csv -o=json >"$final_json"
+
+        if ${flag "vformat"}; then
+          ${final.python3}/bin/python ${v_format} "$final_json"
+        else
+          ${yq} "$final_json"
+        fi
       '';
     };
 in
@@ -160,12 +204,14 @@ rec {
     filter_out = "alpha|beta|dev";
   };
 
-  chart_scan_kube-prometheus-stack = _chart_scan rec {
+  chart_scan_kube-prometheus-stack = prometheus_chart {
     name = "kube-prometheus-stack";
-    base_url = "https://prometheus-community.github.io/helm-charts";
-    chart_url = "https://github.com/prometheus-community/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
     last = 80;
   };
+
+  chart_scan_prometheus-elasticsearch-exporter = prometheus_chart { name = "prometheus-elasticsearch-exporter"; };
+  chart_scan_prometheus-mongodb-exporter = prometheus_chart { name = "prometheus-mongodb-exporter"; last = 10; };
+  chart_scan_prometheus-postgres-exporter = prometheus_chart { name = "prometheus-postgres-exporter"; };
 
   chart_scan_loki = grafana_chart { name = "loki"; prefix = "helm-"; };
   chart_scan_mimir = grafana_chart { name = "mimir-distributed"; filter_out = "weekly|rc"; };
@@ -224,6 +270,9 @@ rec {
     chart_scan_otf
     chart_scan_postgres-operator
     chart_scan_postgres-operator-ui
+    chart_scan_prometheus-postgres-exporter
+    chart_scan_prometheus-elasticsearch-exporter
+    chart_scan_prometheus-mongodb-exporter
     chart_scan_redis-operator
     chart_scan_robusta
     chart_scan_sentry

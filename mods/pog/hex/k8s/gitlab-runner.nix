@@ -8,7 +8,7 @@ let
       sha256 = "1k0gdg2mvm98s8msrsnr0aqsblhigbr7y6fg263yd6mmg8yzxlcp";
     };
     version = rec {
-      _v = v: s: args: chart (args // { version = v; sha256 = s; });
+      _v = hex.k8s._.version chart;
       latest = v0-59-3;
       v0-60-0 = _v "0.60.0" "1k0gdg2mvm98s8msrsnr0aqsblhigbr7y6fg263yd6mmg8yzxlcp";
       v0-59-3 = _v "0.59.3" "11i6p6bp2ysxyv6v22lv7z8d6nc8nlibvbvvrqxnivrp7wjl4yah";
@@ -23,19 +23,7 @@ let
       v0-50-1 = _v "0.50.1" "1i80asaxdpm2pdvya924lix1qwxq9zn89vr19a6jw42fyr74rvyf";
     };
     chart_url = version: "https://gitlab-charts.s3.amazonaws.com/gitlab-runner-${version}.tgz";
-    chart =
-      { name ? defaults.name
-      , namespace ? defaults.namespace
-      , values ? [ ]
-      , sets ? [ ]
-      , version ? defaults.version
-      , sha256 ? defaults.sha256
-      , forceNamespace ? true
-      , extraFlags ? [ hex.k8s.helm.constants.flags.create-namespace ]
-      }: hex.k8s.helm.build {
-        inherit name namespace sha256 values version forceNamespace sets extraFlags;
-        url = chart_url version;
-      };
+    chart = hex.k8s._.chart { inherit defaults chart_url; };
   };
 in
 gitlab-runner
