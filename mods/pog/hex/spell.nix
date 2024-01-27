@@ -43,7 +43,7 @@ let
         { name ? defaults.name
         , namespace ? defaults.namespace
         , values ? [ ]
-        , sets ? [ ] ++ extraSets
+        , sets ? [ ]
         , version ? defaults.version
         , sha256 ? defaults.sha256
         , forceNamespace ? true
@@ -52,8 +52,9 @@ let
         , preRender ? ""
         , postRender ? ""
         }: hex.k8s.helm.build {
-          inherit name namespace values sets version sha256 forceNamespace sortYaml preRender postRender;
+          inherit name namespace values version sha256 forceNamespace sortYaml preRender postRender;
           extraFlags = extraFlags ++ [ "--version=${version}" ];
+          sets = sets ++ extraSets;
           url = chart_url version;
         };
     };

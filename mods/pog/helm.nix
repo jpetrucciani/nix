@@ -21,7 +21,6 @@ let
     , filter_out ? ""
     }:
     let
-      mktemp = "${final.coreutils}/bin/mktemp";
       jq = final.lib.getExe final.jaq;
       yq = "${final.yq-go}/bin/yq";
       parallel = "${final.parallel}/bin/parallel --will-cite --keep-order -j0 --colsep ' '";
