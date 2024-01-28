@@ -8,13 +8,13 @@ in
 rec {
   tesla-py = buildPythonPackage rec {
     pname = "tesla-py";
-    version = "2.8.0";
+    version = "2.9.0";
     format = "setuptools";
 
     src = fetchPypi {
       pname = "TeslaPy";
       inherit version;
-      hash = "sha256-+LdOKxqFjvhkWzhsKkujt9tYQb8yqi3LgBO48JtT7NM=";
+      hash = "sha256-8k7l8aYK+7DNzoZJeIJl9mAtagzVGqfWyTPVLzv8V1c=";
     };
 
     propagatedBuildInputs = with final; [
