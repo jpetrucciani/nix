@@ -321,12 +321,12 @@ rec {
 
   nicegui = buildPythonPackage rec {
     pname = "nicegui";
-    version = "1.4.11";
+    version = "1.4.13";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-5Cy1hzNZqJ2gtU67Rome69gsO0QfxztanlDVYL6uNtI=";
+      hash = "sha256-YpcAASOV+aJTnU9YFu4YWtQZEFof+3nHkWKddYqQF0s=";
     };
 
     postPatch = ''
@@ -341,6 +341,7 @@ rec {
 
     pythonRelaxDeps = [
       "aiohttp"
+      "fastapi"
       "httpx"
       "uvicorn"
       "watchfiles"
