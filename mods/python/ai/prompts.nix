@@ -239,14 +239,14 @@ rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.9.39";
+    version = "0.9.40";
     pyproject = true;
 
     src = fetchFromGitHub {
       owner = "run-llama";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-yfBY5FS8lxuXj7z9qWcUxQcGWRIoO56RsMA4kmqqRtw=";
+      hash = "sha256-mRRGTCi9MyEQzzXft7CXEJM7/w6p3Es7vidPQtPtofA=";
     };
 
     nativeBuildInputs = with prev; [
@@ -269,6 +269,7 @@ rec {
     propagatedBuildInputs = with prev; [
       beautifulsoup4
       deprecated
+      dirtyjson
       faiss
       fsspec
       langchain
