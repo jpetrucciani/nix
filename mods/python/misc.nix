@@ -732,29 +732,4 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
-
-  dirtyjson = buildPythonPackage rec {
-    pname = "dirtyjson";
-    version = "1.0.8";
-    pyproject = true;
-
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-kMpKGPP/MM6EnRANz0oAOVPHnTojSO8Fbx2cIiMaJf0=";
-    };
-
-    nativeBuildInputs = with final; [
-      setuptools
-      wheel
-    ];
-
-    pythonImportsCheck = [ "dirtyjson" ];
-
-    meta = {
-      description = "JSON decoder for Python that can extract data from the muck";
-      homepage = "https://pypi.org/project/dirtyjson/";
-      license = licenses.afl21;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
 }
