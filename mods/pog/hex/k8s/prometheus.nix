@@ -95,6 +95,20 @@ in
       chart_url = prom_chart "prometheus-mongodb-exporter";
       chart = hex.k8s._.chart { inherit defaults chart_url; };
     };
+    mysql = rec {
+      defaults = {
+        name = "prometheus-mysql-exporter";
+        namespace = "default";
+        version = "2.4.0";
+        sha256 = "0ksm6hxwka2wiw7lzngs27xffm4i2sp9h0i2xqhbviwkd9pppwd4";
+      };
+      version = rec {
+        _v = hex.k8s._.version chart;
+        v2-4-0 = _v "2.4.0" "0ksm6hxwka2wiw7lzngs27xffm4i2sp9h0i2xqhbviwkd9pppwd4"; # 2024-01-10
+      };
+      chart_url = prom_chart "prometheus-mysql-exporter";
+      chart = hex.k8s._.chart { inherit defaults chart_url; };
+    };
     postgres = rec {
       defaults = {
         name = "prometheus-postgres-exporter";
@@ -107,6 +121,20 @@ in
         v5-3-0 = _v "5.3.0" "0zimga6ya5f2cf736yc0svmd8bs7v7nhrahsm56xzj26r89cwrh9";
       };
       chart_url = prom_chart "prometheus-postgres-exporter";
+      chart = hex.k8s._.chart { inherit defaults chart_url; };
+    };
+    redis = rec {
+      defaults = {
+        name = "prometheus-redis-exporter";
+        namespace = "default";
+        version = "6.1.1";
+        sha256 = "0im2gkiijz0ggsnw39my7j0w1f8m7msd5hkr2930i2p2cn5mmp8j";
+      };
+      version = rec {
+        _v = hex.k8s._.version chart;
+        v6-1-1 = _v "6.1.1" "0im2gkiijz0ggsnw39my7j0w1f8m7msd5hkr2930i2p2cn5mmp8j"; # 2024-01-30
+      };
+      chart_url = prom_chart "prometheus-redis-exporter";
       chart = hex.k8s._.chart { inherit defaults chart_url; };
     };
   };
