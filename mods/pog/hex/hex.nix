@@ -14,6 +14,10 @@ rec {
   flat = x: join (map (y: if isFunction y then y { } else y) (flatten x));
   join = x: concatStringsSep "\n" (flatten x);
   unlines = indent: values: "\n" + concatStringsSep "\n" (map (v: "${indent}${v}") values) + "\n";
+  toYAMLDoc = x: ''
+    ---
+    ${toYAML x}
+  '';
   toYAML = _toYAML "";
   _toYAML = indent: value:
     if isAttrs value
