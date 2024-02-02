@@ -35,6 +35,11 @@ in
       default = 32;
       description = "the amount of players to support";
     };
+    secretFile = mkOption {
+      type = path;
+      default = "/etc/default/palworld";
+      description = "";
+    };
     # world settings
     worldSettings = {
       Difficulty = mkOption {
@@ -257,6 +262,11 @@ in
         type = str;
         default = "True";
       };
+      ServerPassword = mkOption {
+        type = str;
+        default = "$PALWORLD_SERVER_PASSWORD";
+        description = "the password to use on the server. defaults to loading from env. set to empty string for no password";
+      };
     };
   };
 
@@ -322,7 +332,7 @@ in
         "bUseAuth=${ws.bUseAuth}"
         ''ServerDescription=""''
         ''AdminPassword=""''
-        ''ServerPassword=""''
+        ''ServerPassword="${ws.ServerPassword}"''
         ''Region=""''
         ''ServerName="nix-palworld"''
         ''BanListURL="https://api.palworldgame.com/api/banlist.txt"''
@@ -357,12 +367,13 @@ in
             "&& mkdir -p ${dir}/.steam/sdk64"
             "&& cp ${dir}/linux64/steamclient.so ${dir}/.steam/sdk64/."
             "&& ls -alF ${world_settings_file}"
-            "&& cp ${world_settings_file} ${dir}/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini"
+            "&& ${pkgs.envsubst}/bin/envsubst <${world_settings_file} >${dir}/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini"
           ];
         in
         {
           wantedBy = [ "multi-user.target" ];
           serviceConfig = {
+            EnvironmentFile = cfg.secretFile;
             ExecStartPre = "${pkgs.bash}/bin/bash -c '${pre_command}'";
             ExecStart = join [
               "${pkgs.steam-run}/bin/steam-run ${dir}/Pal/Binaries/Linux/PalServer-Linux-Test Pal"
