@@ -262,10 +262,23 @@ in
         type = str;
         default = "True";
       };
+      AdminPassword = mkOption {
+        type = str;
+        default = "";
+        description = "the admin password for the server. leave unset for no admin functionality";
+      };
       ServerPassword = mkOption {
         type = str;
-        default = "$PALWORLD_SERVER_PASSWORD";
-        description = "the password to use on the server. defaults to loading from env. set to empty string for no password";
+        default = "";
+        description = "the password to use on the server. leave empty for no password. you can use env vars like so: '$PALWORLD_SERVER_PASSWORD'";
+      };
+      ServerDescription = mkOption {
+        type = str;
+        default = "";
+      };
+      ServerName = mkOption {
+        type = str;
+        default = "nix-palworld";
       };
     };
   };
@@ -330,11 +343,11 @@ in
         "RCONEnabled=${ws.RCONEnabled}"
         "RCONPort=${ws.RCONPort}"
         "bUseAuth=${ws.bUseAuth}"
-        ''ServerDescription=""''
-        ''AdminPassword=""''
+        ''ServerDescription="${ws.ServerDescription}"''
+        ''AdminPassword="${ws.AdminPassword}"''
         ''ServerPassword="${ws.ServerPassword}"''
         ''Region=""''
-        ''ServerName="nix-palworld"''
+        ''ServerName="${ws.ServerName}"''
         ''BanListURL="https://api.palworldgame.com/api/banlist.txt"''
       ];
       world_settings_text = ''

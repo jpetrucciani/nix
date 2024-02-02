@@ -95,7 +95,10 @@ in
       enable = false;
       worldName = "memeworld";
     };
-    palworld.enable = true;
+    palworld = {
+      enable = true;
+      worldSettings.ServerPassword = "$PALWORLD_SERVER_PASSWORD";
+    };
     modded-minecraft-servers = with common.minecraft; {
       eula = true;
       instances = {
