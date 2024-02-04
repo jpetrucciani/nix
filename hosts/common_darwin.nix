@@ -131,7 +131,6 @@ in
           "sshfs"
           "qemu"
           "unixodbc"
-          "modularml/packages/modular"
         ];
         onActivation = {
           autoUpdate = true;
