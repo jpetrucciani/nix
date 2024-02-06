@@ -678,21 +678,15 @@ final: prev: with prev; rec {
 
   sqlmodel = buildPythonPackage rec {
     pname = "sqlmodel";
-    version = "0.0.8";
+    version = "0.0.14";
     format = "pyproject";
 
-    disabled = pythonOlder "3.7";
-    # src = pkgs.fetchFromGitHub {
-    #   owner = "tiangolo";
-    #   repo = "sqlmodel";
-    #   rev = version;
-    #   sha256 = "sha256-HASWDm64vZsOnK+cL2/G9xiTbsBD2RoILXrigZMQncQ=";
-    # };
+    disabled = pythonOlder "3.9";
     src = pkgs.fetchFromGitHub {
-      owner = "farahats9";
+      owner = "tiangolo";
       repo = "sqlmodel";
-      rev = "4ce8d0720e9d76069257e46c35b1219b8ab72142";
-      hash = "sha256-flFrjwkxaqjttvuS5ezgwcbHamy7Qr2COf65Q/AM4Vw=";
+      rev = version;
+      sha256 = "sha256-EEOS7c0ospo7qjqPQkKwYXeVmBR5DueONzmjspV6w7w=";
     };
 
     pythonImportsCheck = [
