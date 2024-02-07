@@ -239,14 +239,14 @@ rec {
 
   llama-index = buildPythonPackage rec {
     pname = "llama-index";
-    version = "0.9.44";
+    version = "0.9.45";
     pyproject = true;
 
     src = fetchFromGitHub {
       owner = "run-llama";
       repo = "llama_index";
       rev = "refs/tags/v${version}";
-      hash = "sha256-b7JC0pQ4bx9RZbBtXhLKdwim2yB+QgeVVFS7cBFdq+Y=";
+      hash = "sha256-wFuAgMu+WDwj5nxqKwc4+EaSJDe4pApUnFQUArFH6HA=";
     };
 
     nativeBuildInputs = with prev; [
