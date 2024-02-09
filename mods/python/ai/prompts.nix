@@ -7,12 +7,12 @@ in
 rec {
   langsmith = buildPythonPackage rec {
     pname = "langsmith";
-    version = "0.0.85";
+    version = "0.0.87";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-/vxjH8MNg2tU1OP5mWHEGupJdjOJi48J4wW2xyFsLFQ=";
+      hash = "sha256-NsTMR+W1S+V9A4A2ow+xnObkxzBIzXpGS48ltFlpTTQ=";
     };
 
     nativeBuildInputs = with prev; [
@@ -73,13 +73,13 @@ rec {
 
   langchain-core = buildPythonPackage rec {
     pname = "langchain-core";
-    version = "0.1.18";
+    version = "0.1.22";
     pyproject = true;
 
     src = fetchPypi {
       pname = "langchain_core";
       inherit version;
-      hash = "sha256-rUcLIc39x16CnNkcjY634EOKuN21tQgoEl/3raEh7ns=";
+      hash = "sha256-3qwSs+QqCLu6oqz4PV+N0tVRMlbY2vDoU+nWj/TJnXk=";
     };
 
     nativeBuildInputs = with final; [
@@ -397,7 +397,7 @@ rec {
   guidance =
     let
       name = "guidance";
-      version = "0.0.85";
+      version = "0.0.87";
     in
     buildPythonPackage rec {
       inherit version;
