@@ -600,4 +600,57 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  ffn = buildPythonPackage rec {
+    pname = "ffn";
+    version = "1.0.1";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "pmorissette";
+      repo = "ffn";
+      rev = "v${version}";
+      hash = "sha256-ynl3y5ZeuZxTybEJ9P/z3VDlqwmhQUIMUcYe+eihl+o=";
+    };
+
+    nativeBuildInputs = with final; [
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = with final; [
+      decorator
+      matplotlib
+      numpy
+      pandas
+      pandas-datareader
+      scikit-learn
+      scipy
+      tabulate
+      yfinance
+    ];
+
+    passthru.optional-dependencies = with final; {
+      dev = [
+        build
+        pytest
+        pytest-cov
+        ruff
+        wheel
+      ];
+      test = [
+        pytest
+        pytest-cov
+      ];
+    };
+
+    pythonImportsCheck = [ "ffn" ];
+
+    meta = {
+      description = "Ffn - a financial function library for Python";
+      homepage = "https://github.com/pmorissette/ffn";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
