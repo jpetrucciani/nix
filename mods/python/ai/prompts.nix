@@ -73,17 +73,18 @@ rec {
 
   langchain-core = buildPythonPackage rec {
     pname = "langchain-core";
-    version = "0.1.22";
+    version = "0.1.23";
     pyproject = true;
 
     src = fetchPypi {
       pname = "langchain_core";
       inherit version;
-      hash = "sha256-3qwSs+QqCLu6oqz4PV+N0tVRMlbY2vDoU+nWj/TJnXk=";
+      hash = "sha256-NDWcyLb4w9RQmMVKaps1yfU471gynNlDoiSdbXtOWAY=";
     };
 
     nativeBuildInputs = with final; [
       poetry-core
+      pythonRelaxDepsHook
     ];
 
     propagatedBuildInputs = with final; [
@@ -95,6 +96,7 @@ rec {
       tenacity
     ];
 
+    pythonRelaxDeps = [ "langsmith" ];
     pythonImportsCheck = [ "langchain_core" ];
 
     meta = {
