@@ -38,6 +38,14 @@ this overlay contains evaluation packages, like langfuse
 
 this overlay contains libraries owned by [kagi](https://github.com/kagisearch/)
 
+### [langchain.nix](./langchain.nix)
+
+this overlay contains python packages for [langchain](https://github.com/langchain-ai/langchain)
+
+### [llama-index.nix](./llama-index.nix)
+
+this overlay contains python packages for [llama-index](https://github.com/run-llama/llama_index)
+
 ### [prompts.nix](./prompts.nix)
 
 this overlay provides libraries that help us orchestrate prompting

@@ -13,6 +13,8 @@
           ./ai/bindings.nix
           ./ai/vector.nix
           ./ai/prompts.nix
+          ./ai/langchain.nix
+          ./ai/llama-index.nix
           ./ai/apps.nix
           ./ai/auto.nix
           ./ai/eval.nix

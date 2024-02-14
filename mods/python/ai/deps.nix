@@ -1344,4 +1344,34 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  mistralai = buildPythonPackage rec {
+    pname = "mistralai";
+    version = "0.0.12";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-/mUoNhRqFb3OdpGpWAOjLFPGQcVAAJNEf/qTvy7SlrI=";
+    };
+
+    nativeBuildInputs = [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = [
+      httpx
+      orjson
+      pydantic
+    ];
+
+    pythonImportsCheck = [ "mistralai" ];
+
+    meta = with lib; {
+      description = "";
+      homepage = "https://pypi.org/project/mistralai/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
