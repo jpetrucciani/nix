@@ -1,6 +1,6 @@
 { hex, ... }:
 let
-  inherit (hex) ifNotNull ifNotEmptyList toYAML;
+  inherit (hex) ifNotNull ifNotEmptyList toYAMLDoc;
 
   cron = {
     build =
@@ -74,10 +74,7 @@ let
           };
         } // extra;
       in
-      ''
-        ---
-        ${toYAML cron}
-      '';
+      toYAMLDoc cron;
   };
 in
 cron

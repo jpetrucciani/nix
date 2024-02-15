@@ -1,6 +1,6 @@
 { hex, ... }:
 let
-  inherit (hex) toYAML;
+  inherit (hex) toYAMLDoc;
 
   cert-manager = rec {
     defaults = {
@@ -27,10 +27,7 @@ let
       });
     };
     certificate = rec {
-      build = args: ''
-        ---
-        ${toYAML (cert args)}
-      '';
+      build = args: toYAMLDoc (cert args);
       cert = { name, namespace ? "default", issuer ? "letsencrypt-prod", dns_names ? [ ] }: {
         apiVersion = "cert-manager.io/v1";
         kind = "Certificate";
@@ -63,10 +60,7 @@ let
           , acme_server ? if staging then acme_servers.staging else acme_servers.prod
           , staging ? false
           , solvers ? [ ]
-          }: ''
-            ---
-            ${toYAML (issuer {inherit name ingress_class acme_server email solvers;})}
-          '';
+          }: toYAMLDoc (issuer { inherit name ingress_class acme_server email solvers; });
 
         issuer = { name, ingress_class, acme_server, email, solvers }:
           let

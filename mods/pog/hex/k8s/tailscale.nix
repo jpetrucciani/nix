@@ -1,6 +1,6 @@
 { hex, ... }:
 let
-  inherit (hex) toYAML boolToString concatMapStrings removePrefix ifNotNull ifNotEmptyList;
+  inherit (hex) toYAMLDoc boolToString concatMapStrings removePrefix ifNotNull ifNotEmptyList;
 
   imagePullPolicy = "Always";
   joinTags = concatMapStrings (x: ",tag:${x}");
@@ -121,18 +121,12 @@ let
         , bind_local ? false
         , hostAliases ? [ ]
         }: ''
-          ---
-          ${toYAML (sa {inherit name namespace;})}
-          ---
-          ${toYAML (secret {inherit name namespace;})}
-          ---
-          ${toYAML (role {inherit name namespace;})}
-          ---
-          ${toYAML (role-binding {inherit name namespace;})}
-          ---
-          ${toYAML (network-policy {inherit name namespace cidr;})}
-          ---
-          ${toYAML (deployment {inherit name namespace destination_ip tailscale_image all_tags cpu memory userspace exit_node subnet_router_cidr bind_local hostAliases;})}
+          ${toYAMLDoc (sa {inherit name namespace;})}
+          ${toYAMLDoc (secret {inherit name namespace;})}
+          ${toYAMLDoc (role {inherit name namespace;})}
+          ${toYAMLDoc (role-binding {inherit name namespace;})}
+          ${toYAMLDoc (network-policy {inherit name namespace cidr;})}
+          ${toYAMLDoc (deployment {inherit name namespace destination_ip tailscale_image all_tags cpu memory userspace exit_node subnet_router_cidr bind_local hostAliases;})}
         '';
       deployment =
         { name
@@ -251,18 +245,12 @@ let
         , exit_node ? false
         , hostAliases ? [ ]
         }: ''
-          ---
-          ${toYAML (sa {inherit name namespace;})}
-          ---
-          ${toYAML (secret {inherit name namespace;})}
-          ---
-          ${toYAML (role {inherit name namespace;})}
-          ---
-          ${toYAML (role-binding {inherit name namespace;})}
-          ---
-          ${toYAML (network-policy {inherit name namespace cidr;})}
-          ---
-          ${toYAML (deployment {inherit name namespace tailscale_image cloudsql_image memory cpu gcp_project gcp_region cloudsql_instance secret_name port all_tags tailscale_cpu tailscale_memory userspace exit_node hostAliases;})}
+          ${toYAMLDoc (sa {inherit name namespace;})}
+          ${toYAMLDoc (secret {inherit name namespace;})}
+          ${toYAMLDoc (role {inherit name namespace;})}
+          ${toYAMLDoc (role-binding {inherit name namespace;})}
+          ${toYAMLDoc (network-policy {inherit name namespace cidr;})}
+          ${toYAMLDoc (deployment {inherit name namespace tailscale_image cloudsql_image memory cpu gcp_project gcp_region cloudsql_instance secret_name port all_tags tailscale_cpu tailscale_memory userspace exit_node hostAliases;})}
         '';
       deployment =
         { name

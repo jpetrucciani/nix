@@ -1,6 +1,6 @@
 { hex, services, ... }:
 let
-  inherit (hex) toYAML concatStringsSep;
+  inherit (hex) toYAMLDoc concatStringsSep;
   inherit (services) components;
   defaults = {
     region = "us-east-2";
@@ -36,10 +36,7 @@ in
         };
       };
     in
-    ''
-      ---
-      ${toYAML auth_map}
-    '';
+    toYAMLDoc auth_map;
   ecr_cron =
     { account_id
     , name ? "ecr-login"
@@ -96,13 +93,9 @@ in
       };
     in
     ''
-      ---
-      ${toYAML sa}
-      ---
-      ${toYAML role}
-      ---
-      ${toYAML rb}
-      ---
+      ${toYAMLDoc sa}
+      ${toYAMLDoc role}
+      ${toYAMLDoc rb}
       ${cron}
     '';
 }

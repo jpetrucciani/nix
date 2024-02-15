@@ -1,6 +1,6 @@
 { hex, ... }:
 let
-  inherit (hex) ifNotEmptyList ifNotNull toYAML;
+  inherit (hex) ifNotEmptyList ifNotNull toYAMLDoc;
   prom_chart = name: version: "https://github.com/prometheus-community/helm-charts/releases/download/${name}-${version}/${name}-${version}.tgz";
 in
 {
@@ -36,10 +36,7 @@ in
           };
         };
       in
-      ''
-        ---
-        ${toYAML monitor}
-      '';
+      toYAMLDoc monitor;
   };
   kube-prometheus-stack = rec {
     defaults = {

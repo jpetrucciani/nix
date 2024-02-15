@@ -1,6 +1,6 @@
 { hex, ... }:
 let
-  inherit (hex) attrIf ifNotEmptyAttr toYAML;
+  inherit (hex) attrIf ifNotEmptyAttr toYAMLDoc;
 
   external-secrets = rec {
     defaults = {
@@ -62,10 +62,7 @@ let
         , secret ? "${name}-creds"
         , filename ? "${name}-creds.json"
         , namespace ? "external-secrets"
-        }: ''
-          ---
-          ${toYAML (store {inherit name aws aws_region gcp_project secret filename namespace;})}
-        '';
+        }: toYAMLDoc (store { inherit name aws aws_region gcp_project secret filename namespace; });
       store =
         { name
         , aws
@@ -133,10 +130,7 @@ let
         , extra_data ? [ ]
         , labels ? { }
         , string_data ? { }
-        }: ''
-          ---
-          ${toYAML (secret {inherit name filename env store store_kind refresh_interval secret_ref namespace extract decoding_strategy extra_data labels string_data;})}
-        '';
+        }: toYAMLDoc (secret { inherit name filename env store store_kind refresh_interval secret_ref namespace extract decoding_strategy extra_data labels string_data; });
 
       secret =
         { name

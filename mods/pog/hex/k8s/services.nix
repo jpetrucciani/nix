@@ -1,6 +1,6 @@
 { hex, pkgs, ... }:
 let
-  inherit (hex) attrIf ifNotNull ifNotEmptyList ifNotEmptyAttr toYAML;
+  inherit (hex) attrIf ifNotNull ifNotEmptyList ifNotEmptyAttr toYAMLDoc;
   inherit (pkgs.lib.attrsets) mapAttrsToList;
 
   defaults = {
@@ -208,18 +208,17 @@ let
         ing = (components.ingress { inherit name namespace port ingressSuffix serviceSuffix pre1_18 host extraIngressAnnotations disableHttp; tls = ingressTLSSecret; }) // extraIng;
       in
       ''
-        ${if serviceAccountToken then "---\n${toYAML sa-token}" else ""}
-        ${if serviceAccount then "---\n${toYAML sa}" else ""}
-        ${if roleBinding then "---\n${toYAML rb}" else ""}
-        ${if tailscaleSidecar then "---\n${toYAML ts_r}" else ""}
-        ${if tailscaleSidecar then "---\n${toYAML ts_rb}" else ""}
-        ${if tailscaleSidecar then "---\n${toYAML ts_secret}" else ""}
-        ---
-        ${toYAML dep}
-        ${if service then "---\n${toYAML svc}" else ""}
-        ${if autoscale then "---\n${toYAML hpa}" else ""}
-        ${if networkPolicy then "---\n${toYAML np}" else ""}
-        ${if ingress then "---\n${toYAML ing}" else ""}
+        ${if serviceAccountToken then toYAMLDoc sa-token else ""}
+        ${if serviceAccount then toYAMLDoc sa else ""}
+        ${if roleBinding then toYAMLDoc rb else ""}
+        ${if tailscaleSidecar then toYAMLDoc ts_r else ""}
+        ${if tailscaleSidecar then toYAMLDoc ts_rb else ""}
+        ${if tailscaleSidecar then toYAMLDoc ts_secret else ""}
+        ${toYAMLDoc dep}
+        ${if service then toYAMLDoc svc else ""}
+        ${if autoscale then toYAMLDoc hpa else ""}
+        ${if networkPolicy then toYAMLDoc np else ""}
+        ${if ingress then toYAMLDoc ing else ""}
       '';
     components = {
       volumes = {

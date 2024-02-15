@@ -1,6 +1,6 @@
 { hex, pkgs, ... }:
 let
-  inherit (hex) toYAML ifNotEmptyList;
+  inherit (hex) toYAML toYAMLDoc ifNotEmptyList;
 
   traefik = rec {
     defaults = {
@@ -203,10 +203,7 @@ let
     # ingressroute https://doc.traefik.io/traefik/v2.2/routing/providers/kubernetes-crd/#kind-ingressroute
     ingress_route = rec {
       constants = { };
-      build = args: ''
-        ---
-        ${toYAML (setup args)}
-      '';
+      build = args: toYAMLDoc (setup args);
       setup =
         { name
         , domain
