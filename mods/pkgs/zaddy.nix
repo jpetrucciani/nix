@@ -32,13 +32,17 @@ rec {
         caddy-hax = { name = "github.com/jpetrucciani/caddy-hax"; version = "v0.0.2"; };
         caddy-troll = { name = "github.com/jpetrucciani/caddy-troll"; version = "v0.0.1"; };
         ## other
+        cache-handler = { name = "github.com/caddyserver/cache-handler"; version = "v0.11.0"; };
         caddy-bandwidth = { name = "github.com/mediafoundation/caddy-bandwidth"; version = "v1.0.10"; };
         caddy-git = { name = "github.com/greenpau/caddy-git"; version = "v1.0.9"; };
         caddy-json-parse = { name = "github.com/abiosoft/caddy-json-parse"; version = "c57039f26567f4b4120e35b4dc1a9bbd20a4f37f"; };
+        caddy-l4 = { name = "github.com/mholt/caddy-l4"; version = "22554b119f249f9cac5626ada525cd257f2fb404"; };
         caddy-ratelimit = { name = "github.com/mholt/caddy-ratelimit"; version = "2dc0d586f0b87e983757c403bc0929ddeb84a537"; };
         caddy-trace = { name = "github.com/greenpau/caddy-trace"; version = "v1.1.13"; };
+        forwardproxy = { name = "github.com/caddyserver/forwardproxy"; version = "1.0.1"; };
         geolocation = { name = "github.com/jpetrucciani/caddy-maxmind-geolocation"; version = "456a3bae9dbd0fe882eb806e8fb0d21bf5e11610"; };
-        replace_response = { name = "github.com/caddyserver/replace-response"; version = "d32dc3ffff0c07a3c935ef33092803f90c55ba19"; };
+        pkl-adapter = { name = "github.com/caddyserver/pkl-adapter"; version = "5b5eecd6f104d0ea95fb7031dbd0c0c79e7e1e5d"; };
+        replace_response = { name = "github.com/caddyserver/replace-response"; version = "a85d4ddc11d635c093074205bd32f56d05fc7811"; };
         user_agent_parse = { name = "github.com/neodyme-labs/user_agent_parse"; version = "450380e8b6d048d71937014932ba6d4d56dd611d"; };
       };
     in
