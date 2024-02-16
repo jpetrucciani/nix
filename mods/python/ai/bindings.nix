@@ -48,13 +48,13 @@ rec {
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
-      version = "0.2.43";
+      version = "0.2.44";
       format = "pyproject";
       src = fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-+Kh7L1y5OBZ4SlVvclR8Ukra40mIF9+YESoy0W9/1wc=";
+        hash = "sha256-Xh7s7P3D+FlEEd6sPgcY4+AvSr8ewe3vSZdMwpsR2Zs=";
       };
 
       cuda = false;
@@ -88,6 +88,7 @@ rec {
       pythonRelaxDeps = [ "diskcache" ];
       propagatedBuildInputs = with prev; [
         diskcache
+        jinja2
         numpy
         typing-extensions
 
@@ -456,7 +457,7 @@ rec {
   ctransformers =
     let
       name = "ctransformers";
-      version = "0.2.43";
+      version = "0.2.44";
       osSpecific =
         if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
         else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
