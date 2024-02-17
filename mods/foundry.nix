@@ -127,7 +127,8 @@ let
         , description ? "a foundry_v2 docker image built with nix"
         , hostPkgs ? pkgs
         , enableNix ? true
-        , pathsToLink ? [ "/bin" "/etc" "/lib" "/lib64" "/run" "/share" "/tmp" "/usr" ]
+        , pathsToLink ? [ "/bin" "/etc" "/lib" "/lib64" "/run" "/share" "/tmp" "/usr" ] ++ extraPathsToLink
+        , extraPathsToLink ? [ ]
         , sysLayer ? true
         , user ? "user"
         , group ? "user"
@@ -156,14 +157,21 @@ let
           name = "${registry}/${name}";
           config = {
             Entrypoint = if enableNix then [ "${drvs.entrypoint}/bin/entrypoint" ] else [ "${pkgs.bash}/bin/bash" "-c" ];
-            Env = env ++ (optionals enableNix [
-              "NIX_PAGER=cat"
-              "USER=${user}"
-              "HOME=/home/${user}"
-              "NIX_PATH=nixpkgs=${pkgs.path}"
-              "PATH=/home/user/.local/state/nix/profiles/profile/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-              "FOUNDRY=3"
-            ]);
+            Env =
+              let
+                base_path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";
+              in
+              env ++ [
+                "USER=${user}"
+                "HOME=/home/${user}"
+                "FOUNDRY=3"
+              ] ++ (if enableNix then [
+                "NIX_PAGER=cat"
+                "NIX_PATH=nixpkgs=${pkgs.path}"
+                "PATH=/home/user/.local/state/nix/profiles/profile/bin:${base_path}"
+              ] else [
+                "PATH=${base_path}"
+              ]);
             Labels = let _base = "org.opencontainers.image"; in {
               "${_base}.source" = "https://github.com/jpetrucciani/nix";
               "${_base}.title" = name;
