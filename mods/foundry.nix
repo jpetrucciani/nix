@@ -155,7 +155,7 @@ let
         hostPkgs.nix2container.nix2container.buildImage {
           name = "${registry}/${name}";
           config = {
-            Entrypoint = [ "${drvs.entrypoint}/bin/entrypoint" ];
+            Entrypoint = if enableNix then [ "${drvs.entrypoint}/bin/entrypoint" ] else [ "${pkgs.bash}/bin/bash" "-c" ];
             Env = env ++ (optionals enableNix [
               "NIX_PAGER=cat"
               "USER=${user}"
