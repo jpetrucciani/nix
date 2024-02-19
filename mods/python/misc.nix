@@ -732,35 +732,4 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
-
-  unificontrol = buildPythonPackage rec {
-    pname = "unificontrol";
-    version = "0.2.8";
-    pyproject = true;
-
-    src = fetchFromGitHub {
-      owner = "nickovs";
-      repo = "unificontrol";
-      rev = version;
-      hash = "sha256-m4w6Zsg/c2hxhAdYnwQS+Z66UMCzTs8c6P08ySMgyzI=";
-    };
-
-    nativeBuildInputs = with final; [
-      setuptools
-      wheel
-    ];
-
-    propagatedBuildInputs = with final; [
-      requests
-    ];
-
-    pythonImportsCheck = [ "unificontrol" ];
-
-    meta = {
-      description = "A high-level Python interface to the Unifi controller software";
-      homepage = "https://github.com/nickovs/unificontrol";
-      license = licenses.asl20;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
 }
