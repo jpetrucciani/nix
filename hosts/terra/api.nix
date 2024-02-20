@@ -29,11 +29,9 @@ let
         playwright
 
         # ai
-        # llama-cpp-python
         whisper-cpp-python
         langchain
         langchainhub
-        langfuse
         pdf2image
         qdrant-client
         sentence-transformers
