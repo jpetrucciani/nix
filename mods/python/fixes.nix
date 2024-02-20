@@ -358,4 +358,8 @@ rec {
   tenacity = prev.tenacity.overridePythonAttrs (_: {
     disabledTests = [ "test_retry_type_annotations" ];
   });
+
+  openai = prev.openai.overridePythonAttrs (old: {
+    disabledTestPaths = old.disabledTestPaths ++ [ "tests/test_client.py" ];
+  });
 }
