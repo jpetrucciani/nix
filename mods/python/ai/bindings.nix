@@ -639,4 +639,38 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  groq = buildPythonPackage rec {
+    pname = "groq";
+    version = "0.4.1";
+    pyproject = true;
+
+    src = final.fetchPypi {
+      inherit pname version;
+      hash = "sha256-8ihcCn1kq+/N7D1h6LwaYf8E2IftMLmRrH/lOuHhAlE=";
+    };
+
+    nativeBuildInputs = with final; [
+      hatchling
+    ];
+
+    propagatedBuildInputs = with final; [
+      anyio
+      cached-property
+      distro
+      httpx
+      pydantic
+      sniffio
+      typing-extensions
+    ];
+
+    pythonImportsCheck = [ "groq" ];
+
+    meta = {
+      description = "The official Python library for the groq API";
+      homepage = "https://pypi.org/project/groq/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
