@@ -399,6 +399,49 @@ rec {
     };
   };
 
+  opentelemetry-instrumentation-fastapi = buildPythonPackage rec {
+    pname = "opentelemetry-instrumentation-fastapi";
+    version = "0.43b0";
+    pyproject = true;
+
+    src = fetchPypi {
+      pname = "opentelemetry_instrumentation_fastapi";
+      inherit version;
+      hash = "sha256-KvqvRwYi4aJzIYLGj20kMf/l4Can7azQ+DYFYytmNH8=";
+    };
+
+    nativeBuildInputs = with final; [
+      hatchling
+    ];
+
+    propagatedBuildInputs = with final; [
+      fastapi
+      opentelemetry-api
+      opentelemetry-instrumentation
+      opentelemetry-instrumentation-asgi
+      opentelemetry-semantic-conventions
+      opentelemetry-util-http
+    ];
+
+    passthru.optional-dependencies = with final; {
+      test = [
+        httpx
+        opentelemetry-instrumentation-fastapi
+        opentelemetry-test-utils
+        requests
+      ];
+    };
+
+    pythonImportsCheck = [ "opentelemetry.instrumentation.fastapi" ];
+
+    meta = {
+      description = "OpenTelemetry FastAPI Instrumentation";
+      homepage = "https://pypi.org/project/opentelemetry-instrumentation-fastapi/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
   gaffe = buildPythonPackage rec {
     pname = "gaffe";
     version = "0.2.0";
