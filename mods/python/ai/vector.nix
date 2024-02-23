@@ -10,12 +10,12 @@ in
     in
     buildPythonPackage rec {
       pname = "chromadb";
-      version = "0.4.22";
+      version = "0.4.23";
       format = "pyproject";
 
       src = fetchPypi {
         inherit pname version;
-        hash = "sha256-x5MUnhwru7Utd2AsbAWUxXUvBM2b4SYZJQ3a0ggq8no=";
+        hash = "sha256-VNmncGQHBMbO3BUxf6q5/UW+uYM+dITAADfnqIAaNJ8=";
       };
 
       nativeBuildInputs = with prev; [
@@ -27,33 +27,41 @@ in
       pythonRelaxDeps = [
         "fastapi"
         "onnxruntime"
+        "orjson"
         "tqdm"
       ];
 
-      propagatedBuildInputs = with prev; [
+      propagatedBuildInputs = with final; [
         bcrypt
+        build
         chroma-hnswlib
         clickhouse-connect
         duckdb
         fastapi
         httptools
         importlib-resources
+        kubernetes
+        mmh3
         numpy
-        overrides
         opentelemetry-api
         opentelemetry-exporter-otlp-proto-common
         opentelemetry-exporter-otlp-proto-grpc
+        opentelemetry-instrumentation-fastapi
         opentelemetry-sdk
+        orjson
+        overrides
         pandas
         posthog
         pulsar-client
         pydantic
         pypika
         python-dotenv
+        pyyaml
         requests
         tenacity
         tokenizers
         tqdm
+        typer
         typing-extensions
         uvicorn
         uvloop
