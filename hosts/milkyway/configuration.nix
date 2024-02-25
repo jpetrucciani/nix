@@ -27,7 +27,6 @@ in
 
   boot.tmp.useTmpfs = true;
 
-
   environment = {
     etc."nixpkgs-path".source = common.pkgs.path;
     # cuda stuff?
