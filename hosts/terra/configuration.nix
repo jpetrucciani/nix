@@ -197,6 +197,12 @@ in
           "x.hexa.dev" = reverse_proxy "neptune:8421";
           "meme.x.hexa.dev" = reverse_proxy "neptune:8420";
           "edge.be.hexa.dev" = reverse_proxy "edge:10000";
+          "countdown.cobi.dev" = secure_geo ''
+            rewrite * /countdown{uri}
+            reverse_proxy /* {
+              to localhost:10000
+            }
+          '';
           "vault.cobi.dev" = secure_geo ''
             reverse_proxy /* {
               to localhost:8222
