@@ -321,12 +321,12 @@ rec {
 
   nicegui = buildPythonPackage rec {
     pname = "nicegui";
-    version = "1.4.15";
+    version = "1.4.16";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-61xXRVwTJo7y8jgXtfvhLekg4Zuc2e7/SPZGr6d54KA=";
+      hash = "sha256-8elQ77FQxS0l/JcXzPbUW/CO4LzzZsmB0PTEHTXctPo=";
     };
 
     postPatch = ''
@@ -343,19 +343,22 @@ rec {
       "aiohttp"
       "fastapi"
       "httpx"
+      "python-multipart"
       "uvicorn"
       "watchfiles"
     ];
 
     propagatedBuildInputs = with final; [
-      aiohttp
       aiofiles
+      aiohttp
       colorama
       fastapi
       fastapi-socketio
       httptools
+      httpx
       ifaddr
       importlib-metadata
+      itsdangerous
       jinja2
       markdown2
       matplotlib
