@@ -186,14 +186,14 @@ rec {
     in
     buildPythonPackage rec {
       pname = "pyllamacpp";
-      version = "2.4.2";
+      version = "2.4.3";
       format = "pyproject";
 
       src = fetchFromGitHub {
         owner = "abdeladim-s";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-+P+KK50WtMDUKK6tl3yZ3rEZ3/3P2kKqb7bi+vgDBGQ=";
+        hash = "sha256-uBlequjMBOG9utBTj2fj291tO+BkKyaoStfrbxk+iDY=";
         fetchSubmodules = true;
       };
       preBuild = ''
