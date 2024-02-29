@@ -195,11 +195,34 @@ rec {
     '';
   };
 
+  ksecedit = pog {
+    name = "ksecedit";
+    description = "edit a k8s secret quickly and easily, inline!";
+    flags = [
+      _.flags.k8s.namespace
+      {
+        name = "secret";
+        description = "the secret to edit. if not passed in, a dialog will pop up to select from";
+        prompt = ''${_.k} --namespace "$namespace" get secret | ${_.fzfq} --header-lines=1 | ${_.k8s.get_id}'';
+        promptError = "you must specify a secret to edit!";
+        completion = ''${_.k} get secret | ${_.sed} '1d' | ${_.awk} '{print $1}' '';
+      }
+    ];
+    script = helpers: with helpers; ''
+      ${_.k} --namespace "$namespace" get secret "$secret" -o yaml | \
+        ${_.yq} '.dataStrings = (.data | map_values(@base64d)) | del(.data)' | \
+        ${final.moreutils}/bin/vipe | \
+        ${_.yq} '.data = (.dataStrings | map_values(@base64)) | del(.dataStrings)' | \
+        ${_.k} apply -f --server-side=true -
+    '';
+  };
+
   k8s_pog_scripts = [
     kdesc
     kdiff
     kdrain
     kedit
+    ksecedit
     kex
     klog
     krm
