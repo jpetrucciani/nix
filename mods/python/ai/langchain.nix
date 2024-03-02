@@ -7,19 +7,25 @@ in
 rec {
   langsmith = buildPythonPackage rec {
     pname = "langsmith";
-    version = "0.1.5";
+    version = "0.1.13";
     format = "pyproject";
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-qnooYao9muVjoHfGIpU1M4AEZsTi5Tmw1We4TV/VsVc=";
+      hash = "sha256-bKzIjicsEjPkA4vjPp4hkiFGKIfzaB2U8jGZFvrjH8w=";
     };
 
     nativeBuildInputs = with prev; [
       poetry-core
+      pythonRelaxDepsHook
+    ];
+
+    pythonRelaxDeps = [
+      "orjson"
     ];
 
     propagatedBuildInputs = with prev; [
+      orjson
       pydantic
       requests
     ];
