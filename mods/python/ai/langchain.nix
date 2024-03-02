@@ -40,6 +40,35 @@ rec {
     };
   };
 
+  langchain-text-splitters = buildPythonPackage rec {
+    pname = "langchain-text-splitters";
+    version = "0.0.1";
+    pyproject = true;
+
+    src = fetchPypi {
+      pname = "langchain_text_splitters";
+      inherit version;
+      hash = "sha256-rEWfqYeZ9RF61UJakzCyGWEyHjC8GaKi+fdh3a3WKqE=";
+    };
+
+    nativeBuildInputs = with final; [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = [
+      langchain-core
+    ];
+
+    pythonImportsCheck = [ "langchain_text_splitters" ];
+
+    meta = {
+      description = "LangChain text splitting utilities";
+      homepage = "https://pypi.org/project/langchain-text-splitters/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
   langchain-community = buildPythonPackage rec {
     pname = "langchain-community";
     version = "0.0.25";
@@ -115,14 +144,14 @@ rec {
 
   langchain = buildPythonPackage rec {
     pname = "langchain";
-    version = "0.1.9";
+    version = "0.1.10";
     format = "pyproject";
 
     src = fetchFromGitHub {
       owner = "langchain-ai";
       repo = pname;
       rev = "refs/tags/v${version}";
-      hash = "sha256-AgEze4JUo3i6HCg541tz/gV6g+zrueyOljy/TXUYBV4=";
+      hash = "sha256-wSm+n66CWvvR1ljrmmmE1wOX/CaCNgf8AKBZl5+I07A=";
     };
     sourceRoot = "source/libs/langchain";
 
@@ -140,6 +169,7 @@ rec {
       jsonpatch
       langchain-community
       langchain-core
+      langchain-text-splitters
       langsmith
       numexpr
       numpy
