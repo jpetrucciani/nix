@@ -11,13 +11,6 @@ let
   configPath = "/Users/jacobi/cfg/hosts/${hostname}/configuration.nix";
   username = "jacobi";
 
-  github-runners-fork = builtins.fetchTree {
-    type = "github";
-    owner = "DavHau";
-    repo = "nix-darwin";
-    ref = "github-runners";
-    narHash = "sha256-z9PpdTZRRaAXM6eFznIgbNCRp9jQoIAQ67k0YDxvn/A=";
-  };
   runner-defaults = {
     url = "https://github.com/jpetrucciani/nix";
     extraLabels = [ "nix" "m1" ];
@@ -27,7 +20,6 @@ in
 {
   imports = [
     "${common.home-manager}/nix-darwin"
-    "${github-runners-fork}/modules/services/github-runners"
   ];
 
   home-manager.users.jacobi = common.jacobi;
