@@ -12,6 +12,7 @@ let
   username = "jacobi";
 
   runner-defaults = {
+    enable = true;
     url = "https://github.com/jpetrucciani/nix";
     extraLabels = [ "nix" "m1" ];
     extraPackages = [ ];
@@ -65,6 +66,7 @@ in
       coreutils
       git
       gnutar
+      gnused
       gzip
     ] ++ [
       (

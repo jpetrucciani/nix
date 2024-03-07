@@ -19,11 +19,4 @@ in
   py-spy = prev.py-spy.overrideAttrs (old: {
     doCheck = false;
   });
-
-  github-runner = prev.github-runner.override {
-    nodejs_16 = prev.nodejs_16.overrideAttrs (old: {
-      meta = removeAttrs old.meta [ "knownVulnerabilities" ];
-    });
-    nodeRuntimes = [ "node16" "node20" ];
-  };
 }
