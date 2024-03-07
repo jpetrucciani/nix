@@ -1,10 +1,6 @@
 { config, flake, machine-name, pkgs, lib, ... }:
 let
   inherit (lib.attrsets) mapAttrs' nameValuePair;
-  inherit (lib.trivial) flip;
-
-  mapAttrValues = f: builtins.mapAttrs (_: f);
-  forAttrValues = flip mapAttrValues;
 
   hostname = "charon";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
@@ -52,7 +48,7 @@ in
     ];
   };
 
-  services.github-runners = mapAttrs' (n: nameValuePair n) {
+  services.github-runners = mapAttrs' nameValuePair {
     jpetrucciani-nix = runner-defaults // {
       extraPackages = with pkgs; [ gh cachix ];
       tokenFile = "/etc/default/gh.token";
