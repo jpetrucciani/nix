@@ -59,23 +59,4 @@ in
       tokenFile = "/etc/default/gh.token";
     };
   };
-
-  launchd.daemons = forAttrValues config.services.github-runners (cfg: {
-    # daemon path fixes copied from the nixos module
-    path = with pkgs;[
-      bash
-      coreutils
-      git
-      gnutar
-      gnused
-      gzip
-    ] ++ [
-      (
-        # allow x64 runners
-        if cfg.package != pkgsx86_64Darwin.github-runner
-        then config.nix.package
-        else pkgsx86_64Darwin.nix
-      )
-    ] ++ cfg.extraPackages;
-  });
 }
