@@ -13,6 +13,7 @@ let
 
   runner-defaults = {
     enable = true;
+    replace = true;
     url = "https://github.com/jpetrucciani/nix";
     extraLabels = [ "nix" "m1" ];
     extraPackages = [ ];
