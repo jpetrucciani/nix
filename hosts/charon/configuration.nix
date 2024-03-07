@@ -16,7 +16,6 @@ let
     replace = true;
     url = "https://github.com/jpetrucciani/nix";
     extraLabels = [ "nix" "m1" ];
-    extraPackages = [ ];
   };
 in
 {
@@ -53,7 +52,7 @@ in
     ];
   };
 
-  services.github-runners = mapAttrs' (n: nameValuePair "runner-${n}") {
+  services.github-runners = mapAttrs' (n: nameValuePair n) {
     jpetrucciani-nix = runner-defaults // {
       extraPackages = with pkgs; [ gh cachix ];
       tokenFile = "/etc/default/gh.token";
