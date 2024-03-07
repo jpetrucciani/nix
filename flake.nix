@@ -18,12 +18,11 @@
       url = "github:kwbauson/cfg";
       inputs = {
         home-manager.follows = "home-manager";
-        nix-darwin.follows = "nix-darwin";
         nixos-hardware.follows = "nixos-hardware";
         nixpkgs.follows = "nixpkgs";
       };
     };
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-darwin.flake = true;
     nix2container = {
       url = "github:nlewo/nix2container";
     };

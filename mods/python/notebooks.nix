@@ -66,7 +66,7 @@ rec {
   html2image = buildPythonPackage rec {
     pname = "html2image";
     version = "2.0.3";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
@@ -95,7 +95,7 @@ rec {
   ipyaggrid = buildPythonPackage rec {
     pname = "ipyaggrid";
     version = "0.4.0";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
@@ -131,7 +131,7 @@ rec {
   jupyterlab-code-formatter = buildPythonPackage rec {
     pname = "jupyterlab-code-formatter";
     version = "1.6.1";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       pname = "jupyterlab_code_formatter";

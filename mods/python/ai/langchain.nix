@@ -8,7 +8,7 @@ rec {
   langsmith = buildPythonPackage rec {
     pname = "langsmith";
     version = "0.1.20";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
@@ -145,7 +145,7 @@ rec {
   langchain = buildPythonPackage rec {
     pname = "langchain";
     version = "0.1.11";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchFromGitHub {
       owner = "langchain-ai";

@@ -28,8 +28,8 @@ rec {
   procrastinate = buildPythonPackage rec {
     pname = "procrastinate";
     version = "0.27.0";
+    pyproject = true;
 
-    format = "pyproject";
     src = fetchFromGitHub {
       owner = "procrastinate-org";
       repo = pname;

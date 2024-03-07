@@ -36,8 +36,8 @@ rec {
   osrsreboxed = buildPythonPackage {
     pname = "osrsreboxed";
     version = "2.3.5";
+    pyproject = true;
 
-    format = "pyproject";
     src = fetchFromGitHub {
       owner = "0xNeffarion";
       repo = "osrsreboxed-db";
@@ -93,8 +93,8 @@ rec {
   starred = buildPythonPackage rec {
     pname = "starred";
     version = "4.2.0";
+    pyproject = true;
 
-    format = "pyproject";
     src = fetchFromGitHub {
       owner = "maguowei";
       repo = pname;
@@ -126,8 +126,8 @@ rec {
   milli = buildPythonPackage rec {
     pname = "milli";
     version = "1.1.1";
+    pyproject = true;
 
-    format = "pyproject";
     src = fetchFromGitHub {
       owner = "AlexAltea";
       repo = "milli-py";
@@ -206,7 +206,7 @@ rec {
   roadmapper = buildPythonPackage rec {
     pname = "roadmapper";
     version = "1.2.0";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
@@ -337,7 +337,7 @@ rec {
   poetry2setup = buildPythonPackage rec {
     pname = "poetry2setup";
     version = "1.1.0";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
@@ -365,7 +365,7 @@ rec {
   opentelemetry-distro = buildPythonPackage rec {
     pname = "opentelemetry-distro";
     version = "0.39b0";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       pname = "opentelemetry_distro";
@@ -445,7 +445,7 @@ rec {
   gaffe = buildPythonPackage rec {
     pname = "gaffe";
     version = "0.2.0";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
@@ -469,7 +469,7 @@ rec {
   chili = buildPythonPackage rec {
     pname = "chili";
     version = "2.4.0";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;

@@ -355,7 +355,7 @@ rec {
   newnewtulipy = buildPythonPackage {
     pname = "newnewtulipy";
     version = "0.4.6.5";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchFromGitHub {
       owner = "blankly-finance";

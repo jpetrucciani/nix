@@ -1,7 +1,7 @@
 { lib
 , stdenv
 , fetchFromGitHub
-, python312
+, python311
 , ...
 }:
 
@@ -18,7 +18,7 @@ stdenv.mkDerivation rec {
 
   installPhase = ''
     mkdir -p $out/bin
-    echo "#!${python312}/bin/python" >$out/bin/ppp
+    echo "#!${python311}/bin/python" >$out/bin/ppp
     tail -n +2 $src/pypipe.py >>$out/bin/ppp
     chmod +x $out/bin/ppp
   '';

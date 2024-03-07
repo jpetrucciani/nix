@@ -31,7 +31,7 @@ let
   version = "1.60";
   owner = "LostRuins";
   repo = "koboldcpp";
-  python = python311.withPackages (p: with p; [
+  py = python311.withPackages (p: with p; [
     numpy
     sentence-transformers
     sentencepiece
@@ -61,7 +61,7 @@ llvmPackages_14.stdenv.mkDerivation rec {
     cat <<EOF >$out/bin/koboldcpp
     #!${bash}/bin/bash
     export PORT="\''${PORT:-8100}"
-    ${python}/bin/python $out/lib/koboldcpp.py "\$@" "\$MODEL" "\$PORT"
+    ${py}/bin/python $out/lib/koboldcpp.py "\$@" "\$MODEL" "\$PORT"
     EOF
     chmod +x $out/bin/koboldcpp
   '';

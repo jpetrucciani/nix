@@ -2,7 +2,7 @@ final: prev: with prev; rec {
   sse-starlette = buildPythonPackage rec {
     pname = "sse-starlette";
     version = "1.6.1";
-    format = "pyproject";
+    pyproject = true;
 
     src = pkgs.fetchFromGitHub {
       owner = "sysid";
@@ -137,7 +137,7 @@ final: prev: with prev; rec {
   posthog = buildPythonPackage rec {
     pname = "posthog";
     version = "3.3.2";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
@@ -188,7 +188,7 @@ final: prev: with prev; rec {
   vellum-ai = buildPythonPackage rec {
     pname = "vellum-ai";
     version = "0.2.2";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       pname = "vellum_ai";
@@ -359,7 +359,7 @@ final: prev: with prev; rec {
   gradio-client = buildPythonPackage rec {
     pname = "gradio-client";
     version = "0.7.0";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       pname = "gradio_client";
@@ -397,7 +397,7 @@ final: prev: with prev; rec {
     pname = "gradio";
     version = "4.4.1";
     disabled = pythonOlder "3.7";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
@@ -484,7 +484,7 @@ final: prev: with prev; rec {
   simple-websocket = buildPythonPackage rec {
     pname = "simple-websocket";
     version = "0.10.0";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
@@ -604,7 +604,7 @@ final: prev: with prev; rec {
   graphlib-backport = buildPythonPackage rec {
     pname = "graphlib-backport";
     version = "1.0.3";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       pname = "graphlib_backport";
@@ -634,7 +634,7 @@ final: prev: with prev; rec {
   chroma-hnswlib = buildPythonPackage rec {
     pname = "chroma-hnswlib";
     version = "0.7.3";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
@@ -679,7 +679,7 @@ final: prev: with prev; rec {
   sqlmodel = buildPythonPackage rec {
     pname = "sqlmodel";
     version = "0.0.14";
-    format = "pyproject";
+    pyproject = true;
 
     disabled = pythonOlder "3.9";
     src = pkgs.fetchFromGitHub {
@@ -824,7 +824,7 @@ final: prev: with prev; rec {
   dalaipy = buildPythonPackage rec {
     pname = "dalaipy";
     version = "2.0.2";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
@@ -856,7 +856,7 @@ final: prev: with prev; rec {
   clean-text = buildPythonPackage rec {
     pname = "clean-text";
     version = "0.6.0";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
@@ -900,7 +900,7 @@ final: prev: with prev; rec {
   textsum = buildPythonPackage rec {
     pname = "textsum";
     version = "0.2.0";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
@@ -1005,7 +1005,7 @@ final: prev: with prev; rec {
   gluonts = buildPythonPackage rec {
     pname = "gluonts";
     version = "0.13.4";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
@@ -1292,7 +1292,7 @@ final: prev: with prev; rec {
   mlforecast = buildPythonPackage rec {
     pname = "mlforecast";
     version = "0.9.2";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;

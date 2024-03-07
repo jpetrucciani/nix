@@ -130,7 +130,7 @@ in
   bark = buildPythonPackage rec {
     pname = "bark";
     version = "unstable-2023-08-31";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchFromGitHub {
       owner = "suno-ai";

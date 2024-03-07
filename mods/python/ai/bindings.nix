@@ -16,7 +16,7 @@ rec {
   gguf = buildPythonPackage {
     pname = "gguf";
     version = "0.0.1";
-    format = "pyproject";
+    pyproject = true;
     src = llama-cpp-pin;
     postPatch = ''
       cd ./gguf-py
@@ -49,7 +49,7 @@ rec {
     buildPythonPackage rec {
       pname = "llama-cpp-python";
       version = "0.2.55";
-      format = "pyproject";
+      pyproject = true;
       src = fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
@@ -124,8 +124,8 @@ rec {
     buildPythonPackage rec {
       pname = "ggml-python";
       version = "0.0.1";
+      pyproject = true;
 
-      format = "pyproject";
       src = fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
@@ -187,7 +187,7 @@ rec {
     buildPythonPackage rec {
       pname = "pyllamacpp";
       version = "2.4.3";
-      format = "pyproject";
+      pyproject = true;
 
       src = fetchFromGitHub {
         owner = "abdeladim-s";
@@ -231,7 +231,7 @@ rec {
     buildPythonPackage rec {
       pname = "pygptj";
       version = "2.0.3";
-      format = "pyproject";
+      pyproject = true;
 
       src = fetchFromGitHub {
         owner = "abdeladim-s";
@@ -319,7 +319,7 @@ rec {
     buildPythonPackage {
       inherit version;
       pname = "rwkv-cpp";
-      format = "pyproject";
+      pyproject = true;
       src = fetchFromGitHub {
         owner = "saharNooby";
         repo = "rwkv.cpp";
@@ -408,7 +408,7 @@ rec {
     buildPythonPackage {
       inherit version;
       pname = name;
-      format = "pyproject";
+      pyproject = true;
 
       src = fetchFromGitHub {
         owner = "carloscdias";

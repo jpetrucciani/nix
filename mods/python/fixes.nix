@@ -88,7 +88,7 @@ rec {
 
   python-multipart = let version = "0.0.6"; in prev.python-multipart.overridePythonAttrs (_: {
     inherit version;
-    format = "pyproject";
+    pyproject = true;
     src = prev.pkgs.fetchFromGitHub {
       owner = "andrew-d";
       repo = "python-multipart";
@@ -207,7 +207,7 @@ rec {
       prev.setuptools-rust.overridePythonAttrs
         (_: {
           inherit version;
-          format = "pyproject";
+          pyproject = true;
           src = prev.fetchPypi {
             inherit pname version;
             hash = "sha256-xxAJmZSCNaOK5+VV/hmapmwlPcOEsSX12FRzv4Hq46M=";

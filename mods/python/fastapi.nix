@@ -48,8 +48,8 @@ rec {
   httpx-oauth = buildPythonPackage rec {
     pname = "httpx-oauth";
     version = "0.11.0";
+    pyproject = true;
 
-    format = "pyproject";
     src = fetchFromGitHub {
       owner = "frankie567";
       repo = pname;
@@ -100,8 +100,8 @@ rec {
   prometheus-fastapi-instrumentator = buildPythonPackage rec {
     pname = "prometheus-fastapi-instrumentator";
     version = "6.0.0";
+    pyproject = true;
 
-    format = "pyproject";
     src = fetchFromGitHub {
       owner = "trallnag";
       repo = pname;
@@ -150,8 +150,8 @@ rec {
   fastapi-users = buildPythonPackage rec {
     pname = "fastapi-users";
     version = "10.4.0";
+    pyproject = true;
 
-    format = "pyproject";
     src = fetchFromGitHub {
       owner = "fastapi-users";
       repo = pname;
@@ -256,7 +256,7 @@ rec {
   vbuild = buildPythonPackage rec {
     pname = "vbuild";
     version = "0.8.2";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
@@ -322,7 +322,7 @@ rec {
   nicegui = buildPythonPackage rec {
     pname = "nicegui";
     version = "1.4.17";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;

@@ -8,7 +8,7 @@ final: prev: with prev; rec {
     buildPythonPackage rec {
       pname = "reflex";
       version = "0.3.8";
-      format = "pyproject";
+      pyproject = true;
 
 
       src = pkgs.fetchFromGitHub {
@@ -73,7 +73,7 @@ final: prev: with prev; rec {
   starlette-admin = buildPythonPackage rec {
     pname = "starlette-admin";
     version = "0.11.1";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       pname = "starlette_admin";
@@ -149,7 +149,7 @@ final: prev: with prev; rec {
   emmett-rest = buildPythonPackage rec {
     pname = "rest";
     version = "1.4.5";
-    format = "pyproject";
+    pyproject = true;
 
     disabled = pythonOlder "3.7";
     src = pkgs.fetchFromGitHub {
@@ -187,7 +187,7 @@ final: prev: with prev; rec {
   renoir = buildPythonPackage rec {
     pname = "renoir";
     version = "1.6.0";
-    format = "pyproject";
+    pyproject = true;
 
     disabled = pythonOlder "3.7";
     src = pkgs.fetchFromGitHub {
@@ -227,7 +227,7 @@ final: prev: with prev; rec {
   severus = buildPythonPackage rec {
     pname = "severus";
     version = "1.2.0";
-    format = "pyproject";
+    pyproject = true;
 
     disabled = pythonOlder "3.7";
     src = pkgs.fetchFromGitHub {
@@ -268,7 +268,7 @@ final: prev: with prev; rec {
   emmett = buildPythonPackage rec {
     pname = "emmett";
     version = "2.4.13";
-    format = "pyproject";
+    pyproject = true;
 
     disabled = pythonOlder "3.7";
     src = pkgs.fetchFromGitHub {
@@ -331,8 +331,8 @@ final: prev: with prev; rec {
   emmett-crypto = buildPythonPackage rec {
     pname = "emmett-crypto";
     version = "0.3.8";
+    pyproject = true;
 
-    format = "pyproject";
     src = pkgs.fetchFromGitHub {
       owner = "emmett-framework";
       repo = "crypto";
@@ -372,8 +372,8 @@ final: prev: with prev; rec {
   granian = buildPythonPackage rec {
     pname = "granian";
     version = "0.3.8";
+    pyproject = true;
 
-    format = "pyproject";
     src = pkgs.fetchFromGitHub {
       owner = "emmett-framework";
       repo = pname;

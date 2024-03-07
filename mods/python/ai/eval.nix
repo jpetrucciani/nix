@@ -7,7 +7,7 @@ in
   langfuse = buildPythonPackage rec {
     pname = "langfuse";
     version = "2.6.0";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;

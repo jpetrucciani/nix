@@ -11,7 +11,7 @@ in
     buildPythonPackage rec {
       pname = "chromadb";
       version = "0.4.24";
-      format = "pyproject";
+      pyproject = true;
 
       src = fetchPypi {
         inherit pname version;

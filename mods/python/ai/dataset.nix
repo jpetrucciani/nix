@@ -7,7 +7,7 @@ in
   argilla = buildPythonPackage rec {
     pname = "argilla";
     version = "1.13.3";
-    format = "pyproject";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
