@@ -1,5 +1,4 @@
 { lib
-, system
 , rustPlatform
 , fetchFromGitHub
 , fetchpatch
