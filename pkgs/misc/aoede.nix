@@ -11,7 +11,6 @@
 }:
 let
   hashes = {
-    aarch64-darwin = "sha256-Wa/i+SENpljafoaRMmUMY7QTarbQQZDXb/eT797TJLc=";
     x86_64-linux = "sha256-MgBgQ/641wf3SnOB2lNYluI2udgfhqrD/4c6EFtZv9I=";
   };
 in
