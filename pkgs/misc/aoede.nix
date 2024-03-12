@@ -1,5 +1,4 @@
 { lib
-, system
 , rustPlatform
 , fetchFromGitHub
 , fetchpatch
@@ -9,11 +8,7 @@
 , stdenv
 , darwin
 }:
-let
-  hashes = {
-    x86_64-linux = "sha256-MgBgQ/641wf3SnOB2lNYluI2udgfhqrD/4c6EFtZv9I=";
-  };
-in
+
 rustPlatform.buildRustPackage rec {
   pname = "aoede";
   version = "0.7.0";
@@ -25,7 +20,7 @@ rustPlatform.buildRustPackage rec {
     hash = "sha256-Kjbf55ufZyRXAS3ExLfqkmSYw2R0Acc25867MNWIB/0=";
   };
 
-  cargoHash = hashes.${system};
+  cargoHash = "sha256-MgBgQ/641wf3SnOB2lNYluI2udgfhqrD/4c6EFtZv9I=";
 
   patches = [
     # fix cargo lock file
@@ -51,7 +46,7 @@ rustPlatform.buildRustPackage rec {
     homepage = "https://github.com/codetheweb/aoede";
     license = licenses.mit;
     maintainers = with maintainers; [ jpetrucciani ];
-    platforms = lib.attrNames hashes;
+    broken = stdenv.isDarwin;
     mainProgram = "aoede";
   };
 }
