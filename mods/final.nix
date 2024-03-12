@@ -5,9 +5,9 @@ let
   checked_packages = filterAttrs
     (_: pkg: all id [
       (isDerivation pkg)
+      (elem final.system pkg.meta.platforms)
       (!pkg.meta.broken or false)
       (!pkg.meta.skipBuild or false)
-      (elem final.system pkg.meta.platforms or [ final.system ])
     ])
     prev.custom;
 in
