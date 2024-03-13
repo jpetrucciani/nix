@@ -71,40 +71,4 @@ in
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
-
-  diffusers = buildPythonPackage rec {
-    pname = "diffusers";
-    version = "0.23.1";
-    pyproject = true;
-
-    src = prev.fetchPypi {
-      inherit pname version;
-      hash = "sha256-ospWvOU8f4/Cnn46rgrx2/XXdtmvx8k3+wHJXBeJ2gM=";
-    };
-
-    nativeBuildInputs = with prev; [
-      setuptools
-      wheel
-    ];
-
-    propagatedBuildInputs = with prev; [
-      filelock
-      huggingface-hub
-      importlib-metadata
-      numpy
-      pillow
-      regex
-      requests
-      safetensors
-    ];
-
-    pythonImportsCheck = [ "diffusers" ];
-
-    meta = {
-      description = "State-of-the-art diffusion in PyTorch and JAX";
-      homepage = "https://pypi.org/project/diffusers/";
-      license = licenses.asl20;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
 }

@@ -19,13 +19,13 @@ rec {
             ];
         }) else prev.passlib;
 
-  curio =
-    if isDarwin then
-      prev.curio.overrideAttrs
-        (_: {
-          doCheck = false;
-          doInstallCheck = false;
-        }) else prev.curio;
+  # curio =
+  #   if isDarwin then
+  #     prev.curio.overrideAttrs
+  #       (_: {
+  #         doCheck = false;
+  #         doInstallCheck = false;
+  #       }) else prev.curio;
 
   twisted =
     if isDarwin then
@@ -37,25 +37,6 @@ rec {
   cherrypy = prev.cherrypy.overridePythonAttrs (old: {
     disabled = nonCurrentPython;
     doCheck = false;
-  });
-
-  watchfiles = prev.watchfiles.overridePythonAttrs (_: {
-    doCheck = false;
-  });
-
-  slack-bolt = prev.slack-bolt.overridePythonAttrs (old: {
-    postPatch = ''
-      sed -i '/pytest-runner/d' ./setup.py
-    '';
-    disabledTests = old.disabledTests ++ [
-      "TestAuthorize"
-      "TestAsyncAuthorize"
-    ];
-  });
-
-  aioquic = prev.aioquic.overrideAttrs (_: {
-    patches = [ ];
-    disabledTestPaths = [ "tests/test_tls.py" "tests/test_asyncio.py" ];
   });
 
   maxminddb =
@@ -86,21 +67,6 @@ rec {
     meta.broken = false;
   });
 
-  python-multipart = let version = "0.0.6"; in prev.python-multipart.overridePythonAttrs (_: {
-    inherit version;
-    pyproject = true;
-    src = prev.pkgs.fetchFromGitHub {
-      owner = "andrew-d";
-      repo = "python-multipart";
-      rev = "refs/tags/${version}";
-      hash = "sha256-Qadzs6T28xj2L2PsRr4WPfBcBOUa5QTC3i4HyxpOGzU=";
-    };
-    nativeBuildInputs = with prev; [
-      hatch-vcs
-      hatchling
-    ];
-  });
-
   betterproto = prev.betterproto.overridePythonAttrs (_: {
     src = prev.pkgs.fetchFromGitHub {
       owner = "danielgtaylor";
@@ -109,11 +75,7 @@ rec {
       hash = "sha256-nQlLFQgwwkCOa3+DliHkWeoxlaS0LN8haXEQ8ARmblY=";
     };
   });
-  grpclib = prev.grpclib.overridePythonAttrs (_: { doCheck = false; });
-
-  tensorboard = prev.tensorboard.overridePythonAttrs (_: {
-    disabled = false;
-  });
+  # grpclib = prev.grpclib.overridePythonAttrs (_: { doCheck = false; });
 
   numba = prev.numba.overridePythonAttrs (old: {
     disabled = nonCurrentPython;
@@ -121,13 +83,6 @@ rec {
 
   librosa = prev.librosa.overridePythonAttrs (_: {
     disabledTestPaths = [ "tests/test_display.py" ];
-  });
-
-  pydevd = prev.pydevd.overridePythonAttrs (_: {
-    disabledTestPaths = [
-      "tests_python/test_debugger.py"
-      "tests_python/test_debugger_json.py"
-    ];
   });
 
   python-binance = prev.python-binance.overridePythonAttrs (old: {
@@ -175,85 +130,11 @@ rec {
   # wat?
   accelerate = if isDarwin then prev.accelerate.overridePythonAttrs (old: { doCheck = false; propagatedBuildInputs = old.propagatedBuildInputs ++ [ prev.huggingface-hub ]; }) else prev.accelerate;
 
-  qdrant-client = prev.qdrant-client.overridePythonAttrs (old: {
-    nativeBuildInputs = old.nativeBuildInputs ++ [ prev.pythonRelaxDepsHook ];
-    pythonRelaxDeps = [
-      "urllib3"
-    ];
-  });
-
-  # PYTHON 3.12 FIXES!
-  autoflake = disableCheckPython312 "autoflake";
   nose3 = disableCheckPython312 "nose3";
   nosexcover = disableCheckPython312 "nosexcover";
   itsdangerous = disableCheckPython312 "itsdangerous";
   async-generator = disableCheckPython312 "async-generator";
   parameterized = disableCheckPython312 "parameterized";
-  pycryptodome = let version = "3.19.0"; in prev.pycryptodome.overridePythonAttrs (_: {
-    inherit version;
-    src = fetchFromGitHub {
-      owner = "Legrandin";
-      repo = "pycryptodome";
-      rev = "refs/tags/v${version}";
-      hash = "sha256-WD+OEjePVtqlmn7h1CIfraLuEQlodkvjmYQ8q7nNoGU=";
-    };
-  });
-  setuptools-rust =
-    let
-      pname = "setuptools-rust";
-      version = "1.7.0";
-    in
-    if (pythonAtLeast "3.12") then
-      prev.setuptools-rust.overridePythonAttrs
-        (_: {
-          inherit version;
-          pyproject = true;
-          src = prev.fetchPypi {
-            inherit pname version;
-            hash = "sha256-xxAJmZSCNaOK5+VV/hmapmwlPcOEsSX12FRzv4Hq46M=";
-          };
-        }) else prev.setuptools-rust;
-  cffi =
-    let
-      pname = "cffi";
-      version = "1.16.0";
-    in
-    if (pythonAtLeast "3.12") then
-      prev.cffi.overridePythonAttrs
-        (_: {
-          inherit version;
-          src = prev.fetchPypi {
-            inherit pname version;
-            hash = "sha256-vLPvQ+WGZbvaL7GYaY/K5ndkg+DEpjGqVkeAbCXgLMA=";
-          };
-          patches = [ ];
-        }) else prev.cffi;
-  pyflakes =
-    let
-      pname = "pyflakes";
-      version = "3.1.0";
-    in
-    if (pythonAtLeast "3.12") then
-      prev.pyflakes.overridePythonAttrs
-        (_: {
-          inherit version;
-          src = prev.fetchPypi {
-            inherit pname version;
-            hash = "sha256-oKrgNMRE2wBxqgd5crpHaNQMgw2VOf1Fv0zT+PaZLvw=";
-          };
-        }) else prev.pyflakes;
-  # need to use this commit for python 3.12 to work
-  ruamel-yaml-clib =
-    if (pythonAtLeast "3.12") then
-      prev.ruamel-yaml-clib.overridePythonAttrs
-        (_: {
-          version = "0.2.8";
-          src = fetchhg {
-            url = "http://hg.code.sf.net/p/ruamel-yaml-clib/code";
-            rev = "5f8ccce2f70b3a5d27c47ce19fe33e5bdd815571";
-            sha256 = "sha256-6AizGQLpn887R8D9qbLOc0z514oSArBOkDJ3cabFV2M=";
-          };
-        }) else prev.ruamel-yaml-clib;
 
   tokenize-rt = let version = "5.2.0"; in
     if (pythonAtLeast "3.12") then
@@ -267,49 +148,6 @@ rec {
             hash = "sha256-G4Dn6iZLVOovzfEt9eMzp93mTX+bo0tHI5cCbaJLxBQ=";
           };
         }) else prev.tokenize-rt;
-
-  typeguard = prev.buildPythonPackage rec {
-    pname = "typeguard";
-    version = "4.1.5";
-    pyproject = true;
-
-    src = prev.fetchPypi {
-      inherit pname version;
-      hash = "sha256-6goRO7wRG8/8kHieuyFWJcljQR9wlqfpBi1ORjDBVf0=";
-    };
-
-    nativeBuildInputs = with prev; [
-      setuptools
-      setuptools-scm
-      wheel
-    ];
-
-    propagatedBuildInputs = with prev;[
-      importlib-metadata
-      typing-extensions
-    ];
-
-    passthru.optional-dependencies = with prev; {
-      doc = [
-        packaging
-        sphinx
-        sphinx-autodoc-typehints
-      ];
-      test = [
-        coverage
-        pytest
-      ];
-    };
-
-    pythonImportsCheck = [ "typeguard" ];
-
-    meta = with prev.pkgs.lib; {
-      description = "Run-time type checker for Python";
-      homepage = "https://pypi.org/project/typeguard";
-      license = licenses.mit;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
 
   stack-data = prev.buildPythonPackage
     rec {
@@ -354,12 +192,4 @@ rec {
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
-
-  tenacity = prev.tenacity.overridePythonAttrs (_: {
-    disabledTests = [ "test_retry_type_annotations" ];
-  });
-
-  openai = prev.openai.overridePythonAttrs (old: {
-    disabledTestPaths = old.disabledTestPaths ++ [ "tests/test_client.py" ];
-  });
 }

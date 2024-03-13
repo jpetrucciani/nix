@@ -10,7 +10,6 @@ final: prev: with prev; rec {
       version = "0.3.8";
       pyproject = true;
 
-
       src = pkgs.fetchFromGitHub {
         owner = "reflex-dev";
         repo = pname;
