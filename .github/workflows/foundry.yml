@@ -17,7 +17,7 @@ jobs:
     name: foundry-${{ matrix.image }}
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.2
       - uses: cachix/install-nix-action@v26
       - uses: cachix/cachix-action@master
         with:
