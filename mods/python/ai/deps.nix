@@ -32,7 +32,7 @@ final: prev: with prev; rec {
 
   hnswlib = buildPythonPackage rec {
     pname = "hnswlib";
-    version = "0.7.0";
+    version = "0.12.0";
 
     src = pkgs.fetchFromGitHub {
       owner = "nmslib";
@@ -358,19 +358,24 @@ final: prev: with prev; rec {
 
   gradio-client = buildPythonPackage rec {
     pname = "gradio-client";
-    version = "0.7.0";
+    version = "0.12.0";
     pyproject = true;
 
     src = fetchPypi {
       pname = "gradio_client";
       inherit version;
-      hash = "sha256-+MNVJzfaWocluz4b6hD3e703gj8NeU1BDphe9xJyCaw=";
+      hash = "sha256-en40BoKaF2FTuhpn8eF3nC6JfXdcf3DzrrfnsuHOkGs=";
     };
 
     nativeBuildInputs = [
       hatch-fancy-pypi-readme
       hatch-requirements-txt
       hatchling
+      pythonRelaxDepsHook
+    ];
+
+    pythonRelaxDeps = [
+      "websockets"
     ];
 
     propagatedBuildInputs = [
