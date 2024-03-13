@@ -400,48 +400,58 @@ final: prev: with prev; rec {
 
   gradio = buildPythonPackage rec {
     pname = "gradio";
-    version = "4.4.1";
+    version = "4.21.0";
     disabled = pythonOlder "3.7";
     pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
-      sha256 = "sha256-jMMYGKjT5eVd1rXv0dSjvgYlot+fnHblO6WPryxzq3Q=";
+      sha256 = "sha256-gay/v4fQfUcoieFMaWo9oJrMbxq9HX49fxqWPntyc2M=";
     };
 
     nativeBuildInputs = [
       hatchling
       hatch-requirements-txt
       hatch-fancy-pypi-readme
+      pythonRelaxDepsHook
     ];
+
+    pythonRelaxDeps = [
+      "python-multipart"
+      "tomlkit"
+    ];
+
     propagatedBuildInputs = [
-      altair
-      aiohttp
       aiofiles
+      aiohttp
+      altair
       analytics-python
       fastapi
       ffmpy
+      fsspec
       gradio-client
+      httpx
+      importlib-resources
+      jinja2
+      linkify-it-py
+      markdown-it-py
       matplotlib
+      mdit-py-plugins
       numpy
       orjson
       pandas
       paramiko
       pillow
       pycryptodome
-      python-multipart
-      pydub
-      requests
-      uvicorn
-      jinja2
-      fsspec
-      httpx
       pydantic
+      pydub
+      python-multipart
+      requests
       semantic-version
+      tomlkit
+      typer
+      uvicorn
       websockets
-      markdown-it-py
-      mdit-py-plugins
-      linkify-it-py
     ];
 
     postPatch = ''
@@ -450,6 +460,7 @@ final: prev: with prev; rec {
       substituteInPlace requirements.txt \
         --replace "mdit-py-plugins<=0.3.3" "mdit-py-plugins>=0.3.3" \
         --replace "  # required for fastapi forms" ""
+        sed -i '/ruff/d' requirements.txt
     '';
 
     doCheck = false;
