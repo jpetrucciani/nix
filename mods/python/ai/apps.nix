@@ -136,6 +136,7 @@ in
       description = "Image inpainting, outpainting tool powered by SOTA AI Model";
       homepage = "https://github.com/Sanster/iopaint";
       license = licenses.asl20;
+      mainProgram = "iopaint";
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
