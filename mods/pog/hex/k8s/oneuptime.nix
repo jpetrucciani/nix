@@ -5,6 +5,8 @@ let
     defaults = {
       inherit name;
       namespace = name;
+      version = "7.0.1733";
+      sha256 = "0pgnyv72g1bjmh4r08mrxn55l7si00sxy4k4mkqyapawh9qsi1jb";
     };
     version = rec {
       _v = hex.k8s._.version chart;
