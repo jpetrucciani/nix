@@ -3,10 +3,12 @@ let
   inherit (prev) buildPythonPackage fetchPypi;
   inherit (prev.lib) licenses maintainers;
   inherit (prev.pkgs) fetchFromGitHub;
-  lama-cleaner-base =
+
+  # wip for now
+  iopaint-base =
     let
-      name = "lama-cleaner";
-      version = "1.2.1";
+      name = "iopaint";
+      version = "1.2.2";
     in
     buildPythonPackage {
       inherit version;
@@ -16,14 +18,15 @@ let
       src = fetchFromGitHub {
         owner = "Sanster";
         repo = name;
-        rev = "203e775e2ed9bda2c55b15bba71a2a107ba7b8d2";
-        hash = "sha256-r0ZiHdUdEckqR2TmsJDrH5/4Jp63IZRMNex1iqqDHHQ=";
+        rev = "refs/tags/iopaint-${version}";
+        hash = "sha256-jY2NZVhcFH+YXcbasTXEyhswOKaLx3lqAzYQlyYhAgk=";
       };
 
       propagatedBuildInputs = with prev; [
         accelerate
-        # controlnet-aux
+        controlnet-aux
         diffusers
+        einops
         flask
         flask-cors
         flask-socketio
@@ -34,6 +37,7 @@ let
         markupsafe
         omegaconf
         opencv4
+        peft
         piexif
         pydantic
         pytest
@@ -45,13 +49,13 @@ let
         torchvision
         tqdm
         transformers
+        typer
+        typer-config
         yacs
       ];
 
       postPatch = ''
         sed -i -E \
-          -e '/opencv-python/d' \
-          -e '/diffusers\[torch/d' \
           -e '/controlnet-aux/d' \
           ./requirements.txt
       '';
@@ -63,28 +67,79 @@ let
         "markupsafe"
         "transformers"
       ];
+
       nativeBuildInputs = with prev; [
         pythonRelaxDepsHook
       ];
 
-      pythonImportsCheck = [ "lama_cleaner" ];
+      pythonImportsCheck = [ "iopaint" ];
       doCheck = false;
 
       meta = {
-        description = "Image inpainting tool powered by SOTA AI Model";
-        homepage = "https://github.com/Sanster/lama-cleaner";
-        mainProgram = "lama-cleaner";
+        description = "Image inpainting tool powered by SOTA AI Models";
+        homepage = "https://github.com/Sanster/iopaint";
+        mainProgram = "iopaint";
         license = licenses.asl20;
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
 in
 {
-  lama-cleaner = lama-cleaner-base;
-  lama-cleaner-cuda = lama-cleaner-base.override {
-    torch = prev.torch-bin;
-    torchvision = prev.torchvision-bin;
+  io-paint = buildPythonPackage rec {
+    pname = "io-paint";
+    version = "1.2.2";
+    pyproject = true;
+
+    src = fetchPypi {
+      pname = "IOPaint";
+      inherit version;
+      hash = "sha256-653nYW5qbfW/taf/W6vB12fl0YaEoieRWjE/kIuN/t4=";
+    };
+    postPatch = "touch ./requirements.txt";
+
+    nativeBuildInputs = with final; [
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = with final; [
+      accelerate
+      # controlnet-aux
+      diffusers
+      easydict
+      einops
+      fastapi
+      gradio
+      loguru
+      omegaconf
+      opencv4
+      peft
+      piexif
+      pillow
+      pydantic
+      python-multipart
+      python-socketio
+      rich
+      safetensors
+      torch
+      torchvision
+      transformers
+      typer
+      typer-config
+      uvicorn
+      yacs
+    ];
+
+    pythonImportsCheck = [ "iopaint" ];
+
+    meta = {
+      description = "Image inpainting, outpainting tool powered by SOTA AI Model";
+      homepage = "https://github.com/Sanster/iopaint";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
   };
+
   chainforge = buildPythonPackage rec {
     pname = "chainforge";
     version = "0.2.5.3";

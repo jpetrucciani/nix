@@ -1,10 +1,14 @@
-final: prev: with prev; rec {
+final: prev: with prev;
+let
+  inherit (pkgs) fetchFromGitHub;
+in
+rec {
   sse-starlette = buildPythonPackage rec {
     pname = "sse-starlette";
     version = "1.6.1";
     pyproject = true;
 
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "sysid";
       repo = pname;
       rev = "refs/tags/v${version}";
@@ -34,7 +38,7 @@ final: prev: with prev; rec {
     pname = "hnswlib";
     version = "0.12.0";
 
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "nmslib";
       repo = pname;
       rev = "v${version}";
@@ -65,7 +69,7 @@ final: prev: with prev; rec {
     version = "0.5.24";
     format = "setuptools";
 
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "ClickHouse";
       repo = pname;
       rev = "refs/tags/v${version}";
@@ -361,7 +365,7 @@ final: prev: with prev; rec {
     version = "1.0.6";
     format = "setuptools";
 
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "ClimenteA";
       repo = "flaskwebgui";
       rev = "b77555b9a795dfd7154c5116f7dfde5ce238e99b";
@@ -413,13 +417,13 @@ final: prev: with prev; rec {
 
   controlnet-aux = buildPythonPackage rec {
     pname = "controlnet-aux";
-    version = "0.0.5";
+    version = "0.0.7";
     format = "setuptools";
 
     src = fetchPypi {
       pname = "controlnet_aux";
       inherit version;
-      hash = "sha256-xtwtVN/afiTblqocThBq7cVj3BQqNHtfOOzS8TuxBOk=";
+      hash = "sha256-23KZMjum04ni/mt9gTGgWica86SsKldHdUSMTQd4vow=";
     };
 
     propagatedBuildInputs = [
@@ -583,7 +587,7 @@ final: prev: with prev; rec {
     pyproject = true;
 
     disabled = pythonOlder "3.9";
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "tiangolo";
       repo = "sqlmodel";
       rev = version;
@@ -614,7 +618,7 @@ final: prev: with prev; rec {
     version = "0.8.1";
     format = "setuptools";
 
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "Unstructured-IO";
       repo = pname;
       rev = "refs/tags/${version}";
@@ -1272,6 +1276,37 @@ final: prev: with prev; rec {
       description = "";
       homepage = "https://pypi.org/project/mistralai/";
       license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  typer-config = buildPythonPackage rec {
+    pname = "typer-config";
+    version = "1.4.0";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "maxb2";
+      repo = "typer-config";
+      rev = version;
+      hash = "sha256-58dlMpEGRyWqtUIPsq0xVFTJVbOkV8CmI+yRFIi+N2c=";
+    };
+
+    nativeBuildInputs = [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = [
+      typer
+    ];
+
+    pythonImportsCheck = [ "typer_config" ];
+
+    meta = with lib; {
+      description = "Utilities for working with configuration files in typer CLIs";
+      homepage = "https://github.com/maxb2/typer-config";
+      changelog = "https://github.com/maxb2/typer-config/blob/${src.rev}/CHANGELOG.md";
+      license = licenses.mit;
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
