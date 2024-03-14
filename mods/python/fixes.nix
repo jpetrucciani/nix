@@ -2,7 +2,7 @@ final: prev:
 let
   inherit (final) pythonAtLeast pythonOlder;
   inherit (final.stdenv) isDarwin;
-  inherit (final.pkgs) fetchFromGitHub fetchhg;
+  inherit (final.pkgs) fetchFromGitHub;
   nonCurrentPython = pythonOlder "3.7" || pythonAtLeast "3.13";
   disableCheckPython312 = pkg:
     if (pythonAtLeast "3.12") then

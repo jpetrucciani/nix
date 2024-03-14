@@ -3,9 +3,7 @@ let
   inherit (prev) buildPythonPackage fetchPypi;
   inherit (prev.lib) licenses maintainers;
   inherit (prev.pkgs) fetchFromGitHub;
-in
-{
-  lama-cleaner =
+  lama-cleaner-base =
     let
       name = "lama-cleaner";
       version = "1.2.1";
@@ -80,7 +78,13 @@ in
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
-
+in
+{
+  lama-cleaner = lama-cleaner-base;
+  lama-cleaner-cuda = lama-cleaner-base.override {
+    torch = prev.torch-bin;
+    torchvision = prev.torchvision-bin;
+  };
   chainforge = buildPythonPackage rec {
     pname = "chainforge";
     version = "0.2.5.3";
