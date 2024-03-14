@@ -250,6 +250,12 @@ rec {
     chart_url = "https://github.com/flipt-io/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
   };
 
+  chart_scan_oneuptime = _chart_scan rec {
+    name = "oneuptime";
+    base_url = "https://helm-chart.oneuptime.com";
+    chart_url = "https://helm-chart.oneuptime.com/${name}-{1}.tgz";
+  };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
@@ -268,6 +274,7 @@ rec {
     chart_scan_mongo-operator
     chart_scan_nfs
     chart_scan_oncall
+    chart_scan_oneuptime
     chart_scan_otf
     chart_scan_postgres-operator
     chart_scan_postgres-operator-ui

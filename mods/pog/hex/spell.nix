@@ -23,6 +23,7 @@ let
     linkerd = import ./k8s/linkerd.nix params;
     mongo = import ./k8s/mongo.nix params;
     nginx-ingress = import ./k8s/nginx-ingress.nix params;
+    oneuptime = import ./k8s/oneuptime.nix params;
     otf = import ./k8s/otf.nix params;
     postgres = import ./k8s/postgres.nix params;
     prometheus = import ./k8s/prometheus.nix params;
