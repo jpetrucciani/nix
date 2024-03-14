@@ -83,9 +83,8 @@ let
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
-in
-{
-  io-paint = buildPythonPackage rec {
+
+  _io-paint = buildPythonPackage rec {
     pname = "io-paint";
     version = "1.2.2";
     pyproject = true;
@@ -141,6 +140,10 @@ in
     };
   };
 
+in
+{
+  io-paint = _io-paint;
+  io-paint-cuda = _io-paint.override { torch = final.torchWithCuda; };
   chainforge = buildPythonPackage rec {
     pname = "chainforge";
     version = "0.2.5.3";
