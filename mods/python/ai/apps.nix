@@ -5,7 +5,7 @@ let
   inherit (prev.pkgs) fetchFromGitHub;
 
   # wip for now
-  iopaint-base =
+  _iopaint-base =
     let
       name = "iopaint";
       version = "1.2.2";
