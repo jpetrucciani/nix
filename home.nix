@@ -119,7 +119,6 @@ in
         pigz
         procps
         pssh
-        pylyzer
         ranger
         re2c
         rlwrap
