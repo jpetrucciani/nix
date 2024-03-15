@@ -17,12 +17,18 @@ hex tries to implement a plan and apply workflow with the given specs, similar t
 
 there are some tradeoffs when doing things with hex!
 
-- hex does not track the expected state between applies (like terraform does with a state file or state store). This means that hex is not able to detect things that need to be deleted (yet)!
+hex does not track the expected state between applies (like terraform does with a state file or state store). This means that hex is not able to detect things that need to be deleted (yet)!
 
 ### basic workflow
 
 ```bash
+# hex by default will use a file named specs.nix
+hex
 
+# you can also target a specific file with `-t`
+hex -t charts.nix
+
+# running these will trigger a render, then will diff against the live state of the cluster!
 ```
 
 ---
