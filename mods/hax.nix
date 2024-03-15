@@ -1,3 +1,4 @@
+# This overlay provides the `hax` library, which contains useful functions and other packages and configurations.
 final: prev:
 (x: { hax = x; }) (
   with prev;

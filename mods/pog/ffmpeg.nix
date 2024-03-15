@@ -1,3 +1,4 @@
+# This module provides some shorthand `pog` helpers that simplify some ffmpeg workflows!
 final: prev:
 with prev;
 rec {

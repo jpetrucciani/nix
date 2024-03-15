@@ -1,3 +1,4 @@
+# This overlay acts as the last overlay, allowing me to add attributes after every other overlay in this repo
 final: prev:
 let
   inherit (final.lib) elem all id isDerivation;

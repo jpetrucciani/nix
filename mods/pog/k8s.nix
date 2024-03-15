@@ -1,3 +1,4 @@
+# This module creates some `pog` tools that help make you more productive in Kubernetes!
 final: prev:
 let
   inherit (final) _ pog;

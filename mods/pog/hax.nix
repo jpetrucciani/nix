@@ -1,3 +1,4 @@
+# This module provides some hacky `pog` tools!
 final: prev:
 with prev;
 {

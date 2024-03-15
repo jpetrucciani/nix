@@ -13,3 +13,5 @@ declaratively
 (?i)ktools
 (?i)dtools
 (?i)kubectl
+(?i)zaddy
+(?i)geoip

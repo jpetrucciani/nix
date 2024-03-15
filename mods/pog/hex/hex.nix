@@ -1,3 +1,4 @@
+# hex magic module! this contains the helpers that are exposed within the `hex` attribute of the function that makes up a hex file.
 pkgs:
 rec {
   inherit (pkgs.lib) isList isAttrs isInt isBool isFloat;
@@ -82,6 +83,7 @@ rec {
       in
       ''${_.yq} e -i '. | select(${_filter})' '';
     secret_metadata = ''${_.yq} e 'del(.metadata | (.annotations,.creationTimestamp,.uid,.resourceVersion))' '';
+    crds = ''${_.yq} e -i '. | select(.kind == "CustomResourceDefinition")' '';
     empty = ''${_.yq} e -i 'del(. | select(tag == "!!map" and length == 0))' '';
   };
 

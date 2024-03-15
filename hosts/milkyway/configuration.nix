@@ -53,6 +53,7 @@ in
     defaultUser = "jacobi";
     startMenuLaunchers = true;
     wslConf.automount.root = "/mnt";
+    nativeSystemd = true;
 
     # Enable native Docker support
     # docker-native.enable = true;
@@ -61,7 +62,7 @@ in
   networking.hostName = hostname;
   nix = common.nix-cuda // {
     nixPath = [
-      "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
+      "nixpkgs=/etc/nixpkgs-path"
       "nixos-config=/home/jacobi/cfg/hosts/${hostname}/configuration.nix"
       "/nix/var/nix/profiles/per-user/root/channels"
     ];

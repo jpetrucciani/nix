@@ -1,3 +1,4 @@
+# [rancher](https://github.com/rancher/rancher) is an open-source multi-cluster orchestration platform
 { hex, ... }:
 let
   rancher = rec {

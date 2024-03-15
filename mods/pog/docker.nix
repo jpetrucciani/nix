@@ -1,3 +1,4 @@
+# This module creates some `pog` tools that help make you more productive in Docker!
 final: prev:
 with prev;
 rec {

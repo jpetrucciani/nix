@@ -1,3 +1,4 @@
+# This overlay contains the bashbible implemented entirely in nix attr sets.
 final: prev:
 let
   inherit (final.lib) attrValues concatStrings;

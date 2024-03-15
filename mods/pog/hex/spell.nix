@@ -1,3 +1,4 @@
+# this is the nix function that is actually run when you run the `hex` command
 nixpkgs: SPELL:
 let
   inherit (builtins) functionArgs isFunction intersectAttrs;
@@ -20,7 +21,6 @@ let
     helm = import ./k8s/helm.nix params;
     infisical = import ./k8s/infisical.nix params;
     jupyterhub = import ./k8s/jupyterhub.nix params;
-    linkerd = import ./k8s/linkerd.nix params;
     mongo = import ./k8s/mongo.nix params;
     nginx-ingress = import ./k8s/nginx-ingress.nix params;
     oneuptime = import ./k8s/oneuptime.nix params;
@@ -36,8 +36,6 @@ let
     stackstorm = import ./k8s/stackstorm.nix params;
     tailscale = import ./k8s/tailscale.nix params;
     traefik = import ./k8s/traefik.nix params;
-    whoogle = import ./k8s/whoogle.nix params;
-    woodpecker = import ./k8s/woodpecker.nix params;
     _ = {
       version = chart_url_fn: v: s: args: chart_url_fn (args // { version = v; sha256 = s; });
       chart = { defaults, chart_url, extraSets ? [ ] }:

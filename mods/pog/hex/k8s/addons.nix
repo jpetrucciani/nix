@@ -1,3 +1,4 @@
+# various cluster addons [out of date]
 { hex, pkgs, ... }:
 let
   inherit (hex) toYAML;

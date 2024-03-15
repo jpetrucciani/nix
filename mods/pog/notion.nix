@@ -1,3 +1,4 @@
+# this pog module includes tools to interact with notion
 final: prev:
 with prev;
 rec {

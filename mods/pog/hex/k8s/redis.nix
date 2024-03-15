@@ -1,3 +1,4 @@
+# [redis-operator](https://github.com/spotahome/redis-operator) creates/configures/manages high availability redis with sentinel automatic failover atop Kubernetes
 { hex, ... }:
 let
   name = "redis-operator";

@@ -1,3 +1,4 @@
+# [oneuptime](https://github.com/OneUptime/oneuptime) is a self-hostable observability platform
 { hex, ... }:
 let
   name = "oneuptime";

@@ -1,3 +1,4 @@
+# [flipt](https://github.com/flipt-io/flipt) is a feature flag service built with Go
 { hex, ... }:
 let
   name = "flipt";

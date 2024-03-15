@@ -1,3 +1,4 @@
+# This hex spell allows concise cron job declaration in Kubernetes.
 { hex, ... }:
 let
   inherit (hex) ifNotNull ifNotEmptyList toYAMLDoc;

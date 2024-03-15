@@ -1,3 +1,4 @@
+# This module contains an [elastic operator](https://github.com/elastic/cloud-on-k8s/)
 _:
 let
   elastic_url = "https://download.elastic.co/downloads/eck";

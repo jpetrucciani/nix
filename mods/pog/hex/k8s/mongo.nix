@@ -1,3 +1,4 @@
+# [mongodb-operator](https://github.com/mongodb/mongodb-kubernetes-operator) is a way to deploy and maintain mongodb deployments on k8s
 { hex, ... }:
 let
   name = "mongo-operator";

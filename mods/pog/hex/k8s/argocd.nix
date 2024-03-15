@@ -1,3 +1,4 @@
+# [argocd](https://github.com/argoproj/argo-cd) is declarative continuous deployment for kubernetes
 { hex, ... }:
 let
   argocd = rec {

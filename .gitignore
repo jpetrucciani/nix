@@ -11,3 +11,4 @@ data/
 pynixify/
 .github/styles/*
 !.github/styles/config
+.direnv

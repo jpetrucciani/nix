@@ -1,3 +1,4 @@
+# [sentry](https://github.com/getsentry/sentry) is a Developer-first error tracking and performance monitoring platform.
 { hex, ... }:
 let
   sentry = rec {

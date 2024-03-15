@@ -16,7 +16,11 @@ This module makes some AWS related tools with `pog`.
 
 ### [curl.nix](./curl.nix)
 
+this file provides some pog wrappers around curl to make it a bit more ergonomic
+
 ### [db.nix](./db.nix)
+
+this set of pog scripts allows us to use postgres, redis, etc. in local dev environments via nix
 
 ### [docker.nix](./docker.nix)
 
@@ -48,6 +52,8 @@ This module provides some tools for analyzing helm repos and charts!
 
 ### [ignore.nix](./ignore.nix)
 
+this module sets up a list of gitignore lines for various languages
+
 ### [k8s.nix](./k8s.nix)
 
 This module creates some `pog` tools that help make you more productive in Kubernetes!
@@ -56,14 +62,14 @@ This module creates some `pog` tools that help make you more productive in Kuber
 
 This module configures some helper tools for creating new nix environments!
 
-### [python.nix](./python.nix)
-
-This module configures some helper tools for interacting with python and pip!
-
 ### [notion.nix](./notion.nix)
+
+this pog module includes tools to interact with notion
 
 ### [sound.nix](./sound.nix)
 
 This module contains a `soundScript` wrapper that uses `pog` to create command line sound bites!
 
 ### [ssh.nix](./ssh.nix)
+
+this set of pog scripts creates some wrappers around ssh to make things easier

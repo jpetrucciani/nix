@@ -1,3 +1,4 @@
+# [external-secrets](https://github.com/external-secrets/external-secrets) reads information from a third-party service like AWS Secrets Manager and automatically injects the values as Kubernetes Secrets.
 { hex, ... }:
 let
   inherit (hex) attrIf ifNotEmptyAttr toYAMLDoc;

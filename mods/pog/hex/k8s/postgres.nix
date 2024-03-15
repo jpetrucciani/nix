@@ -1,3 +1,4 @@
+# [postgres-operator](https://github.com/zalando/postgres-operator) creates and manages PostgreSQL clusters running in Kubernetes
 { hex, ... }:
 let
   repo_url = "https://opensource.zalando.com/postgres-operator/charts/postgres-operator";

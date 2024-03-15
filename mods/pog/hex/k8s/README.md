@@ -6,6 +6,14 @@ hexes related to k8s specs and charts!
 
 ## In this directory
 
+### [addons.nix](./addons.nix)
+
+various cluster addons [out of date]
+
+### [airbyte.nix](./airbyte.nix)
+
+a hex module for [airbyte](https://github.com/airbytehq/airbyte), an ETL pipeline tool
+
 ### [argocd.nix](./argocd.nix)
 
 [argocd](https://github.com/argoproj/argo-cd) is declarative continuous deployment for kubernetes
@@ -28,11 +36,11 @@ This hex spell allows concise cron job declaration in Kubernetes.
 
 ### [datadog.nix](./datadog.nix)
 
-[datadog](https://github.com/DataDog/helm-charts) provides helm charts to add logging and monitoring to your clusters.
+[datadog](https://github.com/DataDog/helm-charts) provides helm charts to add logging and monitoring to your clusters. WARNING - extremely expensive!
 
 ### [elastic.nix](./elastic.nix)
 
-This module contains an elastic operator
+This module contains an [elastic operator](https://github.com/elastic/cloud-on-k8s/)
 
 ### [external-secrets.nix](./external-secrets.nix)
 
@@ -41,6 +49,10 @@ This module contains an elastic operator
 ### [fission.nix](./fission.nix)
 
 [fission](https://github.com/fission/fission) is a serverless function platform for k8s
+
+### [flipt.nix](./flipt.nix)
+
+[flipt](https://github.com/flipt-io/flipt) is a feature flag service built with Go
 
 ### [gitlab-runner.nix](./gitlab-runner.nix)
 
@@ -52,27 +64,55 @@ This module contains helm charts under the [grafana](https://grafana.com/) obser
 
 ### [helm.nix](./helm.nix)
 
-This module allows us to transparently use helm charts in hex spells!
+This module allows us to transparently use [helm](https://github.com/helm/helm) charts in hex spells!
 
 ### [infisical.nix](./infisical.nix)
 
 This module contains an [infisical](https://github.com/Infisical/infisical) helm chart
 
+### [jupyterhub.nix](./jupyterhub.nix)
+
+[jupyterhub](https://github.com/jupyterhub/jupyterhub) is a platform for hosting Jupyter notebooks for many users
+
+### [mongo.nix](./mongo.nix)
+
+[mongodb-operator](https://github.com/mongodb/mongodb-kubernetes-operator) is a way to deploy and maintain mongodb deployments on k8s
+
 ### [nginx-ingress.nix](./nginx-ingress.nix)
 
 [nginx-ingress controller](https://github.com/kubernetes/ingress-nginx)
 
+### [oneuptime.nix](./oneuptime.nix)
+
+[oneuptime](https://github.com/OneUptime/oneuptime) is a self-hostable observability platform
+
+### [otf.nix](./otf.nix)
+
+[otf](https://github.com/jpetrucciani/otf) is an open source terraform cloud alternative
+
 ### [postgres.nix](./postgres.nix)
 
-This module contains a postgres operator
+[postgres-operator](https://github.com/zalando/postgres-operator) creates and manages PostgreSQL clusters running in Kubernetes
 
 ### [prometheus.nix](./prometheus.nix)
 
-Helpers for prometheus related things in k8s land!
+Helpers for [prometheus](https://github.com/prometheus/prometheus) related things in k8s land!
 
 ### [rancher.nix](./rancher.nix)
 
 [rancher](https://github.com/rancher/rancher) is an open-source multi-cluster orchestration platform
+
+### [redis.nix](./redis.nix)
+
+[redis-operator](https://github.com/spotahome/redis-operator) creates/configures/manages high availability redis with sentinel automatic failover atop Kubernetes
+
+### [robusta.nix](./robusta.nix)
+
+[robusta](https://github.com/robusta-dev/robusta) is a Kubernetes observability and automation, with an awesome Prometheus integration
+
+### [sentry.nix](./sentry.nix)
+
+[sentry](https://github.com/getsentry/sentry) is a Developer-first error tracking and performance monitoring platform.
 
 ### [services.nix](./services.nix)
 
@@ -93,11 +133,3 @@ This module contains useful shorthands for using [tailscale](https://tailscale.c
 ### [traefik.nix](./traefik.nix)
 
 [Traefik](https://github.com/traefik/traefik-helm-chart) is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease.
-
-### [whoogle.nix](./whoogle.nix)
-
-This module contains a [whoogle](https://github.com/benbusby/whoogle-search) deployment
-
-### [woodpecker.nix](./woodpecker.nix)
-
-[Woodpecker CI](https://github.com/woodpecker-ci/woodpecker) is a community fork of the Drone CI system

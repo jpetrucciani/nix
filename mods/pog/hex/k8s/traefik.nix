@@ -1,3 +1,4 @@
+# [Traefik](https://github.com/traefik/traefik-helm-chart) is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease.
 { hex, pkgs, ... }:
 let
   inherit (hex) toYAML toYAMLDoc ifNotEmptyList;

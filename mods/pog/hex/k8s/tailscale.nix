@@ -1,3 +1,4 @@
+# This module contains useful shorthands for using [tailscale](https://tailscale.com/) within kubernetes
 { hex, ... }:
 let
   inherit (hex) toYAMLDoc boolToString concatMapStrings removePrefix ifNotNull ifNotEmptyList;
@@ -17,7 +18,7 @@ let
         memory = "2Gi";
       };
       tailscale_image_base = "ghcr.io/tailscale/tailscale";
-      tailscale_image_tag = "v1.60.1";
+      tailscale_image_tag = "v1.62.0";
       cloudsql_image_base = "gcr.io/cloudsql-docker/gce-proxy";
       cloudsql_image_tag = "1.34.0";
 

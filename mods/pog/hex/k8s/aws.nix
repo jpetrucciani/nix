@@ -1,3 +1,4 @@
+# This module contains k8s helpers for AWS related functionality
 { hex, services, ... }:
 let
   inherit (hex) toYAMLDoc concatStringsSep;

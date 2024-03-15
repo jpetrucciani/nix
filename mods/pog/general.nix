@@ -1,3 +1,4 @@
+# This module provides miscellaneous `pog` implemented tools
 final: prev:
 with prev;
 rec {

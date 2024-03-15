@@ -1,3 +1,4 @@
+# This module contains a `soundScript` wrapper that uses `pog` to create command line sound bites!
 final: prev:
 with prev;
 let
