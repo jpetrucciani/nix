@@ -182,7 +182,7 @@ rec {
       '';
     };
 
-  hexrender =
+  hexcast =
     let
       _ = {
         prettier = "${final.nodePackages.prettier}/bin/prettier --write --config ${../../prettier.config.js}";
@@ -194,18 +194,18 @@ rec {
       };
     in
     pog {
-      name = "hexrender";
-      version = "0.0.3";
-      description = "a quick and easy way to use nix to render various other types of config files!";
+      name = "hexcast";
+      version = "0.0.4";
+      description = "a quick and easy way to use nix to render (cast) various other types of config files!";
       flags = [
         {
           name = "format";
-          description = "the output format to use";
+          description = "the output format to use. use either yaml or json!";
           default = "yaml";
         }
         {
           name = "crds";
-          description = "filter to only the crds";
+          description = "filter to only the crds (k8s specific)";
           bool = true;
         }
       ];
@@ -229,7 +229,7 @@ rec {
 
   hex = pog {
     name = "hex";
-    version = "0.0.4";
+    version = "0.0.5";
     description = "a quick and easy way to render full kubespecs from nix files";
     flags = [
       {
@@ -288,7 +288,7 @@ rec {
         };
         _ = {
           k = lib.getExe' final.kubectl "kubectl";
-          hr = lib.getExe hexrender;
+          hc = lib.getExe hexcast;
           delta = lib.getExe' final.delta "delta";
           mktemp = "${final.coreutils}/bin/mktemp";
           prettier = "${final.nodePackages.prettier}/bin/prettier --write --config ${../../prettier.config.js}";
@@ -310,7 +310,7 @@ rec {
         diffed=$(${_.mktemp})
         debug "''${GREEN}render to '$rendered'"
         ${timer.start steps.render}
-        ${_.hr} ''${crds:+--crds} "$target" >"$rendered"
+        ${_.hc} ''${crds:+--crds} "$target" >"$rendered"
         render_exit_code=$?
         render_runtime=${timer.stop steps.render}
         debug "''${GREEN}rendered to '$rendered' in $render_runtime''${RESET}"
@@ -407,7 +407,7 @@ rec {
   nix_pog_scripts = [
     cache
     hex
-    hexrender
+    hexcast
     ndiff
     nixrender
     nixup

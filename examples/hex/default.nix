@@ -1,3 +1,4 @@
+# this is a lightweight nix env showing how you can include hex in your local environment
 { pkgs ? import
     (fetchTarball {
       name = "jpetrucciani-2024-03-15";
@@ -7,43 +8,12 @@
     { }
 }:
 let
-  name = "cfg";
+  name = "hex";
+
   tools = with pkgs; {
-    cli = [
-      bashInteractive
-      coreutils
-      cowsay
-      curl
-      delta
-      direnv
-      figlet
-      git
-      gron
-      jq
-      just
-      moreutils
-      nodePackages.prettier
-      scc
-      yq-go
-      (writeShellScriptBin "hms" ''
-        nix-env -i -f ~/cfg.nix
-      '')
-    ];
     k8s = [
+      hex
       kubectl
-      kubectx
-    ];
-    nix = [
-      nix-direnv
-      nixpkgs-fmt
-      nixup
-    ];
-    python = [
-      ruff
-      (python311.withPackages (p: with p; [
-        black
-        httpx
-      ]))
     ];
     scripts = pkgs.lib.attrsets.attrValues scripts;
   };

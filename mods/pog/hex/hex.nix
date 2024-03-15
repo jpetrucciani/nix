@@ -83,6 +83,7 @@ rec {
       in
       ''${_.yq} e -i '. | select(${_filter})' '';
     secret_metadata = ''${_.yq} e 'del(.metadata | (.annotations,.creationTimestamp,.uid,.resourceVersion))' '';
+    crds = ''${_.yq} e -i '. | select(.kind == "CustomResourceDefinition")' '';
     empty = ''${_.yq} e -i 'del(. | select(tag == "!!map" and length == 0))' '';
   };
 
