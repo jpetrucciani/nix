@@ -9,7 +9,7 @@ hex is comprised of two tools:
 - `hexcast`: the tool for casting nix code into yaml/json/etc. This script takes a single nix file as an argument, and outputs `yaml` or `json`.
 - `hex`: the tool that uses hexcast under the hood to render and diff/apply those files against a [kubernetes](https://kubernetes.io/) cluster
 
-both of these tools are created with [pog](../../mods/pog.nix) - so they have nice bash completion, smart flags, etc. Use the `--help` flag with either to see what options they currently support!
+both of these tools are created with [pog](../../mods/pog.nix), so they have nice bash completion, smart flags, etc. Use the `--help` flag with either to see what options they currently support!
 
 hex tries to implement a plan and apply workflow with the given specs, similar to how [terraform](https://developer.hashicorp.com/terraform) does things with infrastructure.
 
