@@ -1,3 +1,4 @@
+# This module makes some AWS related tools with `pog`.
 final: prev:
 with prev;
 rec {

@@ -1,3 +1,4 @@
+# This module provides some tools that interact with GitHub
 final: prev:
 with prev;
 rec {

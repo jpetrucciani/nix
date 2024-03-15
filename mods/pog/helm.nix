@@ -1,3 +1,4 @@
+# This module provides some tools for analyzing helm repos and charts!
 final: prev:
 let
   grafana_chart = { name, prefix ? "", filter_out ? "", last ? 20 }: _chart_scan {

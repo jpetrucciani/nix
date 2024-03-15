@@ -1,3 +1,4 @@
+# This overlay provides shorthand commands for generating rev/sha256 combos for common repos I touch.
 final: prev: {
   _nix_hash = repo: branch: name: (
     final.pog {

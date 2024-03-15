@@ -1,3 +1,4 @@
+# This module contains the helm chart for the [GitLab Kubernetes Executor](https://docs.gitlab.com/runner/executors/kubernetes.html).
 { hex, ... }:
 let
   gitlab-runner = rec {

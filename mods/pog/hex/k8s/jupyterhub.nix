@@ -1,3 +1,4 @@
+# [jupyterhub](https://github.com/jupyterhub/jupyterhub) is a platform for hosting Jupyter notebooks for many users
 { hex, ... }:
 let
   # https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tags

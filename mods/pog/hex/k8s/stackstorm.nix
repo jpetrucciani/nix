@@ -1,3 +1,4 @@
+# K8s Helm module for running a [StackStorm](https://stackstorm.com) cluster in HA mode.
 { hex, ... }:
 let
   # https://github.com/StackStorm/stackstorm-k8s

@@ -1,3 +1,4 @@
+# [Authentik](https://github.com/goauthentik/authentik) is an open source IDP written in go
 { hex, ... }:
 let
   authentik = rec {

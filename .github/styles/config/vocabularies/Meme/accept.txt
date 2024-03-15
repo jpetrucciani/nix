@@ -1,3 +1,5 @@
+(?i)jacobi
+(?i)keith
 [mM]eme
 [kK]eef
 [pP]og

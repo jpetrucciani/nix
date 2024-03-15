@@ -1,3 +1,4 @@
+# This module contains an [infisical](https://github.com/Infisical/infisical) helm chart
 { hex, ... }:
 let
   infisical = rec {

@@ -1,3 +1,4 @@
+# Helpers for [prometheus](https://github.com/prometheus/prometheus) related things in k8s land!
 { hex, ... }:
 let
   inherit (hex) ifNotEmptyList ifNotNull toYAMLDoc;

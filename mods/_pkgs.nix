@@ -1,3 +1,4 @@
+# This overlay allows me to load the custom packages I've built in my [pkgs/](../pkgs/) directory
 final: prev:
 let
   inherit (builtins) listToAttrs pathExists readDir;

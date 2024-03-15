@@ -6,10 +6,14 @@ Hex is a nix module system that allows us to create powerful abstractions of oth
 
 ## In this directory
 
-### [k8s/](./k8s/)
+### [k8s](./k8s/)
 
 hexes related to k8s specs and charts!
 
+### [hex.nix](./hex.nix)
+
+hex magic module! this contains the helpers that are exposed within the `hex` attribute of the function that makes up a hex file.
+
 ### [spell.nix](./spell.nix)
 
-This nix module allows us to form some magic that the hex tool can use to help us render nix into other things!
+this is the nix function that is actually run when you run the `hex` command

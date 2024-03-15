@@ -1,3 +1,4 @@
+# this module sets up a list of gitignore lines for various languages
 {
   crystal = ''
     /docs/

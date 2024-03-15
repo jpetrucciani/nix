@@ -1,3 +1,4 @@
+# this set of pog scripts allows us to use postgres, redis, etc. in local dev environments via nix
 final: prev:
 with prev;
 let

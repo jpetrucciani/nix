@@ -1,3 +1,4 @@
+# [robusta](https://github.com/robusta-dev/robusta) is a Kubernetes observability and automation, with an awesome Prometheus integration
 { hex, ... }:
 let
   robusta = rec {

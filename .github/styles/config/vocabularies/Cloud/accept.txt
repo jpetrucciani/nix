@@ -9,4 +9,10 @@
 (?i)gcloud
 (?i)awscli
 (?i)parseable
+(?i)oneuptime
+(?i)otf
+(?i)airbyte
+(?i)flipt
+(?i)addons
+(?i)robusta
 (?i)serverless

@@ -1,3 +1,4 @@
+# This overlay provides a way to build foundry docker images with nix
 { pkgs }:
 let
   inherit (pkgs.lib) concatStringsSep optionals;

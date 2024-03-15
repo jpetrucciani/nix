@@ -1,3 +1,4 @@
+# This module configures some helper tools for creating new nix environments!
 final: prev:
 let
   inherit (final) _ pog lib;
@@ -354,6 +355,31 @@ rec {
       '';
   };
 
+  nixsum = pog {
+    name = "nixsum";
+    description = "my lazy helper function to summarize a dir of nix scripts";
+    flags = [
+      {
+        name = "extensions";
+        description = "pipe separated list of extensions to use in the summary";
+        default = "nix";
+      }
+      {
+        name = "depth";
+        description = "how deep to search";
+        default = "1";
+      }
+    ];
+    script = ''
+      files=$(${_.find} . -maxdepth "$depth" -regextype posix-egrep -regex "\./.*\.($extensions)" | ${_.sort})
+      for f in $files; do
+          echo -e "### [''${f:2}]($f)\n"
+          top=$(${_.grep} "^#" "$f" | ${_.head} -1)
+          echo -e "''${top:2}\n"
+      done
+    '';
+  };
+
   nupdate = pog {
     name = "nupdate";
     arguments = [{ name = "attribute"; }];
@@ -385,6 +411,7 @@ rec {
     ndiff
     nixrender
     nixup
+    nixsum
     nupdate
     y2n
   ];

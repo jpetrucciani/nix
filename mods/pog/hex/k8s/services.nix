@@ -1,3 +1,4 @@
+# This module allows us to create best-practices, all-inclusive k8s services with a set of powerful nix functions.
 { hex, pkgs, ... }:
 let
   inherit (hex) attrIf ifNotNull ifNotEmptyList ifNotEmptyAttr toYAMLDoc;

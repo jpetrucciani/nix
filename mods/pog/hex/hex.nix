@@ -1,3 +1,4 @@
+# hex magic module! this contains the helpers that are exposed within the `hex` attribute of the function that makes up a hex file.
 pkgs:
 rec {
   inherit (pkgs.lib) isList isAttrs isInt isBool isFloat;

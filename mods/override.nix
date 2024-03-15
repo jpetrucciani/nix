@@ -1,3 +1,4 @@
+# This overlay provides some overrides/fixes for various packages
 final: prev:
 let
   inherit (final.stdenv) isDarwin;

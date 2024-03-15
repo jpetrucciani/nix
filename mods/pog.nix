@@ -1,3 +1,4 @@
+# This overlay provides the `pog` function, as well as a good amount of constants that make building tools easier.
 final: prev:
 let
   inherit (builtins) isString;
@@ -47,6 +48,7 @@ rec {
     ## common
     ls = "${core}/ls";
     date = "${core}/date";
+    find = "${pkgs.findutils}/bin/find";
     xargs = "${pkgs.findutils}/bin/xargs";
     getopt = "${pkgs.getopt}/bin/getopt";
     fzf = "${pkgs.fzf}/bin/fzf";

@@ -1,3 +1,4 @@
+# This module contains the [signoz](https://github.com/SigNoz/signoz) helm chart
 { hex, ... }:
 let
   # https://github.com/SigNoz/charts/

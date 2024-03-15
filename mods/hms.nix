@@ -1,3 +1,4 @@
+# This overlay provides more packages and scripts for use in my setup. This is also used in my repo's modified comma, exposing the binaries and scripts in this overlay directly through comma.
 final: prev:
 let
   inherit (builtins) listToAttrs;

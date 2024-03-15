@@ -1,3 +1,4 @@
+# This module allows us to transparently use [helm](https://github.com/helm/helm) charts in hex spells!
 { hex, pkgs }:
 let
   inherit (builtins) isFunction readFile;

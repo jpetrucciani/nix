@@ -1,3 +1,4 @@
+# a hex module for [airbyte](https://github.com/airbytehq/airbyte), an ETL pipeline tool
 { hex, ... }:
 let
   # https://github.com/airbytehq/airbyte-platform/blob/main/charts/airbyte/values.yaml

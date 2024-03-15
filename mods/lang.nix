@@ -1,3 +1,4 @@
+# This overlay provides new helpers for programming languages (like [vlang](https://vlang.io/) and [nim](https://nim-lang.org)). These helpers provide a default set of packages, and a way to build environments that link these packages into the build environment.
 final: prev:
 let
   inherit (final) concatStringsSep fetchFromGitHub stdenv;

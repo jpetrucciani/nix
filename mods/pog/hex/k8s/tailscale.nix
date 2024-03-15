@@ -1,3 +1,4 @@
+# This module contains useful shorthands for using [tailscale](https://tailscale.com/) within kubernetes
 { hex, ... }:
 let
   inherit (hex) toYAMLDoc boolToString concatMapStrings removePrefix ifNotNull ifNotEmptyList;

@@ -1,3 +1,4 @@
+# [datadog](https://github.com/DataDog/helm-charts) provides helm charts to add logging and monitoring to your clusters. WARNING - extremely expensive!
 { hex, ... }:
 let
   datadog = rec {
