@@ -6,7 +6,7 @@ rec {
       builtins = {
         caddy-cgi = { name = "github.com/aksdb/caddy-cgi"; version = "7cf2523251ffeef310868d8ed03e17a929236f2e"; };
         caddy-exec = { name = "github.com/abiosoft/caddy-exec"; version = "06d4f7218eb886ab9664e63c3f56010992e93fb9"; };
-        caddy-security = { name = "github.com/greenpau/caddy-security"; version = "v1.1.26"; };
+        caddy-security = { name = "github.com/greenpau/caddy-security"; version = "v1.1.27"; };
         caddy-webhook = { name = "github.com/WingLim/caddy-webhook"; version = "v1.0.8"; };
         certmagic-storage-dynamodb = { name = "github.com/silinternational/certmagic-storage-dynamodb"; version = "3.0.0"; };
 
@@ -92,7 +92,7 @@ rec {
       caddy-hax
       caddy-troll
     ];
-    vendorHash = "sha256-EYcr9BFfbH3oFMmpeD6Od237yQe09zpRbYbXxKXhhZc=";
+    vendorHash = "sha256-Y5xkIaXtoWgku5nj5zhGsoYZF+ZTkI9uRN5lzIZNGEk=";
   };
 
   # caddy with s3-browser plugin
@@ -102,6 +102,6 @@ rec {
       s3-proxy
       s3-browser
     ];
-    vendorHash = "sha256-ww1mWXRKD53S8ytFbyKGn7vXZ5rJjvjOFQpdeDWJz4c=";
+    vendorHash = "sha256-i7kpGDXTVI6XPMqpbaNklmzd3A7dei1yRa2KOlXraaQ=";
   };
 }
