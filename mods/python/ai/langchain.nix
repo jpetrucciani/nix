@@ -248,12 +248,12 @@ rec {
 
   langchainhub = buildPythonPackage rec {
     pname = "langchainhub";
-    version = "0.1.24";
+    version = "0.1.15";
     pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-2lEgqctohfH9+vILhdTnxuUlNpo4nnCNIEF8P3YNySo=";
+      hash = "sha256-+j/4GjGUaGD4TBGfHi9rfHcH4r1+0jlKcxOyhtWfO9o=";
     };
 
     nativeBuildInputs = with prev; [
@@ -263,6 +263,7 @@ rec {
     propagatedBuildInputs = with prev; [
       requests
       types-requests
+      typing-extensions
     ];
 
     pythonImportsCheck = [ "langchainhub" ];
