@@ -132,11 +132,13 @@ in
           }
         '';
         virtualHosts = {
-          "bot.blackedge.capital" = internal_proxy { port = 8088; };
           "edge.blackedge.capital" = internal_proxy { };
-          "vsc0.blackedge.capital" = internal_proxy { port = 8100; };
-          "vsc1.blackedge.capital" = internal_proxy { port = 8101; };
-          "influx.blackedge.capital" = internal_proxy { host = "aur-devopsdb"; port = 8086; };
+          "ds.blackedge.capital" = let f = "10.31.41.212"; in ''
+            reverse_proxy /* {
+              to ${f}:5000 ${f}:5001
+              lb_policy round_robin
+            }
+          '';
         };
       };
   } // common.services;
