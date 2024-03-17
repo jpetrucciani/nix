@@ -196,7 +196,6 @@ final: prev:
     basePythonPackages = p: with p; [
       # linting
       black
-      mypy
 
       # common use case
       gamble
@@ -216,7 +215,6 @@ final: prev:
       # data
       numpy
       pandas
-      scipy
 
       # type annotations (from nixpkgs)
       types-requests
