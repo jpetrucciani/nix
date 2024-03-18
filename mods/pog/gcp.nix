@@ -69,9 +69,7 @@ rec {
 
   gcp_get_gke_build =
     let
-      curl = final._.curl;
-      head = final._.head;
-      jq = final._.jq;
+      inherit (final._) curl head jq;
       nurl = "${final._._nix}/bin/nix-prefetch-url";
       base_url = "https://dl.google.com/dl/cloudsdk/channels/rapid/components/google-cloud-sdk-gke-gcloud-auth-plugin-";
     in

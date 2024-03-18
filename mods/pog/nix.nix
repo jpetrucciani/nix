@@ -185,12 +185,10 @@ rec {
   hexcast =
     let
       _ = {
+        inherit (final._) realpath sed yq;
         prettier = "${final.nodePackages.prettier}/bin/prettier --write --config ${../../prettier.config.js}";
         mktemp = "${final.coreutils}/bin/mktemp --suffix=.yaml";
-        realpath = final._.realpath;
         nix = "${final._._nix}/bin/nix";
-        sed = final._.sed;
-        yq = final._.yq;
       };
     in
     pog {

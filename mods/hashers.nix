@@ -18,9 +18,7 @@ final: prev: {
       ];
       script =
         let
-          curl = final._.curl;
-          date = final._.date;
-          jq = final._.jq;
+          inherit (final._) curl date jq;
           nix-prefetch = "${final._._nix}/bin/nix-prefetch-url";
         in
         h: ''
