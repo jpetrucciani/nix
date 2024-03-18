@@ -2,6 +2,7 @@
 final: prev:
 let
   inherit (final.lib) elem all id isDerivation;
+  inherit (final.lib.lists) remove;
   inherit (final.lib.attrsets) filterAttrs;
   checked_packages = filterAttrs
     (_: pkg: all id [
@@ -17,5 +18,15 @@ in
   __j_custom = prev.buildEnv {
     name = "__j_custom";
     paths = (prev.lib.attrsets.attrValues checked_packages) ++ [ prev.hex prev.nix (prev.python311.withPackages prev.hax.basePythonPackages) ];
+  };
+
+  poetry-helpers = {
+    add_propagated = pkg: propagated: pkg.overridePythonAttrs (old: {
+      propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ propagated;
+    });
+    remove_propagated = pkg: _remove: pkg.overridePythonAttrs (old: {
+      propagatedBuildInputs = remove _remove (old.propagatedBuildInputs or [ ]);
+    });
+    no_wheel = pkg: pkg.override { preferWheel = false; };
   };
 }
