@@ -135,6 +135,7 @@ in
           "edge.blackedge.capital" = internal_proxy { };
           "ds.blackedge.capital" = let f = "10.31.41.212"; in {
             extraConfig = ''
+              tls /opt/crt/bec.crt /opt/crt/bec.key
               reverse_proxy /* {
                 to ${f}:5000 ${f}:5001
                 lb_policy round_robin
