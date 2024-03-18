@@ -104,7 +104,7 @@ in
         nanorc
         netcat-gnu
         nil
-        nix
+        nixVersions.nix_2_21
         nix-info
         nix-output-monitor
         nix-prefetch-github

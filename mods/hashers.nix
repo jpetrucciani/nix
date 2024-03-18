@@ -18,10 +18,10 @@ final: prev: {
       ];
       script =
         let
-          curl = "${prev.curl}/bin/curl";
-          date = "${prev.coreutils}/bin/date";
-          jq = "${prev.jq}/bin/jq";
-          nix-prefetch = "${prev.nix}/bin/nix-prefetch-url";
+          curl = final._.curl;
+          date = final._.date;
+          jq = final._.jq;
+          nix-prefetch = "${final._._nix}/bin/nix-prefetch-url";
         in
         h: ''
           rev=$(${curl} -s "https://api.github.com/repos/${repo}/commits/$branch" | ${jq} -r '.sha')

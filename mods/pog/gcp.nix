@@ -69,10 +69,10 @@ rec {
 
   gcp_get_gke_build =
     let
-      curl = "${prev.curl}/bin/curl";
-      head = "${prev.coreutils}/bin/head";
-      jq = "${prev.jq}/bin/jq";
-      nurl = "${prev.nix}/bin/nix-prefetch-url";
+      curl = final._.curl;
+      head = final._.head;
+      jq = final._.jq;
+      nurl = "${final._._nix}/bin/nix-prefetch-url";
       base_url = "https://dl.google.com/dl/cloudsdk/channels/rapid/components/google-cloud-sdk-gke-gcloud-auth-plugin-";
     in
     pog {

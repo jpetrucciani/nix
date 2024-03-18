@@ -163,7 +163,7 @@ rec {
       }
     ];
     script = ''
-      ${final.nix}/bin/nix-build ''${oldmac:+--system x86_64-darwin} | ${_.cachix} push "$cache_name"
+      ${final._._nix}/bin/nix-build ''${oldmac:+--system x86_64-darwin} | ${_.cachix} push "$cache_name"
     '';
   };
 
@@ -177,7 +177,7 @@ rec {
       ];
       script = ''
         template="$1"
-        rendered="$(${final.nix}/bin/nix eval --raw -f "$template")"
+        rendered="$(${final._._nix}/bin/nix eval --raw -f "$template")"
         echo "$rendered"
       '';
     };
@@ -187,10 +187,10 @@ rec {
       _ = {
         prettier = "${final.nodePackages.prettier}/bin/prettier --write --config ${../../prettier.config.js}";
         mktemp = "${final.coreutils}/bin/mktemp --suffix=.yaml";
-        realpath = "${final.coreutils}/bin/realpath";
-        nix = "${final.nix}/bin/nix";
-        sed = "${final.gnused}/bin/sed";
-        yq = lib.getExe final.yq-go;
+        realpath = final._.realpath;
+        nix = "${final._._nix}/bin/nix";
+        sed = final._.sed;
+        yq = final._.yq;
       };
     in
     pog {
@@ -399,8 +399,8 @@ rec {
       attribute="$1"
       ${var.empty "attribute"} && die "no attribute specified to diff!"
       ${prev.nvd}/bin/nvd diff \
-        "$(${prev.nix}/bin/nix eval --raw "github:NixOS/nixpkgs/$nixpkgs#$attribute.drvPath")" \
-        "$(${prev.nix}/bin/nix eval --raw "github:jpetrucciani/nix#$attribute.drvPath")"
+        "$(${final._._nix}/bin/nix eval --raw "github:NixOS/nixpkgs/$nixpkgs#$attribute.drvPath")" \
+        "$(${final._._nix}/bin/nix eval --raw "github:jpetrucciani/nix#$attribute.drvPath")"
     '';
   };
 

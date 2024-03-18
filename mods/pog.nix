@@ -33,6 +33,7 @@ rec {
     cut = "${core}/cut";
     head = "${core}/head";
     mktemp = "${core}/mktemp";
+    realpath = "${core}/realpath";
     sort = "${core}/sort";
     tail = "${core}/tail";
     tr = "${core}/tr";
@@ -42,6 +43,7 @@ rec {
     y2j = "${pkgs.remarshal}/bin/yaml2json";
 
     ## nix
+    _nix = pkgs.nixVersions.nix_2_21;
     cachix = "${pkgs.cachix}/bin/cachix";
     nixpkgs-fmt = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
 
