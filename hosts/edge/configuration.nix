@@ -133,12 +133,14 @@ in
         '';
         virtualHosts = {
           "edge.blackedge.capital" = internal_proxy { };
-          "ds.blackedge.capital" = let f = "10.31.41.212"; in ''
-            reverse_proxy /* {
-              to ${f}:5000 ${f}:5001
-              lb_policy round_robin
-            }
-          '';
+          "ds.blackedge.capital" = let f = "10.31.41.212"; in {
+            extraConfig = ''
+              reverse_proxy /* {
+                to ${f}:5000 ${f}:5001
+                lb_policy round_robin
+              }
+            '';
+          };
         };
       };
   } // common.services;
