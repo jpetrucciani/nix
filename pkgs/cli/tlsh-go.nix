@@ -1,9 +1,9 @@
-{ lib, buildGo120Module, fetchFromGitHub }:
+{ lib, buildGo122Module, fetchFromGitHub }:
 let
   version = "0.3.0";
   date = "2022-12-12";
 in
-buildGo120Module rec {
+buildGo122Module rec {
   inherit version;
   pname = "tlsh-go";
 
