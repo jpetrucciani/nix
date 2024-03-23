@@ -1,5 +1,5 @@
-{ lib, buildGo120Module, fetchFromGitHub }:
-buildGo120Module rec {
+{ lib, buildGo122Module, fetchFromGitHub }:
+buildGo122Module rec {
   pname = "terraform-cloud-exporter";
   version = "2.3.0";
 

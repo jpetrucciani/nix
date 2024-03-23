@@ -1,5 +1,5 @@
-{ lib, buildGo120Module, fetchFromGitHub, installShellFiles }:
-buildGo120Module rec {
+{ lib, buildGo122Module, fetchFromGitHub, installShellFiles }:
+buildGo122Module rec {
   pname = "ov";
   version = "0.32.0";
 

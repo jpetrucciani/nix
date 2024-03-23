@@ -1,5 +1,5 @@
-{ lib, buildGo120Module, fetchFromGitHub, installShellFiles }:
-buildGo120Module rec {
+{ lib, buildGo122Module, fetchFromGitHub, installShellFiles }:
+buildGo122Module rec {
   pname = "poglets";
   version = "0.0.3";
   commit = "0e96c5f5887cd317cd92e6e51eb366929cee3ed1";

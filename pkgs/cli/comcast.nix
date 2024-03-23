@@ -1,5 +1,5 @@
-{ lib, buildGo120Module, fetchFromGitHub }:
-buildGo120Module rec {
+{ lib, buildGo122Module, fetchFromGitHub }:
+buildGo122Module rec {
   pname = "comcast";
   version = "1.0.1";
 
