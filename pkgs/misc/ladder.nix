@@ -1,3 +1,4 @@
+# Alternative to 12ft.io. Bypass paywalls with a proxy ladder and remove CORS headers from any URL
 { lib
 , buildGoModule
 , fetchFromGitHub

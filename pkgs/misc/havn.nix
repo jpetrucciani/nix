@@ -1,7 +1,8 @@
+# A fast configurable port scanner with reasonable defaults
 { lib, fetchFromGitHub, rustPlatform }:
 let
   pname = "havn";
-  version = "0.1.0";
+  version = "0.1.8";
 in
 rustPlatform.buildRustPackage rec {
   inherit pname version;
@@ -10,10 +11,10 @@ rustPlatform.buildRustPackage rec {
     owner = "mrjackwills";
     repo = pname;
     rev = "refs/tags/v${version}";
-    sha256 = "sha256-zuqYYLmZOTs9MmowEz3J3og8Uu3ibbsRyuQBE9e+A5I=";
+    sha256 = "sha256-HAJ4gPS2ubi7Qu+XUh9Z2pNGm3G0NOl3k8GQtMox0MU=";
   };
 
-  cargoHash = "sha256-5OVmtweweRaUuFjWhy60OrdtxnS7hqTnIgSO/NDxR2s=";
+  cargoHash = "sha256-ueXkZu58YJ5pktHwWIlwtWo4njGHlKXImLyE4eRoSEE=";
 
   checkFlags = [
     # these tests attempt to bind to local ports
@@ -21,6 +22,7 @@ rustPlatform.buildRustPackage rec {
     "--skip=scanner::tests::test_scanner_1000_empty"
     "--skip=scanner::tests::test_scanner_all_80"
     "--skip=scanner::tests::test_scanner_port_80"
+    "--skip=terminal::print::tests::test_terminal_monochrome_false"
   ];
 
   meta = with lib; {

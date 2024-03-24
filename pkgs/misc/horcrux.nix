@@ -1,3 +1,4 @@
+# Split your file into encrypted fragments so that you don't need to remember a passcode
 { lib, buildGo122Module, fetchFromGitHub }:
 buildGo122Module rec {
   pname = "horcrux";

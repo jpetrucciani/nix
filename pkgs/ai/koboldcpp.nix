@@ -73,7 +73,7 @@ llvmPackages_14.stdenv.mkDerivation rec {
     description = "A simple one-file way to run various GGML models with KoboldAI's UI";
     homepage = "https://github.com/LostRuins/koboldcpp";
     mainProgram = "koboldcpp";
-    license = licenses.agpl3;
+    license = licenses.agpl3Only;
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }
