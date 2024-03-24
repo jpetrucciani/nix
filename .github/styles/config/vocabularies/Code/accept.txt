@@ -52,6 +52,7 @@
 (?i)oncall
 (?i)ops
 (?i)pagerduty
+(?i)passcode
 (?i)pingdom
 (?i)pkgs
 (?i)pocketbase
