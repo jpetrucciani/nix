@@ -1,3 +1,4 @@
+# A fast configurable port scanner with reasonable defaults
 { lib, fetchFromGitHub, rustPlatform }:
 let
   pname = "havn";
