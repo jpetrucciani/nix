@@ -7,12 +7,13 @@ let
     defaults = {
       name = "jupyterhub";
       namespace = "jupyterhub";
-      version = "3.2.1";
-      sha256 = "144bbsb0j0zpfkj8bki0kikjjj1wvy98b250cdzq2rh8mkpcfyfd";
+      version = "3.3.4";
+      sha256 = "0jr6dxsyh450am7jr96w6gg4hhzd6m5cihyj5pg1gf06vxp2ylil";
     };
     version = rec {
       _v = hex.k8s._.version chart;
-      latest = v3-2-1;
+      latest = v3-3-4;
+      v3-3-4 = _v "3.3.4" "0jr6dxsyh450am7jr96w6gg4hhzd6m5cihyj5pg1gf06vxp2ylil"; # 2024-03-25
       v3-2-1 = _v "3.2.1" "144bbsb0j0zpfkj8bki0kikjjj1wvy98b250cdzq2rh8mkpcfyfd"; # 2023-11-27
       v3-2-0 = _v "3.2.0" "1qzc8q8wjwjbm2ymdgxjsqyfkmqvjbnq4450dsfngp9adss1gslx"; # 2023-11-27
       v3-1-0 = _v "3.1.0" "1aj4s6ykchfl59y5nid86kj389d6njl3ndp68gy5lm9wphvwiqw3"; # 2023-09-29
