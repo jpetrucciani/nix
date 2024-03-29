@@ -67,7 +67,10 @@ in
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
   };
-  programs.command-not-found.enable = false;
+  programs = {
+    command-not-found.enable = false;
+    nix-ld.enable = true;
+  };
 
   security.sudo = common.security.sudo;
   system.stateVersion = "23.11";
