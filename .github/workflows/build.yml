@@ -7,7 +7,7 @@ jobs:
       matrix:
         os:
           - ubuntu-22.04
-          - m1
+          - macos-14
     name: nix (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
@@ -15,7 +15,7 @@ jobs:
       - uses: cachix/install-nix-action@v26
       - uses: cachix/cachix-action@master
         with:
-          skipAddingSubstituter: ${{ matrix.os == 'm1' && 'true' || 'false' }}
+          # skipAddingSubstituter: ${{ matrix.os == 'm1' && 'true' || 'false' }}
           name: jacobi
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - run: nix --show-trace build .#__j_custom .#zaddy .#zaddy-browser
