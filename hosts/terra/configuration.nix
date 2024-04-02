@@ -93,6 +93,15 @@ in
   services = {
     caddy =
       let
+        err403 = "乃尺ㄩ卄";
+        internals = "127.0.0.1 100.64.0.0/10";
+        admin_block = ''
+          @adminblock {
+            path /admin*
+            not remote_ip ${internals}
+          }
+          respond @adminblock "${err403}" 403
+        '';
         reverse_proxy = location: {
           extraConfig = ''
             import GEOBLOCK
@@ -142,8 +151,8 @@ in
         # countries from here http://www.geonames.org/countries/
         extraConfig = ''
           (TAILSCALE) {
-            @tailscale not remote_ip 127.0.0.1 100.64.0.0/10
-            respond @tailscale "乃尺ㄩ卄" 403
+            @tailscale not remote_ip ${internals}
+            respond @tailscale "${err403}" 403
           }
 
           (GEOBLOCK) {
@@ -152,9 +161,9 @@ in
                 db_path {env.GEOIP_DB}
                 allow_countries US
               }
-              not remote_ip 127.0.0.1 192.168.69.0/24 100.64.0.0/10 10.0.0.0/8
+              not remote_ip ${internals} 192.168.69.0/24 10.0.0.0/8
             }
-            respond @geoblock "乃尺ㄩ卄" 403
+            respond @geoblock "${err403}" 403
           }
 
           (BA3GEOBLOCK) {
@@ -204,6 +213,7 @@ in
             }
           '';
           "vault.cobi.dev" = secure_geo ''
+            ${admin_block}
             reverse_proxy /* {
               to localhost:8222
             }
@@ -269,6 +279,7 @@ in
             extraConfig = ''
               import BA3GEOBLOCK
               import SECURITY
+              ${admin_block}
               reverse_proxy /* {
                 to ${ip.ba3}:8222
               }
