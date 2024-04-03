@@ -310,7 +310,10 @@ in
     ntfy-sh = {
       enable = true;
       settings = {
+        auth-default-access = "deny-all";
         base-url = "https://ntfy.cobi.dev";
+        behind-proxy = "true";
+        enable-login = "true";
       };
     };
     promtail = common.templates.promtail {
