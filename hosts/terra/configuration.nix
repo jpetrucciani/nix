@@ -377,7 +377,7 @@ in
       after = [ "network-online.service" "firewall.service" ];
       serviceConfig.KillMode = pkgs.lib.mkForce "control-group";
     };
-    ntfy.serviceConfig.EnvironmentFile = config.age.secrets.ntfy.path;
+    ntfy-sh.serviceConfig.EnvironmentFile = config.age.secrets.ntfy.path;
     lemmy.serviceConfig = {
       EnvironmentFile = "/etc/default/lemmy";
       ExecStartPre =
