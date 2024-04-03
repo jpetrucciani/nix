@@ -193,16 +193,16 @@ in
           }
         '';
         virtualHosts = {
-          "api.cobi.dev" = secure_geo "localhost:10000";
-          "z.cobi.dev" = secure_geo "localhost:8080";
-          "ntfy.cobi.dev" = secure_geo "localhost:2586";
-          "otf.cobi.dev" = secure_geo "localhost:8010";
+          "api.cobi.dev" = reverse_proxy "localhost:10000";
+          "z.cobi.dev" = reverse_proxy "localhost:8080";
+          "ntfy.cobi.dev" = reverse_proxy "localhost:2586";
+          "otf.cobi.dev" = reverse_proxy "localhost:8010";
           "auth.cobi.dev" = reverse_proxy neptune_traefik;
           # "auth.cobi.dev" = reverse_proxy "localhost:9091";
           "search.cobi.dev" = reverse_proxy neptune_traefik;
           "recipe.cobi.dev" = reverse_proxy orbit_traefik;
           "netdata.cobi.dev" = ts_reverse_proxy "localhost:${toString common.ports.netdata}";
-          "flix.cobi.dev" = secure_geo "jupiter:${toString common.ports.plex}";
+          "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
           "n8n.cobi.dev" = reverse_proxy "luna:${toString common.ports.n8n}";
           "ombi.cobi.dev" = reverse_proxy "neptune:5999";
           "rss.cobi.dev" = reverse_proxy "localhost:8099";
