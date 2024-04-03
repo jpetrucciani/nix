@@ -1,18 +1,18 @@
-{ config, flake, machine-name, pkgs, lib, ... }:
+{ config, flake, machine-name, pkgs, ... }:
 let
-  inherit (lib.attrsets) mapAttrs' nameValuePair;
+  # inherit (lib.attrsets) mapAttrs' nameValuePair;
 
   hostname = "charon";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
   configPath = "/Users/jacobi/cfg/hosts/${hostname}/configuration.nix";
   username = "jacobi";
 
-  runner-defaults = {
-    enable = true;
-    replace = true;
-    url = "https://github.com/jpetrucciani/nix";
-    extraLabels = [ "nix" "m1" ];
-  };
+  # runner-defaults = {
+  #   enable = true;
+  #   replace = true;
+  #   url = "https://github.com/jpetrucciani/nix";
+  #   extraLabels = [ "nix" "m1" ];
+  # };
 in
 {
   imports = [
@@ -48,10 +48,11 @@ in
     ];
   };
 
-  services.github-runners = mapAttrs' nameValuePair {
-    jpetrucciani-nix = runner-defaults // {
-      extraPackages = with pkgs; [ gh cachix ];
-      tokenFile = "/etc/default/gh.token";
-    };
-  };
+  ### can't get this working?
+  # services.github-runners = mapAttrs' nameValuePair {
+  #   jpetrucciani-nix = runner-defaults // {
+  #     extraPackages = with pkgs; [ gh cachix ];
+  #     tokenFile = "/etc/default/gh.token";
+  #   };
+  # };
 }
