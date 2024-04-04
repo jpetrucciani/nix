@@ -1,3 +1,4 @@
+# This overlay provides a handful of kubernetes related tools
 final: prev:
 let
   inherit (final) callPackage;

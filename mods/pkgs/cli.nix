@@ -1,3 +1,4 @@
+# This overlay provides general CLI tools for use in text transformation and other use cases.
 final: prev:
 let
   inherit (final) fetchFromGitHub lib isLinux isDarwin;

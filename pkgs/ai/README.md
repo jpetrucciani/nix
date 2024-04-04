@@ -18,10 +18,6 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 [koboldcpp](https://github.com/LostRuins/koboldcpp) is a fork of llama-cpp based on backwards compatibility
 
-### [latent-consistency.nix](./latent-consistency.nix)
-
-latent consistency helper
-
 ### [llm.nix](./llm.nix)
 
 [`llm`](https://github.com/rustformers/llm) is a port of [`llama.cpp`](https://github.com/ggerganov/llama.cpp) in rust!
