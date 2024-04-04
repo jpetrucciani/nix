@@ -12,7 +12,7 @@ This directory contains specific servers
 
 ### [obligator.nix](./obligator.nix)
 
-[obligator](https://github.com/anderspitman/obligator) is a simple OIDC server designed for self-hosters
+[obligator](https://github.com/anderspitman/obligator) is an OIDC server designed for self-hosters
 
 ### [parseable.nix](./parseable.nix)
 
