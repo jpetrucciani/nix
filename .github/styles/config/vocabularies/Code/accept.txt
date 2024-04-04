@@ -89,6 +89,7 @@
 (?i)validators?
 (?i)vlang
 (?i)vpm
+(?i)webapps?
 (?i)webservers?
 (?i)whoogle
 (?i)workspaces?
