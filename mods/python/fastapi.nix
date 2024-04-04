@@ -321,12 +321,12 @@ rec {
 
   nicegui = buildPythonPackage rec {
     pname = "nicegui";
-    version = "1.4.18";
+    version = "1.4.20";
     pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-AbKGWiV6fd0495H/EEBY4TOSg0OZCW86EmlG1Z1/SxI=";
+      hash = "sha256-PFoMRvmEhvIqE0iZZUCjrT18z3xNAwx9DS0+uIukeKg=";
     };
 
     postPatch = ''
@@ -354,6 +354,7 @@ rec {
       aiofiles
       aiohttp
       colorama
+      docutils
       fastapi
       fastapi-socketio
       httptools

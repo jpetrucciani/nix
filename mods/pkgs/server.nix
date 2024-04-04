@@ -1,3 +1,4 @@
+# This overlay provides some servers/services as nix derivations, such as specific versions of [haproxy](http://www.haproxy.org/).
 final: prev:
 with prev;
 rec {
