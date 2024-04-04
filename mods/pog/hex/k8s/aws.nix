@@ -49,6 +49,7 @@ in
     , schedule ? "0 */8 * * *"
     , failedJobsHistoryLimit ? 1
     , successfulJobsHistoryLimit ? 1
+    , extra ? { }
     }:
     let
       sa = components.service-account { inherit name namespace; };
@@ -78,7 +79,7 @@ in
         "kubectl create secret docker-registry ${secret_name} ${secret_opts}"
       ];
       cron = hex.k8s.cron.build {
-        inherit name namespace schedule failedJobsHistoryLimit successfulJobsHistoryLimit;
+        inherit name namespace schedule failedJobsHistoryLimit successfulJobsHistoryLimit extra;
         cpuLimit = "500m";
         memoryLimit = "512Mi";
         ephemeralStorageLimit = "100Mi";
