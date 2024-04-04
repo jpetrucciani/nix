@@ -1,3 +1,4 @@
+# [headscale-ui](https://github.com/gurucomputing/headscale-ui) is a web frontend for headscale management
 { fetchFromGitHub, buildNpmPackage }:
 let
   pname = "headscale-ui";

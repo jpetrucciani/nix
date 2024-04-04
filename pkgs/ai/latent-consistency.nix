@@ -1,3 +1,4 @@
+# latent consistency helper
 { pog, python311, writeTextFile }:
 let
   script = writeTextFile {

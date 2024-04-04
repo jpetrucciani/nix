@@ -1,3 +1,4 @@
+# [slack-notifier](https://github.com/cloudposse/slack-notifier) is a cli util to send slack messages
 { lib
 , buildGoModule
 , fetchFromGitHub

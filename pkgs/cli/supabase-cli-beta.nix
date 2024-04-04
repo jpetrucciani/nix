@@ -1,3 +1,4 @@
+# [supabase-cli](https://github.com/supabase/cli) is the main CLI interface for [supabase](https://supabase.com)
 { lib
 , buildGoModule
 , installShellFiles
@@ -7,16 +8,16 @@
 buildGoModule
 rec {
   pname = "supabase-cli-beta";
-  version = "1.148.2";
+  version = "1.153.4";
 
   src = fetchFromGitHub {
     owner = "supabase";
     repo = "cli";
     rev = "v${version}";
-    hash = "sha256-s3KwGD4SHQopvopI+Ama/3F90Vi93NsxUWC+bfyrs+E=";
+    hash = "sha256-G+aQheVeQOVa4uFVgn5u+L5RT++28ATJNMhrx9HEmYg=";
   };
 
-  vendorHash = "sha256-PNAZ+vnbLhuQpXe99wc5c/QEJXYrFoB60Ij9FSDFQxw=";
+  vendorHash = "sha256-jIhX90ntfUKhwgg3+EIjs8RIQ/qgfbKh+UeqHH2U+HQ=";
   proxyVendor = true;
 
   ldflags = [

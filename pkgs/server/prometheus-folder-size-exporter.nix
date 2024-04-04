@@ -1,3 +1,4 @@
+# [prometheus-folder-size-exporter](https://github.com/MindFlavor/prometheus_folder_size_exporter) is a prometheus exporter for directory sizes
 { lib
 , rustPlatform
 , fetchFromGitHub

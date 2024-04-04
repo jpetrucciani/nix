@@ -1,3 +1,4 @@
+# [`BetterChatGPT`](https://github.com/ztjhz/BetterChatGPT) is an alternative UI for OpenAI's ChatGPT.
 { fetchFromGitHub, mkYarnPackage, cname ? "meme.com" }:
 let
   pname = "BetterChatGPT";

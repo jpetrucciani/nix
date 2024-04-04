@@ -1,3 +1,4 @@
+# [xlsxsql](https://github.com/noborus/xlsxsql) is a cli tool for executing SQL queries on excel files
 { lib
 , buildGoModule
 , fetchFromGitHub

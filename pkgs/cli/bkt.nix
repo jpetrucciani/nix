@@ -1,3 +1,4 @@
+# [bkt](https://github.com/dimo414/bkt) is a subprocess caching utility
 { lib, fetchFromGitHub, rustPlatform }:
 let
   pname = "bkt";

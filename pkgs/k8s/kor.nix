@@ -1,3 +1,4 @@
+# [kor](https://github.com/yonahd/kor) is a tool to find unused k8s resources
 { lib
 , buildGoModule
 , fetchFromGitHub

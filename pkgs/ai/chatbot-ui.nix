@@ -1,3 +1,4 @@
+# [`chatbot-ui`](https://github.com/mckaywrigley/chatbot-ui) is a popular frontend for OpenAI compliant APIs. It is designed to look similar to OpenAI's ChatGPT UI.
 { fetchFromGitHub, buildNpmPackage, fetchpatch, bash }:
 let
   src = fetchFromGitHub {

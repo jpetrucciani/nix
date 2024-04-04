@@ -1,3 +1,4 @@
+# [poglets](https://github.com/jpetrucciani/poglets) is a TCP tunneling system
 { lib, buildGo122Module, fetchFromGitHub, installShellFiles }:
 buildGo122Module rec {
   pname = "poglets";
@@ -30,8 +31,8 @@ buildGo122Module rec {
   '';
 
   meta = with lib; {
-    inherit (src.meta) homepage;
-    description = "";
+    description = "a TCP tunneling system";
+    homepage = "https://github.com/jpetrucciani/poglets";
     license = licenses.mit;
     mainProgram = "poglets";
     maintainers = with maintainers; [ jpetrucciani ];

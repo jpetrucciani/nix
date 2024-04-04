@@ -1,3 +1,4 @@
+# [lastresort](https://github.com/ctsrc/Base256) is a base256 encoder/decoder
 { lib, fetchFromGitHub, rustPlatform }:
 let
   pname = "lastresort";
@@ -17,6 +18,7 @@ rustPlatform.buildRustPackage rec {
 
   meta = with lib; {
     description = "Encode and decode data in base 256 easily typed words";
+    homepage = "https://github.com/ctsrc/Base256";
     license = licenses.isc;
     mainProgram = "lastresort";
     maintainers = with maintainers; [ jpetrucciani ];

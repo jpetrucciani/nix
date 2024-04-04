@@ -1,3 +1,4 @@
+# [stree](https://github.com/orangekame3/stree) is a directory tree tool for s3
 { lib
 , buildGoModule
 , fetchFromGitHub

@@ -1,3 +1,4 @@
+# [pql](https://github.com/runreveal/pql) is a pipeline to sql tool
 { lib
 , buildGoModule
 , fetchFromGitHub

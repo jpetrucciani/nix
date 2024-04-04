@@ -1,3 +1,4 @@
+# gke-gcloud-auth-plugin is a required plugin for using kubectl with Google's GKE on GCP
 { stdenvNoCC, fetchurl, autoPatchelfHook, lib }:
 let
   dists = {

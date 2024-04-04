@@ -1,3 +1,4 @@
+# [katafygio](https://github.com/bpineau/katafygio) is a tool to dump k8s objects to files
 { lib, buildGo122Module, fetchFromGitHub }:
 buildGo122Module rec {
   pname = "katafygio";
@@ -19,8 +20,8 @@ buildGo122Module rec {
   ];
 
   meta = with lib; {
-    inherit (src.meta) homepage;
     description = "Dump, or continuously backup Kubernetes objects as yaml files in git";
+    homepage = "https://github.com/bpineau/katafygio";
     license = licenses.mit;
     mainProgram = "katafygio";
     maintainers = with maintainers; [ jpetrucciani ];

@@ -1,3 +1,4 @@
+# [parseable](https://github.com/parseablehq/parseable) is a log analytics system written in Rust
 { lib
 , rustPlatform
 , stdenvNoCC

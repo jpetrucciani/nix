@@ -1,3 +1,4 @@
+# [dirdiff](https://github.com/ocamlpro/dirdiff) is a tool to compute the differences between two directories
 { lib, fetchFromGitHub, rustPlatform, ... }:
 let
   pname = "dirdiff";

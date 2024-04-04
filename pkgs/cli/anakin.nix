@@ -1,3 +1,4 @@
+# [anakin](https://github.com/Timmmm/anakin/) is a tool to kill orphan processes
 { lib
 , rustPlatform
 , fetchFromGitHub

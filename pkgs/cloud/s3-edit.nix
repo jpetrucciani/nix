@@ -1,3 +1,4 @@
+# [s3-edit](https://github.com/tsub/s3-edit) is a cli tool for editing s3 files directly
 { lib, buildGo122Module, fetchFromGitHub }:
 buildGo122Module rec {
   pname = "s3-edit";
@@ -19,8 +20,8 @@ buildGo122Module rec {
   vendorHash = "sha256-ZM5Z3yLOwOYpOTyoXmSbyPFBE31F+Jvc6DN4rmHmyt0=";
 
   meta = with lib; {
-    inherit (src.meta) homepage;
     description = "Edit directly a file on Amazon S3 in CLI";
+    homepage = "https://github.com/tsub/s3-edit";
     license = licenses.mit;
     mainProgram = "s3-edit";
     maintainers = with maintainers; [ jpetrucciani ];

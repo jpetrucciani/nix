@@ -1,3 +1,4 @@
+# [rare](https://github.com/zix99/rare) is a realtime regex extraction and aggregation cli tool
 { lib, buildGo122Module, fetchFromGitHub }:
 buildGo122Module rec {
   pname = "rare";
@@ -13,9 +14,9 @@ buildGo122Module rec {
   vendorHash = "sha256-wUOtxNjL/4MosACCzPTWKWrnMZhxINfN1ppkRsqDh9M=";
 
   meta = with lib; {
-    inherit (src.meta) homepage;
     description =
       "Realtime regex-extraction and aggregation into common formats such as histograms, bar graphs, numerical summaries, tables, and more";
+    homepage = "https://github.com/zix99/rare";
     license = licenses.gpl3Only;
     mainProgram = "rare";
     maintainers = with maintainers; [ jpetrucciani ];

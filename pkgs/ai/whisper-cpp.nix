@@ -1,3 +1,4 @@
+# [`whisper.cpp`](https://github.com/ggerganov/whisper.cpp) is a port of [OpenAI's Whisper](https://openai.com/research/whisperg) model in C/C++
 { lib
 , symlinkJoin
 , darwin

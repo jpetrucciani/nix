@@ -6,6 +6,61 @@ let
   inherit (final.pkgs) fetchFromGitHub rustPlatform autoPatchelfHook bash;
 in
 rec {
+  systemdunitparser = buildPythonPackage rec {
+    pname = "systemdunitparser";
+    version = "0.2";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-GgcqTlX8VXOCPgqRBJcWTbltnhZkiw9UDVRs1Vkd6Q4=";
+    };
+
+    nativeBuildInputs = with final; [
+      setuptools
+      wheel
+    ];
+
+    pythonImportsCheck = [ "SystemdUnitParser" ];
+
+    meta = {
+      description = "Parser to read and create unit files for systemd";
+      homepage = "https://pypi.org/project/systemdunitparser/";
+      license = licenses.gpl3Only;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  systemdlint = buildPythonPackage rec {
+    pname = "systemdlint";
+    version = "1.3.0";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-iJqWXL1lKc6CY3TRH2GB5CarmEYhSJdNeJCWO/28MOA=";
+    };
+
+    nativeBuildInputs = with final;[
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = with final;[
+      anytree
+      systemdunitparser
+    ];
+
+    pythonImportsCheck = [ "systemdlint" ];
+
+    meta = {
+      description = "Systemd Unitfile Linter";
+      homepage = "https://pypi.org/project/systemdlint/";
+      maintainers = with maintainers; [ jpetrucciani ];
+      mainProgram = "systemdlint";
+    };
+  };
+
   tesla-py = buildPythonPackage rec {
     pname = "tesla-py";
     version = "2.9.0";

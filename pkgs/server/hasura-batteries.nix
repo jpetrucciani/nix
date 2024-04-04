@@ -1,3 +1,4 @@
+# [hasura-batteries](https://github.com/RocketsGraphQL/hasura-batteries) is a service that runs alongside Hasura GraphQL engine giving it superpowers like Authentication
 { lib
 , buildGoModule
 , fetchFromGitHub
@@ -20,7 +21,7 @@ buildGoModule rec {
   ldflags = [ "-s" "-w" ];
 
   meta = with lib; {
-    description = "";
+    description = "service that runs alongside Hasura GraphQL engine giving it superpowers like Authentication";
     homepage = "https://github.com/RocketsGraphQL/hasura-batteries";
     # license = licenses.unfree;
     maintainers = with maintainers; [ jpetrucciani ];

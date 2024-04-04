@@ -1,3 +1,4 @@
+# [sideko](https://github.com/Sideko-Inc/sideko) is a tool to generate SDKs and docs for APIs
 { lib
 , rustPlatform
 , fetchFromGitHub

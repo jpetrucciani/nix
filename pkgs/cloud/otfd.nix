@@ -1,3 +1,4 @@
+# [otfd](https://github.com/jpetrucciani/otf) is an open source terraform cloud
 { lib
 , buildGoModule
 , fetchFromGitHub

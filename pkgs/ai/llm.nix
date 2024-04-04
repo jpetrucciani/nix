@@ -1,3 +1,4 @@
+# [`llm`](https://github.com/rustformers/llm) is a port of [`llama.cpp`](https://github.com/ggerganov/llama.cpp) in rust!
 { lib, stdenv, darwin, fetchFromGitHub, rustPlatform, openssl, pkg-config }:
 let
   inherit (stdenv) isAarch64 isDarwin;

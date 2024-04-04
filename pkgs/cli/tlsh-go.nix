@@ -1,3 +1,4 @@
+# [tlsh](https://github.com/glaslos/tlsh) is a tlsh implementation in go
 { lib, buildGo122Module, fetchFromGitHub }:
 let
   version = "0.3.0";
@@ -28,8 +29,8 @@ buildGo122Module rec {
   vendorHash = null;
 
   meta = with lib; {
-    inherit (src.meta) homepage;
     description = "TLSH lib in Golang";
+    homepage = "https://github.com/glaslos/tlsh";
     license = licenses.asl20;
     mainProgram = "tlsh";
     maintainers = with maintainers; [ jpetrucciani ];

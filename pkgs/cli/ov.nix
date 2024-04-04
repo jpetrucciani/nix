@@ -1,3 +1,4 @@
+# [ov](https://github.com/noborus/ov) is a Feature-rich terminal-based text viewer.
 { lib, buildGo122Module, fetchFromGitHub, installShellFiles }:
 buildGo122Module rec {
   pname = "ov";
@@ -28,8 +29,8 @@ buildGo122Module rec {
   '';
 
   meta = with lib; {
-    inherit (src.meta) homepage;
     description = "Feature-rich terminal-based text viewer";
+    homepage = "https://github.com/noborus/ov";
     license = licenses.mit;
     mainProgram = "ov";
     maintainers = with maintainers; [ jpetrucciani ];

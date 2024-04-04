@@ -1,3 +1,4 @@
+# [tenere](https://github.com/pythops/tenere) is a TUI interface for LLMs
 { lib
 , rustPlatform
 , fetchFromGitHub
@@ -11,16 +12,16 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "tenere";
-  version = "0.11";
+  version = "0.11.1";
 
   src = fetchFromGitHub {
     owner = "pythops";
     repo = "tenere";
     rev = "v${version}";
-    hash = "sha256-Dug7sKILFn+m1OtXNjALXiaF6ryJ5Czb59Bfsd9zQ80=";
+    hash = "sha256-uvv7URcdpKBUc04LsEigjt7iQhiEgiglBP5iwH6bQRI=";
   };
 
-  cargoHash = "sha256-56kFJgDAPoZ8y/e7kqkAIcb36aVVRmUBD0wElklaJII=";
+  cargoHash = "sha256-mz/lRh5+GWQrU7w2P4J3KV9Fz8rvc14JswPKO5UxrIs=";
 
   nativeBuildInputs = [
     pkg-config

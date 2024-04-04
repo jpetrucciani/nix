@@ -1,3 +1,4 @@
+# [pypipe](https://github.com/bugen/pypipe) is a python pipe cli tool
 { lib
 , stdenv
 , fetchFromGitHub
@@ -24,8 +25,8 @@ stdenv.mkDerivation rec {
   '';
 
   meta = with lib; {
-    homepage = "https://github.com/bugen/pypipe";
     description = "Python pipe command line tool";
+    homepage = "https://github.com/bugen/pypipe";
     mainProgram = "ppp";
     license = licenses.asl20;
     maintainers = with maintainers; [ jpetrucciani ];

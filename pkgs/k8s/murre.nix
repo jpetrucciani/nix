@@ -1,3 +1,4 @@
+# [murre](https://github.com/groundcover-com/murre) is an on-demand scaleable source of container resource metrics for k8s
 { lib, buildGo122Module, fetchFromGitHub }:
 buildGo122Module rec {
   pname = "murre";
@@ -18,8 +19,8 @@ buildGo122Module rec {
   ];
 
   meta = with lib; {
-    inherit (src.meta) homepage;
     description = "on-demand, scaleable source of container resource metrics for K8s";
+    homepage = "https://github.com/groundcover-com/murre";
     license = licenses.asl20;
     mainProgram = "murre";
     maintainers = with maintainers; [ jpetrucciani ];

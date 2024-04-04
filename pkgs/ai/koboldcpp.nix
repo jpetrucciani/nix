@@ -1,3 +1,4 @@
+# [koboldcpp](https://github.com/LostRuins/koboldcpp) is a fork of llama-cpp based on backwards compatibility
 { lib
 , darwin
 , stdenv

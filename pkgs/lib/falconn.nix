@@ -1,3 +1,4 @@
+# [falconn](https://github.com/FALCONN-LIB/FALCONN) is a header only NN lookup tool
 { lib
 , stdenv
 , fetchFromGitHub

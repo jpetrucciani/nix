@@ -1,5 +1,6 @@
+# [comcast](https://github.com/tylertreat/comcast) is a tool to help in simulating shitty network connections
 { lib, buildGo122Module, fetchFromGitHub }:
-buildGo122Module rec {
+buildGo122Module {
   pname = "comcast";
   version = "1.0.1";
 
@@ -17,8 +18,8 @@ buildGo122Module rec {
   doCheck = false;
 
   meta = with lib; {
-    inherit (src.meta) homepage;
     description = "Simulating shitty network connections so you can build better systems";
+    homepage = "https://github.com/tylertreat/comcast";
     license = licenses.asl20;
     mainProgram = "comcast";
     maintainers = with maintainers; [ jpetrucciani ];

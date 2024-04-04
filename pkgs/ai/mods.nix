@@ -1,3 +1,4 @@
+# [`mods`](https://github.com/charmbracelet/mods) is a CLI tool to interact with AI APIs
 { lib
 , buildGoModule
 , fetchFromGitHub

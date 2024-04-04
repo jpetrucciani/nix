@@ -1,3 +1,4 @@
+# [obligator](https://github.com/anderspitman/obligator) is a simple OIDC server designed for self-hosters
 { lib
 , buildGoModule
 , fetchFromGitHub

@@ -1,3 +1,4 @@
+# [dep-tree](https://github.com/gabotechs/dep-tree) allows visualizing code base dependencies
 { lib
 , buildGoModule
 , fetchFromGitHub

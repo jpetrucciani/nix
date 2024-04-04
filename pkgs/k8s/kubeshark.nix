@@ -1,3 +1,4 @@
+# [kubeshark](https://github.com/kubeshark/kubeshark) is a k8s traffic analyzers
 { stdenvNoCC, fetchurl, autoPatchelfHook, installShellFiles, lib }:
 let
   dists = {

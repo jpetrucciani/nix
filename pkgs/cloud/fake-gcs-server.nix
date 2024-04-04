@@ -1,3 +1,4 @@
+# [fake-gcs-server](https://github.com/fsouza/fake-gcs-server) is a google cloud storageg emulator
 { lib
 , buildGoModule
 , fetchFromGitHub

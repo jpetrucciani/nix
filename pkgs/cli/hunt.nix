@@ -1,3 +1,4 @@
+# [hunt](https://github.com/LyonSyonII/hunt-rs) is a simplified find command in rust
 { lib, fetchFromGitHub, rustPlatform }:
 let
   pname = "hunt";
@@ -17,6 +18,7 @@ rustPlatform.buildRustPackage rec {
 
   meta = with lib; {
     description = "simplified find command made with rust";
+    homepage = "https://github.com/LyonSyonII/hunt-rs";
     license = licenses.mit;
     mainProgram = "hunt";
     maintainers = with maintainers; [ jpetrucciani ];
