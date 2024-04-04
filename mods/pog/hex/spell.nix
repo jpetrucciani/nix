@@ -28,6 +28,7 @@ let
     otf = import ./k8s/otf.nix params;
     postgres = import ./k8s/postgres.nix params;
     prometheus = import ./k8s/prometheus.nix params;
+    pulp = import ./k8s/pulp.nix params;
     rancher = import ./k8s/rancher.nix params;
     redis = import ./k8s/redis.nix params;
     robusta = import ./k8s/robusta.nix params;
