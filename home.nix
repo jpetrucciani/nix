@@ -181,7 +181,6 @@ in
           google-cloud-sdk
           ripgrep
           shellcheck
-          step-cli
           terraform-ls
 
           # python
