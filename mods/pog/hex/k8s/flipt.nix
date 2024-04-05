@@ -6,12 +6,15 @@ let
     defaults = {
       inherit name;
       namespace = name;
-      version = "0.55.0";
-      sha256 = "0nnz89cxrvxbmyk51hkhsywf4j6p1hc4q70lp0s059cr7zxhli8k";
+      version = "0.57.0";
+      sha256 = "18mf3ggp8lzycj7fw27ar0k232vgk5m8z0cig2byi8frkq1c0l91";
     };
     version = rec {
       _v = hex.k8s._.version chart;
-      latest = v0-55-0;
+      latest = v0-57-0;
+      v0-57-0 = _v "0.57.0" "18mf3ggp8lzycj7fw27ar0k232vgk5m8z0cig2byi8frkq1c0l91"; # 2024-04-05
+      v0-56-0 = _v "0.56.0" "0l6m6ncwqlaqmwhr3dd4k1p3apq1lbgwxlwhyx3k1gpi92z5kpbb"; # 2024-04-02
+      v0-55-2 = _v "0.55.2" "06shfrpk8m2x6pkssy2iq3qrj71dp88zzmma88b04hddvn56vh83"; # 2024-03-29
       v0-55-0 = _v "0.55.0" "0nnz89cxrvxbmyk51hkhsywf4j6p1hc4q70lp0s059cr7zxhli8k"; # 2024-03-25
       v0-54-2 = _v "0.54.2" "0fpzrmwlanzm5mkxsdab6q8v7nnfjidi9r27ldpi85mfkdigjwrp"; # 2024-03-15
       v0-54-1 = _v "0.54.1" "1iqh9g2rcwfljffpf1yb5n1w45gr67z713s68bl43cp0zalmvykv"; # 2024-03-13
