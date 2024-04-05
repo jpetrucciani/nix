@@ -154,10 +154,7 @@ let
 
     # middlewares https://doc.traefik.io/traefik/middlewares/http/overview/
     middleware = rec {
-      build = args: ''
-        ---
-        ${toYAML (setup args)}
-      '';
+      build = args: toYAMLDoc (setup args);
       setup = { name, spec, kind ? "Middleware", apiVersion ? "traefik.containo.us/v1alpha1", extraSpec ? { } }: {
         inherit kind apiVersion spec;
         metadata = {
