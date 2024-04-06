@@ -131,7 +131,10 @@ rec {
       tenacity
     ];
 
-    pythonRelaxDeps = [ "langsmith" ];
+    pythonRelaxDeps = [
+      "langsmith"
+      "packaging"
+    ];
     pythonImportsCheck = [ "langchain_core" ];
 
     meta = {
