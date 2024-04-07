@@ -99,23 +99,19 @@ rec {
 
   prometheus-fastapi-instrumentator = buildPythonPackage rec {
     pname = "prometheus-fastapi-instrumentator";
-    version = "6.0.0";
+    version = "7.0.0";
     pyproject = true;
 
     src = fetchFromGitHub {
       owner = "trallnag";
       repo = pname;
       rev = "v${version}";
-      hash = "sha256-VVDsMwd/d2hnhM9ZHCkWUVkaGrw1wgLzFDF2mK24r0o=";
+      hash = "sha256-yvKdhQdbY0+jEc8TEHNNgtdnqE0abnd4MN/JZFQwQ2E=";
     };
 
-    preBuild =
-      let
-        sed = "sed -i -E";
-      in
-      ''
-        ${sed} '/asyncio_mode =/d' ./pyproject.toml
-      '';
+    preBuild = ''
+      sed -i -E '/asyncio_mode =/d' ./pyproject.toml
+    '';
 
     pythonImportsCheck = [
       "prometheus_fastapi_instrumentator"
@@ -127,6 +123,8 @@ rec {
 
     nativeCheckInputs = with final; [
       pytestCheckHook
+      devtools
+      httpx
       requests
     ];
 
