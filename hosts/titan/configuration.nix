@@ -134,7 +134,10 @@ in
 
   system.stateVersion = "23.11";
   security.sudo = common.security.sudo;
-  programs.command-not-found.enable = false;
+  programs = {
+    command-not-found.enable = false;
+    nix-ld.enable = true;
+  };
 
   # nvidia setup?
   virtualisation.docker = {
