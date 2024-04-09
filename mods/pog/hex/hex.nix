@@ -86,6 +86,9 @@ rec {
     crds = ''${_.yq} e -i '. | select(.kind == "CustomResourceDefinition")' '';
     empty = ''${_.yq} e -i 'del(. | select(tag == "!!map" and length == 0))' '';
   };
+  yq_magic = {
+    delete_key = selectors: key: "${_.yq} e -i 'del(select(${selectors}) | ${key})'";
+  };
 
   patchYAML =
     { url

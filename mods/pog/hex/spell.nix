@@ -41,8 +41,8 @@ let
     _ = {
       version = chart_url_fn: v: s: args: chart_url_fn (args // { version = v; sha256 = s; });
       chart = { defaults, chart_url, extraSets ? [ ] }:
-        { name ? defaults.name
-        , namespace ? defaults.namespace
+        { name ? defaults.name or ""
+        , namespace ? defaults.namespace or "default"
         , values ? [ ]
         , sets ? [ ]
         , version ? defaults.version
@@ -50,8 +50,8 @@ let
         , forceNamespace ? true
         , extraFlags ? [ ]
         , sortYaml ? false
-        , preRender ? ""
-        , postRender ? ""
+        , preRender ? defaults.preRender or ""
+        , postRender ? defaults.postRender or ""
         }: hex.k8s.helm.build {
           inherit name namespace values version sha256 forceNamespace sortYaml preRender postRender;
           extraFlags = extraFlags ++ [ "--version=${version}" ];

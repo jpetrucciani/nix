@@ -43,12 +43,15 @@ in
     defaults = {
       name = "prometheus";
       namespace = "default";
-      version = "56.2.0";
-      sha256 = "0halhmdxyrn5drimyx1hp9sgxyh1qcz9gsb5vn3jmbsx0grv94yn";
+      version = "58.0.0";
+      sha256 = "0kr65dkhk8728sdg1lm562zqsknpnw6wfq3jdg150d8yzlz3cdrg";
     };
     version = rec {
       _v = hex.k8s._.version chart;
-      latest = v56-2-0;
+      latest = v58-0-0;
+      v58-0-0 = _v "58.0.0" "0kr65dkhk8728sdg1lm562zqsknpnw6wfq3jdg150d8yzlz3cdrg"; # 2024-04-06
+      v57-2-1 = _v "57.2.1" "1p87qngiab98n6l59432harkmg53c9vk1wl7hmfllp7wphcflsx8"; # 2024-04-06
+      v56-21-4 = _v "56.21.4" "16ihd84isg09clhyyjf5r7h3s9pcisl8201dya6p0hl6gd15935l"; # 2024-03-08
       v56-2-0 = _v "56.2.0" "0halhmdxyrn5drimyx1hp9sgxyh1qcz9gsb5vn3jmbsx0grv94yn";
       v56-1-0 = _v "56.1.0" "18vhd3455pq894gnanczkns6mw18byk9hhvyn8iz1ss17wyqcaif";
       v55-11-0 = _v "55.11.0" "06l4bn25illfwm2k0jlibxz2ndqbl09xg7mim2ym0rim0m0rljfl";
