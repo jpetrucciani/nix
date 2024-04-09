@@ -45,7 +45,7 @@ in
       cudaPackages.cudatoolkit
       cudaPackages.cudnn
       nvidia-docker
-      nvtop-nvidia
+      nvtopPackages.nvidia
       linuxPackages.nvidia_x11
     ];
   };
