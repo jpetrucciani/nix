@@ -84,7 +84,6 @@ in
         gnumake
         gnupg
         gnused
-        gnutar
         gron
         gum
         gzip
@@ -202,13 +201,13 @@ in
           (
             optList (!isX86Mac) [
               git-trim
-              # watcher
             ]
           )
 
           # linux specific
           (
             optList isLinux [
+              gnutar # this breaks vscode server?
               nixos-generators
               binutils
               bitwarden-cli
@@ -216,12 +215,6 @@ in
               ncdu
               sampler
               vtm
-
-              # k8s tools
-              katafygio
-              kube-linter
-              pluto
-              rbac-tool
             ]
           )
         ])
