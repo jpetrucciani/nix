@@ -2,16 +2,16 @@
 { lib, buildGo122Module, fetchFromGitHub }:
 buildGo122Module rec {
   pname = "goaws";
-  version = "0.4.2";
+  version = "0.4.6";
 
   src = fetchFromGitHub {
     owner = "Admiral-Piett";
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-lnDmLBJS7DE0BclwNzuS3zWdZsUCWEIsd0hubgkn5As=";
+    hash = "sha256-xxQct7Istl2dMFiXoaNbNtUBaZ9O07crjI3gHhktSbI=";
   };
 
-  vendorHash = "sha256-VqRRCQKtqhRtxG8uJrf332vXr1Lo0ivu8UNWf6y/K2s=";
+  vendorHash = "sha256-mq180F0V7BF3GBFgrlME7+5IF6Wfk/xMDWNmIOc6FlU=";
 
   ldflags = [
     "-s"
