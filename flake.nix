@@ -40,7 +40,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     vscode-server = {
-      url = "github:msteen/nixos-vscode-server";
+      url = "github:Ten0/nixos-vscode-server/support_new_vscode_versions";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

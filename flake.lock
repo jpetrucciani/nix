@@ -1121,15 +1121,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1709622318,
-        "narHash": "sha256-bTscF0366xtoIXgH7Zq+Mn0mpX3w4h/2xKpHiYMyLNc=",
-        "owner": "msteen",
+        "lastModified": 1711042850,
+        "narHash": "sha256-8PDNi/dgoI2kyM7uSiU4eoLBqUKoA+3TXuz+VWmuCOc=",
+        "owner": "Ten0",
         "repo": "nixos-vscode-server",
-        "rev": "d0ed9b8cf1f0a71f110df9119489ab047e0726bd",
+        "rev": "b02b3cceaae22fb66c00f03f1aff705e9711956e",
         "type": "github"
       },
       "original": {
-        "owner": "msteen",
+        "owner": "Ten0",
+        "ref": "support_new_vscode_versions",
         "repo": "nixos-vscode-server",
         "type": "github"
       }
