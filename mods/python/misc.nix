@@ -830,4 +830,31 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  findblas = buildPythonPackage {
+    pname = "findblas";
+    version = "unstable-2024-01-13";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "david-cortes";
+      repo = "findblas";
+      rev = "29c29ec13d6e89ee977e87554aeef219c5db2552";
+      hash = "sha256-VMiys4pa3X/uN5yJK4vBuigGObJeamXPipEjz3jZ6jo=";
+    };
+
+    nativeBuildInputs = with prev; [
+      setuptools
+      wheel
+    ];
+
+    pythonImportsCheck = [ "findblas" ];
+
+    meta = {
+      description = "Python module for finding available BLAS libraries in the system and linking wrapped C/C++ or FORTRAN code to it";
+      homepage = "https://github.com/david-cortes/findblas";
+      license = licenses.bsd2;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
