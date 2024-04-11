@@ -843,6 +843,16 @@ rec {
       hash = "sha256-VMiys4pa3X/uN5yJK4vBuigGObJeamXPipEjz3jZ6jo=";
     };
 
+    postPatch =
+      let
+        BLAS = "${prev.pkgs.blas}/lib";
+        BLAS_DEV = "${prev.pkgs.blas.dev}/include";
+        find_blas = ''"${BLAS}", "libblas.so", "${BLAS_DEV}", "cblas.h", ["HAS_OPENBLAS"]'';
+      in
+      ''
+        sed -i -E 's#\#\# Possible file names for each library in different OSes#return ${find_blas}#g' ./findblas/__init__.py
+      '';
+
     nativeBuildInputs = with prev; [
       setuptools
       wheel
