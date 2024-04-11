@@ -378,6 +378,28 @@ rec {
     '';
   };
 
+  nixcache = pog {
+    name = "nixcache";
+    description = "a way to cache one or more builds into s3";
+    flags = [
+      {
+        name = "uri";
+        description = "the cache uri to copy to (example: s3://nix-cache?region=us-east-2&compression=zstd)";
+      }
+    ];
+    script = ''
+      files=( "$@" )
+      echo "caching $# builds"
+      rm -f ./nixcache.log
+      for i in $(${prev.coreutils}/bin/seq $#); do
+          index=$((i-1))
+          ${prev.nix}/bin/nix copy --refresh --to "$uri" "''${files[$index]}" >>nixcache.log
+          echo "$i"
+      done | ${prev.python311Packages.tqdm}/bin/tqdm --total "$#" >>/dev/null
+      echo "cached $# builds!"
+    '';
+  };
+
   nupdate = pog {
     name = "nupdate";
     arguments = [{ name = "attribute"; }];
@@ -410,6 +432,7 @@ rec {
     nixrender
     nixup
     nixsum
+    nixcache
     nupdate
     y2n
   ];
