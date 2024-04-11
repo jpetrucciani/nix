@@ -99,32 +99,51 @@ let
     ] ++ mobile;
     all = desktop ++ server ++ mobile ++ laptop;
   };
+  _base_nix_options = ''
+    max-jobs = auto
+    narinfo-cache-negative-ttl = 10
+    extra-experimental-features = nix-command flakes
+  '';
+  subs = {
+    jacobi = {
+      url = "https://jacobi.cachix.org";
+      key = "jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=";
+    };
+    be = {
+      url = "https://blackedge-nix.s3.us-east-2.amazonaws.com";
+      key = "blackedge-nix.s3.us-east-2.amazonaws.com:1MDUZHbXmD18H1RJYRo7Fy4prdg+xjyyKm8CUjrOj5w=";
+    };
+    cuda = {
+      url = "https://cuda-maintainers.cachix.org";
+      key = "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E=";
+    };
+  };
 in
 {
   inherit ports pubkeys;
   nix = {
     extraOptions = ''
-      max-jobs = auto
-      narinfo-cache-negative-ttl = 10
-      extra-experimental-features = nix-command flakes
-      extra-substituters = https://jacobi.cachix.org
-      extra-trusted-public-keys = jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=
+      ${_base_nix_options}
+      extra-substituters = ${subs.jacobi.url}
+      extra-trusted-public-keys = ${subs.jacobi.key}
     '';
-    settings = {
-      trusted-users = [ "root" "jacobi" ];
-    };
+    settings.trusted-users = [ "root" "jacobi" ];
+  };
+  nix-be = {
+    extraOptions = ''
+      ${_base_nix_options}
+      extra-substituters = ${subs.jacobi.url} ${subs.be.url}
+      extra-trusted-public-keys = ${subs.jacobi.key} ${subs.be.key}
+    '';
+    settings.trusted-users = [ "root" "jacobi" ];
   };
   nix-cuda = {
     extraOptions = ''
-      max-jobs = auto
-      narinfo-cache-negative-ttl = 10
-      extra-experimental-features = nix-command flakes
-      extra-substituters = https://jacobi.cachix.org https://cuda-maintainers.cachix.org
-      extra-trusted-public-keys = jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU= cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E=
+      ${_base_nix_options}
+      extra-substituters = ${subs.jacobi.url} ${subs.cuda.url}
+      extra-trusted-public-keys = ${subs.jacobi.key} ${subs.cuda.key}
     '';
-    settings = {
-      trusted-users = [ "root" "jacobi" ];
-    };
+    settings.trusted-users = [ "root" "jacobi" ];
   };
 
   sysctl_opts = {
