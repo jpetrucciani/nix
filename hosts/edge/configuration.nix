@@ -40,7 +40,17 @@ in
       NIX_HOST = hostname;
       NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
     };
-    etc."nixpkgs-path".source = common.pkgs.path;
+    etc = {
+      "nixpkgs-path".source = common.pkgs.path;
+      "rancher/k3s/kubelet.config".source = pkgs.writeTextFile {
+        name = "kubelet.config";
+        text = ''
+          apiVersion: kubelet.config.k8s.io/v1beta1
+          kind: KubeletConfiguration
+          maxPods: 250
+        '';
+      };
+    };
     systemPackages = with pkgs; [
       amazon-ecr-credential-helper
     ];
@@ -100,7 +110,7 @@ in
       {
         enable = true;
         role = "server";
-        extraFlags = "--disable traefik ${oidc_flags}";
+        extraFlags = "--disable traefik ${oidc_flags} --kubelet-arg=config=/etc/rancher/k3s/kubelet.config";
       };
     caddy =
       let
