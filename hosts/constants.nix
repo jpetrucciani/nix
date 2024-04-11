@@ -276,6 +276,7 @@ in
         enabledCollectors = [ "systemd" ];
         port = ports.prometheus_node_exporter;
       };
+      systemd.enable = true;
     };
   };
 }

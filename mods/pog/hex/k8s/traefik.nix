@@ -7,12 +7,13 @@ let
     defaults = {
       name = "traefik";
       namespace = "traefik";
-      version = "27.0.0";
-      sha256 = "1axsvh5awc223rqla1b7ibyrcbdsp26ayv32djl6qhd8s881qsw4";
+      version = "27.0.1";
+      sha256 = "09zpx9rva7d09fgybk8iwfw5jl0nzcscbl5whq7s7wv8ybjjckkd";
     };
     version = rec {
       _v = hex.k8s._.version chart;
-      latest = v27-0-0;
+      latest = v27-0-1;
+      v27-0-1 = _v "27.0.1" "09zpx9rva7d09fgybk8iwfw5jl0nzcscbl5whq7s7wv8ybjjckkd"; # 2024-04-11
       v27-0-0 = _v "27.0.0" "1axsvh5awc223rqla1b7ibyrcbdsp26ayv32djl6qhd8s881qsw4"; # 2024-04-04
       v26-1-0 = _v "26.1.0" "0cmmfx908dli28l36dx38mmw67hajzxymm5fchgs8cfry6gkg4jl"; # 2024-02-19
       v26-0-0 = _v "26.0.0" "14crjr25zanrcq4mji9c01rfrcdqciz8nxw7yf169h2iljbp380r"; # 2023-12-05
