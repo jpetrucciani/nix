@@ -4,6 +4,27 @@ let
   inherit (final) _ pog;
 in
 rec {
+  ka = pog {
+    name = "ka";
+    description = "a shorthand to see all pods";
+    flags = [
+      _.flags.k8s.namespace
+      { name = "allnamespaces"; short = "A"; description = "load from all namespaces"; bool = true; }
+      { name = "json"; description = "shorthand for json output"; bool = true; }
+    ];
+    script = h: with h; ''
+      ns="--namespace $namespace"
+      ${flag "allnamespaces"} && ns="--all-namespaces"
+      if ${flag "json"}; then
+        # shellcheck disable=SC2086
+        ${_.k} get $ns pods --output json
+      else
+        # shellcheck disable=SC2086
+        ${_.k} get $ns pods 
+      fi
+    '';
+  };
+
   kex = pog {
     name = "kex";
     description = "a quick and easy way to exec into a k8s pod!";
@@ -219,6 +240,7 @@ rec {
   };
 
   k8s_pog_scripts = [
+    ka
     kdesc
     kdiff
     kdrain

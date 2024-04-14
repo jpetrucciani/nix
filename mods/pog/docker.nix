@@ -2,6 +2,23 @@
 final: prev:
 with prev;
 rec {
+  da = pog {
+    name = "da";
+    description = "a shorthand to see all containers on a host";
+    flags = [
+      { name = "json"; description = "shorthand for json output"; bool = true; }
+      { name = "wide"; description = "show more columns"; bool = true; }
+    ];
+    script = h: with h; ''
+      if ${flag "json"}; then 
+        ${_.d} ps -a --format json
+      else
+        extra="\t{{.CreatedAt}}\t{{.Size}}"
+        ${_.d} container ls -a --format "table {{.ID}}\t{{.Image}}\t{{.Command}}\t{{.Status}}\t{{.Ports}}\t{{.Names}}''${wide:+$extra}"
+      fi
+    '';
+  };
+
   drm = pog {
     name = "drm";
     description = "quickly remove containers from your docker daemon!";
@@ -12,6 +29,7 @@ rec {
       ${_.docker.da} | ${_.fzfqm} --header-lines=1 | ${_.docker.get_container} | ${_.xargs} -r ${_.d} rm ''${force:+--force}
     '';
   };
+
   drmi = pog {
     name = "drmi";
     description = "quickly remove images from your docker daemon!";
@@ -22,6 +40,7 @@ rec {
       ${_.docker.di} | ${_.fzfqm} --header-lines=1 | ${_.docker.get_image} | ${_.xargs} -r ${_.d} rmi ''${force:+--force}
     '';
   };
+
   _dex = pog {
     name = "dex";
     description = "a quick and easy way to exec into a docker pod!";
@@ -40,6 +59,7 @@ rec {
       ${_.d} exec --interactive --tty "$container" sh -c "${_.globals.hacks.bash_or_sh}"
     '';
   };
+
   dshell = pog {
     name = "dshell";
     description = "a quick and easy way to pop a shell on docker!";
@@ -80,6 +100,7 @@ rec {
         sh -c "$command"
     '';
   };
+
   dlint = pog {
     name = "dlint";
     description = "a prescriptive hadolint dockerfile linter config";
@@ -102,6 +123,7 @@ rec {
   };
 
   docker_pog_scripts = [
+    da
     drm
     drmi
     dshell
