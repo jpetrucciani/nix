@@ -95,7 +95,6 @@ in
         libnotify
         loop
         lsof
-        man-pages
         manix
         mods
         moreutils
@@ -212,6 +211,7 @@ in
               binutils
               bitwarden-cli
               keybase
+              man-pages
               ncdu
               sampler
               vtm
