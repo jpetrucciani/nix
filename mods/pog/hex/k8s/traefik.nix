@@ -219,6 +219,7 @@ let
         , secretName ? ""
         , labels ? [ ]
         , middlewares ? [ ]
+        , extraRule ? { }
         , extraRoutes ? [ ]
         , extraSpec ? { }
         }:
@@ -248,7 +249,7 @@ let
               entrypoint
             ];
             routes = [
-              {
+              ({
                 ${ifNotEmptyList middlewares "middlewares"} = middlewares;
                 kind = "Rule";
                 match = "Host${if regex then "Regexp" else ""}(`${domain}`)";
@@ -260,7 +261,7 @@ let
                     scheme = serviceScheme;
                   } // extraService)
                 ];
-              }
+              } // extraRule)
             ] ++ extraRoutes;
           } // tlsOptions // extraSpec;
         };
