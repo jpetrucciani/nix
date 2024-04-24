@@ -8,8 +8,8 @@ let
   llama-cpp-pin = fetchFromGitHub {
     owner = "ggerganov";
     repo = "llama.cpp";
-    rev = "0e4802b2ecbaab04b4f829fde4a3096ca19c84b5";
-    hash = "sha256-M4uT687li8WOa3LLNk+ohcBLCbvJK9Lnv5Sm2SfycZE=";
+    rev = "4e96a812b3ce7322a29a3008db2ed73d9087b176";
+    hash = "sha256-xS4LwVwpbdpCMXATTBlQPws3u8AWMlzGuk5SR6TUfl8=";
   };
 in
 rec {
@@ -48,13 +48,13 @@ rec {
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
-      version = "0.2.63";
+      version = "0.2.64";
       pyproject = true;
       src = fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-Gbl6QfHKuJ6ijILc5hezfLHndzoqpbhVJW3Pa8KsnSQ=";
+        hash = "sha256-808+p+lC0siGMx5JkMUlnlv61Hqk7AbA/bTiohnEdsM=";
       };
 
       cuda = false;
@@ -72,6 +72,7 @@ rec {
         sed -E -i \
           -e '/"ninja/d' \
           -e '/"cmake/d' \
+          -e 's/(requires =).*/\1 ["scikit-build-core[pyproject]>=0.8.2"]/g' \
           ./pyproject.toml
       '';
       buildInputs = osSpecific;
@@ -457,7 +458,7 @@ rec {
   ctransformers =
     let
       name = "ctransformers";
-      version = "0.2.63";
+      version = "0.2.64";
       osSpecific =
         if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
         else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
