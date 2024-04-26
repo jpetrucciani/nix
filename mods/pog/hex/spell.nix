@@ -45,8 +45,8 @@ let
         , namespace ? defaults.namespace or "default"
         , values ? [ ]
         , sets ? [ ]
-        , version ? defaults.version
-        , sha256 ? defaults.sha256
+        , version ? defaults.version or ""
+        , sha256 ? defaults.sha256 or ""
         , forceNamespace ? true
         , extraFlags ? [ ]
         , sortYaml ? false
