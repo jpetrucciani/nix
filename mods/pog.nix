@@ -354,11 +354,11 @@ rec {
         "ghcr.io/jpetrucciani/k8s-aws:latest"
         "ghcr.io/jpetrucciani/k8s-gcp:latest"
         "nicolaka/netshoot:latest"
-        "node:16"
         "node:20"
+        "node:22"
         "python:3.11"
         "python:3.12"
-        "ubuntu:22.04"
+        "ubuntu:24.04"
       ];
       aws = {
         regions = [
