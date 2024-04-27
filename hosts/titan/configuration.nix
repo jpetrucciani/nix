@@ -108,7 +108,7 @@ in
         '';
         virtualHosts = {
           "http://llama3.llm.cobi.dev:80" = reverse_proxy ''
-            ${m1max}:5000 ${m1max}:5002
+            localhost:5000 localhost:5002
             lb_policy round_robin
           '';
           "http://llava.llm.cobi.dev:80" = reverse_proxy "${m1max}:8080";
