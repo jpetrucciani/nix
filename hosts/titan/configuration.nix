@@ -102,7 +102,7 @@ in
         email = common.emails.personal;
         globalConfig = ''
           auto_https off
-          http_port 8080
+          http_port 80
         '';
         extraConfig = ''
           (TAILSCALE) {
@@ -111,12 +111,12 @@ in
           }
         '';
         virtualHosts = {
-          "http://llama3.llm.cobi.dev:8080" = reverse_proxy ''
+          "http://llama3.llm.cobi.dev:80" = reverse_proxy ''
             localhost:5000 localhost:5002
             lb_policy round_robin
           '';
-          "http://llava.llm.cobi.dev:8080" = reverse_proxy "${m1max}:8080";
-          "http://v.llm.cobi.dev:8080" = reverse_proxy "localhost:5000";
+          "http://llava.llm.cobi.dev:80" = reverse_proxy "${m1max}:8080";
+          "http://v.llm.cobi.dev:80" = reverse_proxy "localhost:5000";
         };
       };
     postgresql = {
