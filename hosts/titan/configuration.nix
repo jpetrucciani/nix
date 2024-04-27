@@ -111,10 +111,25 @@ in
           }
         '';
         virtualHosts = {
-          "http://llama3.llm.cobi.dev:80" = reverse_proxy ''
-            localhost:5000 localhost:5002
-            lb_policy round_robin
-          '';
+          "http://llama3.llm.cobi.dev:80" = {
+            extraConfig = ''
+              @options {
+                method OPTIONS
+              }
+              header {
+                Access-Control-Allow-Origin *
+                Access-Control-Allow-Credentials true
+                Access-Control-Allow-Methods *
+                Access-Control-Allow-Headers *
+                defer
+              }
+              reverse_proxy /* {
+                to localhost:5000 localhost:5002
+                lb_policy round_robin
+              }
+              respond @options 204
+            '';
+          };
           "http://llava.llm.cobi.dev:80" = reverse_proxy "${m1max}:8080";
           "http://v.llm.cobi.dev:80" = reverse_proxy "localhost:5000";
         };
