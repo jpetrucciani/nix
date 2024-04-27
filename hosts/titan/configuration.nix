@@ -107,15 +107,12 @@ in
           }
         '';
         virtualHosts = {
-          "http://zephyr.llm.cobi.dev:80" = reverse_proxy "${m1max}:8100";
-          "http://starling.llm.cobi.dev:80" = reverse_proxy "${m1max}:8101";
-          "http://airoboros.llm.cobi.dev:80" = reverse_proxy "${m1max}:8102";
-          "http://hermes.llm.cobi.dev:80" = reverse_proxy ''
-            ${m1max}:6910 ${m1max}:6911
+          "http://llama3.llm.cobi.dev:80" = reverse_proxy ''
+            ${m1max}:5000 ${m1max}:5002
             lb_policy round_robin
           '';
           "http://llava.llm.cobi.dev:80" = reverse_proxy "${m1max}:8080";
-          "http://v.llm.cobi.dev:80" = reverse_proxy "localhost:8000";
+          "http://v.llm.cobi.dev:80" = reverse_proxy "localhost:5000";
         };
       };
     postgresql = {
