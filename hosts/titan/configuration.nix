@@ -100,6 +100,9 @@ in
         enable = true;
         package = pkgs.zaddy;
         email = common.emails.personal;
+        globalConfig = ''
+          auto_https off
+        '';
         extraConfig = ''
           (TAILSCALE) {
             @tailscale not remote_ip 127.0.0.1 100.64.0.0/10
