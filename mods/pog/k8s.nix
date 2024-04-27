@@ -77,16 +77,19 @@ rec {
     description = "a quick and easy way to pop a shell on k8s!";
     flags = [
       _.flags.k8s.namespace
+      _.flags.k8s.serviceaccount
       _.flags.docker.image
     ];
     script = ''
       debug "''${GREEN}running image '$image' on the '$namespace' namespace!''${RESET}"
       pod_name="$(echo "''${USER:-user}-kshell-''$(${_.uuid} | ${_.head} -c 8)" | tr -cd '[:alnum:]-')"
+      overrides="$(echo "json.spec.serviceAccount = \"$serviceaccount\";" | gron -u | tr -d '\n')"
       ${_.k} run \
         --stdin \
         --tty \
         --rm \
         --restart Never \
+        --overrides="$overrides" \
         --namespace "$namespace" \
         --image-pull-policy=Always \
         --image="$image" \

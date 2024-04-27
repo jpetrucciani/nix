@@ -171,6 +171,13 @@ rec {
           '';
           promptError = "you must specify one or more nodes!";
         };
+        serviceaccount = {
+          name = "serviceaccount";
+          description = "the service account to use for the workload";
+          argument = "SERVICE_ACCOUNT";
+          default = "default";
+          completion = ''${_.k} get sa -o=jsonpath='{range .items[*].metadata.name}{@}{"\n"}{end}' '';
+        };
       };
       docker = {
         image = {
