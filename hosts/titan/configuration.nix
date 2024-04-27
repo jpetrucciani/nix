@@ -111,7 +111,7 @@ in
           }
         '';
         virtualHosts = {
-          "http://llama3.llm.cobi.dev:80" = {
+          "http://llama3.llm.jacobi.xyz:80" = {
             extraConfig = ''
               @options {
                 method OPTIONS
@@ -130,8 +130,8 @@ in
               respond @options 204
             '';
           };
-          "http://llava.llm.cobi.dev:80" = reverse_proxy "${m1max}:8080";
-          "http://v.llm.cobi.dev:80" = reverse_proxy "localhost:5000";
+          "http://llava.llm.jacobi.xyz:80" = reverse_proxy "${m1max}:8080";
+          "http://v.llm.jacobi.xyz:80" = reverse_proxy "localhost:5000";
         };
       };
     postgresql = {
