@@ -125,7 +125,7 @@ in
               }
               reverse_proxy /* {
                 to localhost:5000 localhost:5002
-                lb_policy round_robin
+                lb_policy least_conn
               }
               respond @options 204
             '';
