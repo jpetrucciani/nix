@@ -39,6 +39,9 @@ in
 
   environment = {
     etc."nixpkgs-path".source = common.pkgs.path;
+    systemPackages = with pkgs; [
+      rocmPackages.rocm-smi
+    ];
     variables = {
       NIX_HOST = hostname;
       NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
@@ -71,8 +74,6 @@ in
       nix-m1max
     ] ++ usual;
   };
-
-  environment.systemPackages = [ ];
 
   networking.firewall.enable = false;
   services = {
