@@ -149,7 +149,6 @@ in
                   bucket "blackedge-ops"
                   region "us-east-2"
                   root /apps/grid
-                  index ["index.html"]
                 }
               }
             '';
