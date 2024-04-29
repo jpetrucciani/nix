@@ -144,11 +144,13 @@ in
         virtualHosts = {
           "http://grid:80" = {
             extraConfig = ''
-              s3proxy {
-                bucket {env.S3_BUCKET}
-                region {env.S3_REGION}
-                root /apps/grid
-                index ["index.html"]
+              route /* {
+                s3proxy {
+                  bucket {env.S3_BUCKET}
+                  region {env.S3_REGION}
+                  root /apps/grid
+                  index ["index.html"]
+                }
               }
             '';
           };
