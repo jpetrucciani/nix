@@ -174,7 +174,7 @@ in
                 db_path {env.GEOIP_DB}
                 allow_countries US CA BD PH
               }
-              not remote_ip 127.0.0.1
+              not remote_ip ${internals}
             }
             respond @ba3geoblock 403
           }
