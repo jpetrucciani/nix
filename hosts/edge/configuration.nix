@@ -146,8 +146,8 @@ in
             extraConfig = ''
               route /* {
                 s3proxy {
-                  bucket {env.S3_BUCKET}
-                  region {env.S3_REGION}
+                  bucket "blackedge-ops"
+                  region "us-east-2"
                   root /apps/grid
                   index ["index.html"]
                 }
