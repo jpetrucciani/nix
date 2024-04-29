@@ -85,6 +85,10 @@ rec {
     doCheck = false;
   });
 
+  dulwich = prev.dulwich.overridePythonAttrs (_: {
+    doCheck = false;
+  });
+
   python-binance = prev.python-binance.overridePythonAttrs (old: {
     postPatch = ''
       sed -i -E 's#raise.*#version = "${old.version}"#g' ./setup.py
