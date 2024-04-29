@@ -25,7 +25,8 @@ rec {
         vultr = { name = "github.com/caddy-dns/vultr"; version = "733392841379526fd314012909963c3c6406687a"; };
 
         # s3 stuff
-        s3-proxy = { name = "github.com/lindenlab/caddy-s3-proxy"; version = "v0.5.6"; };
+        s3-proxy = { name = "github.com/jpetrucciani/caddy-s3-proxy"; version = "f818d1a7bb35c74f37d4a809236024e9f464162d"; };
+        # s3-proxy = { name = "github.com/lindenlab/caddy-s3-proxy"; version = "v0.5.6"; };
         s3-browser = { name = "github.com/jpetrucciani/caddy-s3browser"; version = "b553c40251fd727217b3e49eb5c69d18c4460e08"; };
 
         # utils
@@ -93,7 +94,7 @@ rec {
       caddy-hax
       caddy-troll
     ];
-    vendorHash = "sha256-hAvPKxc5OfGauYNPUkrekFZWNUMD4YL/vlDi0b8vCFQ=";
+    vendorHash = "sha256-2a2YEGWY0JY2QfP5+q4y7BdD4T6oupk2fBLBzCKthLg=";
   };
 
   # caddy with s3-browser plugin
@@ -103,6 +104,6 @@ rec {
       s3-proxy
       s3-browser
     ];
-    vendorHash = "sha256-toQf0QXyRFeQnBQG2R7mI/b/DP+AC/ABbH3JkcKmob0=";
+    vendorHash = "sha256-t+R668Mao//D0XfjMSVcK6Z3Stv/Uu17ITt2ez5VbAQ=";
   };
 }
