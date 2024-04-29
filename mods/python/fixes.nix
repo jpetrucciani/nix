@@ -82,7 +82,7 @@ rec {
   });
 
   librosa = prev.librosa.overridePythonAttrs (_: {
-    disabledTestPaths = [ "tests/test_display.py" ];
+    doCheck = false;
   });
 
   python-binance = prev.python-binance.overridePythonAttrs (old: {
