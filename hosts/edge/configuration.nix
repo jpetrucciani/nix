@@ -142,6 +142,16 @@ in
           }
         '';
         virtualHosts = {
+          "http://grid:80" = {
+            extraConfig = ''
+              s3proxy {
+                bucket {env.S3_BUCKET}
+                region {env.S3_REGION}
+                root /apps/grid
+                index ["index.html"]
+              }
+            '';
+          };
           "edge.blackedge.capital" = internal_proxy { };
           "ds.blackedge.capital" = let f = "10.31.41.212"; in {
             extraConfig = ''
