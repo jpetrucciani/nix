@@ -28,5 +28,6 @@ in
       propagatedBuildInputs = remove _remove (old.propagatedBuildInputs or [ ]);
     });
     no_wheel = pkg: pkg.override { preferWheel = false; };
+    no_check = pkg: pkg.overridePythonAttrs (_: { doCheck = false; });
   };
 }
