@@ -7,13 +7,12 @@ let
     defaults = {
       name = "external-secrets";
       namespace = "external-secrets";
-      version = "0.9.16";
-      sha256 = "1lib2rf12iw4spk6qkp8wsxm35hvfxnb4i0awkf12ds3ddxs84cr";
       store_name = "gsm";
     };
     version = rec {
       _v = hex.k8s._.version chart;
-      latest = v0-9-16;
+      latest = v0-9-17;
+      v0-9-17 = _v "0.9.17" "0scsqcc5sfqd5yhyhi1c78clcs7szs1gfas7al05qjnjbb3hvbis"; # 2024-05-01
       v0-9-16 = _v "0.9.16" "1lib2rf12iw4spk6qkp8wsxm35hvfxnb4i0awkf12ds3ddxs84cr"; # 2024-04-18
       v0-9-14 = _v "0.9.14" "0r0g9bv30qywlw1qlk4i581pvsmrmc5bxp7nxbm1lmqq6a6ihv16"; # 2024-03-30
       v0-9-13 = _v "0.9.13" "00mmhqy70n9q512zgf15kpcn22ri9vzx9bx782j3pz59ppa849i4"; # 2024-02-17
