@@ -17,7 +17,7 @@ rec {
       rev = "refs/tags/0.13";
       hash = "sha256-eHosY/JfJr317S7WI8phy7DNHf3cZzs6c5MMfw7yzAE=";
     };
-    propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ [ prev.poetry-core ];
+    build-system = [ prev.poetry-core ];
   });
 
   passlib =
