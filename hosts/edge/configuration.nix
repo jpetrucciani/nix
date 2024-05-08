@@ -153,6 +153,17 @@ in
               }
             '';
           };
+          "http://griddy-staging:80" = {
+            extraConfig = ''
+              route /* {
+                s3proxy {
+                  bucket "blackedge-ops"
+                  region "us-east-2"
+                  root /apps/griddy-staging
+                }
+              }
+            '';
+          };
           "edge.blackedge.capital" = internal_proxy { };
           "ds.blackedge.capital" = let f = "10.31.41.212"; in {
             extraConfig = ''
