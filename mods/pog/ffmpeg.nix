@@ -191,11 +191,28 @@ rec {
     '';
   };
 
+  faxify = pog {
+    name = "faxify";
+    flags = [
+      {
+        name = "output";
+        description = "the filename to output to [defaults to the current name with a tag]";
+      }
+    ];
+    script = helpers: with helpers; ''
+      file="$1"
+      export PATH="$PATH:${final.ghostscript}/bin"
+      ${var.empty "output"} && output="''${file%.*}.faxify.''${file##*.}"
+      ${final.imagemagick}/bin/convert -density 130 "$file" -rotate 0.33 -attenuate 0.15 +noise Gaussian -colorspace Gray "$output"
+    '';
+  };
+
   ffmpeg_pog_scripts = [
-    scale
-    flip
-    cut_video
     crop_video
+    cut_video
+    faxify
+    flip
+    scale
     to_mp3
   ];
 }
