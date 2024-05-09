@@ -6,6 +6,10 @@ This directory contains cli tools
 
 ## In this directory
 
+### [ahab.nix](./ahab.nix)
+
+[ahab](https://github.com/jpetrucciani/ahab) is a tool that allows you to tail one or more docker containers
+
 ### [anakin.nix](./anakin.nix)
 
 [anakin](https://github.com/Timmmm/anakin/) is a tool to kill orphan processes
@@ -17,6 +21,10 @@ This directory contains cli tools
 ### [bonk.nix](./bonk.nix)
 
 [bonk](https://github.com/elliot40404/bonk) is an alternative to the touch command
+
+### [borgo.nix](./borgo.nix)
+
+[borgo](https://github.com/borgo-lang/borgo) is a statically typed language that compiles to Go
 
 ### [comcast.nix](./comcast.nix)
 

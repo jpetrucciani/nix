@@ -1,3 +1,4 @@
+# [borgo](https://github.com/borgo-lang/borgo) is a statically typed language that compiles to Go
 { lib
 , rustPlatform
 , fetchFromGitHub
