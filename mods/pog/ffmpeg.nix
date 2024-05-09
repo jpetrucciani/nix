@@ -199,9 +199,9 @@ rec {
         description = "the filename to output to [defaults to the current name with a tag]";
       }
     ];
+    runtimeInputs = with final; [ ghostscript ];
     script = helpers: with helpers; ''
       file="$1"
-      export PATH="$PATH:${final.ghostscript}/bin"
       ${var.empty "output"} && output="''${file%.*}.faxify.''${file##*.}"
       ${final.imagemagick}/bin/convert -density 130 "$file" -rotate 0.33 -attenuate 0.15 +noise Gaussian -colorspace Gray "$output"
     '';

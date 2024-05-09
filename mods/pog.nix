@@ -662,6 +662,7 @@ rec {
     , parsedFlags ? map flag flags
     , arguments ? [ ]
     , argumentCompletion ? "files"
+    , runtimeInputs ? [ ]
     , bashBible ? false
     , beforeExit ? ""
     , strict ? false
@@ -692,6 +693,7 @@ rec {
         ${if strict then "set -o errexit -o pipefail -o noclobber" else ""}
         VERBOSE="''${POG_VERBOSE-}"
         NO_COLOR="''${POG_NO_COLOR-}"
+        export PATH="${final.lib.makeBinPath runtimeInputs}:$PATH"
 
         help() {
           cat <<EOF
