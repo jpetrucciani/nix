@@ -1,4 +1,5 @@
 (?i)acls
+(?i)ahab
 (?i)anakin
 (?i)api
 (?i)argocd
@@ -11,6 +12,7 @@
 (?i)bashbible
 (?i)bigquery
 (?i)bkt
+(?i)borgo
 (?i)caddy
 (?i)cd
 (?i)certbot
