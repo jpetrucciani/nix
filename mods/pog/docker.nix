@@ -101,6 +101,30 @@ rec {
     '';
   };
 
+  dlog = pog {
+    name = "dlog";
+    description = "a quick and easy way to log one or more containers!";
+    flags = [
+      {
+        name = "container";
+        description = "the containers to tail logs from";
+        prompt = ''
+          ${_.d} ps -a | ${_.fzfqm} --header-lines=1 | ${_.k8s.get_id}
+        '';
+        promptError = "you must specify one or more containers to log from!";
+      }
+      {
+        name = "since";
+        description = "Return logs newer than a relative duration like 52, 2m, or 3h";
+        default = "10m";
+      }
+    ];
+    script = helpers: ''
+      # shellcheck disable=SC2086
+      ${final.ahab}/bin/ahab --since "$since" $container
+    '';
+  };
+
   dlint = pog {
     name = "dlint";
     description = "a prescriptive hadolint dockerfile linter config";
@@ -123,11 +147,12 @@ rec {
   };
 
   docker_pog_scripts = [
+    # dlint
+    _dex
     da
+    dlog
     drm
     drmi
     dshell
-    # dlint
-    _dex
   ];
 }
