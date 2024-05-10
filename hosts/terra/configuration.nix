@@ -37,6 +37,10 @@ in
     NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
   };
 
+  fonts.packages = with pkgs; [
+    nerdfonts
+  ];
+
   time.timeZone = common.timeZone;
 
   networking = {
