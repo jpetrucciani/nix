@@ -19,14 +19,6 @@ rec {
             ];
         }) else prev.passlib;
 
-  # curio =
-  #   if isDarwin then
-  #     prev.curio.overrideAttrs
-  #       (_: {
-  #         doCheck = false;
-  #         doInstallCheck = false;
-  #       }) else prev.curio;
-
   twisted =
     if isDarwin then
       prev.twisted.overrideAttrs
