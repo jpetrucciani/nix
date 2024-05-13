@@ -9,17 +9,6 @@ let
       prev.${pkg}.overridePythonAttrs (_: { doCheck = false; }) else prev.${pkg};
 in
 rec {
-  gamble = prev.gamble.overridePythonAttrs (old: {
-    format = "pyproject";
-    src = fetchFromGitHub {
-      owner = "jpetrucciani";
-      repo = "gamble";
-      rev = "refs/tags/0.13";
-      hash = "sha256-eHosY/JfJr317S7WI8phy7DNHf3cZzs6c5MMfw7yzAE=";
-    };
-    build-system = [ prev.poetry-core ];
-  });
-
   passlib =
     if isDarwin then
       prev.passlib.overrideAttrs
