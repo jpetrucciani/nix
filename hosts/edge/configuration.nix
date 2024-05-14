@@ -144,8 +144,10 @@ in
         virtualHosts = {
           "http://go:80" = {
             extraConfig = ''
-              reverse_proxy /* {
-                localhost:4200
+              route /* {
+                reverse_proxy /* {
+                  localhost:4200
+                }
               }
             '';
           };
