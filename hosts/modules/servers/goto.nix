@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 let
-  inherit (lib) mkIf mkEnableOption mkOption literalExpression mdDoc;
-  inherit (lib.types) lines package path port str;
+  inherit (lib) mkIf mkEnableOption mkOption mdDoc;
+  inherit (lib.types) path port str;
   cfg = config.services.goto;
 in
 {
@@ -34,17 +34,6 @@ in
       type = path;
       default = "/var/lib/goto/goto";
       description = mdDoc ''the executable file for goto'';
-    };
-
-    bindAddress = mkOption {
-      type = str;
-      default = "0.0.0.0";
-      description = mdDoc '''';
-    };
-    bindPort = mkOption {
-      type = port;
-      default = 4200;
-      description = mdDoc '''';
     };
   };
 
