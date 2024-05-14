@@ -9,6 +9,7 @@ in
     ./hardware-configuration.nix
     ../modules/conf/blackedge.nix
     ../modules/conf/ssh-remote-bind.nix
+    ../modules/servers/goto.nix
   ];
 
   inherit (common) zramSwap swapDevices;
@@ -183,6 +184,7 @@ in
           };
         };
       };
+    goto.enable = true;
   } // common.services;
 
   virtualisation.docker.enable = true;
