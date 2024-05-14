@@ -142,6 +142,13 @@ in
           }
         '';
         virtualHosts = {
+          "http://go:80" = {
+            extraConfig = ''
+              reverse_proxy /* {
+                localhost:4200
+              }
+            '';
+          };
           "http://grid:80" = {
             extraConfig = ''
               route /* {
