@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption mkOption mdDoc;
   inherit (lib.types) path str;
