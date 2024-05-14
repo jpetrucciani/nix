@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption mkOption mdDoc;
-  inherit (lib.types) path port str;
+  inherit (lib.types) path str;
   cfg = config.services.goto;
 in
 {
