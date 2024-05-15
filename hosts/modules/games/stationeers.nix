@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }:
 let
-  inherit (lib) mdDoc mkIf mkEnableOption mkOption;
+  inherit (lib) mkIf mkEnableOption mkOption;
   inherit (lib.types) path port str number;
   cfg = config.services.stationeers;
 in
@@ -12,12 +12,12 @@ in
     user = mkOption {
       type = str;
       default = "stationeers";
-      description = mdDoc "User account under which stationeers runs";
+      description = "User account under which stationeers runs";
     };
     group = mkOption {
       type = str;
       default = "stationeers";
-      description = mdDoc "Group under which stationeers runs";
+      description = "Group under which stationeers runs";
     };
     dataDir = mkOption {
       type = path;

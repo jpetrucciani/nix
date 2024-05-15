@@ -1,6 +1,6 @@
 { config, lib, ... }:
 let
-  inherit (lib) mkIf mkEnableOption mkOption mdDoc;
+  inherit (lib) mkIf mkEnableOption mkOption;
   inherit (lib.types) path str;
   cfg = config.services.goto;
 in
@@ -12,28 +12,28 @@ in
     user = mkOption {
       type = str;
       default = "goto";
-      description = mdDoc "User account under which goto runs";
+      description = "User account under which goto runs";
     };
     group = mkOption {
       type = str;
       default = "goto";
-      description = mdDoc "Group under which goto runs";
+      description = "Group under which goto runs";
     };
     dataDir = mkOption {
       type = path;
       default = "/var/lib/goto";
-      description = mdDoc ''the data directory for goto'';
+      description = ''the data directory for goto'';
     };
     secretFile = mkOption {
       type = path;
       default = "/etc/default/goto";
-      description = mdDoc ''secret env variables for goto'';
+      description = ''secret env variables for goto'';
     };
 
     execFile = mkOption {
       type = path;
       default = "/var/lib/goto/goto";
-      description = mdDoc ''the executable file for goto'';
+      description = ''the executable file for goto'';
     };
   };
 

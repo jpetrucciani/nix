@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }:
 let
-  inherit (lib) mdDoc mkIf mkEnableOption mkOption;
+  inherit (lib) mkIf mkEnableOption mkOption;
   inherit (lib.types) path port str number;
   cfg = config.services.palworld;
   join = builtins.concatStringsSep " ";
@@ -13,12 +13,12 @@ in
     user = mkOption {
       type = str;
       default = "palworld";
-      description = mdDoc "User account under which palworld runs";
+      description = "User account under which palworld runs";
     };
     group = mkOption {
       type = str;
       default = "palworld";
-      description = mdDoc "Group under which palworld runs";
+      description = "Group under which palworld runs";
     };
     dataDir = mkOption {
       type = path;

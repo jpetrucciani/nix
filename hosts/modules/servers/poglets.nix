@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }:
 let
-  inherit (lib) mkIf mkEnableOption mkOption literalExpression mdDoc;
+  inherit (lib) mkIf mkEnableOption mkOption literalExpression;
   inherit (lib.types) lines package path port str;
   cfg = config.services.poglets;
 in
@@ -12,49 +12,49 @@ in
     user = mkOption {
       type = str;
       default = "poglets";
-      description = mdDoc "User account under which poglets runs";
+      description = "User account under which poglets runs";
     };
     group = mkOption {
       type = str;
       default = "poglets";
-      description = mdDoc "Group under which poglets runs";
+      description = "Group under which poglets runs";
     };
     dataDir = mkOption {
       type = path;
       default = "/var/lib/poglets";
-      description = mdDoc ''the data directory for poglets'';
+      description = ''the data directory for poglets'';
     };
     secretFile = mkOption {
       type = path;
       default = "/etc/default/poglets";
-      description = mdDoc ''secret env variables for poglets'';
+      description = ''secret env variables for poglets'';
     };
     package = mkOption {
       default = pkgs.poglets;
       defaultText = literalExpression "pkgs.poglets";
       type = package;
-      description = mdDoc ''poglets package to use'';
+      description = ''poglets package to use'';
     };
 
     bindAddress = mkOption {
       type = str;
       default = "0.0.0.0";
-      description = mdDoc '''';
+      description = '''';
     };
     bindPort = mkOption {
       type = port;
       default = 8000;
-      description = mdDoc '''';
+      description = '''';
     };
     controlAddress = mkOption {
       type = str;
       default = "0.0.0.0";
-      description = mdDoc '''';
+      description = '''';
     };
     controlPort = mkOption {
       type = port;
       default = 8001;
-      description = mdDoc '''';
+      description = '''';
     };
 
     # extra
@@ -62,7 +62,7 @@ in
       type = lines;
       default = "";
       example = '' '';
-      description = lib.mdDoc ''
+      description = lib ''
         Additional lines of configuration appended to the automatically generated poglets config.
       '';
     };

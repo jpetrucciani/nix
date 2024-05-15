@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }:
 let
-  inherit (lib) mdDoc mkIf mkEnableOption mkOption;
+  inherit (lib) mkIf mkEnableOption mkOption;
   inherit (lib.types) path port str;
   cfg = config.services.valheim;
 in
@@ -12,12 +12,12 @@ in
     user = mkOption {
       type = str;
       default = "valheim";
-      description = mdDoc "User account under which valheim runs";
+      description = "User account under which valheim runs";
     };
     group = mkOption {
       type = str;
       default = "valheim";
-      description = mdDoc "Group under which valheim runs";
+      description = "Group under which valheim runs";
     };
     dataDir = mkOption {
       type = path;
