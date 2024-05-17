@@ -4,31 +4,31 @@ jobs:
   prettier:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4.1.5
+      - uses: actions/checkout@v4.1.6
       - uses: cachix/install-nix-action@V27
       - run: nix run .#nodePackages.prettier -- --config ./prettier.config.js --check .
   nixpkgs-fmt:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4.1.5
+      - uses: actions/checkout@v4.1.6
       - uses: cachix/install-nix-action@V27
       - run: nix run .#nixpkgs-fmt -- --check .
   statix:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4.1.5
+      - uses: actions/checkout@v4.1.6
       - uses: cachix/install-nix-action@V27
       - run: nix run .#statix -- check
   deadnix:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4.1.5
+      - uses: actions/checkout@v4.1.6
       - uses: cachix/install-nix-action@V27
       - run: nix run .#deadnix -- -f -_ -l .
   vale:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4.1.5
+      - uses: actions/checkout@v4.1.6
       - uses: cachix/install-nix-action@V27
       - run: nix profile install .#{vale,fd}
       - run: vale sync && vale $(fd --glob --hidden '*.md')
