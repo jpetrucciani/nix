@@ -66,6 +66,10 @@ This directory contains cli tools
 
 [sideko](https://github.com/Sideko-Inc/sideko) is a tool to generate SDKs and docs for APIs
 
+### [sig.nix](./sig.nix)
+
+[sig](https://github.com/ynqa/sig) is an Interactive grep (for streaming)
+
 ### [slack-notifier.nix](./slack-notifier.nix)
 
 [slack-notifier](https://github.com/cloudposse/slack-notifier) is a cli util to send slack messages
