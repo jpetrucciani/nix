@@ -58,7 +58,7 @@ clangStdenv.mkDerivation {
   };
 
   meta = with lib; {
-    description = "Port of OpenAI's Whisper model in C/C++";
+    description = "Stable Diffusion in pure C/C++";
     homepage = "https://github.com/leejet/stable-diffusion.cpp";
     mainProgram = "sd";
     license = licenses.mit;
