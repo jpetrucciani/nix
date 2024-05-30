@@ -47,7 +47,7 @@ clangStdenv.mkDerivation {
 
   CMAKE_ARGS = builtins.concatStringsSep " " _CMAKE_ARGS;
 
-  buildInputs = [ ] ++ osSpecific;
+  buildInputs = osSpecific;
   nativeBuildInputs = [ cmake ]
     ++ (optionals cuda [ cudatoolkit_joined ])
     ++ (optionals rocm (with rocmPackages; [ clr hipblas rocblas ]));
