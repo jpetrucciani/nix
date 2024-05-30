@@ -117,7 +117,6 @@ in
         pigz
         procps
         pssh
-        ranger
         re2c
         rlwrap
         ruff
