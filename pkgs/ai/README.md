@@ -26,6 +26,10 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 [`mods`](https://github.com/charmbracelet/mods) is a CLI tool to interact with AI APIs
 
+### [stable-diffusion-cpp.nix](./stable-diffusion-cpp.nix)
+
+[`stable-diffusion.cpp`](https://github.com/leejet/stable-diffusion.cpp) is a port of stable-diffusion model inference in C/C+
+
 ### [tenere.nix](./tenere.nix)
 
 [tenere](https://github.com/pythops/tenere) is a TUI interface for LLMs
