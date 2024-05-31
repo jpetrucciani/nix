@@ -166,6 +166,7 @@ in
         ${terra} cobi.dev
         ${terra} api.cobi.dev
         ${terra} auth.cobi.dev
+        ${terra} oc.cobi.dev
         ${terra} otf.cobi.dev
         ${terra} vault.cobi.dev
         ${terra} z.cobi.dev
