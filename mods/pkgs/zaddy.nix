@@ -19,6 +19,7 @@ rec {
         dnspod = { name = "github.com/caddy-dns/dnspod"; version = "v0.0.4"; };
         duckdns = { name = "github.com/caddy-dns/duckdns"; version = "v0.3.1"; };
         gandi = { name = "github.com/caddy-dns/gandi"; version = "v1.0.2"; };
+        googleclouddns = { name = "github.com/caddy-dns/googleclouddns"; version = "v1.0.4"; };
         hetzner = { name = "github.com/caddy-dns/hetzner"; version = "v0.0.1"; };
         route53 = { name = "github.com/caddy-dns/route53"; version = "v1.2.1"; };
         tencentcloud = { name = "github.com/caddy-dns/tencentcloud"; version = "v0.1.0"; };
@@ -93,8 +94,11 @@ rec {
       geolocation
       caddy-hax
       caddy-troll
+      # dns providers
+      googleclouddns
+      route53
     ];
-    vendorHash = "sha256-2a2YEGWY0JY2QfP5+q4y7BdD4T6oupk2fBLBzCKthLg=";
+    vendorHash = "sha256-Rw7E27KQ54KveY55zdnb8EI0Qxl/m9Wm6JwadjFCEME=";
   };
 
   # caddy with s3-browser plugin
@@ -104,6 +108,6 @@ rec {
       s3-proxy
       s3-browser
     ];
-    vendorHash = "sha256-t+R668Mao//D0XfjMSVcK6Z3Stv/Uu17ITt2ez5VbAQ=";
+    vendorHash = "sha256-QBSgUZCYV9pWTmEyJfwe+C/xHAf1xHkO3zn8JYQ7PkY=";
   };
 }
