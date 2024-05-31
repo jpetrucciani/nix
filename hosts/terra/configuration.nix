@@ -161,6 +161,14 @@ in
             respond @tailscale "${err403}" 403
           }
 
+          (GCPWILD) {
+            tls {
+              dns googleclouddns {
+                gcp_project {env.GCP_PROJECT}
+              }
+            }
+          }
+
           (GEOBLOCK) {
             @geoblock {
               not maxmind_geolocation {
@@ -204,7 +212,6 @@ in
           "auth.cobi.dev" = reverse_proxy neptune_traefik;
           # "auth.cobi.dev" = reverse_proxy "localhost:9091";
           "search.cobi.dev" = reverse_proxy neptune_traefik;
-          "recipe.cobi.dev" = reverse_proxy orbit_traefik;
           "netdata.cobi.dev" = ts_reverse_proxy "localhost:${toString common.ports.netdata}";
           "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
           "n8n.cobi.dev" = reverse_proxy "luna:${toString common.ports.n8n}";
@@ -213,6 +220,19 @@ in
           "x.hexa.dev" = reverse_proxy "neptune:8421";
           "meme.x.hexa.dev" = reverse_proxy "neptune:8420";
           "edge.be.hexa.dev" = reverse_proxy "edge:10000";
+          "oc.cobi.dev" = reverse_proxy "granite:9200";
+          "*.s3.cobi.dev" = secure_geo ''
+            import GCPWILD
+            reverse_proxy /* {
+              to granite:3900
+            }
+          '';
+          "*.web.cobi.dev" = secure_geo ''
+            import GCPWILD
+            reverse_proxy /* {
+              to granite:3902
+            }
+          '';
           "countdown.cobi.dev" = secure_geo ''
             rewrite * /countdown{uri}
             reverse_proxy /* {
