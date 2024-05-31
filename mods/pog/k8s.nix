@@ -6,6 +6,7 @@ in
 rec {
   ka = pog {
     name = "ka";
+    version = "0.0.1";
     description = "a shorthand to see all pods";
     flags = [
       _.flags.k8s.namespace
@@ -27,6 +28,7 @@ rec {
 
   kex = pog {
     name = "kex";
+    version = "0.0.1";
     description = "a quick and easy way to exec into a k8s pod!";
     flags = [
       _.flags.k8s.namespace
@@ -48,6 +50,7 @@ rec {
 
   krm = pog {
     name = "krm";
+    version = "0.0.1";
     description = "a quick and easy way to delete one or more pods on k8s!";
     flags = [
       _.flags.k8s.namespace
@@ -74,11 +77,17 @@ rec {
 
   kshell = pog {
     name = "kshell";
-    description = "a quick and easy way to pop a shell on k8s!";
+    version = "0.0.1";
+    description = "a quick and easy way to pop into an ephemeral shell on k8s!";
     flags = [
       _.flags.k8s.namespace
       _.flags.k8s.serviceaccount
       _.flags.docker.image
+      {
+        name = "podtimeout";
+        default = "1m";
+        description = "The length of time (like 5s, 2m, or 3h, higher than zero) to wait until at least one pod is running";
+      }
     ];
     script = ''
       debug "''${GREEN}running image '$image' on the '$namespace' namespace!''${RESET}"
@@ -93,6 +102,7 @@ rec {
         --namespace "$namespace" \
         --image-pull-policy=Always \
         --image="$image" \
+        --pod-running-timeout="$podtimeout" \
         "$pod_name" \
         -- \
         sh -c "${_.globals.hacks.bash_or_sh}"
@@ -101,6 +111,7 @@ rec {
 
   kroll = pog {
     name = "kroll";
+    version = "0.0.1";
     description = "a quick and easy way to roll a deployment's pods!";
     flags = [
       _.flags.k8s.namespace
@@ -122,6 +133,7 @@ rec {
 
   kdesc = pog {
     name = "kdesc";
+    version = "0.0.1";
     description = "a quick and easy way to describe k8s objects!";
     flags = [
       _.flags.k8s.namespace
@@ -140,6 +152,7 @@ rec {
 
   kedit = pog {
     name = "kedit";
+    version = "0.0.1";
     description = "a quick and easy way to edit k8s objects!";
     flags = [
       _.flags.k8s.namespace
@@ -158,6 +171,7 @@ rec {
 
   kdrain = pog {
     name = "kdrain";
+    version = "0.0.1";
     description = "a quick and easy way to drain one or more nodes on k8s!";
     flags = [
       _.flags.common.force
@@ -173,7 +187,9 @@ rec {
 
   klog = pog {
     name = "klog";
+    version = "0.0.1";
     description = "a quick and easy way to log one or more pods!";
+    arguments = [{ name = "FILTER"; }];
     flags = [
       _.flags.k8s.all_namespaces
       _.flags.k8s.namespace
@@ -200,6 +216,7 @@ rec {
 
   kdiff = pog {
     name = "kdiff";
+    version = "0.0.1";
     description = "view a pretty diff of the file against the live cluster";
     arguments = [{ name = "KUBESPEC"; }];
     flags = [
@@ -222,6 +239,7 @@ rec {
 
   ksecedit = pog {
     name = "ksecedit";
+    version = "0.0.1";
     description = "edit a k8s secret quickly and easily, inline!";
     flags = [
       _.flags.k8s.namespace
