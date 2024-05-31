@@ -130,10 +130,8 @@ in
         landing_page = { title ? "gemologic", start ? "#000", end ? "#6A3DE8" }:
           ''<html style='background-image: linear-gradient(to bottom right, ${start}, ${end});height:100%'><head><title>${title}</title></head></html>'';
         neptune_traefik = "neptune:8088";
-        orbit_traefik = "${ip.orbit}:8088";
         ip = {
           ba3 = "192.168.69.20";
-          orbit = "192.168.69.42";
           bedrock = "192.168.69.70";
         };
         secure = block: {
