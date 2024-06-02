@@ -53,7 +53,7 @@ in
       # settings: https://0xerr0r.github.io/blocky/configuration
       settings = {
         blocking = {
-          blackLists = {
+          denylists = {
             ads = [
               "http://sysctl.org/cameleon/hosts"
               "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
@@ -77,8 +77,11 @@ in
           downloadTimeout = "4m";
           refreshPeriod = "4h";
           startStrategy = "failOnError";
-          whiteLists = {
+          allowlists = {
             ads = [
+              ''
+                fc.yahoo.com
+              ''
             ];
           };
         };
