@@ -38,8 +38,8 @@ in
   nix = {
     extraOptions = ''
       extra-experimental-features = nix-command flakes
-      extra-substituters = https://medable.cachix.org https://jacobi.cachix.org
-      extra-trusted-public-keys = medable.cachix.org-1:FhcOls9dE6to37lWBsKaTImxFxNIxW4NoG1cr/UOLLo= jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=
+      extra-substituters = https://medable-nix.s3.us-west-1.amazonaws.com https://jacobi.cachix.org
+      extra-trusted-public-keys = medable-nix.s3.us-west-1.amazonaws.com:dtdREarYUM5iVkNgmcJyL1aYfzVL2Pgfq4a5godxCVk= jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=
       keep-outputs = true
       builders = ssh://jacobi@neptune x86_64-linux - 8 - big-parallel;
       builders-use-substitutes = true
