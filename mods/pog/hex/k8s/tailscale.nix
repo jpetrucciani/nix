@@ -151,7 +151,7 @@ let
           exit_node_flag = if exit_node then exitNode else null;
           _tags = removePrefix "," (joinTags all_tags);
           advertise_tags_flag = if builtins.length all_tags != 0 then "--advertise-tags=${_tags}" else null;
-          stateful_filtering = "--stateful-filtering=${if tailscale_stateful_filtering then "true" else "false"}";
+          stateful_filtering = "--stateful-filtering=${boolToString tailscale_stateful_filtering}";
           _extra_args = filter (x: x != null) ([
             advertise_tags_flag
             exit_node_flag

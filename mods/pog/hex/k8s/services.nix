@@ -2,6 +2,7 @@
 { hex, pkgs, ... }:
 let
   inherit (hex) attrIf ifNotNull ifNotEmptyList ifNotEmptyAttr toYAMLDoc;
+  inherit (hex) boolToString concatMapStrings concatStringsSep filter removePrefix;
   inherit (pkgs.lib.attrsets) mapAttrsToList;
 
   defaults = {
@@ -499,13 +500,27 @@ let
         , extraPodAnnotations ? { }
         , appArmor ? "unconfined"
         , tailscaleSidecar ? false
+        , tailscale_tags ? [ ]
+        , default_tailscale_tags ? [ "k8s" "proxy" ]
+        , all_tailscale_tags ? tailscale_tags ++ default_tailscale_tags
         , tailscale_image_base ? hex.k8s.tailscale.defaults.tailscale_image_base
         , tailscale_image_tag ? hex.k8s.tailscale.defaults.tailscale_image_tag
+        , tailscale_stateful_filtering ? false
+        , tailscale_extra_args ? [ ]
         , hostAliases ? [ ]
         , __init ? false
         }:
         let
+          joinTags = concatMapStrings (x: ",tag:${x}");
           depName = "${name}${depSuffix}";
+          _tags = removePrefix "," (joinTags all_tailscale_tags);
+          advertise_tags_flag = if builtins.length all_tailscale_tags != 0 then "--advertise-tags=${_tags}" else null;
+          stateful_filtering = "--stateful-filtering=${boolToString tailscale_stateful_filtering}";
+          _extra_args = filter (x: x != null) ([
+            advertise_tags_flag
+            stateful_filtering
+          ] ++ tailscale_extra_args);
+          ts_extra_args = concatStringsSep " " _extra_args;
         in
         {
           apiVersion = "apps/v1";
@@ -573,7 +588,7 @@ let
                   env = hex.envAttrToNVP {
                     TS_KUBE_SECRET = "${name}${tsSuffix}";
                     TS_USERSPACE = "false";
-                    TS_EXTRA_ARGS = "--advertise-tags=tag:k8s,tag:proxy";
+                    TS_EXTRA_ARGS = ts_extra_args;
                   };
                   securityContext.capabilities.add = [ "NET_ADMIN" ];
                 }] else [ ]);
