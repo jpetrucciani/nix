@@ -2,7 +2,7 @@
 pkgs:
 rec {
   inherit (pkgs.lib) isList isAttrs isInt isBool isFloat;
-  inherit (pkgs.lib) attrNames concatMap concatStringsSep substring replaceStrings stringLength;
+  inherit (pkgs.lib) attrNames concatMap concatStringsSep filter substring replaceStrings stringLength;
   inherit (pkgs.lib.strings) toJSON toLower;
   inherit (pkgs.lib.trivial) isFunction;
   annotations = {
@@ -55,7 +55,7 @@ rec {
       substring preLen (sLen - preLen) str
     else
       str;
-  envAttrToNVP = with pkgs.lib.attrsets; x: builtins.filter (x: x.name != "") (mapAttrsToList nameValuePair x);
+  envAttrToNVP = with pkgs.lib.attrsets; x: filter (x: x.name != "") (mapAttrsToList nameValuePair x);
   defaults = {
     env = rec {
       _field = var: field: {

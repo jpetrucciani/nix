@@ -1,7 +1,7 @@
 # This module contains useful shorthands for using [tailscale](https://tailscale.com/) within kubernetes
 { hex, ... }:
 let
-  inherit (hex) toYAMLDoc boolToString concatMapStrings removePrefix ifNotNull ifNotEmptyList;
+  inherit (hex) toYAMLDoc boolToString concatMapStrings concatStringsSep filter removePrefix ifNotNull ifNotEmptyList;
 
   imagePullPolicy = "Always";
   joinTags = concatMapStrings (x: ",tag:${x}");
@@ -18,7 +18,7 @@ let
         memory = "2Gi";
       };
       tailscale_image_base = "ghcr.io/tailscale/tailscale";
-      tailscale_image_tag = "v1.66.3";
+      tailscale_image_tag = "v1.66.4";
       cloudsql_image_base = "gcr.io/cloudsql-docker/gce-proxy";
       cloudsql_image_tag = "1.35.0";
 
@@ -111,6 +111,8 @@ let
         , tailscale_image ? "${tailscale_image_base}:${tailscale_image_tag}"
         , tailscale_image_base ? defaults.tailscale_image_base
         , tailscale_image_tag ? defaults.tailscale_image_tag
+        , tailscale_stateful_filtering ? false
+        , tailscale_extra_args ? [ ]
         , tags ? [ ]
         , default_tags ? defaults.tags
         , all_tags ? tags ++ default_tags
@@ -127,13 +129,15 @@ let
           ${toYAMLDoc (role {inherit name namespace;})}
           ${toYAMLDoc (role-binding {inherit name namespace;})}
           ${toYAMLDoc (network-policy {inherit name namespace cidr;})}
-          ${toYAMLDoc (deployment {inherit name namespace destination_ip tailscale_image all_tags cpu memory userspace exit_node subnet_router_cidr bind_local hostAliases;})}
+          ${toYAMLDoc (deployment {inherit name namespace destination_ip tailscale_image tailscale_stateful_filtering tailscale_extra_args all_tags cpu memory userspace exit_node subnet_router_cidr bind_local hostAliases;})}
         '';
       deployment =
         { name
         , namespace
         , destination_ip
         , tailscale_image
+        , tailscale_stateful_filtering
+        , tailscale_extra_args
         , all_tags
         , cpu
         , memory
@@ -144,9 +148,16 @@ let
         , hostAliases
         }:
         let
-          exit_node_flag = if exit_node then " ${exitNode}" else "";
+          exit_node_flag = if exit_node then exitNode else null;
           _tags = removePrefix "," (joinTags all_tags);
-          advertise_tags_flag = if builtins.length all_tags != 0 then "--advertise-tags=${_tags}" else "";
+          advertise_tags_flag = if builtins.length all_tags != 0 then "--advertise-tags=${_tags}" else null;
+          stateful_filtering = "--stateful-filtering=${if tailscale_stateful_filtering then "true" else "false"}";
+          _extra_args = filter (x: x != null) ([
+            advertise_tags_flag
+            exit_node_flag
+            stateful_filtering
+          ] ++ tailscale_extra_args);
+          ts_extra_args = concatStringsSep " " _extra_args;
         in
         {
           apiVersion = "apps/v1";
@@ -190,7 +201,7 @@ let
                     ] ++ (hex.envAttrToNVP {
                       TS_KUBE_SECRET = name;
                       TS_USERSPACE = boolToString userspace;
-                      TS_EXTRA_ARGS = "${advertise_tags_flag}${exit_node_flag}";
+                      TS_EXTRA_ARGS = ts_extra_args;
                       ${ifNotNull destination_ip "TS_DEST_IP"} = destination_ip;
                       ${ifNotNull subnet_router_cidr "TS_ROUTES"} = subnet_router_cidr;
                     });
