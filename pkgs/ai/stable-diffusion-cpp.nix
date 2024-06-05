@@ -27,7 +27,7 @@ let
       cudatoolkit.out
     ];
   };
-  version = "1d2af5c";
+  version = "master-e1384de";
   owner = "leejet";
   repo = "stable-diffusion.cpp";
   _CMAKE_ARGS = (optionals isM1 [ "-DSD_METAL=on" ])
@@ -40,8 +40,8 @@ clangStdenv.mkDerivation {
   name = repo;
   src = fetchFromGitHub {
     inherit owner repo;
-    rev = "refs/tags/master-${version}";
-    hash = "sha256-PhvmzcWnnKwq+RDURlIlOLCyLlExUoNsOG8xG0Ntduo=";
+    rev = "refs/tags/${version}";
+    hash = "sha256-GWl1CAIrAPF6rLmJG/cZbxrh3HGxg/qK6/OvyAShYtM=";
     fetchSubmodules = true;
   };
 
