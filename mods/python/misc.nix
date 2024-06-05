@@ -787,4 +787,41 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  mesop =
+    buildPythonPackage rec {
+      pname = "mesop";
+      version = "0.7.2";
+      format = "wheel";
+
+      src = fetchPypi {
+        inherit pname version;
+        format = "wheel";
+        python = "py3";
+        dist = "py3";
+        platform = "any";
+        hash = "sha256-yZnen4/zwE1KDe75/uWbkXMuUCilU+6cqk10OEsydlU=";
+      };
+
+      propagatedBuildInputs = with final; [
+        absl-py
+        flask
+        gunicorn
+        libcst
+        markdown
+        protobuf
+        pydantic
+        watchdog
+        werkzeug
+      ];
+
+      pythonImportsCheck = [ "mesop" ];
+
+      meta = {
+        description = "UI framework that allows you to rapidly build web apps like demos and internal apps";
+        homepage = "https://github.com/google/mesop";
+        license = licenses.asl20;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
 }
