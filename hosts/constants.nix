@@ -160,6 +160,10 @@ in
         ben = "192.168.69.20";
         bedrock = "192.168.69.70";
         granite = "192.168.69.72";
+        jupiter = "100.84.224.73";
+        neptune = "100.101.139.41";
+        edge = "100.69.215.126";
+        luna = "100.78.40.10";
       in
       ''
         ${terra} terra
@@ -177,6 +181,10 @@ in
         ${ben} ben
         ${bedrock} bedrock
         ${granite} granite
+        ${edge} edge
+        ${jupiter} jupiter
+        ${luna} luna
+        ${neptune} neptune
       '';
   };
 
