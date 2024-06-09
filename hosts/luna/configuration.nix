@@ -100,7 +100,10 @@ in
     };
     palworld = {
       enable = true;
-      worldSettings.ServerPassword = "$PALWORLD_SERVER_PASSWORD";
+      worldSettings = {
+        ExpRate = "1.5";
+        ServerPassword = "$PALWORLD_SERVER_PASSWORD";
+      };
     };
     modded-minecraft-servers = with common.minecraft; {
       eula = true;
