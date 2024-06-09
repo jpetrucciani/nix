@@ -40,6 +40,11 @@ in
       default = "/etc/default/palworld";
       description = "";
     };
+    serverBinary = mkOption {
+      type = str;
+      default = "PalServer-Linux-Shipping"; # used to be PalServer-Linux-Test
+      description = "the name of the binary to use";
+    };
     # world settings
     worldSettings = {
       Difficulty = mkOption {
@@ -389,7 +394,7 @@ in
             EnvironmentFile = cfg.secretFile;
             ExecStartPre = "${pkgs.bash}/bin/bash -c '${pre_command}'";
             ExecStart = join [
-              "${pkgs.steam-run}/bin/steam-run ${dir}/Pal/Binaries/Linux/PalServer-Linux-Test Pal"
+              "${pkgs.steam-run}/bin/steam-run ${dir}/Pal/Binaries/Linux/${cfg.serverBinary} Pal"
               "--port ${toString cfg.port}"
               "--players ${toString cfg.maxPlayers}"
               "--useperfthreads"
