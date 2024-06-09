@@ -26,6 +26,10 @@ This directory contains cli tools
 
 [borgo](https://github.com/borgo-lang/borgo) is a statically typed language that compiles to Go
 
+### [brows.nix](./brows.nix)
+
+[brows](https://github.com/rubysolo/brows) is a CLI tool to browse github releases
+
 ### [comcast.nix](./comcast.nix)
 
 [comcast](https://github.com/tylertreat/comcast) is a tool to help in simulating shitty network connections
