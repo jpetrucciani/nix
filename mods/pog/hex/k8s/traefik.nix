@@ -216,6 +216,7 @@ let
         , service ? name
         , serviceScheme ? if port == 443 then "https" else "http"
         , extraService ? { }
+        , extraServices ? [ ]
         , internal ? true
         , secretName ? ""
         , labels ? [ ]
@@ -246,9 +247,7 @@ let
             ${ifNotEmptyList labels "labels"} = labels;
           };
           spec = {
-            entryPoints = [
-              entrypoint
-            ];
+            entryPoints = [ entrypoint ];
             routes = [
               ({
                 ${ifNotEmptyList middlewares "middlewares"} = middlewares;
@@ -261,7 +260,7 @@ let
                     passHostHeader = true;
                     scheme = serviceScheme;
                   } // extraService)
-                ];
+                ] ++ extraServices;
               } // extraRule)
             ] ++ extraRoutes;
           } // tlsOptions // extraSpec;
