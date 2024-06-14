@@ -6,12 +6,12 @@ let
     defaults = {
       inherit name;
       namespace = name;
-      version = "1.20.0";
-      sha256 = "1cqxsjmrbaljxvkzbi6m4wx5zhmajw18prdn4yl2zhlh9bgvjpxy";
     };
     version = rec {
       _v = hex.k8s._.version chart;
-      latest = v1-20-0;
+      latest = v1-20-2;
+      v1-20-2 = _v "1.20.2" "13pzylgllcb83yanxnmz6kg1bdhy80zkxbdc98ckqz5k15wy7f6p"; # 2024-05-27
+      v1-20-1 = _v "1.20.1" "0yrba33qh6dyqgam31lx3jr4b7ah9gfcbc25b32ffivmp6fdwdgs"; # 2024-01-14
       v1-20-0 = _v defaults.version defaults.sha256;
     };
     chart_url = version: "https://github.com/fission/fission-charts/releases/download/${name}-all-${version}/${name}-all-${version}.tgz";
