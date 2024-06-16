@@ -166,7 +166,7 @@ in
 
         # lsps
         (with nodePackages; [
-          bash-language-server
+          # bash-language-server
           dockerfile-language-server-nodejs
           vscode-json-languageserver
           yaml-language-server
