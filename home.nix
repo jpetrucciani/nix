@@ -153,6 +153,7 @@ in
         )
         hms
         aws_pog_scripts
+        curl_pog_scripts
         docker_pog_scripts
         ffmpeg_pog_scripts
         gcp_pog_scripts

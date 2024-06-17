@@ -84,12 +84,12 @@ rec {
       { name = "owner"; description = "the owner of the repo"; }
       { name = "repo"; description = "the repo name"; }
       { name = "tag"; description = "the tag to create a release for"; }
-      {
-        name = "token";
-        short = "";
-        description = "the github token to use for bearer auth [also passable via env with 'GITHUB_ACTIONS_RELEASE_TOKEN']";
-        envVar = "GITHUB_ACTIONS_RELEASE_TOKEN";
-      }
+      # {
+      #   name = "token";
+      #   short = "";
+      #   description = "the github token to use for bearer auth [also passable via env with 'GITHUB_ACTIONS_RELEASE_TOKEN']";
+      #   envVar = "GITHUB_ACTIONS_RELEASE_TOKEN";
+      # }
     ];
     script = ''
       ${githubcurl}/bin/githubcurl "repos/$owner/$repo/releases" \
