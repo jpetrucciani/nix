@@ -824,4 +824,291 @@ rec {
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
+
+  shandy-sqlfmt = buildPythonPackage rec {
+    pname = "shandy-sqlfmt";
+    version = "0.21.3";
+    pyproject = true;
+
+    src = fetchPypi {
+      pname = "shandy_sqlfmt";
+      inherit version;
+      hash = "sha256-UAqIoTNYVDKuz3dhlkITubdWq/1vM/XVPgUtLh0FhNo=";
+    };
+
+    nativeBuildInputs = [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = with final; [
+      click
+      importlib-metadata
+      jinja2
+      platformdirs
+      tomli
+      tqdm
+    ];
+
+    passthru.optional-dependencies = with final; {
+      jinjafmt = [
+        black
+      ];
+      sqlfmt_primer = [
+        gitpython
+      ];
+    };
+
+    pythonImportsCheck = [ "sqlfmt" ];
+
+    meta = {
+      description = "Sqlfmt formats your dbt SQL files so you don't have to";
+      homepage = "https://pypi.org/project/shandy-sqlfmt/";
+      license = licenses.asl20;
+      mainProgram = "sqlfmt";
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  textual-fastdatatable = buildPythonPackage rec {
+    pname = "textual-fastdatatable";
+    version = "0.7.1";
+    pyproject = true;
+
+    src = fetchPypi {
+      pname = "textual_fastdatatable";
+      inherit version;
+      hash = "sha256-Atkp3ddV59I5NuqAkMVJCQgW6eymPMFKBqwqgqVWt2M=";
+    };
+
+    nativeBuildInputs = [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = with final; [
+      pyarrow
+      pytz
+      textual
+      tzdata
+    ];
+
+    pythonImportsCheck = [ "textual_fastdatatable" ];
+
+    meta = {
+      description = "A performance-focused reimplementation of Textual's DataTable widget, with a pluggable data storage backend";
+      homepage = "https://pypi.org/project/textual-fastdatatable/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  textual-textarea = buildPythonPackage rec {
+    pname = "textual-textarea";
+    version = "0.13.0";
+    pyproject = true;
+
+    src = fetchPypi {
+      pname = "textual_textarea";
+      inherit version;
+      hash = "sha256-xCzwGMZ0AHirZDwXok2DqKlBXPssntpqs7hDk6Qim9c=";
+    };
+
+    nativeBuildInputs = with final; [
+      poetry-core
+      pythonRelaxDepsHook
+    ];
+
+    pythonRelaxDeps = [
+      "textual"
+    ];
+
+    propagatedBuildInputs = with final; [
+      pyperclip
+      textual
+    ];
+
+    pythonImportsCheck = [ "textual_textarea" ];
+
+    meta = {
+      description = "A text area (multi-line input) with syntax highlighting for Textual";
+      homepage = "https://pypi.org/project/textual-textarea/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  harlequin-mysql = buildPythonPackage rec {
+    pname = "harlequin-mysql";
+    version = "0.2.0";
+    pyproject = true;
+
+    src = fetchPypi {
+      pname = "harlequin_mysql";
+      inherit version;
+      hash = "sha256-8YTtlcCXd6nb9BEM1axe4G/VsnX7HjABFQCARxPXIEs=";
+    };
+
+    nativeBuildInputs = with final; [
+      poetry-core
+      pythonRelaxDepsHook
+    ];
+
+    pythonRelaxDeps = [
+      "mysql-connector-python"
+    ];
+
+    propagatedBuildInputs = with final; [
+      harlequin
+      mysql-connector
+    ];
+
+    pythonImportsCheck = [ "harlequin_mysql" ];
+
+    meta = {
+      description = "A Harlequin adapter for MySQL";
+      homepage = "https://pypi.org/project/harlequin-mysql/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  harlequin-postgres = buildPythonPackage rec {
+    pname = "harlequin-postgres";
+    version = "0.2.2";
+    pyproject = true;
+
+    src = fetchPypi {
+      pname = "harlequin_postgres";
+      inherit version;
+      hash = "sha256-IF8ueqYjwaG9I1S4+h04sz4pYpIxgxaFhspGiPsay4E=";
+    };
+
+    nativeBuildInputs = [
+      poetry-core
+    ];
+
+    dontCheckRuntimeDeps = true;
+
+    propagatedBuildInputs = with final; [
+      harlequin
+      psycopg2
+    ];
+
+    pythonImportsCheck = [ "harlequin_postgres" ];
+
+    meta = {
+      description = "A Harlequin adapter for Postgres";
+      homepage = "https://pypi.org/project/harlequin-postgres/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  harlequin-odbc = buildPythonPackage rec {
+    pname = "harlequin-odbc";
+    version = "0.1.1";
+    pyproject = true;
+
+    src = fetchPypi {
+      pname = "harlequin_odbc";
+      inherit version;
+      hash = "sha256-vrK1eDbM2yG0+ksVHizW/BuUb0+RTrIz3l3rwsCJIM8=";
+    };
+
+    nativeBuildInputs = [
+      poetry-core
+    ];
+
+    propagatedBuildInputs = with final; [
+      harlequin
+      pyodbc
+    ];
+
+    pythonImportsCheck = [ "harlequin_odbc" ];
+
+    meta = {
+      description = "A Harlequin adapter for ODBC drivers";
+      homepage = "https://pypi.org/project/harlequin-odbc/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  harlequin = buildPythonPackage rec {
+    pname = "harlequin";
+    version = "1.21.0";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-wglcEjkGegLUIPaYAMPugH+qID1zjPf1Ht3rc7eE6FI=";
+    };
+
+    nativeBuildInputs = with final; [
+      poetry-core
+      pythonRelaxDepsHook
+    ];
+
+    pythonRelaxDeps = [
+      "textual"
+    ];
+    propagatedBuildInputs = with final; [
+      click
+      duckdb
+      importlib-metadata
+      numpy
+      platformdirs
+      questionary
+      rich-click
+      shandy-sqlfmt
+      textual
+      textual-fastdatatable
+      textual-textarea
+      tomli
+      tomlkit
+      # adapters we like?
+      boto3
+    ];
+
+    passthru.optional-dependencies = with final; {
+      adbc = [
+        harlequin-adbc
+      ];
+      bigquery = [
+        harlequin-bigquery
+      ];
+      cassandra = [
+        harlequin-cassandra
+      ];
+      databricks = [
+        harlequin-databricks
+      ];
+      mysql = [
+        harlequin-mysql
+      ];
+      nebulagraph = [
+        harlequin-nebulagraph
+      ];
+      odbc = [
+        harlequin-odbc
+      ];
+      postgres = [
+        harlequin-postgres
+      ];
+      s3 = [
+        boto3
+      ];
+      trino = [
+        harlequin-trino
+      ];
+    };
+
+    pythonImportsCheck = [ "harlequin" ];
+
+    meta = {
+      description = "The SQL IDE for Your Terminal";
+      homepage = "https://pypi.org/project/harlequin/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
