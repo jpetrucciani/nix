@@ -88,6 +88,8 @@ rec {
   };
   yq_magic = {
     delete_key = selectors: key: "${_.yq} e -i 'del(select(${selectors}) | ${key})'";
+    crds_filter = yq_filters.docs_ne ".kind" [ "CustomResourceDefinition" ];
+    remove_named = names: yq_filters.docs_ne ".metadata.name" names;
   };
 
   patchYAML =
