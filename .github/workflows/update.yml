@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v4.1.7
       - uses: cachix/install-nix-action@V27
       - run: nix flake update
-      - uses: peter-evans/create-pull-request@v6.0.5
+      - uses: peter-evans/create-pull-request@v6.1.0
         id: pr
         with:
           delete-branch: true
