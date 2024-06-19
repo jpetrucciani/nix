@@ -164,6 +164,10 @@ in
         neptune = "100.101.139.41";
         edge = "100.69.215.126";
         luna = "100.78.40.10";
+        milkyway = "100.83.252.130";
+        styx = "100.102.221.30";
+        phobos = "100.116.153.116";
+        mercury = "100.92.180.69";
       in
       ''
         ${terra} terra
@@ -185,6 +189,10 @@ in
         ${jupiter} jupiter
         ${luna} luna
         ${neptune} neptune
+        ${milkyway} milkyway
+        ${styx} styx
+        ${mercury} mercury
+        ${phobos} phobos
       '';
   };
 
