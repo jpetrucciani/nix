@@ -39,6 +39,7 @@
 (?i)headscale
 (?i)html
 (?i)infisical
+(?i)javascript
 (?i)json
 (?i)jupyter
 (?i)justfile
