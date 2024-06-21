@@ -1,6 +1,16 @@
 # This module provides miscellaneous `pog` implemented tools
 final: prev:
 with prev;
+let
+  treefmt_blocks = {
+    go = { formatter.go = { command = "${final.go}/bin/gofmt"; options = [ "-w" ]; includes = [ "*.go" ]; }; };
+    nix = { formatter.nix = { command = "${final.nixpkgs-fmt}/bin/nixpkgs-fmt"; includes = [ "*.nix" ]; }; };
+    python = { formatter.python = { command = "${final.black}/bin/black"; includes = [ "*.py" ]; }; };
+    shellcheck = { formatter.shellcheck = { command = "${final.shellcheck}/bin/shellcheck"; includes = [ "*.sh" ]; priority = 0; }; };
+    shfmt = { formatter.shfmt = { command = "shfmt"; options = [ "-s" "-w" ]; includes = [ "*.sh" ]; priority = 1; }; };
+  };
+  _merge = lib.foldl lib.recursiveUpdate { };
+in
 rec {
   batwhich = pog {
     name = "batwhich";
@@ -274,6 +284,27 @@ rec {
     '';
   };
 
+  _fomrat =
+    { name ? "fomrat"
+    , settings ? _merge (with treefmt_blocks; [ python go nix ])
+    }:
+    let
+      config_file = writeTextFile {
+        name = "treefmt.toml";
+        text = _std.serde.toTOML settings;
+      };
+    in
+    pog {
+      inherit name;
+      description = "a pog wrapper for treefmt";
+      script = ''
+        ${final.treefmt2}/bin/treefmt --config-file ${config_file} --on-unmatched debug --tree-root "$PWD" "$@"
+      '';
+    };
+
+  # named after my most consistent typo!
+  fomrat = _fomrat { };
+
   general_pog_scripts = [
     batwhich
     get_cert
@@ -282,6 +313,7 @@ rec {
     jwtdecode
     slack_meme
     fif
+    fomrat
     rot13
     sin
     srv

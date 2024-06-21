@@ -5,6 +5,7 @@ rec {
   inherit (pkgs.lib) attrNames concatMap concatStringsSep filter substring replaceStrings stringLength;
   inherit (pkgs.lib.strings) toJSON toLower;
   inherit (pkgs.lib.trivial) isFunction;
+  inherit (pkgs._std.serde) toTOML;
   annotations = {
     source = "hex";
   };

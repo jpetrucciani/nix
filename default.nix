@@ -8,6 +8,7 @@ import nixpkgs {
   inherit system;
   overlays = [
     (_: _: { nixpkgsRev = nixpkgs.rev; })
+    (_: _: { _std = _compat.inputs.nix-std.lib; })
     _compat.inputs.poetry2nix.overlays.default
     _compat.inputs.pnpm2nix.overlays.default
   ] ++ (import ./overlays.nix) ++ overlays;

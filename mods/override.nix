@@ -20,4 +20,6 @@ in
   py-spy = prev.py-spy.overrideAttrs (old: {
     doCheck = false;
   });
+
+  _std = (import ../flake-compat.nix).inputs.nix-std.lib;
 }

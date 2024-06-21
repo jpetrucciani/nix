@@ -54,6 +54,10 @@ This overlay provides the `hax` library, which contains useful functions and oth
 
 This overlay provides more packages and scripts for use in my setup. This is also used in my repo's modified comma, exposing the binaries and scripts in this overlay directly through comma.
 
+### [js.nix](./js.nix)
+
+this overlay injects various javascript helpers into scope
+
 ### [lang.nix](./lang.nix)
 
 This overlay provides new helpers for programming languages (like [vlang](https://vlang.io/) and [nim](https://nim-lang.org)). These helpers provide a default set of packages, and a way to build environments that link these packages into the build environment.
