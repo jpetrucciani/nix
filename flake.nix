@@ -23,9 +23,7 @@
       };
     };
     nix-darwin.flake = true;
-    nix2container = {
-      url = "github:nlewo/nix2container";
-    };
+    nix2container.url = "github:nlewo/nix2container";
     nixos-hardware.flake = true;
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
@@ -35,6 +33,7 @@
       url = "github:nix-community/NixOS-WSL";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    pnpm2nix.url = "github:nzbr/pnpm2nix-nzbr";
     poetry2nix = {
       url = "github:nix-community/poetry2nix";
       inputs.nixpkgs.follows = "nixpkgs";
