@@ -76,7 +76,7 @@ in
     k3s = {
       enable = true;
       role = "server";
-      extraFlags = "--disable traefik";
+      extraFlags = "--disable traefik --tls-san '100.101.139.41'";
     };
     poglets = {
       enable = true;
