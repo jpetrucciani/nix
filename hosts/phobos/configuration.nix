@@ -1,6 +1,7 @@
 { config, flake, machine-name, pkgs, ... }:
 let
   hostname = "phobos";
+  ts_ip = "100.116.153.116";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
 in
 {
@@ -63,7 +64,7 @@ in
     k3s = {
       enable = true;
       role = "server";
-      extraFlags = "--disable traefik";
+      extraFlags = "--disable traefik --tls-san '${ts_ip}'";
     };
     valheim = {
       enable = true;

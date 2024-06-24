@@ -1,6 +1,7 @@
 { config, flake, machine-name, pkgs, lib, ... }:
 let
   hostname = "edge";
+  ts_ip = "100.69.215.126";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
 in
 {
@@ -111,7 +112,7 @@ in
       {
         enable = true;
         role = "server";
-        extraFlags = "--disable traefik ${oidc_flags} --kubelet-arg=config=/etc/rancher/k3s/kubelet.config";
+        extraFlags = "--disable traefik --tls-san '${ts_ip}' ${oidc_flags} --kubelet-arg=config=/etc/rancher/k3s/kubelet.config";
       };
     caddy =
       let

@@ -1,6 +1,7 @@
 { config, flake, machine-name, pkgs, ... }:
 let
   hostname = "neptune";
+  ts_ip = "100.101.139.41";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
 in
 {
@@ -76,7 +77,7 @@ in
     k3s = {
       enable = true;
       role = "server";
-      extraFlags = "--disable traefik --tls-san '100.101.139.41'";
+      extraFlags = "--disable traefik --tls-san '${ts_ip}'";
     };
     poglets = {
       enable = true;
