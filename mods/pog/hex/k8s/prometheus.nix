@@ -67,7 +67,31 @@ in
     chart_url = prom_chart "kube-prometheus-stack";
     chart = hex.k8s._.chart { inherit defaults chart_url; };
   };
+  pushgateway = rec {
+    defaults = {
+      name = "prometheus-pushgateway";
+      namespace = "default";
+    };
+    version = rec {
+      _v = hex.k8s._.version chart;
+      v2-13-0 = _v "2.13.0" "0p8jc1xalkmsm3y666nrzm0srrlkf1zyr2cmqq448mf7f6zf68vr"; # 2024-06-05
+    };
+    chart_url = prom_chart "prometheus-pushgateway";
+    chart = hex.k8s._.chart { inherit defaults chart_url; };
+  };
   exporters = {
+    cloudwatch = rec {
+      defaults = {
+        name = "prometheus-cloudwatch-exporter";
+        namespace = "default";
+      };
+      version = rec {
+        _v = hex.k8s._.version chart;
+        v0-25-3 = _v "0.25.3" "0pxaj0ayp2yh9cs554r41y5zya4a9f7nx81xr6irki11kj6ys9na"; # 2023-12-16
+      };
+      chart_url = prom_chart "prometheus-cloudwatch-exporter";
+      chart = hex.k8s._.chart { inherit defaults chart_url; };
+    };
     elasticsearch = rec {
       defaults = {
         name = "prometheus-elasticsearch-exporter";

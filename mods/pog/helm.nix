@@ -209,11 +209,13 @@ rec {
     last = 80;
   };
 
+  chart_scan_prometheus-cloudwatch-exporter = prometheus_chart { name = "prometheus-cloudwatch-exporter"; last = 10; };
   chart_scan_prometheus-elasticsearch-exporter = prometheus_chart { name = "prometheus-elasticsearch-exporter"; };
   chart_scan_prometheus-mongodb-exporter = prometheus_chart { name = "prometheus-mongodb-exporter"; last = 10; };
   chart_scan_prometheus-mysql-exporter = prometheus_chart { name = "prometheus-mysql-exporter"; last = 10; };
-  chart_scan_prometheus-redis-exporter = prometheus_chart { name = "prometheus-redis-exporter"; last = 10; };
   chart_scan_prometheus-postgres-exporter = prometheus_chart { name = "prometheus-postgres-exporter"; };
+  chart_scan_prometheus-pushgateway = prometheus_chart { name = "prometheus-pushgateway"; last = 10; };
+  chart_scan_prometheus-redis-exporter = prometheus_chart { name = "prometheus-redis-exporter"; last = 10; };
 
   chart_scan_loki = grafana_chart { name = "loki"; prefix = "helm-"; };
   chart_scan_mimir = grafana_chart { name = "mimir-distributed"; filter_out = "weekly|rc"; };
@@ -279,10 +281,12 @@ rec {
     chart_scan_otf
     chart_scan_postgres-operator
     chart_scan_postgres-operator-ui
-    chart_scan_prometheus-postgres-exporter
+    chart_scan_prometheus-cloudwatch-exporter
     chart_scan_prometheus-elasticsearch-exporter
     chart_scan_prometheus-mongodb-exporter
     chart_scan_prometheus-mysql-exporter
+    chart_scan_prometheus-postgres-exporter
+    chart_scan_prometheus-pushgateway
     chart_scan_prometheus-redis-exporter
     chart_scan_redis-operator
     chart_scan_robusta
