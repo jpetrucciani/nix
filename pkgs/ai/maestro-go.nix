@@ -22,7 +22,6 @@ buildGoModule rec {
   meta = with lib; {
     description = "Turn natual language into commands. Your CLI tasks, now as easy as a conversation. Run it 100% offline, or use OpenAI's models";
     homepage = "https://github.com/pluja/maestro";
-    license = licenses.unfree; # FIXME: nix-init did not found a license
     maintainers = with maintainers; [ jpetrucciani ];
     mainProgram = "maestro";
   };
