@@ -101,7 +101,7 @@ in
     palworld = {
       enable = true;
       worldSettings = {
-        ExpRate = "1.5";
+        ExpRate = "3";
         ServerPassword = "$PALWORLD_SERVER_PASSWORD";
       };
     };
