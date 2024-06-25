@@ -1,10 +1,14 @@
-{ lib, config, ... }:
+{ pkgs, lib, config, ... }:
 let
   inherit (lib.lists) subtractLists;
   inherit (lib) mkEnableOption;
   inherit (config.conf) work;
 in
 {
+  nix.linux-builder = {
+    enable = true;
+    package = pkgs.darwin.linux-builder-x86_64;
+  };
   options.conf.work = {
     enable = mkEnableOption "work";
   };
