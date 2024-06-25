@@ -6,6 +6,10 @@ hexes related to k8s specs and charts!
 
 ## In this directory
 
+### [svc/](./svc/)
+
+individual service hexes
+
 ### [addons.nix](./addons.nix)
 
 various cluster addons [out of date]

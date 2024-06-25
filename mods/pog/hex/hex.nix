@@ -39,6 +39,7 @@ rec {
 
   _if = optionalString;
   attrIf = check: name: if check then name else null;
+  ifSet = cond: value: if (cond != null && cond != "") then value else null;
   ifNotNull = check: name: if check != null then name else null;
   ifNotEmptyList = check: name: if builtins.length check != 0 then name else null;
   ifNotEmptyAttr = check: name: if check != { } then name else null;
@@ -115,6 +116,7 @@ rec {
     tr = "${_cu}/tr";
     yq = "${pkgs.yq-go}/bin/yq";
     prettier = "${pkgs.nodePackages.prettier}/bin/prettier --write --config ${_files.prettier_config}";
+    yamlfmt = "${pkgs.yamlfmt}/bin/yamlfmt";
 
     _yaml_py = pkgs.python311.withPackages (p: with p; [ pyaml ]);
     yaml_sort = "${_yaml_py} ${_files.yaml_sort}";

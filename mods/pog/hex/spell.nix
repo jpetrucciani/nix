@@ -2,6 +2,9 @@
 nixpkgs: SPELL:
 let
   inherit (builtins) functionArgs isFunction intersectAttrs;
+  inherit (builtins) listToAttrs pathExists readDir;
+  inherit (pkgs.lib) hasSuffix mapAttrsToList optionalAttrs removeSuffix;
+  inherit (pkgs.lib.attrsets) filterAttrs;
   pkgs = import nixpkgs { };
   k8s = rec {
     addons = import ./k8s/addons.nix params;
@@ -38,6 +41,18 @@ let
     stackstorm = import ./k8s/stackstorm.nix params;
     tailscale = import ./k8s/tailscale.nix params;
     traefik = import ./k8s/traefik.nix params;
+    svc =
+      (
+        fn:
+        optionalAttrs (pathExists ./k8s/svc)
+          (listToAttrs (mapAttrsToList fn (filterAttrs (k: v: (v == "directory") || (hasSuffix ".nix" k)) (readDir ./k8s/svc))))
+      ) (
+        n: _:
+          let _fn = import ./k8s/svc/${n}; in {
+            name = removeSuffix ".nix" n;
+            value = _fn { inherit hex pkgs services; };
+          }
+      );
     _ = {
       version = chart_url_fn: v: s: args: chart_url_fn (args // { version = v; sha256 = s; });
       chart = { defaults, chart_url, extraSets ? [ ] }:
