@@ -5,14 +5,14 @@ let
   inherit (config.conf) work;
 in
 {
-  nix.linux-builder = {
-    enable = true;
-    package = pkgs.darwin.linux-builder-x86_64;
-  };
   options.conf.work = {
     enable = mkEnableOption "work";
   };
   config = {
+    nix.linux-builder = {
+      enable = true;
+      package = pkgs.darwin.linux-builder-x86_64;
+    };
     system = {
       activationScripts.postUserActivation.text = ''
         # Following line should allow us to avoid a logout/login cycle
