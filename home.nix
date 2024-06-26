@@ -373,6 +373,7 @@ in
       completion-query-items = -1;
       expand-tilde = false;
       bell-style = false;
+      revert-all-at-newline = true;
     };
     bindings = {
       "\\e[1;5D" = "backward-word";
@@ -381,6 +382,10 @@ in
       "\\e[5C" = "forward-word";
       "\\e\\e[D" = "backward-word";
       "\\e\\e[C" = "forward-word";
+      "\\C-k" = "kill-whole-line";
+      "\\C-p" = "history-search-backward";
+      "\\C-l" = "complete";
+      "\\C-f" = "complete-filename";
     };
   };
 
