@@ -74,6 +74,7 @@ in
     };
     version = rec {
       _v = hex.k8s._.version chart;
+      latest = v2-13-0;
       v2-13-0 = _v "2.13.0" "0p8jc1xalkmsm3y666nrzm0srrlkf1zyr2cmqq448mf7f6zf68vr"; # 2024-06-05
     };
     chart_url = prom_chart "prometheus-pushgateway";
@@ -87,6 +88,7 @@ in
       };
       version = rec {
         _v = hex.k8s._.version chart;
+        latest = v0-25-3;
         v0-25-3 = _v "0.25.3" "0pxaj0ayp2yh9cs554r41y5zya4a9f7nx81xr6irki11kj6ys9na"; # 2023-12-16
       };
       chart_url = prom_chart "prometheus-cloudwatch-exporter";
@@ -101,6 +103,7 @@ in
       };
       version = rec {
         _v = hex.k8s._.version chart;
+        latest = v5-4-0;
         v5-4-0 = _v "5.4.0" "0rbrq4k0rqvpxx4xhb7sf6m4jdz2giwv6kfmsizbk7fjw05yiilx"; # 2023-12-25
       };
       chart_url = prom_chart "prometheus-elasticsearch-exporter";
@@ -115,6 +118,7 @@ in
       };
       version = rec {
         _v = hex.k8s._.version chart;
+        latest = v3-5-0;
         v3-5-0 = _v "3.5.0" "08sg78nqld5h7ynfznf3zn185s9nxsj278xh5p1waw6hxk8993gk"; # 2023-12-14
       };
       chart_url = prom_chart "prometheus-mongodb-exporter";
@@ -129,6 +133,7 @@ in
       };
       version = rec {
         _v = hex.k8s._.version chart;
+        latest = v2-4-0;
         v2-4-0 = _v "2.4.0" "0ksm6hxwka2wiw7lzngs27xffm4i2sp9h0i2xqhbviwkd9pppwd4"; # 2024-01-10
       };
       chart_url = prom_chart "prometheus-mysql-exporter";
@@ -143,6 +148,7 @@ in
       };
       version = rec {
         _v = hex.k8s._.version chart;
+        latest = v5-3-0;
         v5-3-0 = _v "5.3.0" "0zimga6ya5f2cf736yc0svmd8bs7v7nhrahsm56xzj26r89cwrh9";
       };
       chart_url = prom_chart "prometheus-postgres-exporter";
@@ -157,6 +163,7 @@ in
       };
       version = rec {
         _v = hex.k8s._.version chart;
+        latest = v6-1-1;
         v6-1-1 = _v "6.1.1" "0im2gkiijz0ggsnw39my7j0w1f8m7msd5hkr2930i2p2cn5mmp8j"; # 2024-01-30
       };
       chart_url = prom_chart "prometheus-redis-exporter";
