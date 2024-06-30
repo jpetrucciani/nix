@@ -25,3 +25,7 @@ This directory contains specific servers
 ### [prometheus-folder-size-exporter.nix](./prometheus-folder-size-exporter.nix)
 
 [prometheus-folder-size-exporter](https://github.com/MindFlavor/prometheus_folder_size_exporter) is a prometheus exporter for directory sizes
+
+### [smoothmq.nix](./smoothmq.nix)
+
+[smoothmq](https://github.com/poundifdef/SmoothMQ) is A drop-in replacement for SQS designed for great developer experience and efficiency

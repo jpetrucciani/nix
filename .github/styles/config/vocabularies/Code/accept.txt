@@ -80,6 +80,7 @@
 (?i)sideko
 (?i)signoz
 (?i)slackbot
+(?i)smoothmq
 (?i)sql
 (?i)sqlite
 (?i)stackdriver
