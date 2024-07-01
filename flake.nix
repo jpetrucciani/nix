@@ -9,6 +9,10 @@
       url = "github:cachix/devenv/latest";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     flake-compat = {
       flake = false;
       url = "github:edolstra/flake-compat";
@@ -75,7 +79,16 @@
       packages = forAllSystems
         (system: import self.inputs.nixpkgs {
           inherit system;
-          overlays = [ (final: prev: { inherit machines; flake = self; nixpkgsRev = self.inputs.nixpkgs.rev; }) self.inputs.poetry2nix.overlays.default ] ++ import ./overlays.nix;
+          overlays = [
+            (final: prev: { inherit machines; flake = self; nixpkgsRev = self.inputs.nixpkgs.rev; })
+            self.inputs.poetry2nix.overlays.default
+            (_: prev: let pkgs = self.inputs.fenix.inputs.nixpkgs.legacyPackages.${prev.system}; in self.inputs.fenix.overlays.default pkgs pkgs)
+            (_: prev: {
+              nightlyRustPlatform = prev.makeRustPlatform {
+                inherit (self.inputs.fenix.packages.${system}.minimal) cargo rustc;
+              };
+            })
+          ] ++ import ./overlays.nix;
           config = {
             allowUnfree = true;
             permittedInsecurePackages = [
