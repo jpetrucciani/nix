@@ -166,10 +166,6 @@ in
   };
   hardware = {
     nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
-    opengl = {
-      enable = true;
-      driSupport = true;
-      driSupport32Bit = true;
-    };
+    graphics.enable = true;
   };
 }
