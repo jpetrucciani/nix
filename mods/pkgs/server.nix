@@ -1,14 +1,19 @@
 # This overlay provides some servers/services as nix derivations, such as specific versions of [haproxy](http://www.haproxy.org/).
 final: prev:
-with prev;
 rec {
-  haproxy-pin = { version, sha256 }: haproxy.overrideAttrs (attrs: rec {
-    inherit version;
-    src = fetchurl {
-      inherit sha256;
-      url = "https://www.haproxy.org/download/${lib.versions.majorMinor version}/src/${attrs.pname}-${version}.tar.gz";
-    };
-  });
+  haproxy-pin = { version, sha256 }:
+    let
+      oldDeps = [ final.systemd ];
+      pre3 = (builtins.compareVersions version "3.0.0") == -1;
+    in
+    prev.haproxy.overrideAttrs (old: rec {
+      inherit version;
+      src = prev.fetchurl {
+        inherit sha256;
+        url = "https://www.haproxy.org/download/${prev.lib.versions.majorMinor version}/src/${old.pname}-${version}.tar.gz";
+      };
+      buildInputs = old.buildInputs ++ (if pre3 then oldDeps else [ ]);
+    });
 
   haproxy-2-2-25 = haproxy-pin {
     version = "2.2.25";
