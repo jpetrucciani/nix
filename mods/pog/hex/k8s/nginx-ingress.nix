@@ -1,5 +1,5 @@
 # [nginx-ingress controller](https://github.com/kubernetes/ingress-nginx)
-_:
+{ hex, ... }:
 let
   inherit (builtins) fetchurl readFile;
   nginx = rec {
@@ -34,6 +34,31 @@ let
         inherit sha256;
         url = spec_url version;
       });
+    };
+    extras = {
+      dummy-ingress = { name ? "default-host-sinkhole-ingress", serviceName ? "dummy-resource", port ? 80, ingressClassName ? "nginx" }: hex.toYAMLDoc {
+        apiVersion = "networking.k8s.io/v1";
+        kind = "Ingress";
+        metadata = {
+          inherit name;
+          annotations = {
+            "nginx.ingress.kubernetes.io/configuration-snippet" = ''
+              return 444;
+            '';
+          };
+        };
+        spec = {
+          inherit ingressClassName;
+          defaultBackend = {
+            service = {
+              name = serviceName;
+              port = {
+                number = port;
+              };
+            };
+          };
+        };
+      };
     };
   };
 in

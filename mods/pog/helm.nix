@@ -259,6 +259,12 @@ rec {
     chart_url = "https://helm-chart.oneuptime.com/${name}-{1}.tgz";
   };
 
+  chart_scan_plane = _chart_scan rec {
+    name = "plane-ce";
+    base_url = "https://helm.plane.so";
+    chart_url = "https://github.com/makeplane/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
+  };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
@@ -279,6 +285,7 @@ rec {
     chart_scan_oncall
     chart_scan_oneuptime
     chart_scan_otf
+    chart_scan_plane
     chart_scan_postgres-operator
     chart_scan_postgres-operator-ui
     chart_scan_prometheus-cloudwatch-exporter
