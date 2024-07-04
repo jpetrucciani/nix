@@ -5,13 +5,13 @@ let
     defaults = {
       name = "argocd";
       namespace = "argocd";
-      version = "5.19.6";
-      sha256 = "1illqq069qzd7xf66zvyjkiy7xr1x0d1k9hy0w2svmv9q9ffiars";
     };
     version = rec {
       _v = hex.k8s._.version chart;
-      latest = v5-19-6;
-      v5-19-6 = _v defaults.version defaults.sha256;
+      latest = v7-3-4;
+      v7-3-4 = _v "7.3.4" "0xym2k7v8qwmkx7mp2rd1al4xlvanp1lrh5zwyrg852c6cl1wf1w"; # 2024-07-02
+      v6-11-1 = _v "6.11.1" "0hnvnzjfsp4fvnkh8w9axz1254xsr29wc40jrnjbv9i2hhaxy94g"; # 2024-05-23
+      v5-55-0 = _v "5.55.0" "0766cii918lp2b3v7xcraspv1p10snj4z1c4gf4i4pqnpnvpcpwj"; # 2024-02-07
       v5-18-1 = _v "5.18.1" "1dqa8vpsxql3kyfraysdpfignji12f3nzaazv0s6k1s0fwbc2d3m";
       v5-17-4 = _v "5.17.4" "0y4br59pspwqv6p9m9pkj6l1nakdzbnds5nxzqfh1r4bv55hxfdl";
       v5-16-15 = _v "5.16.15" "1pybbvjdi9nvcc1cisv7bdrlfclfbh7lffqjkfr55qlrqrvrpx6i";

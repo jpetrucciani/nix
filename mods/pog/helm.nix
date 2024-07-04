@@ -39,7 +39,8 @@ let
               sha256 = entry["sha256"]
               date = datetime.fromisoformat(entry["date"]).strftime("%Y-%m-%d")
               attr = version.replace(".", "-").strip()
-              return f'v{attr} = _v "{version}" "{sha256}"; # {date}'
+              prefix = "v" if attr[0] != "v" else ""
+              return f'{prefix}{attr} = _v "{version}" "{sha256}"; # {date}'
 
           print("\n".join(_format(x) for x in data))
         '';

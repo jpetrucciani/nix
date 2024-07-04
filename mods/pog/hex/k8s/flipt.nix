@@ -6,12 +6,11 @@ let
     defaults = {
       inherit name;
       namespace = name;
-      version = "0.57.0";
-      sha256 = "18mf3ggp8lzycj7fw27ar0k232vgk5m8z0cig2byi8frkq1c0l91";
     };
     version = rec {
       _v = hex.k8s._.version chart;
-      latest = v0-57-0;
+      latest = v0-64-0;
+      v0-64-0 = _v "0.64.0" "1dz9kd3fbcj2q8yywjr9yqpafln5m6i119kq7s64bdlv3qdh34ww"; # 2024-06-26
       v0-57-0 = _v "0.57.0" "18mf3ggp8lzycj7fw27ar0k232vgk5m8z0cig2byi8frkq1c0l91"; # 2024-04-05
       v0-56-0 = _v "0.56.0" "0l6m6ncwqlaqmwhr3dd4k1p3apq1lbgwxlwhyx3k1gpi92z5kpbb"; # 2024-04-02
       v0-55-2 = _v "0.55.2" "06shfrpk8m2x6pkssy2iq3qrj71dp88zzmma88b04hddvn56vh83"; # 2024-03-29

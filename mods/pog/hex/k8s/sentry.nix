@@ -5,12 +5,11 @@ let
     defaults = {
       name = "sentry";
       namespace = "sentry";
-      version = "21.6.0";
-      sha256 = "0cgzffbhjy4nrnbc5j0ar49x75lbczlag48crsil6aplmg1h1i0f";
     };
     version = rec {
       _v = hex.k8s._.version chart;
-      latest = v23-1-0;
+      latest = v23-11-0;
+      v23-11-0 = _v "23.11.0" "1hvdavc8g3iwx3p424f8z4dlvksf2zaq7afb2wdvr2sa297l0szn"; # 2024-06-24
       v23-1-0 = _v "23.1.0" "0kk1h74vd6zqf39fy1p16glql85p0d7b3xr6p502rk1rvy8wzfd5"; # 2024-05-23
       v22-5-1 = _v "22.5.1" "1hkr8d2n5znfx4ddazrpfx3jhasq4n7i1yk7d4593ryiadp9260b"; # 2024-05-23
       v21-6-3 = _v "21.6.3" "11hk7vs9v8hvr0y2kk2gl0c8pjmkvssl7s2499d7291gl3kvqmj7"; # 2024-05-23

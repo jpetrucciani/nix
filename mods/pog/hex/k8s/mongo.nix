@@ -6,12 +6,11 @@ let
     defaults = {
       inherit name;
       namespace = name;
-      version = "0.9.0";
-      sha256 = "17rrridvqsc9q3ck5smyds60vy5sbyln0bgnxs1i97z2l65czw9s";
     };
     version = rec {
       _v = hex.k8s._.version chart;
-      latest = v0-9-0;
+      latest = v0-10-0;
+      v0-10-0 = _v "0.10.0" "1zm6di9r6kg0prm6sahqrxj7r84qqiz25kaca1ysdsv53pqi3v1r"; # 2024-06-27
       v0-9-0 = _v defaults.version defaults.sha256;
     };
     chart_url = version: "https://github.com/mongodb/helm-charts/releases/download/${name}-${version}/${name}-${version}.tgz";
