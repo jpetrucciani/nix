@@ -3,7 +3,7 @@ final: prev:
 rec {
   haproxy-pin = { version, sha256 }:
     let
-      oldDeps = [ final.systemd ];
+      oldDeps = if prev.stdenv.isLinux then [ final.systemd ] else [ ];
       pre3 = (builtins.compareVersions version "3.0.0") == -1;
     in
     prev.haproxy.overrideAttrs (old: rec {
