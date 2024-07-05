@@ -1111,4 +1111,90 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+
+  pulp-glue = buildPythonPackage rec {
+    pname = "pulp-glue";
+    version = "0.26.0";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-yzc3GC36hKEuRiRaJAhqYxDzL4wK5KGSlCJ7yIH3NsQ=";
+    };
+
+    nativeBuildInputs = with final; [
+      setuptools
+      wheel
+      pythonRelaxDepsHook
+    ];
+
+    pythonRelaxDeps = [
+      "packaging"
+      "requests"
+    ];
+
+    propagatedBuildInputs = with final; [
+      importlib-resources
+      packaging
+      requests
+    ];
+
+    pythonImportsCheck = [ "pulp_glue" ];
+
+    meta = {
+      description = "Version agnostic glue library to talk to pulpcore's REST API";
+      homepage = "https://github.com/pulp/pulp-cli/";
+      license = licenses.gpl2Only;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  pulp-cli = buildPythonPackage
+    rec {
+      pname = "pulp-cli";
+      version = "0.26.0";
+      pyproject = true;
+
+      src = fetchPypi {
+        inherit pname version;
+        hash = "sha256-8204Dt2PtolWMImV8a5/X6nTD7LzdxKNle6thHXCBpA=";
+      };
+
+      nativeBuildInputs = with final; [
+        setuptools
+        wheel
+      ];
+
+      propagatedBuildInputs = with final; [
+        click
+        importlib-metadata
+        packaging
+        pulp-glue
+        pyyaml
+        schema
+        toml
+      ];
+
+      passthru.optional-dependencies = with final; {
+        password-manager = [
+          secretstorage
+        ];
+        pygments = [
+          pygments
+        ];
+        shell = [
+          click-shell
+        ];
+      };
+
+      pythonImportsCheck = [ "pulp_cli" ];
+
+      meta = {
+        description = "Command line interface to talk to pulpcore's REST API";
+        homepage = "https://github.com/pulp/pulp-cli";
+        license = licenses.gpl2Only;
+        maintainers = with maintainers; [ jpetrucciani ];
+      };
+    };
 }
