@@ -205,7 +205,7 @@ in
         '';
         virtualHosts = {
           "api.cobi.dev" = reverse_proxy "localhost:10000";
-          "z.cobi.dev" = reverse_proxy "localhost:8080";
+          "z.cobi.dev" = reverse_proxy "localhost:1616";
           "ntfy.cobi.dev" = reverse_proxy "localhost:2586";
           "otf.cobi.dev" = reverse_proxy "localhost:8010";
           "auth.cobi.dev" = reverse_proxy neptune_traefik;
