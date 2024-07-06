@@ -6,7 +6,7 @@
 
 buildGoModule {
   pname = "obligator";
-  version = "unstable-2024-03";
+  version = "0.2.0";
 
   src = fetchFromGitHub {
     owner = "anderspitman";
