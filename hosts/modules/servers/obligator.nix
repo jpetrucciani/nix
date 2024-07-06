@@ -63,7 +63,6 @@ in
         after = [ "network.target" ];
         wantedBy = [ "multi-user.target" ];
         serviceConfig = {
-          EnvironmentFile = cfg.secretFile;
           ExecStart = ''
             ${cfg.package}/bin/obligator ${extraArgs} \
               -behind-proxy true \
