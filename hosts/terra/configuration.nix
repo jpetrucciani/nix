@@ -9,6 +9,7 @@ in
     ./api.nix
     ./hardware-configuration.nix
     ../modules/servers/minifluxng.nix
+    ../modules/servers/obligator.nix
   ];
 
   inherit (common) zramSwap;
@@ -334,6 +335,10 @@ in
         ROCKET_ADDRESS = "0.0.0.0";
         ROCKET_PORT = 8222;
       };
+    };
+    obligator = {
+      enable = true;
+      geoDbPath = "/var/lib/geoip-databases/GeoLite2-City.mmdb";
     };
     ntfy-sh = {
       enable = true;
