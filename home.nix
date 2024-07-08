@@ -434,7 +434,6 @@ in
     extraConfig =
       let
         mac_meme = ''
-          IPQoS 0x00
           XAuthLocation /opt/X11/bin/xauth
         '';
       in
