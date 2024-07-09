@@ -77,16 +77,6 @@ rec {
     doCheck = false;
   });
 
-  dulwich = prev.dulwich.overridePythonAttrs (_: rec{
-    version = "0.21.7";
-    pname = "dulwich";
-    src = prev.fetchPypi {
-      inherit pname version;
-      hash = "sha256-qenGaDPOpYDDrBKSfkuXEZhddq/KmNqXFAXUFN5g6Wg=";
-    };
-    doCheck = false;
-  });
-
   python-binance = prev.python-binance.overridePythonAttrs (old: {
     postPatch = ''
       sed -i -E 's#raise.*#version = "${old.version}"#g' ./setup.py
