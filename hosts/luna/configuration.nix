@@ -79,16 +79,16 @@ in
   services = {
     inherit (common._services) blocky;
     pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
+      enable = false;
+      alsa.enable = false;
+      alsa.support32Bit = false;
+      pulse.enable = false;
     };
     xserver = {
-      enable = true;
-      displayManager.lightdm.enable = true;
-      desktopManager.xfce.enable = true;
-      videoDrivers = [ "amdgpu" ];
+      enable = false;
+      # displayManager.lightdm.enable = true;
+      # desktopManager.xfce.enable = true;
+      # videoDrivers = [ "amdgpu" ];
       xkb = {
         layout = "us";
         variant = "";
