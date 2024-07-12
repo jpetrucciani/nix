@@ -40,7 +40,7 @@ in
   environment = {
     etc."nixpkgs-path".source = common.pkgs.path;
     systemPackages = with pkgs; [
-      rocmPackages.rocm-smi
+      # rocmPackages.rocm-smi
     ];
     variables = {
       NIX_HOST = hostname;
