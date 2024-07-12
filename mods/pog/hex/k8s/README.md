@@ -130,6 +130,10 @@ This module contains the [signoz](https://github.com/SigNoz/signoz) helm chart
 
 K8s Helm module for running a [StackStorm](https://stackstorm.com) cluster in HA mode.
 
+### [storage.nix](./storage.nix)
+
+helpers for defining PVs and PVCs
+
 ### [tailscale.nix](./tailscale.nix)
 
 This module contains useful shorthands for using [tailscale](https://tailscale.com/) within kubernetes
