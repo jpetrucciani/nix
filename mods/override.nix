@@ -22,4 +22,6 @@ in
   });
 
   _std = (import ../flake-compat.nix).inputs.nix-std.lib;
+
+  sssd = prev.sssd.override { python3 = final.python311; };
 }
