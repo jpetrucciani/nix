@@ -70,6 +70,10 @@
 (?i)postgres
 (?i)pql
 (?i)prometheus
+(?i)pv
+(?i)pvs
+(?i)pvc
+(?i)pvcs
 (?i)pypipe
 (?i)readmes?
 (?i)realtime
