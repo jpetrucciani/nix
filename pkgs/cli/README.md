@@ -10,6 +10,10 @@ This directory contains cli tools
 
 [ahab](https://github.com/jpetrucciani/ahab) is a tool that allows you to tail one or more docker containers
 
+### [aws-secretsmanager-agent.nix](./aws-secretsmanager-agent.nix)
+
+[aws-secretsmanager-agent](https://github.com/aws/aws-secretsmanager-agent) is a local HTTP service that you can install and use in your compute environments to read secrets from Secrets Manager and cache them in memory
+
 ### [anakin.nix](./anakin.nix)
 
 [anakin](https://github.com/Timmmm/anakin/) is a tool to kill orphan processes
