@@ -31,6 +31,24 @@ rec {
     doCheck = false;
   });
 
+  # from https://github.com/NixOS/nixpkgs/pull/326321
+  python-ldap =
+    if (pythonAtLeast "3.12") then
+      prev.python-ldap.overridePythonAttrs
+        (_: {
+          disabled = false;
+          build-system = [
+            (final.setuptools.overrideAttrs {
+              postPatch = ''
+                substituteInPlace setuptools/_distutils/util.py \
+                  --replace-fail \
+                    "from distutils.util import byte_compile" \
+                    "from setuptools._distutils.util import byte_compile"
+              '';
+            })
+          ];
+        }) else prev.python-ldap;
+
   maxminddb =
     if isDarwin then prev.maxminddb.overrideAttrs (_: { doCheck = false; }) else prev.maxminddb;
 
