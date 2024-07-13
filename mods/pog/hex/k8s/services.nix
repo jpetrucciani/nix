@@ -499,7 +499,7 @@ let
         , affinity ? { }
         , extraContainer ? { }
         , extraPodAnnotations ? { }
-        , appArmor ? "unconfined"
+        , appArmor ? if pre1_30 then "unconfined" else "Unconfined"
         , tailscaleSidecar ? false
         , tailscale_tags ? [ ]
         , default_tailscale_tags ? [ "k8s" "proxy" ]
