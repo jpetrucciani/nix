@@ -132,6 +132,7 @@ let
       , ingressSuffix ? "-ingress${suffix}"
       , tsSuffix ? "-ts${suffix}"
       , pre1_18 ? false
+      , pre1_30 ? false
       , host ? null
       , extraContainer ? { }
       , extraServiceAnnotations ? { }
@@ -199,7 +200,7 @@ let
         dep = (components.deployment {
           inherit name namespace labels image replicas revisionHistoryLimit maxSurge maxUnavailable depSuffix saSuffix daemonSet lifecycle imagePullSecrets affinity;
           inherit cpuRequest memoryRequest ephemeralStorageRequest cpuLimit memoryLimit ephemeralStorageLimit command args volumes subdomain nodeSelector livenessProbe readinessProbe securityContext;
-          inherit env envAttrs envFrom extraContainer extraPodAnnotations appArmor tailscaleSidecar tailscale_image_base tailscale_image_tag tsSuffix hostAliases __init;
+          inherit env envAttrs envFrom extraContainer extraPodAnnotations appArmor tailscaleSidecar tailscale_image_base tailscale_image_tag tsSuffix hostAliases __init pre1_30;
         }) // extraDep;
         hpa = (components.hpa { inherit name namespace labels min max cpuUtilization hpaSuffix; }) // extraHPA;
         svc =
@@ -509,6 +510,7 @@ let
         , tailscale_extra_args ? [ ]
         , hostAliases ? [ ]
         , __init ? false
+        , pre1_30 ? false
         }:
         let
           joinTags = concatMapStrings (x: ",tag:${x}");
@@ -521,6 +523,8 @@ let
             stateful_filtering
           ] ++ tailscale_extra_args);
           ts_extra_args = concatStringsSep " " _extra_args;
+          sec_context = if pre1_30 then securityContext else (if securityContext != null then securityContext else { }) // { appArmorProfile.type = appArmor; };
+          oldAppArmor = appArmor != null && pre1_30;
         in
         {
           apiVersion = "apps/v1";
@@ -547,7 +551,7 @@ let
                 inherit namespace labels;
                 name = depName;
                 annotations = {
-                  ${ifNotNull appArmor "container.apparmor.security.beta.kubernetes.io/${name}"} = appArmor;
+                  ${if oldAppArmor then "container.apparmor.security.beta.kubernetes.io/${name}" else null} = appArmor;
                 } // hex.annotations // extraPodAnnotations;
               };
               spec = {
@@ -564,7 +568,7 @@ let
                     ${ifNotNull args "args"} = if __init then [ "-f" "/dev/null" ] else args;
                     ${ifNotNull livenessProbe "livenessProbe"} = livenessProbe;
                     ${ifNotNull readinessProbe "readinessProbe"} = readinessProbe;
-                    ${ifNotNull securityContext "securityContext"} = securityContext;
+                    ${ifNotNull sec_context "securityContext"} = sec_context;
                     ${ifNotNull lifecycle "lifecycle"} = lifecycle;
 
                     imagePullPolicy = "Always";
