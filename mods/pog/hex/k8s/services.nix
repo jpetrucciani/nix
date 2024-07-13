@@ -147,7 +147,7 @@ let
       , tailscale_image_base ? hex.k8s.tailscale.defaults.tailscale_image_base
       , tailscale_image_tag ? hex.k8s.tailscale.defaults.tailscale_image_tag
       , hostAliases ? [ ]
-      , appArmor ? "unconfined"
+      , appArmor ? if pre1_30 then "unconfined" else "Unconfined"
       , extraDep ? { }
       , extraSA ? { }
       , extraNP ? { }
