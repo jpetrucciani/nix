@@ -11,6 +11,7 @@ let
 in
 {
   inherit (zitadel_pr) zitadel;
+
   # fix for getting yank working on darwin
   yank = prev.yank.overrideAttrs (attrs: {
     makeFlags = if isDarwin then [ "YANKCMD=/usr/bin/pbcopy" ] else attrs.makeFlags;
@@ -24,4 +25,14 @@ in
   _std = (import ../flake-compat.nix).inputs.nix-std.lib;
 
   sssd = prev.sssd.override { python3 = final.python311; };
+
+  # lock down terraform 1.5.5 as the final open source version
+  terraform_1-5-5 = import
+    (builtins.fetchGit {
+      name = "terraform-1.5.5";
+      url = "https://github.com/NixOS/nixpkgs/";
+      ref = "refs/heads/nixpkgs-unstable";
+      rev = "976fa3369d722e76f37c77493d99829540d43845";
+    })
+    { inherit (final) system; };
 }
