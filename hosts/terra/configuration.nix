@@ -218,6 +218,7 @@ in
           "invoice.cobi.dev" = reverse_proxy "localhost:8010";
           "otf.cobi.dev" = reverse_proxy "localhost:8010";
           "auth.cobi.dev" = reverse_proxy neptune_traefik;
+          "audiobook.cobi.dev" = reverse_proxy "localhost:9888";
           # "auth.cobi.dev" = reverse_proxy "localhost:9091";
           "search.cobi.dev" = reverse_proxy neptune_traefik;
           "netdata.cobi.dev" = ts_reverse_proxy "localhost:${toString common.ports.netdata}";
@@ -385,6 +386,10 @@ in
           tls_type = "tls";
         };
       };
+    };
+    audiobookshelf = {
+      enable = true;
+      port = 9888;
     };
     k3s = {
       enable = true;
