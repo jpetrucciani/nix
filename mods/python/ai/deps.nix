@@ -538,14 +538,14 @@ rec {
 
   chroma-hnswlib = buildPythonPackage rec {
     pname = "chroma-hnswlib";
-    version = "0.7.5";
+    version = "0.7.6";
     pyproject = true;
 
     src = fetchFromGitHub {
       owner = "chroma-core";
       repo = "hnswlib";
       rev = version;
-      hash = "sha256-KU/t37MZMFeNWPme+rgCHchZH7B8timIV2EH40laXkA=";
+      hash = "sha256-pjz5SGg2drO6fkml9ojFG7/Gq3/Y7vPaOHc+3LKnjUw=";
     };
 
     nativeBuildInputs = [
