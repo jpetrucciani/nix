@@ -58,10 +58,6 @@ in
   i18n.defaultLocale = common.defaultLocale;
   i18n.extraLocaleSettings = common.extraLocaleSettings;
 
-  sound.enable = true;
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-
   users.users.jacobi = {
     isNormalUser = true;
     description = "jacobi";
