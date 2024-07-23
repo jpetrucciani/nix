@@ -43,9 +43,10 @@ rec {
     y2j = "${pkgs.remarshal}/bin/yaml2json";
 
     ## nix
-    _nix = pkgs.nixVersions.nix_2_21;
+    _nix = pkgs.nixVersions.nix_2_22;
     cachix = "${pkgs.cachix}/bin/cachix";
     nixpkgs-fmt = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
+    nixfmt = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
 
     ## common
     ls = "${core}/ls";

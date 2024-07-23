@@ -405,7 +405,7 @@ rec {
     arguments = [{ name = "attribute"; }];
     description = "my lazy helper function to update an attribute in my nix repo";
     script = ''
-      ${prev.nix-update}/bin/nix-update --build --commit --flake --format --use-update-script "$@"
+      ${prev.nix-update}/bin/nix-update --build --commit --flake --use-update-script "$@"
     '';
   };
 

@@ -102,15 +102,16 @@ in
         nanorc
         netcat-gnu
         nil
-        nixVersions.nix_2_21
         nix-info
         nix-output-monitor
         nix-prefetch-github
         nix-prefetch-scripts
         nix-tree
         nix-update
+        nixfmt-rfc-style
         nixpkgs-fmt
         nixpkgs-review
+        nixVersions.nix_2_22
         openssh
         p7zip
         patch
