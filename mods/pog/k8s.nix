@@ -260,6 +260,28 @@ rec {
     '';
   };
 
+  refresh_secret = pog {
+    name = "refresh_secret";
+    description = "a quick and easy way to refresh external secrets!";
+    flags = [
+      _.flags.k8s.namespace
+      {
+        name = "secret";
+        description = "the secret to refresh";
+        prompt = ''
+          ${_.k} --namespace "$namespace" get externalsecret.external-secrets.io |
+            ${_.fzfqm} --header-lines=1 |
+            ${_.awk} '{ print $1 }'
+        '';
+        promptError = "you must specify an external secret to refresh!";
+      }
+    ];
+    script = ''
+      echo "''${secret}" | ${_.xargs} -I {} --no-run-if-empty \
+        ${_.k} annotate --overwrite externalsecret.external-secrets.io {} refresh="$(${_.date} +%s)"
+    '';
+  };
+
   k8s_pog_scripts = [
     ka
     kdesc
@@ -272,5 +294,6 @@ rec {
     krm
     kroll
     kshell
+    refresh_secret
   ];
 }
