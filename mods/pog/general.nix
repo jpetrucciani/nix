@@ -59,6 +59,17 @@ rec {
     '';
   };
 
+  json_envvars = pog {
+    name = "json_envvars";
+    description = "convert json to a set of bash exports!";
+    script = ''
+      # shellcheck disable=SC1003
+      for s in $(cat - | ${_.jq} -r "to_entries|map(\"\(.key)='\(.value|tostring|split(\"'\")|join(\"\\\\'\"))'\")|.[]" ); do
+        echo "export $s"
+      done
+    '';
+  };
+
   jwtdecode = pog {
     name = "jwtdecode";
     description = "decode a jwt on the command line!";
@@ -310,6 +321,7 @@ rec {
     get_cert
     jql
     jqf
+    json_envvars
     jwtdecode
     slack_meme
     fif
