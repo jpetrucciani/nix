@@ -18,6 +18,10 @@ This directory contains tooling related to various cloud providers
 
 [gcsproxy](https://github.com/daichirata/gcsproxy/) is a reverse proxy for google cloud storage
 
+### [github_exporter.nix](./github_exporter.nix)
+
+[github_exporter](https://github.com/promhippie/github_exporter) is a prometheus exporter for github
+
 ### [gke-gcloud-auth-plugin.nix](./gke-gcloud-auth-plugin.nix)
 
 gke-gcloud-auth-plugin is a required plugin for using kubectl with Google's GKE on GCP
