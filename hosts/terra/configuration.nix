@@ -216,6 +216,7 @@ in
           # };
           "ntfy.cobi.dev" = reverse_proxy "localhost:2586";
           "invoice.cobi.dev" = reverse_proxy "localhost:8010";
+          "llm.cobi.dev" = ts_reverse_proxy "localhost:8010";
           "otf.cobi.dev" = reverse_proxy "localhost:8010";
           "auth.cobi.dev" = reverse_proxy neptune_traefik;
           "audiobook.cobi.dev" = reverse_proxy "localhost:9888";
