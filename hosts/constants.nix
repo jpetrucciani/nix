@@ -157,6 +157,7 @@ in
     proxmox =
       let
         terra = "192.168.69.10";
+        terra_ts = "100.88.176.6";
         ben = "192.168.69.20";
         bedrock = "192.168.69.70";
         granite = "192.168.69.72";
@@ -170,18 +171,21 @@ in
         mercury = "100.92.180.69";
       in
       ''
-        ${terra} terra
-        ${terra} cobi.dev
         ${terra} api.cobi.dev
         ${terra} auth.cobi.dev
+        ${terra} broadsword.tech
+        ${terra} cobi.dev
+        ${terra} hexa.dev
+        ${terra} invoice.cobi.dev
+        ${terra} nix.cobi.dev
+        ${terra} ntfy.cobi.dev
         ${terra} oc.cobi.dev
         ${terra} otf.cobi.dev
+        ${terra} terra
         ${terra} vault.cobi.dev
-        ${terra} z.cobi.dev
-        ${terra} nix.cobi.dev
-        ${terra} broadsword.tech
-        ${terra} hexa.dev
         ${terra} x.hexa.dev
+        ${terra} z.cobi.dev
+        ${terra_ts} llm.cobi.dev
         ${ben} ben
         ${bedrock} bedrock
         ${granite} granite
