@@ -12,7 +12,7 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 ### [cli/](./cli/)
 
-This directory contains cli tools
+This directory contains various cli tools
 
 ### [cloud/](./cloud/)
 
@@ -29,6 +29,10 @@ This directory contains derivations that are just libraries for other derivation
 ### [misc/](./misc/)
 
 This is a catch-all directory, for anything that doesn't fit nicely into other directories
+
+### [prometheus/](./prometheus/)
+
+This directory contains prometheus exporters
 
 ### [server/](./server/)
 
