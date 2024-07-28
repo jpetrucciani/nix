@@ -57,11 +57,17 @@ in
     wslConf.automount.root = "/mnt";
     nativeSystemd = true;
 
+    wslConf.network.generateHosts = false;
     # Enable native Docker support
     # docker-native.enable = true;
   };
 
-  networking.hostName = hostname;
+  networking = {
+    extraHosts = ''
+      100.88.176.6 llm.cobi.dev
+    '';
+    hostName = hostname;
+  };
   nix = common.nix-cuda // {
     nixPath = [
       "nixpkgs=/etc/nixpkgs-path"
