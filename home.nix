@@ -233,7 +233,7 @@ in
   programs.lsd.enable = true;
 
   programs.yt-dlp = {
-    enable = true;
+    enable = isLinux;
     extraConfig = ''
       --embed-thumbnail
       --embed-metadata
