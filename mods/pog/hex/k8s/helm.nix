@@ -47,17 +47,10 @@ let
       , kubeVersion ? "1.27"
       }:
       let
-        chartFiles =
-          if useOCI then
-            fetchOCIChart
-              {
-                inherit sha256 url;
-              } else
-            fetchTarball {
-              inherit sha256 url;
-            };
-        startsWith = prefix: str: builtins.substring 0 (builtins.stringLength prefix) str == prefix;
-        useOCI = startsWith "oci://" url;
+        chartFiles = (if useOCI then fetchOCIChart else fetchTarball) {
+          inherit sha256 url;
+        };
+        useOCI = pkgs.lib.hasPrefix "oci://" url;
       in
       rec {
         hookParams = {

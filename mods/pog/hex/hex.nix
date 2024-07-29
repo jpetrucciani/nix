@@ -96,19 +96,15 @@ rec {
 
   fetchOCIChart = { url, sha256 }:
     pkgs.stdenv.mkDerivation {
-      name = "oci-artifact";
-      buildInputs = [ pkgs.skopeo ];
+      name = "oci-chart";
+      buildInputs = with pkgs; [ jq skopeo ];
       phases = [ "buildPhase" ];
       buildPhase = ''
         tmpDir=$(mktemp -d)
         skopeo --insecure-policy copy --format oci docker://${pkgs.lib.removePrefix "oci://" url} dir:$tmpDir
-        largest_blob=$(find $tmpDir -type f -printf '%s %p\n' | sort -rn | head -1 | cut -d' ' -f2)
+        largest_blob=$(jq '.layers[] | select (.mediaType == "application/vnd.cncf.helm.chart.content.v1.tar+gzip") | .digest' -r $tmpDir/manifest.json | cut -d: -f2)
         mkdir -p $out
-        if file $largest_blob | grep -q gzip; then
-          tar -xzvf $largest_blob --strip-components=1 -C $out
-        else
-          cp $largest_blob $out/
-        fi
+        tar -xzvf $tmpDir/$largest_blob --strip-components=1 -C $out
       '';
       outputHashAlgo = "sha256";
       outputHashMode = "recursive";
