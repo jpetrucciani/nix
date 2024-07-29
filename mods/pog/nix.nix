@@ -4,11 +4,12 @@ let
   inherit (final) _ pog lib;
 in
 rec {
-  nixup = let version = "0.0.6"; in pog {
+  nixup = let version = "0.0.7"; in pog {
     inherit version;
     name = "nixup";
     description = "a quick tool to create/update a base default.nix environment!";
     flags = [
+      { name = "srcpath"; description = "the fs path to import pkgs from if passed. if not passed in, will pin to the latest version of jpetrucciani/nix"; }
       { name = "update"; bool = true; description = "update the pin to jpetrucciani in the given file (argument 1) [default: ./default.nix]"; }
       _.flags.nix.with_crystal
       _.flags.nix.with_db_pg
@@ -81,8 +82,8 @@ rec {
         fi
         poetry=""
         if [ "$with_poetry" = "1" ]; then
-          py="python = [ruff${"\n"}black poetry];"
-          poetry="python = (pkgs.poetry2nix.mkPoetryEnv { ${"\n"}projectDir = ./.; python = pkgs.python312; overrides = pkgs.poetry2nix.overrides.withDefaults (final: prev: { }); preferWheels = true; }).overrideAttrs (old: { buildInputs = with pkgs; [ libcxx ]; });${"\n"}"
+          py="python = [ruff${"\n"}(poetry.override (_: { python3 = python312; }))];"
+          poetry="python = pkgs.poetry-helpers.mkEnv {${"\n"}projectDir = ./.; python = pkgs.python312; extraOverrides = [(final: prev: { })];};${"\n"}"
           _env="python.env.overrideAttrs (_: {${"\n"} buildInputs = paths; });"
         fi
         ruby=""
@@ -110,6 +111,9 @@ rec {
           ${_.sed} -i -E 's#(fetchTarball \{) (name)#\1\n\2#' "$default_nix"
           ${_.nixpkgs-fmt} "$default_nix" 2>/dev/null
           exit 0
+        fi
+        if ${h.var.notEmpty "srcpath"}; then
+          ftb="$srcpath"
         fi
         ${prev.coreutils}/bin/cat -s <<EOF | ${_.sed} -E 's#(fetchTarball \{) (name)#\1\n\2#' | ${_.nixpkgs-fmt}
           { pkgs ? import
