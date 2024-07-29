@@ -153,7 +153,7 @@ let
                             username = basicAuthUser;
                           };
                           external_labels = {
-                            cluster = "meme";
+                            inherit cluster;
                             job = "integrations/kubernetes/eventhandler";
                           };
                           url = "${scheme}://${lokiHost}${lokiPath}";
