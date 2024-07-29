@@ -1,6 +1,7 @@
 # This module contains helm charts under the [grafana](https://grafana.com/) observability umbrella. This includes things like [loki](https://github.com/grafana/loki), [mimir](https://github.com/grafana/mimir), and [oncall](https://github.com/grafana/oncall).
 { hex, ... }:
 let
+  inherit (hex) toYAML toYAMLDoc;
   _chart_url = { name, version, prefix ? "" }: "https://github.com/grafana/helm-charts/releases/download/${prefix}${name}-${version}/${name}-${version}.tgz";
   _chart = { defaults, prefix ? "" }:
     { name ? defaults.name
@@ -41,6 +42,489 @@ let
       v5-43-7 = _v "5.43.7" "1n8mbv198kjx4drbvv6alh3l2vr86spvv3zik99ppajfpi8pv0rv"; # 2024-03-14
       v5-42-3 = _v "5.42.3" "0qkbivgpwbx7ffwh7szs725qhvla2bh1h66ja5zdnyry5wagcz8k"; # 2024-02-14
     };
+    # this agent is useful for pushing k8s logs into loki
+    agent =
+      { cluster
+      , lokiHost
+      , name ? "grafana-agent"
+      , namespace ? "default"
+      , extraConfig ? { }  # extra prometheus config for agent.yaml, as an attrset
+      , image ? "${image_base}:${image_tag}"
+      , image_base ? "grafana/agent"
+      , image_tag ? "v0.42.0"
+      , scheme ? "http"
+      , lokiPath ? "/loki/api/v1/push"
+      , basicAuth ? false
+      , basicAuthUser ? ""
+      , basicAuthPassword ? ""
+      }:
+      let
+        sa = {
+          apiVersion = "v1";
+          kind = "ServiceAccount";
+          metadata = {
+            inherit name namespace;
+          };
+        };
+        cluster_role = {
+          apiVersion = "rbac.authorization.k8s.io/v1";
+          kind = "ClusterRole";
+          metadata = {
+            inherit name;
+          };
+          rules = [
+            {
+              apiGroups = [ "" ];
+              resources = [
+                "nodes"
+                "nodes/proxy"
+                "services"
+                "endpoints"
+                "pods"
+                "events"
+              ];
+              verbs = [
+                "get"
+                "list"
+                "watch"
+              ];
+            }
+            {
+              nonResourceURLs = [ "/metrics" ];
+              verbs = [ "get" ];
+            }
+          ];
+        };
+        cluster_role_binding = {
+          apiVersion = "rbac.authorization.k8s.io/v1";
+          kind = "ClusterRoleBinding";
+          metadata = { inherit name; };
+          roleRef = {
+            apiGroup = "rbac.authorization.k8s.io";
+            kind = "ClusterRole";
+            inherit name;
+          };
+          subjects = [
+            {
+              inherit name namespace;
+              kind = "ServiceAccount";
+            }
+          ];
+        };
+        service = {
+          apiVersion = "v1";
+          kind = "Service";
+          metadata = {
+            labels = { inherit name; };
+            inherit name namespace;
+          };
+          spec = {
+            clusterIP = "None";
+            ports = [
+              {
+                name = "grafana-agent-http-metrics";
+                port = 80;
+                targetPort = 80;
+              }
+            ];
+            selector = {
+              inherit name;
+            };
+          };
+        };
+        config = {
+          apiVersion = "v1";
+          data = {
+            "agent.yaml" = toYAMLDoc
+              ({
+                integrations = {
+                  eventhandler = {
+                    cache_path = "/var/lib/agent/eventhandler.cache";
+                    logs_instance = "integrations";
+                  };
+                };
+                logs = {
+                  configs = [
+                    {
+                      clients = [
+                        {
+                          ${if basicAuth then "basic_auth" else null} = {
+                            password = basicAuthPassword;
+                            username = basicAuthUser;
+                          };
+                          external_labels = {
+                            cluster = "meme";
+                            job = "integrations/kubernetes/eventhandler";
+                          };
+                          url = "${scheme}://${lokiHost}${lokiPath}";
+                        }
+                      ];
+                      name = "integrations";
+                      positions = {
+                        filename = "/tmp/positions.yaml";
+                      };
+                      target_config = {
+                        sync_period = "10s";
+                      };
+                    }
+                  ];
+                };
+              } // extraConfig);
+          };
+          kind = "ConfigMap";
+          metadata = {
+            inherit name namespace;
+          };
+        };
+        statefulset = {
+          apiVersion = "apps/v1";
+          kind = "StatefulSet";
+          metadata = {
+            inherit name namespace;
+          };
+          spec = {
+            replicas = 1;
+            selector = {
+              matchLabels = {
+                inherit name;
+              };
+            };
+            serviceName = name;
+            template = {
+              metadata = {
+                labels = { inherit name; };
+              };
+              spec = {
+                containers = [
+                  {
+                    inherit image;
+                    args = [
+                      "-config.expand-env=true"
+                      "-config.file=/etc/agent/agent.yaml"
+                      "-enable-features=integrations-next"
+                      "-server.http.address=0.0.0.0:80"
+                    ];
+                    env = [
+                      {
+                        name = "HOSTNAME";
+                        valueFrom = {
+                          fieldRef = {
+                            fieldPath = "spec.nodeName";
+                          };
+                        };
+                      }
+                    ];
+                    imagePullPolicy = "IfNotPresent";
+                    inherit name;
+                    ports = [
+                      {
+                        containerPort = 80;
+                        name = "http-metrics";
+                      }
+                    ];
+                    volumeMounts = [
+                      {
+                        mountPath = "/var/lib/agent";
+                        name = "agent-wal";
+                      }
+                      {
+                        mountPath = "/etc/agent";
+                        inherit name;
+                      }
+                    ];
+                  }
+                ];
+                serviceAccountName = "grafana-agent";
+                volumes = [
+                  {
+                    configMap = {
+                      inherit name;
+                    };
+                    inherit name;
+                  }
+                ];
+              };
+            };
+            updateStrategy = {
+              type = "RollingUpdate";
+            };
+            volumeClaimTemplates = [
+              {
+                apiVersion = "v1";
+                kind = "PersistentVolumeClaim";
+                metadata = {
+                  name = "agent-wal";
+                  inherit namespace;
+                };
+                spec = {
+                  accessModes = [
+                    "ReadWriteOnce"
+                  ];
+                  resources = {
+                    requests = {
+                      storage = "5Gi";
+                    };
+                  };
+                };
+              }
+            ];
+          };
+        };
+      in
+      assert basicAuth -> basicAuthUser != "";
+      assert basicAuth -> basicAuthPassword != "";
+      ''
+        ${toYAMLDoc config}
+        ${toYAMLDoc sa}
+        ${toYAMLDoc cluster_role}
+        ${toYAMLDoc cluster_role_binding}
+        ${toYAMLDoc service}
+        ${toYAMLDoc statefulset}
+      '';
+
+    # promtail will tail all the stderr and stdout of logs in the cluster to the specified loki endpoint
+    promtail =
+      { cluster
+      , lokiHost
+      , name ? "promtail"
+      , namespace ? "default"
+      , extraConfig ? { } # extra config for promtail.yml, as an attrset
+      , scheme ? "http"
+      , lokiPath ? "/loki/api/v1/push"
+      , basicAuth ? false
+      , basicAuthUser ? ""
+      , basicAuthPassword ? ""
+      }:
+      let
+        labels = { inherit name; };
+        sa = {
+          apiVersion = "v1";
+          kind = "ServiceAccount";
+          metadata = {
+            inherit name namespace;
+          };
+        };
+        clusterrolebinding = {
+          apiVersion = "rbac.authorization.k8s.io/v1";
+          kind = "ClusterRoleBinding";
+          metadata = { inherit name; };
+          roleRef = {
+            apiGroup = "rbac.authorization.k8s.io";
+            kind = "ClusterRole";
+            inherit name;
+          };
+          subjects = [
+            {
+              kind = "ServiceAccount";
+              inherit name namespace;
+            }
+          ];
+        };
+        clusterrole = {
+          apiVersion = "rbac.authorization.k8s.io/v1";
+          kind = "ClusterRole";
+          metadata = { inherit name; };
+          rules = [
+            {
+              apiGroups = [ "" ];
+              resources = [
+                "nodes"
+                "services"
+                "pods"
+              ];
+              verbs = [
+                "get"
+                "watch"
+                "list"
+              ];
+            }
+          ];
+        };
+        configmap = {
+          apiVersion = "v1";
+          data = {
+            "promtail.yaml" = toYAML ({
+              clients = [
+                {
+                  ${if basicAuth then "basic_auth" else null} = {
+                    password = basicAuthPassword;
+                    username = basicAuthUser;
+                  };
+                  url = "${scheme}://${lokiHost}${lokiPath}";
+                }
+              ];
+              positions = {
+                filename = "/tmp/positions.yaml";
+              };
+              scrape_configs = [
+                {
+                  job_name = "pod-logs";
+                  kubernetes_sd_configs = [
+                    {
+                      role = "pod";
+                    }
+                  ];
+                  pipeline_stages = [
+                    {
+                      docker = { };
+                    }
+                    {
+                      static_labels = {
+                        inherit cluster;
+                      };
+                    }
+                  ];
+                  relabel_configs = [
+                    {
+                      source_labels = [
+                        "__meta_kubernetes_pod_node_name"
+                      ];
+                      target_label = "__host__";
+                    }
+                    {
+                      action = "labelmap";
+                      regex = "__meta_kubernetes_pod_label_(.+)";
+                    }
+                    {
+                      action = "replace";
+                      replacement = "$1";
+                      separator = "/";
+                      source_labels = [
+                        "__meta_kubernetes_namespace"
+                        "__meta_kubernetes_pod_name"
+                      ];
+                      target_label = "job";
+                    }
+                    {
+                      action = "replace";
+                      source_labels = [
+                        "__meta_kubernetes_namespace"
+                      ];
+                      target_label = "namespace";
+                    }
+                    {
+                      action = "replace";
+                      source_labels = [
+                        "__meta_kubernetes_pod_name"
+                      ];
+                      target_label = "pod";
+                    }
+                    {
+                      action = "replace";
+                      source_labels = [
+                        "__meta_kubernetes_pod_container_name"
+                      ];
+                      target_label = "container";
+                    }
+                    {
+                      replacement = "/var/log/pods/*$1/*.log";
+                      separator = "/";
+                      source_labels = [
+                        "__meta_kubernetes_pod_uid"
+                        "__meta_kubernetes_pod_container_name"
+                      ];
+                      target_label = "__path__";
+                    }
+                  ];
+                }
+              ];
+              server = {
+                grpc_listen_port = 0;
+                http_listen_port = 9080;
+              };
+              target_config = {
+                sync_period = "10s";
+              };
+            } // extraConfig);
+          };
+          kind = "ConfigMap";
+          metadata = {
+            inherit namespace;
+            name = "promtail-config";
+          };
+        };
+        daemonset = {
+          apiVersion = "apps/v1";
+          kind = "DaemonSet";
+          metadata = { inherit name namespace; };
+          spec = {
+            selector = {
+              matchLabels = labels;
+            };
+            template = {
+              metadata = {
+                inherit labels;
+              };
+              spec = {
+                containers = [
+                  {
+                    args = [
+                      "-config.file=/etc/promtail/promtail.yaml"
+                    ];
+                    env = [
+                      {
+                        name = "HOSTNAME";
+                        valueFrom = {
+                          fieldRef = {
+                            fieldPath = "spec.nodeName";
+                          };
+                        };
+                      }
+                    ];
+                    image = "grafana/promtail";
+                    name = "promtail-container";
+                    volumeMounts = [
+                      {
+                        mountPath = "/var/log";
+                        name = "logs";
+                      }
+                      {
+                        mountPath = "/etc/promtail";
+                        name = "promtail-config";
+                      }
+                      {
+                        mountPath = "/var/lib/docker/containers";
+                        name = "varlibdockercontainers";
+                        readOnly = true;
+                      }
+                    ];
+                  }
+                ];
+                serviceAccount = "promtail";
+                volumes = [
+                  {
+                    hostPath = {
+                      path = "/var/log";
+                    };
+                    name = "logs";
+                  }
+                  {
+                    hostPath = {
+                      path = "/var/lib/docker/containers";
+                    };
+                    name = "varlibdockercontainers";
+                  }
+                  {
+                    configMap = {
+                      name = "promtail-config";
+                    };
+                    name = "promtail-config";
+                  }
+                ];
+              };
+            };
+          };
+        };
+      in
+      assert basicAuth -> basicAuthUser != "";
+      assert basicAuth -> basicAuthPassword != "";
+      ''
+        ${toYAMLDoc sa}
+        ${toYAMLDoc clusterrole}
+        ${toYAMLDoc clusterrolebinding}
+        ${toYAMLDoc configmap}
+        ${toYAMLDoc daemonset}
+      '';
   };
   mimir = rec {
     defaults = {
