@@ -231,7 +231,7 @@ rec {
 
   hex = pog {
     name = "hex";
-    version = "0.0.5";
+    version = "0.0.6";
     description = "a quick and easy way to render full kubespecs from nix files";
     flags = [
       {

@@ -2,7 +2,7 @@
 { hex, pkgs }:
 let
   inherit (builtins) isFunction readFile;
-  inherit (hex) concatMapStrings _if;
+  inherit (hex) concatMapStrings _if fetchOCIChart;
   inherit (hex._) prettier sed yaml_sort yq;
   helm = rec {
     constants = {
@@ -46,10 +46,20 @@ let
       , sortYaml ? false
       , kubeVersion ? "1.27"
       }:
+      let
+        chartFiles =
+          if useOCI then
+            fetchOCIChart
+              {
+                inherit sha256 url;
+              } else
+            fetchTarball {
+              inherit sha256 url;
+            };
+        startsWith = prefix: str: builtins.substring 0 (builtins.stringLength prefix) str == prefix;
+        useOCI = startsWith "oci://" url;
+      in
       rec {
-        chartFiles = fetchTarball {
-          inherit url sha256;
-        };
         hookParams = {
           inherit chartFiles;
         };

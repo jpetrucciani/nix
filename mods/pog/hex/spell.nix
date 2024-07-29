@@ -42,6 +42,7 @@ let
     stackstorm = import ./k8s/stackstorm.nix params;
     storage = import ./k8s/storage.nix params;
     tailscale = import ./k8s/tailscale.nix params;
+    tofutf = import ./k8s/tofutf.nix params;
     traefik = import ./k8s/traefik.nix params;
     svc =
       (
