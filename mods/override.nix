@@ -27,7 +27,7 @@ in
   sssd = prev.sssd.override { python3 = final.python311; };
 
   # lock down terraform 1.5.5 as the final open source version
-  terraform_1-5-5 = import
+  terraform_1-5-5_src = import
     (builtins.fetchGit {
       name = "terraform-1.5.5";
       url = "https://github.com/NixOS/nixpkgs/";
