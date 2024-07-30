@@ -78,6 +78,10 @@ This module contains an [infisical](https://github.com/Infisical/infisical) helm
 
 [jupyterhub](https://github.com/jupyterhub/jupyterhub) is a platform for hosting Jupyter notebooks for many users
 
+### [langflow.nix](./langflow.nix)
+
+[langflow](https://github.com/langflow-ai/langflow) is a visual framework for building multi-agent and RAG applications
+
 ### [mongo.nix](./mongo.nix)
 
 [mongodb-operator](https://github.com/mongodb/mongodb-kubernetes-operator) is a way to deploy and maintain mongodb deployments on k8s
@@ -137,6 +141,10 @@ helpers for defining PVs and PVCs
 ### [tailscale.nix](./tailscale.nix)
 
 This module contains useful shorthands for using [tailscale](https://tailscale.com/) within kubernetes
+
+### [tofutf.nix](./tofutf.nix)
+
+[tofutf](https://github.com/tofutf/tofutf) is an open source terraform cloud alternative
 
 ### [traefik.nix](./traefik.nix)
 

@@ -139,6 +139,26 @@ rec {
       chart_url = "${base}/traefik/traefik-{1}.tgz";
     };
 
+  chart_scan_langflow-ide =
+    let
+      base_url = "https://langflow-ai.github.io/langflow-helm-charts";
+      name = "langflow-ide";
+    in
+    _chart_scan {
+      inherit name base_url;
+      chart_url = "https://github.com/langflow-ai/langflow-helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
+    };
+
+  chart_scan_langflow-runtime =
+    let
+      base_url = "https://langflow-ai.github.io/langflow-helm-charts";
+      name = "langflow-runtime";
+    in
+    _chart_scan {
+      inherit name base_url;
+      chart_url = "https://github.com/langflow-ai/langflow-helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
+    };
+
   chart_scan_stackstorm = _chart_scan {
     name = "stackstorm";
     chart_name = "stackstorm-ha";
@@ -277,6 +297,8 @@ rec {
     chart_scan_infisical
     chart_scan_jupyterhub
     chart_scan_kube-prometheus-stack
+    chart_scan_langflow-ide
+    chart_scan_langflow-runtime
     chart_scan_linkerd-crds
     chart_scan_linkerd-control-plane
     chart_scan_loki

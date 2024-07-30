@@ -46,6 +46,10 @@ This directory contains cli tools
 
 [dirdiff](https://github.com/ocamlpro/dirdiff) is a tool to compute the differences between two directories
 
+### [helm-oci.nix](./helm-oci.nix)
+
+[helm-oci](https://github.com/ikimpriv/helm-oci) is a command line tool that is useful for listing helm charts in oci repos
+
 ### [hunt.nix](./hunt.nix)
 
 [hunt](https://github.com/LyonSyonII/hunt-rs) is a simplified find command in rust

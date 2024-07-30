@@ -1,4 +1,4 @@
-# [otf](https://github.com/tofutf/tofutf) is an open source terraform cloud alternative
+# [tofutf](https://github.com/tofutf/tofutf) is an open source terraform cloud alternative
 { hex, ... }:
 let
   name = "tofutf";

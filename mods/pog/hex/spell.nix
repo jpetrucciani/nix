@@ -25,6 +25,7 @@ let
     helm = import ./k8s/helm.nix params;
     infisical = import ./k8s/infisical.nix params;
     jupyterhub = import ./k8s/jupyterhub.nix params;
+    langflow = import ./k8s/langflow.nix params;
     mongo = import ./k8s/mongo.nix params;
     nginx-ingress = import ./k8s/nginx-ingress.nix params;
     oneuptime = import ./k8s/oneuptime.nix params;
