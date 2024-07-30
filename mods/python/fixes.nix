@@ -202,4 +202,15 @@ rec {
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
+
+  fastcore = prev.fastcore.overridePythonAttrs (_:
+    let version = "1.6.1"; in {
+      inherit version;
+      src = prev.pkgs.fetchFromGitHub {
+        owner = "fastai";
+        repo = "fastcore";
+        rev = "refs/tags/${version}";
+        hash = "sha256-dVzJtYnsezk7Pb5Y59BUY8TQ/3Z5JLntqjld2zJk6pA=";
+      };
+    });
 }

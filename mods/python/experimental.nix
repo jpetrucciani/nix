@@ -516,4 +516,114 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  sqlite-minutils = buildPythonPackage rec {
+    pname = "sqlite-minutils";
+    version = "3.36.0.post4";
+    pyproject = true;
+
+    src = fetchPypi {
+      pname = "sqlite_minutils";
+      inherit version;
+      hash = "sha256-SkSt84IHluKwwks1mCxT5oejqV177b54WcSMzmYWg3o=";
+    };
+
+    nativeBuildInputs = [
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = [
+      fastcore
+    ];
+
+    pythonImportsCheck = [ "sqlite_minutils" ];
+
+    meta = with lib; {
+      description = "A fork of sqlite-utils with CLI etc removed";
+      homepage = "https://pypi.org/project/sqlite-minutils/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  fastlite = buildPythonPackage rec {
+    pname = "fastlite";
+    version = "0.0.7";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-yfcTWnPKiWhd9wMAYRQ1v4C2iJKQvnuxEfnE4otICuU=";
+    };
+
+    nativeBuildInputs = [
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = [
+      fastcore
+      sqlite-minutils
+    ];
+
+    pythonImportsCheck = [ "fastlite" ];
+
+    meta = with lib; {
+      description = "A bit of extra usability for sqlite";
+      homepage = "https://pypi.org/project/fastlite/";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  fasthtml = buildPythonPackage rec {
+    pname = "python-fasthtml";
+    version = "0.2.1";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-T4pckOnWCGTrqponrVSW3seJ0vkdVKXkBgBl1/fMu8Q=";
+    };
+
+    nativeBuildInputs = [
+      setuptools
+      wheel
+      pythonRelaxDepsHook
+    ];
+
+    pythonRelaxDeps = [
+      "uvicorn"
+    ];
+
+    propagatedBuildInputs = [
+      beautifulsoup4
+      fastcore
+      fastlite
+      httpx
+      itsdangerous
+      oauthlib
+      python-dateutil
+      python-multipart
+      starlette
+      uvicorn
+    ];
+
+    passthru.optional-dependencies = {
+      dev = [
+        ipython
+        lxml
+      ];
+    };
+
+    pythonImportsCheck = [ "fasthtml" ];
+
+    meta = with lib; {
+      description = "The fastest way to create an HTML app";
+      homepage = "https://github.com/AnswerDotAI/fasthtml";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
