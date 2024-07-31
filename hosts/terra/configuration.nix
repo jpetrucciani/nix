@@ -121,7 +121,7 @@ in
           '';
         };
         reverse_proxy = location: _reverse_proxy { inherit location; };
-        reverse_proxy_with_iframe = location: _reverse_proxy { inherit location; sec = "SECURITY"; };
+        reverse_proxy_with_iframe = location: _reverse_proxy { inherit location; sec = "SECURITY_WITH_FRAME"; };
         ts_reverse_proxy = location: {
           extraConfig = ''
             import TAILSCALE
