@@ -56,7 +56,7 @@ rec {
     getopt = "${pkgs.getopt}/bin/getopt";
     fzf = "${pkgs.fzf}/bin/fzf";
     sox = "${pkgs.sox}/bin/play";
-    ffmpeg = "${pkgs.ffmpeg_5-full}/bin/ffmpeg";
+    ffmpeg = "${pkgs.ffmpeg-full}/bin/ffmpeg";
     ssh = "${pkgs.openssh}/bin/ssh";
     which = "${pkgs.which}/bin/which";
 
