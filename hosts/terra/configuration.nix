@@ -111,15 +111,17 @@ in
           }
           respond @adminblock "${err403}" 403
         '';
-        reverse_proxy = location: {
+        _reverse_proxy = { location, sec ? "SECURITY", enable_geoblock ? true }: {
           extraConfig = ''
-            import GEOBLOCK
-            import SECURITY
+            ${if enable_geoblock then "import GEOBLOCK" else ""}
+            import ${sec}
             reverse_proxy /* {
               to ${location}
             }
           '';
         };
+        reverse_proxy = location: _reverse_proxy { inherit location; };
+        reverse_proxy_with_iframe = location: _reverse_proxy { inherit location; sec = "SECURITY"; };
         ts_reverse_proxy = location: {
           extraConfig = ''
             import TAILSCALE
@@ -130,6 +132,20 @@ in
         };
         landing_page = { title ? "gemologic", start ? "#000", end ? "#6A3DE8" }:
           ''<html style='background-image: linear-gradient(to bottom right, ${start}, ${end});height:100%'><head><title>${title}</title></head></html>'';
+        security_block = { name ? "SECURITY", allow_frame ? false, allow_server ? false, allow_compression ? true }: ''
+          (${name}) {
+            ${if allow_compression then "encode zstd gzip" else ""}
+            header {
+              ${if allow_server then "" else "-Server"}
+              Strict-Transport-Security "max-age=31536000; include-subdomains;"
+              X-XSS-Protection "1; mode=block"
+              ${if allow_frame then "" else ''X-Frame-Options "DENY"''}
+              X-Content-Type-Options nosniff
+              Referrer-Policy  no-referrer-when-downgrade
+              X-Robots-Tag "none"
+            }
+          }
+        '';
         neptune_traefik = "neptune:8088";
         ip = {
           ba3 = "192.168.69.20";
@@ -190,18 +206,8 @@ in
             respond @ba3geoblock 403
           }
 
-          (SECURITY) {
-            encode zstd gzip
-            header {
-              -Server
-              Strict-Transport-Security "max-age=31536000; include-subdomains;"
-              X-XSS-Protection "1; mode=block"
-              X-Frame-Options "DENY"
-              X-Content-Type-Options nosniff
-              Referrer-Policy  no-referrer-when-downgrade
-              X-Robots-Tag "none"
-            }
-          }
+          ${security_block {}}
+          ${security_block {name="SECURITY_WITH_FRAME"; allow_frame =true;}}
         '';
         virtualHosts = {
           "api.cobi.dev" = reverse_proxy "localhost:10000";
@@ -215,7 +221,7 @@ in
           #   '';
           # };
           "ntfy.cobi.dev" = reverse_proxy "localhost:2586";
-          "invoice.cobi.dev" = reverse_proxy "localhost:8010";
+          "invoice.cobi.dev" = reverse_proxy_with_iframe "localhost:8010";
           "llm.cobi.dev" = ts_reverse_proxy "localhost:8010";
           "otf.cobi.dev" = reverse_proxy "localhost:8010";
           "auth.cobi.dev" = reverse_proxy neptune_traefik;
