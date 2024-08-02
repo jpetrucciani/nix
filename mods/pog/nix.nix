@@ -44,6 +44,7 @@ rec {
           sha=$(echo "$jacobi" | ${lib.getExe final.jaq} -r '.sha256')
           toplevel=""
           _env="pkgs.buildEnv {${"\n"} inherit name paths; buildInputs = paths; };"
+          extra_env=""
           crystal=""
           if [ "$with_crystal" = "1" ]; then
             crystal="crystal = [crystal_1_2${"\n"}shards];"
@@ -81,7 +82,8 @@ rec {
           fi
           dotnet=""
           if [ "$with_dotnet" = "1" ]; then
-            dotnet="dotnet = [clang${"\n"}dotnet-sdk_8 dotnetPackages.Nuget netcoredbg];"
+            dotnet="dotnet = [clang${"\n"}dotnet-sdk_8 dotnetPackages.Nuget netcoredbg zlib];"
+            extra_env="$extra_env DOTNET_CLI_TELEMETRY_OPTOUT = 1; DOTNET_ROOT = \"\''${pkgs.dotnet-sdk_8}\";"
           fi
           pulumi=""
           if [ "$with_pulumi" = "1" ]; then
@@ -150,7 +152,7 @@ rec {
             in
             (env.overrideAttrs (_: {
               inherit name;
-              NIXUP = "${version}";
+              NIXUP = "${version}"; $extra_env
             })) // {inherit scripts;}
           EOF
         '';
