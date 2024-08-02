@@ -1,9 +1,9 @@
 # this is a lightweight nix env showing how you can include hex in your local environment
 { pkgs ? import
     (fetchTarball {
-      name = "jpetrucciani-2024-03-15";
-      url = "https://github.com/jpetrucciani/nix/archive/901e642726b101dfd5ad6fb9f16aa608d2e96efa.tar.gz";
-      sha256 = "0083rdr4lqc6hlc3c8n6rkqzxk4qf8b3y73vml1mx16da242d1if";
+      name = "jpetrucciani-2024-08-02";
+      url = "https://github.com/jpetrucciani/nix/archive/231b96d11db575631fb5c16f9fb4165950966358.tar.gz";
+      sha256 = "0zbkds5mlxjnp05pyh96z51samw1ikknyz4ndjpcsf8g7khaw9qw";
     })
     { }
 }:
@@ -26,5 +26,5 @@ let
 in
 (env.overrideAttrs (_: {
   inherit name;
-  NIXUP = "0.0.6";
+  NIXUP = "0.0.7";
 })) // { inherit scripts; }

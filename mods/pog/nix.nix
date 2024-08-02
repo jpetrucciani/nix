@@ -4,145 +4,157 @@ let
   inherit (final) _ pog lib;
 in
 rec {
-  nixup = let version = "0.0.7"; in pog {
-    inherit version;
-    name = "nixup";
-    description = "a quick tool to create/update a base default.nix environment!";
-    flags = [
-      { name = "srcpath"; description = "the fs path to import pkgs from if passed. if not passed in, will pin to the latest version of jpetrucciani/nix"; }
-      { name = "update"; bool = true; description = "update the pin to jpetrucciani in the given file (argument 1) [default: ./default.nix]"; }
-      _.flags.nix.with_crystal
-      _.flags.nix.with_db_pg
-      _.flags.nix.with_db_redis
-      _.flags.nix.with_elixir
-      _.flags.nix.with_golang
-      _.flags.nix.with_nim
-      _.flags.nix.with_node
-      _.flags.nix.with_php
-      _.flags.nix.with_poetry
-      _.flags.nix.with_pulumi
-      _.flags.nix.with_python
-      _.flags.nix.with_ruby
-      _.flags.nix.with_rust
-      _.flags.nix.with_terraform
-      _.flags.nix.with_vlang
-    ];
-    shortDefaultFlags = false;
-    script = h:
-      ''
-        directory="$(pwd | ${_.sed} 's#.*/##')"
-        jacobi=$(${final.nix_hash_jpetrucciani}/bin/nix_hash_jpetrucciani 2>/dev/null);
-        rev=$(echo "$jacobi" | ${lib.getExe final.jaq} -r '.rev')
-        sha=$(echo "$jacobi" | ${lib.getExe final.jaq} -r '.sha256')
-        toplevel=""
-        _env="pkgs.buildEnv {${"\n"} inherit name paths; buildInputs = paths; };"
-        crystal=""
-        if [ "$with_crystal" = "1" ]; then
-          crystal="crystal = [crystal_1_2${"\n"}shards];"
-        fi
-        pg=""
-        if [ "$with_db_pg" = "1" ]; then
-          pg="pg = __pg { postgres = pg; };${"\n"}pg_bootstrap = __pg_bootstrap { inherit name; postgres = pg; };${"\n"}pg_shell = __pg_shell { inherit name; postgres = pg; };"
-          toplevel="pg = pkgs.postgresql_15;${"\n"}$toplevel"
-        fi
-        redis=""
-        if [ "$with_db_redis" = "1" ]; then
-          redis="rd = __rd;${"\n"}rd_shell = __rd_shell;"
-        fi
-        elixir=""
-        if [ "$with_elixir" = "1" ]; then
-          elixir="elixir = [elixir${"\n"}(with beamPackages; [${"\n"}hex])(ifIsLinux [inotify-tools]) (ifIsDarwin [ terminal-notifier (with darwin.apple_sdk_11_0.frameworks; [ CoreFoundation CoreServices ])])];"
-          toplevel="inherit (pkgs.hax) ifIsLinux ifIsDarwin;${"\n"}$toplevel"
-        fi
-        golang=""
-        if [ "$with_golang" = "1" ]; then
-          golang="go = [go${"\n"}go-tools gopls];"
-        fi
-        nim=""
-        if [ "$with_nim" = "1" ]; then
-          nim="nim = [(nim2.withPackages (p: with p; []))];"
-        fi
-        node=""
-        if [ "$with_node" = "1" ]; then
-          toplevel="node = pkgs.nodejs_20;${"\n"}$toplevel"
-          node="node = [node];npm = with node.pkgs; [prettier${"\n"}yarn];"
-        fi
-        php=""
-        if [ "$with_php" = "1" ]; then
-          php="php = [php82];"
-        fi
-        pulumi=""
-        if [ "$with_pulumi" = "1" ]; then
-          py="python = [(python311.withPackages ( p: with p; [${"\n"}pulumi]))];"
-          pulumi="pulumi = [pulumi];"
-        fi
-        py=""
-        if [ "$with_python" = "1" ]; then
-          py="python = [ruff${"\n"}(python311.withPackages ( p: with p; [${"\n"}black]))];"
-        fi
-        poetry=""
-        if [ "$with_poetry" = "1" ]; then
-          py="python = [ruff${"\n"}(poetry.override (_: { python3 = python312; }))];"
-          poetry="python = pkgs.poetry-helpers.mkEnv {${"\n"}projectDir = ./.; python = pkgs.python312; extraOverrides = [(final: prev: { })];};${"\n"}"
-          _env="python.env.overrideAttrs (_: {${"\n"} buildInputs = paths; });"
-        fi
-        ruby=""
-        if [ "$with_ruby" = "1" ]; then
-          ruby="ruby = [(ruby_3_2.withPackages ( p: with p; []))${"\n"}sqlite];"
-        fi
-        rust=""
-        if [ "$with_rust" = "1" ]; then
-          rust="rust = [cargo${"\n"}clang rust-analyzer rustc rustfmt];"
-        fi
-        terraform=""
-        if [ "$with_terraform" = "1" ]; then
-          terraform="terraform = [terraform${"\n"}terraform-ls terrascan tfsec];"
-        fi
-        vlang=""
-        if [ "$with_vlang" = "1" ]; then
-          vlang="vlang = [(vlang.withPackages (p: with p; []))];"
-        fi
-        ftb="fetchTarball { name = \"jpetrucciani-$(date '+%F')\"; url = \"https://github.com/jpetrucciani/nix/archive/$rev.tar.gz\"; sha256 = \"$sha\";}"
-        if ${h.flag "update"}; then
-          default_nix="''${1:-./default.nix}"
-          ${h.file.notExists "default_nix"} && die "the nix file to update ('$default_nix') does not exist!"
-          echo "updating '$default_nix' to '$rev'"
-          ${_.sed} -i -E -z "s#(fetchTarball[\s]*).*(\/jpetrucciani\/|nix\.cobi\.dev\/)[^\}]*\}#$ftb#g" "$default_nix"
-          ${_.sed} -i -E 's#(fetchTarball \{) (name)#\1\n\2#' "$default_nix"
-          ${_.nixpkgs-fmt} "$default_nix" 2>/dev/null
-          exit 0
-        fi
-        if ${h.var.notEmpty "srcpath"}; then
-          ftb="$srcpath"
-        fi
-        ${prev.coreutils}/bin/cat -s <<EOF | ${_.sed} -E 's#(fetchTarball \{) (name)#\1\n\2#' | ${_.nixpkgs-fmt}
-          { pkgs ? import
-              (''${ftb}) {}
-          }:
-          let
-            name = "$directory";
-            ''${toplevel}
-            ''${poetry}
-            tools = with pkgs; {
-              cli = [
-                coreutils
-                nixpkgs-fmt
-              ];
-              ''${crystal} ''${elixir} ''${golang} ''${nim} ''${node} ''${php} ''${pulumi} ''${py} ''${ruby} ''${rust} ''${terraform} ''${vlang}
-              scripts = pkgs.lib.attrsets.attrValues scripts;
-            };
+  nixup =
+    let
+      version = "0.0.7";
+      _flags = {
+        with_crystal = "include crystal with dependencies";
+        with_db_pg = "include postgres db and helper scripts";
+        with_db_redis = "include redis db and helper scripts";
+        with_dotnet = "include dotnet and the required libs";
+        with_elixir = "include elixir with dependencies";
+        with_golang = "include golang";
+        with_nim = "include a nim with dependencies";
+        with_node = "include node";
+        with_php = "include a php with packages";
+        with_poetry = "include python using poetry2nix";
+        with_pulumi = "include pulumi";
+        with_python = "include a python with packages";
+        with_ruby = "include ruby";
+        with_rust = "include rust";
+        with_terraform = "include terraform";
+        with_vlang = "include a vlang with dependencies";
+      };
+      flags = lib.mapAttrsToList (k: v: { name = k; description = v; short = ""; bool = true; }) _flags;
+    in
+    pog {
+      inherit version;
+      name = "nixup";
+      description = "a quick tool to create/update a base default.nix environment!";
+      flags = [
+        { name = "srcpath"; description = "the fs path to import pkgs from if passed. if not passed in, will pin to the latest version of jpetrucciani/nix"; }
+        { name = "update"; bool = true; description = "update the pin to jpetrucciani in the given file (argument 1) [default: ./default.nix]"; }
+      ] ++ flags;
+      shortDefaultFlags = false;
+      script = h:
+        ''
+          directory="$(pwd | ${_.sed} 's#.*/##')"
+          jacobi=$(${final.nix_hash_jpetrucciani}/bin/nix_hash_jpetrucciani 2>/dev/null);
+          rev=$(echo "$jacobi" | ${lib.getExe final.jaq} -r '.rev')
+          sha=$(echo "$jacobi" | ${lib.getExe final.jaq} -r '.sha256')
+          toplevel=""
+          _env="pkgs.buildEnv {${"\n"} inherit name paths; buildInputs = paths; };"
+          crystal=""
+          if [ "$with_crystal" = "1" ]; then
+            crystal="crystal = [crystal_1_2${"\n"}shards];"
+          fi
+          pg=""
+          if [ "$with_db_pg" = "1" ]; then
+            pg="pg = __pg { postgres = pg; };${"\n"}pg_bootstrap = __pg_bootstrap { inherit name; postgres = pg; };${"\n"}pg_shell = __pg_shell { inherit name; postgres = pg; };"
+            toplevel="pg = pkgs.postgresql_15;${"\n"}$toplevel"
+          fi
+          redis=""
+          if [ "$with_db_redis" = "1" ]; then
+            redis="rd = __rd;${"\n"}rd_shell = __rd_shell;"
+          fi
+          elixir=""
+          if [ "$with_elixir" = "1" ]; then
+            elixir="elixir = [elixir${"\n"}(with beamPackages; [${"\n"}hex])(ifIsLinux [inotify-tools]) (ifIsDarwin [ terminal-notifier (with darwin.apple_sdk_11_0.frameworks; [ CoreFoundation CoreServices ])])];"
+            toplevel="inherit (pkgs.hax) ifIsLinux ifIsDarwin;${"\n"}$toplevel"
+          fi
+          golang=""
+          if [ "$with_golang" = "1" ]; then
+            golang="go = [go${"\n"}go-tools gopls];"
+          fi
+          nim=""
+          if [ "$with_nim" = "1" ]; then
+            nim="nim = [(nim2.withPackages (p: with p; []))];"
+          fi
+          node=""
+          if [ "$with_node" = "1" ]; then
+            toplevel="node = pkgs.nodejs_22;${"\n"}$toplevel"
+            node="node = [node];npm = with node.pkgs; [prettier${"\n"}yarn];"
+          fi
+          php=""
+          if [ "$with_php" = "1" ]; then
+            php="php = [php83];"
+          fi
+          dotnet=""
+          if [ "$with_dotnet" = "1" ]; then
+            dotnet="dotnet = [clang${"\n"}dotnet-sdk_8 dotnetPackages.Nuget netcoredbg];"
+          fi
+          pulumi=""
+          if [ "$with_pulumi" = "1" ]; then
+            py="python = [(python311.withPackages ( p: with p; [${"\n"}pulumi]))];"
+            pulumi="pulumi = [pulumi];"
+          fi
+          py=""
+          if [ "$with_python" = "1" ]; then
+            py="python = [ruff${"\n"}(python311.withPackages ( p: with p; [${"\n"}black]))];"
+          fi
+          poetry=""
+          if [ "$with_poetry" = "1" ]; then
+            py="python = [ruff${"\n"}(poetry.override (_: { python3 = python312; }))];"
+            poetry="python = pkgs.poetry-helpers.mkEnv {${"\n"}projectDir = ./.; python = pkgs.python312; extraOverrides = [(final: prev: { })];};${"\n"}"
+            _env="python.env.overrideAttrs (_: {${"\n"} buildInputs = paths; });"
+          fi
+          ruby=""
+          if [ "$with_ruby" = "1" ]; then
+            ruby="ruby = [(ruby_3_2.withPackages ( p: with p; []))${"\n"}sqlite];"
+          fi
+          rust=""
+          if [ "$with_rust" = "1" ]; then
+            rust="rust = [cargo${"\n"}clang rust-analyzer rustc rustfmt${"\n"}# deps${"\n"}pkg-config openssl];"
+          fi
+          terraform=""
+          if [ "$with_terraform" = "1" ]; then
+            terraform="terraform = [terraform${"\n"}terraform-ls terrascan tfsec];"
+          fi
+          vlang=""
+          if [ "$with_vlang" = "1" ]; then
+            vlang="vlang = [(vlang.withPackages (p: with p; []))];"
+          fi
+          ftb="fetchTarball { name = \"jpetrucciani-$(date '+%F')\"; url = \"https://github.com/jpetrucciani/nix/archive/$rev.tar.gz\"; sha256 = \"$sha\";}"
+          if ${h.flag "update"}; then
+            default_nix="''${1:-./default.nix}"
+            ${h.file.notExists "default_nix"} && die "the nix file to update ('$default_nix') does not exist!"
+            echo "updating '$default_nix' to '$rev'"
+            ${_.sed} -i -E -z "s#(fetchTarball[\s]*).*(\/jpetrucciani\/|nix\.cobi\.dev\/)[^\}]*\}#$ftb#g" "$default_nix"
+            ${_.sed} -i -E 's#(fetchTarball \{) (name)#\1\n\2#' "$default_nix"
+            ${_.nixpkgs-fmt} "$default_nix" 2>/dev/null
+            exit 0
+          fi
+          if ${h.var.notEmpty "srcpath"}; then
+            ftb="$srcpath"
+          fi
+          ${prev.coreutils}/bin/cat -s <<EOF | ${_.sed} -E 's#(fetchTarball \{) (name)#\1\n\2#' | ${_.nixpkgs-fmt}
+            { pkgs ? import
+                (''${ftb}) {}
+            }:
+            let
+              name = "$directory";
+              ''${toplevel}
+              ''${poetry}
+              tools = with pkgs; {
+                cli = [
+                  coreutils
+                  nixpkgs-fmt
+                ];
+                ''${crystal} ''${elixir} ''${golang} ''${nim} ''${node} ''${php} ''${dotnet} ''${pulumi} ''${py} ''${ruby} ''${rust} ''${terraform} ''${vlang}
+                scripts = pkgs.lib.attrsets.attrValues scripts;
+              };
 
-          scripts = with pkgs; {''${pg} ''${redis}};
-          paths = pkgs.lib.flatten [ (builtins.attrValues tools) ];
-          env = ''${_env}
-          in
-          (env.overrideAttrs (_: {
-            inherit name;
-            NIXUP = "${version}";
-          })) // {inherit scripts;}
-        EOF
-      '';
-  };
+            scripts = with pkgs; {''${pg} ''${redis}};
+            paths = pkgs.lib.flatten [ (builtins.attrValues tools) ];
+            env = ''${_env}
+            in
+            (env.overrideAttrs (_: {
+              inherit name;
+              NIXUP = "${version}";
+            })) // {inherit scripts;}
+          EOF
+        '';
+    };
 
   y2n = final.writeBashBinChecked "y2n" ''
     yaml="$1"
