@@ -286,6 +286,12 @@ rec {
     chart_url = "https://github.com/makeplane/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
   };
 
+  chart_scan_quickwit = _chart_scan rec {
+    name = "quickwit";
+    base_url = "https://helm.quickwit.io";
+    chart_url = "https://github.com/quickwit-oss/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
+  };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
@@ -318,6 +324,7 @@ rec {
     chart_scan_prometheus-postgres-exporter
     chart_scan_prometheus-pushgateway
     chart_scan_prometheus-redis-exporter
+    chart_scan_quickwit
     chart_scan_redis-operator
     chart_scan_robusta
     chart_scan_sentry
