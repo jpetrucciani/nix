@@ -303,7 +303,7 @@ in
               redir https://raw.githubusercontent.com/jpetrucciani/nix/main/scripts/nixup.sh
             }
             route /os-up {
-              redir https://github.com/samuela/nixos-up/archive/main.tar.gz
+              redir https://github.com/jpetrucciani/nixos-up/archive/main.tar.gz
             }
           '';
           "gemologic.dev" = secure ''
