@@ -319,12 +319,12 @@ rec {
 
   nicegui = buildPythonPackage rec {
     pname = "nicegui";
-    version = "1.4.30";
+    version = "1.4.34";
     pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-XJYsDiciB4/ZTrYXZyqIgan2gIbub+gfi4mZ49xPdbw=";
+      hash = "sha256-UCIR3XnX78DeY03LZDH8IQc5dbyTArj6409f+rGvUTU=";
     };
 
     postPatch = ''
@@ -373,7 +373,9 @@ rec {
       python-magic
       python-multipart
       pywebview
+      requests
       typing-extensions
+      urllib3
       uvicorn
       uvloop
       vbuild
