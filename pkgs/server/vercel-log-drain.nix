@@ -1,3 +1,4 @@
+# [vercel-log-drain](https://github.com/dacbd/vercel-log-drain) is a simple log-drain for vercel that supports multiple drivers to ship logs out to various sources
 { lib
 , rustPlatform
 , fetchFromGitHub

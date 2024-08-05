@@ -25,3 +25,7 @@ This directory contains specific servers
 ### [smoothmq.nix](./smoothmq.nix)
 
 [smoothmq](https://github.com/poundifdef/SmoothMQ) is A drop-in replacement for SQS designed for great developer experience and efficiency
+
+### [vercel-log-drain.nix](./vercel-log-drain.nix)
+
+[vercel-log-drain](https://github.com/dacbd/vercel-log-drain) is a simple log-drain for vercel that supports multiple drivers to ship logs out to various sources
