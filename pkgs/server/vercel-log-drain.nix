@@ -7,7 +7,14 @@
 , stdenv
 , darwin
 }:
-
+let
+  osSpecific =
+    if stdenv.isDarwin then
+      (with darwin.apple_sdk.frameworks; [
+        Security
+        SystemConfiguration
+      ]) else [ ];
+in
 rustPlatform.buildRustPackage {
   pname = "vercel-log-drain";
   version = "0.0.3";
@@ -27,12 +34,10 @@ rustPlatform.buildRustPackage {
 
   buildInputs = [
     openssl
-  ] ++ lib.optionals stdenv.isDarwin [
-    darwin.apple_sdk.frameworks.Security
-  ];
+  ] ++ osSpecific;
 
   meta = with lib; {
-    description = "A simple log-drain you can deploy to export log messages from Vercel to AWS Cloudwatch";
+    description = "A simple log-drain you can deploy to export log messages from Vercel to one or more outputs";
     homepage = "https://github.com/dacbd/vercel-log-drain";
     license = licenses.mit;
     maintainers = with maintainers; [ jpetrucciani ];
