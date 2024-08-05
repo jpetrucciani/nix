@@ -16,5 +16,6 @@
 (?i)serverless
 (?i)tencent
 (?i)tofutf
+(?i)vercel
 (?i)vpcs?
 (?i)yandex

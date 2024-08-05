@@ -28,4 +28,4 @@ This directory contains specific servers
 
 ### [vercel-log-drain.nix](./vercel-log-drain.nix)
 
-[vercel-log-drain](https://github.com/dacbd/vercel-log-drain) is a simple log-drain for vercel that supports multiple drivers to ship logs out to various sources
+[vercel-log-drain](https://github.com/dacbd/vercel-log-drain) is a log-drain for vercel that supports multiple drivers to ship logs out to various sources
