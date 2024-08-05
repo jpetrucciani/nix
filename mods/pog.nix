@@ -206,7 +206,7 @@ rec {
           description = "the bash color/style to use [${bashColorsList}]";
           argument = "COLOR";
           default = "green";
-          completion = ''echo "${bashColorsList} ${upper bashColorsList}"'';
+          completion = ''echo "${bashColorsList} ${toUpper bashColorsList}"'';
         };
       };
       github = {
