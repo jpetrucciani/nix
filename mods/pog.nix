@@ -6,7 +6,6 @@ let
   inherit (final.lib) stringToCharacters;
   inherit (final.lib.lists) reverseList;
   inherit (final.lib.strings) fixedWidthString toUpper;
-  upper = toUpper;
   reverse = x: concatStringsSep "" (reverseList (stringToCharacters x));
   rightPad = num: text: reverse (fixedWidthString num " " (reverse text));
   ind = text: concatStringsSep "\n" (map (x: "  ${x}") (filter isString (split "\n" text)));
@@ -608,7 +607,7 @@ rec {
 
         help() {
           cat <<EOF
-          Usage: ${name} ${defaultFlagHelp}${concatStringsSep " " (map (x: x.ex) parsedFlags)} ${concatStringsSep " " (map (x: upper x.name) arguments)}
+          Usage: ${name} ${defaultFlagHelp}${concatStringsSep " " (map (x: x.ex) parsedFlags)} ${concatStringsSep " " (map (x: toUpper x.name) arguments)}
 
           ${description}
 
@@ -623,9 +622,9 @@ rec {
       
         setup_colors() {
           if [[ -t 2 ]] && [[ -z "''$NO_COLOR" ]] && [[ "''$TERM" != "dumb" ]]; then
-            ${concatStringsSep " " (map (x: ''${upper x.name}="${x.code}"'') bashColors)}
+            ${concatStringsSep " " (map (x: ''${toUpper x.name}="${x.code}"'') bashColors)}
           else
-            ${concatStringsSep " " (map (x: ''${upper x.name}=""'') bashColors)}
+            ${concatStringsSep " " (map (x: ''${toUpper x.name}=""'') bashColors)}
           fi
         }
 
@@ -679,7 +678,7 @@ rec {
 
         ${concatStringsSep "\n" (map (x: ''
           ${x.name}(){
-            echo -e "''${${upper x.name}}$1''${RESET}"
+            echo -e "''${${toUpper x.name}}$1''${RESET}"
           }
         '') bashColors)}
 
@@ -771,7 +770,7 @@ rec {
     , marker ? if bool then "" else ":"
     , description ? "a flag"
     , argument ? "VAR"
-    , envVar ? "POG_" + (replaceStrings [ "-" ] [ "_" ] (upper name))
+    , envVar ? "POG_" + (replaceStrings [ "-" ] [ "_" ] (toUpper name))
     , required ? false
     , prompt ? if required then "true" else ""
     , promptError ? "you must specify a value for '--${name}'!"
