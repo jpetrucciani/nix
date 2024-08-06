@@ -18,3 +18,4 @@
 (?i)palworld
 (?i)stationeers
 (?i)styx
+(?i)swiss

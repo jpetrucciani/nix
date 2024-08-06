@@ -1,8 +1,10 @@
 (?i)addons
 (?i)airbyte
 (?i)alibaba
+(?i)argus
 (?i)AWS
 (?i)awscli
+(?i)epimetheus
 (?i)flipt
 (?i)gcloud
 (?i)GCP
