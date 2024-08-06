@@ -108,6 +108,7 @@ in
         nix-prefetch-scripts
         nix-tree
         nix-update
+        nixd
         nixfmt-rfc-style
         nixpkgs-fmt
         nixpkgs-review
