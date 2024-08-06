@@ -6,6 +6,14 @@ This directory contains specific servers
 
 ## In this directory
 
+### [argus.nix](./argus.nix)
+
+[argus](https://github.com/jpetrucciani/argus) is a customizable http request logger with prometheus metrics
+
+### [epimetheus.nix](./epimetheus.nix)
+
+[epimetheus](https://github.com/jpetrucciani/epimetheus) is a swiss army knife prometheus exporter capable of watching json/csv/yaml files and providing prometheus metrics
+
 ### [hasura-batteries.nix](./hasura-batteries.nix)
 
 [hasura-batteries](https://github.com/RocketsGraphQL/hasura-batteries) is a service that runs alongside Hasura GraphQL engine giving it superpowers like Authentication
