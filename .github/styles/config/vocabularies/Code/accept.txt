@@ -38,6 +38,8 @@
 (?i)haproxy
 (?i)headscale
 (?i)html
+(?i)http
+(?i)https
 (?i)infisical
 (?i)javascript
 (?i)json
