@@ -5,7 +5,14 @@
 , stdenv
 , darwin
 }:
-
+let
+  osSpecific =
+    if stdenv.isDarwin then
+      (with darwin.apple_sdk.frameworks; [
+        Security
+        SystemConfiguration
+      ]) else [ ];
+in
 rustPlatform.buildRustPackage rec {
   pname = "epimetheus";
   version = "0.1.0";
@@ -19,9 +26,7 @@ rustPlatform.buildRustPackage rec {
 
   cargoHash = "sha256-3WtVezwva8sJF7OQt599ATc74BVqKojmD0hWtEpSEu8=";
 
-  buildInputs = lib.optionals stdenv.isDarwin [
-    darwin.apple_sdk.frameworks.Security
-  ];
+  buildInputs = osSpecific;
 
   meta = with lib; {
     description = "A swiss army knife prometheus exporter capable of watching json/csv/yaml files and providing prometheus metrics";
