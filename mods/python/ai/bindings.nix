@@ -8,8 +8,8 @@ let
   llama-cpp-pin = fetchFromGitHub {
     owner = "ggerganov";
     repo = "llama.cpp";
-    rev = "398ede5efeb07b9adf9fbda7ea63f630d476a792";
-    hash = "sha256-De7GVz0WS4JQFRt8svFI32JvpFQpb11afkg7A2EHb7A=";
+    rev = "725e3d94379d5b619c027347308bccf2e0ead89f";
+    hash = "sha256-s/q/t7Ty+VKTeZFHxPCcsv7NJbiffadbmxMEDIJZmHE=";
   };
 in
 rec {
@@ -48,13 +48,13 @@ rec {
     in
     buildPythonPackage rec {
       pname = "llama-cpp-python";
-      version = "0.2.85";
+      version = "0.2.86";
       pyproject = true;
       src = fetchFromGitHub {
         owner = "abetlen";
         repo = pname;
         rev = "refs/tags/v${version}";
-        hash = "sha256-7ip9A4aaEYiRfc3mJCG+SQJSPG+sV5IYyeq7xf3dqL0=";
+        hash = "sha256-XX9FwDLmak2NZUEZkGPmpPfvfHRz4PPeD9JWFVSqPms=";
       };
 
       cuda = false;
@@ -458,7 +458,7 @@ rec {
   ctransformers =
     let
       name = "ctransformers";
-      version = "0.2.85";
+      version = "0.2.86";
       osSpecific =
         if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
         else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
