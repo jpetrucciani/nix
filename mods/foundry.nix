@@ -232,7 +232,7 @@ let
     description = "a lightweight pypi server with a few backends";
     layers = [
       [
-        (pkgs.python312.withPackages (p: with p; [
+        (pkgs.python311.withPackages (p: with p; [
           passlib
           pypiserver-backend-s3
           pypiserver-pluggable-backends
