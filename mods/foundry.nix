@@ -232,7 +232,7 @@ let
     description = "a lightweight pypi server with a few backends";
     layers = [
       [
-        (pkgs.python311.withPackages (p: with p; [
+        (pkgs.python312.withPackages (p: with p; [
           passlib
           pypiserver-backend-s3
           pypiserver-pluggable-backends
@@ -259,40 +259,46 @@ let
   foundry_k8s_aws = foundry {
     name = "k8s-aws";
     description = "a lightweight image with just bash, kubectl, and awscliv2";
-    layers = [
-      [ pkgs.awscli2 ]
-      [ pkgs.kubectl ]
+    layers = with pkgs; [
+      [ awscli2 ]
+      [ kubectl ]
     ];
   };
   foundry_k8s_gcp = foundry {
     name = "k8s-gcp";
     description = "a lightweight image with just bash, kubectl, and gcloud cli";
-    layers = [
-      [ pkgs.google-cloud-sdk ]
-      [ pkgs.kubectl ]
+    layers = with pkgs; [
+      [ google-cloud-sdk ]
+      [ kubectl ]
     ];
   };
   foundry_zaddy = foundry {
     name = "zaddy";
     description = "a base image with the custom zaddy build with caddy-security, s3proxy and s3browser";
-    layers = [ [ pkgs.zaddy ] ];
+    layers = with pkgs; [ [ zaddy ] ];
   };
   foundry_curl = foundry {
     name = "curl";
     description = "a base image with just curl and basic requirements. does not include nix!";
-    layers = [ [ pkgs.curl ] ];
+    layers = with pkgs; [ [ curl ] ];
     enableNix = false;
+  };
+  foundry_hex = foundry {
+    name = "hex";
+    description = "a base image with hex and ktools";
+    layers = with pkgs; [ [ hex k8s_pog_scripts ] ];
   };
 in
 {
   inherit foundry;
   foundry_v2 = foundry;
-  nix = foundry_nix;
-  python311 = foundry_python_311;
-  python312 = foundry_python_312;
-  pypi = foundry_pypi;
+  curl = foundry_curl;
+  hex = foundry_hex;
   k8s_aws = foundry_k8s_aws;
   k8s_gcp = foundry_k8s_gcp;
+  nix = foundry_nix;
+  pypi = foundry_pypi;
+  python311 = foundry_python_311;
+  python312 = foundry_python_312;
   zaddy = foundry_zaddy;
-  curl = foundry_curl;
 }
