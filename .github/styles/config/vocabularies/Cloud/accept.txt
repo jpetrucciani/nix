@@ -4,6 +4,7 @@
 (?i)argus
 (?i)AWS
 (?i)awscli
+(?i)dask
 (?i)epimetheus
 (?i)flipt
 (?i)gcloud
