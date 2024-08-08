@@ -286,7 +286,13 @@ let
   foundry_hex = foundry {
     name = "hex";
     description = "a base image with hex and ktools";
-    layers = with pkgs; [ [ hex k8s_pog_scripts ] ];
+    layers = with pkgs; [
+      [
+        hex
+        k8s_pog_scripts
+        kubectl
+      ]
+    ];
   };
 in
 {

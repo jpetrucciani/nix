@@ -292,9 +292,16 @@ rec {
     chart_url = "https://github.com/quickwit-oss/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
   };
 
+  chart_scan_dask-kubernetes-operator = _chart_scan rec {
+    name = "dask-kubernetes-operator";
+    base_url = "https://helm.dask.org";
+    chart_url = "https://helm.dask.org/${name}-{1}.tgz";
+  };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
+    chart_scan_dask-kubernetes-operator
     chart_scan_datadog
     chart_scan_external-secrets
     chart_scan_fission
