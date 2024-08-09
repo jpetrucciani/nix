@@ -282,6 +282,22 @@ rec {
     '';
   };
 
+  kimg = pog {
+    name = "kimg";
+    version = "0.0.1";
+    description = "a shorthand to see pod's images";
+    flags = [
+      _.flags.k8s.namespace
+      { name = "allnamespaces"; short = "A"; description = "load from all namespaces"; bool = true; }
+    ];
+    script = h: with h; ''
+      ns="--namespace $namespace"
+      ${flag "allnamespaces"} && ns="--all-namespaces"
+      # shellcheck disable=SC2086
+      ${_.k} get pods $ns -o custom-columns=POD:metadata.name,IMAGE_HASH:status.containerStatuses[*].imageID
+    '';
+  };
+
   k8s_pog_scripts = [
     ka
     kdesc
@@ -290,6 +306,7 @@ rec {
     kedit
     ksecedit
     kex
+    kimg
     klog
     krm
     kroll
