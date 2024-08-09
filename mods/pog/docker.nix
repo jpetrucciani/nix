@@ -146,6 +146,7 @@ rec {
     '';
   };
 
+  dtools = docker_pog_scripts;
   docker_pog_scripts = [
     # dlint
     _dex

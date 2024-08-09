@@ -264,18 +264,19 @@ rec {
 
       # docker images to use in various spots
       images = [
-        "alpine:3.19"
+        "alpine:3.20"
+        "ubuntu:24.04"
+        "almalinux:8.10"
         "ghcr.io/jpetrucciani/foundry-nix:latest"
-        "ghcr.io/jpetrucciani/foundry-python311:latest"
-        "ghcr.io/jpetrucciani/foundry-python312:latest"
+        "ghcr.io/jpetrucciani/python-3.11:latest"
+        "ghcr.io/jpetrucciani/python-3.12:latest"
         "ghcr.io/jpetrucciani/k8s-aws:latest"
         "ghcr.io/jpetrucciani/k8s-gcp:latest"
-        "nicolaka/netshoot:latest"
         "node:20"
         "node:22"
         "python:3.11"
         "python:3.12"
-        "ubuntu:24.04"
+        "nicolaka/netshoot:latest"
       ];
       aws = {
         regions = [

@@ -54,9 +54,13 @@ This module provides some tools for analyzing helm repos and charts!
 
 this module sets up a list of gitignore lines for various languages
 
+### [k3s.nix](./k3s.nix)
+
+This module creates some `pog` tools specific to [k3s](https://github.com/k3s-io/k3s) cluster maintenance!
+
 ### [k8s.nix](./k8s.nix)
 
-This module creates some `pog` tools that help make you more productive in Kubernetes!
+This module creates some `pog` tools that help make you more productive in [Kubernetes](https://kubernetes.io/)!
 
 ### [nix.nix](./nix.nix)
 

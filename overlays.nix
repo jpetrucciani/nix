@@ -33,6 +33,7 @@
   (import ./mods/pog/github.nix)
   (import ./mods/pog/hax.nix)
   (import ./mods/pog/helm.nix)
+  (import ./mods/pog/k3s.nix)
   (import ./mods/pog/k8s.nix)
   (import ./mods/pog/nix.nix)
   (import ./mods/pog/notion.nix)

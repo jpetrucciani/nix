@@ -1,4 +1,4 @@
-# This module creates some `pog` tools that help make you more productive in Kubernetes!
+# This module creates some `pog` tools that help make you more productive in [Kubernetes](https://kubernetes.io/)!
 final: prev:
 let
   inherit (final) _ pog;
@@ -298,6 +298,7 @@ rec {
     '';
   };
 
+  ktools = k8s_pog_scripts;
   k8s_pog_scripts = [
     ka
     kdesc
