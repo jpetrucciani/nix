@@ -6,6 +6,7 @@ jobs:
       fail-fast: false
       matrix:
         image:
+          - certbot_aws
           - curl
           - hex
           - k8s_aws

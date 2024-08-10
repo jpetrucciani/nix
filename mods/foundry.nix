@@ -273,6 +273,14 @@ let
       [ kubectl ]
     ];
   };
+  foundry_certbot_aws = foundry {
+    name = "certbot-aws";
+    description = "a lightweight image with awscliv2 and certbot configured to work with route53";
+    layers = with pkgs; [
+      [ awscli2 ]
+      [ (certbot.withPlugins (p: with p; [ certbot-dns-route53 ])) ]
+    ];
+  };
   foundry_k8s_gcp = foundry {
     name = "k8s-gcp";
     description = "a lightweight image with just bash, kubectl, and gcloud cli";
@@ -311,6 +319,7 @@ in
   hex = foundry_hex;
   k8s_aws = foundry_k8s_aws;
   k8s_gcp = foundry_k8s_gcp;
+  certbot_aws = foundry_certbot_aws;
   nix = foundry_nix;
   pypi = foundry_pypi;
   python311 = foundry_python_311;
