@@ -36,6 +36,7 @@ let
     yq-go
   ];
 
+
   foundry =
     let
       inherit (pkgs.lib) toInt;
@@ -139,6 +140,7 @@ let
         , trusted-public-keys ? [ "jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=" ]
         , extraCopyToRoot ? [ ]
         , extraPerms ? [ ]
+        , extraMkUserPaths ? [ ]
         , extraMkUser ? ""
         }:
         let
@@ -198,7 +200,13 @@ let
               regex = "/tmp";
               mode = "1777";
             })
-          ] ++ extraPerms;
+          ] ++ extraPerms ++ (map
+            (x: (fn.perm {
+              inherit uid gid user group;
+              path = mkUser;
+              regex = x;
+            }))
+            extraMkUserPaths);
           layers = map (deps: buildLayer { copyToRoot = [ (pkgs.buildEnv { inherit pathsToLink; name = "layer"; paths = deps; }) ]; }) allLayers;
           initializeNixDatabase = enableNix;
           nixUid = toInt uid;
@@ -276,6 +284,15 @@ let
   foundry_certbot_aws = foundry {
     name = "certbot-aws";
     description = "a lightweight image with awscliv2 and certbot configured to work with route53";
+    extraMkUser = ''
+      mkdir -p $out/etc/letsencrypt $out/var/lib/letsencrypt $out/var/log/letsencrypt
+      touch $out/etc/letsencrypt/.keep $out/var/lib/letsencrypt/.keep $out/var/log/letsencrypt/.keep
+    '';
+    extraMkUserPaths = [
+      "/etc/letsencrypt"
+      "/var/lib/letsencrypt"
+      "/var/log/letsencrypt"
+    ];
     layers = with pkgs; [
       [ awscli2 ]
       [ (certbot.withPlugins (p: with p; [ certbot-dns-route53 ])) ]
