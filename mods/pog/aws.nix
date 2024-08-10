@@ -153,7 +153,6 @@ rec {
         name = "profile";
         description = "the profile to load the cluster from";
         envVar = "AWS_PROFILE";
-        required = true;
       }
       {
         name = "cluster";
@@ -173,7 +172,7 @@ rec {
     ];
     script = helpers: ''
       debug "getting cluster config for '$cluster' in '$region' from the '$profile' profile"
-      ${_.aws} eks update-kubeconfig --name "$cluster" --profile "$profile" --region "$region"
+      ${_.aws} eks update-kubeconfig --name "$cluster" ''${profile:+--profile "$profile"} --region "$region"
     '';
   };
 
