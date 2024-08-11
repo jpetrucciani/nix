@@ -90,6 +90,10 @@ This directory contains cli tools
 
 [supabase-cli](https://github.com/supabase/cli) is the main CLI interface for [supabase](https://supabase.com)
 
+### [terramaid.nix](./terramaid.nix)
+
+[terramaid](https://github.com/RoseSecurity/Terramaid) is a utility for generating Mermaid diagrams from Terraform configurations
+
 ### [tlsh-go.nix](./tlsh-go.nix)
 
 [tlsh](https://github.com/glaslos/tlsh) is a tlsh implementation in go
