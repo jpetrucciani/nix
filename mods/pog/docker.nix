@@ -4,6 +4,7 @@ with prev;
 rec {
   da = pog {
     name = "da";
+    version = "0.0.1";
     description = "a shorthand to see all containers on a host";
     flags = [
       { name = "json"; description = "shorthand for json output"; bool = true; }
@@ -21,6 +22,7 @@ rec {
 
   drm = pog {
     name = "drm";
+    version = "0.0.1";
     description = "quickly remove containers from your docker daemon!";
     flags = [
       _.flags.common.force
@@ -32,6 +34,7 @@ rec {
 
   drmi = pog {
     name = "drmi";
+    version = "0.0.1";
     description = "quickly remove images from your docker daemon!";
     flags = [
       _.flags.common.force
@@ -43,6 +46,7 @@ rec {
 
   _dex = pog {
     name = "dex";
+    version = "0.0.1";
     description = "a quick and easy way to exec into a docker pod!";
     flags = [
       {
@@ -62,6 +66,7 @@ rec {
 
   dshell = pog {
     name = "dshell";
+    version = "0.0.1";
     description = "a quick and easy way to pop a shell on docker!";
     flags = [
       _.flags.docker.image
@@ -80,6 +85,11 @@ rec {
         bool = true;
       }
       {
+        name = "mount";
+        description = "mount the current directory into the container";
+        bool = true;
+      }
+      {
         name = "user";
         description = "user to run as inside the container";
       }
@@ -92,17 +102,20 @@ rec {
         --interactive \
         --tty \
         --rm \
+        --entrypoint sh \
         ''${port:+--publish $port:$port} \
         ''${nix:+--volume /nix:/nix:ro} \
+        ''${mount:+--volume $(pwd):/cwd} \
         ''${user:+--user $user} \
         --name "$container_name" \
         "$image" \
-        sh -c "$command"
+        -c "$command"
     '';
   };
 
   dlog = pog {
     name = "dlog";
+    version = "0.0.1";
     description = "a quick and easy way to log one or more containers!";
     flags = [
       {
@@ -127,6 +140,7 @@ rec {
 
   dlint = pog {
     name = "dlint";
+    version = "0.0.1";
     description = "a prescriptive hadolint dockerfile linter config";
     flags = [
       {
