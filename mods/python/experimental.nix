@@ -427,7 +427,7 @@ final: prev: with prev; rec {
 
   icon-font-to-png = buildPythonPackage rec {
     pname = "icon-font-to-png";
-    version = "0.4.1";
+    version = "0.4.2";
 
     format = "setuptools";
     src = pkgs.fetchFromGitHub {
@@ -584,12 +584,12 @@ final: prev: with prev; rec {
 
   fasthtml = buildPythonPackage rec {
     pname = "python-fasthtml";
-    version = "0.4.1";
+    version = "0.4.2";
     pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-xIO9Pg/KFH5P57HmBEwV+b7uxpliRTrgpjG35viBUK0=";
+      hash = "sha256-jn32w93V7RaZSxjmerJKCzTuxK0MVa6ZesVkiYQFTKA=";
     };
 
     nativeBuildInputs = [
