@@ -579,12 +579,12 @@ final: prev: with prev; rec {
 
   fasthtml = buildPythonPackage rec {
     pname = "python-fasthtml";
-    version = "0.2.1";
+    version = "0.4.1";
     pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-T4pckOnWCGTrqponrVSW3seJ0vkdVKXkBgBl1/fMu8Q=";
+      hash = "sha256-xIO9Pg/KFH5P57HmBEwV+b7uxpliRTrgpjG35viBUK0=";
     };
 
     nativeBuildInputs = [
@@ -594,6 +594,7 @@ final: prev: with prev; rec {
     ];
 
     pythonRelaxDeps = [
+      "fastcore"
       "uvicorn"
     ];
 
