@@ -549,17 +549,22 @@ final: prev: with prev; rec {
 
   fastlite = buildPythonPackage rec {
     pname = "fastlite";
-    version = "0.0.7";
+    version = "0.0.8";
     pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-yfcTWnPKiWhd9wMAYRQ1v4C2iJKQvnuxEfnE4otICuU=";
+      hash = "sha256-qQz/ax74QgsXRIMCcrXqCPDnXGOtexXYwHe5f6ztQ9s=";
     };
 
     nativeBuildInputs = [
+      pythonRelaxDepsHook
       setuptools
       wheel
+    ];
+
+    pythonRelaxDeps = [
+      "fastcore"
     ];
 
     propagatedBuildInputs = [
