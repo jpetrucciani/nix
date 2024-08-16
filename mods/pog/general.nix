@@ -65,7 +65,8 @@ rec {
     script = ''
       # shellcheck disable=SC1003
       for s in $(cat - | ${_.jq} -r "to_entries|map(\"\(.key)='\(.value|tostring|split(\"'\")|join(\"\\\\'\"))'\")|.[]" ); do
-        echo "export $s"
+        # shellcheck disable=SC2001,SC2016
+        echo "export $(echo "$s" | sed 's/`/\\`/g')"
       done
     '';
   };
