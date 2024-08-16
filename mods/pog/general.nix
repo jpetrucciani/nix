@@ -63,11 +63,7 @@ rec {
     name = "json_envvars";
     description = "convert json to a set of bash exports!";
     script = ''
-      # shellcheck disable=SC1003
-      for s in $(cat - | ${_.jq} -r "to_entries|map(\"\(.key)='\(.value|tostring|split(\"'\")|join(\"\\\\'\"))'\")|.[]" ); do
-        # shellcheck disable=SC2001,SC2016
-        echo "export $(echo "$s" | sed 's/`/\\`/g')"
-      done
+      ${_.jq} -r 'to_entries[] | "export " + (.key) + "=" + (.value|@sh)'
     '';
   };
 
