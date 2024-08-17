@@ -278,7 +278,7 @@ rec {
     ];
     script = ''
       echo "''${secret}" | ${_.xargs} -I {} --no-run-if-empty \
-        ${_.k} annotate --overwrite externalsecret.external-secrets.io {} refresh="$(${_.date} +%s)"
+        ${_.k} annotate --namespace "$namespace" --overwrite externalsecret.external-secrets.io {} refresh="$(${_.date} +%s)"
     '';
   };
 
