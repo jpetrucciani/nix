@@ -354,6 +354,11 @@ in
     '' else "");
   };
 
+  programs.broot = {
+    enable = true;
+    enableBashIntegration = true;
+  };
+
   programs.zoxide = {
     enable = true;
   };
