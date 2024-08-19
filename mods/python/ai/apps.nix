@@ -247,4 +247,200 @@ in
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  poppler-utils = buildPythonPackage rec {
+    pname = "poppler-utils";
+    version = "0.1.0";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-6XqS3P3leyGpDDBwaU5Y+O6hVVFa6OYkJmoFLQd2o0k=";
+    };
+
+    nativeBuildInputs = with final; [
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = with final; [
+      click
+    ];
+
+    passthru.optional-dependencies = with final; {
+      dev = [
+        click
+        sphinx
+      ];
+    };
+
+    pythonImportsCheck = [ "poppler" ];
+
+    meta = {
+      description = "Precompiled command-line utilities (based on Poppler) for manipulating PDF files and converting them to other formats";
+      homepage = "https://pypi.org/project/poppler-utils/";
+      license = licenses.gpl2Only;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  flupy = buildPythonPackage rec {
+    pname = "flupy";
+    version = "1.2.0";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-Ekh6AI6XRM010PbqPPoG9LKyfLE4v1fQeI9cJuV6/mk=";
+    };
+
+    nativeBuildInputs = with final; [
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = with final; [
+      typing-extensions
+    ];
+
+    pythonImportsCheck = [ "flupy" ];
+
+    meta = {
+      description = "Method chaining built on generators";
+      homepage = "https://pypi.org/project/flupy/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  vecs = buildPythonPackage rec {
+    pname = "vecs";
+    version = "0.4.4";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-PgNJHAWkdISjOzLW7B2fSEERa6cwftmZRRBnjwmDFv0=";
+    };
+
+    nativeBuildInputs = with final; [
+      setuptools
+      wheel
+      pythonRelaxDepsHook
+    ];
+
+    pythonRelaxDeps = [
+      "pgvector"
+    ];
+
+    propagatedBuildInputs = with final; [
+      deprecated
+      flupy
+      pgvector
+      psycopg2
+      sqlalchemy
+    ];
+
+    preBuild = ''
+      substituteInPlace ./setup.py --replace 'psycopg2-binary' 'psycopg2'
+    '';
+
+
+    pythonImportsCheck = [ "vecs" ];
+
+    meta = {
+      description = "Pgvector client";
+      homepage = "https://pypi.org/project/vecs/";
+      license = with licenses; [ asl20 mit ];
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  r2r = buildPythonPackage rec {
+    pname = "r2r";
+    version = "0.2.85";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-xXEWi/lUlKuhfacGL01Tin34sy68DWpccGZflzeCf4U=";
+    };
+
+    nativeBuildInputs = with final; [
+      poetry-core
+      setuptools
+      wheel
+      pythonRelaxDepsHook
+    ];
+
+    pythonRelaxDeps = [
+      "alembic"
+      "fastapi"
+      "fire"
+      "fsspec"
+      "gunicorn"
+      "ollama"
+      "posthog"
+      "pydantic"
+      "uvicorn"
+    ];
+
+    propagatedBuildInputs = with final; [
+      aiosqlite
+      alembic
+      asyncpg
+      bcrypt
+      beautifulsoup4
+      email-validator
+      fastapi
+      fire
+      fsspec
+      gunicorn
+      litellm
+      markdown
+      neo4j
+      nest-asyncio
+      ollama
+      openai
+      openpyxl
+      passlib
+      poppler-utils
+      posthog
+      psutil
+      pydantic
+      pyjwt
+      pypdf
+      python-docx
+      python-multipart
+      python-pptx
+      pyyaml
+      redis
+      requests
+      sqlalchemy
+      toml
+      types-requests
+      uvicorn
+      vecs
+    ];
+
+    passthru.optional-dependencies = with final; {
+      all = [
+        moviepy
+        opencv-python
+      ];
+      ingest-movies = [
+        moviepy
+        opencv-python
+      ];
+    };
+
+    pythonImportsCheck = [ "r2r" ];
+
+    meta = {
+      description = "SciPhi R2R";
+      homepage = "https://pypi.org/project/r2r/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
