@@ -22,10 +22,6 @@ This directory contains specific servers
 
 [obligator](https://github.com/anderspitman/obligator) is an OIDC server designed for self-hosters
 
-### [parseable.nix](./parseable.nix)
-
-[parseable](https://github.com/parseablehq/parseable) is a log analytics system written in Rust
-
 ### [poglets.nix](./poglets.nix)
 
 [poglets](https://github.com/jpetrucciani/poglets) is a TCP tunneling system
