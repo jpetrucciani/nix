@@ -22,11 +22,11 @@ rustPlatform.buildRustPackage {
   src = fetchFromGitHub {
     owner = "dacbd";
     repo = "vercel-log-drain";
-    rev = "df4ddace599e9a8c2ac57c27cbb9e39e0c7c52ee";
-    hash = "sha256-AmKYPmJ5GCbLu+LB3uObagHjIg2ahsg6kmBWLVF3ACw=";
+    rev = "04d002ce54dba769316f649185468de4cf1f7d81";
+    hash = "sha256-NkSU8tCuHdS6UXyeSuYjLMDLC7aARon+bfERWdkQz9I=";
   };
 
-  cargoHash = "sha256-v/GxeBmR6qhUna3PjZhi9wAEwdmC1t7m6ysfNJ/pfyU=";
+  cargoHash = "sha256-ACwAfTZVyl28N14sJuxSRoKj7LvEtKf/i81kEVCMfyc=";
 
   nativeBuildInputs = [
     pkg-config
