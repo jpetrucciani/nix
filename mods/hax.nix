@@ -207,10 +207,6 @@ final: prev:
       tabulate
       beautifulsoup4
 
-      # api
-      fastapi
-      uvicorn
-
       # data
       numpy
       pandas
