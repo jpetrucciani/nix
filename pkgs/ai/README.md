@@ -30,10 +30,6 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 [`stable-diffusion.cpp`](https://github.com/leejet/stable-diffusion.cpp) is a port of stable-diffusion model inference in C/C+
 
-### [tenere.nix](./tenere.nix)
-
-[tenere](https://github.com/pythops/tenere) is a TUI interface for LLMs
-
 ### [whisper-cpp.nix](./whisper-cpp.nix)
 
 [`whisper.cpp`](https://github.com/ggerganov/whisper.cpp) is a port of [OpenAI's Whisper](https://openai.com/research/whisperg) model in C/C++
