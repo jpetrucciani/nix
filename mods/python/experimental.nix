@@ -632,4 +632,56 @@ final: prev: with prev; rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  maas = buildPythonPackage rec {
+    pname = "maas";
+    version = "3.5.0-beta1";
+    pyproject = true;
+
+    src = pkgs.fetchFromGitHub {
+      owner = "canonical";
+      repo = "maas";
+      rev = version;
+      hash = "sha256-39+b/cuLJfPyjz+07ppPhUNTZeRn8CfJ8viuZFM0i3A=";
+      fetchSubmodules = true;
+    };
+
+    nativeBuildInputs = [
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = [
+      aiodns
+      aiofiles
+      aiohttp
+      asyncpg
+      bson
+      fastapi
+      httplib2
+      hvac
+      jsonschema
+      lxml
+      macaroonbakery
+      markupsafe
+      oauthlib
+      paramiko
+      pexpect
+      psycopg2
+      pyopenssl
+      pytz
+      pyyaml
+      requests
+      uvloop
+    ];
+
+    pythonImportsCheck = [ "maascli" ];
+
+    meta = with lib; {
+      description = "Official MAAS repository mirror (may be out of date). Development happens in Launchpad (https://git.launchpad.net/maas";
+      homepage = "https://github.com/canonical/maas/";
+      license = licenses.agpl3Only;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
