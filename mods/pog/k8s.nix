@@ -256,7 +256,7 @@ rec {
         ${_.yq} '.dataStrings = (.data | map_values(@base64d)) | del(.data)' | \
         ${final.moreutils}/bin/vipe | \
         ${_.yq} '.data = (.dataStrings | map_values(@base64)) | del(.dataStrings)' | \
-        ${_.k} apply -f --server-side=true -
+        ${_.k} apply -f -
     '';
   };
 
