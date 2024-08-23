@@ -7,6 +7,7 @@
 , image ? "${image_base}:${image_tag}"
 , port ? 8443
 , altPort ? null
+, command ? [ "haproxy" "-f" "/etc/haproxy/haproxy.cfg" ]
 , replicas ? 1
 , cpuRequest ? "0.2"
 , cpuLimit ? "1.0"
@@ -25,8 +26,7 @@
 let
   inherit (hex) toYAMLDoc;
   haproxy = hex.k8s.services.build {
-    inherit name namespace port altPort labels image replicas cpuRequest cpuLimit memoryRequest memoryLimit autoscale hostAliases readinessProbe maxUnavailable maxSurge;
-    command = [ ];
+    inherit name namespace port altPort command labels image replicas cpuRequest cpuLimit memoryRequest memoryLimit autoscale hostAliases readinessProbe maxUnavailable maxSurge;
     env = extraEnv;
     envFrom = [
       { secretRef.name = secret; }
