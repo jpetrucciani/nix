@@ -7,7 +7,7 @@
 , image ? "${image_base}:${image_tag}"
 , port ? 8443
 , altPort ? null
-, command ? [ "haproxy" "-f" "/etc/haproxy/haproxy.cfg" ]
+, command ? [ "haproxy" "-W" "-db" "-f" "/etc/haproxy/haproxy.cfg" ]
 , replicas ? 1
 , cpuRequest ? "0.2"
 , cpuLimit ? "1.0"
