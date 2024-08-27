@@ -34,6 +34,7 @@
     inherit name;
     tier = "api";
   }
+, extraService ? { } # escape hatch to inject other service spec
 }:
 let
   inherit (hex) toYAMLDoc;
@@ -63,7 +64,7 @@ let
     hex.k8s.services.components.volumes.tmp
   ];
   service = hex.k8s.services.build
-    {
+    ({
       inherit name namespace labels port image replicas cpuRequest cpuLimit memoryRequest memoryLimit autoscale volumes readinessProbe maxUnavailable maxSurge;
       command = [ "litellm" ];
       args = [ "--config" "/etc/conf/config.yaml" ];
@@ -75,7 +76,7 @@ let
       ];
       env = extraEnv;
       securityContext = { privileged = false; };
-    };
+    } // extraService);
 in
 ''
   ${toYAMLDoc config}

@@ -17,16 +17,18 @@
 , haproxy-cfg ? ""
 , autoscale ? false
 , extraEnv ? [ ]
+, envAttrs ? { }
 , tailscale ? false
 , hostAliases ? [ ]
 , readinessProbe ? null
 , maxUnavailable ? 0
 , maxSurge ? "50%"
+, extraService ? { } # escape hatch to inject other service spec
 }:
 let
   inherit (hex) toYAMLDoc;
-  haproxy = hex.k8s.services.build {
-    inherit name namespace port altPort command labels image replicas cpuRequest cpuLimit memoryRequest memoryLimit autoscale hostAliases readinessProbe maxUnavailable maxSurge;
+  haproxy = hex.k8s.services.build ({
+    inherit name namespace port altPort command labels image replicas cpuRequest cpuLimit memoryRequest memoryLimit autoscale hostAliases readinessProbe maxUnavailable maxSurge envAttrs;
     env = extraEnv;
     envFrom = [
       { secretRef.name = secret; }
@@ -40,7 +42,7 @@ let
     ];
     securityContext = { privileged = false; };
     tailscaleSidecar = tailscale;
-  };
+  } // extraService);
   config = {
     apiVersion = "v1";
     stringData = {
