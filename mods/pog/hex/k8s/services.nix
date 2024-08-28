@@ -91,6 +91,7 @@ let
       , roleBinding ? true
       , port ? 443
       , altPort ? null
+      , extraServicePorts ? [ ]
       , cpuUtilization ? 75
       , replicas ? 2
       , revisionHistoryLimit ? 2
@@ -207,7 +208,7 @@ let
           (if nodePort then components.nodeport-service { inherit name namespace labels port serviceSuffix extraServiceAnnotations; } else
           if loadBalancer then
             components.lb-service { inherit name namespace labels port altPort ip serviceSuffix extraServiceAnnotations; } else
-            components.service { inherit name namespace labels port altPort serviceSuffix extraServiceAnnotations; }) // extraSvc;
+            components.service { inherit name namespace labels port altPort serviceSuffix extraServiceAnnotations; extraPorts = extraServicePorts; }) // extraSvc;
         ing = (components.ingress { inherit name namespace port ingressSuffix serviceSuffix pre1_18 host extraIngressAnnotations disableHttp; tls = ingressTLSSecret; }) // extraIng;
       in
       ''
@@ -336,6 +337,7 @@ let
         , labels
         , port ? 443
         , altPort ? null
+        , extraPorts ? [ ]
         , namespace ? "default"
         , serviceSuffix ? "-service"
         , extraServiceAnnotations ? { }
@@ -364,7 +366,8 @@ let
               name = "application-alt";
               targetPort = altPort;
               protocol = "TCP";
-            }] else [ ]);
+            }] else [ ])
+            ++ extraPorts;
             selector = labels;
             type = "ClusterIP";
           };
