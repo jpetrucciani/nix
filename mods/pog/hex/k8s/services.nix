@@ -199,7 +199,7 @@ let
           ingress = ingressPolicy;
         }) // extraNP;
         dep = (components.deployment {
-          inherit name namespace labels image replicas revisionHistoryLimit maxSurge maxUnavailable depSuffix saSuffix daemonSet lifecycle imagePullSecrets affinity;
+          inherit name namespace labels image replicas revisionHistoryLimit port maxSurge maxUnavailable depSuffix saSuffix daemonSet lifecycle imagePullSecrets affinity;
           inherit cpuRequest memoryRequest ephemeralStorageRequest cpuLimit memoryLimit ephemeralStorageLimit command args volumes subdomain nodeSelector livenessProbe readinessProbe securityContext;
           inherit env envAttrs envFrom extraContainer extraPodAnnotations appArmor tailscaleSidecar tailscale_image_base tailscale_image_tag tsSuffix hostAliases __init pre1_30;
         }) // extraDep;
@@ -485,6 +485,7 @@ let
         , depSuffix ? ""
         , saSuffix ? "-sa"
         , tsSuffix ? "-ts"
+        , port ? null
         , command ? null
         , args ? null
         , env ? [ ]
@@ -573,6 +574,11 @@ let
                     ${ifNotNull readinessProbe "readinessProbe"} = readinessProbe;
                     ${ifNotNull sec_context "securityContext"} = sec_context;
                     ${ifNotNull lifecycle "lifecycle"} = lifecycle;
+                    ${ifNotNull port "ports"} = [{
+                      containerPort = port;
+                      name = "application";
+                      protocol = "TCP";
+                    }];
 
                     imagePullPolicy = "Always";
                     resources = {
