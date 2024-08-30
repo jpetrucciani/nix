@@ -165,7 +165,10 @@ in
     enableNvidia = true;
   };
   hardware = {
-    nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+    nvidia = {
+      open = false;
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
+    };
     graphics = {
       enable = true;
       enable32Bit = true;

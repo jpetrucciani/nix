@@ -107,7 +107,10 @@ in
       enable = true;
       enable32Bit = true;
     };
-    nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+    nvidia = {
+      open = false;
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
+    };
   };
 
   fileSystems."/mnt/jupiter" = {
