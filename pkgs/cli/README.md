@@ -70,6 +70,10 @@ This directory contains cli tools
 
 [pypipe](https://github.com/bugen/pypipe) is a python pipe cli tool
 
+### [rainfrog.nix](./rainfrog.nix)
+
+[rainfrog](https://github.com/achristmascarl/rainfrog) is a database management tui for postgres
+
 ### [rare.nix](./rare.nix)
 
 [rare](https://github.com/zix99/rare) is a realtime regex extraction and aggregation cli tool
