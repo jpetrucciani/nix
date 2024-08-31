@@ -161,6 +161,17 @@ in
           import GEOBLOCK
           ${block}
         '';
+        upPaths = ''
+          route /up {
+            redir https://raw.githubusercontent.com/jpetrucciani/nix/main/scripts/nixup.sh
+          }
+          route /os-up {
+            redir https://github.com/jpetrucciani/nixos-up/archive/main.tar.gz
+          }
+          route /win-up {
+            redir https://get.activated.win
+          }
+        '';
       in
       {
         enable = true;
@@ -281,6 +292,7 @@ in
             route / {
               redir https://github.com/jpetrucciani/
             }
+            ${upPaths}
           '';
           "nix.cobi.dev" = secure ''
             route / {
@@ -299,12 +311,7 @@ in
                 tarball_file_text "\{j?import(fetchTarball\{url=\"https://nix.cobi.dev/latest\";\})\{\}\}:with j;{path.0}"
               }
             }
-            route /up {
-              redir https://raw.githubusercontent.com/jpetrucciani/nix/main/scripts/nixup.sh
-            }
-            route /os-up {
-              redir https://github.com/jpetrucciani/nixos-up/archive/main.tar.gz
-            }
+            ${upPaths}
           '';
           "gemologic.dev" = secure ''
             route / {
