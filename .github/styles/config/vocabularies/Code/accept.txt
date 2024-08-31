@@ -23,6 +23,7 @@
 (?i)dev
 (?i)devops
 (?i)dirdiff
+(?i)doceo
 (?i)docker
 (?i)dockerfile
 (?i)failover
@@ -77,6 +78,7 @@
 (?i)pvc
 (?i)pvcs
 (?i)pypipe
+(?i)rainfrog
 (?i)readmes?
 (?i)realtime
 (?i)redis
