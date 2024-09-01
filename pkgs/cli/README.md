@@ -106,6 +106,10 @@ This directory contains cli tools
 
 [uesave](https://github.com/trumank/uesave-rs) is a rust library for reading and writing UE save files
 
+### [wush.nix](./wush.nix)
+
+[wush](https://github.com/coder/wush) is a fast way to transfer files between computers with wireguard
+
 ### [xlsxsql.nix](./xlsxsql.nix)
 
 [xlsxsql](https://github.com/noborus/xlsxsql) is a cli tool for executing SQL queries on excel files

@@ -104,6 +104,8 @@
 (?i)webapps?
 (?i)webservers?
 (?i)whoogle
+(?i)wireguard
 (?i)workspaces?
+(?i)wush
 (?i)xps
 (?i)yarn
