@@ -14,6 +14,7 @@ rec {
         with_dotnet = "include dotnet and the required libs";
         with_elixir = "include elixir with dependencies";
         with_golang = "include golang";
+        with_java = "include a jvm and some basics";
         with_nim = "include a nim with dependencies";
         with_node = "include node";
         with_php = "include a php with packages";
@@ -116,6 +117,10 @@ rec {
           if [ "$with_vlang" = "1" ]; then
             vlang="vlang = [(vlang.withPackages (p: with p; []))];"
           fi
+          java=""
+          if [ "$with_java" = "1" ]; then
+            java="java = [gradle${"\n"}zulu];"
+          fi
           ftb="fetchTarball { name = \"jpetrucciani-$(date '+%F')\"; url = \"https://github.com/jpetrucciani/nix/archive/$rev.tar.gz\"; sha256 = \"$sha\";}"
           if ${h.flag "update"}; then
             default_nix="''${1:-./default.nix}"
@@ -142,7 +147,7 @@ rec {
                   coreutils
                   nixpkgs-fmt
                 ];
-                ''${crystal} ''${elixir} ''${golang} ''${nim} ''${node} ''${php} ''${dotnet} ''${pulumi} ''${py} ''${ruby} ''${rust} ''${terraform} ''${vlang}
+                ''${crystal} ''${elixir} ''${golang} ''${nim} ''${node} ''${php} ''${dotnet} ''${java} ''${pulumi} ''${py} ''${ruby} ''${rust} ''${terraform} ''${vlang}
                 scripts = pkgs.lib.attrsets.attrValues scripts;
               };
 

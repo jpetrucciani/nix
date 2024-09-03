@@ -35,6 +35,10 @@ hex -t charts.nix
 
 ## In this directory
 
+### [charts.nix](./charts.nix)
+
+an example of how to use included helm charts in hex! you can find the [list of hex modules here](../../mods/pog/hex/k8s)
+
 ### [default.nix](./default.nix)
 
 this is a lightweight nix env showing how you can include hex in your local environment

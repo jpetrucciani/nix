@@ -1,3 +1,5 @@
+# jpetrucciani/nix
+
 [![uses nix](https://img.shields.io/badge/uses-nix-%237EBAE4)](https://nixos.org/)
 
 _jacobi's nixpkgs configurations, overlays, documentation, and other magic_
