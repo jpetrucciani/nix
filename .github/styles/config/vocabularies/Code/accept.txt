@@ -49,6 +49,7 @@
 (?i)k8s
 (?i)katafygio
 (?i)knative
+(?i)kong
 (?i)kubernetes
 (?i)kubespecs?
 (?i)lastresort
