@@ -44,13 +44,15 @@ let
       , postRender ? ""
       , prettify ? true
       , sortYaml ? false
-      , kubeVersion ? "1.27"
+      , kubeVersion ? "1.30"
+      , apiVersions ? ""
       }:
       let
         chartFiles = (if useOCI then fetchOCIChart else fetchTarball) {
           inherit sha256 url;
         };
         useOCI = pkgs.lib.hasPrefix "oci://" url;
+        apiVersionOverrides = if apiVersions != "" then ''--api-versions '${apiVersions}' '' else "";
       in
       rec {
         hookParams = {
@@ -63,7 +65,7 @@ let
           ${preRenderText}
           ${pkgs.kubernetes-helm}/bin/helm template \
             --namespace '${namespace}' \
-            --kube-version '${kubeVersion}' \
+            --kube-version '${kubeVersion}' ${apiVersionOverrides} \
             ${_if includeCRDs "--include-crds"} \
             ${name} \
             ${concatMapStrings (x: "--values ${x} ") values} \

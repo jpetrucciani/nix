@@ -216,7 +216,7 @@ rec {
     in
     pog {
       name = "hexcast";
-      version = "0.0.4";
+      version = "0.0.5";
       description = "a quick and easy way to use nix to render (cast) various other types of config files!";
       flags = [
         {
@@ -250,7 +250,7 @@ rec {
 
   hex = pog {
     name = "hex";
-    version = "0.0.6";
+    version = "0.0.7";
     description = "a quick and easy way to render full kubespecs from nix files";
     flags = [
       {

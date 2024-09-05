@@ -26,6 +26,7 @@ let
     helm = import ./k8s/helm.nix params;
     infisical = import ./k8s/infisical.nix params;
     jupyterhub = import ./k8s/jupyterhub.nix params;
+    kong = import ./k8s/kong.nix params;
     langflow = import ./k8s/langflow.nix params;
     mongo = import ./k8s/mongo.nix params;
     nginx-ingress = import ./k8s/nginx-ingress.nix params;
@@ -73,8 +74,10 @@ let
         , sortYaml ? false
         , preRender ? defaults.preRender or ""
         , postRender ? defaults.postRender or ""
+        , kubeVersion ? "1.30"
+        , apiVersions ? ""
         }: hex.k8s.helm.build {
-          inherit name namespace values version sha256 forceNamespace sortYaml preRender postRender;
+          inherit name namespace values version sha256 forceNamespace sortYaml preRender postRender kubeVersion apiVersions;
           extraFlags = extraFlags ++ [ "--version=${version}" ];
           sets = sets ++ extraSets;
           url = chart_url version;

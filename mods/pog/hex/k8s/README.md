@@ -82,6 +82,10 @@ This module contains an [infisical](https://github.com/Infisical/infisical) helm
 
 [jupyterhub](https://github.com/jupyterhub/jupyterhub) is a platform for hosting Jupyter notebooks for many users
 
+### [kong.nix](./kong.nix)
+
+This module contains a [kong ingress controller](https://github.com/Kong/kubernetes-ingress-controller) helm chart
+
 ### [langflow.nix](./langflow.nix)
 
 [langflow](https://github.com/langflow-ai/langflow) is a visual framework for building multi-agent and RAG applications

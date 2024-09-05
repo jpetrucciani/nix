@@ -298,6 +298,12 @@ rec {
     chart_url = "https://helm.dask.org/${name}-{1}.tgz";
   };
 
+  chart_scan_kong-ingress = _chart_scan {
+    name = "ingress";
+    base_url = "https://charts.konghq.com";
+    chart_url = "https://github.com/Kong/charts/releases/download/ingress-{1}/ingress-{1}.tgz";
+  };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
