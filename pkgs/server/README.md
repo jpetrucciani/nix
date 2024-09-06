@@ -14,6 +14,10 @@ This directory contains specific servers
 
 [epimetheus](https://github.com/jpetrucciani/epimetheus) is a swiss army knife prometheus exporter capable of watching json/csv/yaml files and providing prometheus metrics
 
+### [garagemq.nix](./garagemq.nix)
+
+[garagemq](https://github.com/valinurovam/garagemq) is an AMQP message broker implemented with golang
+
 ### [hasura-batteries.nix](./hasura-batteries.nix)
 
 [hasura-batteries](https://github.com/RocketsGraphQL/hasura-batteries) is a service that runs alongside Hasura GraphQL engine giving it superpowers like Authentication
