@@ -35,6 +35,7 @@ let
       , sha256
       , namespace ? "default"
       , values ? [ ]
+      , valuesAttrs ? null
       , sets ? [ ]
       , version ? "0.0.0"
       , includeCRDs ? true
@@ -53,6 +54,7 @@ let
         };
         useOCI = pkgs.lib.hasPrefix "oci://" url;
         apiVersionOverrides = if apiVersions != "" then ''--api-versions '${apiVersions}' '' else "";
+        allValues = values ++ (if valuesAttrs != null then [ hex.valuesFile valuesAttrs ] else [ ]);
       in
       rec {
         hookParams = {
@@ -68,7 +70,7 @@ let
             --kube-version '${kubeVersion}' ${apiVersionOverrides} \
             ${_if includeCRDs "--include-crds"} \
             ${name} \
-            ${concatMapStrings (x: "--values ${x} ") values} \
+            ${concatMapStrings (x: "--values ${x} ") allValues} \
             ${concatMapStrings (x: "--set '${x}' ") sets} \
             ${concatMapStrings (x: "${x} ") extraFlags} \
             . >$out
