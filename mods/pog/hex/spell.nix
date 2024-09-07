@@ -66,6 +66,7 @@ let
         { name ? defaults.name or ""
         , namespace ? defaults.namespace or "default"
         , values ? [ ]
+        , valuesAttrs ? null
         , sets ? [ ]
         , version ? defaults.version or ""
         , sha256 ? defaults.sha256 or ""
@@ -77,7 +78,7 @@ let
         , kubeVersion ? "1.30"
         , apiVersions ? ""
         }: hex.k8s.helm.build {
-          inherit name namespace values version sha256 forceNamespace sortYaml preRender postRender kubeVersion apiVersions;
+          inherit name namespace values valuesAttrs version sha256 forceNamespace sortYaml preRender postRender kubeVersion apiVersions;
           extraFlags = extraFlags ++ [ "--version=${version}" ];
           sets = sets ++ extraSets;
           url = chart_url version;
