@@ -54,7 +54,7 @@ let
         };
         useOCI = pkgs.lib.hasPrefix "oci://" url;
         apiVersionOverrides = if apiVersions != "" then ''--api-versions '${apiVersions}' '' else "";
-        allValues = values ++ (if valuesAttrs != null then [ hex.valuesFile valuesAttrs ] else [ ]);
+        allValues = values ++ (if valuesAttrs != null then [ (hex.valuesFile valuesAttrs) ] else [ ]);
       in
       rec {
         hookParams = {
