@@ -35,18 +35,7 @@ let
       repoName = "helm-chart";
       chartName = "external-secrets";
     };
-    chart =
-      { name ? defaults.name
-      , namespace ? defaults.namespace
-      , values ? [ ]
-      , sets ? [ "installCRDs=true" ]
-      , version ? defaults.version
-      , sha256 ? defaults.sha256
-      , extraFlags ? [ hex.k8s.helm.constants.flags.create-namespace ]
-      }: hex.k8s.helm.build {
-        inherit name namespace values sets version sha256 extraFlags;
-        url = chart_url version;
-      };
+    chart = hex.k8s._.chart { inherit defaults chart_url; };
     cluster_store = rec {
       build =
         { aws ? false
