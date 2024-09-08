@@ -11,7 +11,7 @@ let
     };
     chart = hex.k8s._.chart {
       inherit defaults;
-      chart_url = version: _chart_url { inherit (defaults) name version; prefix = "helm-"; };
+      chart_url = version: _chart_url { inherit version; inherit (defaults) name; prefix = "helm-"; };
     };
     version = rec {
       _v = hex.k8s._.version chart;
@@ -519,7 +519,7 @@ let
     };
     chart = hex.k8s._.chart {
       inherit defaults;
-      chart_url = version: _chart_url { inherit (defaults) name version; };
+      chart_url = version: _chart_url { inherit version; inherit (defaults) name; };
     };
     version = rec {
       _v = hex.k8s._.version chart;
@@ -537,7 +537,7 @@ let
     };
     chart = hex.k8s._.chart {
       inherit defaults;
-      chart_url = version: _chart_url { inherit (defaults) name version; };
+      chart_url = version: _chart_url { inherit version; inherit (defaults) name; };
     };
     version = rec {
       _v = hex.k8s._.version chart;
