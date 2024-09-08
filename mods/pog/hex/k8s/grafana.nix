@@ -3,31 +3,16 @@
 let
   inherit (hex) toYAML toYAMLDoc;
   _chart_url = { name, version, prefix ? "" }: "https://github.com/grafana/helm-charts/releases/download/${prefix}${name}-${version}/${name}-${version}.tgz";
-  _chart = { defaults, prefix ? "" }:
-    { name ? defaults.name
-    , chart_name ? defaults.chart_name
-    , namespace ? defaults.namespace
-    , values ? [ ]
-    , sets ? [ ]
-    , version ? defaults.version
-    , sha256 ? defaults.sha256
-    , forceNamespace ? true
-    , extraFlags ? [ hex.k8s.helm.constants.flags.create-namespace ]
-    , preRender ? ""
-    , postRender ? ""
-    }: hex.k8s.helm.build {
-      inherit name namespace sha256 values version forceNamespace sets extraFlags preRender postRender;
-      url = _chart_url { inherit prefix version; name = chart_name; };
-    };
   loki = rec {
     defaults = {
       name = "loki";
       chart_name = "loki";
       namespace = "loki";
-      version = "6.0.0";
-      sha256 = "08hy2fwr6rlqc0cf6g815fly45nmf1kv3ngfgmy4k2jyf5rd8z50";
     };
-    chart = _chart { inherit defaults; prefix = "helm-"; };
+    chart = hex.k8s._.chart {
+      inherit defaults;
+      chart_url = version: _chart_url { inherit (defaults) name version; prefix = "helm-"; };
+    };
     version = rec {
       _v = hex.k8s._.version chart;
       latest = v6-6-5;
@@ -531,10 +516,11 @@ let
       name = "mimir";
       chart_name = "mimir-distributed";
       namespace = "mimir";
-      version = "5.1.2";
-      sha256 = "0frz4fs0za92flb81cgpxhjrkrsmypykz6ynn5j4z1vafqs4ckhq";
     };
-    chart = _chart { inherit defaults; };
+    chart = hex.k8s._.chart {
+      inherit defaults;
+      chart_url = version: _chart_url { inherit (defaults) name version; };
+    };
     version = rec {
       _v = hex.k8s._.version chart;
       latest = v5-3-0;
@@ -549,7 +535,10 @@ let
       chart_name = "oncall";
       namespace = "oncall";
     };
-    chart = _chart { inherit defaults; };
+    chart = hex.k8s._.chart {
+      inherit defaults;
+      chart_url = version: _chart_url { inherit (defaults) name version; };
+    };
     version = rec {
       _v = hex.k8s._.version chart;
       latest = v1-9-22;
