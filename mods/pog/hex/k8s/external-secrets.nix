@@ -42,14 +42,16 @@ let
         , aws_region ? "us-east-1"
         , gcp_project ? null
         , name ? defaults.store_name
+        , aws_role ? null
         , secret ? "${name}-creds"
         , filename ? "${name}-creds.json"
         , namespace ? "external-secrets"
-        }: toYAMLDoc (store { inherit name aws aws_region gcp_project secret filename namespace; });
+        }: toYAMLDoc (store { inherit name aws aws_region aws_role gcp_project secret filename namespace; });
       store =
         { name
         , aws
         , aws_region
+        , aws_role
         , gcp_project
         , secret
         , filename
@@ -66,7 +68,7 @@ let
             provider = {
               ${if (gcp_project != null) then "gcpsm" else null} = {
                 projectID = gcp_project;
-                auth = {
+                ${if secret != null then "auth" else null} = {
                   secretRef = {
                     secretAccessKeySecretRef = {
                       inherit namespace;
@@ -79,7 +81,8 @@ let
               ${if aws then "aws" else null} = {
                 service = "SecretsManager";
                 region = aws_region;
-                auth = {
+                ${if aws_role != null then "role" else null} = aws_role;
+                ${if secret != null then "auth" else null} = {
                   secretRef = {
                     accessKeyIDSecretRef = {
                       inherit namespace;
