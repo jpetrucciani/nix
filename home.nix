@@ -194,7 +194,7 @@ in
           # mac specific
           (
             optList isDarwin [
-              lima
+              # lima
             ]
           )
 
