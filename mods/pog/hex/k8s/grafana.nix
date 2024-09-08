@@ -30,7 +30,7 @@ let
     # this agent is useful for pushing k8s logs into loki
     agent =
       { cluster  # cluster name to report
-      , lokiHost ? "loki-read.loki.svc.cluster.local:3100"  # default for a base install of the helm chart
+      , lokiHost ? "loki-write.loki.svc.cluster.local:3100"  # default for a base install of the helm chart
       , name ? "grafana-agent"
       , namespace ? "default"
       , extraConfig ? { }  # extra prometheus config for agent.yaml, as an attrset
@@ -270,7 +270,7 @@ let
     # promtail will tail all the stderr and stdout of logs in the cluster to the specified loki endpoint
     promtail =
       { cluster  # cluster name to report
-      , lokiHost ? "loki-read.loki.svc.cluster.local:3100"  # default for a base install of the helm chart
+      , lokiHost ? "loki-write.loki.svc.cluster.local:3100"  # default for a base install of the helm chart
       , name ? "promtail"
       , namespace ? "default"
       , extraConfig ? { } # extra config for promtail.yml, as an attrset
