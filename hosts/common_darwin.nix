@@ -9,10 +9,10 @@ in
     enable = mkEnableOption "work";
   };
   config = {
-    nix.linux-builder = {
-      enable = true;
-      package = pkgs.darwin.linux-builder-x86_64;
-    };
+    # nix.linux-builder = {
+    #   enable = true;
+    #   package = pkgs.darwin.linux-builder-x86_64;
+    # };
     system = {
       activationScripts.postUserActivation.text = ''
         # Following line should allow us to avoid a logout/login cycle
