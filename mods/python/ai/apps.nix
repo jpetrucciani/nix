@@ -560,4 +560,44 @@ in
       mainProgram = "infinity_emb";
     };
   };
+
+  mlx-whisper = buildPythonPackage rec {
+    pname = "mlx-whisper";
+    version = "0.3.0";
+    pyproject = true;
+
+    src = fetchPypi {
+      pname = "mlx_whisper";
+      inherit version;
+      hash = "sha256-CqycWjCoxLJubhfFwz3g+1QPYYEs4+3ocn1n1NE3XmI=";
+    };
+
+    build-system = with final; [
+      setuptools
+      wheel
+    ];
+
+    dependencies = with final; [
+      huggingface-hub
+      mlx
+      more-itertools
+      numba
+      numpy
+      scipy
+      tiktoken
+      torch
+      tqdm
+    ];
+
+    pythonImportsCheck = [
+      "mlx_whisper"
+    ];
+
+    meta = {
+      description = "OpenAI Whisper on Apple silicon with MLX and the Hugging Face Hub";
+      homepage = "https://pypi.org/project/mlx-whisper/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
