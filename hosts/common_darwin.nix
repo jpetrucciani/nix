@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ lib, config, ... }:
 let
   inherit (lib.lists) subtractLists;
   inherit (lib) mkEnableOption;
