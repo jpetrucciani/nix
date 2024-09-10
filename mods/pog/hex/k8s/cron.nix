@@ -95,8 +95,8 @@ let
                       }
                     ];
                     ${if imagePullSecrets != [ ] then "imagePullSecrets" else null} = imagePullSecrets;
+                    ${ifNotEmptyList volumes "volumes"} = map volumeDef volumes;
                   };
-                  ${ifNotEmptyList volumes "volumes"} = map volumeDef volumes;
                 };
               };
             };
