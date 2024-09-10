@@ -32,6 +32,7 @@ let
       , command ? null
       , args ? null
       , restartPolicy ? "Never"
+      , imagePullSecrets ? [ ]
       , extra ? { } # extra escape hatch to use any other options!
       }:
       let
@@ -75,6 +76,7 @@ let
                         };
                       }
                     ];
+                    ${if imagePullSecrets != [ ] then "imagePullSecrets" else null} = imagePullSecrets;
                   };
                 };
               };
