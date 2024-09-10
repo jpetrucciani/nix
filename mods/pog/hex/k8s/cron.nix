@@ -33,9 +33,26 @@ let
       , args ? null
       , restartPolicy ? "Never"
       , imagePullSecrets ? [ ]
+      , volumes ? [ ]
       , extra ? { } # extra escape hatch to use any other options!
       }:
       let
+        volumeDef = { name, secret ? null, hostPath ? null, configMap ? null, emptyDir ? false, items ? null, pvc ? null, ... }: {
+          inherit name;
+          ${ifNotNull pvc "persistentVolumeClaim"} = {
+            claimName = pvc;
+          };
+          ${ifNotNull secret "secret"} = {
+            secretName = secret;
+            ${ifNotNull items "items"} = items;
+          };
+          ${ifNotNull configMap "configMap"}.name = configMap;
+          ${ifNotNull hostPath "hostPath"}.path = hostPath;
+          ${if emptyDir then "emptyDir" else null} = { };
+        };
+        volumeMountDef = { name, mountPath, readOnly ? true, ... }: {
+          inherit name mountPath readOnly;
+        };
         cron = {
           apiVersion = "batch/v1";
           kind = "CronJob";
@@ -74,10 +91,12 @@ let
                             ${ifNotNull ephemeralStorageRequest "ephemeral-storage"} = ephemeralStorageRequest;
                           };
                         };
+                        ${ifNotEmptyList volumes "volumeMounts"} = map volumeMountDef volumes;
                       }
                     ];
                     ${if imagePullSecrets != [ ] then "imagePullSecrets" else null} = imagePullSecrets;
                   };
+                  ${ifNotEmptyList volumes "volumes"} = map volumeDef volumes;
                 };
               };
             };
