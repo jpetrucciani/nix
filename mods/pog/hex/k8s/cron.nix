@@ -32,6 +32,7 @@ let
       , command ? null
       , args ? null
       , restartPolicy ? "Never"
+      , imagePullPolicy ? "Always"
       , imagePullSecrets ? [ ]
       , volumes ? [ ]
       , extra ? { } # extra escape hatch to use any other options!
@@ -71,7 +72,7 @@ let
                     inherit restartPolicy;
                     containers = [
                       {
-                        inherit name image;
+                        inherit name image imagePullPolicy;
                         env = with hex.defaults.env; [
                           pod_ip
                           pod_name
