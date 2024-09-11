@@ -427,7 +427,7 @@ final: prev: with prev; rec {
 
   icon-font-to-png = buildPythonPackage rec {
     pname = "icon-font-to-png";
-    version = "0.4.2";
+    version = "0.4.1";
 
     format = "setuptools";
     src = pkgs.fetchFromGitHub {
