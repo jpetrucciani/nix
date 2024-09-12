@@ -90,6 +90,7 @@
 (?i)signoz
 (?i)slackbot
 (?i)smoothmq
+(?i)sonarqube
 (?i)sql
 (?i)sqlite
 (?i)stackdriver
