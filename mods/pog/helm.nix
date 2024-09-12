@@ -38,7 +38,7 @@ let
               version = entry["version"]
               sha256 = entry["sha256"]
               date = datetime.fromisoformat(entry["date"]).strftime("%Y-%m-%d")
-              attr = version.replace(".", "-").strip()
+              attr = version.replace(".", "-").strip().split("+")[0]
               prefix = "v" if attr[0] != "v" else ""
               return f'{prefix}{attr} = _v "{version}" "{sha256}"; # {date}'
 
@@ -83,8 +83,9 @@ let
 
         # form csv, hash in parallel
         echo "version,date,sha256" >>"$temp_csv"
+        # shellcheck disable=SC2016
         ${jq} -r '.[] | (.version + " " + .date)' <"$temp_json" |
-            ${parallel} 'echo -n "{1},{=2 uq(); =},"; nix-prefetch-url --unpack "${chart_url}" 2>/dev/null' >>"$temp_csv"
+            ${parallel} --rpl '{strip_plus} s/(.*)\+.*/\1/;' --rpl '{ymd} s/(.*)T.*/\1/;' 'echo -n "{1},{=2 uq(); =},"; nix-prefetch-url --unpack "${chart_url}" 2>/dev/null' >>"$temp_csv"
 
         debug "formed json into csv at $temp_csv"
 
@@ -304,6 +305,13 @@ rec {
     chart_url = "https://github.com/Kong/charts/releases/download/ingress-{1}/ingress-{1}.tgz";
   };
 
+  chart_scan_sonarqube = _chart_scan {
+    name = "sonarqube";
+    base_url = "https://SonarSource.github.io/helm-chart-sonarqube";
+    chart_url = "https://github.com/SonarSource/helm-chart-sonarqube/releases/download/sonarqube-{1 strip_plus}/sonarqube-{1}.tgz";
+    last = 1; # something funky with their helm index?
+  };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
@@ -318,8 +326,8 @@ rec {
     chart_scan_kube-prometheus-stack
     chart_scan_langflow-ide
     chart_scan_langflow-runtime
-    chart_scan_linkerd-crds
     chart_scan_linkerd-control-plane
+    chart_scan_linkerd-crds
     chart_scan_loki
     chart_scan_mimir
     chart_scan_mongo-operator
@@ -342,6 +350,7 @@ rec {
     chart_scan_robusta
     chart_scan_sentry
     chart_scan_signoz
+    chart_scan_sonarqube
     chart_scan_stackstorm
     chart_scan_traefik
   ];

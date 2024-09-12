@@ -43,6 +43,7 @@ let
     sentry = import ./k8s/sentry.nix params;
     services = import ./k8s/services.nix params;
     signoz = import ./k8s/signoz.nix params;
+    sonarqube = import ./k8s/sonarqube.nix params;
     stackstorm = import ./k8s/stackstorm.nix params;
     storage = import ./k8s/storage.nix params;
     tailscale = import ./k8s/tailscale.nix params;

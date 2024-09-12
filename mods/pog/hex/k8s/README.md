@@ -142,6 +142,10 @@ This module allows us to create best-practices, all-inclusive k8s services with 
 
 This module contains the [signoz](https://github.com/SigNoz/signoz) helm chart
 
+### [sonarqube.nix](./sonarqube.nix)
+
+This module contains a [sonarqube](https://github.com/SonarSource/helm-chart-sonarqube/tree/master/charts/sonarqube) helm chart
+
 ### [stackstorm.nix](./stackstorm.nix)
 
 K8s Helm module for running a [StackStorm](https://stackstorm.com) cluster in HA mode.
