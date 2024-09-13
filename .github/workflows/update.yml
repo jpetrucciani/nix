@@ -7,7 +7,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4.1.7
-      - uses: cachix/install-nix-action@V27
+      - uses: cachix/install-nix-action@V28
       - run: nix flake update
       - uses: peter-evans/create-pull-request@v7.0.1
         id: pr
