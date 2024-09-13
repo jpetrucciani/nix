@@ -52,6 +52,9 @@ rec {
   maxminddb =
     if isDarwin then prev.maxminddb.overrideAttrs (_: { doCheck = false; }) else prev.maxminddb;
 
+  black =
+    if isDarwin then prev.black.overrideAttrs (_: { doCheck = false; }) else prev.black;
+
   sqlalchemy_1 =
     let
       version = "1.4.48";
