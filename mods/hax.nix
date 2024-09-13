@@ -194,17 +194,17 @@ final: prev:
 
     basePythonPackages = p: with p; [
       # linting
-      black
+      # black
 
       # common use case
       gamble
       httpx
-      requests
+      # requests
       cryptography
 
       # text
-      anybadge
-      tabulate
+      # anybadge
+      # tabulate
       beautifulsoup4
 
       # data
