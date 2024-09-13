@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-unstable";
+    nixpkgs.url = "nixpkgs/nixos-unstable-small";
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -39,6 +39,10 @@
       url = "github:nix-community/poetry2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    uv2nix = {
+      url = "github:adisbladis/uv2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     vscode-server = {
       url = "github:Ten0/nixos-vscode-server/support_new_vscode_versions";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -75,7 +79,11 @@
       packages = forAllSystems
         (system: import self.inputs.nixpkgs {
           inherit system;
-          overlays = [ (final: prev: { inherit machines; flake = self; nixpkgsRev = self.inputs.nixpkgs.rev; }) self.inputs.poetry2nix.overlays.default ] ++ import ./overlays.nix;
+          overlays = [
+            (final: prev: { inherit machines; flake = self; nixpkgsRev = self.inputs.nixpkgs.rev; })
+            self.inputs.poetry2nix.overlays.default
+            (final: prev: { inherit (self.inputs) uv2nix; })
+          ] ++ import ./overlays.nix;
           config = {
             allowUnfree = true;
             permittedInsecurePackages = [

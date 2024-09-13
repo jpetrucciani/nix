@@ -11,6 +11,7 @@ import nixpkgs {
     (_: _: { _std = _compat.inputs.nix-std.lib; })
     _compat.inputs.poetry2nix.overlays.default
     _compat.inputs.pnpm2nix.overlays.default
+    (_: _: { inherit (_compat.inputs) uv2nix; })
   ] ++ (import ./overlays.nix) ++ overlays;
   config = {
     allowUnfree = true;
