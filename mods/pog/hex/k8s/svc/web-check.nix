@@ -1,4 +1,4 @@
-{ hex, ... }:
+{ hex, pkgs, ... }:
 { name ? "web-check"
 , namespace ? "default"
 , image_registry ? "lissy93"
@@ -22,9 +22,11 @@
 }:
 let
   inherit (hex) boolToString;
+  inherit (pkgs.lib) recursiveUpdate;
   volumes = [ hex.k8s.services.components.volumes.tmp ];
 in
-hex.k8s.services.build ({
+hex.k8s.services.build (recursiveUpdate
+{
   inherit name namespace labels port image replicas cpuRequest cpuLimit memoryRequest memoryLimit autoscale volumes;
   envAttrs = {
     DISABLE_GUI = boolToString disableGui;
@@ -33,4 +35,5 @@ hex.k8s.services.build ({
   };
   env = extraEnv;
   securityContext = { privileged = false; };
-} // extraService)
+}
+  extraService)

@@ -1,4 +1,4 @@
-{ hex, ... }:
+{ hex, pkgs, ... }:
 { s3Bucket
 , s3Prefix ? "pypi/"
 , s3Region ? "us-east-2"
@@ -29,10 +29,12 @@
 , extraService ? { } # escape hatch to inject other service spec
 }:
 let
+  inherit (pkgs.lib) recursiveUpdate;
   volumes = [ hex.k8s.services.components.volumes.tmp ];
   htpasswd = if htpasswdEnabled then ''-P <(echo ${htpasswdEnvVar})'' else "";
 in
-hex.k8s.services.build ({
+hex.k8s.services.build (recursiveUpdate
+{
   inherit name namespace labels port image replicas cpuRequest cpuLimit memoryRequest memoryLimit autoscale volumes readinessProbe maxUnavailable maxSurge;
   command = "/bin/bash";
   args = [
@@ -51,4 +53,5 @@ hex.k8s.services.build ({
   ];
   env = extraEnv;
   securityContext = { privileged = false; };
-} // extraService)
+}
+  extraService)

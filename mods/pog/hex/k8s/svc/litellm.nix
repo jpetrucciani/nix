@@ -1,4 +1,4 @@
-{ hex, ... }:
+{ hex, pkgs, ... }:
 { name ? "litellm"
 , namespace ? "default"
 , image_registry ? "ghcr.io/berriai"
@@ -38,6 +38,7 @@
 }:
 let
   inherit (hex) toYAMLDoc;
+  inherit (pkgs.lib) recursiveUpdate;
 
   config = {
     apiVersion = "v1";
@@ -64,19 +65,21 @@ let
     hex.k8s.services.components.volumes.tmp
   ];
   service = hex.k8s.services.build
-    ({
-      inherit name namespace labels port image replicas cpuRequest cpuLimit memoryRequest memoryLimit autoscale volumes readinessProbe maxUnavailable maxSurge;
-      command = [ "litellm" ];
-      args = [ "--config" "/etc/conf/config.yaml" ];
-      envAttrs = {
-        HEX = "true";
-      } // extraEnvAttrs;
-      envFrom = [
-        { secretRef.name = secretName; }
-      ];
-      env = extraEnv;
-      securityContext = { privileged = false; };
-    } // extraService);
+    (recursiveUpdate
+      {
+        inherit name namespace labels port image replicas cpuRequest cpuLimit memoryRequest memoryLimit autoscale volumes readinessProbe maxUnavailable maxSurge;
+        command = [ "litellm" ];
+        args = [ "--config" "/etc/conf/config.yaml" ];
+        envAttrs = {
+          HEX = "true";
+        } // extraEnvAttrs;
+        envFrom = [
+          { secretRef.name = secretName; }
+        ];
+        env = extraEnv;
+        securityContext = { privileged = false; };
+      }
+      extraService);
 in
 ''
   ${toYAMLDoc config}

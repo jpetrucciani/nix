@@ -1,4 +1,4 @@
-{ hex, ... }:
+{ hex, pkgs, ... }:
 { domain
 , name ? "metabase"
 , namespace ? "default"
@@ -41,6 +41,7 @@
 }:
 let
   inherit (hex) boolToString ifSet;
+  inherit (pkgs.lib) recursiveUpdate;
   probe = {
     httpGet = {
       inherit port;
@@ -53,7 +54,8 @@ let
     timeoutSeconds = 4;
   };
 in
-hex.k8s.services.build ({
+hex.k8s.services.build (recursiveUpdate
+{
   inherit name namespace port image replicas cpuRequest cpuLimit memoryRequest memoryLimit autoscale labels;
   softAntiAffinity = true;
   env = extraEnv;
@@ -74,4 +76,5 @@ hex.k8s.services.build ({
   livenessProbe = probe;
   readinessProbe = probe;
   securityContext = { privileged = false; };
-} // extraService)
+}
+  extraService)

@@ -1,4 +1,4 @@
-{ hex, ... }:
+{ hex, pkgs, ... }:
 { name
 , namespace ? "default"
 , labels ? { inherit name; app = name; tier = "haproxy"; }
@@ -27,22 +27,25 @@
 }:
 let
   inherit (hex) toYAMLDoc;
-  haproxy = hex.k8s.services.build ({
-    inherit name namespace port altPort command labels image replicas cpuRequest cpuLimit memoryRequest memoryLimit autoscale hostAliases readinessProbe maxUnavailable maxSurge envAttrs;
-    env = extraEnv;
-    envFrom = [
-      { secretRef.name = secret; }
-    ];
-    volumes = [
-      {
-        inherit secret;
-        name = "haproxy-cfg";
-        mountPath = "/etc/haproxy";
-      }
-    ];
-    securityContext = { privileged = false; };
-    tailscaleSidecar = tailscale;
-  } // extraService);
+  inherit (pkgs.lib) recursiveUpdate;
+  haproxy = hex.k8s.services.build (recursiveUpdate
+    {
+      inherit name namespace port altPort command labels image replicas cpuRequest cpuLimit memoryRequest memoryLimit autoscale hostAliases readinessProbe maxUnavailable maxSurge envAttrs;
+      env = extraEnv;
+      envFrom = [
+        { secretRef.name = secret; }
+      ];
+      volumes = [
+        {
+          inherit secret;
+          name = "haproxy-cfg";
+          mountPath = "/etc/haproxy";
+        }
+      ];
+      securityContext = { privileged = false; };
+      tailscaleSidecar = tailscale;
+    }
+    extraService);
   config = {
     apiVersion = "v1";
     stringData = {
