@@ -38,6 +38,10 @@ This module contains k8s helpers for AWS related functionality
 
 This hex spell allows concise cron job declaration in Kubernetes.
 
+### [custom-pod-autoscaler.nix](./custom-pod-autoscaler.nix)
+
+[custom-pod-autoscaler](https://github.com/jthomperoo/custom-pod-autoscaler-operator) is an operator for managing custom autoscaling rules
+
 ### [dask.nix](./dask.nix)
 
 [dask](https://docs.dask.org/en/stable/) is a python library/framework for parallel and distributed computing
