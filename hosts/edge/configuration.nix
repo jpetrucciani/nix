@@ -157,7 +157,7 @@ in
                 s3proxy {
                   bucket "blackedge-ops"
                   region "us-east-2"
-                  root /apps/griddy/v/0.0.2
+                  root /apps/griddy/v/0.0.3
                 }
               }
             '';
