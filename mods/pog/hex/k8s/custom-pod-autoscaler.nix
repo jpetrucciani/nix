@@ -1,5 +1,5 @@
 # [custom-pod-autoscaler](https://github.com/jthomperoo/custom-pod-autoscaler-operator) is an operator for managing custom autoscaling rules
-{ hex, ... }:
+_:
 {
   cluster =
     let

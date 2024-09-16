@@ -1,4 +1,5 @@
 (?i)addons
+(?i)autoscaling
 (?i)airbyte
 (?i)alibaba
 (?i)argus

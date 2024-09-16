@@ -24,6 +24,7 @@ rec {
         with_ruby = "include ruby";
         with_rust = "include rust";
         with_terraform = "include terraform";
+        # with_uv = "include python and uv";
         with_vlang = "include a vlang with dependencies";
       };
       flags = lib.mapAttrsToList (k: v: { name = k; description = v; short = ""; bool = true; }) _flags;
