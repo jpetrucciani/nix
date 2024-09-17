@@ -192,5 +192,8 @@ in
   virtualisation.vmware.guest.enable = true;
   system.stateVersion = "23.11";
   security.sudo = common.security.sudo;
-  programs.command-not-found.enable = false;
+  programs = {
+    command-not-found.enable = false;
+    nix-ld.enable = true;
+  };
 }
