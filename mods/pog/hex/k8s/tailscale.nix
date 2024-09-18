@@ -215,7 +215,7 @@ let
                       "/bin/sh"
                       "-c"
                       (builtins.concatStringsSep " && " [
-                        "until tailscale --socket=/tmp/tailscaled.sock ping $TS_DEST_IP; do sleep 1; done"
+                        "until tailscale --socket=/tmp/tailscaled.sock ping --until-direct=false -c 2 $TS_DEST_IP; do sleep 1; done"
                         "iptables -t nat -A PREROUTING -d $POD_IP -j DNAT --to-destination $TS_DEST_IP"
                         "iptables -t nat -A POSTROUTING -j MASQUERADE"
                       ]
