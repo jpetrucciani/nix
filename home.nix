@@ -128,6 +128,7 @@ in
         spacer
         statix
         time
+        uv
         unzip
         vale
         watch
