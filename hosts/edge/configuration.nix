@@ -196,4 +196,7 @@ in
     command-not-found.enable = false;
     nix-ld.enable = true;
   };
+  security.pam.loginLimits = [
+    { domain = "*"; item = "nofile"; type = "-"; value = "65536"; }
+  ];
 }
