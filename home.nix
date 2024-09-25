@@ -2,7 +2,7 @@
 let
   inherit (pkgs.hax) isDarwin isLinux isM1 isX86Mac;
   inherit (pkgs.hax) docker_aliases kubernetes_aliases;
-  inherit (pkgs.hax) attrIf optionalString words;
+  inherit (pkgs.hax) attrIf words;
 
   firstName = "jacobi";
   lastName = "petrucciani";
