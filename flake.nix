@@ -103,6 +103,7 @@
                 modules = [
                   ./hosts/${name}/configuration.nix
                   self.inputs.agenix.nixosModules.default
+                  { programs.ssh.setXAuthLocation = lib.mkForce true; }
                 ];
               };
             })
@@ -119,6 +120,7 @@
               modules = [
                 ./hosts/common_darwin.nix
                 ./hosts/${name}/configuration.nix
+                { programs.ssh.setXAuthLocation = lib.mkForce true; }
               ];
             };
           })

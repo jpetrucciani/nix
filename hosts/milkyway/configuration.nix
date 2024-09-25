@@ -30,7 +30,6 @@ in
   environment = {
     etc."nixpkgs-path".source = common.pkgs.path;
     # cuda stuff?
-    noXlibs = false;
     systemPackages = with pkgs; [
       cudaPackages.cudatoolkit
       cudaPackages.cudnn
