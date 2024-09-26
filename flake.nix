@@ -120,7 +120,6 @@
               modules = [
                 ./hosts/common_darwin.nix
                 ./hosts/${name}/configuration.nix
-                { programs.ssh.setXAuthLocation = lib.mkForce true; }
               ];
             };
           })
