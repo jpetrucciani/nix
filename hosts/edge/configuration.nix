@@ -186,7 +186,6 @@ in
         };
       };
     goto.enable = true;
-    openssh.settings.GatewayPorts = "yes";
   } // common.services;
 
   virtualisation.docker.enable = true;
