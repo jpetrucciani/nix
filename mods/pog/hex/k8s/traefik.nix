@@ -115,6 +115,7 @@ let
           };
           providers = {
             kubernetesCRD = {
+              inherit allowExternalNameServices;
               allowCrossNamespace = true;
               ingressClass = name;
             };
@@ -211,6 +212,8 @@ let
         , extraRule ? { }
         , extraRoutes ? [ ]
         , extraSpec ? { }
+        , pre23 ? false
+        , apiVersion ? if pre23 then "traefik.containo.us/v1alpha1" else "traefik.io/v1alpha1"
         }:
         let
           secure = (builtins.stringLength secretName) > 0;
@@ -224,7 +227,7 @@ let
           # route = {kind ? "Rule", match ? "Host(`${host}`)", host ? ""}: {};
         in
         {
-          apiVersion = "traefik.containo.us/v1alpha1";
+          inherit apiVersion;
           kind = "IngressRoute";
           metadata = {
             inherit name;
