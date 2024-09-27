@@ -10,7 +10,8 @@ let
     };
     version = rec {
       _v = hex.k8s._.version chart;
-      latest = v31-1-1;
+      latest = v32-0-0;
+      v32-0-0 = _v "32.0.0" "18agkj3pn5wy2qghfpaj6wvrq9sg55ignp2cqm820kdxjkvfag7n"; # 2024-09-27
       v31-1-1 = _v "31.1.1" "1jidj68wwa93jz9rwx682fxdh6fp4rmjg83m7xbjfqcv3sw1ma6q"; # 2024-09-20
       v31-0-0 = _v "31.0.0" "1xn9iyr527aiwm1nqa7q3gw2gi9p0mnbh9yf2x5jj10kkpvn667r"; # 2024-09-03
       v30-1-0 = _v "30.1.0" "1s5mrly25rs9hpcb5wzc707qsswihdkp8zz5m3c9yl9cnn2whhw2"; # 2024-08-16
@@ -55,6 +56,7 @@ let
       , extraValues ? { }
       }:
       let
+        pre27 = (builtins.compareVersions version "27.0.0") == -1;
         proto = {
           tcp = "TCP";
         };
@@ -90,29 +92,26 @@ let
           globalArguments = [ ];
           ports = {
             traefik = {
-              expose = exposeTraefik;
               exposedPort = portTraefik;
               protocol = proto.tcp;
-            };
+            } // (if pre27 then { expose = exposeTraefik; } else { expose.default = exposeTraefik; });
             web = {
-              expose = exposeHttp;
               exposedPort = portHttp;
               port = 8000;
               protocol = proto.tcp;
               # redirectTo = "websecure";
-            };
+            } // (if pre27 then { expose = exposeHttp; } else { expose.default = exposeHttp; });
             websecure = {
-              expose = exposeHttps;
               exposedPort = portHttps;
               port = 8443;
               protocol = proto.tcp;
-            };
+            } // (if pre27 then { expose = exposeHttps; } else { expose.default = exposeHttps; });
             metrics = {
               expose = exposeMetrics;
               exposedPort = portMetrics;
               port = 9100;
               protocol = proto.tcp;
-            };
+            } // (if pre27 then { expose = exposeMetrics; } else { expose.default = exposeMetrics; });
           };
           providers = {
             kubernetesCRD = {
