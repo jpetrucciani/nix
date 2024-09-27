@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4.2.0
-      - uses: cachix/install-nix-action@V28
+      - uses: cachix/install-nix-action@v29
       - uses: cachix/cachix-action@master
         with:
           name: jacobi
