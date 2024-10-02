@@ -277,7 +277,7 @@ let
     name = "k8s-aws";
     description = "a lightweight image with just bash, kubectl, and awscliv2";
     layers = with pkgs; [
-      [ awscli2 ]
+      [ (awscli2.override { python3 = python311; }) ]
       [ kubectl ]
     ];
   };
@@ -294,7 +294,7 @@ let
       "/var/log/letsencrypt"
     ];
     layers = with pkgs; [
-      [ awscli2 ]
+      [ (awscli2.override { python3 = python311; }) ]
       [ (certbot.withPlugins (p: with p; [ certbot-dns-route53 ])) ]
     ];
   };
