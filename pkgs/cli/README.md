@@ -46,6 +46,10 @@ This directory contains cli tools
 
 [dirdiff](https://github.com/ocamlpro/dirdiff) is a tool to compute the differences between two directories
 
+### [gitlab-ci-verify.nix](./gitlab-ci-verify.nix)
+
+[gitlab-ci-verify](https://github.com/timo-reymann/gitlab-ci-verify) is a tool to help validate/lint gitlab ci files
+
 ### [helm-oci.nix](./helm-oci.nix)
 
 [helm-oci](https://github.com/ikimpriv/helm-oci) is a command line tool that is useful for listing helm charts in oci repos
