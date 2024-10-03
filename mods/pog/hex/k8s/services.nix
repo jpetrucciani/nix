@@ -136,6 +136,7 @@ let
       , pre1_30 ? false
       , host ? null
       , extraContainer ? { }
+      , extraServiceAccountAnnotations ? { }
       , extraServiceAnnotations ? { }
       , extraIngressAnnotations ? { }
       , extraPodAnnotations ? { }
@@ -165,6 +166,7 @@ let
           else { };
         sa = (components.service-account {
           inherit name namespace saSuffix imagePullSecrets;
+          annotations = extraServiceAccountAnnotations;
         }) // extraSA;
         sa-token = components.service-account-token {
           inherit name namespace saSuffix;
@@ -245,12 +247,12 @@ let
         };
         type = "kubernetes.io/service-account-token";
       };
-      service-account = { name, namespace ? "default", saSuffix ? "-sa", imagePullSecrets ? [ ] }: {
+      service-account = { name, namespace ? "default", saSuffix ? "-sa", imagePullSecrets ? [ ], annotations ? { } }: {
         apiVersion = "v1";
         kind = "ServiceAccount";
         metadata = {
           inherit namespace;
-          annotations = { } // hex.annotations;
+          annotations = annotations // hex.annotations;
           name = "${name}${saSuffix}";
         };
         ${ifNotEmptyList imagePullSecrets "imagePullSecrets"} = imagePullSecrets;
