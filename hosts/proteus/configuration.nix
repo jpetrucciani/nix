@@ -7,6 +7,7 @@ let
 in
 {
   imports = [
+    ./hardware-configuration.nix
     "${common.home-manager}/nixos"
   ] ++ (with nixos-hardware.nixosModules; [
     common-cpu-amd
@@ -75,12 +76,18 @@ in
       # Enable touchpad support (enabled default in most desktopManager).
       libinput.enable = true;
     };
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
   } // common.services;
   virtualisation.docker.enable = true;
 
   # Enable sound.
   sound.enable = true;
-  hardware.pulseaudio.enable = true;
+  hardware.pulseaudio.enable = false;
 
   programs.nix-ld.enable = true;
   networking.networkmanager.enable = true;
