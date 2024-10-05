@@ -86,7 +86,6 @@ in
   virtualisation.docker.enable = true;
 
   # Enable sound.
-  sound.enable = true;
   hardware.pulseaudio.enable = false;
 
   programs.nix-ld.enable = true;
