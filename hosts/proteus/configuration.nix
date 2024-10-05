@@ -70,11 +70,10 @@ in
       role = "server";
       extraFlags = "--disable traefik --tls-san '${ts_ip}'";
     };
+    libinput.enable = true;
     xserver = {
       enable = true;
       desktopManager.gnome.enable = true;
-      # Enable touchpad support (enabled default in most desktopManager).
-      libinput.enable = true;
     };
     pipewire = {
       enable = true;
@@ -85,13 +84,11 @@ in
   } // common.services;
   virtualisation.docker.enable = true;
 
-  # Enable sound.
   hardware.pulseaudio.enable = false;
-
-  programs.nix-ld.enable = true;
   networking.networkmanager.enable = true;
 
-  system.stateVersion = "24.05";
-  security.sudo = common.security.sudo;
   programs.command-not-found.enable = false;
+  programs.nix-ld.enable = true;
+  security.sudo = common.security.sudo;
+  system.stateVersion = "24.05";
 }
