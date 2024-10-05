@@ -52,6 +52,7 @@ let
     andromeda = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBRLoe5SoO2nipGJw6QLRRLOyfiKtmi2lvnlCQtLz7o4 jacobi@andromeda";
     # nix-daemon on laptops
     nix-m1max = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIwkBMOku4AYYQsWIX1IZdX9azpEgfVXp6uHEYGUbM3K nix@m1max";
+    proteus = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOgeFDVOG+pFwyd9p3jSbmS7N8+kdtf4l6QdAIT8q+Ps jacobi@proteus";
 
     # edge
     edge = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILkME8cVp908fLcQiSYmwSruCBcm4iBR8CS87s8AqNmK jacobi@edge";
@@ -96,6 +97,7 @@ let
       galaxyboss
       milkyway
       pluto
+      proteus
     ] ++ mobile;
     all = desktop ++ server ++ mobile ++ laptop;
   };
