@@ -13,6 +13,7 @@
 (?i)neptune
 (?i)phobos
 (?i)pluto
+(?i)proteus
 (?i)terra
 (?i)valheim
 (?i)palworld
