@@ -39,7 +39,7 @@ in
 
   environment = {
     systemPackages = with pkgs; [
-      gnome3.adwaita-icon-theme
+      adwaita-icon-theme
       steam-run
       (lutris.override {
         extraPkgs = pkgs: [
