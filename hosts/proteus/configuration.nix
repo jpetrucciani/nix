@@ -29,13 +29,15 @@ in
   home-manager.users.jacobi = common.jacobi;
 
   boot = {
+    initrd.systemd.network.wait-online.enable = false;
+    kernel.sysctl = { } // common.sysctl_opts;
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
-    kernel.sysctl = { } // common.sysctl_opts;
     tmp.useTmpfs = true;
   };
+  systemd.network.wait-online.enable = false;
 
   environment = {
     systemPackages = with pkgs; [

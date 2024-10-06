@@ -24,8 +24,9 @@ in
 
   home-manager.users.jacobi = common.jacobi;
 
-  # Bootloader.
   boot = {
+    initrd.systemd.network.wait-online.enable = false;
+    kernel.sysctl = { } // common.sysctl_opts;
     loader = {
       systemd-boot.enable = true;
       efi = {
@@ -33,9 +34,9 @@ in
         efiSysMountPoint = "/boot/efi";
       };
     };
-    kernel.sysctl = { } // common.sysctl_opts;
     tmp.useTmpfs = true;
   };
+  systemd.network.wait-online.enable = false;
 
   environment = {
     etc."nixpkgs-path".source = common.pkgs.path;
