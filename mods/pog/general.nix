@@ -322,7 +322,7 @@ rec {
     jwtdecode
     slack_meme
     fif
-    fomrat
+    # fomrat
     rot13
     sin
     srv
