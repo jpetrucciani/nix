@@ -3,10 +3,10 @@ let
   inherit (final) pythonAtLeast pythonOlder;
   inherit (final.stdenv) isDarwin;
   inherit (final.pkgs) fetchFromGitHub;
-  nonCurrentPython = pythonOlder "3.7" || pythonAtLeast "3.13";
-  disableCheckPython312 = pkg:
-    if (pythonAtLeast "3.12") then
-      prev.${pkg}.overridePythonAttrs (_: { doCheck = false; }) else prev.${pkg};
+  nonCurrentPython = pythonOlder "3.8" || pythonAtLeast "3.13";
+  # disableCheckPython312 = pkg:
+  #   if (pythonAtLeast "3.12") then
+  #     prev.${pkg}.overridePythonAttrs (_: { doCheck = false; }) else prev.${pkg};
 in
 rec {
   passlib =
@@ -49,11 +49,11 @@ rec {
           ];
         }) else prev.python-ldap;
 
-  maxminddb =
-    if isDarwin then prev.maxminddb.overrideAttrs (_: { doCheck = false; }) else prev.maxminddb;
+  # maxminddb =
+  #   if isDarwin then prev.maxminddb.overrideAttrs (_: { doCheck = false; }) else prev.maxminddb;
 
-  black =
-    if isDarwin then prev.black.overrideAttrs (_: { doCheck = false; }) else prev.black;
+  # black =
+  #   if isDarwin then prev.black.overrideAttrs (_: { doCheck = false; }) else prev.black;
 
   sqlalchemy_1 =
     let
@@ -143,12 +143,6 @@ rec {
   # wat?
   accelerate = if isDarwin then prev.accelerate.overridePythonAttrs (old: { doCheck = false; propagatedBuildInputs = old.propagatedBuildInputs ++ [ prev.huggingface-hub ]; }) else prev.accelerate;
 
-  nose3 = disableCheckPython312 "nose3";
-  nosexcover = disableCheckPython312 "nosexcover";
-  itsdangerous = disableCheckPython312 "itsdangerous";
-  async-generator = disableCheckPython312 "async-generator";
-  parameterized = disableCheckPython312 "parameterized";
-
   tokenize-rt = let version = "5.2.0"; in
     if (pythonAtLeast "3.12") then
       prev.tokenize-rt.overridePythonAttrs
@@ -161,50 +155,6 @@ rec {
             hash = "sha256-G4Dn6iZLVOovzfEt9eMzp93mTX+bo0tHI5cCbaJLxBQ=";
           };
         }) else prev.tokenize-rt;
-
-  stack-data = prev.buildPythonPackage
-    rec {
-      pname = "stack-data";
-      version = "0.6.3";
-      pyproject = true;
-
-      src = prev.fetchPypi {
-        pname = "stack_data";
-        inherit version;
-        hash = "sha256-g2p3jeT+xNzR3Nie2Kv/iiIfWDCEYuHEqio88wFI8Lk=";
-      };
-
-      nativeBuildInputs = with prev; [
-        setuptools
-        setuptools-scm
-        wheel
-      ];
-
-      propagatedBuildInputs = with prev; [
-        asttokens
-        executing
-        pure-eval
-      ];
-
-      passthru.optional-dependencies = with prev; {
-        tests = [
-          cython
-          littleutils
-          pygments
-          pytest
-          typeguard
-        ];
-      };
-
-      pythonImportsCheck = [ "stack_data" ];
-
-      meta = with prev.pkgs.lib; {
-        description = "Extract data from python stack frames and tracebacks for informative displays";
-        homepage = "https://pypi.org/project/stack-data/";
-        license = licenses.mit;
-        maintainers = with maintainers; [ jpetrucciani ];
-      };
-    };
 
   fastcore = prev.fastcore.overridePythonAttrs (_:
     let version = "1.6.1"; in {
