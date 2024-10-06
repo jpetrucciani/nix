@@ -37,9 +37,14 @@ in
     tmp.useTmpfs = true;
   };
 
-  environment.variables = {
-    NIX_HOST = hostname;
-    NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
+  environment = {
+    systemPackages = with pkgs; [
+      steam-run
+    ];
+    variables = {
+      NIX_HOST = hostname;
+      NIXOS_CONFIG = "/home/jacobi/cfg/hosts/${hostname}/configuration.nix";
+    };
   };
 
   time.timeZone = common.timeZone;
