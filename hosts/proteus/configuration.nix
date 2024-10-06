@@ -3,7 +3,7 @@ let
   inherit (flake.inputs) nixos-hardware;
   hostname = "proteus";
   ts_ip = "";
-  common = import ../common.nix { inherit config flake machine-name pkgs; };
+  common = import ../common.nix { inherit config flake machine-name pkgs; isBarebones = true; };
 in
 {
   imports = [
@@ -64,7 +64,7 @@ in
         inherit (common) extraGroups;
         isNormalUser = true;
         hashedPasswordFile = "/etc/passwordFile-jacobi";
-        openssh.authorizedKeys.keys = with common.pubkeys; [ charon mars ] ++ usual;
+        openssh.authorizedKeys.keys = common.pubkeys.usual;
       };
     };
   };
