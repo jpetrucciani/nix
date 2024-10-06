@@ -39,7 +39,16 @@ in
 
   environment = {
     systemPackages = with pkgs; [
+      gnome3.adwaita-icon-theme
       steam-run
+      (lutris.override {
+        extraPkgs = pkgs: [
+          # List package dependencies here
+        ];
+        extraLibraries = pkgs: [
+          # List library dependencies here
+        ];
+      })
     ];
     variables = {
       NIX_HOST = hostname;
@@ -89,7 +98,13 @@ in
   } // common.services;
   virtualisation.docker.enable = true;
 
-  hardware.pulseaudio.enable = false;
+  hardware = {
+    graphics = {
+      enable = true;
+      enable32Bit = true;
+    };
+    pulseaudio.enable = false;
+  };
   networking.networkmanager.enable = true;
 
   programs.command-not-found.enable = false;
