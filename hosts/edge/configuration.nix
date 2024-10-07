@@ -35,6 +35,7 @@ in
     };
     kernel.sysctl = { } // common.sysctl_opts;
     tmp.useTmpfs = true;
+    supportedFilesystems = [ "nfs" ];
   };
 
   environment = {
@@ -55,6 +56,7 @@ in
     };
     systemPackages = with pkgs; [
       amazon-ecr-credential-helper
+      nfs-utils
     ];
   };
 
@@ -186,6 +188,7 @@ in
         };
       };
     goto.enable = true;
+    rpcbind.enable = true;
   } // common.services;
 
   virtualisation.docker.enable = true;
