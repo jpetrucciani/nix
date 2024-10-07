@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  python = (pkgs.python311.withPackages (p: with p;[
+  python = (pkgs.python312.withPackages (p: with p;[
     aiocron
     delegator-py
     discordpy
@@ -26,14 +26,15 @@ let
     playwright
 
     # ai
-    whisper-cpp-python
     langchain
     langchainhub
+    openai
     pdf2image
     qdrant-client
     sentence-transformers
-    transformers
     tokenizers
+    transformers
+    whisper-cpp-python
 
     # data
     numpy
@@ -56,7 +57,6 @@ let
     freezegun
     pytest
     pytest-cov
-    mypy
 
     # types
     types-freezegun
