@@ -95,7 +95,7 @@ rec {
       ${githubcurl}/bin/githubcurl "repos/$owner/$repo/releases" \
         -- \
         -X POST \
-        -d "{\"tag_name\":\"$tag\",\"target_commitish\":\"main\",\"name\":\"$tag\",\"body\":\"\",\"draft\":false,\"prerelease\":false,\"generate_release_notes\":false}"
+        -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\",\"body\":\"\",\"draft\":false,\"prerelease\":false,\"generate_release_notes\":false}"
     '';
   };
 
