@@ -55,6 +55,7 @@ let
       , portMetrics ? 9100
       , allowExternalNameServices ? false
       , extraValues ? { }
+      , additionalArguments ? [ ]
       }:
       let
         pre27 = (builtins.compareVersions version "27.0.0") == -1;
@@ -86,7 +87,7 @@ let
           ] else [ ]) ++ (if allowExternalNameServices then [
             "--providers.kubernetescrd.allowexternalnameservices=true"
             "--providers.kubernetesingress.allowexternalnameservices=true"
-          ] else [ ]);
+          ] else [ ]) ++ additionalArguments;
           deployment = {
             inherit replicas;
           };

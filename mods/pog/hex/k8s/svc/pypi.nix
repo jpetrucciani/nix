@@ -17,6 +17,7 @@
 , memoryLimit ? "4Gi"
 , autoscale ? false
 , extraEnv ? [ ]
+, extraEnvAttrs ? { }
 , port ? 10000
 , secretName ? "pypi-secret"
 , readinessProbe ? null
@@ -47,10 +48,8 @@ hex.k8s.services.build (recursiveUpdate
     PYPISERVER_BACKEND_S3_PREFIX = s3Prefix;
     PORT = toString port;
     HEX = "true";
-  };
-  envFrom = [
-    { secretRef.name = secretName; }
-  ];
+  } // extraEnvAttrs;
+  envFrom = [{ secretRef.name = secretName; }];
   env = extraEnv;
   securityContext = { privileged = false; };
 }
