@@ -29,6 +29,7 @@
 let
   inherit (pkgs.lib) recursiveUpdate;
   volumes = [ hex.k8s.services.components.volumes.tmp ];
+  # other env settings can be found here: https://github.com/langfuse/langfuse/blob/main/docker-compose.yml
 in
 hex.k8s.services.build (recursiveUpdate
 {
