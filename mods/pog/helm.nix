@@ -305,6 +305,13 @@ rec {
     chart_url = "https://github.com/Kong/charts/releases/download/ingress-{1}/ingress-{1}.tgz";
   };
 
+  chart_scan_open-webui = _chart_scan rec {
+    name = "open-webui";
+    base_url = "https://helm.openwebui.com";
+    chart_url = "https://github.com/open-webui/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
+    last = 10;
+  };
+
   chart_scan_sonarqube = _chart_scan {
     name = "sonarqube";
     base_url = "https://SonarSource.github.io/helm-chart-sonarqube";
@@ -334,6 +341,7 @@ rec {
     chart_scan_nfs
     chart_scan_oncall
     chart_scan_oneuptime
+    chart_scan_open-webui
     chart_scan_otf
     chart_scan_plane
     chart_scan_postgres-operator

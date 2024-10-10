@@ -32,6 +32,7 @@ let
     mongo = import ./k8s/mongo.nix params;
     nginx-ingress = import ./k8s/nginx-ingress.nix params;
     oneuptime = import ./k8s/oneuptime.nix params;
+    open-webui = import ./k8s/open-webui.nix params;
     otf = import ./k8s/otf.nix params;
     plane = import ./k8s/plane.nix params;
     postgres = import ./k8s/postgres.nix params;

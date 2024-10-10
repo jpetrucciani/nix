@@ -106,6 +106,10 @@ This module contains a [kong ingress controller](https://github.com/Kong/kuberne
 
 [oneuptime](https://github.com/OneUptime/oneuptime) is a self-hostable observability platform
 
+### [open-webui.nix](./open-webui.nix)
+
+[open-webui](https://github.com/open-webui/open-webui) is a user-friendly AI interface
+
 ### [otf.nix](./otf.nix)
 
 [otf](https://github.com/jpetrucciani/otf) is an open source terraform cloud alternative
