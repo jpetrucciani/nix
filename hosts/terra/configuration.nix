@@ -223,17 +223,11 @@ in
         virtualHosts = {
           "api.cobi.dev" = reverse_proxy "localhost:10000";
           "z.cobi.dev" = reverse_proxy "localhost:8080";
-          # {
-          #   extraConfig = ''
-          #     import GEOBLOCK
-          #     reverse_proxy /* {
-          #       to localhost:1616
-          #     }
-          #   '';
-          # };
           "ntfy.cobi.dev" = reverse_proxy "localhost:2586";
           "invoice.cobi.dev" = reverse_proxy_with_iframe "localhost:8010";
           "llm.cobi.dev" = ts_reverse_proxy "localhost:8010";
+          "chat.cobi.dev" = ts_reverse_proxy "localhost:8010";
+          "lobe.cobi.dev" = ts_reverse_proxy "titan:3210";
           "otf.cobi.dev" = reverse_proxy "localhost:8010";
           "auth.cobi.dev" = reverse_proxy neptune_traefik;
           "audiobook.cobi.dev" = reverse_proxy "localhost:9888";
