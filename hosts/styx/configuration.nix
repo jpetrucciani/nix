@@ -41,4 +41,11 @@ in
       trusted-users = [ "root" "jacobi" ];
     };
   };
+
+  services.llama-server = {
+    enable = true;
+    bindPort = 8012;
+    model = "/opt/box/models/Llama-3.2-3B-Instruct-Q8_0.gguf";
+    ngl = 41;
+  };
 }
