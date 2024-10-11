@@ -8,6 +8,7 @@ jobs:
         image:
           - certbot_aws
           - curl
+          - argohex
           - hex
           - k8s_aws
           - k8s_gcp

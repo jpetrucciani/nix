@@ -328,11 +328,33 @@ let
       ]
     ];
   };
+  foundry_argo_hex = foundry {
+    name = "argohex";
+    description = "an argo sidecar image with hex and ktools";
+    layers = with pkgs; [
+      [
+        hex
+        hexcast
+      ]
+    ];
+    user = "argocd";
+    group = "argocd";
+    uid = "999";
+    gid = "999";
+    extraMkUser = ''
+      mkdir -p $out/home/argocd/cmp-server/config
+      cp ${./pog/hex/argo/plugin.yaml} $out/home/argocd/cmp-server/config/plugin.yaml
+    '';
+    extraMkUserPaths = [
+      "/home/argocd/cmp-server/config"
+    ];
+  };
 in
 {
   inherit foundry;
   foundry_v2 = foundry;
   curl = foundry_curl;
+  argohex = foundry_argo_hex;
   hex = foundry_hex;
   k8s_aws = foundry_k8s_aws;
   k8s_gcp = foundry_k8s_gcp;

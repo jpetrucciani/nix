@@ -249,133 +249,167 @@ rec {
       '';
     };
 
-  hex = pog {
-    name = "hex";
-    version = "0.0.7";
-    description = "a quick and easy way to render full kubespecs from nix files";
-    flags = [
-      {
-        name = "target";
-        description = "the file to render specs from";
-        default = "./specs.nix";
-      }
-      {
-        name = "dryrun";
-        description = "just run the diff, don't prompt to apply";
-        bool = true;
-      }
-      {
-        name = "render";
-        description = "only render and patch, do not diff or apply";
-        bool = true;
-      }
-      # {
-      #   name = "check";
-      #   description = "whether to check the hex for deprecations";
-      #   bool = true;
-      # }
-      {
-        name = "crds";
-        description = "filter down to just the CRDs (useful for initial deployments)";
-        bool = true;
-      }
-      {
-        name = "clientside";
-        description = "run the diff on the clientside instead of serverside";
-        short = "";
-        bool = true;
-      }
-      {
-        name = "prettify";
-        description = "whether to run prettier on the hex output yaml";
-        bool = true;
-      }
-      {
-        name = "force";
-        description = "force apply the resulting hex without a diff (WARNING - BE CAREFUL)";
-        bool = true;
-      }
-      {
-        name = "evaluate";
-        description = "evaluate an in-line hex script";
-      }
-    ];
-    script =
-      let
-        steps = {
-          render = "render";
-          patch = "patch";
-          diff = "diff";
-          apply = "apply";
-        };
-        _ = {
-          k = lib.getExe' final.kubectl "kubectl";
-          hc = lib.getExe hexcast;
-          delta = lib.getExe' final.delta "delta";
-          mktemp = "${final.coreutils}/bin/mktemp";
-          prettier = "${final.nodePackages.prettier}/bin/prettier --write --config ${../../prettier.config.js}";
-        };
-      in
-      helpers: with helpers; ''
-        export USE_GKE_GCLOUD_AUTH_PLUGIN=True
-        if ${var.notEmpty "evaluate"}; then
-          target=$(${_.mktemp})
-          cat <<EOF >"$target"
-          {hex, pkgs}:
-          $evaluate
-        EOF
-        fi
-        side="true"
-        ${flag "clientside"} && side="false"
-        ${file.notExists "target"} && die "the file to render ('$target') does not exist!"
-        rendered=$(${_.mktemp})
-        diffed=$(${_.mktemp})
-        debug "''${GREEN}render to '$rendered'"
-        ${timer.start steps.render}
-        ${_.hc} ''${crds:+--crds} "$target" >"$rendered"
-        render_exit_code=$?
-        render_runtime=${timer.stop steps.render}
-        debug "''${GREEN}rendered to '$rendered' in $render_runtime''${RESET}"
-        if [ $render_exit_code -ne 0 ]; then
-          die "nixrender failed!" 2
-        fi
-        ${flag "prettify"} && ${_.prettier} --parser yaml "$rendered" >/dev/null
-        if ${flag "render"}; then
-          cat "$rendered"
-          exit 0
-        fi
-        if ${flag "force"}; then
+  hex =
+    let
+      version = "0.0.8";
+    in
+    pog {
+      inherit version;
+      name = "hex";
+      description = "a quick and easy way to render full kubespecs from nix files";
+      flags = [
+        {
+          name = "target";
+          description = "the file to render specs from";
+          default = "./specs.nix";
+        }
+        {
+          name = "all";
+          description = "render all hex files in the current directory (ignoring gitignored files)";
+          bool = true;
+        }
+        {
+          name = "dryrun";
+          description = "just run the diff, don't prompt to apply";
+          bool = true;
+        }
+        {
+          name = "render";
+          description = "only render and patch, do not diff or apply";
+          bool = true;
+        }
+        # {
+        #   name = "check";
+        #   description = "whether to check the hex for deprecations";
+        #   bool = true;
+        # }
+        {
+          name = "crds";
+          description = "filter down to just the CRDs (useful for initial deployments)";
+          bool = true;
+        }
+        {
+          name = "clientside";
+          description = "run the diff on the clientside instead of serverside";
+          short = "";
+          bool = true;
+        }
+        {
+          name = "prettify";
+          description = "whether to run prettier on the hex output yaml";
+          bool = true;
+        }
+        {
+          name = "force";
+          description = "force apply the resulting hex without a diff (WARNING - BE CAREFUL)";
+          bool = true;
+        }
+        {
+          name = "evaluate";
+          description = "evaluate an in-line hex script";
+        }
+        {
+          name = "version";
+          description = "print version and exit";
+          short = "";
+          bool = true;
+        }
+      ];
+      script =
+        let
+          steps = {
+            render = "render";
+            patch = "patch";
+            diff = "diff";
+            apply = "apply";
+          };
+          _ = {
+            k = lib.getExe' final.kubectl "kubectl";
+            hc = lib.getExe hexcast;
+            delta = lib.getExe' final.delta "delta";
+            mktemp = "${final.coreutils}/bin/mktemp";
+            rg = "${final.ripgrep}/bin/rg";
+            sort = "${final.coreutils}/bin/sort";
+            prettier = "${final.nodePackages.prettier}/bin/prettier --write --config ${../../prettier.config.js}";
+          };
+        in
+        helpers: with helpers; ''
+          ${flag "version"} && echo "hex: ${version}" && exit 0
+          export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+          if ${var.notEmpty "evaluate"}; then
+            target=$(${_.mktemp})
+            cat <<EOF >"$target"
+            {hex, pkgs}:
+            $evaluate
+          EOF
+          fi
+          side="true"
+          ${flag "clientside"} && side="false"
+          rendered=$(${_.mktemp})
+          diffed=$(${_.mktemp})
+          debug "''${GREEN}render to '$rendered'"
+          ${timer.start steps.render}
+          if ${flag "all"}; then
+            debug "rendering all hex files!"
+            source_files=$(${_.rg} -t nix -l "hex" . | ${_.sort})
+            debug "found: $source_files"
+            for f in $source_files; do
+              debug "rendering $f"
+              echo -e "### HEX: $f\n" >>"$rendered"
+              ${_.hc} ''${crds:+--crds} "$f" >>"$rendered"
+              render_exit_code=$?
+              echo -e "### HEX END: $f\n" >>"$rendered"
+              if [ "$render_exit_code" -ne 0 ]; then
+                die "hexcast failed on '$f'!" 2
+              fi
+            done
+          else
+            ${file.notExists "target"} && die "the file to render ('$target') does not exist!"
+            ${_.hc} ''${crds:+--crds} "$target" >"$rendered"
+            render_exit_code=$?
+          fi
+          render_runtime=${timer.stop steps.render}
+          debug "''${GREEN}rendered to '$rendered' in $render_runtime''${RESET}"
+          if [ "$render_exit_code" -ne 0 ]; then
+            die "hexcast failed!" 2
+          fi
+          ${flag "prettify"} && ${_.prettier} --parser yaml "$rendered" >/dev/null
+          if ${flag "render"}; then
+            cat "$rendered"
+            exit 0
+          fi
+          if ${flag "force"}; then
+            ${timer.start steps.apply}
+            ${_.k} apply --force-conflicts --server-side="$side" -f "$rendered"
+            apply_runtime=${timer.stop steps.apply}
+            debug "''${GREEN}force applied '$rendered' in $apply_runtime''${RESET}"
+            exit 0
+          fi
+          ${timer.start steps.diff}
+          ${_.k} diff --force-conflicts --server-side="$side" -f "$rendered" >"$diffed"
+          diff_exit_code=$?
+          diff_runtime=${timer.stop steps.diff}
+          debug "''${GREEN}diffed '$rendered' to '$diffed' in $diff_runtime [exit code $diff_exit_code]''${RESET}"
+          if [ $diff_exit_code -ne 0 ] && [ $diff_exit_code -ne 1 ]; then
+            die "diff of hex failed!" 3
+          fi
+          if [ -s "$diffed" ]; then
+            debug "''${GREEN}changes detected!''${RESET}"
+          else
+            blue "no changes in hex detected!"
+            exit 0
+          fi
+          ${_.delta} <"$diffed"
+          ${flag "dryrun"} && exit 0
+          echo "---"
+          ${confirm {prompt="Would you like to apply these changes?";}}
+          echo "---"
           ${timer.start steps.apply}
           ${_.k} apply --force-conflicts --server-side="$side" -f "$rendered"
           apply_runtime=${timer.stop steps.apply}
-          debug "''${GREEN}force applied '$rendered' in $apply_runtime''${RESET}"
-          exit 0
-        fi
-        ${timer.start steps.diff}
-        ${_.k} diff --force-conflicts --server-side="$side" -f "$rendered" >"$diffed"
-        diff_exit_code=$?
-        diff_runtime=${timer.stop steps.diff}
-        debug "''${GREEN}diffed '$rendered' to '$diffed' in $diff_runtime [exit code $diff_exit_code]''${RESET}"
-        if [ $diff_exit_code -ne 0 ] && [ $diff_exit_code -ne 1 ]; then
-          die "diff of hex failed!" 3
-        fi
-        if [ -s "$diffed" ]; then
-          debug "''${GREEN}changes detected!''${RESET}"
-        else
-          blue "no changes in hex detected!"
-          exit 0
-        fi
-        ${_.delta} <"$diffed"
-        ${flag "dryrun"} && exit 0
-        echo "---"
-        ${confirm {prompt="Would you like to apply these changes?";}}
-        echo "---"
-        ${timer.start steps.apply}
-        ${_.k} apply --force-conflicts --server-side="$side" -f "$rendered"
-        apply_runtime=${timer.stop steps.apply}
-        debug "''${GREEN}applied '$rendered' in $apply_runtime''${RESET}"
-      '';
-  };
+          debug "''${GREEN}applied '$rendered' in $apply_runtime''${RESET}"
+        '';
+    };
 
   nixsum = pog {
     name = "nixsum";
