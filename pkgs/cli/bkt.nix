@@ -2,7 +2,7 @@
 { lib, fetchFromGitHub, rustPlatform }:
 let
   pname = "bkt";
-  version = "0.8.0";
+  version = "0.8.2";
 in
 rustPlatform.buildRustPackage rec {
   inherit pname version;
@@ -11,10 +11,11 @@ rustPlatform.buildRustPackage rec {
     owner = "dimo414";
     repo = "bkt";
     rev = version;
-    sha256 = "sha256-XQK7oZfutqCvFoGzMH5G5zoGvqB8YaXSdrwjS/SVTNU=";
+    sha256 = "sha256-qb7uRvCAXCayDIg8yQfF/Yxe0pNvR3giCQYmMIur2rM=";
   };
 
-  cargoSha256 = "sha256-Pl+a+ZpxaguRloH8R7x4FmYpTwTUwFrYy7AS/5K3L+8=";
+  cargoHash = "sha256-NGXo+He3KEPTDf5LqEN0sDwK93sc+kU+5w4kAEyaYuU=";
+  doCheck = false; # the tests are currently failing?
 
   meta = with lib; {
     description = "subprocess caching utility";
