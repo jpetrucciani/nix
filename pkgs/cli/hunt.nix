@@ -2,7 +2,7 @@
 { lib, fetchFromGitHub, rustPlatform }:
 let
   pname = "hunt";
-  version = "2.0.0";
+  version = "2.4.0";
 in
 rustPlatform.buildRustPackage rec {
   inherit pname version;
@@ -11,10 +11,10 @@ rustPlatform.buildRustPackage rec {
     owner = "LyonSyonII";
     repo = "hunt-rs";
     rev = "refs/tags/v${version}";
-    sha256 = "sha256-TwxNVT2x9Y0jnLXiIquf/bQ31B+2VwFfh9EFbJQHpt4=";
+    sha256 = "sha256-NKXZECtepuFg6qTuXF9Gnat/vnrygt3UOZb0YUKPqi8=";
   };
 
-  cargoSha256 = "sha256-GU3AXZJ8yGFnj0SXRezS/YI6aS/lJowwo+GBBv5wNik=";
+  cargoHash = "sha256-ExwcFJVqQF/RTUyv1FvOCnlB+9Z7uhi/5UUjW7WcXTk=";
 
   meta = with lib; {
     description = "simplified find command made with rust";
