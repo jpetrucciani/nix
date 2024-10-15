@@ -295,7 +295,13 @@ let
     ];
     layers = with pkgs; [
       [ (awscli2.override { python3 = python311; }) ]
-      [ (certbot.withPlugins (p: with p; [ certbot-dns-route53 ])) ]
+      [
+        ((certbot.override { python = python311; }).withPlugins (p: with p; [
+          (certbot-dns-route53.overridePythonAttrs (old: {
+            pytestFlagsArray = old.pytestFlagsArray ++ [ "-W ignore::DeprecationWarning" ];
+          }))
+        ]))
+      ]
     ];
   };
   foundry_k8s_gcp = foundry {
