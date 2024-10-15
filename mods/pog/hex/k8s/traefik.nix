@@ -214,6 +214,7 @@ let
         , extraRule ? { }
         , extraRoutes ? [ ]
         , extraSpec ? { }
+        , ingressRouteNamespace ? "default"
         , pre23 ? false
         , apiVersion ? if pre23 then "traefik.containo.us/v1alpha1" else "traefik.io/v1alpha1"
         }:
@@ -233,6 +234,7 @@ let
           kind = "IngressRoute";
           metadata = {
             inherit name;
+            namespace = ingressRouteNamespace;
             annotations = {
               "kubernetes.io/ingress.class" = if internal then "traefik-internal" else "traefik";
             } // hex.annotations;
