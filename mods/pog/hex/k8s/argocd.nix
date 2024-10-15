@@ -22,6 +22,34 @@ let
     };
     chart_url = version: "https://github.com/argoproj/argo-helm/releases/download/argo-cd-${version}/argo-cd-${version}.tgz";
     chart = hex.k8s._.chart { inherit defaults chart_url; };
+    app =
+      { name
+      , repo
+      , path
+      , targetRevision ? "main"
+      , pluginName ? "hex-v0.0.8"
+      , namespace ? defaults.namespace
+      , syncOptions ? [ ]
+      , defaultSyncOptions ? [ "ServerSideApply=true" ]
+      , project ? "default"
+      , destination ? "in-cluster"
+      }: hex.toYAMLDoc {
+        apiVersion = "argoproj.io/v1alpha1";
+        kind = "Application";
+        metadata = {
+          inherit name namespace;
+        };
+        spec = {
+          destination.name = destination;
+          inherit project;
+          source = {
+            inherit targetRevision path;
+            plugin.name = pluginName;
+            repoURL = repo;
+          };
+          syncPolicy.syncOptions = defaultSyncOptions ++ syncOptions;
+        };
+      };
   };
 in
 argocd

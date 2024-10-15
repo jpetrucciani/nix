@@ -1,9 +1,9 @@
 # hex magic module! this contains the helpers that are exposed within the `hex` attribute of the function that makes up a hex file.
 pkgs:
 rec {
-  inherit (pkgs.lib) isList isAttrs isInt isBool isFloat;
+  inherit (pkgs.lib) isList isAttrs isInt isBool isFloat isPath;
   inherit (pkgs.lib) attrNames concatMap concatStringsSep filter substring replaceStrings stringLength;
-  inherit (pkgs.lib.strings) toJSON toLower;
+  inherit (pkgs.lib.strings) fileContents hasSuffix toJSON toLower trim;
   inherit (pkgs.lib.trivial) isFunction;
   inherit (pkgs._std.serde) toTOML;
   annotations = {
@@ -13,7 +13,23 @@ rec {
     if isList x
     then concatMap flatten x
     else [ x ];
-  flat = x: join (map (y: if isFunction y then y { } else y) (flatten x));
+  ensureYamlFormat = content:
+    let
+      trimmedContent = trim content;
+      hasYamlSeparator = substring 0 3 trimmedContent == "---";
+      contentWithSeparator = if hasYamlSeparator then trimmedContent else "---\n${trimmedContent}";
+    in
+    if hasSuffix "\n" contentWithSeparator
+    then contentWithSeparator
+    else contentWithSeparator + "\n";
+  loadFileOrValue = y:
+    if isPath y then
+      if hasSuffix ".yaml" y || hasSuffix ".yml" y
+      then ensureYamlFormat (fileContents y)
+      else fileContents y
+    else if isFunction y then y { }
+    else y;
+  flat = x: join (map loadFileOrValue (flatten x));
   join = x: concatStringsSep "\n" (flatten x);
   unlines = indent: values: "\n" + concatStringsSep "\n" (map (v: "${indent}${v}") values) + "\n";
   valuesFile = attrs: pkgs.writeTextFile {
