@@ -36,6 +36,7 @@ let
       , namespace ? "default"
       , values ? [ ]
       , valuesAttrs ? null
+      , defaultValuesAttrs ? null
       , sets ? [ ]
       , version ? "0.0.0"
       , includeCRDs ? true
@@ -54,7 +55,9 @@ let
         };
         useOCI = pkgs.lib.hasPrefix "oci://" url;
         apiVersionOverrides = if apiVersions != "" then ''--api-versions '${apiVersions}' '' else "";
-        allValues = values ++ (if valuesAttrs != null then [ (hex.valuesFile valuesAttrs) ] else [ ]);
+        allValues = values ++
+          (if defaultValuesAttrs != null then [ (hex.valuesFile defaultValuesAttrs) ] else [ ]) ++
+          (if valuesAttrs != null then [ (hex.valuesFile valuesAttrs) ] else [ ]);
       in
       rec {
         hookParams = {

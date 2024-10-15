@@ -5,6 +5,36 @@ let
     defaults = {
       name = "argocd";
       namespace = "argocd";
+      valuesAttrs = {
+        repoServer = {
+          extraContainers = [
+            {
+              command = [
+                "/var/run/argocd/argocd-cmp-server"
+              ];
+              image = "ghcr.io/jpetrucciani/argohex:latest";
+              name = "hex";
+              securityContext = {
+                runAsNonRoot = true;
+                runAsUser = 999;
+              };
+              imagePullPolicy = "Always";
+              volumeMounts = [
+                {
+                  mountPath = "/var/run/argocd";
+                  name = "var-files";
+                }
+                {
+                  mountPath = "/home/argocd/cmp-server/plugins";
+                  name = "plugins";
+                }
+                { mountPath = "/tmp"; name = "hex-tmp"; }
+              ];
+            }
+          ];
+          volumes = [{ name = "hex-tmp"; emptyDir = { }; }];
+        };
+      };
     };
     version = rec {
       _v = hex.k8s._.version chart;
