@@ -112,8 +112,8 @@ rec {
     delete_key = selectors: key: "${_.yq} e -i 'del(select(${selectors}) | ${key})'";
     crds_filter = yq_filters.docs_ne ".kind" [ "CustomResourceDefinition" ];
     remove_named = names: yq_filters.docs_ne ".metadata.name" names;
-    filter_helm_pre_hooks = ''${_.yq} e -i 'select(.metadata.annotations."helm.sh/hook" | test("pre-install|pre-upgrade") | not)' '';
-    filter_helm_post_hooks = ''${_.yq} e -i 'select(.metadata.annotations."helm.sh/hook" | test("post-install|post-upgrade") | not)' '';
+    filter_helm_pre_hooks = ''${_.yq} e -i 'del(select(.metadata.annotations."helm.sh/hook" | test("pre-install|pre-upgrade")))' '';
+    filter_helm_post_hooks = ''${_.yq} e -i 'del(select(.metadata.annotations."helm.sh/hook" | test("post-install|post-upgrade")))' '';
   };
 
   fetchOCIChart = { url, sha256 }:
