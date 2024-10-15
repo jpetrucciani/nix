@@ -112,10 +112,12 @@ let
         , namespace ? "default"
         , extract ? false
         , decoding_strategy ? "Auto"
+        , metadata_policy ? "None"
+        , conversion_strategy ? "Default"
         , extra_data ? [ ]
         , labels ? { }
         , string_data ? { }
-        }: toYAMLDoc (secret { inherit name filename env store store_kind refresh_interval secret_ref namespace extract decoding_strategy extra_data labels string_data; });
+        }: toYAMLDoc (secret { inherit name filename env store store_kind refresh_interval secret_ref namespace extract decoding_strategy metadata_policy conversion_strategy extra_data labels string_data; });
 
       secret =
         { name
@@ -128,6 +130,8 @@ let
         , namespace
         , extract
         , decoding_strategy
+        , metadata_policy
+        , conversion_strategy
         , extra_data
         , labels
         , string_data
@@ -163,6 +167,8 @@ let
               {
                 extract = {
                   key = if secret_ref == "" then "${env}${name}" else secret_ref;
+                  conversionStrategy = conversion_strategy;
+                  metadataPolicy = metadata_policy;
                   decodingStrategy = decoding_strategy;
                 };
               }
@@ -171,6 +177,9 @@ let
               {
                 secretKey = filename;
                 remoteRef = {
+                  conversionStrategy = conversion_strategy;
+                  decodingStrategy = "None";
+                  metadataPolicy = metadata_policy;
                   key = if secret_ref == "" then "${env}${name}" else secret_ref;
                 };
               }
