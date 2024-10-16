@@ -91,7 +91,8 @@ rec {
     , pre ? ""
     , post ? ""
     , procfile ? "Procfile"
-    , title ? "run"
+    , title ? name
+    , root ? null
     , description ? "a quick and easy service orchestrator!"
     , overmindPort ? 4322
     , overmind ? pkgs.overmind
@@ -102,6 +103,7 @@ rec {
     }:
     let
       o = "${overmind}/bin/overmind";
+      chroot = if root != null then "--root ${root}" else "";
     in
     pog {
       inherit name description;
@@ -112,7 +114,7 @@ rec {
         export OVERMIND_TMUX_CONFIG=${tmuxConfig}
         export PATH="${tmux}/bin/:$PATH"
         ${pre}
-        ${o} start -f ${procfile} --title "${title}" --shell ${bash}/bin/bash -D
+        ${o} start ${chroot} --procfile ${procfile} --title "${title}" --shell ${bash}/bin/bash -D
         sleep ${toString sleepHack} # this is a hack to stop overmind from crashing?
         ${o} connect
         ${post}
