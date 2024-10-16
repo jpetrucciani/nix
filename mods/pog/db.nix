@@ -103,7 +103,7 @@ rec {
     }:
     let
       o = "${overmind}/bin/overmind";
-      chroot = if root != null then "--root ${root}" else "";
+      chroot = if root != null then ''--root "${root}"'' else "";
     in
     pog {
       inherit name description;
