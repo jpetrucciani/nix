@@ -205,7 +205,7 @@ rec {
 
   ormar-postgres-extensions = buildPythonPackage rec {
     pname = "ormar-postgres-extensions";
-    version = "2.3.0";
+    version = "2.4.0";
 
     format = "setuptools";
     src = fetchFromGitHub {
@@ -319,12 +319,12 @@ rec {
 
   nicegui = buildPythonPackage rec {
     pname = "nicegui";
-    version = "2.3.0";
+    version = "2.4.0";
     pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-tom74w+eF2JemFnWtIQCEv2AfWgUDhEgvOP35KuZtV0=";
+      hash = "sha256-mP0FWKQh9sOfPUJz6KmTfZMC4c1KI8Xxd/PZdhxHUVI=";
     };
 
     postPatch = ''
