@@ -6,7 +6,7 @@ in
 rec {
   nixup =
     let
-      version = "0.0.7";
+      version = "0.0.8";
       _flags = {
         with_crystal = "include crystal with dependencies";
         with_db_pg = "include postgres db and helper scripts";
@@ -49,12 +49,12 @@ rec {
           extra_env=""
           crystal=""
           if [ "$with_crystal" = "1" ]; then
-            crystal="crystal = [crystal_1_2${"\n"}shards];"
+            crystal="crystal = [crystal${"\n"}shards];"
           fi
           pg=""
           if [ "$with_db_pg" = "1" ]; then
             pg="pg = __pg { postgres = pg; };${"\n"}pg_bootstrap = __pg_bootstrap { inherit name; postgres = pg; };${"\n"}pg_shell = __pg_shell { inherit name; postgres = pg; };"
-            toplevel="pg = pkgs.postgresql_15;${"\n"}$toplevel"
+            toplevel="pg = pkgs.postgresql_16;${"\n"}$toplevel"
           fi
           redis=""
           if [ "$with_db_redis" = "1" ]; then
@@ -62,7 +62,7 @@ rec {
           fi
           elixir=""
           if [ "$with_elixir" = "1" ]; then
-            elixir="elixir = [elixir${"\n"}(with beamPackages; [${"\n"}hex])(ifIsLinux [inotify-tools]) (ifIsDarwin [ terminal-notifier (with darwin.apple_sdk_11_0.frameworks; [ CoreFoundation CoreServices ])])];"
+            elixir="elixir = [elixir${"\n"}(with beamPackages; [${"\n"}hex])(ifIsLinux [inotify-tools]) (ifIsDarwin [ terminal-notifier (with darwin.apple_sdk_12_3.frameworks; [ CoreFoundation CoreServices ])])];"
             toplevel="inherit (pkgs.hax) ifIsLinux ifIsDarwin;${"\n"}$toplevel"
           fi
           golang=""
@@ -89,7 +89,7 @@ rec {
           fi
           pulumi=""
           if [ "$with_pulumi" = "1" ]; then
-            py="python = [(python311.withPackages ( p: with p; [${"\n"}pulumi]))];"
+            py="python = [(python312.withPackages ( p: with p; [${"\n"}pulumi]))];"
             pulumi="pulumi = [pulumi];"
           fi
           py=""
