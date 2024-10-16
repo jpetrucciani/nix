@@ -1,6 +1,8 @@
 # This module provides some tools that interact with GitHub
 final: prev:
-with prev;
+let
+  inherit (final) _ pog lib jaq;
+in
 rec {
   github_tags = pog {
     name = "github_tags";

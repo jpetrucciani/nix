@@ -31,6 +31,7 @@
   (import ./mods/pog/gcp.nix)
   (import ./mods/pog/general.nix)
   (import ./mods/pog/github.nix)
+  (import ./mods/pog/gitlab.nix)
   (import ./mods/pog/hax.nix)
   (import ./mods/pog/helm.nix)
   (import ./mods/pog/k3s.nix)

@@ -42,6 +42,10 @@ This module provides miscellaneous `pog` implemented tools
 
 This module provides some tools that interact with GitHub
 
+### [gitlab.nix](./gitlab.nix)
+
+This module provides some tools that interact with Gitlab
+
 ### [hax.nix](./hax.nix)
 
 This module provides some hacky `pog` tools!
