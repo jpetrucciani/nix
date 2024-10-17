@@ -51,6 +51,7 @@ let
       , basicAuth ? false
       , basicAuthUser ? ""
       , basicAuthPassword ? ""
+      , storageClass ? null
       }:
       let
         sa = {
@@ -254,6 +255,7 @@ let
                   accessModes = [
                     "ReadWriteOnce"
                   ];
+                  ${if storageClass != null then "storageClassName" else null} = storageClass;
                   resources = {
                     requests = {
                       storage = "5Gi";
