@@ -140,9 +140,6 @@ rec {
     };
   };
 
-  # wat?
-  accelerate = if isDarwin then prev.accelerate.overridePythonAttrs (old: { doCheck = false; propagatedBuildInputs = old.propagatedBuildInputs ++ [ prev.huggingface-hub ]; }) else prev.accelerate;
-
   tokenize-rt = let version = "5.2.0"; in
     if (pythonAtLeast "3.12") then
       prev.tokenize-rt.overridePythonAttrs
