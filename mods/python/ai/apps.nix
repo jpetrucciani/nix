@@ -444,54 +444,6 @@ in
     };
   };
 
-  hf-transfer = buildPythonPackage rec {
-    pname = "hf-transfer";
-    version = "0.1.8";
-    pyproject = true;
-
-    src = fetchPypi {
-      pname = "hf_transfer";
-      inherit version;
-      hash = "sha256-JtIpRoFS56PsEmZMrIa4woAGlf2F+cmpZnendcwE8LM=";
-    };
-
-    cargoDeps = final.pkgs.rustPlatform.fetchCargoTarball {
-      inherit src;
-      name = "${pname}-${version}";
-      hash = "sha256-I4APdz1r2KJ8pTfKAg8g240wYy8gtMlHwmBye4796Tk=";
-    };
-
-    build-system = with final.pkgs; [
-      cargo
-      pkg-config
-      rustPlatform.cargoSetupHook
-      rustPlatform.maturinBuildHook
-      rustc
-    ];
-
-    buildInputs = with final.pkgs; [
-      openssl
-    ] ++ lib.optionals stdenv.isDarwin [
-      darwin.apple_sdk.frameworks.Security
-      darwin.apple_sdk.frameworks.SystemConfiguration
-    ];
-
-    pythonImportsCheck = [
-      "hf_transfer"
-    ];
-
-    env = {
-      OPENSSL_NO_VENDOR = true;
-    };
-
-    meta = {
-      description = "Speed up file transfers with the Hugging Face Hub";
-      homepage = "https://pypi.org/project/hf-transfer/";
-      license = licenses.asl20;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
   infinity-emb = buildPythonPackage rec {
     pname = "infinity-emb";
     version = "0.0.65";
