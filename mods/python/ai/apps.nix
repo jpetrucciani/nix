@@ -478,7 +478,7 @@ in
       torch
       typer
       uvicorn
-      xformers
+      # xformers # TODO: fix this build for darwin
     ];
 
     optional-dependencies = with final; {

@@ -18,4 +18,4 @@ jobs:
           # skipAddingSubstituter: ${{ matrix.os == 'm1' && 'true' || 'false' }}
           name: jacobi
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-      - run: nix --show-trace build .#__j_custom .#zaddy .#zaddy-browser .#python312Packages.torch .#python312Packages.xformers
+      - run: nix --show-trace build .#__j_custom .#zaddy .#zaddy-browser .#python312Packages.torch
