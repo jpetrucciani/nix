@@ -32,6 +32,8 @@ in
     mkEnv =
       { projectDir
       , extraOverrides ? [ ]
+      , extraPreOverrides ? [ ]
+      , extraPostOverrides ? extraOverrides
       , extraBuildInputs ? [ ]
       , editablePackageSources ? { }
       , extraMkPoetryEnv ? { }
@@ -41,25 +43,26 @@ in
       }:
       let
         p2nix = final.poetry2nix;
+        extraFixes = final: prev:
+          let
+            add_setuptools = pkg: add_propagated pkg [ final.setuptools ];
+          in
+          # some default fixes for things i've seen
+          {
+            inherit (python.pkgs) pymupdf markupsafe;
+            bcrypt = no_wheel prev.bcrypt;
+            orjson = no_wheel prev.orjson;
+            pypika = add_setuptools prev.pypika.overridePythonAttrs;
+            pytesseract = no_wheel prev.pytesseract;
+            reportlab = no_wheel prev.reportlab;
+            watchfiles = no_wheel prev.watchfiles;
+            wikipedia = add_setuptools prev.wikipedia;
+          };
       in
       ((p2nix.mkPoetryEnv
         {
           inherit editablePackageSources python projectDir preferWheels;
-          overrides = (p2nix.overrides.withDefaults (final: prev:
-            let
-              add_setuptools = pkg: add_propagated pkg [ final.setuptools ];
-            in
-            # some default fixes for things i've seen
-            {
-              inherit (python.pkgs) pymupdf markupsafe;
-              bcrypt = no_wheel prev.bcrypt;
-              orjson = no_wheel prev.orjson;
-              pypika = add_setuptools prev.pypika.overridePythonAttrs;
-              pytesseract = no_wheel prev.pytesseract;
-              reportlab = no_wheel prev.reportlab;
-              watchfiles = no_wheel prev.watchfiles;
-              wikipedia = add_setuptools prev.wikipedia;
-            })) ++ extraOverrides;
+          overrides = [ extraFixes ] ++ extraPreOverrides ++ p2nix.defaultPoetryOverrides ++ extraPostOverrides;
         } // extraMkPoetryEnv).override
         (args: {
           inherit ignoreCollisions;
