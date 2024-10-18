@@ -86,6 +86,27 @@ rec {
     '';
   };
 
+  __vk = pog {
+    name = "__vk";
+    description = "run your local valkey db";
+    flags = [
+      flags.redis_port
+    ];
+    script = ''
+      ${valkey}/bin/valkey-server --port "$port"
+    '';
+  };
+  __vk_shell = pog {
+    name = "__vk_shell";
+    description = "run your local valkey db";
+    flags = [
+      flags.redis_port
+    ];
+    script = ''
+      ${final.portwatch}/bin/portwatch "$port" && ${valkey}/bin/valkey-cli -p "$port"
+    '';
+  };
+
   __run =
     { name ? "run"
     , pre ? ""
@@ -175,6 +196,9 @@ rec {
     # redis
     __rd
     __rd_shell
+    # valkey
+    __vk
+    __vk_shell
     # magic run helper
     (__run { })
     # queues
