@@ -478,6 +478,7 @@ in
       torch
       typer
       uvicorn
+      xformers
     ];
 
     optional-dependencies = with final; {

@@ -1,4 +1,4 @@
-(final: prev: prev.lib.genAttrs [ "python310" "python311" "python312" ]
+(final: prev: prev.lib.genAttrs [ "python311" "python312" "python313" ]
   (pythonAttr: final.lib.fix
     (self: (prev.${pythonAttr}.override {
       inherit self;

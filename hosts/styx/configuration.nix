@@ -48,7 +48,7 @@ in
       models = [
         "BAAI/bge-small-en-v1.5"
         "jinaai/jina-embeddings-v3"
-        "dunzhang/stella_en_400M_v5"
+        "dunzhang/stella_en_400M_v5" # requires xformers?
       ];
     };
     llama-server = {

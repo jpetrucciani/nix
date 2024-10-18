@@ -1312,4 +1312,37 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  xformers = buildPythonPackage rec {
+    pname = "xformers";
+    version = "0.0.28.post1";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-WykmQ4hZg5UPbi467Qjf1rF1rItyWAL28+UntaIuKps=";
+    };
+
+    build-system = [
+      setuptools
+      wheel
+      pkgs.which
+    ];
+
+    dependencies = [
+      numpy
+      torch
+    ];
+
+    pythonImportsCheck = [
+      "xformers"
+    ];
+
+    meta = {
+      description = "XFormers: A collection of composable Transformer building blocks";
+      homepage = "https://pypi.org/project/xformers/";
+      license = lib.licenses.bsd3;
+      maintainers = with lib.maintainers; [ jpetrucciani ];
+    };
+  };
 }

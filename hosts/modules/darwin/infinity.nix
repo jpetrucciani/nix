@@ -31,7 +31,7 @@ in
         # check out the MTEB leaderboard!
         ### https://huggingface.co/spaces/mteb/leaderboard
         # "jinaai/jina-embeddings-v3"
-        # "dunzhang/stella_en_400M_v5"
+        # "dunzhang/stella_en_400M_v5"  # requires xformers?
       ];
       description = "the list of embeddings models to load";
     };
@@ -51,7 +51,7 @@ in
     launchd.daemons.infinity =
       let
         models = lib.concatStringsSep " " (
-          map (model: "--model-id ${model}") cfg.models
+          map (model: "--model-id '${lib.replaceStrings ["'"] [""] model}'") cfg.models
         );
         serve = pkgs.writers.writeBash "infinity-serve" ''
           ${lib.getExe' cfg.package "infinity_emb"} v2 --host '${cfg.bindAddress}' --port '${toString cfg.bindPort}' ${models} ${cfg.extraFlags}
