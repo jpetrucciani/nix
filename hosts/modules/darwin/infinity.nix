@@ -54,7 +54,7 @@ in
           lib.imap0 (i: model: "--model-id $model_${toString i}") cfg.models
         );
         serve = pkgs.writers.writeBash "infinity-serve" ''
-          ${lib.getExe' cfg.package "infinity_emb"} --host '${cfg.bindAddress}' --port '${toString cfg.bindPort}' ${models} ${cfg.extraFlags}
+          ${lib.getExe' cfg.package "infinity_emb"} v2 --host '${cfg.bindAddress}' --port '${toString cfg.bindPort}' ${models} ${cfg.extraFlags}
         '';
       in
       {
