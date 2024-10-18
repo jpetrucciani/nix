@@ -62,6 +62,8 @@ in
         serviceConfig = {
           Label = "dev.cobi.infinity";
           RunAtLoad = true;
+          StandardOutPath = "/tmp/infinity-out-logs.txt";
+          StandardErrorPath = "/tmp/infinity-err-logs.txt";
         };
       };
   };
