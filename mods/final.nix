@@ -62,7 +62,7 @@ in
       ((p2nix.mkPoetryEnv
         {
           inherit editablePackageSources python projectDir preferWheels;
-          overrides = [ extraFixes ] ++ extraPreOverrides ++ p2nix.defaultPoetryOverrides ++ extraPostOverrides;
+          overrides = extraPreOverrides ++ (p2nix.overrides.withDefaults extraFixes) ++ extraPostOverrides;
         } // extraMkPoetryEnv).override
         (args: {
           inherit ignoreCollisions;
