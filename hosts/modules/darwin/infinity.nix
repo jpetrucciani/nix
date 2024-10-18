@@ -44,7 +44,7 @@ in
 
   config = mkIf cfg.enable {
     assertions = [{
-      assertion = cfg.model != "";
+      assertion = cfg.models != [ ];
       message = ''no models specified!'';
     }];
     environment.systemPackages = [ cfg.package ];
