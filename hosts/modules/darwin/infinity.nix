@@ -99,7 +99,7 @@ in
       let
         username = if cfg.user != null then cfg.user else "";
       in
-      mkIf (lib.any (cfg: cfg.enable && cfg.user == null && cfg.group == null) (lib.attrValues config.services.infinitys)) {
+      mkIf (lib.any (cfg: cfg.enable && cfg.user == null && cfg.group == null) (lib.attrValues config.services.infinity)) {
         users."${username}" = {
           createHome = false;
           description = "infinity service user";
