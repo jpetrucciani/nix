@@ -42,10 +42,20 @@ in
     };
   };
 
-  services.llama-server = {
-    enable = true;
-    bindPort = 8012;
-    model = "/opt/box/models/Llama-3.2-3B-Instruct-Q8_0.gguf";
-    ngl = 41;
+  services = {
+    infinity = {
+      enable = true;
+      models = [
+        "BAAI/bge-small-en-v1.5"
+        "jinaai/jina-embeddings-v3"
+        "dunzhang/stella_en_400M_v5"
+      ];
+    };
+    llama-server = {
+      enable = true;
+      bindPort = 8012;
+      model = "/opt/box/models/Llama-3.2-3B-Instruct-Q8_0.gguf";
+      ngl = 41;
+    };
   };
 }
