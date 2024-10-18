@@ -40,6 +40,29 @@ in
       description = "any extra flags to pass to infinity";
       default = "";
     };
+    user = mkOption {
+      type = types.nullOr types.str;
+      description = ''
+        User under which to run the service.
+
+        If this option and the `group` option is set to `null`, nix-darwin creates
+        the `_infinity` user and group.
+      '';
+      defaultText = literalExpression "username";
+      default = null;
+    };
+
+    group = mkOption {
+      type = types.nullOr types.str;
+      description = ''
+        Group under which to run the service.
+
+        If this option and the `user` option is set to `null`, nix-darwin creates
+        the `_infinity` user and group.
+      '';
+      defaultText = literalExpression "groupname";
+      default = null;
+    };
   };
 
   config = mkIf cfg.enable {
@@ -59,12 +82,39 @@ in
       in
       {
         command = serve;
-        serviceConfig = {
-          Label = "dev.cobi.infinity";
-          RunAtLoad = true;
-          StandardOutPath = "/tmp/infinity-out-logs.txt";
-          StandardErrorPath = "/tmp/infinity-err-logs.txt";
+        serviceConfig =
+          let
+            homeDir = "/var/lib/infinity";
+          in
+          {
+            Label = "dev.cobi.infinity";
+            RunAtLoad = true;
+            StandardOutPath = "${homeDir}/infinity-out.log";
+            StandardErrorPath = "${homeDir}/infinity-err.log";
+            WorkingDirectory = homeDir;
+          };
+      };
+
+    users =
+      let
+        username = if cfg.user != null then cfg.user else "";
+      in
+      mkIf (lib.any (cfg: cfg.enable && cfg.user == null && cfg.group == null) (lib.attrValues config.services.infinitys)) {
+        users."${username}" = {
+          createHome = false;
+          description = "infinity service user";
+          gid = config.users.groups."${username}".gid;
+          home = "/var/lib/infinity";
+          shell = "/bin/bash";
+          uid = lib.mkDefault 799;
         };
+        knownUsers = [ "${username}" ];
+
+        groups."${username}" = {
+          gid = lib.mkDefault 799;
+          description = "infinity service user group";
+        };
+        knownGroups = [ "${username}" ];
       };
   };
 }
