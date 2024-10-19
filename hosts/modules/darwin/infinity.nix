@@ -66,12 +66,10 @@ in
     }];
     system.activationScripts = {
       launchd = mkIf cfg.enable {
-        text = lib.mkBefore (
-          ''
-            ${pkgs.coreutils}/bin/mkdir -p -m 0750 ${homeDir}
-            ${pkgs.coreutils}/bin/chown ${cfg.user}:${cfg.group} ${homeDir}
-          ''
-        );
+        text = lib.mkBefore ''
+          ${pkgs.coreutils}/bin/mkdir -p -m 0750 ${homeDir}
+          ${pkgs.coreutils}/bin/chown ${cfg.user}:${cfg.group} ${homeDir}
+        '';
       };
     };
     environment.systemPackages = [ cfg.package ];
