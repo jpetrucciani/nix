@@ -2,6 +2,7 @@
 let
   inherit (lib) literalExpression mkEnableOption mkIf mkOption types;
   cfg = config.services.infinity;
+  defaultUser = "_infinity";
 in
 {
   imports = [ ];
@@ -44,24 +45,16 @@ in
       type = types.nullOr types.str;
       description = ''
         User under which to run the service.
-
-        If this option and the `group` option is set to `null`, nix-darwin creates
-        the `_infinity` user and group.
       '';
-      defaultText = literalExpression "username";
-      default = null;
+      default = defaultUser;
     };
 
     group = mkOption {
       type = types.nullOr types.str;
       description = ''
         Group under which to run the service.
-
-        If this option and the `user` option is set to `null`, nix-darwin creates
-        the `_infinity` user and group.
       '';
-      defaultText = literalExpression "groupname";
-      default = null;
+      default = defaultUser;
     };
   };
 
@@ -87,34 +80,31 @@ in
             homeDir = "/var/lib/infinity";
           in
           {
+            GroupName = cfg.group;
             Label = "dev.cobi.infinity";
             RunAtLoad = true;
             StandardOutPath = "${homeDir}/infinity-out.log";
             StandardErrorPath = "${homeDir}/infinity-err.log";
+            UserName = cfg.user;
             WorkingDirectory = homeDir;
           };
       };
 
-    users =
-      let
-        username = if cfg.user != null then cfg.user else "";
-      in
-      mkIf (lib.any (cfg: cfg.enable && cfg.user == null && cfg.group == null) (lib.attrValues config.services.infinity)) {
-        users."${username}" = {
-          createHome = false;
-          description = "infinity service user";
-          gid = config.users.groups."${username}".gid;
-          home = "/var/lib/infinity";
-          shell = "/bin/bash";
-          uid = lib.mkDefault 799;
-        };
-        knownUsers = [ "${username}" ];
-
-        groups."${username}" = {
-          gid = lib.mkDefault 799;
-          description = "infinity service user group";
-        };
-        knownGroups = [ "${username}" ];
+    users = mkIf (cfg.user == defaultUser) {
+      users."${cfg.user}" = {
+        inherit (config.users.groups."${cfg.user}") gid;
+        createHome = false;
+        description = "infinity service user";
+        home = "/var/lib/infinity";
+        shell = "/bin/bash";
+        uid = lib.mkDefault 799;
       };
+      knownUsers = [ "${cfg.user}" ];
+      groups."${cfg.user}" = {
+        gid = lib.mkDefault 799;
+        description = "infinity service user group";
+      };
+      knownGroups = [ "${cfg.user}" ];
+    };
   };
 }
