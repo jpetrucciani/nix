@@ -3,6 +3,7 @@ let
   inherit (lib) literalExpression mkEnableOption mkIf mkOption types;
   cfg = config.services.infinity;
   defaultUser = "_infinity";
+  homeDir = "/var/lib/infinity";
 in
 {
   imports = [ ];
@@ -63,6 +64,14 @@ in
       assertion = cfg.models != [ ];
       message = ''no models specified!'';
     }];
+    system.activationScripts = {
+      launchd = mkIf cfg.enable {
+        text = lib.mkBefore ''
+          ${pkgs.coreutils}/bin/mkdir -p -m 0750 ${homeDir}
+          ${pkgs.coreutils}/bin/chown ${cfg.user}:${cfg.group} ${homeDir}
+        '';
+      };
+    };
     environment.systemPackages = [ cfg.package ];
     launchd.daemons.infinity =
       let
@@ -75,19 +84,15 @@ in
       in
       {
         command = serve;
-        serviceConfig =
-          let
-            homeDir = "/var/lib/infinity";
-          in
-          {
-            GroupName = cfg.group;
-            Label = "dev.cobi.infinity";
-            RunAtLoad = true;
-            StandardOutPath = "${homeDir}/infinity-out.log";
-            StandardErrorPath = "${homeDir}/infinity-err.log";
-            UserName = cfg.user;
-            WorkingDirectory = homeDir;
-          };
+        serviceConfig = {
+          GroupName = cfg.group;
+          Label = "dev.cobi.infinity";
+          RunAtLoad = true;
+          StandardOutPath = "${homeDir}/log/out.log";
+          StandardErrorPath = "${homeDir}/log/err.log";
+          UserName = cfg.user;
+          WorkingDirectory = homeDir;
+        };
       };
 
     users = mkIf (cfg.user == defaultUser) {
