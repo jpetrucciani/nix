@@ -536,39 +536,6 @@ rec {
     };
   };
 
-  chroma-hnswlib = buildPythonPackage rec {
-    pname = "chroma-hnswlib";
-    version = "0.7.6";
-    pyproject = true;
-
-    src = fetchFromGitHub {
-      owner = "chroma-core";
-      repo = "hnswlib";
-      rev = version;
-      hash = "sha256-pjz5SGg2drO6fkml9ojFG7/Gq3/Y7vPaOHc+3LKnjUw=";
-    };
-
-    nativeBuildInputs = [
-      numpy
-      pybind11
-      setuptools
-      wheel
-    ];
-
-    propagatedBuildInputs = [
-      numpy
-    ];
-
-    pythonImportsCheck = [ "hnswlib" ];
-
-    meta = with lib; {
-      description = "Chromas fork of hnswlib";
-      homepage = "https://pypi.org/project/chroma-hnswlib/";
-      license = licenses.asl20;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
   sqlalchemy2-stubs = buildPythonPackage rec {
     pname = "sqlalchemy2-stubs";
     version = "0.0.2a32";

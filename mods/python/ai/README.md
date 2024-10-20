@@ -49,7 +49,3 @@ this overlay contains python packages for [llama-index](https://github.com/run-l
 ### [prompts.nix](./prompts.nix)
 
 this overlay provides libraries that help us orchestrate prompting
-
-### [vector.nix](./vector.nix)
-
-this overlay provides native vector databases and clients for remote vector databases

@@ -11,7 +11,6 @@
           ./ai/deps.nix
           ./ai/dataset.nix
           ./ai/bindings.nix
-          ./ai/vector.nix
           ./ai/prompts.nix
           ./ai/langchain.nix
           ./ai/llama-index.nix
