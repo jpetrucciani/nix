@@ -33,6 +33,14 @@ rec {
     propagatedBuildInputs = old.propagatedBuildInputs ++ [ prev.pycryptodome ];
   });
 
+  prometheus-fastapi-instrumentator =
+    if isDarwin then
+      prev.prometheus-fastapi-instrumentator.overridePythonAttrs
+        (_: {
+          doCheck = false;
+          meta.platforms = prev.lib.platforms.all;
+        }) else prev.prometheus-fastapi-instrumentator;
+
   emoji_1 = prev.buildPythonPackage rec {
     pname = "emoji";
     version = "1.7.0";
