@@ -43,15 +43,14 @@ in
       default = "";
     };
     user = mkOption {
-      type = types.nullOr types.str;
+      type = types.str;
       description = ''
         User under which to run the service.
       '';
       default = defaultUser;
     };
-
     group = mkOption {
-      type = types.nullOr types.str;
+      type = types.str;
       description = ''
         Group under which to run the service.
       '';

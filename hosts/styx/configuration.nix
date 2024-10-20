@@ -51,11 +51,22 @@ in
         # "dunzhang/stella_en_400M_v5" # requires xformers?
       ];
     };
-    llama-server = {
-      enable = true;
-      bindPort = 8012;
-      model = "/opt/box/models/Llama-3.2-3B-Instruct-Q8_0.gguf";
-      ngl = 41;
-    };
+    llama-server.servers =
+      let
+        modelPath = name: "/opt/box/models/${name}";
+      in
+      {
+        llama3 = {
+          enable = true;
+          bindPort = 8012;
+          model = modelPath "Llama-3.2-3B-Instruct-Q8_0.gguf";
+          ngl = 41;
+        };
+        nuextract = {
+          enable = true;
+          bindPort = 8013;
+          model = modelPath "NuExtract-v1.5-Q6_K_L.gguf";
+        };
+      };
   };
 }
