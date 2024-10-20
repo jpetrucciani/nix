@@ -12,7 +12,7 @@ in
   imports = [ ];
   options.services.llama-server = {
     servers = mkOption {
-      type = lib.types.attrsOf (lib.types.submodule ({ ... }: {
+      type = lib.types.attrsOf (lib.types.submodule (_: {
         options = {
           enable = mkEnableOption "llama-cpp server launchd service";
           package = mkOption {
@@ -76,7 +76,7 @@ in
     launchd.daemons = mapAttrs'
       (name: conf: nameValuePair (llamaName name) (
         let
-          serve = pkgs.writers.writeBash "llama-serve" ''
+          serve = pkgs.writers.writeBash "llama-serve-${llamaName name}" ''
             ${lib.getExe' conf.package "llama-server"} --host '${conf.bindAddress}' --port '${toString conf.bindPort}' --model '${conf.model}' -ngl ${toString conf.ngl} ${conf.extraFlags}
           '';
         in
@@ -84,7 +84,7 @@ in
           command = serve;
           serviceConfig = {
             GroupName = cfg.group;
-            Label = "dev.cobi.llama-server";
+            Label = "dev.cobi.llama-server.${llamaName name}";
             RunAtLoad = true;
             StandardOutPath = "${homeDir}/log/${llamaName name}.out";
             StandardErrorPath = "${homeDir}/log/${llamaName name}.err";
