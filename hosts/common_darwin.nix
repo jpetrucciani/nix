@@ -133,7 +133,6 @@ in
         brews = [
           "openconnect"
           "readline"
-          "syncthing"
           "qemu"
           "unixodbc"
         ];
