@@ -109,7 +109,7 @@ in
             "karabiner-elements"
             "keybase"
             "macfuse"
-            "notion"
+            "obsidian"
             "parsec"
             "qlvideo"
             "raycast"
@@ -133,6 +133,7 @@ in
           "openconnect"
           "readline"
           "sshfs"
+          "syncthing"
           "qemu"
           "unixodbc"
         ];
