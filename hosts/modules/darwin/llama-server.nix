@@ -62,7 +62,7 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
+  config = mkIf (enabledServers != { }) {
     system.activationScripts = {
       launchd = mkIf cfg.enable {
         text = lib.mkBefore ''
