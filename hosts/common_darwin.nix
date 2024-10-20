@@ -73,9 +73,10 @@ in
         remapCapsLockToControl = true;
       };
     };
-
-    programs.bash.enable = true;
-
+    programs.bash = {
+      enable = true;
+      completion.enable = true;
+    };
     homebrew =
       let
         casks = rec {
