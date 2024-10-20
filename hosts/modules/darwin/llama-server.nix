@@ -66,14 +66,13 @@ in
 
   config = mkIf (enabledServers != { }) {
     system.activationScripts = {
-      launchd = mkIf cfg.enable {
+      launchd = {
         text = lib.mkBefore ''
           ${pkgs.coreutils}/bin/mkdir -p -m 0750 ${homeDir}
           ${pkgs.coreutils}/bin/chown ${cfg.user}:${cfg.group} ${homeDir}
         '';
       };
     };
-    environment.systemPackages = [ cfg.package ];
     launchd.daemons = mapAttrs' (name: conf: nameValuePair (llamaName name) (
       let
         serve = pkgs.writers.writeBash "llama-serve" ''
