@@ -96,55 +96,6 @@ rec {
     };
   };
 
-
-  prometheus-fastapi-instrumentator = buildPythonPackage rec {
-    pname = "prometheus-fastapi-instrumentator";
-    version = "7.0.0";
-    pyproject = true;
-
-    src = fetchFromGitHub {
-      owner = "trallnag";
-      repo = pname;
-      rev = "v${version}";
-      hash = "sha256-yvKdhQdbY0+jEc8TEHNNgtdnqE0abnd4MN/JZFQwQ2E=";
-    };
-
-    preBuild = ''
-      sed -i -E '/asyncio_mode =/d' ./pyproject.toml
-    '';
-
-    pythonImportsCheck = [
-      "prometheus_fastapi_instrumentator"
-    ];
-
-    nativeBuildInputs = with final; [
-      poetry-core
-    ];
-
-    nativeCheckInputs = with final; [
-      pytestCheckHook
-      devtools
-      httpx
-      requests
-    ];
-
-    disabledTestPaths = [
-      "tests/test_instrumentator_multiple_apps.py"
-    ] ++ (if prev.stdenv.isDarwin then [ "tests/test_instrumentation.py" ] else [ ]);
-
-    propagatedBuildInputs = with final; [
-      fastapi
-      prometheus-client
-    ];
-
-    meta = {
-      description = "Instrument your FastAPI app";
-      homepage = "https://github.com/trallnag/prometheus-fastapi-instrumentator";
-      license = licenses.isc;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
   fastapi-users = buildPythonPackage rec {
     pname = "fastapi-users";
     version = "10.4.0";
