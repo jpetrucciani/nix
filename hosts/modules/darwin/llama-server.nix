@@ -73,25 +73,27 @@ in
         '';
       };
     };
-    launchd.daemons = mapAttrs' (name: conf: nameValuePair (llamaName name) (
-      let
-        serve = pkgs.writers.writeBash "llama-serve" ''
-          ${lib.getExe' conf.package "llama-server"} --host '${conf.bindAddress}' --port '${toString conf.bindPort}' --model '${conf.model}' -ngl ${toString conf.ngl} ${conf.extraFlags}
-        '';
-      in
-      {
-        command = serve;
-        serviceConfig = {
-          GroupName = cfg.group;
-          Label = "dev.cobi.llama-server";
-          RunAtLoad = true;
-          StandardOutPath = "${homeDir}/log/${llamaName name}.out";
-          StandardErrorPath = "${homeDir}/log/${llamaName name}.err";
-          UserName = cfg.user;
-          WorkingDirectory = homeDir;
-        };
-      }
-    ));
+    launchd.daemons = mapAttrs'
+      (name: conf: nameValuePair (llamaName name) (
+        let
+          serve = pkgs.writers.writeBash "llama-serve" ''
+            ${lib.getExe' conf.package "llama-server"} --host '${conf.bindAddress}' --port '${toString conf.bindPort}' --model '${conf.model}' -ngl ${toString conf.ngl} ${conf.extraFlags}
+          '';
+        in
+        {
+          command = serve;
+          serviceConfig = {
+            GroupName = cfg.group;
+            Label = "dev.cobi.llama-server";
+            RunAtLoad = true;
+            StandardOutPath = "${homeDir}/log/${llamaName name}.out";
+            StandardErrorPath = "${homeDir}/log/${llamaName name}.err";
+            UserName = cfg.user;
+            WorkingDirectory = homeDir;
+          };
+        }
+      ))
+      enabledServers;
     users = mkIf (cfg.user == defaultUser) {
       users."${cfg.user}" = {
         inherit (config.users.groups."${cfg.user}") gid;
