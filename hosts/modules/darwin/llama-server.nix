@@ -12,37 +12,39 @@ in
   imports = [ ];
   options.services.llama-server = {
     servers = mkOption {
-      type = lib.types.attrsOf (lib.types.submodule ({ config, name, ... }: {
-        enable = mkEnableOption "llama-cpp server launchd service";
-        package = mkOption {
-          type = types.package;
-          default = pkgs.llama-cpp;
-          defaultText = literalExpression "pkgs.llama-cpp";
-          description = "The package to use for llama-server";
-        };
-        bindAddress = mkOption {
-          type = types.str;
-          default = "0.0.0.0";
-          description = '''';
-        };
-        bindPort = mkOption {
-          type = types.port;
-          default = 8000;
-          description = '''';
-        };
-        model = mkOption {
-          type = types.str;
-          description = "the full path of the gguf file to run";
-        };
-        ngl = mkOption {
-          type = types.int;
-          description = "the number of layers to offload to gpu";
-          default = 0;
-        };
-        extraFlags = mkOption {
-          type = types.str;
-          description = "any extra flags to pass to llama-server";
-          default = "";
+      type = lib.types.attrsOf (lib.types.submodule ({ ... }: {
+        options = {
+          enable = mkEnableOption "llama-cpp server launchd service";
+          package = mkOption {
+            type = types.package;
+            default = pkgs.llama-cpp;
+            defaultText = literalExpression "pkgs.llama-cpp";
+            description = "The package to use for llama-server";
+          };
+          bindAddress = mkOption {
+            type = types.str;
+            default = "0.0.0.0";
+            description = '''';
+          };
+          bindPort = mkOption {
+            type = types.port;
+            default = 8000;
+            description = '''';
+          };
+          model = mkOption {
+            type = types.str;
+            description = "the full path of the gguf file to run";
+          };
+          ngl = mkOption {
+            type = types.int;
+            description = "the number of layers to offload to gpu";
+            default = 0;
+          };
+          extraFlags = mkOption {
+            type = types.str;
+            description = "any extra flags to pass to llama-server";
+            default = "";
+          };
         };
       }));
     };
