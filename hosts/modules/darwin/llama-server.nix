@@ -6,7 +6,7 @@ let
   defaultUser = "_llama";
   homeDir = "/var/lib/llama";
   llamaName = name: "llama" + optionalString (name != "") ("-" + name);
-  enabledServers = filterAttrs (name: conf: conf.enable) config.services.redis.servers;
+  enabledServers = filterAttrs (name: conf: conf.enable) config.services.llama-server.servers;
 in
 {
   imports = [ ];
