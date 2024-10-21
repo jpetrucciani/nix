@@ -9,6 +9,7 @@
 (?i)langflow
 (?i)langfuse
 (?i)llm
+(?i)ollama
 (?i)openai
 (?i)starcoder
 (?i)tenere
