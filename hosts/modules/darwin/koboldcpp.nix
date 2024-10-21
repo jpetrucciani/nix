@@ -107,11 +107,11 @@ in
         description = "koboldcpp service user";
         home = homeDir;
         shell = "/bin/bash";
-        uid = lib.mkDefault 501;
+        uid = lib.mkDefault 5001;
       };
       knownUsers = [ "${cfg.user}" ];
       groups."${cfg.user}" = {
-        gid = lib.mkDefault 501;
+        gid = lib.mkDefault 5001;
         description = "koboldcpp service user group";
       };
       knownGroups = [ "${cfg.user}" ];
