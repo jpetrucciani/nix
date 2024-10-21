@@ -43,7 +43,10 @@ in
   };
 
   services = {
-    ollama.enable = true;
+    ollama = {
+      enable = true;
+      host = "0.0.0.0";
+    };
     infinity = {
       enable = true;
       models = [
