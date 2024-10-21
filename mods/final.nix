@@ -49,14 +49,35 @@ in
           in
           # some default fixes for things i've seen
           {
+            # import from nixpkgs
             inherit (python.pkgs) pymupdf markupsafe;
+
+            # do not pull wheels!
             bcrypt = no_wheel prev.bcrypt;
+            contourpy = no_wheel prev.contourpy;
+            jupyterlab-pygments = no_wheel prev.jupyterlab-pygments;
+            nbconvert = no_wheel prev.nbconvert;
+            numba = no_wheel prev.numba;
             orjson = no_wheel prev.orjson;
-            pypika = add_setuptools prev.pypika.overridePythonAttrs;
             pytesseract = no_wheel prev.pytesseract;
+            referencing = no_wheel prev.referencing;
+            jsonschema-specifications = no_wheel prev.jsonschema-specifications;
+            jsonschema = no_wheel prev.jsonschema;
             reportlab = no_wheel prev.reportlab;
+            rpds-py = no_wheel prev.rpds-py;
+            scipy = no_wheel prev.scipy;
+            scikit-learn = no_wheel prev.scikit-learn;
             watchfiles = no_wheel prev.watchfiles;
+
+            # requires setuptools
+            py-lets-be-rational = add_setuptools prev.py-lets-be-rational;
+            pypika = add_setuptools prev.pypika.overridePythonAttrs;
+            swifter = add_setuptools prev.swifter;
             wikipedia = add_setuptools prev.wikipedia;
+            xalglib = add_setuptools prev.xalglib;
+
+            # other required propagations
+            jupyterlab-miami-nights = add_propagated prev.jupyterlab-miami-nights [ prev.jupyter-packaging ];
           };
       in
       ((p2nix.mkPoetryEnv
