@@ -98,7 +98,7 @@ in
         ProgramArguments = [ "${cfg.package}/bin/ollama" "serve" ];
         EnvironmentVariables = cfg.environmentVariables // {
           OLLAMA_HOST = "${cfg.host}:${toString cfg.port}";
-          OLLAMA_MODELS = if cfg.models != null then "${homeDir}/models" else cfg.models;
+          OLLAMA_MODELS = if cfg.models == null then "${homeDir}/models" else cfg.models;
         };
       };
     };
