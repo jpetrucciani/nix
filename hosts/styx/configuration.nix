@@ -64,7 +64,7 @@ in
           enable = true;
           bindPort = 8012;
           model = modelPath "Llama-3.2-3B-Instruct-Q8_0.gguf";
-          ngl = 41;
+          # ngl = 41;
         };
         nuextract = {
           enable = true;
