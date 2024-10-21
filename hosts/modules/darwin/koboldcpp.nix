@@ -5,7 +5,7 @@ let
   cfg = config.services.koboldcpp;
   defaultUser = "_koboldcpp";
   homeDir = "/var/lib/koboldcpp";
-  koboldName = name: "kobold" + optionalString (name != "") ("-" + name);
+  koboldName = name: "koboldcpp" + optionalString (name != "") ("-" + name);
   enabledServers = filterAttrs (name: conf: conf.enable) config.services.koboldcpp.servers;
 in
 {
@@ -90,7 +90,7 @@ in
           command = serve;
           serviceConfig = {
             GroupName = cfg.group;
-            Label = "dev.cobi.kobold.${koboldName name}";
+            Label = "dev.cobi.koboldcpp.${koboldName name}";
             RunAtLoad = true;
             StandardOutPath = "${homeDir}/log/${koboldName name}.out";
             StandardErrorPath = "${homeDir}/log/${koboldName name}.err";
