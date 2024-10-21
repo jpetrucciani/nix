@@ -42,24 +42,24 @@ in
     };
   };
 
-  services = {
-    ollama = {
-      enable = true;
-      host = "0.0.0.0";
-    };
-    infinity = {
-      enable = true;
-      models = [
-        "BAAI/bge-small-en-v1.5"
-        "jinaai/jina-embeddings-v3"
-        # "dunzhang/stella_en_400M_v5" # requires xformers?
-      ];
-    };
-    llama-server.servers =
-      let
-        modelPath = name: "/opt/box/models/${name}";
-      in
-      {
+  services =
+    let
+      modelPath = name: "/opt/box/models/${name}";
+    in
+    {
+      ollama = {
+        enable = true;
+        host = "0.0.0.0";
+      };
+      infinity = {
+        enable = true;
+        models = [
+          "BAAI/bge-small-en-v1.5"
+          "jinaai/jina-embeddings-v3"
+          # "dunzhang/stella_en_400M_v5" # requires xformers?
+        ];
+      };
+      llama-server.servers = {
         llama3 = {
           enable = true;
           bindPort = 8012;
@@ -72,5 +72,5 @@ in
           model = modelPath "NuExtract-v1.5-Q6_K_L.gguf";
         };
       };
-  };
+    };
 }

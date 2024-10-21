@@ -4,6 +4,7 @@ let
   inherit (final.lib) elem all id isDerivation;
   inherit (final.lib.lists) remove;
   inherit (final.lib.attrsets) filterAttrs;
+  inherit (final.stdenv) isDarwin;
   checked_packages = filterAttrs
     (_: pkg: all id [
       (isDerivation pkg)
@@ -94,4 +95,13 @@ in
           ] ++ extraBuildInputs;
         });
   };
+
+  koboldcpp =
+    if isDarwin then
+      prev.koboldcpp.overrideAttrs
+        (_: {
+          postInstall = ''
+            cp *.metal "$out/bin"
+          '';
+        }) else prev.koboldcpp;
 }
