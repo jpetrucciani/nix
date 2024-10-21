@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  inherit (lib) mkOption types mkIf optionalAttrs;
+  inherit (lib) mkOption types mkIf;
   cfg = config.services.ollama;
   defaultUser = "_ollama";
   homeDir = "/var/lib/ollama";
