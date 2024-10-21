@@ -35,12 +35,12 @@ in
       type = package;
       description = ''zinc package to use'';
     };
-    bindAddress = mkOption {
+    address = mkOption {
       type = str;
       default = "0.0.0.0";
       description = ''zinc server IP address to bind to'';
     };
-    bindPort = mkOption {
+    port = mkOption {
       type = port;
       default = 4080;
       description = ''zinc server listen http port'';
@@ -93,8 +93,8 @@ in
         ZINC_PROMETHEUS_ENABLE = toString cfg.prometheus;
         ZINC_SENTRY = toString cfg.sentry;
         ZINC_SENTRY_DSN = cfg.sentryDSN;
-        ZINC_SERVER_ADDRESS = cfg.bindAddress;
-        ZINC_SERVER_PORT = toString cfg.bindPort;
+        ZINC_SERVER_ADDRESS = cfg.address;
+        ZINC_SERVER_PORT = toString cfg.port;
         ZINC_TELEMETRY = toString cfg.telemetry;
       };
 

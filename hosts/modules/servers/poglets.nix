@@ -36,12 +36,12 @@ in
       description = ''poglets package to use'';
     };
 
-    bindAddress = mkOption {
+    address = mkOption {
       type = str;
       default = "0.0.0.0";
       description = '''';
     };
-    bindPort = mkOption {
+    port = mkOption {
       type = port;
       default = 8000;
       description = '''';
@@ -84,8 +84,8 @@ in
         EnvironmentFile = cfg.secretFile;
         ExecStart = ''
           ${cfg.package}/bin/poglets server \
-            --port ${toString cfg.bindPort} \
-            --data-addr ${cfg.bindAddress} \
+            --port ${toString cfg.port} \
+            --data-addr ${cfg.address} \
             --control-addr ${cfg.controlAddress} \
             --control-port ${toString cfg.controlPort} \
             --token "$POGLETS_TOKEN" 

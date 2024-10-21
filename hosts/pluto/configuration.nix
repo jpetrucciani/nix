@@ -45,7 +45,7 @@ in
 
   services.llama-server.servers.llama3 = {
     enable = false;
-    bindPort = 8012;
+    port = 8012;
     model = "/opt/box/models/Llama-3.2-3B-Instruct-Q8_0.gguf";
     ngl = 41;
   };

@@ -70,13 +70,13 @@ in
       llama-server.servers = {
         llama3 = {
           enable = true;
-          bindPort = 8012;
+          port = 8012;
           model = modelPath "Llama-3.2-3B-Instruct-Q8_0.gguf";
           # ngl = 41;
         };
         nuextract = {
           enable = true;
-          bindPort = 8013;
+          port = 8013;
           model = modelPath "NuExtract-v1.5-Q6_K_L.gguf";
         };
       };

@@ -20,7 +20,7 @@ in
         description = "This option specifies the ollama package to use.";
       };
 
-      host = mkOption {
+      address = mkOption {
         type = types.str;
         default = "127.0.0.1";
         example = "0.0.0.0";
@@ -36,7 +36,7 @@ in
       };
 
       models = mkOption {
-        type = types.nullOr types.str;
+        type = types.nullOr types.path;
         default = null;
         example = "/var/lib/ollama/models";
         description = ''
@@ -99,7 +99,7 @@ in
         StandardOutPath = "${homeDir}/log/out.log";
         UserName = cfg.user;
         EnvironmentVariables = cfg.environmentVariables // {
-          OLLAMA_HOST = "${cfg.host}:${toString cfg.port}";
+          OLLAMA_HOST = "${cfg.address}:${toString cfg.port}";
           OLLAMA_MODELS = if cfg.models == null then "${homeDir}/models" else cfg.models;
         };
       };

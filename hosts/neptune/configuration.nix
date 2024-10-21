@@ -81,7 +81,7 @@ in
     };
     poglets = {
       enable = true;
-      bindPort = 8420;
+      port = 8420;
       controlPort = 8421;
     };
     ombi = {

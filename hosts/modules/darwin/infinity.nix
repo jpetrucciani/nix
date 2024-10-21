@@ -16,15 +16,15 @@ in
       defaultText = literalExpression "pkgs.python312Packages.infinity-emb";
       description = "The package to use for infinity";
     };
-    bindAddress = mkOption {
+    address = mkOption {
       type = types.str;
       default = "0.0.0.0";
-      description = '''';
+      description = ''the address to bind to'';
     };
-    bindPort = mkOption {
+    port = mkOption {
       type = types.port;
       default = 7997;
-      description = '''';
+      description = ''the port to bind to'';
     };
     models = mkOption {
       type = types.listOf types.str;
@@ -77,7 +77,7 @@ in
           map (model: "--model-id '${lib.replaceStrings ["'"] [""] model}'") cfg.models
         );
         serve = pkgs.writers.writeBash "infinity-serve" ''
-          ${lib.getExe' cfg.package "infinity_emb"} v2 --host '${cfg.bindAddress}' --port '${toString cfg.bindPort}' ${models} ${cfg.extraFlags}
+          ${lib.getExe' cfg.package "infinity_emb"} v2 --host '${cfg.address}' --port '${toString cfg.port}' ${models} ${cfg.extraFlags}
         '';
       in
       {

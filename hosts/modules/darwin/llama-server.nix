@@ -21,18 +21,18 @@ in
             defaultText = literalExpression "pkgs.llama-cpp";
             description = "The package to use for llama-server";
           };
-          bindAddress = mkOption {
+          address = mkOption {
             type = types.str;
             default = "0.0.0.0";
-            description = '''';
+            description = ''the address to bind to'';
           };
-          bindPort = mkOption {
+          port = mkOption {
             type = types.port;
             default = 8000;
-            description = '''';
+            description = ''the port to bind to'';
           };
           model = mkOption {
-            type = types.str;
+            type = types.path;
             description = "the full path of the gguf file to run";
           };
           ngl = mkOption {
@@ -77,7 +77,7 @@ in
       (name: conf: nameValuePair (llamaName name) (
         let
           serve = pkgs.writers.writeBash "llama-serve-${llamaName name}" ''
-            ${lib.getExe' conf.package "llama-server"} --host '${conf.bindAddress}' --port '${toString conf.bindPort}' --model '${conf.model}' -ngl ${toString conf.ngl} ${conf.extraFlags}
+            ${lib.getExe' conf.package "llama-server"} --host '${conf.address}' --port '${toString conf.port}' --model '${conf.model}' -ngl ${toString conf.ngl} ${conf.extraFlags}
           '';
         in
         {

@@ -21,15 +21,15 @@ in
             defaultText = literalExpression "pkgs.koboldcpp";
             description = "The package to use for koboldcpp";
           };
-          bindAddress = mkOption {
+          address = mkOption {
             type = types.str;
             default = "0.0.0.0";
-            description = '''';
+            description = ''the address to bind to'';
           };
-          bindPort = mkOption {
+          port = mkOption {
             type = types.port;
             default = 5001;
-            description = '''';
+            description = ''the port to bind to'';
           };
           model = mkOption {
             type = types.path;
@@ -83,7 +83,7 @@ in
         let
           mmproj = if conf.mmproj != null then "--mmproj ${conf.mmproj}" else "";
           serve = pkgs.writers.writeBash "koboldcpp-${koboldName name}" ''
-            ${lib.getExe' conf.package "koboldcpp"} --host '${conf.bindAddress}' --port '${toString conf.bindPort}' --model '${conf.model}' ${mmproj} --gpulayers ${toString conf.gpulayers} ${conf.extraFlags}
+            ${lib.getExe' conf.package "koboldcpp"} --host '${conf.address}' --port '${toString conf.port}' --model '${conf.model}' ${mmproj} --gpulayers ${toString conf.gpulayers} ${conf.extraFlags}
           '';
         in
         {
