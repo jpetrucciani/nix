@@ -43,6 +43,7 @@ in
   };
 
   services = {
+    ollama.enable = true;
     infinity = {
       enable = true;
       models = [

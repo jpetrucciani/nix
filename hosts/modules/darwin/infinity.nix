@@ -45,14 +45,14 @@ in
     user = mkOption {
       type = types.str;
       description = ''
-        User under which to run the service.
+        User under which to run the infinity service.
       '';
       default = defaultUser;
     };
     group = mkOption {
       type = types.str;
       description = ''
-        Group under which to run the service.
+        Group under which to run the infinity service.
       '';
       default = defaultUser;
     };
@@ -71,7 +71,6 @@ in
         '';
       };
     };
-    environment.systemPackages = [ cfg.package ];
     launchd.daemons.infinity =
       let
         models = lib.concatStringsSep " " (
@@ -99,7 +98,7 @@ in
         inherit (config.users.groups."${cfg.user}") gid;
         createHome = false;
         description = "infinity service user";
-        home = "/var/lib/infinity";
+        home = homeDir;
         shell = "/bin/bash";
         uid = lib.mkDefault 799;
       };
