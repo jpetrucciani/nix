@@ -121,6 +121,7 @@
               modules = [
                 ./hosts/common_darwin.nix
                 ./hosts/modules/darwin/infinity.nix
+                ./hosts/modules/darwin/koboldcpp.nix
                 ./hosts/modules/darwin/llama-server.nix
                 ./hosts/modules/darwin/ollama.nix
                 ./hosts/${name}/configuration.nix

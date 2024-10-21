@@ -59,6 +59,14 @@ in
           # "dunzhang/stella_en_400M_v5" # requires xformers?
         ];
       };
+      koboldcpp.servers = {
+        minicpm = {
+          enable = true;
+          port = 5001;
+          model = modelPath "MiniCPM-V-2_6-Q8_0.gguf";
+          mmproj = modelPath "mmproj-MiniCPM-V-2_6-f16.gguf";
+        };
+      };
       llama-server.servers = {
         llama3 = {
           enable = true;
