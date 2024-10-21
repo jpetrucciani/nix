@@ -90,12 +90,14 @@ in
       path = [ config.environment.systemPath ];
 
       serviceConfig = {
+        GroupName = cfg.group;
         KeepAlive = true;
         Label = "dev.cobi.ollama";
-        RunAtLoad = true;
-        StandardOutPath = "${homeDir}/log/out.log";
-        StandardErrorPath = "${homeDir}/log/err.log";
         ProgramArguments = [ "${cfg.package}/bin/ollama" "serve" ];
+        RunAtLoad = true;
+        StandardErrorPath = "${homeDir}/log/err.log";
+        StandardOutPath = "${homeDir}/log/out.log";
+        UserName = cfg.user;
         EnvironmentVariables = cfg.environmentVariables // {
           OLLAMA_HOST = "${cfg.host}:${toString cfg.port}";
           OLLAMA_MODELS = if cfg.models == null then "${homeDir}/models" else cfg.models;
