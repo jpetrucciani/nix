@@ -86,7 +86,7 @@ in
       };
     };
     environment.systemPackages = [ cfg.package ];
-    launchd.user.agents.ollama = {
+    launchd.daemons.ollama = {
       path = [ config.environment.systemPath ];
 
       serviceConfig = {
