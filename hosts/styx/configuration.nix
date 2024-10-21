@@ -49,7 +49,7 @@ in
     {
       ollama = {
         enable = true;
-        host = "0.0.0.0";
+        address = "0.0.0.0";
       };
       infinity = {
         enable = true;
