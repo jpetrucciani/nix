@@ -78,6 +78,7 @@ in
     '';
     environment = {
       PLAYWRIGHT_BROWSERS_PATH = pkgs.playwright-driver.browsers.outPath;
+      PYTHONUNBUFFERED = "1";
     };
   };
 }
