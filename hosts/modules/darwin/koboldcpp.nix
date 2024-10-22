@@ -52,6 +52,7 @@ in
           };
         };
       }));
+      default = { };
     };
     user = mkOption {
       type = types.str;
