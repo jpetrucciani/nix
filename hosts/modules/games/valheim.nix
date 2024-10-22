@@ -42,7 +42,13 @@ in
     secretFile = mkOption {
       type = path;
       default = "/etc/default/valheim";
-      description = "";
+      description = ''
+        this file contains any additional secrets you might want to pass in.
+
+        You must have a "VALHEIM_PASSWORD" variable in this file.
+
+        Note: VALHEIM_PASSWORD must be at least 8 characters!
+      '';
     };
   };
 
