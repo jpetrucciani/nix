@@ -146,12 +146,19 @@ let
     # middlewares https://doc.traefik.io/traefik/middlewares/http/overview/
     middleware = rec {
       build = args: toYAMLDoc (setup args);
-      setup = { name, spec, kind ? "Middleware", apiVersion ? "traefik.containo.us/v1alpha1", extraSpec ? { } }: {
-        inherit kind apiVersion spec;
-        metadata = {
-          inherit name;
-        };
-      } // extraSpec;
+      setup =
+        { name
+        , spec
+        , kind ? "Middleware"
+        , pre23 ? false
+        , apiVersion ? if pre23 then "traefik.containo.us/v1alpha1" else "traefik.io/v1alpha1"
+        , extraSpec ? { }
+        }: {
+          inherit kind apiVersion spec;
+          metadata = {
+            inherit name;
+          };
+        } // extraSpec;
       _ = {
         add_prefix = { prefix, name ? "add-prefix", extraSpec ? { } }: build {
           inherit name extraSpec;
