@@ -12,6 +12,27 @@ import nixpkgs {
     _compat.inputs.poetry2nix.overlays.default
     _compat.inputs.pnpm2nix.overlays.default
     (_: _: { inherit (_compat.inputs) uv2nix; })
+    (_: _: {
+      machines = {
+        nixos = [
+          "andromeda"
+          "edge"
+          "luna"
+          "milkyway"
+          "neptune"
+          "phobos"
+          "proteus"
+          "terra"
+          "titan"
+        ];
+        darwin = [
+          "charon"
+          "m1max"
+          "pluto"
+          "styx"
+        ];
+      };
+    })
   ] ++ (import ./overlays.nix) ++ overlays;
   config = {
     allowUnfree = true;
