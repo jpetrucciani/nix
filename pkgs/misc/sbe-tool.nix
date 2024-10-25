@@ -1,3 +1,4 @@
+# This is a pog wrapper for [simple-binary-encoding](https://github.com/real-logic/simple-binary-encoding)'s `sbe-tool`. It does leverage a pre-compiled jar from my static file hosting.
 { jdk
 , pog
 }:
@@ -11,9 +12,31 @@ in
 pog {
   inherit version;
   name = "sbe-tool";
-  flags = [{ name = "extraflags"; default = ""; }];
-  script = ''
-    # shellcheck disable=SC2086
-    ${jdk}/bin/java $extraflags -jar ${jar} "$@"
-  '';
+  flags =
+    let
+      langFlag = name: { inherit name; bool = true; short = ""; };
+    in
+    [
+      { name = "extraflags"; default = ""; }
+      (langFlag "c")
+      (langFlag "cpp")
+      (langFlag "csharp")
+      (langFlag "golang")
+      (langFlag "rust")
+    ];
+  script = h:
+    let
+      invoke = class: ''${jdk}/bin/java -Dsbe.target.language=${class} $extraflags -jar ${jar} "$@"'';
+      lang = flag: class: ''
+        # shellcheck disable=SC2086
+        ${h.flag flag} && ${invoke class}
+      '';
+    in
+    ''
+      ${lang "c" "C"}
+      ${lang "cpp" "CPP"}
+      ${lang "csharp" "uk.co.real_logic.sbe.generation.csharp.CSharp"}
+      ${lang "golang" "Golang"}
+      ${lang "rust" "Rust"}
+    '';
 }
