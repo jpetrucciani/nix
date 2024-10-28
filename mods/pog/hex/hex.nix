@@ -29,6 +29,7 @@ rec {
       else fileContents y
     else if isFunction y then y { }
     else y;
+  __functor = _: flat;
   flat = x: join (map loadFileOrValue (flatten x));
   join = x: concatStringsSep "\n" (flatten x);
   unlines = indent: values: "\n" + concatStringsSep "\n" (map (v: "${indent}${v}") values) + "\n";
