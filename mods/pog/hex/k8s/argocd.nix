@@ -6,6 +6,7 @@ let
       name = "argocd";
       namespace = "argocd";
       valuesAttrs = {
+        configs.params."controller.diff.server.side" = "true";
         repoServer = {
           extraContainers = [
             {
