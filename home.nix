@@ -753,7 +753,7 @@ in
           editor = if isDarwin then "code --wait" else "nano";
           pager = "delta --dark";
           autocrlf = "input";
-          hooksPath = "/dev/null";
+          # hooksPath = "/dev/null";
         };
         push = {
           autoSetupRemote = true;
