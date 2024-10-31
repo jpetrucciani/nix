@@ -740,6 +740,7 @@ in
         lol = "log --graph --decorate --pretty=oneline --abbrev-commit";
         lola = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
         shake = "remote prune origin";
+        pop = "reset HEAD~1";
       };
       extraConfig = {
         checkout.defaultRemote = "origin";
