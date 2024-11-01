@@ -41,6 +41,8 @@ final: prev: {
   );
   nix_hash_unstable = final._nix_hash "NixOS/nixpkgs" "nixpkgs-unstable" "unstable";
   nix_hash_jpetrucciani = final._nix_hash "jpetrucciani/nix" "main" "jpetrucciani";
+  nix_hash_hex = final._nix_hash "jpetrucciani/hex" "main" "hex";
+  nix_hash_pog = final._nix_hash "jpetrucciani/pog" "main" "pog";
   nix_hash_medable = final._nix_hash "Medable/nix" "main" "medable";
   home-packages = (import ../home.nix { }).home.packages;
 }
