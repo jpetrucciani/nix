@@ -27,6 +27,7 @@
   (import ./mods/pog/db.nix)
   (import ./mods/pog/curl.nix)
   (import ./mods/pog/docker.nix)
+  (import ./mods/pog/ebook.nix)
   (import ./mods/pog/ffmpeg.nix)
   (import ./mods/pog/gcp.nix)
   (import ./mods/pog/general.nix)
