@@ -13,6 +13,62 @@ let
       (!pkg.meta.skipBuild or false)
     ])
     prev.custom;
+
+  _treefmt =
+    let
+      defaults = {
+        defaultPrograms = {
+          black.enable = true;
+          nixpkgs-fmt.enable = true;
+          prettier = {
+            enable = true;
+            settings = {
+              printWidth = 120;
+              arrowParens = "always";
+              singleQuote = true;
+              tabWidth = 2;
+              useTabs = false;
+              semi = true;
+              bracketSpacing = true;
+              bracketSameLine = false;
+              requirePragma = false;
+              proseWrap = "preserve";
+              trailingComma = "all";
+            };
+          };
+          shellcheck.enable = true;
+          shfmt.enable = true;
+        };
+        extraPrograms = { };
+        defaultGlobalExcludes = [
+          ".env"
+          ".envrc"
+          ".git-blame-ignore-revs"
+          "*.txt"
+          "*.toml"
+          "*.csv"
+          "*/.gitignore"
+        ];
+        extraGlobalExcludes = [ ];
+      };
+      fn =
+        { defaultPrograms
+        , extraPrograms
+        , defaultGlobalExcludes
+        , extraGlobalExcludes
+        }: prev.treefmt-nix.mkWrapper prev {
+          projectRootFile = ".git/config";
+          programs = defaultPrograms // extraPrograms;
+          settings.global.excludes = defaultGlobalExcludes ++ extraGlobalExcludes;
+        };
+      result = fn defaults;
+      treefmt = result // {
+        override = newArgs: fn (defaults // newArgs);
+      };
+    in
+    treefmt // {
+      __functor = _: treefmt.override;
+    };
 in
 {
   foundry = import ./foundry.nix { pkgs = prev; };
@@ -104,4 +160,7 @@ in
             cp *.metal "$out/bin"
           '';
         }) else prev.koboldcpp;
+
+  inherit _treefmt;
+  jfmt = _treefmt;
 }

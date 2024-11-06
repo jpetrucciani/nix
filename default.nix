@@ -10,8 +10,11 @@ import nixpkgs {
     (_: _: { nixpkgsRev = nixpkgs.rev; })
     (_: _: { _std = _compat.inputs.nix-std.lib; })
     _compat.inputs.poetry2nix.overlays.default
-    _compat.inputs.pnpm2nix.overlays.default
+    # _compat.inputs.pnpm2nix.overlays.default
+    (_: _: { treefmt-nix = _compat.inputs.treefmt-nix.lib; })
     (_: _: { inherit (_compat.inputs) uv2nix; })
+    (_: prev: { inherit (import _compat.inputs.pog { pkgs = prev; }) pog; })
+    (_: prev: { inherit (import _compat.inputs.hex { pkgs = prev; }) hex hexcast nixrender; })
     (_: _: {
       machines = {
         nixos = [

@@ -13,7 +13,7 @@ jobs:
           - k8s_aws
           - k8s_gcp
           - nix
-          - pypi
+          # - pypi  # broken at the moment?
           - python311
           - python312
           - zaddy

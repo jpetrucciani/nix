@@ -6,7 +6,6 @@
   (import ./mods/fake_platform.nix)
   (import ./mods/hashers.nix)
   (import ./mods/lang.nix)
-  (import ./mods/pog.nix)
   (import ./mods/hms.nix)
 
   # python sub-overlays

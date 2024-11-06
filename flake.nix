@@ -13,6 +13,7 @@
       flake = false;
       url = "github:edolstra/flake-compat";
     };
+    hex.url = "github:jpetrucciani/hex";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     kwb = {
       url = "github:kwbauson/cfg";
@@ -39,17 +40,19 @@
       url = "github:nix-community/poetry2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    pog.url = "github:jpetrucciani/pog";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
     uv2nix = {
       url = "github:adisbladis/uv2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     vscode-server = {
-      url = "github:Ten0/nixos-vscode-server/support_new_vscode_versions";
+      url = "github:nix-community/nixos-vscode-server";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, ... }:
+  outputs = { self, pog, hex, ... }:
     let
       inherit (self.inputs.nixpkgs) lib;
       forAllSystems = lib.genAttrs lib.systems.flakeExposed;
@@ -81,9 +84,12 @@
         (system: import self.inputs.nixpkgs {
           inherit system;
           overlays = [
-            (final: prev: { inherit machines; flake = self; nixpkgsRev = self.inputs.nixpkgs.rev; })
+            (_: _: { inherit machines; flake = self; nixpkgsRev = self.inputs.nixpkgs.rev; })
             self.inputs.poetry2nix.overlays.default
-            (final: prev: { inherit (self.inputs) uv2nix; })
+            (_: _: { inherit (self.inputs) uv2nix; })
+            (_: _: { treefmt-nix = self.inputs.treefmt-nix.lib; })
+            (_: prev: { inherit (import pog { pkgs = prev; }) _ pog; })
+            (_: prev: { inherit (import hex { pkgs = prev; }) hex hexcast nixrender; })
           ] ++ import ./overlays.nix;
           config = {
             allowUnfree = true;
