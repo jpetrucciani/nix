@@ -17,9 +17,22 @@ let
   _treefmt =
     let
       defaults = {
+        binName = "jfmt";
         defaultPrograms = {
+          # python
           black.enable = true;
+          # ruff-check.enable = true;
+
+          # nix
           nixpkgs-fmt.enable = true;
+          deadnix = {
+            enable = true;
+            no-lambda-arg = true;
+            no-underscore = true;
+          };
+          statix.enable = true;
+
+          # js/md/yaml/etc.
           prettier = {
             enable = true;
             settings = {
@@ -36,6 +49,8 @@ let
               trailingComma = "all";
             };
           };
+
+          # bash
           shellcheck.enable = true;
           shfmt.enable = true;
         };
@@ -52,18 +67,24 @@ let
         extraGlobalExcludes = [ ];
       };
       fn =
-        { defaultPrograms
+        { binName
+        , defaultPrograms
         , extraPrograms
         , defaultGlobalExcludes
         , extraGlobalExcludes
-        }: prev.treefmt-nix.mkWrapper prev {
-          projectRootFile = ".git/config";
-          programs = defaultPrograms // extraPrograms;
-          settings.global.excludes = defaultGlobalExcludes ++ extraGlobalExcludes;
-        };
+        }:
+        let
+          _t = prev.treefmt-nix.mkWrapper prev {
+            projectRootFile = ".git/config";
+            programs = defaultPrograms // extraPrograms;
+            settings.global.excludes = defaultGlobalExcludes ++ extraGlobalExcludes;
+          };
+        in
+        final.writeShellScriptBin binName ''${_t}/bin/treefmt "$@"'';
       result = fn defaults;
       treefmt = result // {
         override = newArgs: fn (defaults // newArgs);
+        overrideWithDefaults = newArgs: fn (final.lib.recursiveUpdates defaults newArgs);
       };
     in
     treefmt // {
