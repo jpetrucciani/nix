@@ -13,6 +13,90 @@ let
       (!pkg.meta.skipBuild or false)
     ])
     prev.custom;
+
+  _treefmt =
+    let
+      defaults = {
+        binName = "jfmt";
+        defaultPrograms = {
+          # python
+          black.enable = true;
+          # ruff-check.enable = true;
+
+          # nix
+          nixpkgs-fmt.enable = true;
+          deadnix = {
+            enable = true;
+            no-lambda-arg = true;
+            no-underscore = true;
+          };
+          statix.enable = true;
+
+          # js/md/yaml/etc.
+          prettier = {
+            enable = true;
+            settings = {
+              printWidth = 120;
+              arrowParens = "always";
+              singleQuote = true;
+              tabWidth = 2;
+              useTabs = false;
+              semi = true;
+              bracketSpacing = true;
+              bracketSameLine = false;
+              requirePragma = false;
+              proseWrap = "preserve";
+              trailingComma = "all";
+            };
+          };
+
+          # bash
+          shellcheck.enable = true;
+          shfmt.enable = true;
+        };
+        extraPrograms = { };
+        defaultGlobalExcludes = [
+          "*/.env"
+          "*/.envrc"
+          "LICENSE"
+          "*.age"
+          "*.ini"
+          "*.plist"
+          "*.txt"
+          "*.conf"
+          "*.toml"
+          "*.csv"
+          "*/.gitignore"
+          ".prettierignore"
+          "ignore"
+          "flake.lock"
+        ];
+        extraGlobalExcludes = [ ];
+      };
+      fn =
+        { binName
+        , defaultPrograms
+        , extraPrograms
+        , defaultGlobalExcludes
+        , extraGlobalExcludes
+        }:
+        let
+          _t = prev.treefmt-nix.mkWrapper prev {
+            projectRootFile = ".git/config";
+            programs = defaultPrograms // extraPrograms;
+            settings.global.excludes = defaultGlobalExcludes ++ extraGlobalExcludes;
+          };
+        in
+        final.writeShellScriptBin binName ''${_t}/bin/treefmt "$@"'';
+      result = fn defaults;
+      treefmt = result // {
+        override = newArgs: fn (defaults // newArgs);
+        overrideWithDefaults = newArgs: fn (final.lib.recursiveUpdates defaults newArgs);
+      };
+    in
+    treefmt // {
+      __functor = _: treefmt.override;
+    };
 in
 {
   foundry = import ./foundry.nix { pkgs = prev; };
@@ -104,4 +188,7 @@ in
             cp *.metal "$out/bin"
           '';
         }) else prev.koboldcpp;
+
+  inherit _treefmt;
+  jfmt = _treefmt;
 }

@@ -6,13 +6,9 @@ _jacobi's nixpkgs configurations, overlays, documentation, and other magic_
 
 # interesting stuff
 
-## [hex](./mods/pog/hex/)
+## [pog](https://pog.gemologic.dev/)
 
-Hex is a nix module system that allows us to create powerful abstractions of other languages and configurations via nix! At the moment, this is the most useful for things like [kubernetes specs](https://kubernetes.io/docs/concepts/overview/working-with-objects/)!
-
-Check out [the hex directory](./mods/pog/hex/) for more context on what this can do, and how to use it!
-
-## [pog](./mods/pog.nix)
+_note: this has moved to it's [own repo!](https://github.com/jpetrucciani/hex)_
 
 This set of nix functions has proven to be extremely useful to me - it is a quick CLI tool generator that leverages the power of nix!
 
@@ -22,6 +18,14 @@ This set of nix functions has proven to be extremely useful to me - it is a quic
 - [dtools - docker wrapper cli tools that make it easier to interact with docker](./mods/pog/docker.nix)
 - [ffmpeg - tired of trying to remember that arcane ffmpeg invocation? wrap it in pog!](./mods/pog/ffmpeg.nix)
 - [ktools - kubectl wrapper cli tools that make it easier to interact with clusters and their resources](./mods/pog/k8s.nix)
+
+## [hex](https://hex.gemologic.dev/)
+
+_note: this has moved to it's [own repo!](https://github.com/jpetrucciani/hex)!_
+
+Hex is a nix module system that allows us to create powerful abstractions of other languages and configurations via nix! At the moment, this is the most useful for things like [kubernetes specs](https://kubernetes.io/docs/concepts/overview/working-with-objects/)!
+
+Check out [the hex repo](https://github.com/jpetrucciani/hex) for more context on what this can do, and how to use it!
 
 ## [pkgs](./pkgs/)
 

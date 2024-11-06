@@ -7,8 +7,7 @@ cleanup() {
   rm $all $keep
 }
 
-if [ $# -eq 0 ]
-then
+if [ $# -eq 0 ]; then
   branches=$(git branch)
 else
   branches=$(git ls-remote --heads "$1" | awk '{print $2}' | awk 'BEGIN { FS = "/" } ; {print $3}')
@@ -27,7 +26,7 @@ if [ "$(wc -l <$all)" == 0 ]; then
   exit 0
 fi
 
-cat >> $keep << EOF
+cat >>$keep <<EOF
 
 #  Remove the branches you would like to delete.
 
@@ -43,13 +42,11 @@ fi
 
 delete=$(diff --suppress-common-lines $all $keep | grep '^< ' | awk '{print $2}')
 
-if [ $# -eq 0 ]
-then
+if [ $# -eq 0 ]; then
   # shellcheck disable=SC2086
   echo $delete | xargs git branch -D
 else
-  for branch in $delete
-  do
+  for branch in $delete; do
     git push "$1" ":$branch"
   done
 fi
