@@ -1,5 +1,5 @@
 name: check
-on: {workflow_dispatch, push: {branches: [main]}, pull_request}
+on: { workflow_dispatch, push: { branches: [main] }, pull_request }
 jobs:
   jfmt:
     runs-on: ubuntu-24.04

@@ -5,7 +5,7 @@ const config = {
   tabWidth: 2,
   useTabs: false,
   semi: true,
-  bracketSpacing: false,
+  bracketSpacing: true,
   bracketSameLine: false,
   requirePragma: false,
   proseWrap: 'preserve',

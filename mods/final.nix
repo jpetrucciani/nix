@@ -56,13 +56,20 @@ let
         };
         extraPrograms = { };
         defaultGlobalExcludes = [
-          ".env"
-          ".envrc"
-          ".git-blame-ignore-revs"
+          "*/.env"
+          "*/.envrc"
+          "LICENSE"
+          "*.age"
+          "*.ini"
+          "*.plist"
           "*.txt"
+          "*.conf"
           "*.toml"
           "*.csv"
           "*/.gitignore"
+          ".prettierignore"
+          "ignore"
+          "flake.lock"
         ];
         extraGlobalExcludes = [ ];
       };
