@@ -19,6 +19,8 @@ let
       };
       tailscale_image_base = "ghcr.io/tailscale/tailscale";
       tailscale_image_tag = "v1.76.1";
+      busybox_image_base = "busybox";
+      busybox_image_tag = "1.37.0";
       cloudsql_image_base = "gcr.io/cloudsql-docker/gce-proxy";
       cloudsql_image_tag = "1.36.0";
 
@@ -103,6 +105,7 @@ let
     } // extraConfig;
 
     proxy = rec {
+      __functor = _: build;
       build =
         { name
         , namespace ? "default"
@@ -113,6 +116,9 @@ let
         , tailscale_image_tag ? defaults.tailscale_image_tag
         , tailscale_stateful_filtering ? false
         , tailscale_extra_args ? [ ]
+        , busybox_image ? "${busybox_image_base}:${busybox_image_tag}"
+        , busybox_image_base ? defaults.busybox_image_base
+        , busybox_image_tag ? defaults.busybox_image_tag
         , tags ? [ ]
         , default_tags ? defaults.tags
         , all_tags ? tags ++ default_tags
@@ -129,7 +135,7 @@ let
           ${toYAMLDoc (role {inherit name namespace;})}
           ${toYAMLDoc (role-binding {inherit name namespace;})}
           ${toYAMLDoc (network-policy {inherit name namespace cidr;})}
-          ${toYAMLDoc (deployment {inherit name namespace destination_ip tailscale_image tailscale_stateful_filtering tailscale_extra_args all_tags cpu memory userspace exit_node subnet_router_cidr bind_local hostAliases;})}
+          ${toYAMLDoc (deployment {inherit name namespace destination_ip tailscale_image busybox_image tailscale_stateful_filtering tailscale_extra_args all_tags cpu memory userspace exit_node subnet_router_cidr bind_local hostAliases;})}
         '';
       deployment =
         { name
@@ -138,6 +144,7 @@ let
         , tailscale_image
         , tailscale_stateful_filtering
         , tailscale_extra_args
+        , busybox_image
         , all_tags
         , cpu
         , memory
@@ -175,7 +182,7 @@ let
                 initContainers = [
                   {
                     name = "sysctler";
-                    image = "busybox";
+                    image = busybox_image;
                     securityContext.privileged = true;
                     command = [ "/bin/sh" ];
                     args = [
