@@ -2,7 +2,8 @@
 final: prev:
 let
   inherit (builtins) listToAttrs;
-  inherit (final) git nvd writeBashBinChecked machines;
+  inherit (final) git nvd machines;
+  inherit (final.hax) writeBashBinChecked;
   nbuild = "nix build --no-link --print-out-paths --extra-experimental-features nix-command --extra-experimental-features flakes";
   _nixos-switch = host: writeBashBinChecked "switch" ''
     toplevel="$(${nbuild} ~/cfg#nixosConfigurations.${host}.config.system.build.toplevel)"

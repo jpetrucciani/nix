@@ -150,7 +150,7 @@ in
 
         # load in my custom checked pog scripts
         (
-          writeBashBinChecked "machine-name" ''
+          writeShellScriptBin "machine-name" ''
             echo "${machine-name}"
           ''
         )
@@ -228,7 +228,6 @@ in
         nix_hash_hex
         nix_hash_pog
         nixup
-        foo
       ];
   };
 

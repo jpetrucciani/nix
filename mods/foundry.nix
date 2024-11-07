@@ -334,27 +334,55 @@ let
       ]
     ];
   };
-  foundry_argo_hex = foundry {
-    name = "argohex";
-    description = "an argo sidecar image with hex and ktools";
-    layers = with pkgs; [
-      [
-        hex
-        hexcast
-      ]
-    ];
-    user = "argocd";
-    group = "argocd";
-    uid = "999";
-    gid = "999";
-    extraMkUser = ''
-      mkdir -p $out/home/argocd/cmp-server/config
-      cp ${./pog/hex/argo/plugin.yaml} $out/home/argocd/cmp-server/config/plugin.yaml
-    '';
-    extraMkUserPaths = [
-      "/home/argocd/cmp-server/config"
-    ];
-  };
+  foundry_argo_hex =
+    let
+      plugin = pkgs.writeTextFile {
+        name = "plugin.yaml";
+        text = ''
+          apiVersion: argoproj.io/v1alpha1
+          kind: ConfigManagementPlugin
+          metadata:
+            name: hex
+          spec:
+            version: v0.0.8
+            init:
+              command: [sh]
+              args: [-c, 'echo "init hex version $(hex --version)"']
+            # The generate command runs in the Application source directory each time manifests are generated. Standard output
+            # must be ONLY valid Kubernetes Objects in either YAML or JSON. A non-zero exit code will fail manifest generation.
+            # To write log messages from the command, write them to stderr, it will always be displayed.
+            # Error output will be sent to the UI, so avoid printing sensitive information (such as secrets).
+            generate:
+              command: [sh, -c]
+              args:
+                - hex -a -r
+            discover:
+              fileName: './*.nix'
+            preserveFileMode: false
+        '';
+      };
+    in
+    foundry {
+      name = "argohex";
+      description = "an argo sidecar image with hex and ktools";
+      layers = with pkgs; [
+        [
+          hex
+          hexcast
+        ]
+      ];
+      user = "argocd";
+      group = "argocd";
+      uid = "999";
+      gid = "999";
+      extraMkUser = ''
+        mkdir -p $out/home/argocd/cmp-server/config
+        cp ${plugin} $out/home/argocd/cmp-server/config/plugin.yaml
+      '';
+      extraMkUserPaths = [
+        "/home/argocd/cmp-server/config"
+      ];
+    };
 in
 {
   inherit foundry;

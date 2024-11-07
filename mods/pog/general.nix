@@ -115,7 +115,7 @@ rec {
     '';
   };
 
-  rot13 = writeBashBinChecked "rot13" ''
+  rot13 = final.hax.writeBashBinChecked "rot13" ''
     ${_.tr} 'A-Za-z' 'N-ZA-Mn-za-m'
   '';
 

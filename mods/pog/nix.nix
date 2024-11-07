@@ -164,7 +164,7 @@ rec {
         '';
     };
 
-  y2n = final.writeBashBinChecked "y2n" ''
+  y2n = final.hax.writeBashBinChecked "y2n" ''
     yaml="$1"
     json=$(${_.y2j} "$yaml") \
       nix eval --raw --impure --expr \

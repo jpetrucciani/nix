@@ -66,7 +66,7 @@ final: prev:
       '';
     };
 
-    comma = (final.writeBashBinCheckedWithFlags {
+    comma = (pog {
       name = ",";
       description = "a quick and easy way to run software that you don't have!";
       flags = [
