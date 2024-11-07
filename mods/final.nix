@@ -95,7 +95,7 @@ let
       result = fn defaults;
       treefmt = result // {
         override = newArgs: fn (defaults // newArgs);
-        overrideWithDefaults = newArgs: fn (final.lib.recursiveUpdates defaults newArgs);
+        overrideWithDefaults = newArgs: fn (final.lib.recursiveUpdate defaults newArgs);
       };
     in
     treefmt // {
