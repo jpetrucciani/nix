@@ -191,4 +191,6 @@ in
 
   inherit _treefmt;
   jfmt = _treefmt;
+
+  _nix = final.lix;
 }

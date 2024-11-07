@@ -19,7 +19,7 @@ final: prev: {
       script =
         let
           inherit (final._) curl date jq;
-          nix-prefetch = "${final._._nix}/bin/nix-prefetch-url";
+          nix-prefetch = "${final._nix}/bin/nix-prefetch-url";
         in
         h: ''
           rev=$(${curl} -s "https://api.github.com/repos/${repo}/commits/$branch" | ${jq} -r '.sha')

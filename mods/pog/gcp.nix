@@ -70,7 +70,7 @@ rec {
   gcp_get_gke_build =
     let
       inherit (final._) curl head jq;
-      nurl = "${final._._nix}/bin/nix-prefetch-url";
+      nurl = "${final._nix}/bin/nix-prefetch-url";
       base_url = "https://dl.google.com/dl/cloudsdk/channels/rapid/components/google-cloud-sdk-gke-gcloud-auth-plugin-";
     in
     pog {

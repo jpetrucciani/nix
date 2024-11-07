@@ -187,7 +187,7 @@ rec {
       }
     ];
     script = ''
-      ${final._._nix}/bin/nix-build ''${oldmac:+--system x86_64-darwin} | ${_.cachix} push "$cache_name"
+      ${final._nix}/bin/nix-build ''${oldmac:+--system x86_64-darwin} | ${_.cachix} push "$cache_name"
     '';
   };
 
@@ -258,8 +258,8 @@ rec {
       attribute="$1"
       ${var.empty "attribute"} && die "no attribute specified to diff!"
       ${prev.nvd}/bin/nvd diff \
-        "$(${final._._nix}/bin/nix eval --raw "github:NixOS/nixpkgs/$nixpkgs#$attribute.drvPath")" \
-        "$(${final._._nix}/bin/nix eval --raw "github:jpetrucciani/nix#$attribute.drvPath")"
+        "$(${final._nix}/bin/nix eval --raw "github:NixOS/nixpkgs/$nixpkgs#$attribute.drvPath")" \
+        "$(${final._nix}/bin/nix eval --raw "github:jpetrucciani/nix#$attribute.drvPath")"
     '';
   };
 
