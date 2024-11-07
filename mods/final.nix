@@ -56,20 +56,24 @@ let
         };
         extraPrograms = { };
         defaultGlobalExcludes = [
-          "*/.env"
-          "*/.envrc"
-          "LICENSE"
+          ".env"
+          ".envrc"
+          ".prettierignore"
           "*.age"
+          "*.conf"
+          "*.csv"
           "*.ini"
           "*.plist"
-          "*.txt"
-          "*.conf"
+          "*.rst"
           "*.toml"
-          "*.csv"
+          "*.txt"
+          "*.xml"
+          "*/.env"
+          "*/.envrc"
           "*/.gitignore"
-          ".prettierignore"
-          "ignore"
           "flake.lock"
+          "ignore"
+          "LICENSE"
         ];
         extraGlobalExcludes = [ ];
       };
