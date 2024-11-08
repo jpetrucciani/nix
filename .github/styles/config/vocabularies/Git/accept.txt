@@ -1,2 +1,4 @@
 [rR]epos?
 [dD]otfiles?
+(?i)kwbauson
+(?i)wuz
