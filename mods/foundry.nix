@@ -304,6 +304,26 @@ let
       ]
     ];
   };
+  foundry_certbot_porkbun = foundry {
+    name = "certbot-porkbun";
+    description = "a lightweight certbot image including the porkbun dns plugin";
+    extraMkUser = ''
+      mkdir -p $out/etc/letsencrypt $out/var/lib/letsencrypt $out/var/log/letsencrypt
+      touch $out/etc/letsencrypt/.keep $out/var/lib/letsencrypt/.keep $out/var/log/letsencrypt/.keep
+    '';
+    extraMkUserPaths = [
+      "/etc/letsencrypt"
+      "/var/lib/letsencrypt"
+      "/var/log/letsencrypt"
+    ];
+    layers = with pkgs; [
+      [
+        ((certbot.override { python = python311; }).withPlugins (p: with p; [
+          certbot-dns-porkbun
+        ]))
+      ]
+    ];
+  };
   foundry_k8s_gcp = foundry {
     name = "k8s-gcp";
     description = "a lightweight image with just bash, kubectl, and gcloud cli";
@@ -393,6 +413,7 @@ in
   k8s_aws = foundry_k8s_aws;
   k8s_gcp = foundry_k8s_gcp;
   certbot_aws = foundry_certbot_aws;
+  certbot_porkbun = foundry_certbot_porkbun;
   nix = foundry_nix;
   pypi = foundry_pypi;
   python311 = foundry_python_311;

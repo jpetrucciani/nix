@@ -1197,4 +1197,76 @@ rec {
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
+
+  pkb-client = buildPythonPackage rec {
+    pname = "pkb-client";
+    version = "2.0.0";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "infinityofspace";
+      repo = "pkb_client";
+      rev = "refs/tags/v${version}";
+      hash = "sha256-crV4Yi2UO5G+6N/dU07FoUFGA1pBRd2ef1ytTptHTl8=";
+    };
+
+    build-system = with final; [
+      setuptools
+      wheel
+    ];
+
+    dependencies = with final; [
+      dnspython
+      requests
+      setuptools
+    ];
+
+    pythonImportsCheck = [
+      "pkb_client"
+    ];
+
+    meta = {
+      description = "Python client for the Porkbun API";
+      homepage = "https://pypi.org/project/pkb-client/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
+  certbot-dns-porkbun = buildPythonPackage rec {
+    pname = "certbot-dns-porkbun";
+    version = "0.9";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "infinityofspace";
+      repo = "certbot_dns_porkbun";
+      rev = "refs/tags/v${version}";
+      hash = "sha256-I19NtwoPg5GiFgFkCXI78tApx1xd5Yqv/NlTOsa6tz4=";
+    };
+
+    build-system = with final; [
+      setuptools
+      wheel
+    ];
+
+    dependencies = with final; [
+      certbot
+      dnspython
+      pkb-client
+      setuptools
+      tldextract
+    ];
+
+    pythonImportsCheck = [
+      "certbot_dns_porkbun"
+    ];
+
+    meta = {
+      description = "Plugin for certbot to obtain certificates using a DNS TXT record for Porkbun domains";
+      homepage = "https://pypi.org/project/certbot-dns-porkbun/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
