@@ -25,6 +25,7 @@
   (import ./mods/pog/aws.nix)
   (import ./mods/pog/db.nix)
   (import ./mods/pog/curl.nix)
+  (import ./mods/pog/discord.nix)
   (import ./mods/pog/docker.nix)
   (import ./mods/pog/ebook.nix)
   (import ./mods/pog/ffmpeg.nix)

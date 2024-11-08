@@ -87,7 +87,7 @@ let
         let
           _t = prev.treefmt-nix.mkWrapper prev {
             projectRootFile = ".git/config";
-            programs = defaultPrograms // extraPrograms;
+            programs = final.lib.recursiveUpdate defaultPrograms extraPrograms;
             settings.global.excludes = defaultGlobalExcludes ++ extraGlobalExcludes;
           };
         in
@@ -183,15 +183,6 @@ in
           ] ++ extraBuildInputs;
         });
   };
-
-  koboldcpp =
-    if isDarwin then
-      prev.koboldcpp.overrideAttrs
-        (_: {
-          postInstall = ''
-            cp *.metal "$out/bin"
-          '';
-        }) else prev.koboldcpp;
 
   inherit _treefmt;
   jfmt = _treefmt;

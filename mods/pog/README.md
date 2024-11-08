@@ -22,6 +22,10 @@ this file provides some pog wrappers around curl to make it a bit more ergonomic
 
 this set of pog scripts allows us to use postgres, redis, etc. in local dev environments via nix
 
+### [discord.nix](./discord.nix)
+
+this file provides some pog wrappers for discord features
+
 ### [docker.nix](./docker.nix)
 
 This module creates some `pog` tools that help make you more productive in Docker!
