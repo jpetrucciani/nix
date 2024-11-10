@@ -978,4 +978,105 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  autotiktokenizer = buildPythonPackage rec {
+    pname = "autotiktokenizer";
+    version = "0.1.2";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "bhavnicksm";
+      repo = "autotiktokenizer";
+      rev = "v${version}";
+      hash = "sha256-d3YsVl70yVdBWprT0YA+1bW09zd0gQwg7nVMp92JzNU=";
+    };
+
+    build-system = [
+      setuptools
+      wheel
+    ];
+
+    dependencies = [
+      tiktoken
+      tokenizers
+    ];
+
+    optional-dependencies = {
+      dev = [
+        pytest
+      ];
+    };
+
+    pythonImportsCheck = [
+      "autotiktokenizer"
+    ];
+
+    meta = {
+      description = "The AutoTokenizer that TikToken always needed -- Load any tokenizer with TikToken now";
+      homepage = "https://github.com/bhavnicksm/autotiktokenizer";
+      license = lib.licenses.mit;
+      maintainers = with lib.maintainers; [ jpetrucciani ];
+    };
+  };
+
+  chonkie = buildPythonPackage rec {
+    pname = "chonkie";
+    version = "0.1.2";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "bhavnicksm";
+      repo = "chonkie";
+      rev = "v${version}";
+      hash = "sha256-diHT5RVo9WlRHBeVdYwMtbk3u6C6V4gWOkWwWiZ2+ro=";
+    };
+
+    build-system = [
+      setuptools
+      wheel
+    ];
+
+    dependencies = [
+      autotiktokenizer
+      tiktoken
+      tokenizers
+    ];
+
+    optional-dependencies = {
+      all = [
+        numpy
+        sentence-transformers
+        spacy
+      ];
+      dev = [
+        black
+        flake8
+        isort
+        mypy
+        pre-commit
+        pylint
+        pytest
+        tiktoken
+        transformers
+      ];
+      semantic = [
+        numpy
+        sentence-transformers
+      ];
+      sentence = [
+        spacy
+      ];
+    };
+
+    pythonImportsCheck = [
+      "chonkie"
+    ];
+
+    meta = {
+      description = "CHONK your texts with Chonkie ✨ - The no-nonsense RAG chunking library";
+      homepage = "https://github.com/bhavnicksm/chonkie";
+      license = lib.licenses.mit;
+      maintainers = with lib.maintainers; [ jpetrucciani ];
+    };
+  };
 }
