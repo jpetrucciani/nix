@@ -66,6 +66,7 @@ in
     system.activationScripts = {
       launchd = mkIf cfg.enable {
         text = lib.mkBefore ''
+          # shellcheck disable=SC2174
           ${pkgs.coreutils}/bin/mkdir -p -m 0750 ${homeDir}
           ${pkgs.coreutils}/bin/chown ${cfg.user}:${cfg.group} ${homeDir}
         '';
