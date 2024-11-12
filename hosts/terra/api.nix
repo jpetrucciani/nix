@@ -26,8 +26,8 @@ let
     playwright
 
     # ai
-    langchain
-    langchainhub
+    # langchain
+    # langchainhub
     openai
     pdf2image
     qdrant-client
