@@ -781,7 +781,7 @@ in
     enable = true;
     tmuxp.enable = false;
     historyLimit = 500000;
-    shortcut = "s";
+    shortcut = "a";
     extraConfig = ''
       set -g base-index 1
       set -g pane-base-index 1
