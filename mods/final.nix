@@ -105,6 +105,7 @@ let
             projectRootFile = ".git/config";
             programs = final.lib.recursiveUpdate defaultPrograms extraPrograms;
             settings.global.excludes = defaultGlobalExcludes ++ extraGlobalExcludes;
+            settings.formatter.shellcheck.options = [ "-x" ];
           };
         in
         final.writeShellScriptBin binName ''${_t}/bin/treefmt "$@"'';
