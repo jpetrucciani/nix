@@ -19,4 +19,5 @@ jobs:
           commit-message: automatic update
           branch: automatic-update
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - run: gh pr merge --auto --squash ${{ steps.pr.outputs.pull-request-url }}
+      - if: ${{ steps.pr.outputs.pull-request-number }}
+        run: gh pr merge --auto --squash ${{ steps.pr.outputs.pull-request-url }}
