@@ -1,0 +1,29 @@
+name: check for package updates
+on: { workflow_dispatch, schedule: [cron: '0 0 * * *'] }
+jobs:
+  check-for-pkg-updates:
+    strategy:
+      fail-fast: false
+      matrix:
+        attrs:
+          - attr: fake-gcs-server
+            cmd: nupdate
+          - attr: supabase-cli-stable
+            cmd: nupdate_latest_github -- --owner supabase --repo cli
+    runs-on: ubuntu-24.04
+    env:
+      GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: cachix/install-nix-action@v30
+      - run: nix run .#${{ matrix.attrs.cmd }} ${{ matrix.attrs.attr }}
+      - uses: peter-evans/create-pull-request@v7.0.5
+        id: pr
+        with:
+          delete-branch: true
+          author: jacobi petrucciani <j@cobi.dev>
+          title: automatic update (${{ matrix.attr.attr }})
+          commit-message: automatic update (${{ matrix.attr.attr }})
+          branch: automatic-update-${{ matrix.attr.attr }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - run: gh pr merge --auto --squash ${{ steps.pr.outputs.pull-request-url }}

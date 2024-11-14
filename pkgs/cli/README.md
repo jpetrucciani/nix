@@ -94,9 +94,9 @@ This directory contains cli tools
 
 [slack-notifier](https://github.com/cloudposse/slack-notifier) is a cli util to send slack messages
 
-### [supabase-cli-beta.nix](./supabase-cli-beta.nix)
+### [supabase-cli-stable.nix](./supabase-cli-stable.nix)
 
-[supabase-cli](https://github.com/supabase/cli) is the main CLI interface for [supabase](https://supabase.com)
+[supabase-cli](https://github.com/supabase/cli) is the main CLI interface for [supabase](https://supabase.com). This is updated independently
 
 ### [terramaid.nix](./terramaid.nix)
 

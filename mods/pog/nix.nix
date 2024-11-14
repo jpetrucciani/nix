@@ -244,9 +244,25 @@ rec {
     arguments = [{ name = "attribute"; }];
     description = "my lazy helper function to update an attribute in my nix repo";
     script = ''
-      ${prev.nix-update}/bin/nix-update --build --commit --flake --use-update-script "$@"
+      ${prev.nix-update}/bin/nix-update --build --flake --use-update-script "$@"
     '';
   };
+
+  nupdate_latest_github = pog {
+    name = "nupdate_latest_github";
+    arguments = [{ name = "attribute"; }];
+    flags = [
+      { name = "owner"; description = "the owner of the repo"; }
+      { name = "repo"; description = "the repo name"; }
+    ];
+    description = "";
+    script = ''
+      latest_tag=$(${final.curl}/bin/curl "https://api.github.com/repos/$owner/$repo/releases/latest" | ${final.jq}/bin/jq -r '.tag_name')
+      ${prev.nix-update}/bin/nix-update --build --flake --version="$latest_tag" "$@"
+    '';
+  };
+
+  #  get_latest = "${curl}/bin/curl https://api.github.com/repos/supabase/cli/releases/latest | ${jq}/bin/jq '.tag_name'";
 
   ndiff = pog {
     name = "ndiff";
@@ -273,6 +289,7 @@ rec {
     nixsum
     nixcache
     nupdate
+    nupdate_latest_github
     y2n
   ];
 }

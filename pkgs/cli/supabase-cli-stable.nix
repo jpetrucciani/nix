@@ -7,9 +7,8 @@
 , supabase-cli
 }:
 
-
 buildGoModule rec {
-  pname = "supabase-cli-beta";
+  pname = "supabase-cli-stable";
   version = "1.219.2";
 
   src = fetchFromGitHub {
