@@ -6,13 +6,13 @@
 
 buildGoModule rec {
   pname = "slack-notifier";
-  version = "0.8.0";
+  version = "0.10.0";
 
   src = fetchFromGitHub {
     owner = "cloudposse";
     repo = "slack-notifier";
     rev = version;
-    hash = "sha256-7xtZV1X9Zn3Orv601q3pY3tedTDsFcmpwHTlNjO3ENE=";
+    hash = "sha256-tggrpcnIdPOgjbtM8ph4K8sLIg0lJaQjUrAj9ChW+kE=";
   };
 
   vendorHash = null;
