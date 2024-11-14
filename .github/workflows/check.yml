@@ -5,12 +5,14 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: cachix/install-nix-action@v30
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
       - run: nix run .#jfmt -- --ci
   vale:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: cachix/install-nix-action@v30
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
       - run: nix profile install .#{vale,fd}
       - run: vale sync && vale $(fd --glob --hidden '*.md')
