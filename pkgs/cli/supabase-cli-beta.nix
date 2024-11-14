@@ -3,22 +3,24 @@
 , buildGoModule
 , installShellFiles
 , fetchFromGitHub
+, testers
+, supabase-cli
+, nix-update-script
 }:
 
-buildGoModule
-rec {
+
+buildGoModule rec {
   pname = "supabase-cli-beta";
-  version = "1.153.4";
+  version = "1.223.6";
 
   src = fetchFromGitHub {
     owner = "supabase";
     repo = "cli";
     rev = "v${version}";
-    hash = "sha256-G+aQheVeQOVa4uFVgn5u+L5RT++28ATJNMhrx9HEmYg=";
+    hash = "sha256-2t0FaKzZ3Aw/i+AkFsISdWxK3nM1Do5wc0jVE6gYdp0=";
   };
 
-  vendorHash = "sha256-jIhX90ntfUKhwgg3+EIjs8RIQ/qgfbKh+UeqHH2U+HQ=";
-  proxyVendor = true;
+  vendorHash = "sha256-0yIM1U8ugA0FutN8/gclJIubD/+fVYQbIqJzKQXXsTA=";
 
   ldflags = [
     "-s"
@@ -31,7 +33,7 @@ rec {
   nativeBuildInputs = [ installShellFiles ];
 
   postInstall = ''
-    rm $out/bin/{codegen,docs,listdep}
+    rm $out/bin/{docs,listdep}
     mv $out/bin/{cli,supabase}
 
     installShellCompletion --cmd supabase \
@@ -39,6 +41,13 @@ rec {
       --fish <($out/bin/supabase completion fish) \
       --zsh <($out/bin/supabase completion zsh)
   '';
+
+  passthru = {
+    tests.version = testers.testVersion {
+      package = supabase-cli;
+    };
+    updateScript = nix-update-script { };
+  };
 
   meta = with lib; {
     description = "Supabase CLI. Manage postgres migrations, run Supabase locally, deploy edge functions. Postgres backups. Generating types from your database schema";
