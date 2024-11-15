@@ -35,4 +35,15 @@ in
       rev = "976fa3369d722e76f37c77493d99829540d43845";
     })
     { inherit (final) system; };
+
+
+  questdb = prev.questdb.overrideAttrs (old: {
+    preInstall = ''
+      mkdir -p $out/bin
+      echo -e '#!/usr/bin/env bash\nexport JAVA_MAIN="io.questdb/io.questdb.ServerMain"' >$out/bin/env.sh
+      echo -e '#!/usr/bin/env bash\necho hello' >$out/bin/print-hello.sh
+      chmod +x $out/bin/env.sh
+      chmod +x $out/bin/print-hello.sh
+    '';
+  });
 }
