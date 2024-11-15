@@ -92,6 +92,7 @@ let
           "LICENSE"
         ];
         extraGlobalExcludes = [ ];
+        extraFormatter = { };
       };
       fn =
         { binName
@@ -99,13 +100,14 @@ let
         , extraPrograms
         , defaultGlobalExcludes
         , extraGlobalExcludes
+        , extraFormatter
         }:
         let
           _t = prev.treefmt-nix.mkWrapper prev {
             projectRootFile = ".git/config";
             programs = final.lib.recursiveUpdate defaultPrograms extraPrograms;
             settings.global.excludes = defaultGlobalExcludes ++ extraGlobalExcludes;
-            settings.formatter.shellcheck.options = [ "-x" ];
+            settings.formatter = { shellcheck.options = [ "-x" ]; } // extraFormatter;
           };
         in
         final.writeShellScriptBin binName ''${_t}/bin/treefmt "$@"'';
