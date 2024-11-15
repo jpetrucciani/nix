@@ -93,6 +93,7 @@ in
         QDB_LINE_UDP_BIND_TO = "${cfg.lineAddress}:${toString cfg.linePort}";
         QDB_PG_NET_BIND_TO = "${cfg.pgAddress}:${toString cfg.pgPort}";
       };
+      path = [ pkgs.ps ];
 
       serviceConfig = let qdb = "${cfg.package}/bin/questdb.sh"; in {
         Type = "forking";
@@ -102,7 +103,7 @@ in
         StateDirectory = "questdb";
         User = cfg.user;
         WorkingDirectory = cfg.dataDir;
-        PIDFile = "/run/.pid";
+        PIDFile = "/run/questdb-${cfg.tag}.pid";
       };
     };
   };
