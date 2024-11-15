@@ -57,6 +57,7 @@
 (?i)medable
 (?i)metabase
 (?i)mimir
+(?i)miniflux
 (?i)mongo
 (?i)mongodb
 (?i)nim
@@ -75,10 +76,11 @@
 (?i)pql
 (?i)prometheus
 (?i)pv
-(?i)pvs
 (?i)pvc
 (?i)pvcs
+(?i)pvs
 (?i)pypipe
+(?i)questdb
 (?i)rainfrog
 (?i)readmes?
 (?i)realtime
