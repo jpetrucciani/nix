@@ -94,7 +94,7 @@ in
         QDB_PG_NET_BIND_TO = "${cfg.pgAddress}:${toString cfg.pgPort}";
       };
 
-      serviceConfig = let qdb = "${cfg.package}/bin/questdb"; in {
+      serviceConfig = let qdb = "${cfg.package}/bin/questdb.sh"; in {
         Type = "forking";
         ${if cfg.secretFile != null then "EnvironmentFile" else null} = cfg.secretFile;
         ExecStart = ''${qdb} -f -d "${cfg.dataDir}" -n -t "${cfg.tag}"'';
