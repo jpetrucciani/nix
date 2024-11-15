@@ -88,10 +88,10 @@ in
         HOME = cfg.dataDir;
         USER = cfg.user;
         QDB_TELEMETRY_ENABLED = "false";
-        QDB_HTTP_BIND_TO = "${cfg.httpAddress}:${cfg.httpPort}";
-        QDB_LINE_TCP_NET_BIND_TO = "${cfg.lineAddress}:${cfg.linePort}";
-        QDB_LINE_UDP_BIND_TO = "${cfg.lineAddress}:${cfg.linePort}";
-        QDB_PG_NET_BIND_TO = "${cfg.pgAddress}:${cfg.pgPort}";
+        QDB_HTTP_BIND_TO = "${cfg.httpAddress}:${toString cfg.httpPort}";
+        QDB_LINE_TCP_NET_BIND_TO = "${cfg.lineAddress}:${toString cfg.linePort}";
+        QDB_LINE_UDP_BIND_TO = "${cfg.lineAddress}:${toString cfg.linePort}";
+        QDB_PG_NET_BIND_TO = "${cfg.pgAddress}:${toString cfg.pgPort}";
       };
 
       serviceConfig = let qdb = "${cfg.package}/bin/questdb"; in {
