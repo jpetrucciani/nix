@@ -96,7 +96,7 @@ in
       path = [ pkgs.ps ];
 
       serviceConfig = let qdb = "${cfg.package}/bin/questdb.sh"; in {
-        Type = "forking";
+        # Type = "forking";
         ${if cfg.secretFile != null then "EnvironmentFile" else null} = cfg.secretFile;
         ExecStart = ''${qdb} start -f -d "${cfg.dataDir}" -n -t "${cfg.tag}"'';
         ExecStop = ''${qdb} stop -d "${cfg.dataDir}" -t "${cfg.tag}"'';
