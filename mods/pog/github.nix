@@ -16,15 +16,19 @@ rec {
       _.flags.github.owner
       _.flags.github.repo
     ];
-    script = ''
-      tags="$(${_.curl} -Ls "https://api.github.com/repos/''${owner}/''${repo}/tags" |
-        ${lib.getExe jaq} -r '.[].name')"
-      if [ -n "''${latest}" ]; then
-        echo "$tags" | ${_.head} -n 1
-      else
-        echo "$tags"
-      fi
-    '';
+    script =
+      let
+        _curl = "${_.curl} -Ls";
+        _jq = "${final.jq}/bin/jq -r";
+      in
+      helpers: ''
+        api_url="https://api.github.com/repos/$owner/$repo"
+        if ${helpers.flag "latest"}; then
+          ${_curl} "$api_url/releases/latest" | ${_jq} '.tag_name'
+        else
+          ${_curl} "$api_url/tags" | ${_jq} '.[].name'
+        fi
+      '';
   };
 
   github_actions = pog {
