@@ -126,6 +126,7 @@ in
             "pluto.cobi" = "192.168.1.100";
             "phobos.cobi" = "192.168.1.134";
             "neptune.cobi" = "100.101.139.41";
+            "llm.cobi.dev" = "100.88.176.6";
           };
           rewrite = { };
         };
