@@ -46,4 +46,17 @@ in
       chmod +x $out/bin/print-hello.sh
     '';
   });
+
+  distcc_34 =
+    let
+      version = "2021-05-11";
+    in
+    prev.distcc.overrideAttrs (old: {
+      src = final.fetchFromGitHub {
+        owner = "distcc";
+        repo = "distcc";
+        rev = "50d821efe99cae82c05be0a4ab3b4035ef0d3883";
+        hash = "sha256-S3EHJ8s+bYWBmOfKP5ErNSa+UIalIK82MgKhWvPnwFo=";
+      };
+    });
 }
