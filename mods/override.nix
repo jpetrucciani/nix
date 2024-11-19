@@ -52,6 +52,7 @@ in
       version = "2021-05-11";
     in
     prev.distcc.overrideAttrs (old: {
+      inherit version;
       src = final.fetchFromGitHub {
         owner = "distcc";
         repo = "distcc";
