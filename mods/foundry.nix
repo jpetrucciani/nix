@@ -142,6 +142,7 @@ let
         , extraPerms ? [ ]
         , extraMkUserPaths ? [ ]
         , extraMkUser ? ""
+        , extraConfig ? { }
         }:
         let
           inherit (pkgs.nix2container.nix2container) buildLayer;
@@ -183,7 +184,7 @@ let
             };
             User = user;
             WorkingDir = "/home/${user}";
-          };
+          } // extraConfig;
           copyToRoot = [
             mkUser
             drvs.mkFolders
