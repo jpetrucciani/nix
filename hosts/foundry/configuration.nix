@@ -5,7 +5,10 @@ in
 {
   inherit (common) nix;
 
-  boot.kernel.sysctl = { "net.ipv4.ip_forward" = 1; } // common.sysctl_opts;
+  boot = {
+    kernel.sysctl = { "net.ipv4.ip_forward" = 1; } // common.sysctl_opts;
+    kernelModules = [ "ixgbe" "tg3" "mlx4_en" "mlx5_core" ]; # adding more nic drivers?
+  };
 
   environment.systemPackages = with pkgs; [
     bashInteractive
@@ -46,6 +49,7 @@ in
     extraGroups = [ "wheel" "networkmanager" "docker" ];
     useDefaultShell = true;
     openssh.authorizedKeys.keys = with common.pubkeys; [ milkyway pluto ];
+    initialHashedPassword = "$y$j9T$sBRLvlFhZSD07thGM.zC3/$CwyHjx3d9hM2kT/A2dvIs9JPoPs1ipQoEwUcdnvy9o4";
   };
 
   networking.firewall.enable = false;
