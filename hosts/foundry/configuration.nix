@@ -1,9 +1,10 @@
-{ pkgs, config, flake, machine-name, ... }:
+{ pkgs, config, flake, machine-name, modulesPath, ... }:
 let
   common = import ../common.nix { inherit config flake machine-name pkgs; };
 in
 {
   inherit (common) nix;
+  imports = [ "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix" ];
 
   boot = {
     kernel.sysctl = { "net.ipv4.ip_forward" = 1; } // common.sysctl_opts;
