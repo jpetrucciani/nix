@@ -1079,4 +1079,45 @@ rec {
       maintainers = with lib.maintainers; [ jpetrucciani ];
     };
   };
+
+  graphiti = buildPythonPackage rec {
+    pname = "graphiti";
+    version = "0.4.2";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "getzep";
+      repo = "graphiti";
+      rev = "v${version}";
+      hash = "sha256-yETE+Nww3KaBPpOgrm/g4JjbNCFIb5afvaATz1n3n+s=";
+    };
+
+    build-system = [
+      poetry-core
+      pythonRelaxDepsHook
+    ];
+
+    pythonRelaxDeps = [ "openai" ];
+
+    dependencies = [
+      diskcache
+      neo4j
+      numpy
+      openai
+      pydantic
+      python-dotenv
+      tenacity
+    ];
+
+    pythonImportsCheck = [
+      "graphiti_core"
+    ];
+
+    meta = {
+      description = "Build and query dynamic, temporally-aware Knowledge Graphs";
+      homepage = "https://github.com/getzep/graphiti";
+      license = lib.licenses.asl20;
+      maintainers = with lib.maintainers; [ jpetrucciani ];
+    };
+  };
 }
