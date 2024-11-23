@@ -6,6 +6,10 @@ This directory contains cli tools
 
 ## In this directory
 
+### [10mb-video.nix](./10mb-video.nix)
+
+[10mb.video](https://github.com/ugjka/10mb.video) is a tool to help hyper-compress videos!
+
 ### [ahab.nix](./ahab.nix)
 
 [ahab](https://github.com/jpetrucciani/ahab) is a tool that allows you to tail one or more docker containers
