@@ -20,6 +20,7 @@ rec {
         duckdns = { name = "github.com/caddy-dns/duckdns"; version = "v0.3.1"; };
         gandi = { name = "github.com/caddy-dns/gandi"; version = "v1.0.2"; };
         googleclouddns = { name = "github.com/caddy-dns/googleclouddns"; version = "v1.0.4"; };
+        porkbun = { name = "github.com/caddy-dns/porkbun"; version = "v0.2.1"; };
         hetzner = { name = "github.com/caddy-dns/hetzner"; version = "v0.0.1"; };
         route53 = { name = "github.com/caddy-dns/route53"; version = "v1.2.1"; };
         tencentcloud = { name = "github.com/caddy-dns/tencentcloud"; version = "v0.1.0"; };
@@ -29,6 +30,9 @@ rec {
         s3-proxy = { name = "github.com/jpetrucciani/caddy-s3-proxy"; version = "f818d1a7bb35c74f37d4a809236024e9f464162d"; };
         # s3-proxy = { name = "github.com/lindenlab/caddy-s3-proxy"; version = "v0.5.6"; };
         s3-browser = { name = "github.com/jpetrucciani/caddy-s3browser"; version = "b553c40251fd727217b3e49eb5c69d18c4460e08"; };
+
+        # gcs stuff
+        gcs-proxy = { name = "github.com/jpetrucciani/caddy-gcs-proxy"; version = "98628394327ca61587d02497353dd3a1dc2ac726"; };
 
         # utils
         ## jacobi's plugins
@@ -65,7 +69,7 @@ rec {
         '')
         allPlugins;
       zaddy = prev.caddy.override {
-        buildGoModule = args: buildGo122Module (args // {
+        buildGoModule = args: buildGo123Module (args // {
           inherit vendorHash;
           overrideModAttrs = _: {
             preBuild = ''
@@ -91,6 +95,7 @@ rec {
     plugins = p: with p; [
       caddy-security
       s3-proxy
+      gcs-proxy
       geolocation
       caddy-hax
       caddy-troll
@@ -98,16 +103,16 @@ rec {
       googleclouddns
       route53
     ];
-    vendorHash = "sha256-U/iLkGSQ9UErxSCuWg9vrXUo6B48Z+2O3fOwUb2IB14=";
+    vendorHash = "sha256-7rHqW9d6T1Kj80llaWr1MP2bsPxenSyD+Ty3eZ5ZiR4=";
   };
 
   # caddy with s3-browser plugin
-  zaddy-browser = _zaddy {
-    plugins = p: with p; [
-      caddy-security
-      s3-proxy
-      s3-browser
-    ];
-    vendorHash = "sha256-3xxqel03yFxTjuKsELYJEfIJVC9TVQrsm3kVz2g+Myo=";
-  };
+  # zaddy-browser = _zaddy {
+  #   plugins = p: with p; [
+  #     caddy-security
+  #     s3-proxy
+  #     s3-browser
+  #   ];
+  #   vendorHash = "";
+  # };
 }
