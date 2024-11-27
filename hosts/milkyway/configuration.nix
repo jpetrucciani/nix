@@ -45,9 +45,9 @@ in
       EXLA_TARGET = cudaTarget;
     };
   };
-  fonts.packages = with pkgs; [
-    nerdfonts
-  ];
+  # fonts.packages = with pkgs; [
+  #   nerdfonts
+  # ];
   home-manager.users.jacobi = common.jacobi;
   wsl = {
     enable = true;

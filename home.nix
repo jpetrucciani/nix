@@ -112,7 +112,8 @@ in
         nixfmt-rfc-style
         nixpkgs-fmt
         nixpkgs-review
-        nixVersions.nix_2_22
+        # nixVersions.nix_2_25
+        lix
         openssh
         p7zip
         patch
