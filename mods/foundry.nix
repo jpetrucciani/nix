@@ -79,6 +79,7 @@ let
       drvs = {
         mkFolders = pkgs.runCommand "folders" { } ''
           mkdir -p $out/tmp
+          touch $out/tmp/foundry.txt
         '';
         mkUser =
           { user ? "user"
@@ -188,7 +189,6 @@ let
           } // extraConfig;
           copyToRoot = [
             mkUser
-            drvs.mkFolders
           ] ++ extraCopyToRoot;
           perms = [
             (fn.perm {
@@ -209,7 +209,7 @@ let
               regex = x;
             }))
             extraMkUserPaths);
-          layers = (map (deps: fn.buildLayer { copyToRoot = [ (pkgs.buildEnv { inherit pathsToLink; name = "layer"; paths = deps; }) ]; }) allLayers) ++ raw_layers;
+          layers = [ (fn.buildLayer { copyToRoot = [ drvs.mkFolders ]; reproducible = false; }) ] ++ (map (deps: fn.buildLayer { copyToRoot = [ (pkgs.buildEnv { inherit pathsToLink; name = "layer"; paths = deps; }) ]; }) allLayers) ++ raw_layers;
           initializeNixDatabase = enableNix;
           nixUid = toInt uid;
           nixGid = toInt gid;
