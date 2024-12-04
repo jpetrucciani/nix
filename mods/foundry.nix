@@ -59,6 +59,7 @@ let
         nixLayer = with pkgs; [ nix ];
       };
       fn = {
+        inherit (pkgs.nix2container.nix2container) buildLayer;
         perm =
           { path
           , user ? "user"
@@ -120,7 +121,6 @@ let
     in
     {
       inherit _layers drvs fn;
-      inherit (pkgs.nix2container.nix2container) buildLayer;
       __functor = _:
         { name
         , layers
@@ -146,7 +146,6 @@ let
         , extraConfig ? { }
         }:
         let
-          inherit (pkgs.nix2container.nix2container) buildLayer;
           allLayers = with _layers; [ baseLayer ] ++ (optionals sysLayer [ coreLayer ]) ++ (optionals enableNix [ nixLayer ]) ++ layers;
           mkUser = drvs.mkUser {
             inherit user group uid gid substituters trusted-public-keys;
@@ -209,7 +208,7 @@ let
               regex = x;
             }))
             extraMkUserPaths);
-          layers = map (deps: buildLayer { copyToRoot = [ (pkgs.buildEnv { inherit pathsToLink; name = "layer"; paths = deps; }) ]; }) allLayers;
+          layers = map (deps: fn.buildLayer { copyToRoot = [ (pkgs.buildEnv { inherit pathsToLink; name = "layer"; paths = deps; }) ]; }) allLayers;
           initializeNixDatabase = enableNix;
           nixUid = toInt uid;
           nixGid = toInt gid;
