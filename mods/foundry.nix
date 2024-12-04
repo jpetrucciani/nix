@@ -124,6 +124,7 @@ let
       __functor = _:
         { name
         , layers
+        , _layers ? [ ]
         , env ? [ ]
         , registry ? "ghcr.io/jpetrucciani"
         , author ? "j@cobi.dev"
@@ -208,7 +209,7 @@ let
               regex = x;
             }))
             extraMkUserPaths);
-          layers = map (deps: fn.buildLayer { copyToRoot = [ (pkgs.buildEnv { inherit pathsToLink; name = "layer"; paths = deps; }) ]; }) allLayers;
+          layers = (map (deps: fn.buildLayer { copyToRoot = [ (pkgs.buildEnv { inherit pathsToLink; name = "layer"; paths = deps; }) ]; }) allLayers) ++ _layers;
           initializeNixDatabase = enableNix;
           nixUid = toInt uid;
           nixGid = toInt gid;
