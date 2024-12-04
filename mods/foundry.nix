@@ -196,12 +196,6 @@ let
               path = mkUser;
               regex = "/home/${user}";
             })
-            (fn.perm {
-              inherit uid gid user group;
-              path = drvs.mkFolders;
-              regex = "/tmp";
-              mode = "1777";
-            })
           ] ++ extraPerms ++ (map
             (x: (fn.perm {
               inherit uid gid user group;
@@ -209,7 +203,21 @@ let
               regex = x;
             }))
             extraMkUserPaths);
-          layers = [ (fn.buildLayer { copyToRoot = [ drvs.mkFolders ]; reproducible = false; }) ] ++ (map (deps: fn.buildLayer { copyToRoot = [ (pkgs.buildEnv { inherit pathsToLink; name = "layer"; paths = deps; }) ]; }) allLayers) ++ raw_layers;
+          layers = [
+            (fn.buildLayer {
+              copyToRoot = [ drvs.mkFolders ];
+              reproducible = false;
+              perms = [
+                fn.perm
+                {
+                  inherit uid gid user group;
+                  path = drvs.mkFolders;
+                  regex = "/tmp";
+                  mode = "1777";
+                }
+              ];
+            })
+          ] ++ (map (deps: fn.buildLayer { copyToRoot = [ (pkgs.buildEnv { inherit pathsToLink; name = "layer"; paths = deps; }) ]; }) allLayers) ++ raw_layers;
           initializeNixDatabase = enableNix;
           nixUid = toInt uid;
           nixGid = toInt gid;
