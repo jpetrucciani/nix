@@ -120,6 +120,7 @@ let
     in
     {
       inherit _layers drvs fn;
+      inherit (pkgs.nix2container.nix2container) buildLayer;
       __functor = _:
         { name
         , layers
