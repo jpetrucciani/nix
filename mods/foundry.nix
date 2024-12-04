@@ -132,7 +132,7 @@ let
         , description ? "a foundry_v2 docker image built with nix"
         , hostPkgs ? pkgs
         , enableNix ? true
-        , pathsToLink ? [ "/bin" "/etc" "/lib" "/lib64" "/run" "/share" "/tmp" "/usr" ] ++ extraPathsToLink
+        , pathsToLink ? [ "/bin" "/etc" "/lib" "/lib64" "/run" "/share" "/usr" ] ++ extraPathsToLink
         , extraPathsToLink ? [ ]
         , sysLayer ? true
         , user ? "user"
