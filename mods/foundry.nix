@@ -208,13 +208,12 @@ let
               copyToRoot = [ drvs.mkFolders ];
               reproducible = false;
               perms = [
-                fn.perm
-                {
+                (fn.perm {
                   inherit uid gid user group;
                   path = drvs.mkFolders;
                   regex = "/tmp";
                   mode = "1777";
-                }
+                })
               ];
             })
           ] ++ (map (deps: fn.buildLayer { copyToRoot = [ (pkgs.buildEnv { inherit pathsToLink; name = "layer"; paths = deps; }) ]; }) allLayers) ++ raw_layers;
