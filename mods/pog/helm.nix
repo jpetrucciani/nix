@@ -319,9 +319,16 @@ rec {
     last = 1; # something funky with their helm index?
   };
 
+  chart_scan_aws_mountpoint-s3-csi-driver = _chart_scan {
+    name = "aws-mountpoint-s3-csi-driver";
+    base_url = "https://awslabs.github.io/mountpoint-s3-csi-driver";
+    chart_url = "https://github.com/awslabs/mountpoint-s3-csi-driver/releases/download/helm-chart-aws-mountpoint-s3-csi-driver-{1}/aws-mountpoint-s3-csi-driver-{1}.tgz";
+  };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
+    chart_scan_aws_mountpoint-s3-csi-driver
     chart_scan_dask-kubernetes-operator
     chart_scan_datadog
     chart_scan_external-secrets
