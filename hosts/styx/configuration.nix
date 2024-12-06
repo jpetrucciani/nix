@@ -47,10 +47,10 @@ in
       modelPath = name: "/opt/box/models/${name}";
     in
     {
-      ollama = {
-        enable = true;
-        address = "0.0.0.0";
-      };
+      # ollama = {
+      #   enable = true;
+      #   address = "0.0.0.0";
+      # };
       infinity = {
         enable = true;
         models = [

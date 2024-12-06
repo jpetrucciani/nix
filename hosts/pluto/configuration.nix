@@ -43,10 +43,51 @@ in
     };
   };
 
-  services.llama-server.servers.llama3 = {
-    enable = false;
-    port = 8012;
-    model = "/opt/box/models/Llama-3.2-3B-Instruct-Q8_0.gguf";
-    ngl = 41;
-  };
+  # services.llama-server.servers.llama3 = {
+  #   enable = false;
+  #   port = 8012;
+  #   model = "/opt/box/models/Llama-3.2-3B-Instruct-Q8_0.gguf";
+  #   ngl = 41;
+  # };
+  services =
+    let
+      modelPath = name: "/opt/box/models/${name}";
+    in
+    {
+      infinity = {
+        enable = true;
+        models = [
+          "BAAI/bge-small-en-v1.5"
+          "jinaai/jina-embeddings-v3"
+        ];
+      };
+      koboldcpp.servers = {
+        minicpm = {
+          enable = true;
+          port = 5001;
+          model = modelPath "MiniCPM-V-2_6-Q8_0.gguf";
+          mmproj = modelPath "mmproj-MiniCPM-V-2_6-f16.gguf";
+          gpulayers = -1;
+        };
+      };
+      llama-server.servers = {
+        llama3 = {
+          enable = true;
+          port = 8012;
+          model = modelPath "Llama-3.2-3B-Instruct-Q8_0.gguf";
+          # ngl = 41;
+        };
+        # nuextract = {
+        #   enable = true;
+        #   port = 8013;
+        #   model = modelPath "NuExtract-v1.5-Q6_K_L.gguf";
+        # };
+        qwen-25-coder-7b = {
+          enable = true;
+          port = 8014;
+          model = modelPath "Qwen2.5.1-Coder-7B-Instruct-Q6_K_L.gguf";
+          ngl = 81;
+        };
+      };
+    };
 }
