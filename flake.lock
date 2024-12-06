@@ -546,11 +546,11 @@
         "pog": "pog"
       },
       "locked": {
-        "lastModified": 1733443348,
-        "narHash": "sha256-2jdByQL68AET4XDILqLLjIH2LO8d0rZX4dUu7LvWPDg=",
+        "lastModified": 1733445553,
+        "narHash": "sha256-nH5zCb7lLkwDS4NVlmNwURkXRKwpXT05ebB3vMarqic=",
         "owner": "jpetrucciani",
         "repo": "hex",
-        "rev": "6b4bd50584b27490cf2dd8ae27db7b706de06b37",
+        "rev": "24f1c57ed127cdfa39522a06895cd5b8e0bc0575",
         "type": "github"
       },
       "original": {
