@@ -231,6 +231,7 @@ rec {
     last = 80;
   };
 
+  chart_scan_prometheus-adapter = prometheus_chart { name = "prometheus-adapter"; last = 10; };
   chart_scan_prometheus-cloudwatch-exporter = prometheus_chart { name = "prometheus-cloudwatch-exporter"; last = 10; };
   chart_scan_prometheus-elasticsearch-exporter = prometheus_chart { name = "prometheus-elasticsearch-exporter"; };
   chart_scan_prometheus-mongodb-exporter = prometheus_chart { name = "prometheus-mongodb-exporter"; last = 10; };
@@ -353,6 +354,7 @@ rec {
     chart_scan_plane
     chart_scan_postgres-operator
     chart_scan_postgres-operator-ui
+    chart_scan_prometheus-adapter
     chart_scan_prometheus-cloudwatch-exporter
     chart_scan_prometheus-elasticsearch-exporter
     chart_scan_prometheus-mongodb-exporter
