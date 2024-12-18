@@ -200,6 +200,12 @@ rec {
     base_url = "https://sentry-kubernetes.github.io/charts";
   };
 
+  chart_scan_searxng = _chart_scan {
+    name = "searxng";
+    base_url = "https://charts.searxng.org";
+    chart_url = "https://github.com/searxng/searxng-helm-chart/releases/download/searxng-{1}/searxng-{1}.tgz";
+  };
+
   chart_scan_linkerd-crds = _chart_scan {
     name = "linkerd-crds";
     base_url = "https://helm.linkerd.io/stable";
@@ -365,6 +371,7 @@ rec {
     chart_scan_quickwit
     chart_scan_redis-operator
     chart_scan_robusta
+    chart_scan_searxng
     chart_scan_sentry
     chart_scan_signoz
     chart_scan_sonarqube
