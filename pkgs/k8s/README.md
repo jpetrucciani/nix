@@ -6,6 +6,10 @@ This directory contains tools related to kubernetes
 
 ## In this directory
 
+### [cyphernetes.nix](./cyphernetes.nix)
+
+[cyphernetes](https://github.com/AvitalTamir/cyphernetes) is an alternative k8s query language
+
 ### [katafygio.nix](./katafygio.nix)
 
 [katafygio](https://github.com/bpineau/katafygio) is a tool to dump k8s objects to files
