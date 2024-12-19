@@ -200,6 +200,6 @@ in
     nix-ld.enable = true;
   };
   security.pam.loginLimits = [
-    { domain = "*"; item = "nofile"; type = "-"; value = "65536"; }
+    { domain = "*"; item = "nofile"; type = "-"; value = "131072"; }
   ];
 }
