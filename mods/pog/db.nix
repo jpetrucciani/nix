@@ -17,7 +17,7 @@ rec {
     , db_name ? name
     , password ? name
     , extensions ? [ "pgcrypto" "uuid-ossp" ]
-    , postgres ? postgresql_15
+    , postgres ? postgresql_16
     , extra_bootstrap ? ""
     }: pog {
       name = "__pg_bootstrap";
@@ -188,11 +188,145 @@ rec {
       '';
     };
 
+  __mysql_bootstrap =
+    { name ? "db"
+    , mysql ? mysql84
+    , extra_bootstrap ? ""
+    , extra_bootstrap_sql ? ""
+    , mysql_settings ? {
+        mysqld = {
+          bind-address = "0.0.0.0";
+          port = 3306;
+          innodb_numa_interleave = "0";
+        };
+      }
+    }: pog {
+      name = "__mysql_bootstrap";
+      description = "a quick and easy way to bootstrap a local mysql db";
+      script =
+        let
+          _mysql = ''${mysql}/bin/mysql -h 127.0.0.1 -N -u root'';
+          mysqld = builtins.concatStringsSep " " [
+            ''${mysql}/bin/mysqld''
+            ''--defaults-file=${configFile}''
+            ''--datadir="$MYSQLDATA"''
+            ''--socket="$MYSQLDATA/mysql.sock"''
+            ''--pid-file="$MYSQLDATA/mysql.pid"''
+            ''--basedir=${mysql}''
+          ];
+          format = pkgs.formats.ini { listsAsDuplicateKeys = true; };
+          configFile = format.generate "my.cnf" mysql_settings;
+          bootstrap = ''
+            CREATE DATABASE IF NOT EXISTS ${name} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            CREATE USER IF NOT EXISTS '${name}'@'%' IDENTIFIED BY '${name}';
+            GRANT ALL PRIVILEGES ON ${name}.* TO '${name}'@'%';
+            FLUSH PRIVILEGES;
+            SET GLOBAL max_connections = 150;
+            SET GLOBAL connect_timeout = 10;
+            ${extra_bootstrap_sql}
+          '';
+        in
+        ''
+          MYSQLDATA=''${MYSQLDATA:-$(pwd)/.db/}
+          PIDFILE="$MYSQLDATA/mysql.pid"
+
+          wait_for_mysql() {
+            for i in $(seq 1 10); do
+              if ${_mysql} -e "SELECT 1" >/dev/null 2>&1; then
+                return 0
+              fi
+              debug "wait_for_mysql[$i]"
+              sleep 1
+            done
+            echo "Failed to connect to MySQL after 30 seconds"
+            return 1
+          }
+          bootstrap() {
+            ${mysqld} --initialize-insecure
+            cp ${configFile} "$MYSQLDATA/my.cnf"
+            touch "$MYSQLDATA/mysql_init"
+            rm "$MYSQLDATA"/undo_*
+
+            ${mysqld} --pid-file="$PIDFILE" --daemonize
+
+            # Wait for MySQL to be ready
+            if ! wait_for_mysql; then
+              echo "MySQL failed to start"
+              exit 1
+            fi
+            echo "${bootstrap}" | ${_mysql}
+            ${extra_bootstrap}
+
+            # Properly shutdown MySQL using the pid file
+            if [ -f "$PIDFILE" ]; then
+              kill "$(cat "$PIDFILE")"
+              while [ -f "$PIDFILE" ]; do sleep 1; done
+            fi
+          }
+          [ ! -d "$MYSQLDATA" ] && bootstrap
+        '';
+    };
+  __mysql = { mysql ? mysql84, extra_flags ? "" }: pog {
+    name = "__mysql";
+    description = "run your local mysql db from $MYSQLDATA";
+    script = ''
+      MYSQLDATA=''${MYSQLDATA:-$(pwd)/.db/}
+
+      # Clean up any existing undo files if the server isn't running
+      if [ ! -f "$MYSQLDATA/mysql.pid" ] || ! kill -0 "$(cat "$MYSQLDATA/mysql.pid")" 2>/dev/null; then
+        rm -f "$MYSQLDATA"/undo_*
+      fi
+
+      cleanup() {
+        echo "Shutting down MySQL..."
+        if [ -f "$MYSQLDATA/mysql.pid" ]; then
+          kill "$(cat "$MYSQLDATA/mysql.pid")"
+          while [ -f "$MYSQLDATA/mysql.pid" ]; do sleep 1; done
+        fi
+        exit 0
+      }
+      trap cleanup TERM
+
+      red "mysqld starting - use ctrl+\ (SIGQUIT) to kill!"
+      ${mysql}/bin/mysqld \
+        --defaults-file="$MYSQLDATA/my.cnf" \
+        --datadir="$MYSQLDATA" \
+        --socket="$MYSQLDATA/mysql.sock" \
+        --pid-file="$MYSQLDATA/mysql.pid" \
+        --console \
+        --basedir=${mysql} ${extra_flags}
+    '';
+  };
+  __mysql_shell = { name ? "db", mysql ? mysql84, extra_flags ? "" }: pog {
+    name = "__mysql_shell";
+    description = "run a psql shell into postgres locally";
+    script = ''
+      MYSQLPORT=''${MYSQLPORT:-3306}
+      TMPCNF=$(mktemp)
+      trap 'rm -f $TMPCNF' EXIT
+
+      cat > "$TMPCNF" << EOF
+      [client]
+      user=${name}
+      password=${name}
+      host=127.0.0.1
+      port=$MYSQLPORT
+      database=${name}
+      EOF
+
+      ${final.portwatch}/bin/portwatch "$MYSQLPORT" && ${mysql}/bin/mysql --defaults-file="$TMPCNF" ${extra_flags}
+    '';
+  };
+
   db_pog_scripts = [
     # postgres
     (__pg { })
     (__pg_bootstrap { })
     (__pg_shell { })
+    # mysql
+    (__mysql { })
+    (__mysql_bootstrap { })
+    (__mysql_shell { })
     # redis
     __rd
     __rd_shell
