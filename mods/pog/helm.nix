@@ -122,6 +122,12 @@ rec {
     chart_url = "https://github.com/DataDog/helm-charts/releases/download/datadog-{1}/datadog-{1}.tgz";
   };
 
+  chart_scan_fleet = _chart_scan {
+    name = "fleet";
+    base_url = "https://fleetdm.github.io/fleet/charts";
+    chart_url = "https://fleetdm.github.io/fleet/charts/fleet-{1}.tgz";
+  };
+
   chart_scan_external-secrets = _chart_scan {
     name = "external-secrets";
     base_url = "https://charts.external-secrets.io";
@@ -340,6 +346,7 @@ rec {
     chart_scan_datadog
     chart_scan_external-secrets
     chart_scan_fission
+    chart_scan_fleet
     chart_scan_flipt
     chart_scan_gitlab-runner
     chart_scan_infisical
