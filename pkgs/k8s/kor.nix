@@ -18,7 +18,7 @@ buildGoModule rec {
   vendorHash = "sha256-DRbwM6fKTIlefD0rUmNLlUXrK+t3vNCl4rxHF7m8W10=";
 
   doCheck = false;
-  CGO_ENABLED = 0;
+  env.CGO_ENABLED = 0;
   ldflags = [
     "-X=github.com/yonahd/kor/pkg/utils.Version=${version}"
   ];

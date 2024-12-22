@@ -41,7 +41,7 @@ rec {
 
         vendorHash = "sha256-NJktyKDyByAWLAc/oayOSQxohKPcxAHiW2ynM77cCOY=";
 
-        CGO_ENABLED = 1;
+        env.CGO_ENABLED = 1;
 
         nativeBuildInputs = [ ];
         subPackages = [
