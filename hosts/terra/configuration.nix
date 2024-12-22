@@ -218,7 +218,7 @@ in
           }
 
           ${security_block {}}
-          ${security_block {name="SECURITY_WITH_FRAME"; allow_frame =true;}}
+          ${security_block {name="SECURITY_WITH_FRAME"; allow_frame = true;}}
         '';
         virtualHosts = {
           "api.cobi.dev" = reverse_proxy "localhost:10000";
@@ -227,7 +227,7 @@ in
           "invoice.cobi.dev" = reverse_proxy_with_iframe "localhost:8010";
           "llm.cobi.dev" = ts_reverse_proxy "localhost:8010";
           "chat.cobi.dev" = ts_reverse_proxy "localhost:8010";
-          "lobe.cobi.dev" = ts_reverse_proxy "titan:3210";
+          "lobe.cobi.dev" = ts_reverse_proxy "localhost:8010";
           "otf.cobi.dev" = reverse_proxy "localhost:8010";
           "auth.cobi.dev" = reverse_proxy neptune_traefik;
           "audiobook.cobi.dev" = reverse_proxy "localhost:9888";
