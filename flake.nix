@@ -71,6 +71,7 @@
         darwin = [
           "charon"
           "m1max"
+          "nyx0"
           "pluto"
           "styx"
         ];

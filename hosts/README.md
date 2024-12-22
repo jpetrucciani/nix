@@ -38,6 +38,10 @@ additional modules for use in the various host configurations for nixos and nix-
 
 This is a bare-metal nixos server.
 
+### [nyx0/](./nyx0)
+
+This is a m4 mac mini
+
 ### [phobos/](./phobos)
 
 This is an experimental nixos install inside a VM.
