@@ -8,6 +8,13 @@ let
       sha256 = "13jgyc0b9l6j80dzsk1bwia4vsyh7q7kwxjl5fv402gypycij275";
     })
     { system = "x86_64-linux"; };
+
+  darwin_zlib = pkg:
+    if isDarwin then
+      pkg.overrideAttrs
+        (old: {
+          buildInputs = old.buildInputs ++ [ prev.zlib ];
+        }) else pkg;
 in
 {
   inherit (zitadel_pr) zitadel;
@@ -61,10 +68,6 @@ in
       };
     });
 
-  git-trim =
-    if isDarwin then
-      prev.git-trim.overrideAttrs
-        (old: {
-          buildInputs = old.buildInputs ++ [ prev.zlib ];
-        }) else prev.git-trim;
+  genpass = darwin_zlib prev.genpass;
+  git-trim = darwin_zlib prev.git-trim;
 }
