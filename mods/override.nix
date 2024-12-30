@@ -76,7 +76,7 @@ in
       prev.libossp_uuid.overrideAttrs
         (old: {
           postPatch = ''
-            sed -E -i 's/__VA_COPY_USE/__builtin_va_copy/g' config.h.in
+            sed -E -i 's/__VA_COPY_USE/__builtin_va_copy/g' config.h
           '';
         }) else prev.libossp-uuid;
 }
