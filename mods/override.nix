@@ -70,4 +70,13 @@ in
 
   genpass = darwin_zlib prev.genpass;
   git-trim = darwin_zlib prev.git-trim;
+
+  libossp_uuid =
+    if isDarwin then
+      prev.libossp_uuid.overrideAttrs
+        (old: {
+          postPatch = ''
+            sed -E -i 's/(va_copy)/__builtin_\1/g' uuid_str.c
+          '';
+        }) else prev.libossp-uuid;
 }
