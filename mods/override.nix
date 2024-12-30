@@ -75,6 +75,8 @@ in
     if isDarwin then
       prev.libossp_uuid.overrideAttrs
         (old: {
-          configureFlags = prev.lib.lists.remove "ac_cv_va_copy=yes" old.configureFlags;
+          postPatch = ''
+            sed -E -i 's/__VA_COPY_USE/__builtin_va_copy/g' config.h.in
+          '';
         }) else prev.libossp-uuid;
 }
