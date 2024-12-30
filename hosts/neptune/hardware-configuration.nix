@@ -14,17 +14,15 @@
     extraModulePackages = [ ];
   };
 
-  fileSystems."/" =
-    {
-      device = "/dev/nvme0n1p2";
-      fsType = "btrfs";
-    };
+  fileSystems."/" = {
+    device = "/dev/nvme0n1p2";
+    fsType = "btrfs";
+  };
 
-  fileSystems."/boot" =
-    {
-      device = "/dev/disk/by-uuid/aadbe86d-0045-4122-915a-bbd33ef2aec3";
-      fsType = "ext2";
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/aadbe86d-0045-4122-915a-bbd33ef2aec3";
+    fsType = "ext2";
+  };
 
   swapDevices = [ ];
 

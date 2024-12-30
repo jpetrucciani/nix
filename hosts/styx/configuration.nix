@@ -54,9 +54,9 @@ in
       infinity = {
         enable = true;
         models = [
-          "BAAI/bge-small-en-v1.5"
           "jinaai/jina-embeddings-v3"
-          "nomic-ai/nomic-embed-text-v1"
+          "nomic-ai/nomic-embed-text-v1.5"
+          # "BAAI/bge-small-en-v1.5"
           # "dunzhang/stella_en_400M_v5" # requires xformers?
         ];
       };

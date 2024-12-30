@@ -10,9 +10,17 @@ This directory contains misc servers implemented as nix modules!
 
 a service to run + watch a local executable
 
+### [infinity.nix](./infinity.nix)
+
+[infinity](https://github.com/michaelfeil/infinity) embeddings server
+
 ### [minifluxng.nix](./minifluxng.nix)
 
 miniflux
+
+### [obligator.nix](./obligator.nix)
+
+[obligator](https://github.com/lastlogin-net/obligator) service
 
 ### [poglets.nix](./poglets.nix)
 

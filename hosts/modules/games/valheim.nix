@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption mkOption;
-  inherit (lib.types) path port str;
+  inherit (lib.types) nullOr path port str;
   cfg = config.services.valheim;
 in
 {
@@ -40,7 +40,7 @@ in
       description = "the name of the world to use";
     };
     secretFile = mkOption {
-      type = path;
+      type = nullOr path;
       default = "/etc/default/valheim";
       description = ''
         this file contains any additional secrets you might want to pass in.
@@ -64,7 +64,7 @@ in
     systemd.services.valheim = {
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        EnvironmentFile = cfg.secretFile;
+        ${if cfg.secretFile != null then "EnvironmentFile" else null} = cfg.secretFile;
         ExecStartPre = ''
           ${pkgs.steamcmd}/bin/steamcmd \
             +force_install_dir ${cfg.dataDir} \

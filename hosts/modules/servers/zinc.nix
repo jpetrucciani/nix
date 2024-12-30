@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption mkOption literalExpression;
-  inherit (lib.types) bool package path port str;
+  inherit (lib.types) bool nullOr package path port str;
   cfg = config.services.zinc;
 in
 {
@@ -25,8 +25,9 @@ in
       description = ''the data directory for zinc'';
     };
     secretFile = mkOption {
-      type = path;
-      default = "/etc/default/zinc";
+      type = nullOr path;
+      default = null;
+      # default = "/etc/default/zinc";
       description = ''secret env variables for zinc'';
     };
     package = mkOption {
@@ -99,7 +100,7 @@ in
       };
 
       serviceConfig = {
-        EnvironmentFile = cfg.secretFile;
+        ${if cfg.secretFile != null then "EnvironmentFile" else null} = cfg.secretFile;
         ExecStart = ''
           ${cfg.package}/bin/zinc
         '';

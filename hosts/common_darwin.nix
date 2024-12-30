@@ -106,6 +106,7 @@ in
           util = [
             "dbeaver-community"
             "docker"
+            "ghostty"
             "insomnia"
             "karabiner-elements"
             "keybase"

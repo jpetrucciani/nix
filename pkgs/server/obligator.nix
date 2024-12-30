@@ -1,4 +1,4 @@
-# [obligator](https://github.com/anderspitman/obligator) is an OIDC server designed for self-hosters
+# [obligator](https://github.com/lastlogin-net/obligator) is an OIDC server designed for self-hosters
 { lib
 , buildGoModule
 , fetchFromGitHub
@@ -22,7 +22,7 @@ buildGoModule {
 
   meta = with lib; {
     description = "Simple and opinionated OpenID Connect server designed for self-hosters";
-    homepage = "https://github.com/anderspitman/obligator";
+    homepage = "https://github.com/lastlogin-net/obligator";
     license = licenses.mit;
     maintainers = with maintainers; [ jpetrucciani ];
     mainProgram = "obligator";
