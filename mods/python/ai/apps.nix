@@ -457,6 +457,11 @@ in
 
     build-system = with final; [
       poetry-core
+      pythonRelaxDepsHook
+    ];
+
+    pythonRelaxDeps = [
+      "numpy"
     ];
 
     dependencies = with final; [
