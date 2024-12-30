@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption mkOption literalExpression;
-  inherit (lib.types) bool listOf nullOr package path port str;
+  inherit (lib.types) listOf nullOr package path port str;
   cfg = config.services.infinity;
   defaultUser = "infinity";
 in
@@ -9,6 +9,7 @@ in
   imports = [ ];
 
   options.services.infinity = {
+    enable = mkEnableOption "infinity";
     package = mkOption {
       type = package;
       default = pkgs.python312Packages.infinity-emb;
