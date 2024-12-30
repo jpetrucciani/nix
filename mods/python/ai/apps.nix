@@ -470,6 +470,7 @@ in
       einops
       fastapi
       hf-transfer
+      httptools
       huggingface-hub
       numpy
       optimum
