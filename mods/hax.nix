@@ -11,6 +11,11 @@ final: prev:
     isX86Mac = isDarwin && !isAarch64;
     isArmLinux = isAarch64 && isLinux;
     isNixDarwin = builtins.getEnv "NIXDARWIN_CONFIG" != "";
+    isWSL = builtins.pathExists "/proc/sys/fs/binfmt_misc/WSLInterop";
+    isNixOS = builtins.pathExists "/etc/NIXOS";
+    isNixOSWSL = isWSL && isNixOS;
+
+    nvidiaLdPath = if isWSL then "/usr/lib/wsl/lib" else if isNixOS then "/run/opengl-driver/lib" else "";
 
     attrIf = check: name: if check then name else null;
     # attrIf helpers

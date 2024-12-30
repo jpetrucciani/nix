@@ -26,6 +26,7 @@ rec {
         with_terraform = "include terraform";
         # with_uv = "include python and uv";
         with_vlang = "include a vlang with dependencies";
+        with_nvidia = "include some ld hacks to get nvidia drivers working (only useful on nixos/wsl)";
       };
       flags = lib.mapAttrsToList (k: v: { name = k; description = v; short = ""; bool = true; }) _flags;
     in
@@ -122,6 +123,10 @@ rec {
           if [ "$with_java" = "1" ]; then
             java="java = [gradle${"\n"}zulu];"
           fi
+          if [ "$with_nvidia" = "1" ]; then
+            toplevel="deps = with pkgs; [${"\n"}cudaPackages.cudatoolkit stdenv.cc.cc.lib ];${"\n"}$toplevel"
+            extra_env="$extra_env LD_LIBRARY_PATH = \"\''${pkgs.hax.nvidiaLdPath}:\''${pkgs.lib.makeLibraryPath deps}\";${"\n"}CUDA_PATH = pkgs.cudatoolkit;"
+          fi
           ftb="fetchTarball { name = \"jpetrucciani-$(date '+%F')\"; url = \"https://github.com/jpetrucciani/nix/archive/$rev.tar.gz\"; sha256 = \"$sha\";}"
           if ${h.flag "update"}; then
             default_nix="''${1:-./default.nix}"
@@ -141,14 +146,13 @@ rec {
             }:
             let
               name = "$directory";
-              ''${toplevel}
-              ''${poetry}
+
+              ''${toplevel} ''${poetry}
               tools = with pkgs; {
                 cli = [
-                  coreutils
-                  nixpkgs-fmt
-                ];
-                ''${crystal} ''${elixir} ''${golang} ''${nim} ''${node} ''${php} ''${dotnet} ''${java} ''${pulumi} ''${py} ''${ruby} ''${rust} ''${terraform} ''${vlang}
+                  jfmt
+                  nixup
+                ]; ''${crystal} ''${elixir} ''${golang} ''${nim} ''${node} ''${php} ''${dotnet} ''${java} ''${pulumi} ''${py} ''${ruby} ''${rust} ''${terraform} ''${vlang}
                 scripts = pkgs.lib.attrsets.attrValues scripts;
               };
 
