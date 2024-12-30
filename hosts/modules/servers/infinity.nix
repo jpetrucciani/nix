@@ -1,33 +1,33 @@
-{ config, lib, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 let
-  inherit (lib) literalExpression mkEnableOption mkIf mkOption types;
+  inherit (lib) mkIf mkEnableOption mkOption literalExpression;
+  inherit (lib.types) listOf nullOr package path port str;
   cfg = config.services.infinity;
-  defaultUser = "_infinity";
-  homeDir = "/var/lib/infinity";
+  defaultUser = "infinity";
 in
 {
   imports = [ ];
 
   options.services.infinity = {
-    enable = mkEnableOption "infinity server launchd service";
+    enable = mkEnableOption "infinity";
     package = mkOption {
-      type = types.package;
+      type = package;
       default = pkgs.python312Packages.infinity-emb;
       defaultText = literalExpression "pkgs.python312Packages.infinity-emb";
       description = "The package to use for infinity";
     };
     address = mkOption {
-      type = types.str;
+      type = str;
       default = "0.0.0.0";
       description = ''the address to bind to'';
     };
     port = mkOption {
-      type = types.port;
+      type = port;
       default = 7997;
       description = ''the port to bind to'';
     };
     models = mkOption {
-      type = types.listOf types.str;
+      type = listOf str;
       default = [
         "nomic-ai/nomic-embed-text-v1.5"
         # check out the MTEB leaderboard!
@@ -39,41 +39,47 @@ in
       description = "the list of embeddings models to load";
     };
     extraFlags = mkOption {
-      type = types.str;
+      type = str;
       description = "any extra flags to pass to infinity";
       default = "";
     };
+    secretFile = mkOption {
+      type = nullOr path;
+      default = null;
+      # default = "/etc/default/infinity";
+      description = ''secret env variables for infinity'';
+    };
     user = mkOption {
-      type = types.str;
+      type = str;
       description = ''
         User under which to run the infinity service.
       '';
       default = defaultUser;
     };
     group = mkOption {
-      type = types.str;
+      type = str;
       description = ''
         Group under which to run the infinity service.
       '';
       default = defaultUser;
     };
+    dataDir = mkOption {
+      type = path;
+      default = "/var/lib/infinity";
+      description = ''the data directory for infinity'';
+    };
   };
 
   config = mkIf cfg.enable {
-    assertions = [{
-      assertion = cfg.models != [ ];
-      message = ''no models specified!'';
-    }];
-    system.activationScripts = {
-      launchd = mkIf cfg.enable {
-        text = lib.mkBefore ''
-          # shellcheck disable=SC2174
-          ${pkgs.coreutils}/bin/mkdir -p -m 0750 ${homeDir}
-          ${pkgs.coreutils}/bin/chown ${cfg.user}:${cfg.group} ${homeDir}
-        '';
-      };
+    users.users.${cfg.user} = {
+      inherit (cfg) group;
+      home = cfg.dataDir;
+      createHome = true;
+      isSystemUser = true;
     };
-    launchd.daemons.infinity =
+    users.groups.${cfg.group} = { };
+
+    systemd.services.infinity =
       let
         models = lib.concatStringsSep " " (
           map (model: "--model-id '${lib.replaceStrings ["'"] [""] model}'") cfg.models
@@ -83,33 +89,22 @@ in
         '';
       in
       {
-        command = serve;
+        after = [ "network.target" ];
+        wantedBy = [ "multi-user.target" ];
+
+        environment = {
+          HOME = cfg.dataDir;
+          USER = cfg.user;
+        };
+
         serviceConfig = {
-          GroupName = cfg.group;
-          Label = "dev.cobi.infinity";
-          RunAtLoad = true;
-          StandardOutPath = "${homeDir}/log/out.log";
-          StandardErrorPath = "${homeDir}/log/err.log";
-          UserName = cfg.user;
-          WorkingDirectory = homeDir;
+          ${if cfg.secretFile != null then "EnvironmentFile" else null} = cfg.secretFile;
+          ExecStart = serve;
+          Restart = "on-failure";
+          StateDirectory = "infinity";
+          User = cfg.user;
+          WorkingDirectory = cfg.dataDir;
         };
       };
-
-    users = mkIf (cfg.user == defaultUser) {
-      users."${cfg.user}" = {
-        inherit (config.users.groups."${cfg.user}") gid;
-        createHome = false;
-        description = "infinity service user";
-        home = homeDir;
-        shell = "/bin/bash";
-        uid = lib.mkDefault 799;
-      };
-      knownUsers = [ "${cfg.user}" ];
-      groups."${cfg.user}" = {
-        gid = lib.mkDefault 799;
-        description = "infinity service user group";
-      };
-      knownGroups = [ "${cfg.user}" ];
-    };
   };
 }

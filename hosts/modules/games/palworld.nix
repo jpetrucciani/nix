@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption mkOption;
-  inherit (lib.types) path port str number;
+  inherit (lib.types) nullOr path port str number;
   cfg = config.services.palworld;
   join = builtins.concatStringsSep " ";
 in
@@ -36,7 +36,7 @@ in
       description = "the amount of players to support";
     };
     secretFile = mkOption {
-      type = path;
+      type = nullOr path;
       default = "/etc/default/palworld";
       description = "";
     };
@@ -391,7 +391,7 @@ in
         {
           wantedBy = [ "multi-user.target" ];
           serviceConfig = {
-            EnvironmentFile = cfg.secretFile;
+            ${if cfg.secretFile != null then "EnvironmentFile" else null} = cfg.secretFile;
             ExecStartPre = "${pkgs.bash}/bin/bash -c '${pre_command}'";
             ExecStart = join [
               "${pkgs.steam-run}/bin/steam-run ${dir}/Pal/Binaries/Linux/${cfg.serverBinary} Pal"
