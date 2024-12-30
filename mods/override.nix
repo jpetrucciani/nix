@@ -60,4 +60,11 @@ in
         hash = "sha256-S3EHJ8s+bYWBmOfKP5ErNSa+UIalIK82MgKhWvPnwFo=";
       };
     });
+
+  git-trim =
+    if isDarwin then
+      prev.git-trim.overrideAttrs
+        (old: {
+          buildInputs = old.buildInputs ++ [ prev.zlib ];
+        }) else prev.git-trim;
 }
