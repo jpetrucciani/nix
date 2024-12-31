@@ -41,6 +41,7 @@ in
   fileSystems."/opt/box" = {
     device = "zroot/box";
     fsType = "zfs";
+    options = [ "legacy" ];
   };
 
   environment = {
