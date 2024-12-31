@@ -33,16 +33,11 @@ in
     kernel.sysctl = { } // common.sysctl_opts;
     tmp.useTmpfs = true;
     zfs = {
+      extraPools = [ "zroot/box" ];
       forceImportRoot = false;
       forceImportAll = false;
     };
   };
-
-  # fileSystems."/opt/box" = {
-  #   device = "zroot/box";
-  #   fsType = "zfs";
-  #   options = [ "legacy" ];
-  # };
 
   environment = {
     variables = {
