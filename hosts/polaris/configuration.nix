@@ -34,6 +34,11 @@ in
     tmp.useTmpfs = true;
   };
 
+  fileSystems."/opt/box" = {
+    device = "zroot/box";
+    fsType = "zfs";
+  };
+
   environment = {
     variables = {
       NIX_HOST = hostname;
