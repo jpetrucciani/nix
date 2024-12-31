@@ -71,11 +71,9 @@ in
   genpass = darwin_zlib prev.genpass;
   git-trim = darwin_zlib prev.git-trim;
 
-  libossp_uuid =
-    if isDarwin then
-      prev.libossp_uuid.overrideAttrs
-        (old: {
-          configureFlags = [ "ac_cv_va_copy=C99" ]
-            ++ (if prev.stdenv.hostPlatform.isFreeBSD then [ "--with-pic" ] else [ ]);
-        }) else prev.libossp-uuid;
+  libossp_uuid = prev.libossp_uuid.overrideAttrs
+    (old: {
+      configureFlags = [ "ac_cv_va_copy=C99" ]
+        ++ (if prev.stdenv.hostPlatform.isFreeBSD then [ "--with-pic" ] else [ ]);
+    });
 }
