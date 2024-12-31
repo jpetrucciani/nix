@@ -13,3 +13,7 @@
 (?i)openai
 (?i)starcoder
 (?i)tenere
+(?i)rtx
+(?i)deepseek
+(?i)qwen
+(?i)qwq
