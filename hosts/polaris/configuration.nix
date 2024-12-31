@@ -32,6 +32,11 @@ in
     };
     kernel.sysctl = { } // common.sysctl_opts;
     tmp.useTmpfs = true;
+    zfs = {
+      enabled = true;
+      forceImportRoot = false;
+      forceImportAll = false;
+    };
   };
 
   fileSystems."/opt/box" = {
