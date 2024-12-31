@@ -64,6 +64,7 @@
           "milkyway"
           "neptune"
           "phobos"
+          "polaris"
           "proteus"
           "terra"
           "titan"

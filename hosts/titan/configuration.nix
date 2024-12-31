@@ -50,10 +50,6 @@ in
     ];
   };
 
-  # fonts.packages = with pkgs; [
-  #   nerdfonts
-  # ];
-
   time.timeZone = common.timeZone;
 
   networking = {

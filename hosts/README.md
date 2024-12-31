@@ -50,6 +50,10 @@ This is an experimental nixos install inside a VM.
 
 This is my personal M2 Max Macbook, running MacOS and using nix-darwin and home-manager to manage things.
 
+### [polaris/](./polaris)
+
+This is a _large_ bare-metal nixos server with dual rtx a6000s!
+
 ### [styx/](./styx)
 
 This is a M2 Ultra Mac Studio server
