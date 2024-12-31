@@ -33,7 +33,7 @@ in
     kernel.sysctl = { } // common.sysctl_opts;
     tmp.useTmpfs = true;
     zfs = {
-      extraPools = [ "zroot/box" ];
+      extraPools = [ "zroot" ];
       forceImportRoot = false;
       forceImportAll = false;
     };
