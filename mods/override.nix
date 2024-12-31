@@ -75,8 +75,8 @@ in
     if isDarwin then
       prev.libossp_uuid.overrideAttrs
         (old: {
-          postPatch = ''
-            sed -E -i 's/__VA_COPY_USE/__builtin_va_copy/g' config.h
-          '';
+          configureFlags =
+            (if prev.stdenv.buildPlatform != prev.stdenv.hostPlatform then [ "ac_cv_va_copy=C99" ] else [ ])
+            ++ (if prev.stdenv.hostPlatform.isFreeBSD then [ "--with-pic" ] else [ ]);
         }) else prev.libossp-uuid;
 }
