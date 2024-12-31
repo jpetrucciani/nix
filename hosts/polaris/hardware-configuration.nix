@@ -6,10 +6,16 @@
       (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "nvme" "usbhid" "usb_storage" "sd_mod" "sr_mod" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ ];
-  boot.extraModulePackages = [ ];
+  boot = {
+    initrd = {
+      availableKernelModules = [ "ahci" "xhci_pci" "nvme" "usbhid" "usb_storage" "sd_mod" "sr_mod" ];
+      supportedFilesystems = [ "nfs" ];
+      kernelModules = [ "nfs" ];
+    };
+    kernelModules = [ ];
+    extraModulePackages = [ ];
+    supportedFilesystems = [ "nfs" "zfs" ];
+  };
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/628eb25a-ec4f-4f73-84a7-8a96c335d47a";
