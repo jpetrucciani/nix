@@ -18,7 +18,6 @@ sudo zpool create -o ashift=12 -o autotrim=on zroot /dev/nvme1n1
 sudo zfs create zroot/box
 sudo zfs set compression=lz4 zroot/box
 sudo zfs set atime=off zroot/box
-sudo zfs set xattr=sa zroot/box
 sudo zfs set recordsize=128k zroot/box
 sudo zfs set mountpoint=/opt/box zroot/box
 
