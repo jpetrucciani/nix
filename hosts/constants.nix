@@ -173,6 +173,8 @@ in
         styx = "100.102.221.30";
         phobos = "100.116.153.116";
         mercury = "100.92.180.69";
+        polaris = "100.65.145.59";
+        titan = "100.66.137.28";
       in
       ''
         ${terra} api.cobi.dev
@@ -201,6 +203,8 @@ in
         ${styx} styx
         ${mercury} mercury
         ${phobos} phobos
+        ${polaris} polaris
+        ${titan} titan
       '';
   };
 
