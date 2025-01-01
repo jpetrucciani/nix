@@ -68,7 +68,8 @@ in
     };
     valheim = {
       enable = true;
-      worldName = "trello_gold";
+      # worldName = "trello_gold";
+      worldName = "RPGWorld";
     };
     palworld.enable = false;
     promtail = common.templates.promtail { inherit hostname; };
