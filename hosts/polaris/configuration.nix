@@ -81,7 +81,7 @@ in
     k3s = {
       enable = true;
       role = "server";
-      extraFlags = "--disable traefik";
+      extraFlags = "--disable traefik --tls-san='100.65.145.59'";
     };
     infinity.enable = true;
   } // common.services;
