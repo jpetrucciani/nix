@@ -78,6 +78,12 @@ in
 
   services = {
     xserver.videoDrivers = [ "nvidia" ];
+    k3s = {
+      enable = true;
+      role = "server";
+      extraFlags = "--disable traefik";
+    };
+    infinity.enable = true;
   } // common.services;
 
   system.stateVersion = "24.05";
