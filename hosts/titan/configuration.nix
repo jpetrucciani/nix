@@ -137,7 +137,7 @@ in
     postgresql = {
       enable = true;
       package = pkgs.postgresql_16;
-      extraPlugins = with pkgs.postgresql16Packages; [ pgvector ];
+      extensions = with pkgs.postgresql16Packages; [ pgvector ];
       enableTCPIP = true;
       authentication = pkgs.lib.mkOverride 10 ''
         local all all trust
@@ -146,6 +146,7 @@ in
         host all all 100.64.0.0/10 trust
       '';
     };
+    infinity.enable = true;
   } // common.services;
 
   system.stateVersion = "23.11";
