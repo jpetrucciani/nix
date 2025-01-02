@@ -103,7 +103,7 @@ in
           USER = cfg.user;
           INFINITY_HOST = cfg.address;
           INFINITY_PORT = toString cfg.port;
-          INFINITY_URL_PREFIX = cfg.urlPrefix;
+          # INFINITY_URL_PREFIX = cfg.urlPrefix;
         };
 
         serviceConfig = {
