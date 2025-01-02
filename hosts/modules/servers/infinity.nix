@@ -41,7 +41,7 @@ in
     };
     urlPrefix = mkOption {
       type = str;
-      default = "/v2";
+      default = "/v1";
       description = "a prefix for each endpoint to have";
     };
     extraFlags = mkOption {
