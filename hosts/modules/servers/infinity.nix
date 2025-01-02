@@ -30,6 +30,7 @@ in
       type = listOf str;
       default = [
         "nomic-ai/nomic-embed-text-v1.5"
+        "mixedbread-ai/mxbai-rerank-base-v1"
         # check out the MTEB leaderboard!
         ### https://huggingface.co/spaces/mteb/leaderboard
         # "jinaai/jina-embeddings-v3"

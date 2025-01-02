@@ -45,7 +45,7 @@ let
     oauth2client
     peewee
     psycopg2
-    pydrive2
+    # pydrive2
 
     # server
     fastapi
