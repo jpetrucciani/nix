@@ -1,6 +1,6 @@
 final: prev:
 let
-  inherit (final) buildPythonPackage fetchPypi;
+  inherit (final) buildPythonPackage;
   inherit (final.lib) licenses maintainers;
   inherit (final.pkgs) fetchFromGitHub;
 in
