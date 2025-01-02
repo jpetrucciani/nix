@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   inherit (lib) literalExpression mkEnableOption mkIf mkOption types;
+  inherit (lib.types) listOf package port str;
   cfg = config.services.infinity;
   defaultUser = "_infinity";
   homeDir = "/var/lib/infinity";
@@ -11,23 +12,23 @@ in
   options.services.infinity = {
     enable = mkEnableOption "infinity server launchd service";
     package = mkOption {
-      type = types.package;
+      type = package;
       default = pkgs.python312Packages.infinity-emb;
       defaultText = literalExpression "pkgs.python312Packages.infinity-emb";
       description = "The package to use for infinity";
     };
     address = mkOption {
-      type = types.str;
+      type = str;
       default = "0.0.0.0";
       description = ''the address to bind to'';
     };
     port = mkOption {
-      type = types.port;
+      type = port;
       default = 7997;
       description = ''the port to bind to'';
     };
     models = mkOption {
-      type = types.listOf types.str;
+      type = listOf str;
       default = [
         "nomic-ai/nomic-embed-text-v1.5"
         # check out the MTEB leaderboard!
@@ -39,19 +40,24 @@ in
       description = "the list of embeddings models to load";
     };
     extraFlags = mkOption {
-      type = types.str;
+      type = str;
       description = "any extra flags to pass to infinity";
       default = "";
     };
+    urlPrefix = mkOption {
+      type = str;
+      default = "/v1";
+      description = "a prefix for each endpoint to have";
+    };
     user = mkOption {
-      type = types.str;
+      type = str;
       description = ''
         User under which to run the infinity service.
       '';
       default = defaultUser;
     };
     group = mkOption {
-      type = types.str;
+      type = str;
       description = ''
         Group under which to run the infinity service.
       '';
@@ -79,12 +85,17 @@ in
           map (model: "--model-id '${lib.replaceStrings ["'"] [""] model}'") cfg.models
         );
         serve = pkgs.writers.writeBash "infinity-serve" ''
-          ${lib.getExe' cfg.package "infinity_emb"} v2 --host '${cfg.address}' --port '${toString cfg.port}' ${models} ${cfg.extraFlags}
+          ${lib.getExe' cfg.package "infinity_emb"} v2 ${models} ${cfg.extraFlags}
         '';
       in
       {
         command = serve;
         serviceConfig = {
+          EnvironmentVariables = {
+            INFINITY_HOST = cfg.address;
+            INFINITY_PORT = toString cfg.port;
+            INFINITY_URL_PREFIX = cfg.urlPrefix;
+          };
           GroupName = cfg.group;
           Label = "dev.cobi.infinity";
           RunAtLoad = true;
