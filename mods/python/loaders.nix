@@ -5,27 +5,6 @@ let
   inherit (final.pkgs) fetchFromGitHub;
 in
 {
-  docx2txt = buildPythonPackage
-    rec {
-      pname = "docx2txt";
-      version = "0.8";
-      format = "setuptools";
-
-      src = fetchPypi {
-        inherit pname version;
-        hash = "sha256-LAbZjXz+LTlH5XYKV9kk4/8HdFs3nIc3cjki5wCSNuU=";
-      };
-
-      pythonImportsCheck = [ "docx2txt" ];
-
-      meta = {
-        description = "A pure python-based utility to extract text and images from docx files";
-        homepage = "https://github.com/ankushshah89/python-docx2txt";
-        license = licenses.mit;
-        maintainers = with maintainers; [ jpetrucciani ];
-      };
-    };
-
   selectolax = buildPythonPackage rec {
     pname = "selectolax";
     version = "0.3.21";
