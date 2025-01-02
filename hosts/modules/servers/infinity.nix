@@ -39,6 +39,11 @@ in
       ];
       description = "the list of embeddings models to load";
     };
+    urlPrefix = mkOption {
+      type = str;
+      default = "/v2";
+      description = "a prefix for each endpoint to have";
+    };
     extraFlags = mkOption {
       type = str;
       description = "any extra flags to pass to infinity";
@@ -86,7 +91,7 @@ in
           map (model: "--model-id '${lib.replaceStrings ["'"] [""] model}'") cfg.models
         );
         serve = pkgs.writers.writeBash "infinity-serve" ''
-          ${lib.getExe' cfg.package "infinity_emb"} v2 --host '${cfg.address}' --port '${toString cfg.port}' ${models} ${cfg.extraFlags}
+          ${lib.getExe' cfg.package "infinity_emb"} v2 --url-prefix "${cfg.urlPrefix}" --host '${cfg.address}' --port '${toString cfg.port}' ${models} ${cfg.extraFlags}
         '';
       in
       {
