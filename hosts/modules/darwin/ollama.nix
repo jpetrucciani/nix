@@ -3,7 +3,7 @@ let
   inherit (lib) mkOption types mkIf;
   cfg = config.services.ollama;
   defaultUser = "_ollama";
-  homeDir = "/var/lib/ollama";
+  homeDir = "/private/var/lib/ollama";
 in
 {
   options = {

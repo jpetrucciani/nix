@@ -4,7 +4,7 @@ let
   inherit (lib) mapAttrs' nameValuePair optionalString;
   cfg = config.services.llama-server;
   defaultUser = "_llama";
-  homeDir = "/var/lib/llama";
+  homeDir = "/private/var/lib/llama";
   llamaName = name: "llama" + optionalString (name != "") ("-" + name);
   enabledServers = filterAttrs (name: conf: conf.enable) config.services.llama-server.servers;
 in
