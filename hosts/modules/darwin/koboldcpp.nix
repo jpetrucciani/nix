@@ -4,7 +4,7 @@ let
   inherit (lib) mapAttrs' nameValuePair optionalString;
   cfg = config.services.koboldcpp;
   defaultUser = "_koboldcpp";
-  homeDir = "/var/lib/koboldcpp";
+  homeDir = "/private/var/lib/koboldcpp";
   koboldName = name: "koboldcpp" + optionalString (name != "") ("-" + name);
   enabledServers = filterAttrs (name: conf: conf.enable) config.services.koboldcpp.servers;
 in

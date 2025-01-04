@@ -4,7 +4,7 @@ let
   inherit (lib.types) listOf package port str;
   cfg = config.services.infinity;
   defaultUser = "_infinity";
-  homeDir = "/var/lib/infinity";
+  homeDir = "/private/var/lib/infinity";
 in
 {
   imports = [ ];
