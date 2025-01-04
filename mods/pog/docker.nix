@@ -96,7 +96,7 @@ rec {
     ];
     script = ''
       debug "''${GREEN}running image '$image' docker!''${RESET}"
-      container_name="$(echo "''${USER:-user}-dshell-''$(${_.uuid} | ${_.head} -c 8)" | tr -cd '[:alnum:]-')"
+      container_name="$(echo "''${USER:-user}-dshell-''$(${final.util-linux}/bin/uuidgen | ${_.head} -c 8)" | tr -cd '[:alnum:]-')"
       # shellcheck disable=SC2086
       ${_.d} run \
         --interactive \

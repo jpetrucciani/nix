@@ -91,7 +91,7 @@ rec {
     ];
     script = ''
       debug "''${GREEN}running image '$image' on the '$namespace' namespace!''${RESET}"
-      pod_name="$(echo "''${USER:-user}-kshell-''$(${_.uuid} | ${_.head} -c 8)" | tr -cd '[:alnum:]-')"
+      pod_name="$(echo "''${USER:-user}-kshell-''$(${final.util-linux}/bin/uuidgen | ${_.head} -c 8)" | tr -cd '[:alnum:]-')"
       overrides="$(echo "json.spec.serviceAccount = \"$serviceaccount\";" | gron -u | tr -d '\n')"
       ${_.k} run \
         --stdin \

@@ -67,17 +67,4 @@ in
         hash = "sha256-S3EHJ8s+bYWBmOfKP5ErNSa+UIalIK82MgKhWvPnwFo=";
       };
     });
-
-  genpass = darwin_zlib prev.genpass;
-  git-trim = darwin_zlib prev.git-trim;
-
-  libossp_uuid =
-    let
-      inherit (prev) stdenv lib;
-    in
-    prev.libossp_uuid.overrideAttrs
-      (old: {
-        configureFlags = lib.optional (stdenv.buildPlatform != stdenv.hostPlatform) "ac_cv_va_copy=C99"
-          ++ lib.optional stdenv.hostPlatform.isFreeBSD "--with-pic";
-      });
 }
