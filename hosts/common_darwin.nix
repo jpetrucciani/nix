@@ -141,9 +141,9 @@ in
           upgrade = true;
         };
         casks = if work.enable then casks.all_work else casks.all_personal;
-        masApps = {
-          Wireguard = 1451685025;
-        };
+        # masApps = {
+        #   Wireguard = 1451685025;
+        # };
         extraConfig = "";
       };
   };
