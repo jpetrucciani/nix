@@ -179,6 +179,8 @@ in
       ''
         ${terra} api.cobi.dev
         ${terra} auth.cobi.dev
+        ${terra} search.cobi.dev
+        ${terra} searxng.cobi.dev
         ${terra} broadsword.tech
         ${terra} cobi.dev
         ${terra} hexa.dev
