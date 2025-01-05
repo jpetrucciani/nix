@@ -146,7 +146,6 @@ in
             }
           }
         '';
-        neptune_traefik = "neptune:8010";
         ip = {
           ba3 = "192.168.69.20";
           bedrock = "192.168.69.70";
