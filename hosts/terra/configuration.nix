@@ -229,7 +229,8 @@ in
           "chat.cobi.dev" = ts_reverse_proxy "localhost:8010";
           "lobe.cobi.dev" = ts_reverse_proxy "localhost:8010";
           "otf.cobi.dev" = reverse_proxy "localhost:8010";
-          "auth.cobi.dev" = reverse_proxy neptune_traefik;
+          "auth.cobi.dev" = reverse_proxy "localhost:8010";
+          # "auth.cobi.dev" = reverse_proxy neptune_traefik;
           "audiobook.cobi.dev" = reverse_proxy "localhost:9888";
           # "auth.cobi.dev" = reverse_proxy "localhost:9091";
           "search.cobi.dev" = reverse_proxy neptune_traefik;
