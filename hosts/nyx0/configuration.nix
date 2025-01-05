@@ -47,13 +47,7 @@ in
       modelPath = name: "/opt/box/models/${name}";
     in
     {
-      infinity = {
-        enable = true;
-        models = [
-          "jinaai/jina-embeddings-v3"
-          "nomic-ai/nomic-embed-text-v1.5"
-        ];
-      };
+      infinity.enable = true;
       llama-server.servers = {
         llama3 = {
           enable = true;

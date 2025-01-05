@@ -47,19 +47,7 @@ in
       modelPath = name: "/opt/box/models/${name}";
     in
     {
-      # ollama = {
-      #   enable = true;
-      #   address = "0.0.0.0";
-      # };
-      infinity = {
-        enable = true;
-        models = [
-          "jinaai/jina-embeddings-v3"
-          "nomic-ai/nomic-embed-text-v1.5"
-          # "BAAI/bge-small-en-v1.5"
-          # "dunzhang/stella_en_400M_v5" # requires xformers?
-        ];
-      };
+      infinity.enable = true;
       koboldcpp.servers = {
         minicpm = {
           enable = true;

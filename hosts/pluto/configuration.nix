@@ -54,13 +54,7 @@ in
       modelPath = name: "/opt/box/models/${name}";
     in
     {
-      infinity = {
-        enable = true;
-        models = [
-          "jinaai/jina-embeddings-v3"
-          "nomic-ai/nomic-embed-text-v1.5"
-        ];
-      };
+      infinity.enable = true;
       koboldcpp.servers = {
         minicpm = {
           enable = true;
@@ -75,13 +69,7 @@ in
           enable = true;
           port = 8012;
           model = modelPath "Llama-3.2-3B-Instruct-Q8_0.gguf";
-          # ngl = 41;
         };
-        # nuextract = {
-        #   enable = true;
-        #   port = 8013;
-        #   model = modelPath "NuExtract-v1.5-Q6_K_L.gguf";
-        # };
         qwen-25-coder-7b = {
           enable = true;
           port = 8014;

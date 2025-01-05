@@ -34,6 +34,8 @@ in
     ];
   };
 
+  services.infinity.enable = true;
+
   system.stateVersion = 4;
   nix = {
     extraOptions = ''
