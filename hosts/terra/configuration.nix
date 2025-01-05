@@ -233,7 +233,7 @@ in
           # "auth.cobi.dev" = reverse_proxy neptune_traefik;
           "audiobook.cobi.dev" = reverse_proxy "localhost:9888";
           # "auth.cobi.dev" = reverse_proxy "localhost:9091";
-          "search.cobi.dev" = reverse_proxy neptune_traefik;
+          "search.cobi.dev" = reverse_proxy "localhost:8010";
           "netdata.cobi.dev" = ts_reverse_proxy "localhost:${toString common.ports.netdata}";
           "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
           "n8n.cobi.dev" = reverse_proxy "luna:${toString common.ports.n8n}";
