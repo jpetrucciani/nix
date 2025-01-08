@@ -209,4 +209,25 @@ in
   jfmt = _treefmt;
 
   _nix = final.lix;
+
+  llama-cpp-latest =
+    let
+      # deepseek v3 support
+      version = "main-2025-01-04";
+      rev = "9394bbd484f802ce80d2858033583af3ef700d25";
+      hash = "sha256-bxT+FQvFRiYQ1PKZtVG2O8H8U/Hr6XNJwsvAagkC0aY=";
+    in
+    prev.llama-cpp.overrideAttrs (_: {
+      inherit version;
+      src = final.fetchFromGitHub {
+        inherit rev hash;
+        owner = "ggerganov";
+        repo = "llama.cpp";
+        leaveDotGit = true;
+        postFetch = ''
+          git -C "$out" rev-parse --short HEAD > $out/COMMIT
+          find "$out" -name .git -print0 | xargs -0 rm -rf
+        '';
+      };
+    });
 }
