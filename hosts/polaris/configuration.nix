@@ -105,4 +105,8 @@ in
       enable32Bit = true;
     };
   };
+  security.pam.loginLimits = [
+    { domain = "*"; item = "nofile"; type = "-"; value = "131072"; }
+    { domain = "*"; item = "memlock"; type = "hard"; value = "unlimited"; }
+  ];
 }
