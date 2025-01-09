@@ -231,7 +231,6 @@ in
       };
     });
 
-
   getpwuid_hack = final.stdenv.mkDerivation rec {
     name = "pwuid-override";
     version = "0.1.0";

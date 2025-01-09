@@ -10,6 +10,8 @@ let
       description = "port that redis lives on";
     };
   };
+  db_init_hack = ''LD_PRELOAD="${final.getpwuid_hack}/lib/libpwuid_override.so '';
+  LOCALE_ARCHIVE_2_27 = "${final.glibcLocales}/lib/locale/locale-archive";
 in
 rec {
   __pg_bootstrap =
@@ -18,6 +20,7 @@ rec {
     , password ? name
     , extensions ? [ "pgcrypto" "uuid-ossp" ]
     , postgres ? postgresql_16
+    , hackDbInit ? false
     , extra_bootstrap ? ""
     }: pog {
       name = "__pg_bootstrap";
@@ -40,8 +43,9 @@ rec {
           '';
         in
         ''
+          export LOCALE_ARCHIVE_2_27=${LOCALE_ARCHIVE_2_27}
           bootstrap() {
-            ${postgres}/bin/initdb -E UTF8 "$PGDATA"
+            ${if hackDbInit then db_init_hack else ""}${postgres}/bin/initdb -E UTF8 "$PGDATA"
             ${pg_ctl} start
             ${psql} "${create_db}"
             ${psql} "${create_ext}"
@@ -57,7 +61,10 @@ rec {
   __pg = { postgres ? postgresql_15, extra_flags ? "" }: pog {
     name = "__pg";
     description = "run your local postgres db from $PGDATA";
-    script = ''${postgres}/bin/postgres -k "$PGDATA" -D "$PGDATA" -p "$PGPORT" ${extra_flags}'';
+    script = ''
+      export LOCALE_ARCHIVE_2_27=${LOCALE_ARCHIVE_2_27}
+      ${postgres}/bin/postgres -k "$PGDATA" -D "$PGDATA" -p "$PGPORT" ${extra_flags}
+    '';
   };
   __pg_shell = { name ? "db", postgres ? postgresql_15, extra_flags ? "" }: pog {
     name = "__pg_shell";
