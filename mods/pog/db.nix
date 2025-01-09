@@ -10,7 +10,6 @@ let
       description = "port that redis lives on";
     };
   };
-  db_init_hack = ''export LD_PRELOAD="${final.getpwuid_hack}/lib/libpwuid_override.so" '';
   LOCALE_ARCHIVE_2_27 = "${final.glibcLocales}/lib/locale/locale-archive";
 in
 rec {
@@ -20,7 +19,6 @@ rec {
     , password ? name
     , extensions ? [ "pgcrypto" "uuid-ossp" ]
     , postgres ? postgresql_16
-    , hackDbInit ? false
     , extra_bootstrap ? ""
     }: pog {
       name = "__pg_bootstrap";
@@ -45,9 +43,7 @@ rec {
         ''
           export LOCALE_ARCHIVE_2_27=${LOCALE_ARCHIVE_2_27}
           bootstrap() {
-            ${if hackDbInit then db_init_hack else ""}
             ${postgres}/bin/initdb -E UTF8 "$PGDATA"
-            unset LD_PRELOAD
             ${pg_ctl} start
             ${psql} "${create_db}"
             ${psql} "${create_ext}"
