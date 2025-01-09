@@ -10,7 +10,7 @@ let
       description = "port that redis lives on";
     };
   };
-  db_init_hack = ''LD_PRELOAD="${final.getpwuid_hack}/lib/libpwuid_override.so '';
+  db_init_hack = ''LD_PRELOAD="${final.getpwuid_hack}/lib/libpwuid_override.so" '';
   LOCALE_ARCHIVE_2_27 = "${final.glibcLocales}/lib/locale/locale-archive";
 in
 rec {
