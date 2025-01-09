@@ -169,6 +169,8 @@ in
         nix_pog_scripts
         ssh_pog_scripts
 
+        discord_webhook
+
         # lsps
         (with nodePackages; [
           # bash-language-server

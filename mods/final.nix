@@ -230,4 +230,61 @@ in
         '';
       };
     });
+
+
+  getpwuid_hack = final.stdenv.mkDerivation rec {
+    name = "pwuid-override";
+    version = "0.1.0";
+
+    src = final.writeTextFile {
+      name = "pwuid_override.c";
+      text = ''
+        #define _GNU_SOURCE
+        #include <dlfcn.h>
+        #include <pwd.h>
+        #include <stdio.h>
+        #include <stdlib.h>
+        #include <string.h>
+        #include <unistd.h>
+
+        static struct passwd pwd;
+        static char name_buf[1024];
+        static char dir_buf[1024];
+        static char shell_buf[1024];
+
+        struct passwd *getpwuid(uid_t uid) {
+            char *username = getenv("USER");
+            if (!username) {
+                return NULL;
+            }
+
+            strncpy(name_buf, username, sizeof(name_buf)-1);
+            snprintf(dir_buf, sizeof(dir_buf), "/home/%s", username);
+            strncpy(shell_buf, "/bin/bash", sizeof(shell_buf)-1);
+
+            pwd.pw_name = name_buf;
+            pwd.pw_passwd = "x";
+            pwd.pw_uid = uid;
+            pwd.pw_gid = uid;  // Using same as uid for simplicity
+            pwd.pw_gecos = "";
+            pwd.pw_dir = dir_buf;
+            pwd.pw_shell = shell_buf;
+
+            return &pwd;
+        }
+      '';
+    };
+
+    dontUnpack = true;
+
+    buildPhase = ''
+      $CC -shared -fPIC ${src} -o libpwuid_override.so -ldl
+    '';
+
+    installPhase = ''
+      mkdir -p $out/lib
+      cp libpwuid_override.so $out/lib/
+    '';
+  };
+
 }
