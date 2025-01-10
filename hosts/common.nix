@@ -119,7 +119,7 @@ in
           mapping =
             let
               terra = "100.88.176.6";
-              terraEntries = pkgs.listToAttrs (map (x: { name = x; value = terra; }) [
+              terraEntries = pkgs.lib.listToAttrs (map (x: { name = x; value = terra; }) [
                 "api.cobi.dev"
                 "chat.cobi.dev"
                 "llm.cobi.dev"
