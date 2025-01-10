@@ -116,18 +116,30 @@ in
         customDNS = {
           customTTL = "1h";
           filterUnmappedTypes = true;
-          mapping = {
-            "cobi" = "192.168.1.44";
-            "milkyway.cobi" = "192.168.1.92";
-            "titan.cobi" = "192.168.1.40";
-            "luna.cobi" = "192.168.1.44";
-            "jupiter.cobi" = "192.168.1.69";
-            "charon.cobi" = "192.168.1.71";
-            "pluto.cobi" = "192.168.1.100";
-            "phobos.cobi" = "192.168.1.134";
-            "neptune.cobi" = "100.101.139.41";
-            "llm.cobi.dev" = "100.88.176.6";
-          };
+          mapping =
+            let
+              terra = "100.88.176.6";
+              terraEntries = pkgs.listToAttrs (map (x: { name = x; value = terra; }) [
+                "api.cobi.dev"
+                "chat.cobi.dev"
+                "llm.cobi.dev"
+                "lobe.cobi.dev"
+                "search.cobi.dev"
+                "vault.cobi.dev"
+              ]);
+            in
+            {
+              "cobi" = "192.168.1.44";
+              "milkyway.cobi" = "192.168.1.92";
+              "titan.cobi" = "192.168.1.40";
+              "luna.cobi" = "192.168.1.44";
+              "jupiter.cobi" = "192.168.1.69";
+              "charon.cobi" = "192.168.1.71";
+              "pluto.cobi" = "192.168.1.100";
+              "phobos.cobi" = "192.168.1.134";
+              "neptune.cobi" = "100.101.139.41";
+              "polaris.cobi" = "100.65.145.59";
+            } // terraEntries;
           rewrite = { };
         };
         ede = {
