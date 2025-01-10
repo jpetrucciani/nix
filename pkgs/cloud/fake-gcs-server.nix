@@ -6,13 +6,13 @@
 
 buildGoModule rec {
   pname = "fake-gcs-server";
-  version = "1.52.0";
+  version = "1.52.1";
 
   src = fetchFromGitHub {
     owner = "fsouza";
     repo = "fake-gcs-server";
     rev = "v${version}";
-    hash = "sha256-sex0t3qVIc838hwJfee/1RE8bsQvgOjPJS9LFigTlZk=";
+    hash = "sha256-GFn729LbQlhhvMy9jbF7r6t/lVCk3BoCRx3cJ5ud2u0=";
   };
 
   doCheck = false;
@@ -24,7 +24,7 @@ buildGoModule rec {
       internal/backend/backend_test.go
   '';
 
-  vendorHash = "sha256-6aVwqwdyOu9lCHKW/ep3/gkBQu8tpPM0Su5AihShRxc=";
+  vendorHash = "sha256-7lA8tymvmnmemudPktADpgZ3p8qyCVc9KIaEP2baccE=";
 
   ldflags = [
     "-s"
