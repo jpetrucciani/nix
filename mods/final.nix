@@ -286,4 +286,5 @@ in
     '';
   };
 
+  openai-whisper-cpp-cuda = prev.openai-whisper-cpp.override { cudaSupport = true; };
 }
