@@ -3,14 +3,12 @@ let
   hostname = "milkyway";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
   cuda = pkgs.cudaPackages.cudatoolkit;
-  cudaTarget = "cuda114";
-  WSL_MAGIC = "/usr/lib/wsl/lib";
   CUDA_PATH = cuda.outPath;
   CUDA_LDPATH = "${
       lib.concatStringsSep ":" [
-        WSL_MAGIC
+        pkgs.hax.nvidiaLdPath
         "/run/opengl-drivers/lib"
-        "/run/opengl-drivers-32/lib"
+        # "/run/opengl-drivers-32/lib"
         "${cuda}/lib"
         "${pkgs.cudaPackages.cudnn}/lib"
       ]
@@ -26,6 +24,7 @@ in
   ];
 
   boot.tmp.useTmpfs = true;
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
   environment = {
     etc."nixpkgs-path".source = common.pkgs.path;
@@ -41,8 +40,6 @@ in
       _CUDA_PATH = CUDA_PATH;
       _CUDA_LDPATH = CUDA_LDPATH;
       XLA_FLAGS = "--xla_gpu_cuda_data_dir=${CUDA_PATH}";
-      XLA_TARGET = cudaTarget;
-      EXLA_TARGET = cudaTarget;
     };
   };
   # fonts.packages = with pkgs; [

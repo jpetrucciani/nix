@@ -116,11 +116,11 @@ rec {
     chart_url = "https://github.com/goauthentik/helm/releases/download/authentik-{1}/authentik-{1}.tgz";
   };
 
-  chart_scan_datadog = _chart_scan {
-    name = "datadog";
-    base_url = "https://helm.datadoghq.com";
-    chart_url = "https://github.com/DataDog/helm-charts/releases/download/datadog-{1}/datadog-{1}.tgz";
-  };
+  # chart_scan_datadog = _chart_scan {
+  #   name = "datadog";
+  #   base_url = "https://helm.datadoghq.com";
+  #   chart_url = "https://github.com/DataDog/helm-charts/releases/download/datadog-{1}/datadog-{1}.tgz";
+  # };
 
   chart_scan_fleet = _chart_scan {
     name = "fleet";
@@ -300,11 +300,11 @@ rec {
     chart_url = "https://github.com/makeplane/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
   };
 
-  chart_scan_quickwit = _chart_scan rec {
-    name = "quickwit";
-    base_url = "https://helm.quickwit.io";
-    chart_url = "https://github.com/quickwit-oss/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
-  };
+  # chart_scan_quickwit = _chart_scan rec {
+  #   name = "quickwit";
+  #   base_url = "https://helm.quickwit.io";
+  #   chart_url = "https://github.com/quickwit-oss/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
+  # };
 
   chart_scan_dask-kubernetes-operator = _chart_scan rec {
     name = "dask-kubernetes-operator";
@@ -338,12 +338,17 @@ rec {
     chart_url = "https://github.com/awslabs/mountpoint-s3-csi-driver/releases/download/helm-chart-aws-mountpoint-s3-csi-driver-{1}/aws-mountpoint-s3-csi-driver-{1}.tgz";
   };
 
+  chart_scan_odoo = _chart_scan {
+    name = "odoo";
+    base_url = "https://imio.github.io/helm-charts";
+    chart_url = "https://imio.github.io/helm-charts/odoo/odoo-{1}.tgz";
+  };
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
     chart_scan_aws_mountpoint-s3-csi-driver
     chart_scan_dask-kubernetes-operator
-    chart_scan_datadog
     chart_scan_external-secrets
     chart_scan_fission
     chart_scan_fleet
@@ -360,6 +365,7 @@ rec {
     chart_scan_mimir
     chart_scan_mongo-operator
     chart_scan_nfs
+    chart_scan_odoo
     chart_scan_oncall
     chart_scan_oneuptime
     chart_scan_open-webui
@@ -375,7 +381,6 @@ rec {
     chart_scan_prometheus-postgres-exporter
     chart_scan_prometheus-pushgateway
     chart_scan_prometheus-redis-exporter
-    chart_scan_quickwit
     chart_scan_redis-operator
     chart_scan_robusta
     chart_scan_searxng
