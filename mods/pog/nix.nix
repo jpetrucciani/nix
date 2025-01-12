@@ -124,7 +124,7 @@ rec {
             java="java = [gradle${"\n"}zulu];"
           fi
           if [ "$with_nvidia" = "1" ]; then
-            toplevel="deps = with pkgs; [${"\n"}cudaPackages.cudatoolkit stdenv.cc.cc.lib ];${"\n"}$toplevel"
+            toplevel="deps = with pkgs; [${"\n"}stdenv.cc.cc.lib ] ++ (with cudaPackages; [${"\n"}cudatoolkit]);${"\n"}$toplevel"
             extra_env="$extra_env LD_LIBRARY_PATH = \"\''${pkgs.hax.nvidiaLdPath}:\''${pkgs.lib.makeLibraryPath deps}\";${"\n"}CUDA_PATH = pkgs.cudatoolkit;"
           fi
           ftb="fetchTarball { name = \"jpetrucciani-$(date '+%F')\"; url = \"https://github.com/jpetrucciani/nix/archive/$rev.tar.gz\"; sha256 = \"$sha\";}"
