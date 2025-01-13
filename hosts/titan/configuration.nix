@@ -158,6 +158,9 @@ in
 
   # nvidia setup?
   virtualisation.docker.enable = true;
+  virtualisation.podman = {
+    enableNvidia = true;
+  };
   hardware = {
     nvidia = {
       open = false;
