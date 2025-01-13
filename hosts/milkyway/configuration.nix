@@ -96,12 +96,21 @@ in
 
   virtualisation.docker = {
     enable = true;
+    daemon.settings.features.cdi = true;
+    daemon.settings.cdi-spec-dirs = [ "/etc/cdi" ];
+    # https://github.com/nix-community/NixOS-WSL/issues/578
+    ### sudo mkdir -p /etc/cdi
+    ### LD_LIBRARY_PATH=/usr/lib/wsl/lib nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml
   };
 
   hardware = {
     graphics = {
       enable = true;
       enable32Bit = true;
+    };
+    nvidia-container-toolkit = {
+      enable = true;
+      mount-nvidia-executables = false;
     };
     nvidia = {
       open = false;

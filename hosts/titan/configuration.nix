@@ -157,9 +157,9 @@ in
   };
 
   # nvidia setup?
-  virtualisation.docker.enable = true;
-  virtualisation.podman = {
-    enableNvidia = true;
+  virtualisation = {
+    docker.enable = true;
+    podman.enable = true;
   };
   hardware = {
     nvidia = {
