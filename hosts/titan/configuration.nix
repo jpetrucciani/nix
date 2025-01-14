@@ -156,10 +156,20 @@ in
     nix-ld.enable = true;
   };
 
-  # nvidia setup?
   virtualisation = {
     docker.enable = true;
     podman.enable = true;
+    oci-containers.containers = {
+      kokoro = {
+        image = "ghcr.io/remsky/kokoro-fastapi-gpu:v0.1.0";
+        ports = [ "8880:8880" ];
+        volumes = [ "/var/lib/kokoro/voices:/app/api/src/voices" ];
+        devices = [ "nvidia.com/gpu=0" ];
+        environment = {
+          PYTHONPATH = "/app:/app/models";
+        };
+      };
+    };
   };
   hardware = {
     nvidia = {
