@@ -182,6 +182,7 @@ in
             PYTHONUNBUFFERED = "1";
             DISABLE_LOCAL_SAVING = "false";
           };
+          extraOptions = [ "--add-host=kokoro-tts:10.88.0.1" ];
         };
       };
   };
