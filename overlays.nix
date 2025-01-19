@@ -11,6 +11,9 @@
   # python sub-overlays
   (import ./mods/python/default.nix)
 
+  # ocaml sub-overlays
+  (import ./mods/ocaml/default.nix)
+
   # sub-overlays
   (import ./mods/pkgs/ai.nix)
   (import ./mods/pkgs/cli.nix)
