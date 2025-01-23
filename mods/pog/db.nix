@@ -61,7 +61,7 @@ rec {
     name = "__pg";
     description = "run your local postgres db from $PGDATA";
     script = ''
-      export LOCALE_ARCHIVE_2_27=${LOCALE_ARCHIVE_2_27}
+      ${locale_override}
       ${postgres}/bin/postgres -k "$PGDATA" -D "$PGDATA" -p "$PGPORT" ${extra_flags}
     '';
   };
