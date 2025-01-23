@@ -11,6 +11,7 @@ let
     };
   };
   LOCALE_ARCHIVE_2_27 = "${final.glibcLocales}/lib/locale/locale-archive";
+  locale_override = lib.optionalString (!stdenv.isDarwin) "export LOCALE_ARCHIVE_2_27=${LOCALE_ARCHIVE_2_27}";
 in
 rec {
   __pg_bootstrap =
@@ -41,7 +42,7 @@ rec {
           '';
         in
         ''
-          export LOCALE_ARCHIVE_2_27=${LOCALE_ARCHIVE_2_27}
+          ${local_override}
           bootstrap() {
             ${postgres}/bin/initdb -E UTF8 "$PGDATA"
             ${pg_ctl} start

@@ -181,7 +181,7 @@ in
 
             # requires setuptools
             py-lets-be-rational = add_setuptools prev.py-lets-be-rational;
-            pypika = add_setuptools prev.pypika.overridePythonAttrs;
+            pypika = add_setuptools prev.pypika;
             swifter = add_setuptools prev.swifter;
             wikipedia = add_setuptools prev.wikipedia;
             xalglib = add_setuptools prev.xalglib;
