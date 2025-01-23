@@ -17,21 +17,25 @@ in
         };
         propagatedBuildInputs = [
           camlp-streams
-          yojson
-          ssl
-          magic-mime
-          mirage-crypto-rng-lwt
-          graphql-lwt
-          lwt_ssl
           caqti-lwt
-          httpun-ws
-          httpun-lwt-unix
-          h2-lwt-unix
           dream-httpaf
-          multipart_form-lwt
-          mirage-clock
-          markup
+          graphql-lwt
+          h2-lwt-unix
+          httpun-lwt-unix
+          httpun-ws
           lambdasoup
+          logs
+          lwt
+          lwt_ppx
+          lwt_ssl
+          magic-mime
+          markup
+          mirage-clock
+          mirage-crypto-rng-lwt
+          multipart_form-lwt
+          ptime
+          ssl
+          yojson
         ];
       };
       dream-pure = buildDunePackage {
