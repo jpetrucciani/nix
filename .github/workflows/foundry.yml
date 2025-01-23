@@ -12,7 +12,7 @@ jobs:
           - argohex
           - hex
           - k8s_aws
-          - k8s_gcp
+          # - k8s_gcp  # disabled for now?
           - nix
           # - pypi
           - python311
