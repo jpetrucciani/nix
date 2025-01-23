@@ -17,6 +17,7 @@ rec {
         with_java = "include a jvm and some basics";
         with_nim = "include a nim with dependencies";
         with_node = "include node";
+        with_ocaml = "include an ocaml environment";
         with_php = "include a php with packages";
         with_poetry = "include python using poetry2nix";
         with_pulumi = "include pulumi";
@@ -88,6 +89,10 @@ rec {
             dotnet="dotnet = [clang${"\n"}dotnet-sdk_8 dotnetPackages.Nuget netcoredbg zlib];"
             extra_env="$extra_env DOTNET_CLI_TELEMETRY_OPTOUT = 1; DOTNET_ROOT = \"\''${pkgs.dotnet-sdk_8}\";"
           fi
+          ocaml=""
+          if [ "$with_ocaml" = "1" ]; then
+            ocaml="ocaml = [bintools${"\n"}clang] ++ (with ocamlPackages; [dream${"\n"}dune_3 findlib ocaml ocaml-lsp ocamlformat]);"
+          fi
           pulumi=""
           if [ "$with_pulumi" = "1" ]; then
             py="python = [(python312.withPackages ( p: with p; [${"\n"}pulumi]))];"
@@ -152,7 +157,7 @@ rec {
                 cli = [
                   jfmt
                   nixup
-                ]; ''${crystal} ''${elixir} ''${golang} ''${nim} ''${node} ''${php} ''${dotnet} ''${java} ''${pulumi} ''${py} ''${ruby} ''${rust} ''${terraform} ''${vlang}
+                ]; ''${crystal} ''${elixir} ''${golang} ''${nim} ''${node} ''${ocaml} ''${php} ''${dotnet} ''${java} ''${pulumi} ''${py} ''${ruby} ''${rust} ''${terraform} ''${vlang}
                 scripts = pkgs.lib.attrsets.attrValues scripts;
               };
 
