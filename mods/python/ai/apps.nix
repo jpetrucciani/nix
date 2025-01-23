@@ -446,13 +446,13 @@ in
 
   infinity-emb = buildPythonPackage rec {
     pname = "infinity-emb";
-    version = "0.0.74";
+    version = "0.0.75";
     pyproject = true;
 
     src = fetchPypi {
       pname = "infinity_emb";
       inherit version;
-      hash = "sha256-eWIg99IDnNonOGYe20YMJc+lXReqA4iBhXlOxC1Z3eM=";
+      hash = "sha256-zYpqoXtXZyukilaZz2XIrVYfZfJI44r9OD3DX4z0cN4=";
     };
 
     build-system = with final; [
