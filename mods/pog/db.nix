@@ -42,7 +42,7 @@ rec {
           '';
         in
         ''
-          ${local_override}
+          ${locale_override}
           bootstrap() {
             ${postgres}/bin/initdb -E UTF8 "$PGDATA"
             ${pg_ctl} start
