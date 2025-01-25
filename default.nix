@@ -24,13 +24,14 @@ import nixpkgs {
           "milkyway"
           "neptune"
           "phobos"
-          "proteus"
+          "polaris"
           "terra"
           "titan"
         ];
         darwin = [
           "charon"
           "m1max"
+          "nyx0"
           "pluto"
           "styx"
         ];
