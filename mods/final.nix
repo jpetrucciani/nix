@@ -120,8 +120,29 @@ let
     treefmt // {
       __functor = _: treefmt.override;
     };
+
+  llama-cpp-latest =
+    let
+      version = "main-2025-01-28";
+      rev = "cae9fb4361138b937464524eed907328731b81f6";
+      hash = "sha256-XPQSYk9zTkgX49IwhK+16Kx8TINDh3h5r+1nqpNgaOs=";
+    in
+    prev.llama-cpp.overrideAttrs (_: {
+      inherit version;
+      src = final.fetchFromGitHub {
+        inherit rev hash;
+        owner = "ggerganov";
+        repo = "llama.cpp";
+        leaveDotGit = true;
+        postFetch = ''
+          git -C "$out" rev-parse --short HEAD > $out/COMMIT
+          find "$out" -name .git -print0 | xargs -0 rm -rf
+        '';
+      };
+    });
 in
 {
+  inherit llama-cpp-latest;
   foundry = import ./foundry.nix { pkgs = prev; };
   __j_custom = prev.buildEnv {
     name = "__j_custom";
@@ -210,31 +231,12 @@ in
 
   _nix = final.lix;
 
-  llama-cpp-latest =
-    let
-      # deepseek v3 support
-      version = "main-2025-01-04";
-      rev = "9394bbd484f802ce80d2858033583af3ef700d25";
-      hash = "sha256-bxT+FQvFRiYQ1PKZtVG2O8H8U/Hr6XNJwsvAagkC0aY=";
-    in
-    prev.llama-cpp.overrideAttrs (_: {
-      inherit version;
-      src = final.fetchFromGitHub {
-        inherit rev hash;
-        owner = "ggerganov";
-        repo = "llama.cpp";
-        leaveDotGit = true;
-        postFetch = ''
-          git -C "$out" rev-parse --short HEAD > $out/COMMIT
-          find "$out" -name .git -print0 | xargs -0 rm -rf
-        '';
-      };
-    });
+  llama-cpp-cuda = prev.llama-cpp.override { cudaSupport = true; };
+  llama-cpp-cuda-latest = llama-cpp-latest.override { cudaSupport = true; };
 
   getpwuid_hack = final.stdenv.mkDerivation rec {
     name = "pwuid-override";
     version = "0.1.0";
-
     src = final.writeTextFile {
       name = "pwuid_override.c";
       text = ''
