@@ -107,6 +107,6 @@ in
   };
   security.pam.loginLimits = [
     { domain = "*"; item = "nofile"; type = "-"; value = "131072"; }
-    { domain = "*"; item = "memlock"; type = "hard"; value = "unlimited"; }
+    { domain = "*"; item = "memlock"; type = "-"; value = "419430400"; }
   ];
 }
