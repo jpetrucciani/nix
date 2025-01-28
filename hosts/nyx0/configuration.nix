@@ -48,17 +48,20 @@ in
     in
     {
       infinity.enable = true;
-      llama-server.servers = {
-        llama3 = {
+      koboldcpp.servers = {
+        minicpm = {
           enable = true;
-          port = 8012;
-          model = modelPath "Llama-3.2-3B-Instruct-Q8_0.gguf";
-          ngl = 41;
+          port = 5001;
+          model = modelPath "MiniCPM-V-2_6-Q8_0.gguf";
+          mmproj = modelPath "mmproj-MiniCPM-V-2_6-f16.gguf";
+          gpulayers = -1;
         };
-        llama3-1b = {
+      };
+      llama-server.servers = {
+        r1-1-5b = {
           enable = true;
           port = 8013;
-          model = modelPath "Llama-3.2-1B-Instruct-Q8_0.gguf";
+          model = modelPath "DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf";
           ngl = 41;
         };
       };

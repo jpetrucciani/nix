@@ -58,22 +58,18 @@ in
         };
       };
       llama-server.servers = {
-        llama3 = {
+        r1-14b = {
           enable = true;
           port = 8012;
-          model = modelPath "Llama-3.2-3B-Instruct-Q8_0.gguf";
-          # ngl = 41;
+          model = modelPath "DeepSeek-R1-Distill-Qwen-145B-Q8_0.gguf";
+          extraFlags = ''-md DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf -ngld 99'';
+          ngl = 99;
         };
-        nuextract = {
+        r1-1-5b = {
           enable = true;
           port = 8013;
-          model = modelPath "NuExtract-v1.5-Q6_K_L.gguf";
-        };
-        qwen-25-7b = {
-          enable = true;
-          port = 8014;
-          model = modelPath "Qwen2.5-7B-Instruct-Q8_0.gguf";
-          ngl = 81;
+          model = modelPath "DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf";
+          ngl = 99;
         };
       };
     };
