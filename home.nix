@@ -93,7 +93,6 @@ in
         just
         libarchive
         libnotify
-        loop
         lsof
         manix
         mods
