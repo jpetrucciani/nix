@@ -7,19 +7,30 @@
 final: prev: {
   snowball =
     let
+      inherit (final.lib) filter fix hasAttr attrNames concatMapStringsSep;
       _snowball = { name, conf }:
         let
           defaults = { system.stateVersion = final.lib.mkDefault "25.05"; };
           empty = final.nixos defaults;
           os = final.nixos { imports = [ defaults conf ]; };
-          uniqueKeys = a: b: builtins.filter (k: !builtins.hasAttr k b) (builtins.attrNames a);
+          uniqueKeys = a: b: filter (k: !hasAttr k b) (attrNames a);
           systemd-units = uniqueKeys os.config.systemd.units empty.config.systemd.units;
         in
-        final.buildEnv {
+        fix (result: final.buildEnv {
           name = "snowball-${name}";
           extraPrefix = "/snowball";
           paths = map (unit: os.config.systemd.units.${unit}.unit) systemd-units;
-        };
+          passthru.install = final.writers.writeBashBin "install" ''
+            sudo -i nix-env -i ${result}
+            ${concatMapStringsSep "\n" (unit: ''
+            sudo ln -sf /nix/var/nix/profiles/default/snowball/${unit} /etc/systemd/system/${unit}
+            '') systemd-units}
+            sudo systemctl daemon-reload
+            ${concatMapStringsSep "\n" (unit: ''
+            sudo systemctl enable ${unit}
+            '') systemd-units}
+          '';
+        });
     in
     {
       pack = _snowball;
