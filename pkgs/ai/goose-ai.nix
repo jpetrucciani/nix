@@ -20,6 +20,25 @@ let
     url = "https://cobi.dev/static/cargolock/goose/${version}.lock";
     hash = "sha256-2XWClzjaBTw+MTKvU/NpXVyMaZEbjoIjSjCX+OAh7bE=";
   };
+  tokenizerSlug = str: builtins.replaceStrings [ "/" ] [ "--" ] str;
+  tokenizerData = {
+    "Xenova/gpt-4o".sha256 = "sha256-Q6OtRhimqTj4wmFBVOoQwxrVOmLVaDrgsOYTNXXO8H4=";
+    "Xenova/claude-tokenizer".sha256 = "sha256-wkFzffJLTn98mvT9zuKaDKkD3LKIqLdTvDRqMJKRF2c=";
+  };
+  tokenizerUrl = tokenizer: "https://huggingface.co/${tokenizer}/resolve/main/tokenizer.json";
+  fetchedTokenizers = lib.mapAttrs
+    (name: data:
+      fetchurl {
+        inherit (data) sha256;
+        url = tokenizerUrl name;
+        name = "${tokenizerSlug name}-tokenizer.json";
+      }
+    )
+    tokenizerData;
+  copyCommands = lib.concatStringsSep "\n" (map
+    (name: "cp ${fetchedTokenizers.${name}} ./${tokenizerSlug name}/tokenizer.json")
+    (builtins.attrNames tokenizerData)
+  );
 in
 rustPlatform.buildRustPackage {
   inherit version;
@@ -66,6 +85,14 @@ rustPlatform.buildRustPackage {
     RUSTONIG_SYSTEM_LIBONIG = true;
     ZSTD_SYS_USE_PKG_CONFIG = true;
   };
+
+  preBuild = ''
+    mkdir -p tokenizer_files
+    cd tokenizer_files
+    mkdir -p ${lib.concatStringsSep " " (map tokenizerSlug (builtins.attrNames tokenizerData))}
+    ${copyCommands}
+    cd ../
+  '';
 
   # Skip tests that require filesystem write access or keyring functionality
   # as these fail in the Nix build sandbox
