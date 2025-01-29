@@ -17,10 +17,10 @@ final: prev: {
           systemd-units = uniqueKeys os.config.systemd.units empty.config.systemd.units;
         in
         fix (result: final.buildEnv {
-          name = "snowball-${name}";
+          name = "snowball_${name}";
           extraPrefix = "/snowball";
           paths = map (unit: os.config.systemd.units.${unit}.unit) systemd-units;
-          passthru.install = final.writers.writeBashBin "snowball-${name}-install" ''
+          passthru.install = final.writers.writeBash "snowball_${name}_install" ''
             sudo -i nix-env -i ${result}
             ${concatMapStringsSep "\n" (unit: ''
             sudo ln -sf /nix/var/nix/profiles/default/snowball/${unit} /etc/systemd/system/${unit}
