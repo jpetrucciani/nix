@@ -14,6 +14,10 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 [`chatbot-ui`](https://github.com/mckaywrigley/chatbot-ui) is a popular frontend for OpenAI compliant APIs. It is designed to look similar to OpenAI's ChatGPT UI.
 
+### [goose-ai.nix](./goose-ai.nix)
+
+[`goose`](https://github.com/block/goose) is an open-source, extensible AI agent that goes beyond code suggestions.
+
 ### [llm.nix](./llm.nix)
 
 [`llm`](https://github.com/rustformers/llm) is a port of [`llama.cpp`](https://github.com/ggerganov/llama.cpp) in rust!

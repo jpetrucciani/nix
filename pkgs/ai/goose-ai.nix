@@ -1,0 +1,85 @@
+# [`goose`](https://github.com/block/goose) is an open-source, extensible AI agent that goes beyond code suggestions.
+{ lib
+, rustPlatform
+, fetchFromGitHub
+, pkg-config
+, dbus
+, libgit2
+, oniguruma
+, openssl
+, zlib
+, zstd
+, stdenv
+, darwin
+, xorg
+, fetchurl
+}:
+let
+  version = "1.0.1";
+  cargoLock = fetchurl {
+    url = "https://cobi.dev/static/cargolock/goose/${version}.lock";
+    hash = "sha256-2XWClzjaBTw+MTKvU/NpXVyMaZEbjoIjSjCX+OAh7bE=";
+  };
+in
+rustPlatform.buildRustPackage {
+  inherit version;
+  pname = "goose-ai";
+
+  src = fetchFromGitHub {
+    owner = "block";
+    repo = "goose";
+    rev = "v${version}";
+    hash = "sha256-4mjA+Wu+FitJu5XPWASizF4La5RvbGLPx6RHduelT7c=";
+  };
+
+  cargoLock = {
+    lockFile = cargoLock;
+  };
+
+  postPatch = ''
+    ln -s ${cargoLock} Cargo.lock
+  '';
+
+  nativeBuildInputs = [
+    pkg-config
+    rustPlatform.bindgenHook
+  ];
+
+  buildInputs = [
+    dbus
+    libgit2
+    oniguruma
+    openssl
+    zlib
+    zstd
+  ] ++ lib.optionals stdenv.isDarwin [
+    darwin.apple_sdk.frameworks.CoreGraphics
+    darwin.apple_sdk.frameworks.CoreServices
+    darwin.apple_sdk.frameworks.IOKit
+    darwin.apple_sdk.frameworks.Security
+    darwin.apple_sdk.frameworks.SystemConfiguration
+  ] ++ lib.optionals stdenv.isLinux [
+    xorg.libxcb
+  ];
+
+  env = {
+    RUSTONIG_SYSTEM_LIBONIG = true;
+    ZSTD_SYS_USE_PKG_CONFIG = true;
+  };
+
+  # Skip tests that require filesystem write access or keyring functionality
+  # as these fail in the Nix build sandbox
+  checkFlags = [
+    "--skip=providers::oauth::tests::test_token_cache"
+    "--skip=config::base::tests::test_multiple_secrets"
+    "--skip=config::base::tests::test_secret_management"
+  ];
+
+  meta = {
+    description = "An open-source, extensible AI agent that goes beyond code suggestions - install, execute, edit, and test with any LLM";
+    homepage = "https://github.com/block/goose";
+    license = lib.licenses.asl20;
+    maintainers = with lib.maintainers; [ jpetrucciani ];
+    mainProgram = "goose";
+  };
+}
