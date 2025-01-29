@@ -22,6 +22,10 @@ This directory contains overlays containing tools with my [`pog`](./pog.nix) mod
 
 This directory provides my python package overlays.
 
+### [\_pkgs.nix](./_pkgs.nix)
+
+This overlay allows me to load the custom packages I've built in my [pkgs/](../pkgs/) directory
+
 ### [bashbible.nix](./bashbible.nix)
 
 This overlay contains the bashbible implemented entirely in nix attr sets.
@@ -66,10 +70,6 @@ This overlay provides new helpers for programming languages (like [vlang](https:
 
 This overlay provides some overrides/fixes for various packages
 
-### [\_pkgs.nix](./_pkgs.nix)
+### [snowball.nix](./snowball.nix)
 
-This overlay allows me to load the custom packages I've built in my [pkgs/](../pkgs/) directory
-
-### [pog.nix](./pog.nix)
-
-This overlay provides the `pog` function, as well as a good amount of constants that make building tools easier.
+This overlay provides `snowball`, a fun way to package up some (snow)flakes and throw it at another operating system!

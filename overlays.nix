@@ -48,5 +48,6 @@
   # after all
   (import ./mods/containers.nix)
   (import ./mods/js.nix)
+  (import ./mods/snowball.nix)
   (import ./mods/final.nix)
 ]
