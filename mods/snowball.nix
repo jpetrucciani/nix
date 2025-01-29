@@ -1,4 +1,9 @@
 # This overlay provides `snowball`, a fun way to package up some (snow)flakes and throw it at another operating system!
+### example
+# sudo -i nix-env -f https://github.com/jpetrucciani/nix/archive/main.tar.gz -iA snowball.amazon-ssm-agent
+# sudo ln -s /nix/var/nix/profiles/default/snowball/amazon-ssm-agent.service /etc/systemd/system/amazon-ssm-agent.service
+# sudo systemctl daemon-reload
+# sudo systemctl enable amazon-ssm-agent
 final: prev: {
   snowball =
     let
