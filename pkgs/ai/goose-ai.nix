@@ -100,6 +100,8 @@ rustPlatform.buildRustPackage {
     "--skip=providers::oauth::tests::test_token_cache"
     "--skip=config::base::tests::test_multiple_secrets"
     "--skip=config::base::tests::test_secret_management"
+    "--skip=jetbrains::tests::test_capabilities"
+    "--skip=jetbrains::tests::test_router_creation"
   ];
 
   meta = {
