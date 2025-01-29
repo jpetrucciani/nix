@@ -20,7 +20,7 @@ final: prev: {
           name = "snowball_${name}";
           extraPrefix = "/snowball";
           paths = map (unit: os.config.systemd.units.${unit}.unit) systemd-units;
-          passthru.install = final.writers.writeBash "snowball_${name}_install" ''
+          passthru.install = (final.writers.writeBashBin "install" ''
             sudo -i nix-env -i ${result}
             ${concatMapStringsSep "\n" (unit: ''
             sudo ln -sf /nix/var/nix/profiles/default/snowball/${unit} /etc/systemd/system/${unit}
@@ -29,7 +29,7 @@ final: prev: {
             ${concatMapStringsSep "\n" (unit: ''
             sudo systemctl enable ${unit}
             '') systemd-units}
-          '';
+          '').overrideAttrs { name = "snowball_${name}_install"; };
         });
     in
     {
