@@ -17,7 +17,7 @@ final: prev: {
         };
     in
     {
-      __functor = _: _snowball;
+      pack = _snowball;
       amazon-ssm-agent = _snowball { name = "amazon-ssm-agent"; conf = { services.amazon-ssm-agent.enable = true; }; };
     };
 }
