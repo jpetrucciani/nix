@@ -15,10 +15,10 @@
 , fetchurl
 }:
 let
-  version = "1.0.1";
+  version = "1.0.2";
   cargoLock = fetchurl {
     url = "https://cobi.dev/static/cargolock/goose/${version}.lock";
-    hash = "sha256-2XWClzjaBTw+MTKvU/NpXVyMaZEbjoIjSjCX+OAh7bE=";
+    hash = "sha256-RyHs2pafBfbLDB+zDdaKVZhOpy/EefcTb6B+7pCnbng=";
   };
   tokenizerSlug = str: builtins.replaceStrings [ "/" ] [ "--" ] str;
   tokenizerData = {
@@ -48,7 +48,7 @@ rustPlatform.buildRustPackage {
     owner = "block";
     repo = "goose";
     rev = "v${version}";
-    hash = "sha256-4mjA+Wu+FitJu5XPWASizF4La5RvbGLPx6RHduelT7c=";
+    hash = "sha256-x4G+LE8M3JHNcWy9/4l5Xx+66ZtrKERDZM10K32ZMIE=";
   };
 
   cargoLock = {
