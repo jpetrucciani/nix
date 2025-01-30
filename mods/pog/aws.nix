@@ -194,6 +194,9 @@ rec {
       }
     ];
     script = ''
+      # due to https://github.com/aws/aws-cli/issues/9214
+      export AWS_REQUEST_CHECKSUM_CALCULATION=when_required
+      export AWS_RESPONSE_CHECKSUM_VALIDATION=when_required
       ${awscli2}/bin/aws --endpoint-url="https://$region" --profile "$profile" s3 "$@"
     '';
   };
