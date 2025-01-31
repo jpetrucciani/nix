@@ -1162,4 +1162,94 @@ rec {
       maintainers = with lib.maintainers; [ jpetrucciani ];
     };
   };
+
+  smolagents = buildPythonPackage rec {
+    pname = "smolagents";
+    version = "1.6.0";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-FcG0e66RyPYnfkU1+7wXNoR62XAlTa7Yw0O5iCxZx18=";
+    };
+
+    build-system = [
+      pythonRelaxDepsHook
+      setuptools
+    ];
+
+    pythonRelaxDeps = [ "duckduckgo-search" ];
+
+    dependencies = [
+      duckduckgo-search
+      huggingface-hub
+      jinja2
+      markdownify
+      pandas
+      pillow
+      requests
+      rich
+    ];
+
+    optional-dependencies = {
+      all = [
+        smolagents
+      ];
+      audio = [
+        smolagents
+        soundfile
+      ];
+      dev = [
+        smolagents
+        sqlalchemy
+      ];
+      e2b = [
+        e2b-code-interpreter
+        python-dotenv
+      ];
+      gradio = [
+        gradio
+      ];
+      litellm = [
+        litellm
+      ];
+      mcp = [
+        mcp
+        mcpadapt
+      ];
+      openai = [
+        openai
+      ];
+      quality = [
+        ruff
+      ];
+      test = [
+        ipython
+        pytest
+        python-dotenv
+        rank-bm25
+        smolagents
+      ];
+      torch = [
+        torch
+        torchvision
+      ];
+      transformers = [
+        accelerate
+        smolagents
+        transformers
+      ];
+    };
+
+    pythonImportsCheck = [
+      "smolagents"
+    ];
+
+    meta = {
+      description = "Smolagents: a barebones library for agents. Agents write python code to call tools or orchestrate other agents";
+      homepage = "https://pypi.org/project/smolagents/";
+      license = lib.licenses.asl20;
+      maintainers = with lib.maintainers; [ jpetrucciani ];
+    };
+  };
 }
