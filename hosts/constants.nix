@@ -40,6 +40,7 @@ let
     terra = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFWWDYzXHtB3hd/5sWeg+kz+COGxCEWalspwCNnZNOZz jacobi@terra";
     nyx0 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIg9CfLq9fHbwfg16W2k8A9rXw7AUGQWDk4qwikDrikj jacobi@nyx0";
     styx = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3gO1YSpzqJ5aheyC/gx53lK9Wu21dA88+VrvPqMoRD jacobi@styx";
+    mercury = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKLAJdW+XxljUGrFMXJdc1ULVYOYR+/aeEddl+7mjOCG jacobi@mercury";
 
     # android
     s21 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICLuqazOtTUHVkywIMHWXizCLmSaEl2C8Oyb9t5LmslD jacobi@s21";
