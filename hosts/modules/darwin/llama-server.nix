@@ -17,9 +17,9 @@ in
           enable = mkEnableOption "llama-cpp server launchd service";
           package = mkOption {
             type = types.package;
-            default = pkgs.llama-cpp;
+            default = pkgs.llama-cpp-latest;
             defaultText = literalExpression "pkgs.llama-cpp";
-            description = "The package to use for llama-server";
+            description = "The package to use for llama-server. defaults to jacobi's latest llama-cpp overlay";
           };
           address = mkOption {
             type = types.str;

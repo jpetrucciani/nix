@@ -123,9 +123,10 @@ let
 
   llama-cpp-latest =
     let
-      version = "main-2025-01-28";
-      rev = "cae9fb4361138b937464524eed907328731b81f6";
-      hash = "sha256-XPQSYk9zTkgX49IwhK+16Kx8TINDh3h5r+1nqpNgaOs=";
+      # adds tool call support
+      version = "main-2025-01-31";
+      rev = "8b576b6c55bc4e6be898b47522f0ef402b93ef62";
+      hash = "sha256-52CGiZVzny9qkaJqztRqT7bdTf7DvixAbMtQvCUHlfo=";
     in
     prev.llama-cpp.overrideAttrs (_: {
       inherit version;
