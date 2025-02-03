@@ -189,6 +189,13 @@ in
       };
     goto.enable = true;
     rpcbind.enable = true;
+    _3proxy = {
+      enable = true;
+      services = [{
+        type = "socks";
+        auth = [ "none" ];
+      }];
+    };
   } // common.services;
 
   virtualisation.docker.enable = true;
