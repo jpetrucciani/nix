@@ -160,7 +160,7 @@ in
     docker.enable = true;
     oci-containers.containers =
       let
-        kokoro_version = "v0.1.4";
+        kokoro_version = "v0.1.0";
         kokoro_api_port = 8880;
         kokoro_ui_port = 7860;
       in
