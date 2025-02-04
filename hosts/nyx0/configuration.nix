@@ -65,5 +65,6 @@ in
           ngl = 41;
         };
       };
+      prometheus.exporters.node.enable = true;
     };
 }

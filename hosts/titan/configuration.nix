@@ -147,6 +147,13 @@ in
       '';
     };
     infinity.enable = true;
+    paperless = {
+      enable = true;
+      address = "0.0.0.0";
+      settings = {
+        PAPERLESS_OCR_LANGUAGE = "eng";
+      };
+    };
   } // common.services;
 
   system.stateVersion = "23.11";

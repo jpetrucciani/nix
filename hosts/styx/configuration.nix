@@ -72,5 +72,6 @@ in
           ngl = 99;
         };
       };
+      prometheus.exporters.node.enable = true;
     };
 }

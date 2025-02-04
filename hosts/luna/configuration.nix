@@ -395,6 +395,7 @@ in
           (hostScrape "phobos")
           (hostScrape "terra")
           (hostScrape "titan")
+          (hostScrape "polaris")
         ];
       exporters = common.templates.prometheus_exporters { };
     };
