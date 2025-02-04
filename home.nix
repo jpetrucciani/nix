@@ -230,6 +230,8 @@ in
         nix_hash_hex
         nix_hash_pog
         nixup
+
+        httptap
       ];
   };
 
