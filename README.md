@@ -8,7 +8,7 @@ _jacobi's nixpkgs configurations, overlays, documentation, and other magic_
 
 ### [pog](https://pog.gemologic.dev/)
 
-_note: this has moved to it's [own repo!](https://github.com/jpetrucciani/hex)_
+_note: this has moved to it's [own repo!](https://github.com/jpetrucciani/pog)_
 
 This set of nix functions has proven to be extremely useful to me - it is a quick CLI tool generator that leverages the power of nix!
 
