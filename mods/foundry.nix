@@ -80,6 +80,7 @@ let
         mkFolders = pkgs.runCommand "folders" { } ''
           mkdir -p $out/tmp
           touch $out/tmp/foundry.txt
+          chmod -R 1777 $out/tmp
         '';
         mkUser =
           { user ? "user"
