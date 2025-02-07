@@ -111,7 +111,6 @@ in
         nixfmt-rfc-style
         nixpkgs-fmt
         nixpkgs-review
-        # nixVersions.nix_2_25
         lix
         openssh
         p7zip
@@ -230,8 +229,6 @@ in
         nix_hash_hex
         nix_hash_pog
         nixup
-
-        httptap
       ];
   };
 

@@ -58,10 +58,6 @@ This directory contains cli tools
 
 [helm-oci](https://github.com/ikimpriv/helm-oci) is a command line tool that is useful for listing helm charts in oci repos
 
-### [httptap.nix](./httptap.nix)
-
-[httptap](https://github.com/monasticacademy/httptap) is a program that lets you view HTTP/HTTPS requests made by any Linux program
-
 ### [hunt.nix](./hunt.nix)
 
 [hunt](https://github.com/LyonSyonII/hunt-rs) is a simplified find command in rust
