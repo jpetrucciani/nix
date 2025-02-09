@@ -6,17 +6,21 @@ jobs:
       fail-fast: false
       matrix:
         image:
+          - certbot
           - certbot_aws
+          - certbot_cloudflare
+          - certbot_google
           - certbot_porkbun
           - curl
           - argohex
           - hex
           - k8s_aws
-          # - k8s_gcp  # disabled for now?
+          - k8s_gcp
           - nix
           # - pypi
           - python311
           - python312
+          - python313
           - zaddy
     name: foundry-${{ matrix.image }}
     runs-on: ubuntu-24.04

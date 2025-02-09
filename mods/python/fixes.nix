@@ -1,8 +1,8 @@
 final: prev:
 let
-  inherit (final) pythonOlder;
+  inherit (final) pythonOlder fetchPypi buildPythonPackage;
   inherit (final.stdenv) isDarwin;
-  inherit (final.pkgs) fetchFromGitHub;
+  inherit (final.pkgs) fetchFromGitHub lib;
 in
 rec {
   sqlalchemy_1 =
@@ -119,4 +119,86 @@ rec {
                            '{"major": 133, "minor": 0, "build": ${pdfiumVersion}, "patch": 1}'
         '';
     });
+
+  certbot-dns-cloudflare-latest = buildPythonPackage
+    rec {
+      pname = "certbot-dns-cloudflare";
+      version = "3.1.0";
+      pyproject = true;
+
+      src = fetchPypi {
+        pname = "certbot_dns_cloudflare";
+        inherit version;
+        hash = "sha256-oktsloLV/CwzYLJ+y19NKfMYjOgAm3miTBnkfK6jzgM=";
+      };
+
+      build-system = with final; [
+        setuptools
+        wheel
+      ];
+
+      dependencies = with final; [
+        acme
+        certbot
+        (buildPythonPackage rec {
+          pname = "cloudflare";
+          version = "2.19.4";
+          pyproject = true;
+
+          src = fetchPypi {
+            inherit pname version;
+            hash = "sha256-O2AAoBojfCO8z99tICVupREex0qCaunnT58OW7WyOD8=";
+          };
+
+          build-system = [
+            setuptools
+            wheel
+          ];
+
+          dependencies = [
+            anyio
+            distro
+            httpx
+            jsonlines
+            pydantic
+            pyyaml
+            requests
+            sniffio
+            typing-extensions
+          ];
+
+          pythonImportsCheck = [
+            "CloudFlare"
+          ];
+
+          meta = {
+            description = "The official Python library for the cloudflare API";
+            homepage = "https://pypi.org/project/cloudflare/2.19.4/";
+            license = lib.licenses.mit;
+            maintainers = with lib.maintainers; [ jpetrucciani ];
+          };
+        })
+      ];
+
+      optional-dependencies = with final; {
+        docs = [
+          sphinx
+          sphinx-rtd-theme
+        ];
+        test = [
+          pytest
+        ];
+      };
+
+      pythonImportsCheck = [
+        "certbot_dns_cloudflare"
+      ];
+
+      meta = {
+        description = "Cloudflare DNS Authenticator plugin for Certbot";
+        homepage = "https://pypi.org/project/certbot-dns-cloudflare/#history";
+        license = lib.licenses.asl20;
+        maintainers = with lib.maintainers; [ jpetrucciani ];
+      };
+    };
 }

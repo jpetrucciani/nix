@@ -36,6 +36,17 @@ let
     yq-go
   ];
 
+  certbot_base = {
+    extraMkUser = ''
+      mkdir -p $out/etc/letsencrypt $out/var/lib/letsencrypt $out/var/log/letsencrypt
+      touch $out/etc/letsencrypt/.keep $out/var/lib/letsencrypt/.keep $out/var/log/letsencrypt/.keep
+    '';
+    extraMkUserPaths = [
+      "/etc/letsencrypt"
+      "/var/lib/letsencrypt"
+      "/var/log/letsencrypt"
+    ];
+  };
 
   foundry =
     let
@@ -291,18 +302,26 @@ let
       [ kubectl ]
     ];
   };
-  foundry_certbot_aws = foundry {
+  foundry_certbot = foundry ({
+    name = "certbot";
+    description = "a full certbot image with a few different providers";
+    layers = with pkgs; [
+      [ (awscli2.override { python3 = python311; }) ]
+      [
+        ((certbot.override { python = python311; }).withPlugins (p: with p; [
+          (certbot-dns-route53.overridePythonAttrs (old: {
+            pytestFlagsArray = old.pytestFlagsArray ++ [ "-W ignore::DeprecationWarning" ];
+          }))
+          certbot-dns-cloudflare-latest
+          certbot-dns-google
+          certbot-dns-porkbun
+        ]))
+      ]
+    ];
+  } // certbot_base);
+  foundry_certbot_aws = foundry ({
     name = "certbot-aws";
     description = "a lightweight image with awscliv2 and certbot configured to work with route53";
-    extraMkUser = ''
-      mkdir -p $out/etc/letsencrypt $out/var/lib/letsencrypt $out/var/log/letsencrypt
-      touch $out/etc/letsencrypt/.keep $out/var/lib/letsencrypt/.keep $out/var/log/letsencrypt/.keep
-    '';
-    extraMkUserPaths = [
-      "/etc/letsencrypt"
-      "/var/lib/letsencrypt"
-      "/var/log/letsencrypt"
-    ];
     layers = with pkgs; [
       [ (awscli2.override { python3 = python311; }) ]
       [
@@ -313,19 +332,32 @@ let
         ]))
       ]
     ];
-  };
-  foundry_certbot_porkbun = foundry {
+  } // certbot_base);
+  foundry_certbot_cloudflare = foundry ({
+    name = "certbot-cloudflare";
+    description = "a lightweight certbot image including the cloudflare dns plugin";
+    layers = with pkgs; [
+      [
+        ((certbot.override { python = python311; }).withPlugins (p: with p; [
+          certbot-dns-cloudflare-latest
+        ]))
+      ]
+    ];
+  } // certbot_base);
+  foundry_certbot_google = foundry ({
+    name = "certbot-google";
+    description = "a lightweight certbot image including the google dns plugin";
+    layers = with pkgs; [
+      [
+        ((certbot.override { python = python311; }).withPlugins (p: with p; [
+          certbot-dns-google
+        ]))
+      ]
+    ];
+  } // certbot_base);
+  foundry_certbot_porkbun = foundry ({
     name = "certbot-porkbun";
     description = "a lightweight certbot image including the porkbun dns plugin";
-    extraMkUser = ''
-      mkdir -p $out/etc/letsencrypt $out/var/lib/letsencrypt $out/var/log/letsencrypt
-      touch $out/etc/letsencrypt/.keep $out/var/lib/letsencrypt/.keep $out/var/log/letsencrypt/.keep
-    '';
-    extraMkUserPaths = [
-      "/etc/letsencrypt"
-      "/var/lib/letsencrypt"
-      "/var/log/letsencrypt"
-    ];
     layers = with pkgs; [
       [
         ((certbot.override { python = python311; }).withPlugins (p: with p; [
@@ -333,7 +365,7 @@ let
         ]))
       ]
     ];
-  };
+  } // certbot_base);
   foundry_k8s_gcp = foundry {
     name = "k8s-gcp";
     description = "a lightweight image with just bash, kubectl, and gcloud cli";
@@ -422,7 +454,10 @@ in
   hex = foundry_hex;
   k8s_aws = foundry_k8s_aws;
   k8s_gcp = foundry_k8s_gcp;
+  certbot = foundry_certbot;
   certbot_aws = foundry_certbot_aws;
+  certbot_cloudflare = foundry_certbot_cloudflare;
+  certbot_google = foundry_certbot_google;
   certbot_porkbun = foundry_certbot_porkbun;
   nix = foundry_nix;
   pypi = foundry_pypi;
