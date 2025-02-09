@@ -15,7 +15,7 @@ rustPlatform.buildRustPackage rec {
     hash = "sha256-1ZSo1Nv6WeEI/5uNhvzwB2CudqHf/YKRiCAhOR9ARgg=";
   };
 
-  cargoHash = "sha256-q8a7HXhE46OAsh1QceLQNMUadjm1GIrnQwZYsa96D+M=";
+  cargoHash = "sha256-55/slAX0YAOkMjabT37T8vM4wYp/RYGvbsI3VmvVgKA=";
 
   meta = with lib; {
     description = "A customizable http request logger with prometheus metrics";
