@@ -106,8 +106,6 @@ rec {
       first = ''${pkgs.gawk}/bin/awk '{ print $1 }' '';
       jq = "${final.jq}/bin/jq";
       grep = "${final.gnugrep}/bin/grep";
-      delta = "${final.delta}/bin/delta";
-      cmp = "${final.diffutils}/bin/cmp";
       dyff = "${final.dyff}/bin/dyff between --omit-header";
     in
     pog {
