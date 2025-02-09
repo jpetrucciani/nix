@@ -201,4 +201,15 @@ rec {
         maintainers = with lib.maintainers; [ jpetrucciani ];
       };
     };
+
+  anybadge = let version = "1.16.0"; in prev.anybadge.overridePythonAttrs (_: {
+    postPatch = ''
+      substituteInPlace ./setup.py \
+        --replace 'version=get_version()' 'version="${version}"'
+
+      substituteInPlace ./anybadge/__init__.py \
+        --replace '"0.0.0"' '"${version}"'
+    '';
+    nativeCheckInputs = with final; [ sh ];
+  });
 }
