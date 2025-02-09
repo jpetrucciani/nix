@@ -213,8 +213,6 @@ in
               gnutar # this breaks vscode server?
               nixos-generators
               binutils
-              bitwarden-cli
-              keybase
               man-pages
               ncdu
               sampler
