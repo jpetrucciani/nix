@@ -12,6 +12,12 @@ let
   };
   LOCALE_ARCHIVE_2_27 = "${final.glibcLocales}/lib/locale/locale-archive";
   locale_override = lib.optionalString (!stdenv.isDarwin) "export LOCALE_ARCHIVE_2_27=${LOCALE_ARCHIVE_2_27}";
+  force_flag = {
+    name = "force";
+    description = "remove database data directory before bootstraping";
+    short = "f";
+    bool = true;
+  };
 in
 rec {
   __pg_bootstrap =
@@ -24,7 +30,8 @@ rec {
     }: pog {
       name = "__pg_bootstrap";
       description = "a quick and easy way to bootstrap a local postgres db";
-      script =
+      flags = [ force_flag ];
+      script = h:
         let
           pg_ctl = ''${postgres}/bin/pg_ctl -o "-k '$PGDATA'" -D "$PGDATA"'';
           _psql = x: ''${postgres}/bin/psql -d ${x} -h localhost -p "$PGPORT" -c'';
@@ -54,6 +61,7 @@ rec {
             ${extra_bootstrap}
             ${pg_ctl} stop
           }
+          ${h.flag "force"} && rm -rf "$PGDATA"
           [ ! -d "$PGDATA" ] && bootstrap
         '';
     };
@@ -209,7 +217,8 @@ rec {
     }: pog {
       name = "__mysql_bootstrap";
       description = "a quick and easy way to bootstrap a local mysql db";
-      script =
+      flags = [ force_flag ];
+      script = h:
         let
           _mysql = ''${mysql}/bin/mysql -h 127.0.0.1 -N -u root'';
           mysqld = builtins.concatStringsSep " " [
@@ -269,6 +278,7 @@ rec {
               while [ -f "$PIDFILE" ]; do sleep 1; done
             fi
           }
+          ${h.flag "force"} && rm -rf "$MYSQLDATA"
           [ ! -d "$MYSQLDATA" ] && bootstrap
         '';
     };
