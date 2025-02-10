@@ -157,9 +157,6 @@ in
         };
       };
     };
-    n8n = {
-      enable = false;
-    };
     step-ca =
       let
         base = "/var/lib/step-ca";
@@ -401,8 +398,6 @@ in
     };
     promtail = common.templates.promtail { inherit hostname; loki_ip = "127.0.0.1"; };
   } // common.services;
-
-  systemd.services.n8n.serviceConfig.EnvironmentFile = "/etc/default/n8n";
 
   virtualisation.docker.enable = true;
   virtualisation.oci-containers = {

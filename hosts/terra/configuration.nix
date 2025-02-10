@@ -130,6 +130,7 @@ in
             }
           '';
         };
+        ts_terra_k8s = ts_reverse_proxy "localhost:8010";
         landing_page = { title ? "gemologic", start ? "#000", end ? "#6A3DE8" }:
           ''<html style='background-image: linear-gradient(to bottom right, ${start}, ${end});height:100%'><head><title>${title}</title></head></html>'';
         security_block = { name ? "SECURITY", allow_frame ? false, allow_server ? false, allow_compression ? true }: ''
@@ -224,18 +225,16 @@ in
           "z.cobi.dev" = reverse_proxy "localhost:8080";
           "ntfy.cobi.dev" = reverse_proxy "localhost:2586";
           "invoice.cobi.dev" = reverse_proxy_with_iframe "localhost:8010";
-          "llm.cobi.dev" = ts_reverse_proxy "localhost:8010";
-          "chat.cobi.dev" = ts_reverse_proxy "localhost:8010";
-          "lobe.cobi.dev" = ts_reverse_proxy "localhost:8010";
+          "llm.cobi.dev" = ts_terra_k8s;
+          "chat.cobi.dev" = ts_terra_k8s;
+          "lobe.cobi.dev" = ts_terra_k8s;
           "otf.cobi.dev" = reverse_proxy "localhost:8010";
           "auth.cobi.dev" = reverse_proxy "localhost:8010";
-          # "auth.cobi.dev" = reverse_proxy neptune_traefik;
           "audiobook.cobi.dev" = reverse_proxy "localhost:9888";
-          # "auth.cobi.dev" = reverse_proxy "localhost:9091";
           "search.cobi.dev" = reverse_proxy "localhost:8010";
           "netdata.cobi.dev" = ts_reverse_proxy "localhost:${toString common.ports.netdata}";
           "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
-          "n8n.cobi.dev" = reverse_proxy "luna:${toString common.ports.n8n}";
+          "n8n.cobi.dev" = ts_terra_k8s;
           "ombi.cobi.dev" = reverse_proxy "neptune:5999";
           "rss.cobi.dev" = reverse_proxy "localhost:8099";
           "x.hexa.dev" = reverse_proxy "neptune:8421";
