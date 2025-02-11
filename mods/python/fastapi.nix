@@ -270,12 +270,12 @@ rec {
 
   nicegui = buildPythonPackage rec {
     pname = "nicegui";
-    version = "2.11.0";
+    version = "2.11.1";
     pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-RVrnPSF5Wt0jE0Jo0ipq6+0/AS/VQSSC0O2EACa+1TQ=";
+      hash = "sha256-lijXakpeeohintpryp+bquEKN9i5TGPZnhr5S7W8nAU=";
     };
 
     postPatch = ''
