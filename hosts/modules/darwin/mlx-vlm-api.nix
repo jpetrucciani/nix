@@ -27,7 +27,7 @@ in
           };
           model = mkOption {
             type = types.str;
-            default = "mlx-community/Qwen2.5-VL-7B-Instruct-4bit";
+            default = "mlx-community/Qwen2.5-VL-7B-Instruct-8bit";
             description = "the huggingface path of the model to run";
           };
           extraFlags = mkOption {
