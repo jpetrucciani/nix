@@ -97,11 +97,11 @@ in
         description = "mlx-vlm-api service user";
         home = homeDir;
         shell = "/bin/bash";
-        uid = lib.mkDefault 800;
+        uid = lib.mkDefault 801;
       };
       knownUsers = [ "${cfg.user}" ];
       groups."${cfg.user}" = {
-        gid = lib.mkDefault 800;
+        gid = lib.mkDefault 801;
         description = "mlx-vlm-api service user group";
       };
       knownGroups = [ "${cfg.user}" ];
