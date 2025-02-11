@@ -72,6 +72,7 @@ in
           ngl = 99;
         };
       };
+      mlx-vlm-api.servers.qwen-2-5-vl-7b.enable = true;
       prometheus.exporters.node.enable = true;
     };
 }

@@ -135,6 +135,7 @@
                 ./hosts/modules/darwin/infinity.nix
                 ./hosts/modules/darwin/koboldcpp.nix
                 ./hosts/modules/darwin/llama-server.nix
+                ./hosts/modules/darwin/mlx-vlm-api.nix
                 ./hosts/modules/darwin/ollama.nix
                 ./hosts/${name}/configuration.nix
               ];
