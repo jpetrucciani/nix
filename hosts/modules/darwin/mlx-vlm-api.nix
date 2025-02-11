@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  inherit (lib) literalExpression mkEnableOption filterAttrs mkIf mkOption types;
+  inherit (lib) mkEnableOption filterAttrs mkIf mkOption types;
   inherit (lib) mapAttrs' nameValuePair optionalString;
   cfg = config.services.mlx-vlm-api;
   defaultUser = "_mlxvlm";
