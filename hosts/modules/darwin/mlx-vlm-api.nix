@@ -69,7 +69,7 @@ in
       (name: conf: nameValuePair (mlxvlmName name) (
         let
           serve = pkgs.writers.writeBash "mlx-vlm-api-${mlxvlmName name}" ''
-            ${lib.getExe' pkgs.uv} run \
+            ${pkgs.uv}/bin/uv run \
               --with 'numpy<2' \
               --with 'git+https://github.com/huggingface/transformers' \
               --with 'git+https://github.com/jpetrucciani/mlx-vlm@add_api' \
