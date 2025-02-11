@@ -26,7 +26,7 @@ in
             description = ''the port to bind to'';
           };
           model = mkOption {
-            type = types.path;
+            type = types.str;
             default = "mlx-community/Qwen2.5-VL-7B-Instruct-4bit";
             description = "the huggingface path of the model to run";
           };
