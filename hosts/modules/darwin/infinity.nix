@@ -33,7 +33,7 @@ in
         "nomic-ai/nomic-embed-text-v1.5"
         "nomic-ai/modernbert-embed-base"
         "mixedbread-ai/mxbai-rerank-base-v1"
-        "NovaSearch/stella_en_400M_v5"
+        # "NovaSearch/stella_en_400M_v5"
         # check out the MTEB leaderboard!
         ### https://huggingface.co/spaces/mteb/leaderboard
         # "jinaai/jina-embeddings-v3"
