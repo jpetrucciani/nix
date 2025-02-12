@@ -21,7 +21,7 @@ This set of nix functions has proven to be extremely useful to me - it is a quic
 
 ### [hex](https://hex.gemologic.dev/)
 
-_note: this has moved to it's [own repo!](https://github.com/jpetrucciani/hex)!_
+_note: this has moved to it's [own repo!](https://github.com/jpetrucciani/hex)_
 
 Hex is a nix module system that allows us to create powerful abstractions of other languages and configurations via nix! At the moment, this is the most useful for things like [kubernetes specs](https://kubernetes.io/docs/concepts/overview/working-with-objects/)!
 
