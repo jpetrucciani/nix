@@ -32,7 +32,6 @@ in
 
   system.stateVersion = 4;
   nix = common.nix // {
-    useDaemon = true;
     nixPath = [
       "darwin=${common.nix-darwin}"
       "darwin-config=${configPath}"
@@ -69,6 +68,12 @@ in
           enable = true;
           port = 8013;
           model = modelPath "DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf";
+          ngl = 99;
+        };
+        deepscaler-1-5b = {
+          enable = true;
+          port = 8014;
+          model = modelPath "agentica-org_DeepScaleR-1.5B-Preview-Q8_0.gguf";
           ngl = 99;
         };
       };

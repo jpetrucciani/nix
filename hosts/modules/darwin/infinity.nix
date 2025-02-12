@@ -33,11 +33,11 @@ in
         "nomic-ai/nomic-embed-text-v1.5"
         "nomic-ai/modernbert-embed-base"
         "mixedbread-ai/mxbai-rerank-base-v1"
+        # "NovaSearch/stella_en_400M_v5"
         # check out the MTEB leaderboard!
         ### https://huggingface.co/spaces/mteb/leaderboard
         # "jinaai/jina-embeddings-v3"
         # "BAAI/bge-small-en-v1.5"
-        # "dunzhang/stella_en_400M_v5"  # requires xformers?
       ];
       description = "the list of embeddings models to load";
     };
