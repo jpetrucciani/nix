@@ -17,8 +17,11 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: DeterminateSystems/nix-installer-action@main
-      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: cachix/install-nix-action@v30
+      - uses: cachix/cachix-action@master
+        with:
+          name: jacobi
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - run: nix run .#${{ matrix.attrs.cmd }} ${{ matrix.attrs.attr }}
       - uses: peter-evans/create-pull-request@v7.0.6
         id: pr
