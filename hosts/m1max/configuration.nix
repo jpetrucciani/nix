@@ -68,7 +68,6 @@ in
       builders = ssh://jacobi@neptune x86_64-linux - 8 - big-parallel;
       builders-use-substitutes = true
     '';
-    useDaemon = true;
     nixPath = [
       "darwin=${common.nix-darwin}"
       "darwin-config=${configPath}"
