@@ -71,6 +71,12 @@ in
           model = modelPath "DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf";
           ngl = 99;
         };
+        deepscaler-1-5b = {
+          enable = true;
+          port = 8014;
+          model = modelPath "agentica-org_DeepScaleR-1.5B-Preview-Q8_0.gguf";
+          ngl = 99;
+        };
       };
       mlx-vlm-api.servers.qwen-2-5-vl-7b.enable = true;
       prometheus.exporters.node.enable = true;
