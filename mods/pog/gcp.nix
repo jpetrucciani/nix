@@ -139,7 +139,6 @@ rec {
         fi
 
         while true; do
-
           if [ -s "$ERROR_FILE" ]; then
               # Create a temporary file with error messages and original content
               {
@@ -164,17 +163,13 @@ rec {
               mv "$TEMP_FILE.tmp" "$TEMP_FILE"
           fi
 
-          "$EDITOR" "$TEMP_FILE"
+          eval "$EDITOR" "$TEMP_FILE"
 
           # Remove any comment lines starting with #
           ${grep} -v '^#' "$TEMP_FILE" > "$TEMP_FILE.tmp"
           mv "$TEMP_FILE.tmp" "$TEMP_FILE"
 
           ${grep} -v '^#' "$TEMP_FILE_ORIG" > "$TEMP_FILE_ORIG.tmp"
-          if cmp -s "$TEMP_FILE" "$TEMP_FILE_ORIG.tmp"; then
-              echo "no changes made - exiting."
-              exit 0
-          fi
 
           JSON_ERROR=$(jq . "$TEMP_FILE" 2>&1 >/dev/null)
           # shellcheck disable=SC2181
@@ -191,7 +186,13 @@ rec {
         done
 
         ${jq} . "$TEMP_FILE" > "$TEMP_FILE.tmp" && mv "$TEMP_FILE.tmp" "$TEMP_FILE"
-        ${dyff} "$TEMP_FILE_ORIG" "$TEMP_FILE"
+        ${dyff} --set-exit-code "$TEMP_FILE_ORIG" "$TEMP_FILE"
+        exit_code=$?
+        if [ $exit_code -eq 0 ]; then
+          green "no changes made - exiting!"
+          exit 0
+        fi
+
         echo "---"
         ${h.confirm {prompt="Would you like to apply these changes to the secret '$secret'?";}}
         echo "---"
