@@ -56,6 +56,7 @@ in
     wslConf.network.generateHosts = false;
     # Enable native Docker support
     # docker-native.enable = true;
+    interop.register = true;
   };
 
   networking = {
