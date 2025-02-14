@@ -123,15 +123,14 @@ let
 
   llama-cpp-latest =
     let
-      # adds tool call support
-      version = "main-2025-01-31";
-      rev = "8b576b6c55bc4e6be898b47522f0ef402b93ef62";
-      hash = "sha256-52CGiZVzny9qkaJqztRqT7bdTf7DvixAbMtQvCUHlfo=";
+      version = "b4712";
+      hash = "sha256-H20djENYcgF5+q7GB/UpDh395h/nQ/kgEmqy7NC/aQA=";
     in
     prev.llama-cpp.overrideAttrs (_: {
       inherit version;
       src = final.fetchFromGitHub {
-        inherit rev hash;
+        inherit hash;
+        tag = version;
         owner = "ggerganov";
         repo = "llama.cpp";
         leaveDotGit = true;
