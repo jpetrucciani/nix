@@ -771,7 +771,7 @@ in
       lfs.enable = true;
       ${attrIf (!isLinux) "signing"} = {
         key = "03C0CBEA6EAB9258";
-        gpgPath = "gpg";
+        signer = "gpg";
         signByDefault = true;
       };
     };
