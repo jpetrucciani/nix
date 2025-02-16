@@ -56,5 +56,5 @@ let
 in
 (env.overrideAttrs (_: {
   inherit name;
-  NIXUP = "0.0.8";
+  NIXUP = "0.0.9";
 })) // { inherit scripts; }

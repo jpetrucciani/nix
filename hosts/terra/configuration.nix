@@ -359,12 +359,7 @@ in
     };
     ntfy-sh = {
       enable = true;
-      settings = {
-        auth-default-access = "deny-all";
-        base-url = "https://ntfy.cobi.dev";
-        behind-proxy = "true";
-        enable-login = "true";
-      };
+      settings.base-url = "https://ntfy.cobi.dev";
     };
     promtail = common.templates.promtail {
       inherit hostname;

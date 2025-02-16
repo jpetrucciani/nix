@@ -2,12 +2,14 @@
 final: prev:
 let
   inherit (final) _ pog lib;
+  gitignore = import ./ignore.nix;
 in
 rec {
   nixup =
     let
-      version = "0.0.8";
+      version = "0.0.9";
       _flags = {
+        with_bun = "include bun with dependencies";
         with_crystal = "include crystal with dependencies";
         with_db_pg = "include postgres db and helper scripts";
         with_db_redis = "include redis db and helper scripts";
@@ -25,7 +27,7 @@ rec {
         with_ruby = "include ruby";
         with_rust = "include rust";
         with_terraform = "include terraform";
-        # with_uv = "include python and uv";
+        with_uv = "include python using uv2nix";
         with_vlang = "include a vlang with dependencies";
         with_nvidia = "include some ld hacks to get nvidia drivers working (only useful on nixos/wsl)";
       };
@@ -34,7 +36,7 @@ rec {
     pog {
       inherit version;
       name = "nixup";
-      description = "a quick tool to create/update a base default.nix environment!";
+      description = "a quick tool to create/update a base default.nix environment! will also attempt to make you a baseline gitignore";
       flags = [
         { name = "srcpath"; description = "the fs path to import pkgs from if passed. if not passed in, will pin to the latest version of jpetrucciani/nix"; }
         { name = "update"; bool = true; description = "update the pin to jpetrucciani in the given file (argument 1) [default: ./default.nix]"; }
@@ -49,9 +51,12 @@ rec {
           toplevel=""
           _env="pkgs.buildEnv {${"\n"} inherit name paths; buildInputs = paths; };"
           extra_env=""
+          extra_env_overrides=""
+          gitignore="${gitignore.nix}"
           crystal=""
           if [ "$with_crystal" = "1" ]; then
             crystal="crystal = [crystal${"\n"}shards];"
+            gitignore="$gitignore${"\n"}# crystal${"\n"}${gitignore.crystal}"
           fi
           pg=""
           if [ "$with_db_pg" = "1" ]; then
@@ -70,15 +75,23 @@ rec {
           golang=""
           if [ "$with_golang" = "1" ]; then
             golang="go = [go${"\n"}go-tools gopls];"
+            gitignore="$gitignore${"\n"}# go${"\n"}${gitignore.go}"
           fi
           nim=""
           if [ "$with_nim" = "1" ]; then
             nim="nim = [(nim2.withPackages (p: with p; []))];"
+            gitignore="$gitignore${"\n"}# nim${"\n"}${gitignore.nim}"
+          fi
+          bun=""
+          if [ "$with_bun" = "1" ]; then
+            bun="bun = [bun];"
+            gitignore="$gitignore${"\n"}# bun${"\n"}${gitignore.node}"
           fi
           node=""
           if [ "$with_node" = "1" ]; then
             toplevel="node = pkgs.nodejs_22;${"\n"}$toplevel"
-            node="node = [node];npm = with node.pkgs; [prettier${"\n"}yarn];"
+            node="node = [node];npm = with node.pkgs; [prettier];"
+            gitignore="$gitignore${"\n"}# node${"\n"}${gitignore.node}"
           fi
           php=""
           if [ "$with_php" = "1" ]; then
@@ -101,12 +114,14 @@ rec {
           py=""
           if [ "$with_python" = "1" ]; then
             py="python = [ruff${"\n"}(python311.withPackages ( p: with p; [${"\n"}black]))];"
+            gitignore="$gitignore${"\n"}# python${"\n"}${gitignore.python}"
           fi
           poetry=""
           if [ "$with_poetry" = "1" ]; then
             py="python = [ruff${"\n"}(poetry.override (_: { python3 = python312; }))];"
             poetry="python = pkgs.poetry-helpers.mkEnv {${"\n"}projectDir = ./.; python = pkgs.python312; extraOverrides = [(final: prev: { })];};${"\n"}"
             _env="python.env.overrideAttrs (_: {${"\n"} buildInputs = paths; });"
+            gitignore="$gitignore${"\n"}# python${"\n"}${gitignore.python}"
           fi
           ruby=""
           if [ "$with_ruby" = "1" ]; then
@@ -115,10 +130,20 @@ rec {
           rust=""
           if [ "$with_rust" = "1" ]; then
             rust="rust = [cargo${"\n"}clang rust-analyzer rustc rustfmt${"\n"}# deps${"\n"}pkg-config openssl];"
+            gitignore="$gitignore${"\n"}# rust${"\n"}${gitignore.rust}"
           fi
           terraform=""
           if [ "$with_terraform" = "1" ]; then
             terraform="terraform = [terraform${"\n"}terraform-ls terrascan tfsec];"
+            gitignore="$gitignore${"\n"}# terraform${"\n"}${gitignore.terraform}${"\n"}"
+          fi
+          uv=""
+          uv_top=""
+          if [ "$with_uv" = "1" ]; then
+            extra_env_overrides="// uvEnv.uvEnvVars"
+            uv="uv = [uv uvEnv];"
+            uv_top="uvEnv = pkgs.uv-nix.mkEnv {${"\n"}inherit name; python = pkgs.python312; workspaceRoot = ./.; pyprojectOverrides = final: prev: { }; };${"\n"}"
+            gitignore="$gitignore${"\n"}# python${"\n"}${gitignore.python}"
           fi
           vlang=""
           if [ "$with_vlang" = "1" ]; then
@@ -152,12 +177,12 @@ rec {
             let
               name = "$directory";
 
-              ''${toplevel} ''${poetry}
+              ''${toplevel} ''${poetry} ''${uv_top}
               tools = with pkgs; {
                 cli = [
                   jfmt
                   nixup
-                ]; ''${crystal} ''${elixir} ''${golang} ''${nim} ''${node} ''${ocaml} ''${php} ''${dotnet} ''${java} ''${pulumi} ''${py} ''${ruby} ''${rust} ''${terraform} ''${vlang}
+                ]; ''${bun} ''${crystal} ''${elixir} ''${golang} ''${nim} ''${node} ''${ocaml} ''${php} ''${dotnet} ''${java} ''${pulumi} ''${py} ''${ruby} ''${rust} ''${terraform} ''${uv} ''${vlang}
                 scripts = pkgs.lib.attrsets.attrValues scripts;
               };
 
@@ -168,8 +193,11 @@ rec {
             (env.overrideAttrs (_: {
               inherit name;
               NIXUP = "${version}"; $extra_env
-            })) // {inherit scripts;}
+            }''${extra_env_overrides})) // {inherit scripts;}
           EOF
+          if [ ! -f .gitignore ]; then
+            echo "$gitignore" > .gitignore
+          fi
         '';
     };
 

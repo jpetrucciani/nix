@@ -127,5 +127,4 @@ in
 {
   inherit poetry-helpers uv-nix;
   poetry-nix = poetry-helpers; # i'd like to rename this permanently?
-
 }
