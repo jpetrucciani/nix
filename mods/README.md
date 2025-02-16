@@ -70,6 +70,10 @@ This overlay provides new helpers for programming languages (like [vlang](https:
 
 This overlay provides some overrides/fixes for various packages
 
+### [py_madness.nix](./py_madness.nix)
+
+This overlay is where I create wrappers around other tools to simplify using some of the attempts to simplify python tooling via nix
+
 ### [snowball.nix](./snowball.nix)
 
 This overlay provides `snowball`, a fun way to package up some (snow)flakes and throw it at another operating system!
