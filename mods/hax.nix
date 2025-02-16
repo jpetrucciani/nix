@@ -198,29 +198,20 @@ final: prev:
     };
 
     basePythonPackages = p: with p; [
-      # linting
-      # black
-
       # common use case
       gamble
       httpx
-      # requests
       cryptography
 
       # text
-      # anybadge
-      # tabulate
+      anybadge
+      tabulate
       beautifulsoup4
 
       # data
       numpy
       pandas
-
-      # type annotations (from nixpkgs)
-      types-requests
-      types-tabulate
-      types-enum34
-      types-ipaddress
+      polars
 
       # my types (for nixpkgs)
       boto3-stubs
