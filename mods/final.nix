@@ -226,6 +226,50 @@ in
         });
   };
 
+  uv-helpers = {
+    mkEnv = { name, workspaceRoot, envName ? "${name}-env", python ? final.python312, sourcePreference ? "wheel", pyprojectOverrides ? null }:
+      let
+        workspace = final.uv2nix.lib.workspace.loadWorkspace { inherit workspaceRoot; };
+        overlay = workspace.mkPyprojectOverlay {
+          # Prefer prebuilt binary wheels as a package source.
+          # Sdists are less likely to "just work" because of the metadata missing from uv.lock.
+          # Binary wheels are more likely to, but may still require overrides for library dependencies.
+          inherit sourcePreference; # or sourcePreference = "sdist";
+          # Optionally customise PEP 508 environment
+          # environ = {
+          #   platform_release = "5.10.65";
+          # };
+        };
+        _pyprojectOverrides = _final: _prev: {
+          # Implement standard build fixups here.
+          # Note that uv2nix is _not_ using Nixpkgs buildPythonPackage.
+          # It's using https://pyproject-nix.github.io/pyproject.nix/build.html
+        };
+        pythonSet =
+          # Use base package set from pyproject.nix builders
+          (final.callPackage final.pyproject-nix.build.packages {
+            inherit python;
+          }).overrideScope
+            (
+              final.lib.composeManyExtensions [
+                final.pyproject-build-systems.overlays.default
+                overlay
+                _pyprojectOverrides
+                pyprojectOverrides
+              ]
+            );
+
+        virtualenv = pythonSet.mkVirtualEnv envName workspace.deps.all;
+      in
+      virtualenv // {
+        uvEnvVars = {
+          UV_NO_SYNC = "1";
+          UV_PYTHON = "${virtualenv}/bin/python";
+          UV_PYTHON_DOWNLOADS = "never";
+        };
+      };
+  };
+
   inherit _treefmt;
   jfmt = _treefmt;
 
