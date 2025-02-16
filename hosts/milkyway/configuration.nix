@@ -51,7 +51,6 @@ in
     defaultUser = "jacobi";
     startMenuLaunchers = true;
     wslConf.automount.root = "/mnt";
-    nativeSystemd = true;
 
     wslConf.network.generateHosts = false;
     # Enable native Docker support
