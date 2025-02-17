@@ -81,7 +81,7 @@ let
   };
 
   uv-nix = {
-    mkEnv = { name, workspaceRoot, envName ? "${name}-env", python ? final.python312, sourcePreference ? "wheel", pyprojectOverrides ? null }:
+    mkEnv = { name, workspaceRoot, envName ? "${name}-env", python ? final.python312, sourcePreference ? "wheel", pyprojectOverrides ? null, darwinSdkVersion ? "15.1" }:
       let
         workspace = final.uv2nix.lib.workspace.loadWorkspace { inherit workspaceRoot; };
         overlay = workspace.mkPyprojectOverlay {
@@ -94,15 +94,30 @@ let
           #   platform_release = "5.10.65";
           # };
         };
-        _pyprojectOverrides = _final: _prev: {
-          # Implement standard build fixups here.
-          # Note that uv2nix is _not_ using Nixpkgs buildPythonPackage.
-          # It's using https://pyproject-nix.github.io/pyproject.nix/build.html
-        };
+        _pyprojectOverrides = _final: _prev:
+          let
+            add_buildinputs = build_inputs: pkg: pkg.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ build_inputs;
+            });
+            add_setuptools = add_buildinputs [ _final.setuptools ];
+          in
+          {
+            # Implement standard build fixups here.
+            # Note that uv2nix is _not_ using Nixpkgs buildPythonPackage.
+            # It's using https://pyproject-nix.github.io/pyproject.nix/build.html
+            pypika = add_setuptools _prev.pypika;
+          };
         pythonSet =
           # Use base package set from pyproject.nix builders
           (final.callPackage final.pyproject-nix.build.packages {
             inherit python;
+            stdenv = final.stdenv.override {
+              targetPlatform = final.stdenv.targetPlatform // (if final.stdenv.isDarwin then {
+                # Sets MacOS SDK version to 15.1 which implies Darwin version 24.
+                # See https://en.wikipedia.org/wiki/MacOS_version_history#Releases for more background on version numbers.
+                inherit darwinSdkVersion;
+              } else { });
+            };
           }).overrideScope
             (
               final.lib.composeManyExtensions [
