@@ -81,6 +81,21 @@ let
   };
 
   uv-nix = {
+    overrideHelpers = { pkgs, final, prev }: rec {
+      hacks = pkgs.callPackage pkgs.pyproject-nix.build.hacks { };
+      add_buildinputs = build_inputs: pkg: pkg.overrideAttrs (old: { buildInputs = (old.buildInputs or [ ]) ++ build_inputs; });
+      add_setuptools = add_buildinputs [ final.setuptools ];
+
+      # this is a hack to filter out nvidia deps for torch! it takes in a base package, like pkgs.python311Packages.torchWithoutCuda
+      torchHack = { from ? pkgs.python311Packages.torchWithoutCuda }: hacks.nixpkgsPrebuilt {
+        inherit from;
+        prev = prev.torch.overrideAttrs (old: {
+          passthru = old.passthru // {
+            dependencies = pkgs.lib.filterAttrs (name: _: ! pkgs.lib.hasPrefix "nvidia" name) old.passthru.dependencies;
+          };
+        });
+      };
+    };
     mkEnv = { name, workspaceRoot, envName ? "${name}-env", python ? final.python312, sourcePreference ? "wheel", pyprojectOverrides ? null, darwinSdkVersion ? "15.1" }:
       let
         workspace = final.uv2nix.lib.workspace.loadWorkspace { inherit workspaceRoot; };
@@ -142,21 +157,6 @@ let
           UV_NO_SYNC = "1";
           UV_PYTHON = "${virtualenv}/bin/python";
           UV_PYTHON_DOWNLOADS = "never";
-        };
-        overrideHelpers = { pkgs, final, prev }: rec {
-          hacks = pkgs.callPackage pkgs.pyproject-nix.build.hacks { };
-          add_buildinputs = build_inputs: pkg: pkg.overrideAttrs (old: { buildInputs = (old.buildInputs or [ ]) ++ build_inputs; });
-          add_setuptools = add_buildinputs [ final.setuptools ];
-
-          # this is a hack to filter out nvidia deps for torch! it takes in a base package, like pkgs.python311Packages.torchWithoutCuda
-          torchHack = { from ? pkgs.python311Packages.torchWithoutCuda }: hacks.nixpkgsPrebuilt {
-            inherit from;
-            prev = prev.torch.overrideAttrs (old: {
-              passthru = old.passthru // {
-                dependencies = pkgs.lib.filterAttrs (name: _: ! pkgs.lib.hasPrefix "nvidia" name) old.passthru.dependencies;
-              };
-            });
-          };
         };
       };
   };
