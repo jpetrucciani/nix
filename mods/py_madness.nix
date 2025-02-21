@@ -105,6 +105,7 @@ let
             # Implement standard build fixups here.
             # Note that uv2nix is _not_ using Nixpkgs buildPythonPackage.
             # It's using https://pyproject-nix.github.io/pyproject.nix/build.html
+            docx2txt = add_setuptools _prev.docx2txt;
             pypika = add_setuptools _prev.pypika;
           };
         pythonSet =
