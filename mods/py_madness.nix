@@ -110,6 +110,7 @@ let
             psycopg2 = add_setuptools _prev.psycopg2;
             pypika = add_setuptools _prev.pypika;
             svglib = add_setuptools _prev.svglib;
+            wikipedia = add_setuptools _prev.wikipedia;
           };
         pythonSet =
           # Use base package set from pyproject.nix builders
