@@ -121,6 +121,7 @@ let
             # Note that uv2nix is _not_ using Nixpkgs buildPythonPackage.
             # It's using https://pyproject-nix.github.io/pyproject.nix/build.html
             docx2txt = add_setuptools _prev.docx2txt;
+            html2text = add_setuptools _prev.html2text;
             peewee = add_setuptools _prev.peewee;
             psycopg2 = add_setuptools (_prev.psycopg2.overrideAttrs (_: {
               buildInputs = [ final.postgresql ] ++ final.lib.optionals final.stdenv.hostPlatform.isDarwin [ final.openssl ];
