@@ -107,6 +107,7 @@ let
             # It's using https://pyproject-nix.github.io/pyproject.nix/build.html
             docx2txt = add_setuptools _prev.docx2txt;
             peewee = add_setuptools _prev.peewee;
+            psycopg2 = add_setuptools _prev.psycopg2;
             pypika = add_setuptools _prev.pypika;
           };
         pythonSet =
