@@ -109,6 +109,7 @@ let
             peewee = add_setuptools _prev.peewee;
             psycopg2 = add_setuptools _prev.psycopg2;
             pypika = add_setuptools _prev.pypika;
+            svglib = add_setuptools _prev.svglib;
           };
         pythonSet =
           # Use base package set from pyproject.nix builders
