@@ -107,7 +107,9 @@ let
             # It's using https://pyproject-nix.github.io/pyproject.nix/build.html
             docx2txt = add_setuptools _prev.docx2txt;
             peewee = add_setuptools _prev.peewee;
-            psycopg2 = add_setuptools _prev.psycopg2;
+            psycopg2 = add_setuptools (prev.psycopg2.overrideAttrs (_: {
+              buildInputs = [ final.postgresql ] ++ final.lib.optionals final.stdenv.hostPlatform.isDarwin [ final.openssl ];
+            }));
             pypika = add_setuptools _prev.pypika;
             svglib = add_setuptools _prev.svglib;
             wikipedia = add_setuptools _prev.wikipedia;
@@ -140,6 +142,21 @@ let
           UV_NO_SYNC = "1";
           UV_PYTHON = "${virtualenv}/bin/python";
           UV_PYTHON_DOWNLOADS = "never";
+        };
+        overrideHelpers = { pkgs, final, prev }: rec {
+          hacks = pkgs.callPackage pkgs.pyproject-nix.build.hacks { };
+          add_buildinputs = build_inputs: pkg: pkg.overrideAttrs (old: { buildInputs = (old.buildInputs or [ ]) ++ build_inputs; });
+          add_setuptools = add_buildinputs [ final.setuptools ];
+
+          # this is a hack to filter out nvidia deps for torch! it takes in a base package, like pkgs.python311Packages.torchWithoutCuda
+          torchHack = { from ? pkgs.python311Packages.torchWithoutCuda }: hacks.nixpkgsPrebuilt {
+            inherit from;
+            prev = prev.torch.overrideAttrs (old: {
+              passthru = old.passthru // {
+                dependencies = pkgs.lib.filterAttrs (name: _: ! pkgs.lib.hasPrefix "nvidia" name) old.passthru.dependencies;
+              };
+            });
+          };
         };
       };
   };
