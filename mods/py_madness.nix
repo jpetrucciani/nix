@@ -96,7 +96,7 @@ let
         });
       };
     };
-    mkEnv = { name, workspaceRoot, envName ? "${name}-env", python ? final.python312, sourcePreference ? "wheel", pyprojectOverrides ? null, darwinSdkVersion ? "15.1" }:
+    mkEnv = { name, workspaceRoot, envName ? "${name}-env", python ? final.python312, sourcePreference ? "wheel", pyprojectOverrides ? null, darwinSdkVersion ? "15.1", venvIgnoreCollisions ? [ "*" ] }:
       let
         workspace = final.uv2nix.lib.workspace.loadWorkspace { inherit workspaceRoot; };
         overlay = workspace.mkPyprojectOverlay {
@@ -122,7 +122,7 @@ let
             # It's using https://pyproject-nix.github.io/pyproject.nix/build.html
             docx2txt = add_setuptools _prev.docx2txt;
             peewee = add_setuptools _prev.peewee;
-            psycopg2 = add_setuptools (prev.psycopg2.overrideAttrs (_: {
+            psycopg2 = add_setuptools (_prev.psycopg2.overrideAttrs (_: {
               buildInputs = [ final.postgresql ] ++ final.lib.optionals final.stdenv.hostPlatform.isDarwin [ final.openssl ];
             }));
             pypika = add_setuptools _prev.pypika;
@@ -150,7 +150,7 @@ let
               ]
             );
 
-        virtualenv = pythonSet.mkVirtualEnv envName workspace.deps.all;
+        virtualenv = (pythonSet.mkVirtualEnv envName workspace.deps.all).overrideAttrs (_: { inherit venvIgnoreCollisions; });
       in
       virtualenv // {
         uvEnvVars = {
