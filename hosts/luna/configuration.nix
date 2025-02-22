@@ -63,9 +63,6 @@ in
     isNormalUser = true;
     description = "jacobi";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      firefox
-    ];
     openssh.authorizedKeys.keys = with common.pubkeys; [
       m1max
       nix-m1max
