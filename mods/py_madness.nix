@@ -96,9 +96,10 @@ let
         });
       };
     };
-    mkEnv = { name, workspaceRoot, envName ? "${name}-env", python ? final.python312, sourcePreference ? "wheel", pyprojectOverrides ? null, darwinSdkVersion ? "15.1", venvIgnoreCollisions ? [ "*" ] }:
+    mkEnv = { name, workspaceRoot, envName ? "${name}-env", python ? final.python312, sourcePreference ? "wheel", pyprojectOverrides ? null, darwinSdkVersion ? "15.1", venvIgnoreCollisions ? [ "*" ], gitignore ? true }:
       let
-        workspace = final.uv2nix.lib.workspace.loadWorkspace { inherit workspaceRoot; };
+        gitignoreRecursiveSource = final.nix-gitignore.gitignoreFilterSourcePure (_: _: true) [ ];
+        workspace = final.uv2nix.lib.workspace.loadWorkspace { workspaceRoot = if gitignore then gitignoreRecursiveSource workspaceRoot else workspaceRoot; };
         overlay = workspace.mkPyprojectOverlay {
           # Prefer prebuilt binary wheels as a package source.
           # Sdists are less likely to "just work" because of the metadata missing from uv.lock.
