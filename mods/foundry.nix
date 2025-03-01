@@ -308,10 +308,8 @@ let
     layers = with pkgs; [
       [ (awscli2.override { python3 = python311; }) ]
       [
-        ((certbot.override { python = python311; }).withPlugins (p: with p; [
-          (certbot-dns-route53.overridePythonAttrs (old: {
-            pytestFlagsArray = old.pytestFlagsArray ++ [ "-W ignore::DeprecationWarning" ];
-          }))
+        (zertbot.withPlugins (p: with p; [
+          certbot-dns-route53
           certbot-dns-cloudflare-latest
           certbot-dns-google
           certbot-dns-porkbun
@@ -325,10 +323,8 @@ let
     layers = with pkgs; [
       [ (awscli2.override { python3 = python311; }) ]
       [
-        ((certbot.override { python = python311; }).withPlugins (p: with p; [
-          (certbot-dns-route53.overridePythonAttrs (old: {
-            pytestFlagsArray = old.pytestFlagsArray ++ [ "-W ignore::DeprecationWarning" ];
-          }))
+        (zertbot.withPlugins (p: with p; [
+          certbot-dns-route53
         ]))
       ]
     ];
@@ -338,7 +334,7 @@ let
     description = "a lightweight certbot image including the cloudflare dns plugin";
     layers = with pkgs; [
       [
-        ((certbot.override { python = python311; }).withPlugins (p: with p; [
+        (zertbot.withPlugins (p: with p; [
           certbot-dns-cloudflare-latest
         ]))
       ]
@@ -349,7 +345,7 @@ let
     description = "a lightweight certbot image including the google dns plugin";
     layers = with pkgs; [
       [
-        ((certbot.override { python = python311; }).withPlugins (p: with p; [
+        (zertbot.withPlugins (p: with p; [
           certbot-dns-google
         ]))
       ]
@@ -360,7 +356,7 @@ let
     description = "a lightweight certbot image including the porkbun dns plugin";
     layers = with pkgs; [
       [
-        ((certbot.override { python = python311; }).withPlugins (p: with p; [
+        (zertbot.withPlugins (p: with p; [
           certbot-dns-porkbun
         ]))
       ]
