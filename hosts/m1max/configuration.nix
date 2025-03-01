@@ -15,7 +15,7 @@ in
 
   home-manager.users.jacobi = common.jacobi;
   documentation.enable = false;
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
   time.timeZone = common.timeZone;
   environment.variables = {
