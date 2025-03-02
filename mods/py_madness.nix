@@ -121,6 +121,7 @@ let
             # Implement standard build fixups here.
             # Note that uv2nix is _not_ using Nixpkgs buildPythonPackage.
             # It's using https://pyproject-nix.github.io/pyproject.nix/build.html
+            aiohttp = add_setuptools _prev.aiohttp;
             docx2txt = add_setuptools _prev.docx2txt;
             html2text = add_setuptools _prev.html2text;
             peewee = add_setuptools _prev.peewee;
