@@ -99,7 +99,7 @@ rec {
           fi
           dotnet=""
           if [ "$with_dotnet" = "1" ]; then
-            dotnet="dotnet = [clang${"\n"}dotnet-sdk_8 dotnetPackages.Nuget netcoredbg zlib];"
+            dotnet="dotnet = [clang${"\n"}dotnet-sdk_9 dotnet-runtime_9 dotnetPackages.Nuget netcoredbg zlib];"
             extra_env="$extra_env DOTNET_CLI_TELEMETRY_OPTOUT = 1; DOTNET_ROOT = \"\''${pkgs.dotnet-sdk_8}\";"
           fi
           ocaml=""
