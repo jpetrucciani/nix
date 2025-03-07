@@ -240,25 +240,6 @@ in
           "x.hexa.dev" = reverse_proxy "neptune:8421";
           "meme.x.hexa.dev" = reverse_proxy "neptune:8420";
           "edge.be.hexa.dev" = reverse_proxy "edge:10000";
-          "oc.cobi.dev" = reverse_proxy ''
-            granite:9200
-            transport http {
-              tls
-              tls_insecure_skip_verify
-            }
-          '';
-          "*.s3.cobi.dev" = secure_geo ''
-            import GCPWILD
-            reverse_proxy /* {
-              to granite:3900
-            }
-          '';
-          "*.web.cobi.dev" = secure_geo ''
-            import GCPWILD
-            reverse_proxy /* {
-              to granite:3902
-            }
-          '';
           "countdown.cobi.dev" = secure_geo ''
             rewrite * /countdown{uri}
             reverse_proxy /* {

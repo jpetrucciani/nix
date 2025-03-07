@@ -84,6 +84,8 @@ in
       extraFlags = "--disable traefik --tls-san='100.65.145.59'";
     };
     infinity.enable = true;
+    promtail = common.templates.promtail { inherit hostname; };
+    prometheus.exporters = common.templates.prometheus_exporters { };
   } // common.services;
 
   system.stateVersion = "24.05";

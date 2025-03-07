@@ -195,6 +195,10 @@ in
         ${terra} x.hexa.dev
         ${terra} z.cobi.dev
         ${terra_ts} llm.cobi.dev
+        ${terra_ts} grafana.cobi.dev
+        ${terra_ts} lobe.cobi.dev
+        ${terra_ts} loki-internal.cobi.dev
+        ${terra_ts} search.cobi.dev
         ${ben} ben
         ${bedrock} bedrock
         ${granite} granite
@@ -263,9 +267,10 @@ in
   templates = {
     promtail =
       { hostname
-      , loki_ip ? "100.78.40.10"
+      , loki_ip ? "loki-internal.cobi.dev"
       , promtail_port ? ports.promtail
-      , loki_port ? ports.loki
+      , loki_port ? 443
+      , tls ? true
       , extra_scrape_configs ? [ ]
       }: {
         enable = true;
@@ -278,7 +283,7 @@ in
             filename = "/tmp/positions.yaml";
           };
           clients = [{
-            url = "http://${loki_ip}:${toString loki_port}/loki/api/v1/push";
+            url = "http${if tls then "s" else ""}://${loki_ip}:${toString loki_port}/loki/api/v1/push";
           }];
           scrape_configs = [{
             job_name = "journal";
