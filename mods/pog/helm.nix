@@ -344,6 +344,19 @@ rec {
     chart_url = "https://imio.github.io/helm-charts/odoo/odoo-{1}.tgz";
   };
 
+  chart_scan_redpanda = _chart_scan {
+    name = "operator";
+    base_url = "https://charts.redpanda.com";
+    chart_url = "https://github.com/redpanda-data/helm-charts/releases/download/operator-{1}/operator-{1}.tgz";
+  };
+
+  chart_scan_questdb = _chart_scan {
+    name = "questdb";
+    base_url = "https://helm.questdb.io";
+    chart_url = "https://questdb.github.io/questdb-kubernetes/questdb-{1}.tgz";
+  };
+
+
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
@@ -381,7 +394,9 @@ rec {
     chart_scan_prometheus-postgres-exporter
     chart_scan_prometheus-pushgateway
     chart_scan_prometheus-redis-exporter
+    chart_scan_questdb
     chart_scan_redis-operator
+    chart_scan_redpanda
     chart_scan_robusta
     chart_scan_searxng
     chart_scan_sentry
