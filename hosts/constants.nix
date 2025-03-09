@@ -192,11 +192,11 @@ in
         ${terra} otf.cobi.dev
         ${terra} terra
         ${terra} vault.cobi.dev
-        ${terra} quest.cobi.dev
-        ${terra} k.cobi.dev
         ${terra} x.hexa.dev
         ${terra} z.cobi.dev
         ${terra_ts} llm.cobi.dev
+        ${terra_ts} quest.cobi.dev
+        ${terra_ts} k.cobi.dev
         ${terra_ts} grafana.cobi.dev
         ${terra_ts} lobe.cobi.dev
         ${terra_ts} loki-internal.cobi.dev
