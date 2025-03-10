@@ -163,6 +163,7 @@ in
       let
         terra = "192.168.69.10";
         terra_ts = "100.88.176.6";
+        terra_tk = "100.88.33.20";
         ben = "192.168.69.20";
         bedrock = "192.168.69.70";
         granite = "192.168.69.72";
@@ -194,13 +195,13 @@ in
         ${terra} vault.cobi.dev
         ${terra} x.hexa.dev
         ${terra} z.cobi.dev
-        ${terra_ts} llm.cobi.dev
-        ${terra_ts} quest.cobi.dev
-        ${terra_ts} k.cobi.dev
-        ${terra_ts} grafana.cobi.dev
-        ${terra_ts} lobe.cobi.dev
-        ${terra_ts} loki-internal.cobi.dev
-        ${terra_ts} search.cobi.dev
+        ${terra_tk} llm.cobi.dev
+        ${terra_tk} quest.cobi.dev
+        ${terra_tk} k.cobi.dev
+        ${terra_tk} grafana.cobi.dev
+        ${terra_tk} lobe.cobi.dev
+        ${terra_tk} loki-internal.cobi.dev
+        ${terra_tk} search.cobi.dev
         ${ben} ben
         ${bedrock} bedrock
         ${granite} granite
