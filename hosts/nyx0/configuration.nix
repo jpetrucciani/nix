@@ -60,6 +60,7 @@ in
       llama-server.servers = {
         r1-1-5b = {
           enable = true;
+          package = pkgs.llama-cpp-latest;
           port = 8013;
           model = modelPath "DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf";
           ngl = 41;

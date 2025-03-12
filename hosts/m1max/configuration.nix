@@ -43,6 +43,7 @@ in
       llama-server.servers = {
         r1-14b = {
           enable = true;
+          package = pkgs.llama-cpp-latest;
           port = 8012;
           model = modelPath "DeepSeek-R1-Distill-Qwen-14B-Q8_0.gguf";
           extraFlags = ''-md DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf -ngld 99'';
@@ -50,6 +51,7 @@ in
         };
         r1-1-5b = {
           enable = true;
+          package = pkgs.llama-cpp-latest;
           port = 8013;
           model = modelPath "DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf";
           ngl = 99;

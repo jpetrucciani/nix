@@ -59,6 +59,7 @@ in
       llama-server.servers = {
         gemma3 = {
           enable = true;
+          package = pkgs.llama-cpp-latest;
           port = 8012;
           model = modelPath "gemma-3-27b-it-Q5_K_M.gguf";
           extraFlags = ''--ctx-size 16384 --seed 3407 --prio 2 --temp 1.0 --repeat-penalty 1.0 --min-p 0.01 --top-k 64 --top-p 0.95'';
@@ -66,12 +67,14 @@ in
         };
         r1-1-5b = {
           enable = true;
+          package = pkgs.llama-cpp-latest;
           port = 8013;
           model = modelPath "DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf";
           ngl = 99;
         };
         deepscaler-1-5b = {
           enable = true;
+          package = pkgs.llama-cpp-latest;
           port = 8014;
           model = modelPath "agentica-org_DeepScaleR-1.5B-Preview-Q8_0.gguf";
           ngl = 99;
