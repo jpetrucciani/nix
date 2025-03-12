@@ -64,10 +64,12 @@ in
         };
       };
       llama-server.servers = {
-        llama3 = {
+        gemma3 = {
           enable = true;
           port = 8012;
-          model = modelPath "Llama-3.2-3B-Instruct-Q8_0.gguf";
+          model = modelPath "gemma-3-27b-it-Q5_K_M.gguf";
+          extraFlags = ''--ctx-size 16384 --seed 3407 --prio 2 --temp 1.0 --repeat-penalty 1.0 --min-p 0.01 --top-k 64 --top-p 0.95'';
+          ngl = 99;
         };
         qwen-25-coder-7b = {
           enable = true;

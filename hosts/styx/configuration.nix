@@ -57,11 +57,11 @@ in
         };
       };
       llama-server.servers = {
-        r1-14b = {
+        gemma3 = {
           enable = true;
           port = 8012;
-          model = modelPath "DeepSeek-R1-Distill-Qwen-14B-Q8_0.gguf";
-          extraFlags = ''-md DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf -ngld 99'';
+          model = modelPath "gemma-3-27b-it-Q5_K_M.gguf";
+          extraFlags = ''--ctx-size 16384 --seed 3407 --prio 2 --temp 1.0 --repeat-penalty 1.0 --min-p 0.01 --top-k 64 --top-p 0.95'';
           ngl = 99;
         };
         r1-1-5b = {
