@@ -154,6 +154,13 @@ in
         };
       };
     };
+    _3proxy = {
+      enable = true;
+      services = [{
+        type = "socks";
+        auth = [ "none" ];
+      }];
+    };
     step-ca =
       let
         base = "/var/lib/step-ca";
