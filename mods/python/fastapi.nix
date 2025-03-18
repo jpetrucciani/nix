@@ -270,12 +270,12 @@ rec {
 
   nicegui = buildPythonPackage rec {
     pname = "nicegui";
-    version = "2.12.1";
+    version = "2.13.0";
     pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-n4ELRYlvyzAUJsAWk9F2B91OOwfi63EbvuD4QIs8EhM=";
+      hash = "sha256-orORx4jxXQa67ShqEGUaFZX2lvwqyF4jQ5GxQmir6ks=";
     };
 
     postPatch = ''
@@ -298,6 +298,7 @@ rec {
       "orjson"
       "python-multipart"
       "requests"
+      "starlette"
       "uvicorn"
       "watchfiles"
     ];
