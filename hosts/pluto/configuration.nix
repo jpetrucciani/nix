@@ -55,13 +55,13 @@ in
     {
       infinity.enable = true;
       koboldcpp.servers = {
-        minicpm = {
-          enable = true;
-          port = 5001;
-          model = modelPath "MiniCPM-V-2_6-Q8_0.gguf";
-          mmproj = modelPath "mmproj-MiniCPM-V-2_6-f16.gguf";
-          gpulayers = -1;
-        };
+        # minicpm = {
+        #   enable = true;
+        #   port = 5001;
+        #   model = modelPath "MiniCPM-V-2_6-Q8_0.gguf";
+        #   mmproj = modelPath "mmproj-MiniCPM-V-2_6-f16.gguf";
+        #   gpulayers = -1;
+        # };
       };
       llama-server.servers = {
         # gemma3 = {
