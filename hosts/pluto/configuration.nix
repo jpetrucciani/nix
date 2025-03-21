@@ -49,9 +49,6 @@ in
   #   ngl = 41;
   # };
   services =
-    let
-      modelPath = name: "/opt/box/models/${name}";
-    in
     {
       infinity.enable = true;
       koboldcpp.servers = {
