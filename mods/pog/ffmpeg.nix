@@ -1,6 +1,9 @@
 # This module provides some shorthand `pog` helpers that simplify some ffmpeg workflows!
 final: prev:
-with prev;
+let
+  inherit (final) pog;
+  ffmp = "${final.ffmpeg}/bin/ffmpeg";
+in
 rec {
   scale = pog {
     name = "scale";
@@ -39,7 +42,7 @@ rec {
       fi
       debug "x=$horizontal y=$vertical scale=$scale"
       ${var.empty "output"} && output="''${file%.*}.$name.''${file##*.}"
-      ${_.ffmpeg} -i "$file" -vf scale="$scale" "$output"
+      ${ffmp} -i "$file" -vf scale="$scale" "$output"
     '';
   };
 
@@ -74,7 +77,7 @@ rec {
       ${var.empty "horizontal"} && ${var.empty "vertical"} && die "you must specify at least one way to flip!" 1
       ${var.empty "output"} && output="''${file%.*}.flip.''${file##*.}"
       ${notFlag "horizontal"} && ${notFlag "vertical"} && sep=","
-      ${_.ffmpeg} -i "$file" -filter:v "''${vertical:+vflip}''${sep}''${horizontal:+hflip}" -c:a copy "$output"
+      ${ffmp} -i "$file" -filter:v "''${vertical:+vflip}''${sep}''${horizontal:+hflip}" -c:a copy "$output"
     '';
   };
 
@@ -117,7 +120,7 @@ rec {
         end_sec="$(echo "$start_sec" "$duration" | ${fn.add})"
       fi
 
-      ${_.ffmpeg} -ss "$start_sec" -to "$end_sec" -i "$file" -c:v libx264 -c:a aac "$output"
+      ${ffmp} -ss "$start_sec" -to "$end_sec" -i "$file" -c:v libx264 -c:a aac "$output"
     '';
   };
 
@@ -161,7 +164,7 @@ rec {
       ${var.empty "file"} && die "you must specify a source file!" 1
       ${file.notExists "file"} && die "the file '$file' does not exist!" 2
       ${var.empty "output"} && output="''${file%.*}.crop.''${file##*.}"
-      ${_.ffmpeg} -i "$file" -filter:v "crop=$width:$height:$x:$y" "$output"
+      ${ffmp} -i "$file" -filter:v "crop=$width:$height:$x:$y" "$output"
     '';
   };
 
@@ -187,7 +190,7 @@ rec {
       file="$1"
       ${var.empty "file"} && die "you must specify a source file!" 1
       ${var.empty "output"} && output="''${file%.*}.mp3"
-      ${_.ffmpeg} -i "$file" -c:v copy -c:a libmp3lame -q:a "$quality" "$output"
+      ${ffmp} -i "$file" -c:v copy -c:a libmp3lame -q:a "$quality" "$output"
     '';
   };
 
