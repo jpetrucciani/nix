@@ -324,7 +324,7 @@ rec {
           hash = "sha256-tKGH/cX+vPFvclF53PLEdvMe7r2DU3lNkXVKMgLdUHI=";
         };
       };
-      d = dists.${prev.stdenv.hostPlatform.system} or (throw "Unsupported system: ${prev.stdenv.hostPlatform.system}");
+      d = dists.${final.stdenv.hostPlatform.system} or (throw "Unsupported system: ${final.stdenv.hostPlatform.system}");
       src = fetchPypi {
         inherit version format;
         inherit (d) hash platform;

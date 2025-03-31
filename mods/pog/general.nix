@@ -205,7 +205,7 @@ rec {
   portwatch =
     let
       nc = "${netcat-gnu}/bin/nc";
-      timeout = "${prev.coreutils}/bin/timeout";
+      timeout = "${final.coreutils}/bin/timeout";
       flags = [
         {
           name = "sleep";

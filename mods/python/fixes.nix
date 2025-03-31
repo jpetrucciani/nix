@@ -11,16 +11,16 @@ rec {
     in
     prev.sqlalchemy.overridePythonAttrs (_: {
       inherit version;
-      src = prev.fetchPypi {
+      src = final.fetchPypi {
         inherit version;
         pname = "SQLAlchemy";
         hash = "sha256-tHvChwltmJoIOM6W99jpZpFKJNqHftQadTHUS1XNuN8=";
       };
       passthru.replaceSqlalchemy = old: {
-        propagatedBuildInputs = prev.lib.remove prev.sqlalchemy old.propagatedBuildInputs or [ ] ++ [ sqlalchemy_1 ];
+        propagatedBuildInputs = final.lib.remove prev.sqlalchemy old.propagatedBuildInputs or [ ] ++ [ sqlalchemy_1 ];
       };
       disabledTestPaths = [ ];
-      disabledTests = prev.lib.optionals prev.stdenv.isDarwin [
+      disabledTests = final.lib.optionals final.stdenv.isDarwin [
         "MemUsageWBackendTest"
         "MemUsageTest"
       ];
@@ -30,7 +30,7 @@ rec {
     postPatch = ''
       sed -i -E 's#raise.*#version = "${old.version}"#g' ./setup.py
     '';
-    propagatedBuildInputs = old.propagatedBuildInputs ++ [ prev.pycryptodome ];
+    propagatedBuildInputs = old.propagatedBuildInputs ++ [ final.pycryptodome ];
   });
 
   prometheus-fastapi-instrumentator =
@@ -38,10 +38,10 @@ rec {
       prev.prometheus-fastapi-instrumentator.overridePythonAttrs
         (_: {
           doCheck = false;
-          meta.platforms = prev.lib.platforms.all;
+          meta.platforms = final.lib.platforms.all;
         }) else prev.prometheus-fastapi-instrumentator;
 
-  emoji_1 = prev.buildPythonPackage rec {
+  emoji_1 = final.buildPythonPackage rec {
     pname = "emoji";
     version = "1.7.0";
     format = "setuptools";
@@ -56,7 +56,7 @@ rec {
     };
 
     nativeCheckInputs = [
-      prev.pytestCheckHook
+      final.pytestCheckHook
     ];
 
     disabledTests = [
@@ -67,7 +67,7 @@ rec {
       "emoji"
     ];
 
-    meta = with prev.pkgs.lib; {
+    meta = with final.pkgs.lib; {
       description = "Emoji for Python";
       homepage = "https://github.com/carpedm20/emoji/";
       changelog = "https://github.com/carpedm20/emoji/blob/v${version}/CHANGES.md";

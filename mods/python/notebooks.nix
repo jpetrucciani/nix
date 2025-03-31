@@ -1,9 +1,9 @@
 final: prev:
 let
-  inherit (prev) buildPythonPackage fetchPypi;
-  inherit (prev) poetry-core pytestCheckHook;
-  inherit (prev.lib) licenses maintainers;
-  inherit (prev.pkgs) fetchFromGitHub texlive;
+  inherit (final) buildPythonPackage fetchPypi;
+  inherit (final) poetry-core pytestCheckHook;
+  inherit (final.lib) licenses maintainers;
+  inherit (final.pkgs) fetchFromGitHub texlive;
 in
 rec {
   dataframe-image =
@@ -30,7 +30,7 @@ rec {
           --replace 'setup_requires=["setuptools_scm"],' ""
       '';
 
-      propagatedBuildInputs = with prev; [
+      propagatedBuildInputs = with final; [
         aiohttp
         beautifulsoup4
         cssutils
@@ -105,14 +105,14 @@ rec {
       sed -i -E 's#(requires =).*#\1["jupyterlab"]#g' ./pyproject.toml
     '';
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       jupyter-packaging
       jupyterlab
       setuptools
       wheel
     ];
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       ipywidgets
       pandas
       simplejson
@@ -142,7 +142,7 @@ rec {
       sed -i -E 's#(requires =).*#\1["jupyterlab"]#g' ./pyproject.toml
     '';
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       jupyter-packaging
       jupyterlab
       setuptools
@@ -177,12 +177,12 @@ rec {
     buildPythonPackage {
       inherit pname src version format;
 
-      nativeBuildInputs = with prev; [
+      nativeBuildInputs = with final; [
         jupyter-packaging
         jupyterlab
       ];
 
-      propagatedBuildInputs = with prev; [
+      propagatedBuildInputs = with final; [
         jupyter-server
       ];
 
@@ -214,12 +214,12 @@ rec {
     buildPythonPackage {
       inherit pname src version format;
 
-      nativeBuildInputs = with prev; [
+      nativeBuildInputs = with final; [
         jupyter-packaging
         jupyterlab
       ];
 
-      propagatedBuildInputs = with prev; [
+      propagatedBuildInputs = with final; [
         jupyter-server
       ];
 
@@ -250,14 +250,14 @@ rec {
     buildPythonPackage {
       inherit pname src version format;
 
-      nativeBuildInputs = with prev; [
+      nativeBuildInputs = with final; [
         hatchling
         hatch-jupyter-builder
         jupyter-core
         jupyterlab
       ];
 
-      propagatedBuildInputs = with prev; [
+      propagatedBuildInputs = with final; [
         jupyter-client
         jupyter-core
         jupyter-server
@@ -268,7 +268,7 @@ rec {
         websockets
       ];
 
-      passthru.optional-dependencies = with prev; {
+      passthru.optional-dependencies = with final; {
         dev = [
           black
           hatch

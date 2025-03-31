@@ -1,7 +1,7 @@
 final: prev:
 let
-  inherit (prev) buildPythonPackage fetchPypi;
-  inherit (prev.lib) licenses maintainers;
+  inherit (final) buildPythonPackage fetchPypi;
+  inherit (final.lib) licenses maintainers;
 in
 {
   vectordb = buildPythonPackage rec {
@@ -15,12 +15,12 @@ in
       hash = "sha256-ldrYV3SJ8tIE10FeIkCZHCzHwSBbeRnPhCqRRk+dZ+0=";
     };
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       setuptools
       wheel
     ];
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       faiss
       numpy
       scikit-learn

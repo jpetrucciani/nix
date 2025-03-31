@@ -1,7 +1,7 @@
 final: prev:
 let
-  inherit (prev) buildPythonPackage fetchPypi;
-  inherit (prev.lib) maintainers;
+  inherit (final) buildPythonPackage fetchPypi;
+  inherit (final.lib) maintainers;
 in
 rec {
   boto3-stubs = buildPythonPackage rec {
@@ -14,7 +14,7 @@ rec {
     };
 
     propagatedBuildInputs = [ botocore-stubs ];
-    checkInputs = with prev; [
+    checkInputs = with final; [
       boto3
     ];
     pythonImportsCheck = [ "boto3-stubs" ];

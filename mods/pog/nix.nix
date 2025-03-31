@@ -170,7 +170,7 @@ rec {
           if ${h.var.notEmpty "srcpath"}; then
             ftb="$srcpath"
           fi
-          ${prev.coreutils}/bin/cat -s <<EOF | ${_.sed} -E 's#(fetchTarball \{) (name)#\1\n\2#' | ${_.nixpkgs-fmt}
+          ${final.coreutils}/bin/cat -s <<EOF | ${_.sed} -E 's#(fetchTarball \{) (name)#\1\n\2#' | ${_.nixpkgs-fmt}
             { pkgs ? import
                 (''${ftb}) {}
             }:
@@ -267,11 +267,11 @@ rec {
       files=( "$@" )
       echo "caching $# builds"
       rm -f ./nixcache.log
-      for i in $(${prev.coreutils}/bin/seq $#); do
+      for i in $(${final.coreutils}/bin/seq $#); do
           index=$((i-1))
-          ${prev.nix}/bin/nix copy --refresh --to "$uri" "''${files[$index]}" >>nixcache.log
+          ${final.nix}/bin/nix copy --refresh --to "$uri" "''${files[$index]}" >>nixcache.log
           echo "$i"
-      done | ${prev.python311Packages.tqdm}/bin/tqdm --total "$#" >>/dev/null
+      done | ${final.python311Packages.tqdm}/bin/tqdm --total "$#" >>/dev/null
       echo "cached $# builds!"
     '';
   };
@@ -281,7 +281,7 @@ rec {
     arguments = [{ name = "attribute"; }];
     description = "my lazy helper function to update an attribute in my nix repo";
     script = ''
-      ${prev.nix-update}/bin/nix-update --build --flake --use-update-script "$@"
+      ${final.nix-update}/bin/nix-update --build --flake --use-update-script "$@"
     '';
   };
 
@@ -295,7 +295,7 @@ rec {
     description = "";
     script = ''
       latest_tag=$(${final.curl}/bin/curl "https://api.github.com/repos/$owner/$repo/releases/latest" | ${final.jq}/bin/jq -r '.tag_name')
-      ${prev.nix-update}/bin/nix-update --build --flake --version="$latest_tag" "$@"
+      ${final.nix-update}/bin/nix-update --build --flake --version="$latest_tag" "$@"
     '';
   };
 
@@ -310,16 +310,16 @@ rec {
     script = helpers: with helpers; ''
       attribute="$1"
       ${var.empty "attribute"} && die "no attribute specified to diff!"
-      ${prev.nvd}/bin/nvd diff \
+      ${final.nvd}/bin/nvd diff \
         "$(${final._nix}/bin/nix eval --raw "github:NixOS/nixpkgs/$nixpkgs#$attribute.drvPath")" \
         "$(${final._nix}/bin/nix eval --raw "github:jpetrucciani/nix#$attribute.drvPath")"
     '';
   };
 
   nix_pog_scripts = [
-    prev.hex
-    prev.hexcast
-    prev.nixrender
+    final.hex
+    final.hexcast
+    final.nixrender
     cache
     ndiff
     nixup

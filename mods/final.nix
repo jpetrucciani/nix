@@ -10,7 +10,7 @@ let
       (!pkg.meta.broken or false)
       (!pkg.meta.skipBuild or false)
     ])
-    prev.custom;
+    final.custom;
 
   _treefmt =
     let

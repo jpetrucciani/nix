@@ -1,7 +1,7 @@
 final: prev:
 let
-  inherit (prev) buildPythonPackage fetchPypi;
-  inherit (prev.lib) licenses maintainers;
+  inherit (final) buildPythonPackage fetchPypi;
+  inherit (final.lib) licenses maintainers;
 in
 {
   nemoguardrails =
@@ -22,7 +22,7 @@ in
     buildPythonPackage {
       inherit pname src version format;
 
-      propagatedBuildInputs = with prev; [
+      propagatedBuildInputs = with final; [
         aiohttp
         annoy
         httpx
@@ -57,12 +57,12 @@ in
       hash = "sha256-PAxGk0NYOIY9WKNlJP9wmVBotn7fLp2kqtiehkFphnU=";
     };
 
-    nativeBuildInputs = with prev; [
+    nativeBuildInputs = with final; [
       setuptools
       wheel
     ];
 
-    propagatedBuildInputs = with prev; [
+    propagatedBuildInputs = with final; [
       aiohttp
       astunparse
       llama-cpp-python
@@ -72,7 +72,7 @@ in
       tiktoken
     ];
 
-    passthru.optional-dependencies = with prev; {
+    passthru.optional-dependencies = with final; {
       hf = [
         accelerate
         transformers

@@ -48,9 +48,9 @@ rec {
     ];
     script = ''
       # shellcheck disable=SC2155
-      export DOCKER_HOST="$(${prev.docker-client}/bin/docker context inspect --format '{{.Endpoints.docker.Host}}')"
+      export DOCKER_HOST="$(${final.docker-client}/bin/docker context inspect --format '{{.Endpoints.docker.Host}}')"
       # shellcheck disable=SC2086
-      ${prev.act}/bin/act --container-architecture "linux/$arch" -r --rm $flags
+      ${final.act}/bin/act --container-architecture "linux/$arch" -r --rm $flags
     '';
   };
 
