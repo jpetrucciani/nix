@@ -1,4 +1,25 @@
 let
+  machines = {
+    nixos = [
+      "andromeda"
+      "edge"
+      "luna"
+      "milkyway"
+      "neptune"
+      "phobos"
+      "polaris"
+      "terra"
+      "titan"
+    ];
+    darwin = [
+      "charon"
+      "m1max"
+      "nyx0"
+      "pluto"
+      "styx"
+    ];
+  };
+
   ports = rec {
     usual = [
       ssh
@@ -125,7 +146,7 @@ let
   };
 in
 {
-  inherit ports pubkeys;
+  inherit ports pubkeys machines;
   nix = {
     extraOptions = ''
       ${_base_nix_options}

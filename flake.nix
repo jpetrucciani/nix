@@ -66,30 +66,11 @@
   outputs = { self, ... }:
     let
       inherit (self.inputs.nixpkgs) lib;
+      inherit (import ./hosts/constants.nix) machines;
       forAllSystems = lib.genAttrs lib.systems.flakeExposed;
-      machines = {
-        nixos = [
-          "andromeda"
-          "edge"
-          "luna"
-          "milkyway"
-          "neptune"
-          "phobos"
-          "polaris"
-          "terra"
-          "titan"
-        ];
-        darwin = [
-          "charon"
-          "m1max"
-          "nyx0"
-          "pluto"
-          "styx"
-        ];
-      };
       nix2containerPkgs = self.inputs.nix2container.packages.x86_64-linux;
       packages = forAllSystems
-        (system: import ./. { _compat = self; inherit system; });
+        (system: import ./. { flake = self; inherit system; });
     in
     {
       inherit packages;
