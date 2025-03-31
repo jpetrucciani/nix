@@ -13,8 +13,8 @@ import nixpkgs {
     # _compat.inputs.pnpm2nix.overlays.default
     (_: _: { treefmt-nix = _compat.inputs.treefmt-nix.lib; })
     (_: _: { inherit (_compat.inputs) uv2nix pyproject-nix pyproject-build-systems; })
-    (_: prev: { inherit (import _compat.inputs.pog { pkgs = prev; }) _ pog; })
-    (_: prev: { inherit (import _compat.inputs.hex { pkgs = prev; }) hex hexcast nixrender; })
+    (final: _: { inherit (import _compat.inputs.pog { pkgs = final; }) _ pog; })
+    (final: _: { inherit (import _compat.inputs.hex { pkgs = final; }) hex hexcast nixrender; })
     (_: _: {
       machines = {
         nixos = [

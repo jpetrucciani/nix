@@ -63,7 +63,7 @@
     };
   };
 
-  outputs = { self, pog, hex, ... }:
+  outputs = { self, ... }:
     let
       inherit (self.inputs.nixpkgs) lib;
       forAllSystems = lib.genAttrs lib.systems.flakeExposed;
@@ -89,23 +89,7 @@
       };
       nix2containerPkgs = self.inputs.nix2container.packages.x86_64-linux;
       packages = forAllSystems
-        (system: import self.inputs.nixpkgs {
-          inherit system;
-          overlays = [
-            (_: _: { inherit machines; flake = self; nixpkgsRev = self.inputs.nixpkgs.rev; })
-            self.inputs.poetry2nix.overlays.default
-            (_: _: { inherit (self.inputs) uv2nix; })
-            (_: _: { treefmt-nix = self.inputs.treefmt-nix.lib; })
-            (_: prev: { inherit (import pog { pkgs = prev; }) _ pog; })
-            (_: prev: { inherit (import hex { pkgs = prev; }) hex hexcast nixrender; })
-          ] ++ import ./overlays.nix;
-          config = {
-            allowUnfree = true;
-            permittedInsecurePackages = [
-              "nodejs-16.20.2"
-            ];
-          };
-        });
+        (system: import ./. { _compat = self; inherit system; });
     in
     {
       inherit packages;
