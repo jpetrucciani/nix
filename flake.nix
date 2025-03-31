@@ -63,7 +63,7 @@
     };
   };
 
-  outputs = { self, pog, hex, ... }:
+  outputs = { self, ... }:
     let
       inherit (self.inputs.nixpkgs) lib;
       forAllSystems = lib.genAttrs lib.systems.flakeExposed;
