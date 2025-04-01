@@ -116,7 +116,7 @@ let
             '';
           };
           torch = _prev.torch.overrideAttrs (_: {
-            buildInputs = (python.pkgs.torch.override { cudaSupport = true; }).buildInputs;
+            inherit ((python.pkgs.torch.override { cudaSupport = true; })) buildInputs;
             postFixup = ''
               addAutoPatchelfSearchPath "${_final.nvidia-cusparselt-cu12}"
             '';
