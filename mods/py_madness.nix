@@ -96,8 +96,32 @@ let
         });
       };
     };
-    mkEnv = { name, workspaceRoot, envName ? "${name}-env", python ? final.python312, sourcePreference ? "wheel", pyprojectOverrides ? null, darwinSdkVersion ? "15.1", venvIgnoreCollisions ? [ "*" ], gitignore ? true }:
+    mkEnv = { name, workspaceRoot, envName ? "${name}-env", python ? final.python312, sourcePreference ? "wheel", pyprojectOverrides ? null, darwinSdkVersion ? "15.1", venvIgnoreCollisions ? [ "*" ], gitignore ? true, enableCuda ? false, _pkgs ? final }:
       let
+        cudaOverrides = _final: _prev: {
+          nvidia-cusolver-cu12 = _prev.nvidia-cusolver-cu12.overrideAttrs (_: {
+            buildInputs = [ _pkgs.cudatoolkit _pkgs.cudaPackages.libnvjitlink ];
+          });
+          nvidia-cusparse-cu12 = _prev.nvidia-cusparse-cu12.overrideAttrs (_: {
+            buildInputs = [ _pkgs.cudaPackages.libnvjitlink ];
+          });
+          flash-attn = _prev.flash-attn.overrideAttrs {
+            postFixup = ''
+              addAutoPatchelfSearchPath "${_final.torch}"
+            '';
+          };
+          exllamav2 = _prev.exllamav2.overrideAttrs {
+            postFixup = ''
+              addAutoPatchelfSearchPath "${_final.torch}"
+            '';
+          };
+          torch = _prev.torch.overrideAttrs (_: {
+            buildInputs = (python.pkgs.torch.override { cudaSupport = true; }).buildInputs;
+            postFixup = ''
+              addAutoPatchelfSearchPath "${_final.nvidia-cusparselt-cu12}"
+            '';
+          });
+        };
         gitignoreRecursiveSource = final.nix-gitignore.gitignoreFilterSourcePure (_: _: true) [ ];
         workspace = final.uv2nix.lib.workspace.loadWorkspace { workspaceRoot = if gitignore then gitignoreRecursiveSource workspaceRoot else workspaceRoot; };
         overlay = workspace.mkPyprojectOverlay {
@@ -146,21 +170,26 @@ let
             };
           }).overrideScope
             (
-              final.lib.composeManyExtensions [
+              final.lib.composeManyExtensions ([
                 final.pyproject-build-systems.overlays.default
                 overlay
                 _pyprojectOverrides
+              ] ++
+              (if enableCuda then [ cudaOverrides ] else [ ])
+              ++ [
                 pyprojectOverrides
-              ]
+              ])
             );
 
         virtualenv = (pythonSet.mkVirtualEnv envName workspace.deps.all).overrideAttrs (_: { inherit venvIgnoreCollisions; });
       in
       virtualenv // {
         uvEnvVars = {
+          UV_NO_MANAGED_PYTHON = "true";
           UV_NO_SYNC = "1";
           UV_PYTHON = "${virtualenv}/bin/python";
           UV_PYTHON_DOWNLOADS = "never";
+          UV_SYSTEM_PYTHON = "true";
         };
       };
   };
