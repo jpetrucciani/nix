@@ -1,6 +1,6 @@
 # [coscli](https://github.com/tencentyun/coscli) is a tencent cloud command line tool
-{ lib, buildGo122Module, fetchFromGitHub, ... }:
-buildGo122Module rec {
+{ lib, buildGo124Module, fetchFromGitHub, ... }:
+buildGo124Module rec {
   pname = "coscli";
   version = "0.13.0";
 

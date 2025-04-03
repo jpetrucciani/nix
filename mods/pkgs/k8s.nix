@@ -5,8 +5,8 @@ let
 in
 {
   goldilocks = callPackage
-    ({ lib, buildGo122Module, fetchFromGitHub }:
-      buildGo122Module rec {
+    ({ lib, buildGo124Module, fetchFromGitHub }:
+      buildGo124Module rec {
         pname = "goldilocks";
         version = "4.3.3";
 
@@ -30,8 +30,8 @@ in
     { };
 
   cyclonus = callPackage
-    ({ lib, buildGo122Module, fetchFromGitHub }:
-      buildGo122Module rec {
+    ({ lib, buildGo124Module, fetchFromGitHub }:
+      buildGo124Module rec {
         pname = "cyclonus";
         version = "0.5.0";
 
@@ -55,8 +55,8 @@ in
     { };
 
   rbac-tool = callPackage
-    ({ lib, buildGo122Module, fetchFromGitHub }:
-      buildGo122Module rec {
+    ({ lib, buildGo124Module, fetchFromGitHub }:
+      buildGo124Module rec {
         pname = "rbac-tool";
         version = "1.9.0";
 

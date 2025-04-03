@@ -1,6 +1,6 @@
 # dark souls-esque message generator
-{ lib, buildGo122Module, fetchFromGitHub, ... }:
-buildGo122Module rec {
+{ lib, buildGo124Module, fetchFromGitHub, ... }:
+buildGo124Module rec {
   pname = "soulmsg";
   version = "0.0.1";
 

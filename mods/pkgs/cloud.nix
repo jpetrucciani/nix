@@ -5,8 +5,8 @@ let
 in
 {
   regula = callPackage
-    ({ lib, buildGo122Module, fetchFromGitHub }:
-      buildGo122Module rec {
+    ({ lib, buildGo124Module, fetchFromGitHub }:
+      buildGo124Module rec {
         pname = "regula";
         version = "2.9.0";
         commit = "5193f8781c63e5f79dc8981f7ee9dfa35585dd9e";
