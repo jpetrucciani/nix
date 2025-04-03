@@ -1,6 +1,6 @@
 # [rare](https://github.com/zix99/rare) is a realtime regex extraction and aggregation cli tool
-{ lib, buildGo122Module, fetchFromGitHub }:
-buildGo122Module rec {
+{ lib, buildGo124Module, fetchFromGitHub }:
+buildGo124Module rec {
   pname = "rare";
   version = "0.3.3";
 

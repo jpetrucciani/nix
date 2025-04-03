@@ -1,6 +1,6 @@
 # [terraform-cloud-exporter](https://github.com/pacoguzman/terraform-cloud-exporter) is a prometheus exporter for terraform cloud
-{ lib, buildGo122Module, fetchFromGitHub }:
-buildGo122Module rec {
+{ lib, buildGo124Module, fetchFromGitHub }:
+buildGo124Module rec {
   pname = "terraform-cloud-exporter";
   version = "2.3.0";
 

@@ -1,6 +1,6 @@
 # [ov](https://github.com/noborus/ov) is a Feature-rich terminal-based text viewer.
-{ lib, buildGo122Module, fetchFromGitHub, installShellFiles }:
-buildGo122Module rec {
+{ lib, buildGo124Module, fetchFromGitHub, installShellFiles }:
+buildGo124Module rec {
   pname = "ov";
   version = "0.32.0";
 

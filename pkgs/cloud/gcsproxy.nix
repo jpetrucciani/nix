@@ -1,6 +1,6 @@
 # [gcsproxy](https://github.com/daichirata/gcsproxy/) is a reverse proxy for google cloud storage
-{ lib, buildGo122Module, fetchFromGitHub, ... }:
-buildGo122Module rec {
+{ lib, buildGo124Module, fetchFromGitHub, ... }:
+buildGo124Module rec {
   pname = "gcsproxy";
   version = "0.4.1";
 

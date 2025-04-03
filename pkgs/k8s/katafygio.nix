@@ -1,6 +1,6 @@
 # [katafygio](https://github.com/bpineau/katafygio) is a tool to dump k8s objects to files
-{ lib, buildGo122Module, fetchFromGitHub }:
-buildGo122Module rec {
+{ lib, buildGo124Module, fetchFromGitHub }:
+buildGo124Module rec {
   pname = "katafygio";
   version = "0.8.3";
 

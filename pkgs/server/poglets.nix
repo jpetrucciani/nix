@@ -1,6 +1,6 @@
 # [poglets](https://github.com/jpetrucciani/poglets) is a TCP tunneling system
-{ lib, buildGo122Module, fetchFromGitHub, installShellFiles }:
-buildGo122Module rec {
+{ lib, buildGo124Module, fetchFromGitHub, installShellFiles }:
+buildGo124Module rec {
   pname = "poglets";
   version = "0.0.3";
   commit = "0e96c5f5887cd317cd92e6e51eb366929cee3ed1";

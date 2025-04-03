@@ -1,10 +1,10 @@
 # [tlsh](https://github.com/glaslos/tlsh) is a tlsh implementation in go
-{ lib, buildGo122Module, fetchFromGitHub }:
+{ lib, buildGo124Module, fetchFromGitHub }:
 let
   version = "0.3.0";
   date = "2022-12-12";
 in
-buildGo122Module rec {
+buildGo124Module rec {
   inherit version;
   pname = "tlsh-go";
 
