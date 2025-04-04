@@ -104,7 +104,7 @@ rec {
       googleclouddns
       route53
     ];
-    vendorHash = "sha256-MrOIyLPoX8Tk2FsHIl0VJL3ZA6D3sqmNfE00bItfnyM=";
+    vendorHash = "sha256-QmzuwNI5tKY8SO9ehTCAxumHFGDtD//N4zw/mdWXa/Q=";
   };
 
   # caddy with s3-browser plugin
