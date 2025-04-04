@@ -15,7 +15,7 @@ rustPlatform.buildRustPackage {
     hash = "sha256-4AjgTW2gFLUjr6XMNzzT6Pwt4f2E+ey1bCj8tx+rZS4=";
   };
 
-  cargoHash = "sha256-vlXguCKfyicHEDZMWzNWvkIQJMYS3xVIShtLO5XpK0A=";
+  cargoHash = "sha256-KfDNZe+nhPPvXkkGnKLYfUeld2r9yNEiVN/lClPJbEE=";
 
   postInstall = ''
     mv $out/bin/compiler $out/bin/borgo

@@ -14,7 +14,7 @@ rustPlatform.buildRustPackage rec {
     sha256 = "sha256-YDPYH/qaJkD02/pQdVuiLzNwX+CLYGmMPJrTlYgOqgQ=";
   };
 
-  cargoHash = "sha256-45aq79k2dBkW07iCivkMlFl3Hyd3SAls3UgrCA100u0=";
+  cargoHash = "sha256-+y5IKaOUc4UBK2gOFg68TcE0WK/xEMYN4/4v4f9BbP8=";
 
   meta = with lib; {
     description = "Efficiently compute the differences between two directories";

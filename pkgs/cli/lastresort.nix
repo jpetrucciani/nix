@@ -14,7 +14,7 @@ rustPlatform.buildRustPackage rec {
     sha256 = "sha256-nruXdanshJow4imQY8tshHde96ek1Ro1KK0U2V9jAs4=";
   };
 
-  cargoHash = "sha256-vmG0eOMcLqg9g+QDyW7AFD54zfIFmEb6lVrpHIju6Is=";
+  cargoHash = "sha256-icLggjM7sppAstmS1w1IzuTasC7tYgBmD7ubayjP25E=";
 
   meta = with lib; {
     description = "Encode and decode data in base 256 easily typed words";

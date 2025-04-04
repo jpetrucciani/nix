@@ -15,7 +15,7 @@ rustPlatform.buildRustPackage rec {
     hash = "sha256-YRn14rF94zSTnFAIRuvw84GDRBaqmns9nvaHCTjhWQg=";
   };
 
-  cargoHash = "sha256-MO4LKQbIwiYJzFTMglx4uet8UYtPE+H3MfSEHm0JmOI=";
+  cargoHash = "sha256-sdXr+z8wxEB3qqRB+d9uFbEyX6LEYoHANxrzfdfC3+0=";
 
   meta = with lib; {
     description = "Rust library to read and write Unreal Engine save files";
