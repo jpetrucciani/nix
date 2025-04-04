@@ -23,7 +23,7 @@ rustPlatform.buildRustPackage rec {
     sed -i -E 's/(MetricType::)Counter/\1Gauge/g' ./src/main.rs
   '';
 
-  cargoHash = "sha256-M9kvf0XNDtBzvCHVDs+JPC+oNTsWuDFKdjqVgNUnRLg=";
+  cargoHash = "sha256-IjhNtUgeWr4WjioAZoA1dkQrkTdaSprXXmF15l06rSA=";
 
   buildInputs = lib.optionals stdenv.isDarwin [
     darwin.apple_sdk.frameworks.Security

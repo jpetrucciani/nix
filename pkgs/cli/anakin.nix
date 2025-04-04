@@ -14,7 +14,7 @@ rustPlatform.buildRustPackage {
     hash = "sha256-5v964c7o1/sXS+S9NvaNW9BlyMhFxFPyMLmO819aGds=";
   };
 
-  cargoHash = "sha256-mPnvjx9b+0Vc09jmOGZTczkmKeLjryDCrMGHQTiRzXk=";
+  cargoHash = "sha256-4eOrMfWxV7LFhkfRWopYyOqWY6Sy60h8XdKsjo+jJC8=";
 
   meta = with lib; {
     description = "Kill orphan processes";

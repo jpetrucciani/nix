@@ -25,7 +25,7 @@ rustPlatform.buildRustPackage rec {
   ] ++ osSpecific;
   nativeBuildInputs = [ pkg-config ];
 
-  cargoHash = "sha256-xDloCgOv12BcueEx/kpM/2810Us7rVk8RnIFnaCjW2M=";
+  cargoHash = "sha256-/Bsk5RFGuyUg9AUmiHh6HdLBAEuc50o4bIQPsTHS67M=";
 
   meta = with lib; {
     description = "Run inference for Large Language Models on CPU, with Rust";

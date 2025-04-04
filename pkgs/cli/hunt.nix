@@ -14,7 +14,7 @@ rustPlatform.buildRustPackage rec {
     sha256 = "sha256-NKXZECtepuFg6qTuXF9Gnat/vnrygt3UOZb0YUKPqi8=";
   };
 
-  cargoHash = "sha256-ExwcFJVqQF/RTUyv1FvOCnlB+9Z7uhi/5UUjW7WcXTk=";
+  cargoHash = "sha256-4cPNYvC9e2OucRUYqZ02etYkp/CqhSrrtIAx5+PQDgw=";
 
   meta = with lib; {
     description = "simplified find command made with rust";

@@ -15,7 +15,7 @@ rustPlatform.buildRustPackage rec {
     hash = "sha256-KHXBeQFmuA3YO9AN5dkY/fl/z2RdbR6AqSSEGUNrxt4=";
   };
 
-  cargoHash = "sha256-3nNdCz6Yjnnle/sG6kqGCAcoVRNhc4BOteWGDDl5oWs=";
+  cargoHash = "sha256-seH+ypDSoRUf/+bmVLICEVwXNk7gGZwQ7R84Xu0XjNw=";
 
   meta = with lib; {
     description = "Interactive grep (for streaming";

@@ -14,7 +14,7 @@ rustPlatform.buildRustPackage rec {
     sha256 = "sha256-qb7uRvCAXCayDIg8yQfF/Yxe0pNvR3giCQYmMIur2rM=";
   };
 
-  cargoHash = "sha256-NGXo+He3KEPTDf5LqEN0sDwK93sc+kU+5w4kAEyaYuU=";
+  cargoHash = "sha256-locf3k0jIT9RNQS9yCUtOpj4oKo5pOBU3CEYAJDbaPU=";
   doCheck = false; # the tests are currently failing?
 
   meta = with lib; {

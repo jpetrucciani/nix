@@ -14,7 +14,7 @@ rustPlatform.buildRustPackage rec {
     sha256 = "sha256-HAJ4gPS2ubi7Qu+XUh9Z2pNGm3G0NOl3k8GQtMox0MU=";
   };
 
-  cargoHash = "sha256-ueXkZu58YJ5pktHwWIlwtWo4njGHlKXImLyE4eRoSEE=";
+  cargoHash = "sha256-6apvdapilOLj0XWsig8WvbVlALWk0m7V3YrN/FLVyGo=";
 
   checkFlags = [
     # these tests attempt to bind to local ports
