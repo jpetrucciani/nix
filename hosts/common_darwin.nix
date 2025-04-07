@@ -95,22 +95,17 @@ in
           ];
           work = [
             "1password"
-            "dropbox"
             "robo-3t"
             "slack"
-            "xca"
           ];
           comms = [
             "discord"
           ];
           util = [
-            "dbeaver-community"
             "docker"
             "ghostty"
             "insomnia"
             "karabiner-elements"
-            "keybase"
-            "macfuse"
             "obsidian"
             "parsec"
             "qlvideo"
