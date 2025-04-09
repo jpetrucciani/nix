@@ -70,7 +70,7 @@ rec {
         '')
         allPlugins;
       zaddy = prev.caddy.override {
-        buildGoModule = args: buildGo123Module (args // {
+        buildGoModule = args: buildGo124Module (args // {
           inherit vendorHash;
           overrideModAttrs = _: {
             preBuild = ''
@@ -104,7 +104,7 @@ rec {
       googleclouddns
       route53
     ];
-    vendorHash = "sha256-QmzuwNI5tKY8SO9ehTCAxumHFGDtD//N4zw/mdWXa/Q=";
+    vendorHash = "sha256-lrHMuc1XtJV0em54aZUFsJ6f9jxCtAhh906lclMSTNI=";
   };
 
   # caddy with s3-browser plugin
