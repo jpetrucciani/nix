@@ -375,6 +375,11 @@ let
     description = "a base image with the custom zaddy build with caddy-security, s3proxy and s3browser";
     layers = with pkgs; [ [ zaddy ] ];
   };
+  foundry_genai_toolbox = foundry {
+    name = "genai-toolbox";
+    description = "an image with the genai-toolbox server";
+    layers = with pkgs; [ [ genai-toolbox ] ];
+  };
   foundry_curl = foundry {
     name = "curl";
     description = "a base image with just curl and basic requirements. does not include nix!";
@@ -455,6 +460,7 @@ in
   certbot_cloudflare = foundry_certbot_cloudflare;
   certbot_google = foundry_certbot_google;
   certbot_porkbun = foundry_certbot_porkbun;
+  genai-toolbox = foundry_genai_toolbox;
   nix = foundry_nix;
   pypi = foundry_pypi;
   python311 = foundry_python_311;
