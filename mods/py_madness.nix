@@ -174,7 +174,7 @@ let
               "svglib"
               "wikipedia"
             ];
-            setuptools_required = listToAttrs (map (x: { name = x; value = add_setuptools prev.${x}; }) _setuptools_required);
+            setuptools_required = listToAttrs (map (x: { name = x; value = add_setuptools _prev.${x}; }) _setuptools_required);
           in
           {
             # Implement standard build fixups here.
