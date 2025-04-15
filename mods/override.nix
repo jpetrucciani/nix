@@ -60,4 +60,12 @@ in
         hash = "sha256-S3EHJ8s+bYWBmOfKP5ErNSa+UIalIK82MgKhWvPnwFo=";
       };
     });
+
+  # issue with cuda_gdb https://github.com/NixOS/nixpkgs/issues/398249
+  cuda_gdb = prev.cuda_gdb.overrideAttrs (old: {
+    installPhase = ''
+      ${old.installPhase}
+      find $bin -name '*python3.9*' -delete
+    '';
+  });
 }
