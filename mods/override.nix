@@ -62,7 +62,7 @@ in
     });
 
   # issue with cuda_gdb https://github.com/NixOS/nixpkgs/issues/398249
-  cuda_gdb = prev.cuda_gdb.overrideAttrs (old: {
+  cudaPackages.cuda_gdb = prev.cudaPackages.cuda_gdb.overrideAttrs (old: {
     installPhase = ''
       ${old.installPhase}
       find $bin -name '*python3.9*' -delete
