@@ -1,8 +1,8 @@
 # This overlay provides more packages and scripts for use in my setup. This is also used in my repo's modified comma, exposing the binaries and scripts in this overlay directly through comma.
 final: prev:
 let
-  inherit (builtins) listToAttrs;
   inherit (final) git nvd machines;
+  inherit (final.lib) listToAttrs;
   inherit (final.hax) writeBashBinChecked;
   nbuild = "nix build --no-link --print-out-paths --extra-experimental-features nix-command --extra-experimental-features flakes";
   _nixos-switch = host: writeBashBinChecked "switch" ''

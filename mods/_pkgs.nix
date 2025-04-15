@@ -1,8 +1,8 @@
 # This overlay allows me to load the custom packages I've built in my [pkgs/](../pkgs/) directory
 final: prev:
 let
-  inherit (builtins) listToAttrs pathExists readDir;
-  inherit (prev.lib) hasSuffix pathIsDirectory removeSuffix;
+  inherit (builtins) pathExists readDir;
+  inherit (prev.lib) hasSuffix listToAttrs pathIsDirectory removeSuffix;
   inherit (prev.lib.attrsets) collect mapAttrs;
   inherit (prev.pkgs) callPackage;
   _custom = p:

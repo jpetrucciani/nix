@@ -1,6 +1,7 @@
 # This overlay is where I create wrappers around other tools to simplify using some of the attempts to simplify python tooling via nix
 final: prev:
 let
+  inherit (final.lib) listToAttrs;
   inherit (final.lib.lists) remove;
 
   poetry-helpers = rec {
@@ -121,6 +122,25 @@ let
               addAutoPatchelfSearchPath "${_final.nvidia-cusparselt-cu12}"
             '';
           });
+          torchaudio =
+            let
+              FFMPEG_ROOT = final.symlinkJoin {
+                name = "ffmpeg";
+                paths = with final; [
+                  ffmpeg_6-full.bin
+                  ffmpeg_6-full.dev
+                  ffmpeg_6-full.lib
+                ];
+              };
+            in
+            _prev.torchaudio.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ [ final.sox ];
+              inherit FFMPEG_ROOT;
+              autoPatchelfIgnoreMissingDeps = true;
+              postFixup = ''
+                addAutoPatchelfSearchPath "${_final.torch}/${python.sitePackages}/torch/lib"
+              '';
+            });
         };
         gitignoreRecursiveSource = final.nix-gitignore.gitignoreFilterSourcePure (_: _: true) [ ];
         workspace = final.uv2nix.lib.workspace.loadWorkspace { workspaceRoot = if gitignore then gitignoreRecursiveSource workspaceRoot else workspaceRoot; };
@@ -140,23 +160,31 @@ let
               buildInputs = (old.buildInputs or [ ]) ++ build_inputs;
             });
             add_setuptools = add_buildinputs [ _final.setuptools ];
+            _setuptools_required = [
+              "aiohttp"
+              "antlr4-python3-runtime"
+              "distance"
+              "docx2txt"
+              "encodec"
+              "filterpy"
+              "html2text"
+              "jieba"
+              "peewee"
+              "pypika"
+              "svglib"
+              "wikipedia"
+            ];
+            setuptools_required = listToAttrs (map (x: { name = x; value = add_setuptools prev.${x}; }) _setuptools_required);
           in
           {
             # Implement standard build fixups here.
             # Note that uv2nix is _not_ using Nixpkgs buildPythonPackage.
             # It's using https://pyproject-nix.github.io/pyproject.nix/build.html
-            aiohttp = add_setuptools _prev.aiohttp;
-            docx2txt = add_setuptools _prev.docx2txt;
-            filterpy = add_setuptools _prev.filterpy;
-            html2text = add_setuptools _prev.html2text;
-            peewee = add_setuptools _prev.peewee;
+            numba = add_buildinputs (with final; [ tbb_2021_11 ]) prev.numba;
             psycopg2 = add_setuptools (_prev.psycopg2.overrideAttrs (_: {
               buildInputs = [ final.postgresql ] ++ final.lib.optionals final.stdenv.hostPlatform.isDarwin [ final.openssl ];
             }));
-            pypika = add_setuptools _prev.pypika;
-            svglib = add_setuptools _prev.svglib;
-            wikipedia = add_setuptools _prev.wikipedia;
-          };
+          } // setuptools_required;
         pythonSet =
           # Use base package set from pyproject.nix builders
           (final.callPackage final.pyproject-nix.build.packages {
