@@ -62,10 +62,12 @@ in
     });
 
   # issue with cuda_gdb https://github.com/NixOS/nixpkgs/issues/398249
-  cudaPackages.cuda_gdb = prev.cudaPackages.cuda_gdb.overrideAttrs (old: {
-    installPhase = ''
-      ${old.installPhase}
-      find $bin -name '*python3.9*' -delete
-    '';
+  cudaPackages = prev.cudaPackages.overrideScope (_final: _prev: {
+    cuda_gdb = _prev.cuda_gdb.overrideAttrs (old: {
+      installPhase = ''
+        ${old.installPhase}
+        find $bin -name '*python3.9*' -delete
+      '';
+    });
   });
 }
