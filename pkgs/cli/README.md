@@ -30,10 +30,6 @@ This directory contains cli tools
 
 [bonk](https://github.com/elliot40404/bonk) is an alternative to the touch command
 
-### [borgo.nix](./borgo.nix)
-
-[borgo](https://github.com/borgo-lang/borgo) is a statically typed language that compiles to Go
-
 ### [brows.nix](./brows.nix)
 
 [brows](https://github.com/rubysolo/brows) is a CLI tool to browse github releases
