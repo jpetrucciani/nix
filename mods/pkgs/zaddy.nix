@@ -69,24 +69,35 @@ rec {
           go get ${name}@${version}
         '')
         allPlugins;
-      zaddy = prev.caddy.override {
-        buildGoModule = args: buildGo124Module (args // {
-          inherit vendorHash;
-          overrideModAttrs = _: {
-            preBuild = ''
-              ${caddyPatchMain}
-              ${caddyPatchGoGet}
-            '';
-            postInstall = "cp go.mod go.sum $out/";
+      zaddy =
+        let
+          version = "2.9.1";
+          src = fetchFromGitHub {
+            owner = "caddyserver";
+            repo = "caddy";
+            rev = "v${version}";
+            hash = "sha256-XW1cBW7mk/aO/3IPQK29s4a6ArSKjo7/64koJuzp07I=";
           };
-          postInstall = ''
-            ${args.postInstall}
-            sed -i -E '/Group=caddy/aEnvironmentFile=-/etc/default/caddy\nTimeoutSec=180' $out/lib/systemd/system/caddy.service
-          '';
-          postPatch = caddyPatchMain;
-          preBuild = "cp vendor/go.mod vendor/go.sum .";
-        });
-      };
+        in
+        prev.caddy.override {
+          buildGoModule = args: buildGo124Module (args // {
+            inherit version src;
+            inherit vendorHash;
+            overrideModAttrs = _: {
+              preBuild = ''
+                ${caddyPatchMain}
+                ${caddyPatchGoGet}
+              '';
+              postInstall = "cp go.mod go.sum $out/";
+            };
+            postInstall = ''
+              ${args.postInstall}
+              sed -i -E '/Group=caddy/aEnvironmentFile=-/etc/default/caddy\nTimeoutSec=180' $out/lib/systemd/system/caddy.service
+            '';
+            postPatch = caddyPatchMain;
+            preBuild = "cp vendor/go.mod vendor/go.sum .";
+          });
+        };
     in
     zaddy;
   caddy = prev.caddy.overrideAttrs (_: { passthru.withPackages = _zaddy; });
