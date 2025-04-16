@@ -113,14 +113,14 @@ let
 
         pkb-client = buildPythonPackage rec {
           pname = "pkb-client";
-          version = "2.0.0";
+          version = "2.1.1";
           pyproject = true;
 
           src = fetchFromGitHub {
             owner = "infinityofspace";
             repo = "pkb_client";
             rev = "refs/tags/v${version}";
-            hash = "sha256-crV4Yi2UO5G+6N/dU07FoUFGA1pBRd2ef1ytTptHTl8=";
+            hash = "sha256-9QT2c4n45cw6nfNP//2nT8+wnJxbMj0WbCccyq6OSX4=";
           };
 
           build-system = with final; [
@@ -148,14 +148,14 @@ let
 
         certbot-dns-porkbun = buildPythonPackage rec {
           pname = "certbot-dns-porkbun";
-          version = "0.9";
+          version = "0.10.0";
           pyproject = true;
 
           src = fetchFromGitHub {
             owner = "infinityofspace";
             repo = "certbot_dns_porkbun";
             rev = "refs/tags/v${version}";
-            hash = "sha256-I19NtwoPg5GiFgFkCXI78tApx1xd5Yqv/NlTOsa6tz4=";
+            hash = "sha256-+j4HvJ4R51FioRqyU0Xzuc36zc5wFClZ8gxSQNuOrXY=";
           };
 
           build-system = with final; [

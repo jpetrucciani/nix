@@ -15,7 +15,7 @@ jobs:
           - argohex
           - hex
           - k8s_aws
-          # - k8s_gcp
+          - k8s_gcp
           - nix
           # - pypi
           - python311
