@@ -13,19 +13,19 @@ let
         inherit (final) buildPythonPackage;
       in
       {
-        josepy = prev.josepy.overridePythonAttrs (old: rec {
-          version = "1.15.0";
-          src = fetchFromGitHub {
-            owner = "certbot";
-            repo = "josepy";
-            tag = "v${version}";
-            hash = "sha256-fK4JHDP9eKZf2WO+CqRdEjGwJg/WNLvoxiVrb5xQxRc=";
-          };
-          dependencies = with final; [
-            pyopenssl
-            cryptography
-          ];
-        });
+        # josepy = prev.josepy.overridePythonAttrs (old: rec {
+        #   version = "1.15.0";
+        #   src = fetchFromGitHub {
+        #     owner = "certbot";
+        #     repo = "josepy";
+        #     tag = "v${version}";
+        #     hash = "sha256-fK4JHDP9eKZf2WO+CqRdEjGwJg/WNLvoxiVrb5xQxRc=";
+        #   };
+        #   dependencies = with final; [
+        #     pyopenssl
+        #     cryptography
+        #   ];
+        # });
         certbot-dns-route53 = prev.certbot-dns-route53.overridePythonAttrs (old: {
           pytestFlagsArray = old.pytestFlagsArray ++ [ "-W ignore::DeprecationWarning" ];
         });
