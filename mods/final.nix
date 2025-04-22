@@ -231,5 +231,14 @@ in
         hash = "sha256-fuo2qDORVfUfmLWux9GYh2O0GbrQSaBLOFTE4dReOGQ=";
       };
       patches = [ ];
+      postInstall = final.lib.optionalString (final.stdenv.buildPlatform.canExecute final.stdenv.hostPlatform) ''
+        installShellCompletion --cmd colmena \
+          --bash <($out/bin/colmena gen-completions bash) \
+          --zsh <($out/bin/colmena gen-completions zsh) \
+          --fish <($out/bin/colmena gen-completions fish)
+
+        wrapProgram $out/bin/colmena \
+          --prefix PATH ":" "${final.lib.makeBinPath [ final.lix ]}"
+      '';
     });
 }
