@@ -211,4 +211,25 @@ in
   };
 
   openai-whisper-cpp-cuda = prev.openai-whisper-cpp.override { cudaSupport = true; };
+
+  colmena-latest =
+    let
+      pname = "colmena";
+      version = "0.5.0";
+      src = final.fetchFromGitHub {
+        owner = "zhaofengli";
+        repo = pname;
+        # rev = "v${version}";
+        rev = "2370d4336eda2a9ef29fce10fa7076ae011983ab";
+        sha256 = "sha256-hPSLvw6AZQYrZyGI6Uq4XgST7benF/0zcCpugn/P0yM=";
+      };
+    in
+    prev.colmena.overrideAttrs (_: {
+      inherit src version;
+      cargoDeps = final.rustPlatform.fetchCargoVendor {
+        inherit pname version src;
+        hash = "sha256-fuo2qDORVfUfmLWux9GYh2O0GbrQSaBLOFTE4dReOGQ=";
+      };
+      patches = [ ];
+    });
 }
