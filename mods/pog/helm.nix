@@ -356,11 +356,17 @@ rec {
     chart_url = "https://questdb.github.io/questdb-kubernetes/questdb-{1}.tgz";
   };
 
+  chart_scan_csi-driver-smb = _chart_scan {
+    name = "csi-driver-smb";
+    base_url = "https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts";
+    chart_url = "https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts/{1}/csi-driver-smb-{1}.tgz";
+  };
 
   helm_pog_scripts = [
     chart_scan_argo-cd
     chart_scan_authentik
     chart_scan_aws_mountpoint-s3-csi-driver
+    chart_scan_csi-driver-smb
     chart_scan_dask-kubernetes-operator
     chart_scan_external-secrets
     chart_scan_fission

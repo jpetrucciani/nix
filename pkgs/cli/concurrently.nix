@@ -5,7 +5,6 @@
 , makeWrapper
 , nodejs
 , pnpm_8
-,
 }:
 
 let
