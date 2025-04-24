@@ -26,8 +26,8 @@ let
     , conf
     , preInstall ? ""
     , postInstall ? ""
-    , preBuild ? ""
-    , postBuild ? ""
+    , prePack ? ""
+    , postPack ? ""
     }:
     let
       defaults = { system.stateVersion = final.lib.mkDefault "25.05"; };
@@ -64,19 +64,19 @@ let
             echo "[${name}] postInstall" >&2
             ${postInstall}
           '').overrideAttrs { name = "snowball_${name}_install"; };
-          build = (writeBashBin "build" ''
+          pack = (writeBashBin "pack" ''
             _install=${install}
             ${vars}
-            # preBuild
-            echo "[${name}] preBuild" >&2
-            ${preBuild}
+            # prePack
+            echo "[${name}] prePack" >&2
+            ${prePack}
             install_store_path=$(nix build --no-link --print-out-paths $_install)
             echo "built the snowball installer to $install_store_path" >&2
 
-            # postBuild
-            echo "[${name}] postBuild" >&2
-            ${postBuild}
-          '').overrideAttrs { name = "snowball_${name}_build"; };
+            # postPack
+            echo "[${name}] postPack" >&2
+            ${postPack}
+          '').overrideAttrs { name = "snowball_${name}_pack"; };
         };
     });
 
