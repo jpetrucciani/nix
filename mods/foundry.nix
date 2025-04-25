@@ -296,10 +296,11 @@ let
   };
   foundry_k8s_aws = foundry {
     name = "k8s-aws";
-    description = "a lightweight image with just bash, kubectl, and awscliv2";
+    description = "a lightweight image with just bash, kubectl + ktools, and awscliv2";
     layers = with pkgs; [
       [ (awscli2.override { python3 = python311; }) ]
       [ kubectl ]
+      ktools
     ];
   };
   foundry_certbot = foundry ({
@@ -364,10 +365,11 @@ let
   } // certbot_base);
   foundry_k8s_gcp = foundry {
     name = "k8s-gcp";
-    description = "a lightweight image with just bash, kubectl, and gcloud cli";
+    description = "a lightweight image with just bash, kubectl + ktools, and gcloud cli";
     layers = with pkgs; [
       [ google-cloud-sdk ]
       [ kubectl ]
+      ktools
     ];
   };
   foundry_zaddy = foundry {
@@ -392,7 +394,7 @@ let
     layers = with pkgs; [
       [
         hex
-        k8s_pog_scripts
+        ktools
         kubectl
       ]
     ];
