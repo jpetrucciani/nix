@@ -7,6 +7,7 @@ in
   loki_log = pog {
     name = "loki_log";
     description = "a lightweight helper to allow sending log lines to loki directly, with some included metadata";
+    version = "0.0.2";
     flags = [
       {
         name = "url";
@@ -59,7 +60,7 @@ in
       }
       ip_address=$(get_ip)
 
-      json_tags=$(parse_tags "$tags,hostname=''${hostname},ip=''${ip_address},pog=1")
+      json_tags=$(parse_tags "$tags,hostname=''${hostname},ip=''${ip_address},user=$USER,pog=1")
       TIMESTAMP=$(date +%s%N)
       JSON_PAYLOAD=$(jq -n \
         --arg ts "$TIMESTAMP" \
