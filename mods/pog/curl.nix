@@ -1,6 +1,8 @@
 # this file provides some pog wrappers around curl to make it a bit more ergonomic
 final: prev:
-with prev;
+let
+  inherit (final) pog curl;
+in
 rec {
   jiracurl = pog {
     name = "jiracurl";

@@ -1,7 +1,9 @@
 # this set of pog scripts allows us to use postgres, redis, etc. in local dev environments via nix
 final: prev:
-with prev;
 let
+  inherit (final) pog stdenv writeTextFile;
+  inherit (final) coreutils postgresql_16;
+  inherit (final.lib) optionalString boolToString;
   flags = {
     redis_port = {
       name = "port";
@@ -11,7 +13,7 @@ let
     };
   };
   LOCALE_ARCHIVE_2_27 = "${final.glibcLocales}/lib/locale/locale-archive";
-  locale_override = lib.optionalString (!stdenv.isDarwin) "export LOCALE_ARCHIVE_2_27=${LOCALE_ARCHIVE_2_27}";
+  locale_override = optionalString (!stdenv.isDarwin) "export LOCALE_ARCHIVE_2_27=${LOCALE_ARCHIVE_2_27}";
   force_flag = {
     name = "force";
     description = "remove database data directory before bootstraping";
@@ -86,7 +88,7 @@ rec {
       flags.redis_port
     ];
     script = ''
-      ${redis}/bin/redis-server --port "$port"
+      ${final.redis}/bin/redis-server --port "$port"
     '';
   };
   __rd_shell = pog {
@@ -96,7 +98,7 @@ rec {
       flags.redis_port
     ];
     script = ''
-      ${final.portwatch}/bin/portwatch "$port" && ${redis}/bin/redis-cli -p "$port"
+      ${final.portwatch}/bin/portwatch "$port" && ${final.redis}/bin/redis-cli -p "$port"
     '';
   };
 
@@ -107,7 +109,7 @@ rec {
       flags.redis_port
     ];
     script = ''
-      ${valkey}/bin/valkey-server --port "$port"
+      ${final.valkey}/bin/valkey-server --port "$port"
     '';
   };
   __vk_shell = pog {
@@ -117,7 +119,7 @@ rec {
       flags.redis_port
     ];
     script = ''
-      ${final.portwatch}/bin/portwatch "$port" && ${valkey}/bin/valkey-cli -p "$port"
+      ${final.portwatch}/bin/portwatch "$port" && ${final.valkey}/bin/valkey-cli -p "$port"
     '';
   };
 
@@ -130,9 +132,9 @@ rec {
     , root ? null
     , description ? "a quick and easy service orchestrator!"
     , overmindPort ? 4322
-    , overmind ? pkgs.overmind
-    , bash ? pkgs.bashInteractive
-    , tmux ? pkgs.tmux
+    , overmind ? final.overmind
+    , bash ? final.bashInteractive
+    , tmux ? final.tmux
     , tmuxConfig ? ./resources/tmux.conf
     , sleepHack ? 0.2
     }:
@@ -169,7 +171,7 @@ rec {
       config = writeTextFile {
         name = "__rabbitmq.conf";
         text = ''
-          loopback_users.guest = ${pkgs.lib.boolToString guest}
+          loopback_users.guest = ${boolToString guest}
           listeners.tcp.default = ${toString port}
           management.listener.port = ${toString managementPort}
           management.listener.ssl = false
@@ -183,7 +185,7 @@ rec {
         '';
       };
       _plugins = plugins ++ defaultPlugins;
-      _pluginDirs = [ "${rabbitmq-server}/plugins" ] ++ extraPluginDirs;
+      _pluginDirs = [ "${final.rabbitmq-server}/plugins" ] ++ extraPluginDirs;
       pluginDirs = builtins.concatStringsSep ":" _pluginDirs;
     in
     pog {
@@ -192,19 +194,19 @@ rec {
       script = ''
         export RABBIT_DATA="''${RABBIT_DATA:-.rabbitmq}"
         export RABBIT_PLUGINS="''${RABBIT_PLUGINS:-''${RABBIT_DATA}/plugins}"
-        ${pkgs.coreutils}/bin/mkdir -p "$RABBIT_DATA" "$RABBIT_PLUGINS"
+        ${coreutils}/bin/mkdir -p "$RABBIT_DATA" "$RABBIT_PLUGINS"
         export RABBITMQ_MNESIA_BASE="$RABBIT_DATA"
         export RABBITMQ_LOG_BASE="$RABBIT_DATA/logs"
         export RABBITMQ_CONFIG_FILE="${config}"
         export RABBITMQ_ENABLED_PLUGINS_FILE="${enabledPlugins}"
         export RABBITMQ_PLUGINS_DIR="$RABBIT_PLUGINS:${pluginDirs}"
-        ${rabbitmq-server}/bin/rabbitmq-server
+        ${final.rabbitmq-server}/bin/rabbitmq-server
       '';
     };
 
   __mysql_bootstrap =
     { name ? "db"
-    , mysql ? mysql84
+    , mysql ? final.mysql84
     , extra_bootstrap ? ""
     , extra_bootstrap_sql ? ""
     , mysql_settings ? {
@@ -229,7 +231,7 @@ rec {
             ''--pid-file="$MYSQLDATA/mysql.pid"''
             ''--basedir=${mysql}''
           ];
-          format = pkgs.formats.ini { listsAsDuplicateKeys = true; };
+          format = final.formats.ini { listsAsDuplicateKeys = true; };
           configFile = format.generate "my.cnf" mysql_settings;
           bootstrap = ''
             CREATE DATABASE IF NOT EXISTS ${name} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -282,7 +284,7 @@ rec {
           [ ! -d "$MYSQLDATA" ] && bootstrap
         '';
     };
-  __mysql = { mysql ? mysql84, extra_flags ? "" }: pog {
+  __mysql = { mysql ? final.mysql84, extra_flags ? "" }: pog {
     name = "__mysql";
     description = "run your local mysql db from $MYSQLDATA";
     script = ''
@@ -313,7 +315,7 @@ rec {
         --basedir=${mysql} ${extra_flags}
     '';
   };
-  __mysql_shell = { name ? "db", mysql ? mysql84, extra_flags ? "" }: pog {
+  __mysql_shell = { name ? "db", mysql ? final.mysql84, extra_flags ? "" }: pog {
     name = "__mysql_shell";
     description = "run a psql shell into postgres locally";
     script = ''

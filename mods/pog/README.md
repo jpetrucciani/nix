@@ -70,6 +70,10 @@ This module creates some `pog` tools specific to [k3s](https://github.com/k3s-io
 
 This module creates some `pog` tools that help make you more productive in [Kubernetes](https://kubernetes.io/)!
 
+### [loki.nix](./loki.nix)
+
+this file provides some pog wrappers around curl for communicating with loki
+
 ### [nix.nix](./nix.nix)
 
 This module configures some helper tools for creating new nix environments!
