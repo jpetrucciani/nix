@@ -9,6 +9,8 @@
 (?i)langflow
 (?i)langfuse
 (?i)llm
+(?i)mcp
+(?i)mcpo
 (?i)ollama
 (?i)openai
 (?i)starcoder
