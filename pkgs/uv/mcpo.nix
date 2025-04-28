@@ -11,8 +11,7 @@ let
     hash = "sha256-biLfXQ/4YvbQaL/3YLXFu+31wLwe25JIaCZJ0DMgPCY=";
   };
   uvEnv = uv-nix.mkEnv {
-    inherit name;
-    python = python312;
+    inherit name python;
     workspaceRoot = src;
     pyprojectOverrides = final: prev: { };
   };
