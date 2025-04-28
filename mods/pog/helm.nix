@@ -254,6 +254,7 @@ rec {
 
   chart_scan_loki = grafana_chart { name = "loki"; prefix = "helm-"; };
   chart_scan_mimir = grafana_chart { name = "mimir-distributed"; filter_out = "weekly|rc"; };
+  chart_scan_tempo = grafana_chart { name = "tempo-distributed"; filter_out = "weekly|rc"; };
   chart_scan_oncall = grafana_chart { name = "oncall"; };
 
   chart_scan_otf = _chart_scan rec {
@@ -409,6 +410,7 @@ rec {
     chart_scan_signoz
     chart_scan_sonarqube
     chart_scan_stackstorm
+    chart_scan_tempo
     chart_scan_traefik
   ];
 }
