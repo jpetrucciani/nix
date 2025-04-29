@@ -3,6 +3,7 @@ let
   inherit (pkgs.hax) isDarwin isLinux isM1 isX86Mac;
   inherit (pkgs.hax) docker_aliases kubernetes_aliases;
   inherit (pkgs.hax) attrIf words;
+  inherit (pkgs.lib) mkForce;
 
   firstName = "jacobi";
   lastName = "petrucciani";
@@ -252,9 +253,9 @@ in
     historyFileSize = -1;
     historySize = -1;
     shellAliases = {
-      ls = "ls --color=auto";
+      ls = mkForce "ls --color=auto";
       l = "lsd -lA --permission octal";
-      ll = "ls -ahlFG";
+      ll = mkForce "ls -ahlFG";
       mkdir = "mkdir -pv";
       fzfp = "${pkgs.fzf}/bin/fzf --preview 'bat --style=numbers --color=always {}'";
       strip = ''${pkgs.gnused}/bin/sed -E 's#^\s+|\s+$##g' '';
