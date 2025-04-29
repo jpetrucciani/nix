@@ -106,6 +106,31 @@ let
           nvidia-cusparse-cu12 = _prev.nvidia-cusparse-cu12.overrideAttrs (_: {
             buildInputs = [ _pkgs.cudaPackages.libnvjitlink ];
           });
+          cupy-cuda12x = prev.cupy-cuda12x.overrideAttrs (_: {
+            buildInputs = with _pkgs.cudaPackages; [
+              cuda_nvrtc
+              cudnn_8_9
+              cutensor
+              libcufft
+              libcurand
+              libcusolver
+              libcusparse
+              nccl
+            ];
+            postFixup = ''
+              addAutoPatchelfSearchPath "${_final.nvidia-cusparselt-cu12}"
+            '';
+          });
+          xformers = prev.xformers.overrideAttrs (_: {
+            postFixup = ''
+              addAutoPatchelfSearchPath "${_final.torch}"
+            '';
+          });
+          vllm = prev.vllm.overrideAttrs (_: {
+            postFixup = ''
+              addAutoPatchelfSearchPath "${_final.torch}"
+            '';
+          });
           flash-attn = _prev.flash-attn.overrideAttrs {
             postFixup = ''
               addAutoPatchelfSearchPath "${_final.torch}"
@@ -141,6 +166,11 @@ let
                 addAutoPatchelfSearchPath "${_final.torch}/${python.sitePackages}/torch/lib"
               '';
             });
+          torchvision = prev.torchvision.overrideAttrs (_: {
+            postFixup = ''
+              addAutoPatchelfSearchPath "${_final.torch}/${python.sitePackages}/torch/lib"
+            '';
+          });
         };
         gitignoreRecursiveSource = final.nix-gitignore.gitignoreFilterSourcePure (_: _: true) [ ];
         workspace = final.uv2nix.lib.workspace.loadWorkspace { workspaceRoot = if gitignore then gitignoreRecursiveSource workspaceRoot else workspaceRoot; };
