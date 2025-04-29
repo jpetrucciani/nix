@@ -106,7 +106,7 @@ let
           nvidia-cusparse-cu12 = _prev.nvidia-cusparse-cu12.overrideAttrs (_: {
             buildInputs = [ _pkgs.cudaPackages.libnvjitlink ];
           });
-          cupy-cuda12x = prev.cupy-cuda12x.overrideAttrs (_: {
+          cupy-cuda12x = _prev.cupy-cuda12x.overrideAttrs (_: {
             buildInputs = with _pkgs.cudaPackages; [
               cuda_nvrtc
               cudnn_8_9
@@ -121,12 +121,12 @@ let
               addAutoPatchelfSearchPath "${_final.nvidia-cusparselt-cu12}"
             '';
           });
-          xformers = prev.xformers.overrideAttrs (_: {
+          xformers = _prev.xformers.overrideAttrs (_: {
             postFixup = ''
               addAutoPatchelfSearchPath "${_final.torch}"
             '';
           });
-          vllm = prev.vllm.overrideAttrs (_: {
+          vllm = _prev.vllm.overrideAttrs (_: {
             postFixup = ''
               addAutoPatchelfSearchPath "${_final.torch}"
             '';
@@ -166,7 +166,7 @@ let
                 addAutoPatchelfSearchPath "${_final.torch}/${python.sitePackages}/torch/lib"
               '';
             });
-          torchvision = prev.torchvision.overrideAttrs (_: {
+          torchvision = _prev.torchvision.overrideAttrs (_: {
             postFixup = ''
               addAutoPatchelfSearchPath "${_final.torch}/${python.sitePackages}/torch/lib"
             '';
