@@ -201,6 +201,30 @@ rec {
     '';
   };
 
+  cloudflare_r2 = pog {
+    name = "cloudflare_r2";
+    description = "a wrapper for awscli s3 subcommand to interact with cloudflare";
+    flags = [
+      {
+        name = "profile";
+        default = "cloudflare";
+        envVar = "CLOUDFLARE_R2_PROFILE";
+        description = "the AWS profile to reference for cloudflare";
+      }
+      {
+        name = "endpoint";
+        envVar = "CLOUDFLARE_R2_ENDPOINT";
+        description = "the cloudflare r2 endpoint to use";
+      }
+    ];
+    script = ''
+      # due to https://github.com/aws/aws-cli/issues/9214
+      export AWS_REQUEST_CHECKSUM_CALCULATION=when_required
+      export AWS_RESPONSE_CHECKSUM_VALIDATION=when_required
+      ${awscli2}/bin/aws --endpoint-url="$endpoint" --profile "$profile" s3 "$@"
+    '';
+  };
+
   awslocal = pog {
     name = "awslocal";
     description = "a wrapper for awscli to interact with localstack";
@@ -226,6 +250,7 @@ rec {
     ec2_spot_interrupt
     eks_config
     wasabi
+    cloudflare_r2
     awslocal
   ];
 }
