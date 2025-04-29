@@ -29,7 +29,7 @@ stdenv.mkDerivation {
   '';
   meta = {
     changelog = "https://github.com/open-webui/mcpo/blob/main/CHANGELOG.md";
-    description = "A simple, secure MCP-to-OpenAPI proxy server ";
+    description = "A simple, secure MCP-to-OpenAPI proxy server";
     homepage = "https://github.com/open-webui/mcpo";
     license = lib.licenses.mit;
     maintainers = with lib.maintainers; [ jpetrucciani ];

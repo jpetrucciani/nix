@@ -100,6 +100,22 @@ let
     mkEnv = { name, workspaceRoot, envName ? "${name}-env", python ? final.python312, sourcePreference ? "wheel", pyprojectOverrides ? null, darwinSdkVersion ? "15.1", venvIgnoreCollisions ? [ "*" ], gitignore ? true, enableCuda ? false, _pkgs ? final }:
       let
         cudaOverrides = _final: _prev: {
+          bitsandbytes = _prev.bitsandbytes.overrideAttrs (_: {
+            buildInputs = with _pkgs.cudaPackages; [
+              cuda_cudart
+              libcublas
+              libcusparse
+            ];
+            postFixup = ''
+              addAutoPatchelfSearchPath "${_final.nvidia-cusparselt-cu12}"
+            '';
+            autoPatchelfIgnoreMissingDeps = [
+              "libcudart.so.11.0"
+              "libcublas.so.11"
+              "libcublasLt.so.11"
+              "libcusparse.so.11"
+            ];
+          });
           nvidia-cusolver-cu12 = _prev.nvidia-cusolver-cu12.overrideAttrs (_: {
             buildInputs = [ _pkgs.cudatoolkit _pkgs.cudaPackages.libnvjitlink ];
           });
@@ -171,6 +187,11 @@ let
               addAutoPatchelfSearchPath "${_final.torch}/${python.sitePackages}/torch/lib"
             '';
           });
+          triton = _prev.triton.overrideAttrs (_: {
+            postInstall = ''
+              sed -i -E 's#minor == 6#minor >= 6#g' $out/${python.sitePackages}/triton/backends/nvidia/compiler.py
+            '';
+          });
         };
         gitignoreRecursiveSource = final.nix-gitignore.gitignoreFilterSourcePure (_: _: true) [ ];
         workspace = final.uv2nix.lib.workspace.loadWorkspace { workspaceRoot = if gitignore then gitignoreRecursiveSource workspaceRoot else workspaceRoot; };
@@ -197,6 +218,7 @@ let
               "docx2txt"
               "encodec"
               "filterpy"
+              "flashinfer-python"
               "html2text"
               "jieba"
               "peewee"
