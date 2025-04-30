@@ -17,15 +17,18 @@ let
     dyff
     fd
     gnumake
+    gnutar
     gron
     hex
     just
     nano
-    nixup
     nixpkgs-fmt
+    nixup
+    openssh
     scc
     skopeo
     statix
+    wget
   ];
 
   certbot_base = {
@@ -58,11 +61,8 @@ let
           git
           gnugrep
           gnused
-          gnutar
           jq
           moreutils
-          openssh
-          wget
           which
           yq-go
         ];
