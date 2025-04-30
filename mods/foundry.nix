@@ -65,7 +65,6 @@ let
           gnugrep
           gnused
           jq
-          util-linux
         ];
         nixLayer = with pkgs; [ nix ];
       };
@@ -160,7 +159,7 @@ let
         , extraConfig ? { }
         }:
         let
-          allLayers = with _layers; [ baseLayer ] ++ (optionals sysLayer [ coreLayer ]) ++ (optionals enableNix [ nixLayer ]) ++ layers;
+          allLayers = with _layers; [ baseLayer ] ++ (optionals enableNix [ nixLayer ]) ++ layers;
           mkUser = drvs.mkUser {
             inherit user group uid gid substituters trusted-public-keys;
             extraMkUser =
@@ -201,7 +200,7 @@ let
           } // extraConfig;
           copyToRoot = [
             mkUser
-          ] ++ extraCopyToRoot;
+          ] ++ (optionals sysLayer _layers.coreLayer) ++ extraCopyToRoot;
           perms = [
             (fn.perm {
               inherit uid gid user group;
