@@ -16,24 +16,16 @@ let
     delta
     dyff
     fd
-    findutils
-    git
     gnumake
     gron
     hex
-    jq
     just
-    moreutils
     nano
     nixup
     nixpkgs-fmt
-    openssh
     scc
     skopeo
     statix
-    wget
-    which
-    yq-go
   ];
 
   certbot_base = {
@@ -62,9 +54,17 @@ let
           bashInteractive
           coreutils
           curl
+          findutils
+          git
           gnugrep
           gnused
+          gnutar
           jq
+          moreutils
+          openssh
+          wget
+          which
+          yq-go
         ];
         nixLayer = with pkgs; [ nix ];
       };
