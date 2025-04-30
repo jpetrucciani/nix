@@ -276,7 +276,6 @@ let
 
     buildUvPackage =
       { pname
-      , package ? pname
       , bins ? [ pname ]
       , version
       , python ? final.python312
