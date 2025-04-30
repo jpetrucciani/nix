@@ -917,11 +917,11 @@
         "nixpkgs": "nixpkgs_9"
       },
       "locked": {
-        "lastModified": 1741703904,
-        "narHash": "sha256-WVC0nanOt2O7955p4fX8Yv8TINo9uIpoP3f7MHEd2lc=",
+        "lastModified": 1746041341,
+        "narHash": "sha256-/a2nQBsdztCx35ONbJ1rONypVimc5tRGS8wbQbxUaZQ=",
         "owner": "jpetrucciani",
         "repo": "pog",
-        "rev": "51cdcb2d28b6195c6ffd3c3b2f08d6bb693e48f2",
+        "rev": "c82d487bcfb349810420c32e7d056575ab07ce85",
         "type": "github"
       },
       "original": {

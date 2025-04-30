@@ -237,6 +237,7 @@ let
               buildInputs = [ final.postgresql ] ++ final.lib.optionals final.stdenv.hostPlatform.isDarwin [ final.openssl ];
             }));
           } // setuptools_required;
+
         pythonSet =
           # Use base package set from pyproject.nix builders
           (final.callPackage final.pyproject-nix.build.packages {
@@ -256,9 +257,9 @@ let
                 _pyprojectOverrides
               ] ++
               (if enableCuda then [ cudaOverrides ] else [ ])
-              ++ [
+              ++ (if pyprojectOverrides != null then [
                 pyprojectOverrides
-              ])
+              ] else [ ]))
             );
 
         virtualenv = (pythonSet.mkVirtualEnv envName workspace.deps.all).overrideAttrs (_: { inherit venvIgnoreCollisions; });
@@ -272,6 +273,64 @@ let
           UV_SYSTEM_PYTHON = "true";
         };
       };
+
+    buildUvPackage =
+      { pname
+      , package ? pname
+      , bins ? [ pname ]
+      , version
+      , python ? final.python312
+      , lockFile ? null
+      , lockUrl ? null
+      , lockHash ? null
+      , pyprojectOverrides ? null
+      , extraDependencies ? [ ]
+      , cudaSupport ? final.config.cudaSupport
+      , ...
+      }@args:
+      let
+        attrs = removeAttrs args [ "lockUrl" "lockHash" "extraDependencies" ];
+      in
+      assert (lockFile != null || (lockUrl != null && lockHash != null)) || throw "you must specify either a 'lockFile' or a 'lockUrl' and 'lockHash'!";
+      final.stdenv.mkDerivation (finalAttrs: attrs // {
+        inherit pname version;
+        dontUnpack = true;
+        workspaceRoot = final.runCommand "${pname}-uv-nix"
+          {
+            pyprojectTOML = final.writers.writeTOML "${pname}-pyproject.toml" {
+              project = {
+                name = pname;
+                inherit version;
+                description = "${finalAttrs.pname} package in uv2nix";
+                dependencies = [ "${pname}==${version}" ] ++ extraDependencies;
+              };
+            };
+            uvLock = if lockUrl != null then (final.fetchurl { url = lockUrl; hash = lockHash; }) else lockFile;
+          }
+          ''
+            mkdir -p $out
+            cp $pyprojectTOML $out/pyproject.toml
+            cp $uvLock $out/uv.lock
+          '';
+        uvEnv = uv-nix.mkEnv {
+          inherit python pyprojectOverrides;
+          name = finalAttrs.pname;
+          enableCuda = cudaSupport;
+          inherit (finalAttrs) workspaceRoot;
+        };
+        nativeBuildInputs = [ final.rsync ];
+        installPhase =
+          let
+            copyBins = final.lib.concatStringsSep "\n" (map (x: "cp $uvEnv/bin/${x} $out/bin/${x}") bins);
+          in
+          ''
+            runHook preInstall
+            mkdir -p $out/bin
+            rsync -a --exclude='bin/' $uvEnv/ $out
+            ${copyBins}
+            runHook postInstall
+          '';
+      });
   };
 in
 {
