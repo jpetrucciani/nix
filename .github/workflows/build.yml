@@ -13,8 +13,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: cachix/install-nix-action@v31
-      - uses: cachix/cachix-action@master
         with:
-          name: jacobi
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          extra_nix_config: |
+            extra-substituters = https://cache.g7c.us
+            extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
       - run: nix --show-trace build .#__j_custom .#zaddy
+      - env:
+          POG_URI: ${{ secrets.POG_URI }}
+          PRIVKEY: ${{ secrets.G7C_CACHE_PRIVATE_KEY }}
+        run: |
+          echo "$PRIVKEY" | base64 -d >/tmp/cache.priv.pem
+          nix run .#nixcache ./result*
+          rm /tmp/cache.priv.pem

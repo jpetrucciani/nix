@@ -6,19 +6,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: cachix/install-nix-action@v31
-      - uses: cachix/cachix-action@master
         with:
-          name: jacobi
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          extra_nix_config: |
+            extra-substituters = https://cache.g7c.us
+            extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
       - run: nix run .#jfmt -- --ci
   vale:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: cachix/install-nix-action@v31
-      - uses: cachix/cachix-action@master
         with:
-          name: jacobi
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          extra_nix_config: |
+            extra-substituters = https://cache.g7c.us
+            extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
       - run: nix profile install .#{vale,fd}
       - run: vale sync && vale $(fd --glob --hidden '*.md')

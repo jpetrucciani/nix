@@ -12,3 +12,6 @@ pynixify/
 .github/styles/*
 !.github/styles/config
 .direnv
+tmp
+.env
+nixcache.log
