@@ -2,13 +2,13 @@
 { stdenv, lib, fetchFromGitHub, python312, rsync, uv-nix }:
 let
   name = "mcpo";
-  version = "0.0.12";
+  version = "0.0.13";
 
   src = fetchFromGitHub {
     owner = "open-webui";
     repo = "mcpo";
     rev = "refs/tags/v${version}";
-    hash = "sha256-biLfXQ/4YvbQaL/3YLXFu+31wLwe25JIaCZJ0DMgPCY=";
+    hash = "sha256-4VkOaR2nW6HTfxF24xiH9wC7r277XsSN12+W0759Fmg=";
   };
   uvEnv = uv-nix.mkEnv {
     inherit name;
