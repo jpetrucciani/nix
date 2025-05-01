@@ -102,7 +102,7 @@ let
     , home ? "/var/empty"
     , description ? ""
     , shell ? "/bin/false"
-    ,
+    , ...
     }:
     "${k}:x:${toString uid}:${toString gid}:${description}:${home}:${shell}";
   passwdContents = lib.concatStringsSep "\n" (lib.attrValues (lib.mapAttrs userToPasswd users));
