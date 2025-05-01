@@ -8,6 +8,7 @@
 , channelURL ? "https://nixos.org/channels/nixpkgs-unstable"
 , extraContents ? [ ]
 , extraPkgs ? [ ]
+, extraFakeRootCommands ? ""
 , maxLayers ? 100
 , nixConf ? { }
 , flake-registry ? null
@@ -326,10 +327,12 @@ pkgs.dockerTools.buildLayeredImageWithNixDb {
     ln -s /nix/var/nix/profiles nix/var/nix/gcroots/profiles
   '';
   fakeRootCommands = ''
+    user_group="${toString uid}:${toString gid}"
     chmod 1777 tmp
     chmod 1777 var/tmp
-    chown -R ${toString uid}:${toString gid} .${userHome}
-    chown -R ${toString uid}:${toString gid} nix
+    chown -R "$user_group" .${userHome}
+    chown -R "$user_group" nix
+    ${extraFakeRootCommands}
   '';
 
   config = {
