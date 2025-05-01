@@ -21,7 +21,5 @@ jobs:
       - env:
           POG_URI: ${{ secrets.POG_URI }}
           PRIVKEY: ${{ secrets.G7C_CACHE_PRIVATE_KEY }}
-        run: |
-          echo "$PRIVKEY" | base64 -d >/tmp/cache.priv.pem
-          nix run .#nixcache ./result*
-          rm /tmp/cache.priv.pem
+          S3_CREDS: ${{ secrets.S3_CREDS }}
+        run: nix run .#scripts.ci_cache

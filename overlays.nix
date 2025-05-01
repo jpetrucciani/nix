@@ -47,6 +47,7 @@
   (import ./mods/pog/ssh.nix)
 
   # after all
+  (import ./scripts.nix)
   (import ./mods/containers.nix)
   (import ./mods/js.nix)
   (import ./mods/snowball.nix)

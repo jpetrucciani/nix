@@ -135,6 +135,10 @@ let
       url = "https://jacobi.cachix.org";
       key = "jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=";
     };
+    g7c = {
+      url = "https://cache.g7c.us";
+      key = "cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=";
+    };
     be = {
       url = "https://blackedge-nix.s3.us-east-2.amazonaws.com";
       key = "blackedge-nix.s3.us-east-2.amazonaws.com:1MDUZHbXmD18H1RJYRo7Fy4prdg+xjyyKm8CUjrOj5w=";
