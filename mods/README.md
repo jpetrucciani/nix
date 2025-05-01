@@ -6,6 +6,10 @@ This directory contains my overlays for nixpkgs, but configured in a way that ot
 
 ## In this directory
 
+### [hax/](./hax/)
+
+This directory contains other various hacky things. please ignore!
+
 ### [lang/](./lang/)
 
 This directory contains package sets for specific languages that I overlay functionality on top of, like [vlang](https://vlang.io/) and [nim](https://nim-lang.org)
