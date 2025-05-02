@@ -9,8 +9,8 @@
   echo -e 'max-jobs = auto\nexperimental-features = nix-command flakes' >>~/.config/nix/nix.conf
 
   . $HOME/.nix-profile/etc/profile.d/nix.sh
-  # install direnv, nix-direnv, and cachix
-  nix-env -f 'https://github.com/jpetrucciani/nix/archive/main.tar.gz' -iA direnv nix-direnv cachix
+  # install direnv, nix-direnv
+  nix-env -f 'https://github.com/jpetrucciani/nix/archive/main.tar.gz' -iA direnv nix-direnv
   echo "source $HOME/.nix-profile/share/nix-direnv/direnvrc" >~/.direnvrc
 
   echo ". $HOME/.nix-profile/etc/profile.d/nix.sh" >>~/.bashrc

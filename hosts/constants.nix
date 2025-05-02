@@ -147,6 +147,10 @@ let
       url = "https://cuda-maintainers.cachix.org";
       key = "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E=";
     };
+    medable = {
+      url = "https://medable-nix.s3.us-west-1.amazonaws.com";
+      key = "medable-nix.s3.us-west-1.amazonaws.com:dtdREarYUM5iVkNgmcJyL1aYfzVL2Pgfq4a5godxCVk=";
+    };
   };
 in
 {
@@ -154,24 +158,24 @@ in
   nix = {
     extraOptions = ''
       ${_base_nix_options}
-      extra-substituters = ${subs.jacobi.url}
-      extra-trusted-public-keys = ${subs.jacobi.key}
+      extra-substituters = ${subs.g7c.url} ${subs.jacobi.url}
+      extra-trusted-public-keys = ${subs.g7c.key} ${subs.jacobi.key}
     '';
     settings.trusted-users = [ "root" "jacobi" ];
   };
   nix-be = {
     extraOptions = ''
       ${_base_nix_options}
-      extra-substituters = ${subs.jacobi.url} ${subs.be.url}
-      extra-trusted-public-keys = ${subs.jacobi.key} ${subs.be.key}
+      extra-substituters = ${subs.g7c.url} ${subs.jacobi.url} ${subs.be.url}
+      extra-trusted-public-keys = ${subs.g7c.key} ${subs.jacobi.key} ${subs.be.key}
     '';
     settings.trusted-users = [ "root" "jacobi" ];
   };
   nix-cuda = {
     extraOptions = ''
       ${_base_nix_options}
-      extra-substituters = ${subs.jacobi.url} ${subs.cuda.url}
-      extra-trusted-public-keys = ${subs.jacobi.key} ${subs.cuda.key}
+      extra-substituters = ${subs.g7c.url} ${subs.jacobi.url} ${subs.cuda.url}
+      extra-trusted-public-keys = ${subs.g7c.key} ${subs.jacobi.key} ${subs.cuda.key}
     '';
     settings.trusted-users = [ "root" "jacobi" ];
   };

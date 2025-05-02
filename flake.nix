@@ -5,10 +5,6 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    devenv = {
-      url = "github:cachix/devenv/latest";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     flake-compat = {
       flake = false;
       url = "github:edolstra/flake-compat";

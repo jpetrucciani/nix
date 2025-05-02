@@ -1,5 +1,6 @@
 { config, flake, machine-name, pkgs, ... }:
 let
+  inherit (import ../constants.nix) subs;
   hostname = "m1max";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
   configPath = "/Users/jacobi/cfg/hosts/${hostname}/configuration.nix";
@@ -40,23 +41,7 @@ in
     in
     {
       infinity.enable = true;
-      llama-server.servers = {
-        r1-14b = {
-          enable = true;
-          package = pkgs.llama-cpp-latest;
-          port = 8012;
-          model = modelPath "DeepSeek-R1-Distill-Qwen-14B-Q8_0.gguf";
-          extraFlags = ''-md DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf -ngld 99'';
-          ngl = 99;
-        };
-        r1-1-5b = {
-          enable = true;
-          package = pkgs.llama-cpp-latest;
-          port = 8013;
-          model = modelPath "DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf";
-          ngl = 99;
-        };
-      };
+      llama-server.servers = { };
       prometheus.exporters.node.enable = true;
     };
 
@@ -64,8 +49,8 @@ in
   nix = {
     extraOptions = ''
       extra-experimental-features = nix-command flakes
-      extra-substituters = https://medable-nix.s3.us-west-1.amazonaws.com https://jacobi.cachix.org
-      extra-trusted-public-keys = medable-nix.s3.us-west-1.amazonaws.com:dtdREarYUM5iVkNgmcJyL1aYfzVL2Pgfq4a5godxCVk= jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=
+      extra-substituters = ${subs.medable.url} ${subs.jacobi.url} ${subs.g7c.url}
+      extra-trusted-public-keys = ${subs.medable.key} ${subs.jacobi.key} ${subs.g7c.key}
       keep-outputs = true
       builders = ssh://jacobi@neptune x86_64-linux - 8 - big-parallel;
       builders-use-substitutes = true

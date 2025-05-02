@@ -1,10 +1,12 @@
 # This overlay provides a way to build foundry docker images with nix
 { pkgs }:
 let
+  constants = import ../hosts/constants.nix;
+  inherit (constants) subs;
   inherit (pkgs.lib) concatStringsSep optionals;
   nixconf =
-    { substituters ? [ "https://jacobi.cachix.org" ]
-    , trusted-public-keys ? [ "jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=" ]
+    { substituters ? [ subs.g7c.url ]
+    , trusted-public-keys ? [ subs.g7c.key ]
     }: ''
       build-users-group = nixbld
       extra-experimental-features = nix-command flakes
@@ -98,8 +100,8 @@ let
           , uid ? "1000"
           , gid ? "1000"
           , extraMkUser ? ""
-          , substituters ? [ "https://jacobi.cachix.org" ]
-          , trusted-public-keys ? [ "jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=" ]
+          , substituters ? [ subs.g7c.url ]
+          , trusted-public-keys ? [ subs.g7c.key ]
           }: (pkgs.runCommand "mkUser" { } ''
             mkdir -p $out/etc/pam.d $out/etc/nix
             echo '${nixconf {inherit substituters trusted-public-keys; }}' >$out/etc/nix/nix.conf
@@ -150,8 +152,8 @@ let
         , group ? "user"
         , uid ? "1000"
         , gid ? "1000"
-        , substituters ? [ "https://jacobi.cachix.org" ]
-        , trusted-public-keys ? [ "jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=" ]
+        , substituters ? [ subs.g7c.url ]
+        , trusted-public-keys ? [ subs.g7c.key ]
         , extraCopyToRoot ? [ ]
         , extraPerms ? [ ]
         , extraMkUserPaths ? [ ]
