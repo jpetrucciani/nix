@@ -154,7 +154,7 @@ let
   };
 in
 {
-  inherit ports pubkeys machines;
+  inherit ports pubkeys machines subs;
   nix = {
     extraOptions = ''
       ${_base_nix_options}

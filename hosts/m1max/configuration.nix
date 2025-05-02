@@ -36,9 +36,6 @@ in
   };
 
   services =
-    let
-      modelPath = name: "/opt/box/models/${name}";
-    in
     {
       infinity.enable = true;
       llama-server.servers = { };
