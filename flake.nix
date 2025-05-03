@@ -73,7 +73,7 @@
       inherit (nix2containerPkgs) nix2container;
       pins = self.inputs;
       devShells = forAllSystems (
-        system: let pkgs = packages.${system}; in { default = pkgs.mkShell { buildInputs = with pkgs; [ jfmt nixup ]; }; }
+        system: let pkgs = packages.${system}; in { default = pkgs.mkShell { name = "nix"; buildInputs = with pkgs; [ jfmt nixup ]; }; }
       );
 
       nixosConfigurations = builtins.listToAttrs
