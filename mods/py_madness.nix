@@ -328,7 +328,7 @@ let
           enableCuda = cudaSupport;
           inherit (finalAttrs) workspaceRoot;
         };
-        nativeBuildInputs = [ final.rsync ];
+        nativeBuildInputs = (attrs.nativeBuildInputs or [ ]) ++ [ final.rsync final.makeWrapper ];
         installPhase =
           let
             copyBins = final.lib.concatStringsSep "\n" (map (x: "cp $uvEnv/bin/${x} $out/bin/${x}") bins);
