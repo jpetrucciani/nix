@@ -122,6 +122,13 @@ let
           nvidia-cusparse-cu12 = _prev.nvidia-cusparse-cu12.overrideAttrs (_: {
             buildInputs = [ _pkgs.cudaPackages.libnvjitlink ];
           });
+          nvidia-cufile-cu12 = _prev.nvidia-cufile-cu12.overrideAttrs (_: {
+            autoPatchelfIgnoreMissingDeps = [
+              "libmlx5.so.1"
+              "librdmacm.so.1"
+              "libibverbs.so.1"
+            ];
+          });
           cupy-cuda12x = _prev.cupy-cuda12x.overrideAttrs (_: {
             buildInputs = with _pkgs.cudaPackages; [
               cuda_nvrtc
@@ -152,17 +159,21 @@ let
               addAutoPatchelfSearchPath "${_final.torch}"
             '';
           };
-          exllamav2 = _prev.exllamav2.overrideAttrs {
-            postFixup = ''
-              addAutoPatchelfSearchPath "${_final.torch}"
-            '';
-          };
-          torch = _prev.torch.overrideAttrs (_: {
-            inherit ((python.pkgs.torch.override { cudaSupport = true; })) buildInputs;
-            postFixup = ''
-              addAutoPatchelfSearchPath "${_final.nvidia-cusparselt-cu12}"
-            '';
+          exllamav2 = _prev.exllamav2.overrideAttrs (old: {
+            CUDA_HOME = _pkgs.cudatoolkit;
+            TORCH_CUDA_ARCH_LIST = "8.0 8.6+PTX";
+            buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ setuptools torch ]);
           });
+          torch =
+            let
+              baseInputs = (python.pkgs.torch.override { cudaSupport = true; }).buildInputs;
+            in
+            _prev.torch.overrideAttrs (_: {
+              buildInputs = baseInputs ++ (with _pkgs.cudaPackages; [ libcufile ]);
+              postFixup = ''
+                addAutoPatchelfSearchPath "${_final.nvidia-cusparselt-cu12}"
+              '';
+            });
           torchaudio =
             let
               FFMPEG_ROOT = final.symlinkJoin {
