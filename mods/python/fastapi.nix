@@ -268,14 +268,42 @@ rec {
     };
   };
 
+  wait-for2 = buildPythonPackage rec {
+    pname = "wait-for2";
+    version = "0.3.2";
+    pyproject = true;
+
+    src = fetchPypi {
+      pname = "wait_for2";
+      inherit version;
+      hash = "sha256-k4YwJtw180cRBOz33h9KCzH0yLEqIkHA1u4m3MDCCSo=";
+    };
+
+    build-system = with final; [
+      setuptools
+      wheel
+    ];
+
+    pythonImportsCheck = [
+      "wait_for2"
+    ];
+
+    meta = {
+      description = "Asyncio wait_for that can handle simultaneous cancellation and future completion";
+      homepage = "https://pypi.org/project/wait-for2";
+      license = licenses.asl20;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
   nicegui = buildPythonPackage rec {
     pname = "nicegui";
-    version = "2.15.0";
+    version = "2.16.1";
     pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-C2O8+WNHRNKFqmGPdMTVfqcmT9j4qeMxzxDVKLo3NVw=";
+      hash = "sha256-gc9MSIDtzXIaU4px7l9fSEHV4Uv8KT+tR2NIneKWwR4=";
     };
 
     postPatch = ''
@@ -293,6 +321,7 @@ rec {
       "certifi"
       "docutils"
       "fastapi"
+      "h11"
       "httpx"
       "jinja2"
       "orjson"
@@ -331,6 +360,7 @@ rec {
       uvicorn
       uvloop
       vbuild
+      wait-for2
       watchfiles
       websockets
     ];
