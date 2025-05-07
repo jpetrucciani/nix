@@ -18,6 +18,7 @@ final: prev:
     nvidiaLdPath = if isWSL then "/usr/lib/wsl/lib" else if isNixOS then "/run/opengl-driver/lib" else "";
 
     attrIf = check: name: if check then name else null;
+    attrHash = attrs: builtins.hashString "sha256" (builtins.toJSON attrs);
     # attrIf helpers
     ifIsLinux = attrIf isLinux;
     ifIsArmLinux = attrIf isArmLinux;
