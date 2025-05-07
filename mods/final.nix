@@ -241,4 +241,6 @@ in
           --prefix PATH ":" "${final.lib.makeBinPath [ final.lix ]}"
       '';
     });
+
+  inherit (final.python312Packages) ty;
 }

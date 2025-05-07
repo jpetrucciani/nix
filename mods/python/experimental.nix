@@ -1,7 +1,7 @@
 final: prev:
 let
   inherit (final) buildPythonPackage fetchPypi;
-  inherit (final.pkgs) fetchFromGitHub runCommand rustPlatform lib;
+  inherit (final.pkgs) fetchFromGitHub rustPlatform lib;
 in
 rec {
   ty = buildPythonPackage rec {
