@@ -61,7 +61,7 @@ rec {
           pg=""
           if [ "$with_db_pg" = "1" ]; then
             pg="pg = __pg { postgres = pg; };${"\n"}pg_bootstrap = __pg_bootstrap { inherit name; postgres = pg; };${"\n"}pg_shell = __pg_shell { inherit name; postgres = pg; };"
-            toplevel="pg = pkgs.postgresql_16;${"\n"}$toplevel"
+            toplevel="pg = pkgs.postgresql_16.withPackages (p: with p; [pgvector]);${"\n"}$toplevel"
           fi
           redis=""
           if [ "$with_db_redis" = "1" ]; then
@@ -142,7 +142,7 @@ rec {
           if [ "$with_uv" = "1" ]; then
             extra_env_overrides="// uvEnv.uvEnvVars"
             uv="uv = [uv uvEnv];"
-            uv_top="uvEnv = pkgs.uv-nix.mkEnv {${"\n"}inherit name; python = pkgs.python312; workspaceRoot = ./.; pyprojectOverrides = final: prev: { }; };${"\n"}"
+            uv_top="uvEnv = pkgs.uv-nix.mkEnv {${"\n"}inherit name; python = pkgs.python312; workspaceRoot = pkgs.nix-gitignore.gitignoreSource [ \".git\" ] ./.; pyprojectOverrides = final: prev: { }; };${"\n"}"
             gitignore="$gitignore${"\n"}# python${"\n"}${gitignore.python}"
           fi
           vlang=""
