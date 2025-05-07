@@ -1,17 +1,59 @@
-final: prev: with prev; rec {
+final: prev:
+let
+  inherit (final) buildPythonPackage fetchPypi;
+  inherit (final.pkgs) fetchFromGitHub runCommand rustPlatform lib;
+in
+rec {
+  ty = buildPythonPackage rec {
+    pname = "ty";
+    version = "alpha-2025-05-07";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "astral-sh";
+      repo = "ty";
+      rev = "6edfca161b6af941897d00dac3540e7e4150e0ee";
+      # rev = version;
+      hash = "sha256-TMFHh6o2eNxhJbOe65lojdmTr0ck4NKssWAg4zD1qHE=";
+      fetchSubmodules = true;
+    };
+
+    build-system = [
+      rustPlatform.maturinBuildHook
+      rustPlatform.cargoSetupHook
+    ];
+    cargoRoot = "ruff";
+    cargoDeps = rustPlatform.importCargoLock {
+      lockFile = "${src}/ruff/Cargo.lock";
+      outputHashes = {
+        "lsp-types-0.95.1" = "sha256-8Oh299exWXVi6A39pALOISNfp8XBya8z+KT/Z7suRxQ=";
+        "salsa-0.21.1" = "sha256-cl8rb8lMqKWlq9MI5e7kedoUXFrsAH0RdNORef2udQI=";
+      };
+    };
+
+    pythonImportsCheck = [ "ty" ];
+
+    meta = {
+      description = "An extremely fast Python type checker and language server, written in Rust";
+      homepage = "https://github.com/astral-sh/ty";
+      license = lib.licenses.mit;
+      maintainers = with lib.maintainers; [ jpetrucciani ];
+    };
+  };
+
   icon-font-to-png = buildPythonPackage rec {
     pname = "icon-font-to-png";
     version = "0.4.1";
 
     format = "setuptools";
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "Pythonity";
       repo = pname;
       rev = "v${version}";
       hash = "sha256-6BK9LtI9Kr/rdQQidUtk4YCW5rZfvFzbDF4hkjoQYW8=";
     };
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with final; [
       pillow
       requests
       six
@@ -31,14 +73,14 @@ final: prev: with prev; rec {
     version = "0.5.2";
 
     format = "setuptools";
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "minimaxir";
       repo = pname;
       rev = "v${version}";
       hash = "sha256-WZRzT254JWhhaKYuiq9KMmTo1m5ywK0TzmaVJVeCt2k=";
     };
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with final; [
       wordcloud
       icon-font-to-png
       palettable
@@ -59,14 +101,14 @@ final: prev: with prev; rec {
     version = "0.0.0";
 
     format = "setuptools";
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "minimaxir";
       repo = pname;
       rev = "5ceceb8fa66e56a59ed7a833cd585df21869e3b9";
       hash = "sha256-Vq9oBdruldS4wURU1XbmfwXsjnVO/L1zRDhPU11OqsE=";
     };
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with final; [
       pillow
       numpy
       icon-font-to-png
@@ -102,12 +144,12 @@ final: prev: with prev; rec {
       hash = "sha256-SkSt84IHluKwwks1mCxT5oejqV177b54WcSMzmYWg3o=";
     };
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with final; [
       setuptools
       wheel
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with final; [
       fastcore
     ];
 
@@ -131,7 +173,7 @@ final: prev: with prev; rec {
       hash = "sha256-qQz/ax74QgsXRIMCcrXqCPDnXGOtexXYwHe5f6ztQ9s=";
     };
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with final; [
       pythonRelaxDepsHook
       setuptools
       wheel
@@ -141,7 +183,7 @@ final: prev: with prev; rec {
       "fastcore"
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with final; [
       fastcore
       sqlite-minutils
     ];
@@ -166,7 +208,7 @@ final: prev: with prev; rec {
       hash = "sha256-jn32w93V7RaZSxjmerJKCzTuxK0MVa6ZesVkiYQFTKA=";
     };
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with final; [
       setuptools
       wheel
       pythonRelaxDepsHook
@@ -177,7 +219,7 @@ final: prev: with prev; rec {
       "uvicorn"
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with final; [
       beautifulsoup4
       fastcore
       fastlite
@@ -190,7 +232,7 @@ final: prev: with prev; rec {
       uvicorn
     ];
 
-    passthru.optional-dependencies = {
+    passthru.optional-dependencies = with final;{
       dev = [
         ipython
         lxml
@@ -212,7 +254,7 @@ final: prev: with prev; rec {
     version = "3.5.0-beta1";
     pyproject = true;
 
-    src = pkgs.fetchFromGitHub {
+    src = fetchFromGitHub {
       owner = "canonical";
       repo = "maas";
       rev = version;
@@ -220,12 +262,12 @@ final: prev: with prev; rec {
       fetchSubmodules = true;
     };
 
-    nativeBuildInputs = [
+    nativeBuildInputs = with final; [
       setuptools
       wheel
     ];
 
-    propagatedBuildInputs = [
+    propagatedBuildInputs = with final; [
       aiodns
       aiofiles
       aiohttp
