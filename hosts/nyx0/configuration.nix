@@ -50,7 +50,7 @@ in
       infinity.enable = true;
       koboldcpp.servers = {
         minicpm = {
-          enable = true;
+          enable = false;
           port = 5001;
           model = modelPath "MiniCPM-V-2_6-Q8_0.gguf";
           mmproj = modelPath "mmproj-MiniCPM-V-2_6-f16.gguf";
@@ -58,12 +58,13 @@ in
         };
       };
       llama-server.servers = {
-        r1-1-5b = {
+        qwen3-4b = {
           enable = true;
           package = pkgs.llama-cpp-latest;
           port = 8013;
-          model = modelPath "DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf";
-          ngl = 41;
+          model = modelPath "Qwen3-4B-UD-Q6_K_XL.gguf";
+          ngl = 99;
+          extraFlags = ''--ctx-size 32768 --seed 420 --prio 2 --temp 0.6 --min-p 0.0 --top-k 20 --top-p 0.95'';
         };
       };
       prometheus.exporters.node.enable = true;

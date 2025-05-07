@@ -36,9 +36,21 @@ in
   };
 
   services =
+    let
+      modelPath = name: "/opt/box/models/${name}";
+    in
     {
       infinity.enable = true;
-      llama-server.servers = { };
+      llama-server.servers = {
+        qwen3-4b = {
+          enable = true;
+          package = pkgs.llama-cpp-latest;
+          port = 8013;
+          model = modelPath "Qwen3-4B-UD-Q6_K_XL.gguf";
+          ngl = 99;
+          extraFlags = ''--ctx-size 32768 --seed 420 --prio 2 --temp 0.6 --min-p 0.0 --top-k 20 --top-p 0.95'';
+        };
+      };
       prometheus.exporters.node.enable = true;
     };
 
