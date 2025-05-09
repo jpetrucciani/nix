@@ -46,7 +46,6 @@ in
     };
     systemPackages = with pkgs; [
       cudaPackages.cudatoolkit
-      cudaPackages.cudnn
       nvidia-docker
       nvtopPackages.nvidia
       linuxPackages.nvidia_x11

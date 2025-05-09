@@ -10,7 +10,6 @@ let
         "/run/opengl-drivers/lib"
         # "/run/opengl-drivers-32/lib"
         "${cuda}/lib"
-        "${pkgs.cudaPackages.cudnn}/lib"
       ]
     }:${
       lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib cuda.lib ]
@@ -30,8 +29,6 @@ in
     etc."nixpkgs-path".source = common.pkgs.path;
     # cuda stuff?
     systemPackages = with pkgs; [
-      cudaPackages.cudatoolkit
-      cudaPackages.cudnn
       nvidia-docker
     ];
     variables = {
