@@ -6,7 +6,6 @@
 , sqlite
 , stdenv
 , darwin
-,
 }:
 
 rustPlatform.buildRustPackage rec {
