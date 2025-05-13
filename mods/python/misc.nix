@@ -1197,4 +1197,43 @@ rec {
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
+
+  wtfis = buildPythonPackage rec {
+    pname = "wtfis";
+    version = "0.10.2";
+    pyproject = true;
+
+    src = fetchFromGitHub {
+      owner = "pirxthepilot";
+      repo = "wtfis";
+      rev = "v${version}";
+      hash = "sha256-2p5xFNr08WCgCQY8socmZ5UsyGCMId3zXQhXTX909PE=";
+    };
+
+    build-system = with final; [
+      hatchling
+      pythonRelaxDepsHook
+    ];
+
+    pythonRelaxDeps = [ "pydantic" ];
+
+    dependencies = with final; [
+      pydantic
+      python-dotenv
+      requests
+      rich
+      shodan
+    ];
+
+    pythonImportsCheck = [
+      "wtfis"
+    ];
+
+    meta = {
+      description = "Passive hostname, domain and IP lookup tool for non-robots";
+      homepage = "https://github.com/pirxthepilot/wtfis";
+      license = licenses.mit;
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
 }
