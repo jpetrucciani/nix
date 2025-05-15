@@ -1200,14 +1200,14 @@ rec {
 
   wtfis = buildPythonPackage rec {
     pname = "wtfis";
-    version = "0.10.2";
+    version = "0.11.0";
     pyproject = true;
 
     src = fetchFromGitHub {
       owner = "pirxthepilot";
       repo = "wtfis";
       rev = "v${version}";
-      hash = "sha256-2p5xFNr08WCgCQY8socmZ5UsyGCMId3zXQhXTX909PE=";
+      hash = "sha256-53D5ty5u5/NUEIQXYxuZOOaCrNLPKcHu/faX7S31+lU=";
     };
 
     build-system = with final; [
