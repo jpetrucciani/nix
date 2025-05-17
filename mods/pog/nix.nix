@@ -79,7 +79,7 @@ rec {
           fi
           nim=""
           if [ "$with_nim" = "1" ]; then
-            nim="nim = [(nim2.withPackages (p: with p; []))];"
+            nim="nim = [(nim.withPackages (p: with p; [])) nimble];"
             gitignore="$gitignore${"\n"}# nim${"\n"}${gitignore.nim}"
           fi
           bun=""
