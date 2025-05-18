@@ -1,7 +1,7 @@
 { lib, config, ... }:
 let
   inherit (lib.lists) subtractLists;
-  inherit (lib) mkEnableOption;
+  inherit (lib) mkDefault mkEnableOption;
   inherit (config.conf) work;
 in
 {
@@ -14,6 +14,7 @@ in
     #   package = pkgs.darwin.linux-builder-x86_64;
     # };
     system = {
+      primaryUser = mkDefault "jacobi";
       activationScripts.postUserActivation.text = ''
         # Following line should allow us to avoid a logout/login cycle
         /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
