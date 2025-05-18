@@ -20,7 +20,7 @@ let
       if [[ $(realpath "$profile") != "$toplevel" || "$POG_FORCE" == "1" ]];then
         ${nvd}/bin/nvd diff "$profile" "$toplevel"
         sudo -H nix-env -p "$profile" --set "$toplevel"
-        sudo -u jacobi "$toplevel"/activate-user
+        "$toplevel"/activate-user
         sudo "$toplevel"/activate
       fi
     '';
