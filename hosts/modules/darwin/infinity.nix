@@ -30,6 +30,7 @@ in
     models = mkOption {
       type = listOf str;
       default = [
+        "BAAI/bge-m3"
         "nomic-ai/nomic-embed-text-v1.5"
         "nomic-ai/modernbert-embed-base"
         "mixedbread-ai/mxbai-rerank-base-v1"
