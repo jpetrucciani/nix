@@ -230,6 +230,7 @@ let
               "encodec"
               "filterpy"
               "flashinfer-python"
+              "gensim"
               "html2text"
               "jieba"
               "peewee"
