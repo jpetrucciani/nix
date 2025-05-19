@@ -46,7 +46,7 @@ in
       modelPath = name: "/opt/box/models/${name}";
     in
     {
-      infinity.enable = true;
+      infinity.enable = false;
       koboldcpp.servers = {
         minicpm = {
           enable = false;
@@ -72,6 +72,22 @@ in
           model = modelPath "Qwen3-4B-UD-Q6_K_XL.gguf";
           ngl = 99;
           extraFlags = ''--ctx-size 32768 --seed 420 --prio 2 --temp 0.6 --min-p 0.0 --top-k 20 --top-p 0.95'';
+        };
+        bge-m3 = {
+          enable = true;
+          package = pkgs.llama-cpp-latest;
+          ngl = 99;
+          port = 9100;
+          model = modelPath "bge-m3-FP16.gguf";
+          extraFlags = "-c 65536 -np 8 -b 8192 -ub 8192 --pooling cls --embedding";
+        };
+        bge-m3-rerank = {
+          enable = true;
+          package = pkgs.llama-cpp-latest;
+          ngl = 99;
+          port = 9101;
+          model = modelPath "bge-reranker-v2-m3-FP16.gguf";
+          extraFlags = "-c 65536 -np 8 -b 8192 -ub 8192 -fa -lv 1 --reranking";
         };
       };
       mlx-vlm-api.servers.qwen-2-5-vl-7b.enable = true;
