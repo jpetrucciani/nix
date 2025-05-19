@@ -77,7 +77,7 @@ in
           enable = true;
           package = pkgs.llama-cpp-latest;
           ngl = 99;
-          port = 9100;
+          port = 9300;
           model = modelPath "bge-m3-FP16.gguf";
           extraFlags = "-c 65536 -np 8 -b 8192 -ub 8192 --pooling cls --embedding";
         };
@@ -85,7 +85,7 @@ in
           enable = true;
           package = pkgs.llama-cpp-latest;
           ngl = 99;
-          port = 9101;
+          port = 9301;
           model = modelPath "bge-reranker-v2-m3-FP16.gguf";
           extraFlags = "-c 65536 -np 8 -b 8192 -ub 8192 -fa -lv 1 --reranking";
         };
