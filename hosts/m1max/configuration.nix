@@ -40,7 +40,7 @@ in
       modelPath = name: "/opt/box/models/${name}";
     in
     {
-      infinity.enable = true;
+      # infinity.enable = true;
       llama-server.servers = {
         qwen3-4b = {
           enable = true;
