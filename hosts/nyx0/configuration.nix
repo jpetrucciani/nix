@@ -83,6 +83,6 @@ in
           extraFlags = "-c 65536 -np 8 -b 8192 -ub 8192 -fa -lv 1 --reranking";
         };
       };
-      prometheus.exporters.node.enable = true;
+      # prometheus.exporters.node.enable = true;
     };
 }

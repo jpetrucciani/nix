@@ -51,7 +51,7 @@ in
           extraFlags = ''--ctx-size 32768 --seed 420 --prio 2 --temp 0.6 --min-p 0.0 --top-k 20 --top-p 0.95'';
         };
       };
-      prometheus.exporters.node.enable = true;
+      # prometheus.exporters.node.enable = true;
     };
 
   system.stateVersion = 4;

@@ -54,5 +54,5 @@ in
   #     tokenFile = "/etc/default/gh.token";
   #   };
   # };
-  services.prometheus.exporters.node.enable = true;
+  # services.prometheus.exporters.node.enable = true;
 }

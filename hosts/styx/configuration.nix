@@ -90,7 +90,7 @@ in
           extraFlags = "-c 65536 -np 8 -b 8192 -ub 8192 -fa -lv 1 --reranking";
         };
       };
-      mlx-vlm-api.servers.qwen-2-5-vl-7b.enable = true;
-      prometheus.exporters.node.enable = true;
+      # mlx-vlm-api.servers.qwen-2-5-vl-7b.enable = true;
+      # prometheus.exporters.node.enable = true;
     };
 }
