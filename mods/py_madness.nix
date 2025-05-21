@@ -233,6 +233,7 @@ let
               "gensim"
               "html2text"
               "jieba"
+              "jsonpath-rw"
               "peewee"
               "pypika"
               "svglib"
