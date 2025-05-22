@@ -121,7 +121,7 @@ let
             EOF
 
             touch $out/etc/login.defs
-            mkdir -p $out/home/${user}
+            mkdir -p $out/home/${user} $out/run/${uid}
             ${extraMkUser}
           '');
         entrypoint = pkgs.writeShellApplication {
@@ -145,7 +145,7 @@ let
         , description ? "a foundry_v2 docker image built with nix"
         , hostPkgs ? pkgs
         , enableNix ? true
-        , pathsToLink ? [ "/bin" "/etc" "/lib" "/lib64" "/run" "/share" "/usr" ] ++ extraPathsToLink
+        , pathsToLink ? [ "/bin" "/etc" "/lib" "/lib64" "/share" "/usr" ] ++ extraPathsToLink
         , extraPathsToLink ? [ ]
         , sysLayer ? true
         , user ? "user"
@@ -208,6 +208,11 @@ let
               inherit uid gid user group;
               path = mkUser;
               regex = "/home/${user}";
+            })
+            (fn.perm {
+              inherit uid gid user group;
+              path = mkUser;
+              regex = "/run";
             })
           ] ++ extraPerms ++ (map
             (x: (fn.perm {
