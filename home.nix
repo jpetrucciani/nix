@@ -88,6 +88,7 @@ in
         gron
         gum
         gzip
+        html-to-markdown
         htmlq
         ivy
         jq

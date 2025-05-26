@@ -54,6 +54,10 @@ This directory contains cli tools
 
 [helm-oci](https://github.com/ikimpriv/helm-oci) is a command line tool that is useful for listing helm charts in oci repos
 
+### [html-to-markdown.nix](./html-to-markdown.nix)
+
+[html-to-markdown](https://github.com/JohannesKaufmann/html-to-markdown) is a quick way to convert arbitrary html to markdown documents
+
 ### [hunt.nix](./hunt.nix)
 
 [hunt](https://github.com/LyonSyonII/hunt-rs) is a simplified find command in rust
@@ -117,3 +121,7 @@ This directory contains cli tools
 ### [xlsxsql.nix](./xlsxsql.nix)
 
 [xlsxsql](https://github.com/noborus/xlsxsql) is a cli tool for executing SQL queries on excel files
+
+### [zertbot.nix](./zertbot.nix)
+
+This is my own override of certbot to fix issues in upstream nixpkgs
