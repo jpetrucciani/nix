@@ -348,7 +348,7 @@ in
     };
     prometheus.exporters = common.templates.prometheus_exporters { };
     minifluxng = {
-      enable = true;
+      enable = false;
       baseUrl = "https://rss.cobi.dev/";
       dbHost = "jupiter";
       dbPort = 54321;
