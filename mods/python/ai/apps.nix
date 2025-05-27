@@ -444,6 +444,14 @@ in
     };
   };
 
+  # fix issue with transformers?
+  # https://github.com/huggingface/optimum/issues/2277
+  optimum = prev.optimum.overridePythonAttrs (_: {
+    postInstall = ''
+      sed -i -E 's#(if is\_transformers\_version\(">=", ")4.49#\16.0#g' $out/lib/python*/site-packages/optimum/bettertransformer/__init__.py
+    '';
+  });
+
   infinity-emb = buildPythonPackage rec {
     pname = "infinity-emb";
     version = "0.0.76";
