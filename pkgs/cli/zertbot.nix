@@ -4,7 +4,6 @@
 , python311
 , python3 ? python311
 }:
-
 let
   python = python3.override {
     self = python;
@@ -135,14 +134,14 @@ let
 
         certbot-dns-porkbun = buildPythonPackage rec {
           pname = "certbot-dns-porkbun";
-          version = "0.10.0";
+          version = "0.10.1";
           pyproject = true;
 
           src = fetchFromGitHub {
             owner = "infinityofspace";
             repo = "certbot_dns_porkbun";
             rev = "refs/tags/v${version}";
-            hash = "sha256-+j4HvJ4R51FioRqyU0Xzuc36zc5wFClZ8gxSQNuOrXY=";
+            hash = "sha256-MUvCFP0hGD4rF0ZJEevybSGOBoUqYba6FkpZfNyNEs4=";
           };
 
           build-system = with final; [
@@ -171,6 +170,15 @@ let
         };
       };
   };
+  _certbot = python.pkgs.toPythonApplication python.pkgs.certbot;
 in
-with python.pkgs;
-toPythonApplication certbot
+_certbot.overrideAttrs (old: {
+  passthru = (old.passthru or { }) // {
+    withAll = _certbot.withPlugins (p: with p; [
+      certbot-dns-route53
+      certbot-dns-cloudflare-latest
+      certbot-dns-google
+      certbot-dns-porkbun
+    ]);
+  };
+})

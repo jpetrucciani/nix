@@ -315,12 +315,7 @@ let
     layers = with pkgs; [
       [ (awscli2.override { python3 = python311; }) ]
       [
-        (zertbot.withPlugins (p: with p; [
-          certbot-dns-route53
-          certbot-dns-cloudflare-latest
-          certbot-dns-google
-          certbot-dns-porkbun
-        ]))
+        zertbot.withAll
       ]
     ];
   } // certbot_base);
