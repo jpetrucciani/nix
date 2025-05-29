@@ -250,7 +250,7 @@ let
             psycopg2 = add_setuptools (_prev.psycopg2.overrideAttrs (_: {
               buildInputs = [ final.postgresql ] ++ final.lib.optionals final.stdenv.hostPlatform.isDarwin [ final.openssl ];
             }));
-            soundfile = prev.soundfile.overrideAttrs (_: {
+            soundfile = _prev.soundfile.overrideAttrs (_: {
               postInstall = ''
                 substituteInPlace $out/lib/python*/site-packages/soundfile.py --replace "_find_library('sndfile')" "'${final.libsndfile.out}/lib/libsndfile${final.stdenv.hostPlatform.extensions.sharedLibrary}'"
               '';
