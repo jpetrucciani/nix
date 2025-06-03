@@ -249,6 +249,10 @@ let
             numba = add_buildinputs (with final; [ tbb_2021_11 ]) _prev.numba;
             psycopg2 = add_setuptools (_prev.psycopg2.overrideAttrs (_: {
               buildInputs = [ final.postgresql ] ++ final.lib.optionals final.stdenv.hostPlatform.isDarwin [ final.openssl ];
+              postPatch = ''
+                substituteInPlace setup.py \
+                  --replace-fail "self.pg_config_exe = self.build_ext.pg_config" 'self.pg_config_exe = "${_final.libpq.pg_config}/bin/pg_config"'
+              '';
             }));
             soundfile = _prev.soundfile.overrideAttrs (_: {
               postInstall = ''
