@@ -20,6 +20,7 @@ import nixpkgs {
     allowUnfree = true;
     permittedInsecurePackages = [
       "nodejs-16.20.2"
+      "openssl-1.1.1w"
     ];
   } // config;
 }
