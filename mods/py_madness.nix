@@ -251,7 +251,7 @@ let
               buildInputs = [ final.postgresql ] ++ final.lib.optionals final.stdenv.hostPlatform.isDarwin [ final.openssl ];
               postPatch = ''
                 substituteInPlace setup.py \
-                  --replace-fail "self.pg_config_exe = self.build_ext.pg_config" 'self.pg_config_exe = "${_final.libpq.pg_config}/bin/pg_config"'
+                  --replace-fail "self.pg_config_exe = self.build_ext.pg_config" 'self.pg_config_exe = "${final.libpq.pg_config}/bin/pg_config"'
               '';
             }));
             soundfile = _prev.soundfile.overrideAttrs (_: {
