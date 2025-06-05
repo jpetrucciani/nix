@@ -14,7 +14,7 @@ let
     user = "root";
     group = "root";
     env = {
-      SNOWBALL = "0.0.2";
+      SNOWBALL = "0.0.3";
       TZ = "America/New_York";
       TZDIR = "${final.tzdata}/share/zoneinfo";
     };
@@ -35,6 +35,8 @@ let
       os = final.nixos { imports = [ defaults conf ]; };
       uniqueKeys = a: b: filter (k: !hasAttr k b) (attrNames a);
       systemd-units = uniqueKeys os.config.systemd.units empty.config.systemd.units;
+      enable_units = filter (x: !(hasSuffix ".target" x)) systemd-units;
+      start_units = filter (x: hasSuffix ".timer" x) systemd-units;
     in
     fix (result: final.buildEnv {
       name = "snowball_${name}";
@@ -58,7 +60,11 @@ let
             ${concatMapStringsSep "\n" (unit: ''sudo ln -sf /nix/var/nix/profiles/default/snowball/${unit} /etc/systemd/system/${unit}'') systemd-units}
             # install
             sudo systemctl daemon-reload
-            ${concatMapStringsSep "\n" (unit: ''sudo systemctl enable ${unit}'') systemd-units}
+            # enable everything except targets
+            ${concatMapStringsSep "\n" (unit: ''sudo systemctl enable ${unit}'') enable_units}
+
+            # start timers
+            ${concatMapStringsSep "\n" (unit: ''sudo systemctl start ${unit}'') start_units}
 
             # postInstall
             echo "[${name}] postInstall" >&2
