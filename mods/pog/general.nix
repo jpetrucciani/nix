@@ -224,7 +224,7 @@ rec {
         shortDefaultFlags = false;
         script = h: with h; ''
           set -m
-          trap 'pkill -P $$' SIGINT SIGTERM
+          trap '${final.busybox}/bin/pkill -P $$' SIGINT SIGTERM
           # shellcheck disable=SC2124
           ports="$@"
           ${var.empty "ports"} && die "you must specify one or more ports to wait for!" 1

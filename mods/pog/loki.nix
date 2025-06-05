@@ -62,7 +62,7 @@ in
 
       json_tags=$(parse_tags "$tags,hostname=''${hostname},ip=''${ip_address},user=$USER,pog=1")
       TIMESTAMP=$(date +%s%N)
-      JSON_PAYLOAD=$(jq -n \
+      JSON_PAYLOAD=$(${final.jq}/bin/jq -n \
         --arg ts "$TIMESTAMP" \
         --arg msg "$message" \
         --argjson labels "$json_tags" \
