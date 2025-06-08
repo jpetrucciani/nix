@@ -241,11 +241,11 @@
         "pog": "pog"
       },
       "locked": {
-        "lastModified": 1749237727,
-        "narHash": "sha256-vcgbZijoBEb8s6WwqzU3CgQRR8w9qpEB/oH4LSmOKXw=",
+        "lastModified": 1749328677,
+        "narHash": "sha256-S+mgpgMLDt6EwrFEBJlQNY17Bt8MW1ZWKA5s/yPErew=",
         "owner": "jpetrucciani",
         "repo": "hex",
-        "rev": "c034b5e55741fff0320255c92e19e58f19f31b07",
+        "rev": "07abafd44b208f5258c9711a8256a269914a0a16",
         "type": "github"
       },
       "original": {
@@ -309,11 +309,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1749194648,
-        "narHash": "sha256-ktwuXy7FgsCfuuj/BUyG4NEdCF4Ayjoi4FeLplrEyzM=",
+        "lastModified": 1749281920,
+        "narHash": "sha256-rAptRNrZ7GuCAbYXvgKFWacR2VKY+9EcpeCrlBAlBr0=",
         "owner": "kwbauson",
         "repo": "cfg",
-        "rev": "3591c40e102fe3fa85b5f7f0455e803ea616b57e",
+        "rev": "7d5e67b1ea0da4fc2e1f730ff4b7e07b1eb16f63",
         "type": "github"
       },
       "original": {
@@ -330,11 +330,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1749189731,
-        "narHash": "sha256-9d6cTnzc5PADsByqTV8lHDTTqI6o85XcRBukXO9EKHM=",
+        "lastModified": 1749194393,
+        "narHash": "sha256-vt6hM9DNywnXXuW1qPDLzECmbDcmxhh58wpb0EEQjAo=",
         "owner": "LnL7",
         "repo": "nix-darwin",
-        "rev": "9753a8706bad53ac98a3cd187323f412987aa4a1",
+        "rev": "19346808c445f23b08652971be198b9df6c33edc",
         "type": "github"
       },
       "original": {
