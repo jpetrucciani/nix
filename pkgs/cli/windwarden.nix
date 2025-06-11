@@ -11,6 +11,11 @@ rustPlatform.buildRustPackage rec {
     sha256 = "sha256-lUqP2/kzdz9DzTy+0MyFI7ryTwNdxlBbZkiFT2zHOaU=";
   };
 
+  # fix issues with TempDir in nix sandbox
+  preCheck = ''
+    export TMPDIR="/tmp"
+  '';
+
   cargoHash = "sha256-s2pIi+jJtL8ilTxh+iHia6CWgqh/CfP0uf0jkF8btRA=";
 
   meta = with lib; {
