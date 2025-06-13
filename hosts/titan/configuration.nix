@@ -160,36 +160,40 @@ in
     nix-ld.enable = true;
   };
 
-  virtualisation = {
-    docker.enable = true;
-    oci-containers.containers =
-      let
-        kokoro_version = "v0.1.0";
-        kokoro_api_port = 8880;
-        kokoro_ui_port = 7860;
-      in
-      {
-        kokoro = {
-          image = "ghcr.io/remsky/kokoro-fastapi-gpu:${kokoro_version}";
-          ports = [ "${toString kokoro_api_port}:8880" ];
-          volumes = [ "/var/lib/kokoro/voices:/app/api/src/voices" ];
-          devices = [ "nvidia.com/gpu=0" ];
-          environment = {
-            PYTHONPATH = "/app:/app/models";
+  virtualisation =
+    let
+      enable_kokoro = false;
+    in
+    {
+      docker.enable = true;
+      oci-containers.containers =
+        let
+          kokoro_version = "v0.1.0";
+          kokoro_api_port = 8880;
+          kokoro_ui_port = 7860;
+        in
+        {
+          ${if enable_kokoro then "kokoro" else null} = {
+            image = "ghcr.io/remsky/kokoro-fastapi-gpu:${kokoro_version}";
+            ports = [ "${toString kokoro_api_port}:8880" ];
+            volumes = [ "/var/lib/kokoro/voices:/app/api/src/voices" ];
+            devices = [ "nvidia.com/gpu=0" ];
+            environment = {
+              PYTHONPATH = "/app:/app/models";
+            };
+          };
+          ${if enable_kokoro then "kokoro-ui" else null} = {
+            image = "ghcr.io/remsky/kokoro-fastapi-ui:${kokoro_version}";
+            ports = [ "${toString kokoro_ui_port}:7860" ];
+            volumes = [ "/var/lib/kokoro/data:/app/ui/data" ];
+            environment = {
+              PYTHONUNBUFFERED = "1";
+              DISABLE_LOCAL_SAVING = "false";
+            };
+            extraOptions = [ "--add-host=kokoro-tts:10.88.0.1" ];
           };
         };
-        kokoro-ui = {
-          image = "ghcr.io/remsky/kokoro-fastapi-ui:${kokoro_version}";
-          ports = [ "${toString kokoro_ui_port}:7860" ];
-          volumes = [ "/var/lib/kokoro/data:/app/ui/data" ];
-          environment = {
-            PYTHONUNBUFFERED = "1";
-            DISABLE_LOCAL_SAVING = "false";
-          };
-          extraOptions = [ "--add-host=kokoro-tts:10.88.0.1" ];
-        };
-      };
-  };
+    };
   hardware = {
     nvidia = {
       open = false;
