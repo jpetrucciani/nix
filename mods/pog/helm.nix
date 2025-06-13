@@ -252,10 +252,11 @@ rec {
   chart_scan_prometheus-pushgateway = prometheus_chart { name = "prometheus-pushgateway"; last = 10; };
   chart_scan_prometheus-redis-exporter = prometheus_chart { name = "prometheus-redis-exporter"; last = 10; };
 
+  chart_scan_alloy = grafana_chart { name = "alloy"; };
   chart_scan_loki = grafana_chart { name = "loki"; prefix = "helm-"; };
   chart_scan_mimir = grafana_chart { name = "mimir-distributed"; filter_out = "weekly|rc"; };
-  chart_scan_tempo = grafana_chart { name = "tempo-distributed"; filter_out = "weekly|rc"; };
   chart_scan_oncall = grafana_chart { name = "oncall"; };
+  chart_scan_tempo = grafana_chart { name = "tempo-distributed"; filter_out = "weekly|rc"; };
 
   chart_scan_otf = _chart_scan rec {
     name = "otf";
@@ -364,6 +365,7 @@ rec {
   };
 
   helm_pog_scripts = [
+    chart_scan_alloy
     chart_scan_argo-cd
     chart_scan_authentik
     chart_scan_aws_mountpoint-s3-csi-driver
