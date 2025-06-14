@@ -410,7 +410,7 @@ let
           metadata:
             name: hex
           spec:
-            version: v0.0.8
+            version: v0.0.9
             init:
               command: [sh]
               args: [-c, 'echo "init hex version $(hex --version)"']
