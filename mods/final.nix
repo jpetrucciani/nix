@@ -243,4 +243,8 @@ in
     });
 
   inherit (final.python312Packages) ty;
+
+  # fix nano 8.5 build on darwin
+  # error: format string is not a string literal (potentially insecure) [-Werror,-Wformat-security]
+  nano = if final.stdenv.isDarwin then prev.nano.overrideAttrs (_: { CFLAGS = "-Wno-error=format-security"; }) else prev.nano;
 }
