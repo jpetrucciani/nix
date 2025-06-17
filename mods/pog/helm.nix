@@ -1,6 +1,11 @@
 # This module provides some tools for analyzing helm repos and charts!
 final: prev:
 let
+  coroot_chart = { name, prefix ? "", filter_out ? "", last ? 20 }: _chart_scan {
+    inherit name filter_out last;
+    base_url = "https://coroot.github.io/helm-charts";
+    chart_url = "https://github.com/coroot/helm-charts/releases/download/${prefix}${name}-{1}/${name}-{1}.tgz";
+  };
   grafana_chart = { name, prefix ? "", filter_out ? "", last ? 20 }: _chart_scan {
     inherit name filter_out last;
     base_url = "https://grafana.github.io/helm-charts";
@@ -257,6 +262,10 @@ rec {
   chart_scan_mimir = grafana_chart { name = "mimir-distributed"; filter_out = "weekly|rc"; };
   chart_scan_oncall = grafana_chart { name = "oncall"; };
   chart_scan_tempo = grafana_chart { name = "tempo-distributed"; filter_out = "weekly|rc"; };
+
+  chart_scan_coroot-ce = coroot_chart { name = "coroot-ce"; };
+  chart_scan_coroot-operator = coroot_chart { name = "coroot-operator"; };
+  chart_scan_coroot-node-agent = coroot_chart { name = "node-agent"; };
 
   chart_scan_otf = _chart_scan rec {
     name = "otf";
