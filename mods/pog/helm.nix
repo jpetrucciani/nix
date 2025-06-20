@@ -367,6 +367,12 @@ rec {
     chart_url = "https://questdb.github.io/questdb-kubernetes/questdb-{1}.tgz";
   };
 
+  chart_scan_semaphore = _chart_scan {
+    name = "semaphore";
+    base_url = "https://semaphoreui.github.io/charts";
+    chart_url = "https://github.com/semaphoreui/charts/releases/download/semaphore-{1}/semaphore-{1}.tgz";
+  };
+
   chart_scan_csi-driver-smb = _chart_scan {
     name = "csi-driver-smb";
     base_url = "https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts";
@@ -417,6 +423,7 @@ rec {
     chart_scan_redpanda
     chart_scan_robusta
     chart_scan_searxng
+    chart_scan_semaphore
     chart_scan_sentry
     chart_scan_signoz
     chart_scan_sonarqube
