@@ -1,5 +1,5 @@
 # [`llm`](https://github.com/rustformers/llm) is a port of [`llama.cpp`](https://github.com/ggerganov/llama.cpp) in rust!
-{ lib, stdenv, fetchFromGitHub, rustPlatform, openssl, pkg-config }:
+{ lib, fetchFromGitHub, rustPlatform, openssl, pkg-config }:
 let
   pname = "llm";
   version = "0.0.0";

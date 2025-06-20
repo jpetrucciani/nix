@@ -5,7 +5,7 @@ let
 in
 {
   ggml = callPackage
-    ({ lib, system, stdenv, clangStdenv, fetchFromGitHub, cmake, git }:
+    ({ lib, system, clangStdenv, fetchFromGitHub, cmake, git }:
       clangStdenv.mkDerivation rec {
         name = "ggml";
         version = "0.0.0";
