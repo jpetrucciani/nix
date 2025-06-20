@@ -17,9 +17,6 @@ let
   inherit (lib) optionals;
   inherit (stdenv) isAarch64 isDarwin;
   isM1 = isDarwin && isAarch64;
-  osSpecific =
-    if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
-    else [ ];
   cudatoolkit_joined = symlinkJoin {
     name = "${cudatoolkit.name}-merged";
     paths = [
@@ -47,7 +44,6 @@ clangStdenv.mkDerivation {
 
   CMAKE_ARGS = builtins.concatStringsSep " " _CMAKE_ARGS;
 
-  buildInputs = osSpecific;
   nativeBuildInputs = [ cmake ]
     ++ (optionals cuda [ cudatoolkit_joined ])
     ++ (optionals rocm (with rocmPackages; [ clr hipblas rocblas ]));

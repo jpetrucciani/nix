@@ -9,10 +9,6 @@ in
       let
         inherit (stdenv) isAarch64 isDarwin;
         isM1 = isDarwin && isAarch64;
-        osSpecific =
-          if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
-          else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
-          else [ ];
       in
       clangStdenv.mkDerivation rec {
         name = "ggml";
@@ -38,7 +34,6 @@ in
           mv ./bin/{mpt,replit,starcoder,whisper} $out/bin/.
         '';
 
-        buildInputs = osSpecific;
         nativeBuildInputs = [ cmake git ];
 
         meta = with lib; {

@@ -40,12 +40,6 @@ rec {
   };
 
   ggml-python =
-    let
-      osSpecific =
-        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
-        else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
-        else [ ];
-    in
     buildPythonPackage rec {
       pname = "ggml-python";
       version = "0.0.1";
@@ -70,7 +64,6 @@ rec {
       preBuild = ''
         cd ..
       '';
-      buildInputs = osSpecific;
 
       nativeBuildInputs = with prev; [
         pkgs.cmake
@@ -103,12 +96,6 @@ rec {
     };
 
   pyllamacpp =
-    let
-      osSpecific =
-        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
-        else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
-        else [ ];
-    in
     buildPythonPackage rec {
       pname = "pyllamacpp";
       version = "2.4.3";
@@ -127,7 +114,6 @@ rec {
           -e '/"cmake/d' \
           ./pyproject.toml
       '';
-      buildInputs = osSpecific;
       nativeBuildInputs = with prev; [
         pkgs.cmake
         pkgs.ninja
@@ -147,12 +133,6 @@ rec {
     };
 
   pygptj =
-    let
-      osSpecific =
-        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
-        else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
-        else [ ];
-    in
     buildPythonPackage rec {
       pname = "pygptj";
       version = "2.0.3";
@@ -166,7 +146,6 @@ rec {
         fetchSubmodules = true;
       };
 
-      buildInputs = osSpecific;
       nativeBuildInputs = with prev; [
         pkgs.cmake
         pkgs.ninja
@@ -218,10 +197,6 @@ rec {
 
   rwkv-cpp =
     let
-      osSpecific =
-        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
-        else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
-        else [ ];
       version = "0.0.1";
       libFile = if isDarwin then "librwkv.dylib" else "librwkv.so";
       setup-py = writeTextFile {
@@ -262,7 +237,6 @@ rec {
         cmake --build . --config Release
         sed -i -E "s#(paths = \[)#\1'$out/${prev.python.sitePackages}/${libFile}',#g" ./rwkv_cpp_shared_library.py
       '';
-      buildInputs = osSpecific;
 
       nativeBuildInputs = with prev; [
         pkgs.cmake
@@ -325,10 +299,6 @@ rec {
     let
       name = "whisper-cpp-python";
       version = "0.2.0";
-      osSpecific =
-        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
-        else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
-        else [ ];
     in
     buildPythonPackage {
       inherit version;
@@ -353,7 +323,6 @@ rec {
         cd ..
         sed -E -i 's#(requires =).*#\1["scikit-build"]#g' ./pyproject.toml
       '';
-      buildInputs = osSpecific;
 
       pythonRelaxDeps = [ "librosa" ];
       nativeBuildInputs = with prev; [
@@ -383,10 +352,6 @@ rec {
     let
       name = "ctransformers";
       version = "0.3.4";
-      osSpecific =
-        if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate ]
-        else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
-        else [ ];
     in
     buildPythonPackage {
       inherit version;
@@ -411,7 +376,6 @@ rec {
         pkgs.cmake
         scikit-build
       ];
-      buildInputs = osSpecific;
       nativeCheckInputs = with prev; [ pytestCheckHook ];
       pythonImportsCheck = [ "ctransformers" ];
       disabledTestPaths = [ "tests/test_model.py" ];
