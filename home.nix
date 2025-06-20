@@ -330,7 +330,7 @@ in
       complete -F _kube_contexts kubectx kx
       complete -F _kube_namespaces kubens kns
     '' + (if (!isBarebones) then ''
-      source ~/.nix-profile/share/bash-completion/completions/docker
+      source ~/.nix-profile/share/bash-completion/completions/docker.bash
       complete -F _docker d
     '' else "") +
     ''
