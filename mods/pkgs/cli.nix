@@ -1,7 +1,7 @@
 # This overlay provides general CLI tools for use in text transformation and other use cases.
 final: prev:
 let
-  inherit (final) fetchFromGitHub lib isLinux isDarwin;
+  inherit (final) fetchFromGitHub lib isLinux;
   shardsDerivation = shards: builtins.toFile "shards.nix" (lib.generators.toPretty { } shards);
 in
 {
@@ -53,7 +53,7 @@ in
           sha256 = "sha256-s8MuSUC+TbzfadoiqW11Eh7ZTirFjEtVbIMofD0xRc8=";
         };
 
-        nativeBuildInputs = [ final.cmake ] ++ lib.optional isDarwin final.darwin.apple_sdk_11_0.frameworks.AppKit;
+        nativeBuildInputs = [ final.cmake ];
 
         preConfigure = ''
           cd build/in

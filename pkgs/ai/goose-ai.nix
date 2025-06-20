@@ -10,7 +10,6 @@
 , zlib
 , zstd
 , stdenv
-, darwin
 , xorg
 , fetchurl
 }:
@@ -71,12 +70,6 @@ rustPlatform.buildRustPackage {
     openssl
     zlib
     zstd
-  ] ++ lib.optionals stdenv.isDarwin [
-    darwin.apple_sdk.frameworks.CoreGraphics
-    darwin.apple_sdk.frameworks.CoreServices
-    darwin.apple_sdk.frameworks.IOKit
-    darwin.apple_sdk.frameworks.Security
-    darwin.apple_sdk.frameworks.SystemConfiguration
   ] ++ lib.optionals stdenv.isLinux [
     xorg.libxcb
   ];

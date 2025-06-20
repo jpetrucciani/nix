@@ -1,12 +1,6 @@
 # [`llm`](https://github.com/rustformers/llm) is a port of [`llama.cpp`](https://github.com/ggerganov/llama.cpp) in rust!
-{ lib, stdenv, darwin, fetchFromGitHub, rustPlatform, openssl, pkg-config }:
+{ lib, stdenv, fetchFromGitHub, rustPlatform, openssl, pkg-config }:
 let
-  inherit (stdenv) isAarch64 isDarwin;
-  isM1 = isDarwin && isAarch64;
-  osSpecific =
-    if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
-    else if isDarwin then with darwin.apple_sdk.frameworks; [ Accelerate CoreGraphics CoreVideo ]
-    else [ ];
   pname = "llm";
   version = "0.0.0";
 in
@@ -20,9 +14,7 @@ rustPlatform.buildRustPackage rec {
     sha256 = "sha256-h4PSMMa7wY50fffcgkvpah5ACJWhekrwHyTq2hzwtbo=";
     fetchSubmodules = true;
   };
-  buildInputs = [
-    openssl
-  ] ++ osSpecific;
+  buildInputs = [ openssl ];
   nativeBuildInputs = [ pkg-config ];
 
   cargoHash = "sha256-/Bsk5RFGuyUg9AUmiHh6HdLBAEuc50o4bIQPsTHS67M=";

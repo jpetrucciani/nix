@@ -1,7 +1,6 @@
 # [`stable-diffusion.cpp`](https://github.com/leejet/stable-diffusion.cpp) is a port of stable-diffusion model inference in C/C++
 { lib
 , symlinkJoin
-, darwin
 , cmake
 , stdenv
 , stable-diffusion-cpp
@@ -17,9 +16,6 @@ let
   inherit (lib) optionals;
   inherit (stdenv) isAarch64 isDarwin;
   isM1 = isDarwin && isAarch64;
-  osSpecific =
-    if isM1 then with darwin.apple_sdk_11_0.frameworks; [ Accelerate MetalKit MetalPerformanceShaders MetalPerformanceShadersGraph ]
-    else [ ];
   cudatoolkit_joined = symlinkJoin {
     name = "${cudatoolkit.name}-merged";
     paths = [
@@ -47,7 +43,6 @@ clangStdenv.mkDerivation {
 
   CMAKE_ARGS = builtins.concatStringsSep " " _CMAKE_ARGS;
 
-  buildInputs = osSpecific;
   nativeBuildInputs = [ cmake ]
     ++ (optionals cuda [ cudatoolkit_joined ])
     ++ (optionals rocm (with rocmPackages; [ clr hipblas rocblas ]));

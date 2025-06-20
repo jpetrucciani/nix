@@ -4,17 +4,8 @@
 , fetchFromGitHub
 , pkg-config
 , openssl
-, stdenv
 , darwin
 }:
-let
-  osSpecific =
-    if stdenv.isDarwin then
-      (with darwin.apple_sdk.frameworks; [
-        Security
-        SystemConfiguration
-      ]) else [ ];
-in
 rustPlatform.buildRustPackage {
   pname = "vercel-log-drain";
   version = "0.0.3";
@@ -32,9 +23,7 @@ rustPlatform.buildRustPackage {
     pkg-config
   ];
 
-  buildInputs = [
-    openssl
-  ] ++ osSpecific;
+  buildInputs = [ openssl ];
 
   meta = with lib; {
     description = "A simple log-drain you can deploy to export log messages from Vercel to one or more outputs";

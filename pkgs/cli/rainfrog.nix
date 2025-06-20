@@ -4,7 +4,6 @@
 , fetchFromGitHub
 , pkg-config
 , sqlite
-, stdenv
 , darwin
 }:
 
@@ -25,15 +24,7 @@ rustPlatform.buildRustPackage rec {
     pkg-config
   ];
 
-  buildInputs = [
-    sqlite
-  ] ++ lib.optionals stdenv.isDarwin [
-    darwin.apple_sdk.frameworks.AppKit
-    darwin.apple_sdk.frameworks.CoreFoundation
-    darwin.apple_sdk.frameworks.CoreGraphics
-    darwin.apple_sdk.frameworks.Security
-    darwin.apple_sdk.frameworks.SystemConfiguration
-  ];
+  buildInputs = [ sqlite ];
 
   meta = {
     description = "A database management tui for postgres";
