@@ -1,7 +1,7 @@
 # This overlay provides general CLI tools for use in text transformation and other use cases.
 final: prev:
 let
-  inherit (final) fetchFromGitHub lib isLinux isDarwin;
+  inherit (final) fetchFromGitHub lib isLinux;
   shardsDerivation = shards: builtins.toFile "shards.nix" (lib.generators.toPretty { } shards);
 in
 {

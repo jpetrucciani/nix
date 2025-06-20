@@ -1,7 +1,6 @@
 # [`stable-diffusion.cpp`](https://github.com/leejet/stable-diffusion.cpp) is a port of stable-diffusion model inference in C/C++
 { lib
 , symlinkJoin
-, darwin
 , cmake
 , stdenv
 , stable-diffusion-cpp

@@ -2,8 +2,6 @@
 { lib
 , rustPlatform
 , fetchFromGitHub
-, stdenv
-, darwin
 , cacert
 }:
 rustPlatform.buildRustPackage rec {

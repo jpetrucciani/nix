@@ -10,7 +10,6 @@
 , zlib
 , zstd
 , stdenv
-, darwin
 , xorg
 , fetchurl
 }:

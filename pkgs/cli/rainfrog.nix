@@ -4,7 +4,6 @@
 , fetchFromGitHub
 , pkg-config
 , sqlite
-, stdenv
 , darwin
 }:
 

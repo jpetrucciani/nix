@@ -2,7 +2,7 @@ final: prev:
 let
   inherit (prev) buildPythonPackage;
   inherit (prev.stdenv) isAarch64 isDarwin;
-  inherit (prev.pkgs) fetchFromGitHub darwin writeTextFile;
+  inherit (prev.pkgs) fetchFromGitHub writeTextFile;
   inherit (prev.lib) licenses maintainers;
   isM1 = isDarwin && isAarch64;
   llama-cpp-pin = fetchFromGitHub {

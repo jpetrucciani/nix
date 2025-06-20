@@ -4,7 +4,6 @@
 , fetchFromGitHub
 , pkg-config
 , openssl
-, stdenv
 , darwin
 }:
 rustPlatform.buildRustPackage {

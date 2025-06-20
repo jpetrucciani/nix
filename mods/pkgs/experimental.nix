@@ -5,11 +5,7 @@ let
 in
 {
   ggml = callPackage
-    ({ lib, system, darwin, stdenv, clangStdenv, fetchFromGitHub, cmake, git }:
-      let
-        inherit (stdenv) isAarch64 isDarwin;
-        isM1 = isDarwin && isAarch64;
-      in
+    ({ lib, system, stdenv, clangStdenv, fetchFromGitHub, cmake, git }:
       clangStdenv.mkDerivation rec {
         name = "ggml";
         version = "0.0.0";
