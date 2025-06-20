@@ -25,10 +25,6 @@ rustPlatform.buildRustPackage rec {
 
   cargoHash = "sha256-IjhNtUgeWr4WjioAZoA1dkQrkTdaSprXXmF15l06rSA=";
 
-  buildInputs = lib.optionals stdenv.isDarwin [
-    darwin.apple_sdk.frameworks.Security
-  ];
-
   meta = with lib; {
     description = "A Rust only folder size exporter for Prometheus (Grafana";
     homepage = "https://github.com/MindFlavor/prometheus_folder_size_exporter";

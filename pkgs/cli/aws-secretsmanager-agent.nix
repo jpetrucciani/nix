@@ -19,11 +19,7 @@ rustPlatform.buildRustPackage rec {
 
   cargoHash = "sha256-9yzRGioTICwPEHzUUb8/UGFfKSWOU4Fqa5YZ89Zc/HY=";
 
-  buildInputs = [
-    cacert
-  ] ++ (lib.optionals stdenv.isDarwin [
-    darwin.apple_sdk.frameworks.Security
-  ]);
+  buildInputs = [ cacert ];
 
   meta = with lib; {
     description = "The AWS Secrets Manager Agent is a local HTTP service that you can install and use in your compute environments to read secrets from Secrets Manager and cache them in memory";

@@ -19,10 +19,6 @@ rustPlatform.buildRustPackage rec {
 
   cargoHash = "sha256-8noAmup6DQbVfV4qaZ8NawjxY8ILwYjpG+S1nr3NgDM=";
 
-  buildInputs = lib.optionals stdenv.isDarwin [
-    darwin.apple_sdk.frameworks.Security
-  ];
-
   meta = with lib; {
     description = "Generate SDKs for your API";
     homepage = "https://github.com/Sideko-Inc/sideko";
