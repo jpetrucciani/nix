@@ -244,7 +244,24 @@ in
 
   inherit (final.python312Packages) ty;
 
-  # fix nano 8.5 build on darwin
-  # error: format string is not a string literal (potentially insecure) [-Werror,-Wformat-security]
-  nano = if final.stdenv.isDarwin then prev.nano.overrideAttrs (_: { CFLAGS = "-Wno-error=format-security"; }) else prev.nano;
+  # allow 3proxy on darwin?
+  _3proxy = prev._3proxy.overrideAttrs (old: {
+    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ (if final.stdenv.isDarwin then [ final.pam ] else [ ]);
+    makeFlags =
+      if final.stdenv.isDarwin then [
+        "-f Makefile.FreeBSD"
+        "INSTALL=install"
+        "DESTDIR=${placeholder "out"}"
+        "all"
+        # "CC:=$(CC)"
+      ] else old.makeFlags;
+    installPhase =
+      if final.stdenv.isDarwin then ''
+        mkdir -p $out
+        mv ./bin $out/.
+      '' else old.installPhase;
+    meta = old.meta // {
+      platforms = final.lib.platforms.all;
+    };
+  });
 }

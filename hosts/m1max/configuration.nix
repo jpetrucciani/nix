@@ -52,6 +52,15 @@ in
         };
       };
       # prometheus.exporters.node.enable = true;
+      _3proxy = {
+        servers = {
+          socks = {
+            enable = true;
+            type = "socks";
+            auth = [ "none" ];
+          };
+        };
+      };
     };
 
   system.stateVersion = 4;
