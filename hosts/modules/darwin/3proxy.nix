@@ -32,7 +32,7 @@ let
     
     auth ${concatStringsSep " " serverConf.auth}
     
-    ${optionalString (cfg.denyPrivate) "deny * * ${optionalList cfg.privateRanges}"}
+    ${optionalString cfg.denyPrivate "deny * * ${optionalList cfg.privateRanges}"}
     
     ${concatMapStringsSep "\n" (
       acl:
@@ -63,7 +63,7 @@ in
 
   options.services._3proxy = {
     servers = mkOption {
-      type = lib.types.attrsOf (lib.types.submodule ({ name, ... }: {
+      type = lib.types.attrsOf (lib.types.submodule (_: {
         options = {
           enable = mkEnableOption "3proxy launchd service";
 
@@ -436,7 +436,7 @@ in
     launchd.daemons = mapAttrs'
       (name: conf: nameValuePair (proxyName name) (
         let
-          serverConf = conf // { name = name; };
+          serverConf = conf // { inherit name; };
           configFile = generateConfig serverConf;
         in
         {
