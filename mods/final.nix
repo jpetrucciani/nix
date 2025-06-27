@@ -259,7 +259,7 @@ in
       if final.stdenv.isDarwin then ''
         mkdir -p $out
         mv ./bin $out/.
-      '' else old.installPhase;
+      '' else (old.installPhase or "");
     meta = old.meta // {
       platforms = final.lib.platforms.all;
     };
