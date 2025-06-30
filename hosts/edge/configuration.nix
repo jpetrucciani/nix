@@ -201,7 +201,7 @@ in
   } // common.services;
 
   fileSystems."/mnt/win" = {
-    device = "//aur-jpetrucciani-01/c$/mnt";
+    device = "//aur-jpetrucciani-01.blackedge.local/c$/mnt";
     fsType = "cifs";
     options =
       let
