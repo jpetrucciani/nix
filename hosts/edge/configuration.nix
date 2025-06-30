@@ -56,6 +56,7 @@ in
     };
     systemPackages = with pkgs; [
       amazon-ecr-credential-helper
+      cifs-utils
       nfs-utils
     ];
   };
@@ -198,6 +199,16 @@ in
       }];
     };
   } // common.services;
+
+  fileSystems."/mnt/win" = {
+    device = "//aur-jpetrucciani-01/c$/mnt";
+    fsType = "cifs";
+    options =
+      let
+        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+      in
+      [ "${automount_opts},credentials=/etc/default/smb-secrets" ];
+  };
 
   virtualisation.docker.enable = true;
   virtualisation.vmware.guest.enable = true;
