@@ -83,33 +83,22 @@ in
         };
       };
     };
-    caddy =
-      let
-        reverse_proxy = location: {
-          extraConfig = ''
-            # import TAILSCALE
-            reverse_proxy /* {
-              to ${location}
-            }
-          '';
-        };
-      in
-      {
-        enable = true;
-        package = pkgs.zaddy;
-        email = common.emails.personal;
-        globalConfig = ''
-          auto_https off
-          http_port 80
-        '';
-        extraConfig = ''
-          (TAILSCALE) {
-            @tailscale not remote_ip 127.0.0.1 100.64.0.0/10
-            respond @tailscale "kek" 403
-          }
-        '';
-        virtualHosts = { };
-      };
+    caddy = {
+      enable = true;
+      package = pkgs.zaddy;
+      email = common.emails.personal;
+      globalConfig = ''
+        auto_https off
+        http_port 80
+      '';
+      extraConfig = ''
+        (TAILSCALE) {
+          @tailscale not remote_ip 127.0.0.1 100.64.0.0/10
+          respond @tailscale "kek" 403
+        }
+      '';
+      virtualHosts = { };
+    };
     postgresql = {
       enable = true;
       package = pkgs.postgresql_16;
