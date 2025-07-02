@@ -154,6 +154,11 @@ let
               addAutoPatchelfSearchPath "${_final.torch}"
             '';
           });
+          paddlepaddle-gpu = _prev.paddlepaddle-gpu.overrideAttrs (_: {
+            postFixup = ''
+              addAutoPatchelfSearchPath "${_final.torch}"
+            '';
+          });
           flash-attn = _prev.flash-attn.overrideAttrs {
             postFixup = ''
               addAutoPatchelfSearchPath "${_final.torch}"
