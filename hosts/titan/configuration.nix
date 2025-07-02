@@ -105,31 +105,10 @@ in
         extraConfig = ''
           (TAILSCALE) {
             @tailscale not remote_ip 127.0.0.1 100.64.0.0/10
-            respond @tailscale "Kek" 403
+            respond @tailscale "kek" 403
           }
         '';
-        virtualHosts = {
-          "http://llama3.llm.jacobi.xyz:80" = {
-            extraConfig = ''
-              @options {
-                method OPTIONS
-              }
-              header {
-                Access-Control-Allow-Origin *
-                Access-Control-Allow-Credentials true
-                Access-Control-Allow-Methods *
-                Access-Control-Allow-Headers *
-                defer
-              }
-              reverse_proxy /* {
-                to localhost:5000 localhost:5002
-                lb_policy least_conn
-              }
-              respond @options 204
-            '';
-          };
-          "http://v.llm.jacobi.xyz:80" = reverse_proxy "localhost:5000";
-        };
+        virtualHosts = { };
       };
     postgresql = {
       enable = true;
@@ -143,9 +122,9 @@ in
         host all all 100.64.0.0/10 trust
       '';
     };
-    infinity.enable = true;
+    infinity.enable = false;
     paperless = {
-      enable = true;
+      enable = false;
       address = "0.0.0.0";
       settings = {
         PAPERLESS_OCR_LANGUAGE = "eng";
