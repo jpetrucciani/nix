@@ -154,10 +154,36 @@ let
               addAutoPatchelfSearchPath "${_final.torch}"
             '';
           });
-          paddlepaddle-gpu = _prev.paddlepaddle-gpu.overrideAttrs (_: {
+          fastdeploy-gpu = _prev.fastdeploy-gpu.overrideAttrs (_: {
+            buildInputs = with _pkgs.cudaPackages; [
+              cuda_cudart
+              libcublas
+            ];
+            autoPatchelfIgnoreMissingDeps = [ "libibverbs.so.1" ];
             postFixup = ''
-              addAutoPatchelfSearchPath "${_final.torch}"
+              addAutoPatchelfSearchPath "${_final.paddlepaddle-gpu}"
+              substituteInPlace $out/lib/python*/site-packages/fastdeploy/__init__.py --replace "ImportError" "Exception"
             '';
+          });
+          paddlepaddle-gpu = _prev.paddlepaddle-gpu.overrideAttrs (_: {
+            autoPatchelfIgnoreMissingDeps = [ "libmlx5.so.1" ];
+            postInstall = ''
+              sed -i -E 's#(input_rank = len\(x\.shape\))#\1\n    if input_rank == 1:\n        x = x.unsqueeze(0)\n        input_rank += 1#g' $out/lib/python*/site-packages/paddle/incubate/nn/functional/fused_rms_norm.py
+            '';
+            buildInputs = with _pkgs.cudaPackages; [
+              _final.setuptools
+              cuda_nvrtc
+              cudnn
+              cuda_cudart
+              libcublas
+              cutensor
+              cuda_nvtx
+              libcufft
+              libcurand
+              libcusolver
+              libcusparse
+              nccl
+            ];
           });
           flash-attn = _prev.flash-attn.overrideAttrs {
             postFixup = ''
@@ -230,9 +256,11 @@ let
             _setuptools_required = [
               "aiohttp"
               "antlr4-python3-runtime"
+              "crcmod"
               "distance"
               "docx2txt"
               "encodec"
+              "etcd3"
               "filterpy"
               "flashinfer-python"
               "gensim"
@@ -242,8 +270,10 @@ let
               "peewee"
               "pypika"
               "s3tokenizer"
+              "seqeval"
               "svglib"
               "wikipedia"
+              "zmq"
             ];
             setuptools_required = listToAttrs (map (x: { name = x; value = add_setuptools _prev.${x}; }) _setuptools_required);
           in
