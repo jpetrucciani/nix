@@ -281,7 +281,7 @@ let
             # Implement standard build fixups here.
             # Note that uv2nix is _not_ using Nixpkgs buildPythonPackage.
             # It's using https://pyproject-nix.github.io/pyproject.nix/build.html
-            numba = add_buildinputs (with final; [ tbb_2021_11 ]) _prev.numba;
+            numba = add_buildinputs (with final; [ tbb_2021 ]) _prev.numba;
             psycopg2 = add_setuptools (_prev.psycopg2.overrideAttrs (_: {
               buildInputs = [ final.postgresql ] ++ final.lib.optionals final.stdenv.hostPlatform.isDarwin [ final.openssl ];
               postPatch = ''
