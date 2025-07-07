@@ -1,19 +1,20 @@
 final: prev:
 let
-  inherit (final) buildPythonPackage fetchPypi;
+  inherit (final) buildPythonPackage fetchPypi setuptools;
   inherit (final.lib) maintainers;
 in
 rec {
   boto3-stubs = buildPythonPackage rec {
     pname = "boto3-stubs";
     version = "1.20.35";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
       sha256 = "1nnd8jjakbcfjsfwn0w7i8mkqj7zji7x2vzmgklbrh3hw10ig95p";
     };
 
-    propagatedBuildInputs = [ botocore-stubs ];
+    build-system = [ botocore-stubs setuptools ];
     checkInputs = with final; [
       boto3
     ];
@@ -29,12 +30,14 @@ rec {
   botocore-stubs = buildPythonPackage rec {
     pname = "botocore-stubs";
     version = "1.24.6";
+    pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
       sha256 = "093zsj2wk7xw89yvs7w88z9w3811vkpgfv4q3wk9j6gd6n3hr1pw";
     };
 
+    build-system = [ setuptools ];
     pythonImportsCheck = [ "botocore-stubs" ];
 
     meta = {
