@@ -38,6 +38,10 @@ This directory contains cli tools
 
 [comcast](https://github.com/tylertreat/comcast) is a tool to help in simulating shitty network connections
 
+### [cronv.nix](./cronv.nix)
+
+[cronv](https://github.com/takumakanari/cronv) is a visualizer for crontab entries
+
 ### [dep-tree.nix](./dep-tree.nix)
 
 [dep-tree](https://github.com/gabotechs/dep-tree) allows visualizing code base dependencies
