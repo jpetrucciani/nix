@@ -1,7 +1,6 @@
 { lib
 , stdenv
 , fetchFromGitHub
-, fetchpatch2
 , makeWrapper
 , nodejs
 , pnpm_8
