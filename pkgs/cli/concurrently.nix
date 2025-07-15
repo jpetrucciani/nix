@@ -1,43 +1,29 @@
 { lib
 , stdenv
 , fetchFromGitHub
-, fetchpatch2
 , makeWrapper
 , nodejs
 , pnpm_8
 }:
-
 let
   pnpm = pnpm_8;
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "concurrently";
-  version = "8.2.2";
+  version = "9.2.0";
 
   src = fetchFromGitHub {
     owner = "open-cli-tools";
     repo = "concurrently";
     rev = "refs/tags/v${finalAttrs.version}";
-    hash = "sha256-VoyVYBOBMguFKnG2VItk1L5BbF72nO7bYJpb7adqICs=";
+    hash = "sha256-voPL3qw7oWJP1NqGgkYGCFZ/RhBdBitp4Y1LXSuaeEo=";
   };
 
   pnpmDeps = pnpm.fetchDeps {
-    inherit (finalAttrs)
-      pname
-      version
-      src
-      patches
-      ;
-    hash = "sha256-F1teWIABkK0mqZcK3RdGNKmexI/C59QWSrrD1jYbHt0=";
+    inherit (finalAttrs) pname version src;
+    hash = "sha256-q+EBUEODZvjsLAHfAN/EaANICjbmTl1x6OPedrSGRnk=";
+    fetcherVersion = 2;
   };
-
-  patches = [
-    (fetchpatch2 {
-      name = "use-pnpm-8.patch";
-      url = "https://github.com/open-cli-tools/concurrently/commit/0b67a1a5a335396340f4347886fb9d0968a57555.patch";
-      hash = "sha256-mxid2Yl9S6+mpN7OLUCrJ1vS0bQ/UwNiGJ0DL6Zn//Q=";
-    })
-  ];
 
   nativeBuildInputs = [
     makeWrapper
