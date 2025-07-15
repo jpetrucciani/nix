@@ -12,9 +12,6 @@ let
         inherit (final) buildPythonPackage;
       in
       {
-        certbot-dns-route53 = prev.certbot-dns-route53.overridePythonAttrs (old: {
-          pytestFlagsArray = old.pytestFlagsArray ++ [ "-W ignore::DeprecationWarning" ];
-        });
         certbot-dns-cloudflare-latest = buildPythonPackage
           rec {
             pname = "certbot-dns-cloudflare";
