@@ -6,12 +6,13 @@ in
 {
   types-cachetools = buildPythonPackage rec {
     pname = "types-cachetools";
-    version = "5.3.0.6";
+    version = "6.1.0.20250717";
     format = "setuptools";
 
     src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-WV8DQtJGyLpTT1p2LPTC9g7LYegAK4sid/1c95HU6FE=";
+      inherit version;
+      pname = "types_cachetools";
+      hash = "sha256-SsyOJd6fX4TdF26oHc/6fLJDk4absuWeaS39ATmh5m8=";
     };
 
     pythonImportsCheck = [ "cachetools-stubs" ];
