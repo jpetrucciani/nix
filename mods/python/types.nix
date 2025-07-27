@@ -1,6 +1,6 @@
 final: prev:
 let
-  inherit (final) buildPythonPackage fetchPypi setuptools;
+  inherit (final) buildPythonPackage fetchPypi;
   inherit (final.lib) maintainers;
 in
 {
