@@ -26,12 +26,13 @@ in
 
   types-croniter = buildPythonPackage rec {
     pname = "types-croniter";
-    version = "1.4.0.1";
+    version = "6.0.0.20250626";
     format = "setuptools";
 
     src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-WCFojJO4dFALaGO4oWSo28Se/c7ZhdAMvd3AKbgQZ7g=";
+      inherit version;
+      pname = "types_croniter";
+      hash = "sha256-wyJDsW1N+nyZiaXq3GdiRZ0JPd7QI/PDY/3ua5ZXinc=";
     };
 
     pythonImportsCheck = [ "croniter-stubs" ];
