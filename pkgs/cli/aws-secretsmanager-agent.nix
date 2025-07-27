@@ -6,16 +6,16 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "aws-secretsmanager-agent";
-  version = "1.1.0";
+  version = "2.0.0";
 
   src = fetchFromGitHub {
     owner = "aws";
     repo = "aws-secretsmanager-agent";
     rev = "refs/tags/v${version}";
-    hash = "sha256-/+284hG4wVSaRaRcUJ00BYuVyB8YMgIKGK+DrP6V6rQ=";
+    hash = "sha256-zNqe7TdABaKil2/dtoHHlwVakQqwkhbHXWvYk9YnC6w=";
   };
 
-  cargoHash = "sha256-9yzRGioTICwPEHzUUb8/UGFfKSWOU4Fqa5YZ89Zc/HY=";
+  cargoHash = "sha256-Y1K+U6y7p5VHvvG4/o+hSGf5DltaT6/lAcULlyCRDuU=";
 
   buildInputs = [ cacert ];
 
