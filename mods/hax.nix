@@ -221,6 +221,26 @@ final: prev:
     ++ (optList (!isM1) [ ])
     ++ (optList isLinux [ ])
     ;
+
+    filterSrc =
+      { path
+      , default_ignores ? [
+          ".db"
+          ".git"
+          ".mypy_cache"
+          ".ruff_cache"
+          ".terraform"
+          "*.logs"
+          "bin"
+          "build"
+          "dist"
+          "logs"
+          "node_modules"
+          "tmp"
+          "venv"
+        ]
+      , extra_ignore ? [ ]
+      }: final.nix-gitignore.gitignoreSource (default_ignores ++ extra_ignore) path;
   }
 )
   
