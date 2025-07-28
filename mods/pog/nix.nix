@@ -142,7 +142,7 @@ rec {
           if [ "$with_uv" = "1" ]; then
             extra_env_overrides="// uvEnv.uvEnvVars"
             uv="uv = [uv uvEnv];"
-            uv_top="uvEnv = pkgs.uv-nix.mkEnv {${"\n"}inherit name; python = pkgs.python312; workspaceRoot = pkgs.nix-gitignore.gitignoreSource [ \".git\" ] ./.; pyprojectOverrides = final: prev: { }; };${"\n"}"
+            uv_top="uvEnv = pkgs.uv-nix.mkEnv {${"\n"}inherit name; python = pkgs.python313; workspaceRoot = pkgs.hax.filterSrc { path = ./.; }; pyprojectOverrides = final: prev: { }; };${"\n"}"
             gitignore="$gitignore${"\n"}# python${"\n"}${gitignore.python}"
           fi
           vlang=""
