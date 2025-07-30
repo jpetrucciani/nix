@@ -58,7 +58,7 @@ in
       };
       llama-server.servers = {
         qwen3-30b-a3 = {
-          enable = true;
+          enable = false;
           package = pkgs.llama-cpp-latest;
           port = 8012;
           model = modelPath "Qwen3-30B-A3B-UD-Q4_K_XL.gguf";
@@ -66,7 +66,7 @@ in
           extraFlags = ''--ctx-size 32768 --seed 420 --prio 2 --temp 0.6 --min-p 0.0 --top-k 20 --top-p 0.95'';
         };
         qwen3-4b = {
-          enable = true;
+          enable = false;
           package = pkgs.llama-cpp-latest;
           port = 8013;
           model = modelPath "Qwen3-4B-UD-Q6_K_XL.gguf";
@@ -74,7 +74,7 @@ in
           extraFlags = ''--ctx-size 32768 --seed 420 --prio 2 --temp 0.6 --min-p 0.0 --top-k 20 --top-p 0.95'';
         };
         bge-m3 = {
-          enable = true;
+          enable = false;
           package = pkgs.llama-cpp-latest;
           ngl = 99;
           port = 9300;
@@ -82,7 +82,7 @@ in
           extraFlags = "-c 65536 -np 8 -b 8192 -ub 8192 --pooling cls --embedding";
         };
         bge-m3-rerank = {
-          enable = true;
+          enable = false;
           package = pkgs.llama-cpp-latest;
           ngl = 99;
           port = 9301;
