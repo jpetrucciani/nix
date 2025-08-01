@@ -18,9 +18,9 @@ jobs:
             extra-substituters = https://cache.g7c.us https://nix-community.cachix.org
             extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
       - run: nix --show-trace build .#__j_custom .#zaddy .#llama-cpp-latest
-        if: ${{ matrix.os == "macos-15" }}
+        if: ${{ matrix.os == 'macos-15' }}
       - run: nix --show-trace build .#__j_custom .#zaddy .#llama-cpp-latest .#llama-cpp-cuda-latest
-        if: ${{ matrix.os == "ubuntu-24.04" }}
+        if: ${{ matrix.os == 'ubuntu-24.04' }}
       - env:
           POG_URI: ${{ secrets.POG_URI }}
           PRIVKEY: ${{ secrets.G7C_CACHE_PRIVATE_KEY }}
