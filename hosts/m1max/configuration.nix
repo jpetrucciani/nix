@@ -67,8 +67,8 @@ in
   nix = {
     extraOptions = ''
       extra-experimental-features = nix-command flakes
-      extra-substituters = ${subs.medable.url} ${subs.jacobi.url} ${subs.g7c.url}
-      extra-trusted-public-keys = ${subs.medable.key} ${subs.jacobi.key} ${subs.g7c.key}
+      extra-substituters = ${subs.medable.url} ${subs.g7c.url}
+      extra-trusted-public-keys = ${subs.medable.key} ${subs.g7c.key}
       keep-outputs = true
       builders = ssh://jacobi@neptune x86_64-linux - 8 - big-parallel;
       builders-use-substitutes = true

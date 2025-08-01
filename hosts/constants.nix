@@ -131,9 +131,9 @@ let
     extra-experimental-features = nix-command flakes
   '';
   subs = {
-    jacobi = {
-      url = "https://jacobi.cachix.org";
-      key = "jacobi.cachix.org-1:JJghCz+ZD2hc9BHO94myjCzf4wS3DeBLKHOz3jCukMU=";
+    nix-community = {
+      url = "https://nix-community.cachix.org";
+      key = "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
     };
     g7c = {
       url = "https://cache.g7c.us";
@@ -142,10 +142,6 @@ let
     be = {
       url = "https://blackedge-nix.s3.us-east-2.amazonaws.com";
       key = "blackedge-nix.s3.us-east-2.amazonaws.com:1MDUZHbXmD18H1RJYRo7Fy4prdg+xjyyKm8CUjrOj5w=";
-    };
-    cuda = {
-      url = "https://cuda-maintainers.cachix.org";
-      key = "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E=";
     };
     medable = {
       url = "https://medable-nix.s3.us-west-1.amazonaws.com";
@@ -158,24 +154,24 @@ in
   nix = {
     extraOptions = ''
       ${_base_nix_options}
-      extra-substituters = ${subs.g7c.url} ${subs.jacobi.url}
-      extra-trusted-public-keys = ${subs.g7c.key} ${subs.jacobi.key}
+      extra-substituters = ${subs.g7c.url}
+      extra-trusted-public-keys = ${subs.g7c.key}
     '';
     settings.trusted-users = [ "root" "jacobi" ];
   };
   nix-be = {
     extraOptions = ''
       ${_base_nix_options}
-      extra-substituters = ${subs.g7c.url} ${subs.jacobi.url} ${subs.be.url}
-      extra-trusted-public-keys = ${subs.g7c.key} ${subs.jacobi.key} ${subs.be.key}
+      extra-substituters = ${subs.g7c.url} ${subs.be.url}
+      extra-trusted-public-keys = ${subs.g7c.key} ${subs.be.key}
     '';
     settings.trusted-users = [ "root" "jacobi" ];
   };
   nix-cuda = {
     extraOptions = ''
       ${_base_nix_options}
-      extra-substituters = ${subs.g7c.url} ${subs.jacobi.url} ${subs.cuda.url}
-      extra-trusted-public-keys = ${subs.g7c.key} ${subs.jacobi.key} ${subs.cuda.key}
+      extra-substituters = ${subs.g7c.url} ${subs.nix-community.url}
+      extra-trusted-public-keys = ${subs.g7c.key} ${subs.nix-community.key}
     '';
     settings.trusted-users = [ "root" "jacobi" ];
   };
