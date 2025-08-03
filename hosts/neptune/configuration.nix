@@ -91,7 +91,7 @@ in
     };
     searx = {
       enable = false;
-      runInUwsgi = true;
+      configureUwsgi = true;
       uwsgiConfig = {
         http = "127.0.0.1:8069";
       };
