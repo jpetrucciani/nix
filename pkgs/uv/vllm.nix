@@ -5,11 +5,11 @@ let
 in
 uv-nix.buildUvPackage rec {
   pname = "vllm";
-  version = "0.8.5";
+  version = "0.10.0";
 
   lockUrl = "https://static.g7c.us/lock/uv/vllm/${version}.lock";
-  lockHash = "sha256-jzhEm0KRrS86iEb7xLHouRdA9AVVh3pPxi3Cxj0QzuQ=";
-  extraDependencies = [ "flashinfer-python>=0.2.5" ];
+  lockHash = "sha256-JLl6ezIWFsx9xW16jCX1n8kThwgtUqZD3iUULFK2cGk=";
+  extraDependencies = [ "flashinfer-python==0.2.8" "lmcache==0.3.3" ];
   cudaSupport = true;
 
   postInstall = ''

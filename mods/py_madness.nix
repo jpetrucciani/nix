@@ -122,10 +122,21 @@ let
           nvidia-cusparse-cu12 = _prev.nvidia-cusparse-cu12.overrideAttrs (_: {
             buildInputs = [ _pkgs.cudaPackages.libnvjitlink ];
           });
+          nvidia-nvshmem-cu12 = _prev.nvidia-nvshmem-cu12.overrideAttrs (_: {
+            buildInputs = [ _pkgs.mpi ];
+            autoPatchelfIgnoreMissingDeps = [
+              "libmlx5.so.1"
+            ];
+          });
           nvidia-cufile-cu12 = _prev.nvidia-cufile-cu12.overrideAttrs (_: {
             autoPatchelfIgnoreMissingDeps = [
               "libmlx5.so.1"
               "librdmacm.so.1"
+              "libibverbs.so.1"
+            ];
+          });
+          infinistore = _prev.infinistore.overrideAttrs (_: {
+            autoPatchelfIgnoreMissingDeps = [
               "libibverbs.so.1"
             ];
           });
@@ -145,6 +156,16 @@ let
             '';
           });
           xformers = _prev.xformers.overrideAttrs (_: {
+            postFixup = ''
+              addAutoPatchelfSearchPath "${_final.torch}"
+            '';
+          });
+          flashinfer-python = _prev.flashinfer-python.overrideAttrs (_: {
+            buildInputs = (with _final; [ torch setuptools ]) ++ (with _pkgs.cudaPackages; [
+              cuda_nvcc
+            ]);
+          });
+          lmcache = _prev.lmcache.overrideAttrs (_: {
             postFixup = ''
               addAutoPatchelfSearchPath "${_final.torch}"
             '';
