@@ -70,6 +70,7 @@ in
         diffutils
         dogdns
         dos2unix
+        duckdb
         dyff
         ed
         erdtree
