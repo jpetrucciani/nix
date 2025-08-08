@@ -255,7 +255,6 @@ let
     (_python.withPackages
       (p: with p; [
         black
-        ruff
         httpx
       ])
     )
