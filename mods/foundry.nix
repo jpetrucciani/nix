@@ -255,10 +255,8 @@ let
     (_python.withPackages
       (p: with p; [
         black
-        mypy
+        ruff
         httpx
-        requests
-        types-requests
       ])
     )
   ]);
