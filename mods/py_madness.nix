@@ -288,6 +288,7 @@ let
               "html2text"
               "jieba"
               "jsonpath-rw"
+              "markupsafe"
               "peewee"
               "pypika"
               "s3tokenizer"
