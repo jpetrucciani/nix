@@ -290,6 +290,7 @@ let
               "jsonpath-rw"
               "markupsafe"
               "peewee"
+              "pymongo"
               "pypika"
               "s3tokenizer"
               "seqeval"
