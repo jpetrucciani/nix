@@ -292,6 +292,7 @@ let
               "peewee"
               "pymongo"
               "pypika"
+              "pyyaml"
               "s3tokenizer"
               "seqeval"
               "svglib"
