@@ -122,14 +122,14 @@ let
 
   llama-cpp-latest =
     let
-      version = "b6096";
-      hash = "sha256-xZC/nW/9JUeflvKFEIp9BH3WHzZdjemMQN8hIZTv+2A=";
+      version = "6140";
+      hash = "sha256-sI87Cxp1dBdDFjv0xF27KlXAZ1SF0VpsbF6cyaWPhhE=";
     in
     prev.llama-cpp.overrideAttrs (_: {
       inherit version;
       src = final.fetchFromGitHub {
         inherit hash;
-        tag = version;
+        tag = "b${version}";
         owner = "ggerganov";
         repo = "llama.cpp";
         leaveDotGit = true;
