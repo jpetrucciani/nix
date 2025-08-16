@@ -97,7 +97,20 @@ let
         });
       };
     };
-    mkEnv = { name, workspaceRoot, envName ? "${name}-env", python ? final.python312, sourcePreference ? "wheel", pyprojectOverrides ? null, darwinSdkVersion ? "15.1", venvIgnoreCollisions ? [ "*" ], gitignore ? true, enableCuda ? false, _pkgs ? final }:
+    mkEnv =
+      { name
+      , workspaceRoot
+      , envName ? "${name}-env"
+      , python ? final.python312
+      , sourcePreference ? "wheel"
+      , pyprojectOverrides ? null
+      , darwinSdkVersion ? "15.1"
+      , venvIgnoreCollisions ? [ "*" ]
+      , extraSetuptools ? [ ]
+      , gitignore ? true
+      , enableCuda ? false
+      , _pkgs ? final
+      }:
       let
         cudaOverrides = _final: _prev: {
           bitsandbytes = _prev.bitsandbytes.overrideAttrs (_: {
@@ -278,6 +291,7 @@ let
               "aiohttp"
               "antlr4-python3-runtime"
               "crcmod"
+              "curated-tokenizers"
               "distance"
               "docx2txt"
               "encodec"
@@ -298,7 +312,7 @@ let
               "svglib"
               "wikipedia"
               "zmq"
-            ];
+            ] ++ extraSetuptools;
             setuptools_required = listToAttrs (map (x: { name = x; value = add_setuptools _prev.${x}; }) _setuptools_required);
           in
           {
