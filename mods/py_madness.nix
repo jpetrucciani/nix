@@ -101,7 +101,7 @@ let
       { name
       , workspaceRoot
       , envName ? "${name}-env"
-      , python ? final.python312
+      , python ? final.python313
       , sourcePreference ? "wheel"
       , pyprojectOverrides ? null
       , darwinSdkVersion ? "15.1"
@@ -110,7 +110,7 @@ let
       , gitignore ? true
       , enableCuda ? false
       , _pkgs ? final
-      }:
+      }@args:
       let
         cudaOverrides = _final: _prev: {
           bitsandbytes = _prev.bitsandbytes.overrideAttrs (_: {
@@ -360,21 +360,47 @@ let
 
         virtualenv = (pythonSet.mkVirtualEnv envName workspace.deps.all).overrideAttrs (_: { inherit venvIgnoreCollisions; });
       in
-      virtualenv // {
+      virtualenv // rec {
         uvEnvVars = {
           UV_NO_MANAGED_PYTHON = "true";
           UV_NO_SYNC = "1";
           UV_PYTHON = python.interpreter;
           UV_PYTHON_DOWNLOADS = "never";
           UV_SYSTEM_PYTHON = "true";
+          _UV_SITE = "${virtualenv}/lib/python${python.pythonVersion}/site-packages";
         };
+        internal = {
+          inherit args;
+          libpython = final.runCommand "libpython" { } ''
+            mkdir -p $out/lib
+            cp -L ${python}/lib/*.so $out/lib/
+          '';
+        };
+        wrappers =
+          let
+            wrap = { name, bin ? name }: final.writers.writeBashBin name ''
+              ${virtualenv}/bin/${bin} "$@"
+            '';
+            _base = [
+              "black"
+              "pytest"
+              "ruff"
+              "ty"
+            ];
+          in
+          {
+            shell_hook = ''
+              ln -sf ${uvEnvVars._UV_SITE} .direnv/site
+            '';
+            repo = "$(${final.git}/bin/git rev-parse --show-toplevel)";
+          } // (final.lib.listToAttrs (map (x: { name = x; value = wrap { name = x; }; }) _base));
       };
 
     buildUvPackage =
       { pname
       , bins ? [ pname ]
       , version
-      , python ? final.python312
+      , python ? final.python313
       , lockFile ? null
       , lockUrl ? null
       , lockHash ? null
