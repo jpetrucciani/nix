@@ -303,6 +303,7 @@ let
               "jieba"
               "jsonpath-rw"
               "markupsafe"
+              "multitasking"
               "peewee"
               "pymongo"
               "pypika"
