@@ -80,7 +80,7 @@ rec {
           };
         in
         prev.caddy.override {
-          buildGoModule = args: buildGo124Module (args // {
+          buildGo125Module = args: buildGo125Module (args // {
             inherit version src;
             inherit vendorHash;
             overrideModAttrs = _: {
