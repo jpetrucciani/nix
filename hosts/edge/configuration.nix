@@ -88,7 +88,9 @@ in
   conf.blackedge.enable = true;
 
   services = {
-    logind.extraConfig = ''RuntimeDirectorySize=24G'';
+    logind.settings.Login = {
+      RuntimeDirectorySize = "24G";
+    };
     resolved = {
       enable = true;
       fallbackDns = [ "10.31.65.200" "10.31.155.10" "1.1.1.1" ];
