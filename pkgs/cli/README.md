@@ -54,6 +54,10 @@ This directory contains cli tools
 
 [gitlab-ci-verify](https://github.com/timo-reymann/gitlab-ci-verify) is a tool to help validate/lint gitlab ci files
 
+### [gonzo.nix](./gonzo.nix)
+
+[gonzo](https://github.com/control-theory/gonzo) is the Go based TUI log analysis tool
+
 ### [helm-oci.nix](./helm-oci.nix)
 
 [helm-oci](https://github.com/ikimpriv/helm-oci) is a command line tool that is useful for listing helm charts in oci repos
