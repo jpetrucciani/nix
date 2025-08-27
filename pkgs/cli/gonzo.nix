@@ -7,13 +7,13 @@
 
 buildGoModule rec {
   pname = "gonzo";
-  version = "0.1.5";
+  version = "0.1.6";
 
   src = fetchFromGitHub {
     owner = "control-theory";
     repo = "gonzo";
     rev = "v${version}";
-    hash = "sha256-lB7OTDdJwd+ldWv7ewko/4kO/NP4bhDi+IpZOEL3x9U=";
+    hash = "sha256-8t4ZYInEdd0BkH+kcLUxV29YZm8lEZT8BcHK2aayHAM=";
   };
 
   vendorHash = "sha256-XKwtq8EF774lHLHtyFzveFa5agJa15CvhsuwwaQdJwU=";
