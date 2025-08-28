@@ -299,4 +299,38 @@ rec {
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
+
+  sysdweb = buildPythonPackage rec {
+    pname = "sysdweb";
+    version = "1.1.7";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-187MrH0Nb+soOz06PFwakm0MbvsnNeQ0EGmKxi65m9U=";
+    };
+
+    build-system = with final; [
+      setuptools
+    ];
+
+    dependencies = with final; [
+      bottle
+      dbus-python
+      python-pam
+      six
+      systemd
+    ];
+
+    pythonImportsCheck = [
+      "sysdweb"
+    ];
+
+    meta = {
+      description = "Control systemd services through Web or REST API";
+      homepage = "https://pypi.org/project/sysdweb/";
+      license = lib.licenses.gpl3Only;
+      maintainers = with lib.maintainers; [ jpetrucciani ];
+    };
+  };
 }
