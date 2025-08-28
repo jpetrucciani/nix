@@ -200,13 +200,6 @@ in
         auth = [ "none" ];
       }];
     };
-    cockpit = {
-      enable = true;
-      allowed-origins = [
-        "edge"
-      ];
-      settings.WebService.AllowUnencrypted = true;
-    };
   } // common.services;
 
   fileSystems."/mnt/win" = {
