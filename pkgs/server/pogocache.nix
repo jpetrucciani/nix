@@ -11,13 +11,13 @@ let
 in
 stdenv.mkDerivation rec {
   pname = "pogocache";
-  version = "1.0.3";
+  version = "1.1.0";
 
   src = fetchFromGitHub {
     owner = "tidwall";
     repo = "pogocache";
     rev = version;
-    hash = "sha256-oiJt23Gjectp6QmWwIlCq8DqCvRJHaNu9V9YieujJBk=";
+    hash = "sha256-EYWRpbFMELhPmA2fd7Ng6PtM1HLXh/ew6S85VctHuE4=";
   };
 
   ${onlyDarwin "NOURING"} = "1";
