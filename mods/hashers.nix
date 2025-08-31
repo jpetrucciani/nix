@@ -41,48 +41,48 @@ final: prev: {
   );
 
   nix_hash = final.pog {
-      name = "nix_hash";
-      description = "grab the latest rev/sha256 from the specified repo and branch";
-      flags = [
-        {
-          name = "repo";
-          description = "set the repo to pull data from.";
-          required = true;
-        }
-        {
-          name = "branch";
-          description = "set the branch to pull data from.";
-          default = "main";
-        }
-        {
-          name = "fetchtarball";
-          description = "print out this pin as a nix expression using fetchTarball";
-          bool = true;
-        }
-      ];
-      script =
-        let
-          inherit (final._) curl date jq;
-          nix-prefetch = "${final._nix}/bin/nix-prefetch-url";
-        in
-        h: ''
-          repo_owner=$(echo "$repo" | cut -d'/' -f1)
-          rev=$(${curl} -s "https://api.github.com/repos/$repo/commits/$branch" | ${jq} -r '.sha')
-          sha=$(${nix-prefetch} --unpack "https://github.com/$repo/archive/$rev.tar.gz")
-          d="$(${date} +%Y-%m-%d)"
-          if ${h.flag "fetchtarball"}; then
-            cat <<EOF
-          (fetchTarball {
-            name = "$repo_owner-$d";
-            url = "https://github.com/$repo/archive/$rev.tar.gz";
-            sha256 = "$sha";
-          })
-          EOF
-            exit 0
-          fi
-          echo "{ \"date\": \"$d\", \"rev\": \"$rev\", \"sha256\": \"$sha\" }" | ${jq}
-        '';
-    };
+    name = "nix_hash";
+    description = "grab the latest rev/sha256 from the specified repo and branch";
+    flags = [
+      {
+        name = "repo";
+        description = "set the repo to pull data from.";
+        required = true;
+      }
+      {
+        name = "branch";
+        description = "set the branch to pull data from.";
+        default = "main";
+      }
+      {
+        name = "fetchtarball";
+        description = "print out this pin as a nix expression using fetchTarball";
+        bool = true;
+      }
+    ];
+    script =
+      let
+        inherit (final._) curl date jq;
+        nix-prefetch = "${final._nix}/bin/nix-prefetch-url";
+      in
+      h: ''
+        repo_owner=$(echo "$repo" | cut -d'/' -f1)
+        rev=$(${curl} -s "https://api.github.com/repos/$repo/commits/$branch" | ${jq} -r '.sha')
+        sha=$(${nix-prefetch} --unpack "https://github.com/$repo/archive/$rev.tar.gz")
+        d="$(${date} +%Y-%m-%d)"
+        if ${h.flag "fetchtarball"}; then
+          cat <<EOF
+        (fetchTarball {
+          name = "$repo_owner-$d";
+          url = "https://github.com/$repo/archive/$rev.tar.gz";
+          sha256 = "$sha";
+        })
+        EOF
+          exit 0
+        fi
+        echo "{ \"date\": \"$d\", \"rev\": \"$rev\", \"sha256\": \"$sha\" }" | ${jq}
+      '';
+  };
 
   nix_hash_unstable = final._nix_hash "NixOS/nixpkgs" "nixpkgs-unstable" "unstable";
   nix_hash_jpetrucciani = final._nix_hash "jpetrucciani/nix" "main" "jpetrucciani";
