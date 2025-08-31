@@ -48,6 +48,7 @@ rec {
         ''
           directory="$(pwd | ${_.sed} 's#.*/##')"
           repo_owner=$(echo "$repo" | cut -d'/' -f1)
+          repo_name=$(echo "$repo" | cut -d'/' -f2)
           remote=$(${final.nix_hash}/bin/nix_hash --repo "$repo" --branch "$branch" 2>/dev/null);
           rev=$(echo "$remote" | ${lib.getExe final.jaq} -r '.rev')
           sha=$(echo "$remote" | ${lib.getExe final.jaq} -r '.sha256')
