@@ -32,6 +32,7 @@ rec {
         with_nvidia = "include some ld hacks to get nvidia drivers working (only useful on nixos/wsl)";
       };
       flags = lib.mapAttrsToList (k: v: { name = k; description = v; short = ""; bool = true; }) _flags;
+      jaq = lib.getExe final.jaq;
     in
     pog {
       inherit version;
@@ -50,8 +51,8 @@ rec {
           repo_owner=$(echo "$repo" | cut -d'/' -f1)
           repo_name=$(echo "$repo" | cut -d'/' -f2)
           remote=$(${final.nix_hash}/bin/nix_hash --repo "$repo" --branch "$branch" 2>/dev/null);
-          rev=$(echo "$remote" | ${lib.getExe final.jaq} -r '.rev')
-          sha=$(echo "$remote" | ${lib.getExe final.jaq} -r '.sha256')
+          rev=$(echo "$remote" | ${jaq} -r '.rev')
+          sha=$(echo "$remote" | ${jaq} -r '.sha256')
           toplevel=""
           _env="pkgs.buildEnv {${"\n"} inherit name paths; buildInputs = paths; };"
           extra_env=""
@@ -180,7 +181,6 @@ rec {
             }:
             let
               name = "$directory";
-
               ''${toplevel} ''${poetry} ''${uv_top}
               tools = with pkgs; {
                 cli = [
