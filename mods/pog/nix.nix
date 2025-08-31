@@ -165,7 +165,7 @@ rec {
             default_nix="''${1:-./default.nix}"
             ${h.file.notExists "default_nix"} && die "the nix file to update ('$default_nix') does not exist!"
             echo "updating '$default_nix' to '$repo@$rev'"
-            ${_.sed} -i -E -z "s#(fetchTarball[\s]*)[^}]*github\.com\/[^\/]+\/[^\/]+\/archive\/[^}]*\}#$ftb#g" "$default_nix"
+            ${_.sed} -i -E -z "s#(fetchTarball[\s]*).*(\/$repo_owner\/|nix\.cobi\.dev\/)[^\}]*\}#$ftb#g" "$default_nix"
             ${_.sed} -i -E 's#(fetchTarball \{) (name)#\1\n\2#' "$default_nix"
             ${_.nixpkgs-fmt} "$default_nix" 2>/dev/null
             exit 0
