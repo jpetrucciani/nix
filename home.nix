@@ -226,6 +226,7 @@ in
         # overlays
         nix_hash_unstable
         nix_hash_jpetrucciani
+        nix_hash_magicschool
         nix_hash_medable
         nix_hash_hex
         nix_hash_pog
