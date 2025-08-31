@@ -40,8 +40,7 @@ final: prev: {
     }
   );
 
-  nix_hash = (
-    final.pog {
+  nix_hash = final.pog {
       name = "nix_hash";
       description = "grab the latest rev/sha256 from the specified repo and branch";
       flags = [
@@ -83,8 +82,7 @@ final: prev: {
           fi
           echo "{ \"date\": \"$d\", \"rev\": \"$rev\", \"sha256\": \"$sha\" }" | ${jq}
         '';
-    }
-  );
+    };
 
   nix_hash_unstable = final._nix_hash "NixOS/nixpkgs" "nixpkgs-unstable" "unstable";
   nix_hash_jpetrucciani = final._nix_hash "jpetrucciani/nix" "main" "jpetrucciani";
