@@ -7,7 +7,7 @@ in
 rec {
   nixup =
     let
-      version = "0.0.9";
+      version = "0.0.10";
       _flags = {
         with_bun = "include bun with dependencies";
         with_crystal = "include crystal with dependencies";
@@ -32,6 +32,7 @@ rec {
         with_nvidia = "include some ld hacks to get nvidia drivers working (only useful on nixos/wsl)";
       };
       flags = lib.mapAttrsToList (k: v: { name = k; description = v; short = ""; bool = true; }) _flags;
+      jaq = lib.getExe final.jaq;
     in
     pog {
       inherit version;
@@ -40,14 +41,18 @@ rec {
       flags = [
         { name = "srcpath"; description = "the fs path to import pkgs from if passed. if not passed in, will pin to the latest version of jpetrucciani/nix"; }
         { name = "update"; bool = true; description = "update the pin to jpetrucciani in the given file (argument 1) [default: ./default.nix]"; }
+        { name = "repo"; description = "GitHub repo to pin (format: owner/repo)"; default = "jpetrucciani/nix"; }
+        { name = "branch"; description = "Branch to pin to"; default = "main"; }
       ] ++ flags;
       shortDefaultFlags = false;
       script = h:
         ''
           directory="$(pwd | ${_.sed} 's#.*/##')"
-          jacobi=$(${final.nix_hash_jpetrucciani}/bin/nix_hash_jpetrucciani 2>/dev/null);
-          rev=$(echo "$jacobi" | ${lib.getExe final.jaq} -r '.rev')
-          sha=$(echo "$jacobi" | ${lib.getExe final.jaq} -r '.sha256')
+          repo_owner=$(echo "$repo" | cut -d'/' -f1)
+          repo_name=$(echo "$repo" | cut -d'/' -f2)
+          remote=$(${final.nix_hash}/bin/nix_hash --repo "$repo" --branch "$branch" 2>/dev/null);
+          rev=$(echo "$remote" | ${jaq} -r '.rev')
+          sha=$(echo "$remote" | ${jaq} -r '.sha256')
           toplevel=""
           _env="pkgs.buildEnv {${"\n"} inherit name paths; buildInputs = paths; };"
           extra_env=""
@@ -157,12 +162,12 @@ rec {
             toplevel="deps = with pkgs; [${"\n"}stdenv.cc.cc.lib ] ++ (with cudaPackages; [${"\n"}cudatoolkit]);${"\n"}$toplevel"
             extra_env="$extra_env LD_LIBRARY_PATH = \"\''${pkgs.hax.nvidiaLdPath}:\''${pkgs.lib.makeLibraryPath deps}\";${"\n"}CUDA_PATH = pkgs.cudatoolkit;"
           fi
-          ftb="fetchTarball { name = \"jpetrucciani-$(date '+%F')\"; url = \"https://github.com/jpetrucciani/nix/archive/$rev.tar.gz\"; sha256 = \"$sha\";}"
+          ftb="fetchTarball { name = \"$repo_owner-$(date '+%F')\"; url = \"https://github.com/$repo/archive/$rev.tar.gz\"; sha256 = \"$sha\";}"
           if ${h.flag "update"}; then
             default_nix="''${1:-./default.nix}"
             ${h.file.notExists "default_nix"} && die "the nix file to update ('$default_nix') does not exist!"
-            echo "updating '$default_nix' to '$rev'"
-            ${_.sed} -i -E -z "s#(fetchTarball[\s]*).*(\/jpetrucciani\/|nix\.cobi\.dev\/)[^\}]*\}#$ftb#g" "$default_nix"
+            echo "updating '$default_nix' to '$repo@$rev'"
+            ${_.sed} -i -E -z "s#(fetchTarball[\s]*).*(\/$repo_owner\/$repo_name|nix\.cobi\.dev\/)[^\}]*\}#$ftb#g" "$default_nix"
             ${_.sed} -i -E 's#(fetchTarball \{) (name)#\1\n\2#' "$default_nix"
             ${_.nixpkgs-fmt} "$default_nix" 2>/dev/null
             exit 0
@@ -176,7 +181,6 @@ rec {
             }:
             let
               name = "$directory";
-
               ''${toplevel} ''${poetry} ''${uv_top}
               tools = with pkgs; {
                 cli = [
