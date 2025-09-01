@@ -12,7 +12,6 @@ let
       "titan"
     ];
     darwin = [
-      "charon"
       "m1max"
       "nyx0"
       "pluto"
@@ -52,7 +51,6 @@ let
     # jupiter = "";
     saturn = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPY2sNJE5ysSTeFzTv2U+zIeIB5LMhbUaP+yC5VDgEHD jacobi@saturn";
     neptune = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPqXt2116T/hpMpdmlh3QquPcF/COXPtJS4BkjwECf++ jacobi@neptune";
-    charon = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIQf/+Cw19PwfLGRs7VyJR9rqwglDG/ZwBbwJY1Aagxo jacobi@charon";
     mars = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBMW7fOdfDeI+9TwYHPUzApYDlNFOfLkl9NC06Du23mP jacobi@mars";
     phobos = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID7CSn6s/Wuxa2sC4NXCIXGvX3oz8BN1vsyaZGd3wJED jacobi@phobos";
     polaris = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKkq80OeQLD7QBlE81EYUC+ZOgNZT1+Vc8oGP6y3mTFm jacobi@polaris";
@@ -91,7 +89,6 @@ let
     server = [
       saturn
       neptune
-      charon
       phobos
       luna
       milkyway

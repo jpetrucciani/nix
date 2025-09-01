@@ -10,10 +10,6 @@ This directory contains my nixos configurations for each of my nixos machines, a
 
 This is an experimental nixos install inside a VM using the apple virtualization framework.
 
-### [charon/](./charon)
-
-This is my personal M1 Mac Mini server, running MacOS and using nix-darwin and home-manager to manage things.
-
 ### [foundry/](./foundry/)
 
 this directory contains builders for cloud VM images and isos

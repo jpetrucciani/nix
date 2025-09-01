@@ -134,7 +134,6 @@ in
               "titan.cobi" = "192.168.1.40";
               "luna.cobi" = "192.168.1.44";
               "jupiter.cobi" = "192.168.1.69";
-              "charon.cobi" = "192.168.1.71";
               "pluto.cobi" = "192.168.1.100";
               "phobos.cobi" = "192.168.1.134";
               "neptune.cobi" = "100.101.139.41";
