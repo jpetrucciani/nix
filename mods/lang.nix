@@ -48,7 +48,7 @@ rec {
         makeWrapper ${final.vlang}/bin/v $out/bin/v ${setVModules} ${setVCache}
       '';
     };
-  vlang = final.vlang.overrideAttrs (_: { passthru.withPackages = vWithPackages; });
+  vlang = prev.vlang.overrideAttrs (_: { passthru.withPackages = vWithPackages; });
 
   pycdc = stdenv.mkDerivation {
     name = "pycdc";
