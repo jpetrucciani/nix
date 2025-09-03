@@ -62,7 +62,7 @@ in
   users.users.jacobi = {
     isNormalUser = true;
     description = "jacobi";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     openssh.authorizedKeys.keys = with common.pubkeys; [
       m1max
       nix-m1max
