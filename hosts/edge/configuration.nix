@@ -1,4 +1,4 @@
-{ config, flake, machine-name, pkgs, lib, ... }:
+{ config, flake, machine-name, pkgs, ... }:
 let
   hostname = "edge";
   ts_ip = "100.69.215.126";

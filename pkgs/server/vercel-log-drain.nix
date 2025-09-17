@@ -4,7 +4,6 @@
 , fetchFromGitHub
 , pkg-config
 , openssl
-, darwin
 }:
 rustPlatform.buildRustPackage {
   pname = "vercel-log-drain";
