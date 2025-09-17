@@ -22,7 +22,7 @@ with prev;
       }
     ];
     script = helpers: ''
-      ${pkgs.python311Packages.mitmproxy2swagger}/bin/mitmproxy2swagger -i "$flows" -o "$spec" -p "$baseurl"
+      ${pkgs.python313Packages.mitmproxy2swagger}/bin/mitmproxy2swagger -i "$flows" -o "$spec" -p "$baseurl"
       ${_.yq} -i e 'del(.paths.[].options)' "$spec"
     '';
   };
