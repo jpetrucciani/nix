@@ -1,8 +1,7 @@
 final: prev:
 let
-  inherit (final) pythonOlder fetchPypi buildPythonPackage;
+  inherit (final) pythonOlder;
   inherit (final.stdenv) isDarwin;
-  inherit (final.pkgs) fetchFromGitHub lib;
 in
 rec {
   sqlalchemy_1 =

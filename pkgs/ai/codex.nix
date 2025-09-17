@@ -1,5 +1,5 @@
 # [codex](https://github.com/openai/codex) is a lightweight coding agent that runs in your terminal
-{ lib, fetchFromGitHub, buildNpmPackage, bash }:
+{ lib, fetchFromGitHub, buildNpmPackage }:
 let
   src = (fetchFromGitHub {
     owner = "openai";

@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  inherit (lib) literalExpression mkEnableOption mkIf mkOption types;
+  inherit (lib) literalExpression mkEnableOption mkIf mkOption;
   inherit (lib.types) listOf package port str;
   cfg = config.services.infinity;
   defaultUser = "_infinity";

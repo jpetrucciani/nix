@@ -132,7 +132,7 @@ let
                 ${onFailure}
               fi
             '';
-            wantedBy = if needs == [ ] then defaults.wantedBy else after;
+            wantedBy = if needs == [ ] then wantedBy else after;
           }
           extra
         ];
