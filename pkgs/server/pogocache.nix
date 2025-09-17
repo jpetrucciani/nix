@@ -31,11 +31,12 @@ stdenv.mkDerivation rec {
 
   dontUseCmakeConfigure = true;
 
-  postPatch = lib.optionals stdenv.isLinux ''
+  postPatch = (if stdenv.isLinux then ''
     tar -xzf ${openssl.src}
     mv openssl-* deps/openssl
 
     cp -r ${liburing.src} ./deps/liburing
+  '' else "") + ''
     cp -r ${mimalloc.src} ./deps/mimalloc
     cp -r ${jemalloc.src} ./deps/jemalloc
 
