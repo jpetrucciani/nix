@@ -2,8 +2,12 @@
 , stdenv
 , fetchFromGitHub
 , git
+, autoconf
+, cmake
 , openssl
 , liburing
+, mimalloc
+, jemalloc
 , perl
 }:
 let
@@ -11,28 +15,29 @@ let
 in
 stdenv.mkDerivation rec {
   pname = "pogocache";
-  version = "1.1.0";
+  version = "1.2.0";
 
   src = fetchFromGitHub {
     owner = "tidwall";
     repo = "pogocache";
     rev = version;
-    hash = "sha256-EYWRpbFMELhPmA2fd7Ng6PtM1HLXh/ew6S85VctHuE4=";
+    hash = "sha256-GkWwpJ1HMuhRwQZOuQVyRIUaTqoN5razdIlT0Wkg+LY=";
   };
 
   ${onlyDarwin "NOURING"} = "1";
   ${onlyDarwin "NOOPENSSL"} = "1";
 
-  buildInputs = [ git ] ++ (lib.optionals stdenv.isLinux [ perl liburing openssl ]);
+  buildInputs = [ autoconf cmake git ] ++ (lib.optionals stdenv.isLinux [ perl liburing openssl ]);
+
+  dontUseCmakeConfigure = true;
 
   postPatch = lib.optionals stdenv.isLinux ''
-    sed -i -e '/download.sh/,+7d' ./deps/build-openssl.sh
     tar -xzf ${openssl.src}
     mv openssl-* deps/openssl
 
-    substituteInPlace ./deps/build-uring.sh \
-      --replace-fail './download.sh https://github.com/axboe/liburing liburing $vers liburing-$vers' ""
     cp -r ${liburing.src} ./deps/liburing
+    cp -r ${mimalloc.src} ./deps/mimalloc
+    cp -r ${jemalloc.src} ./deps/jemalloc
 
     patchShebangs ./deps/*.sh ./deps/openssl/Configure
     chmod -R +w ./deps
