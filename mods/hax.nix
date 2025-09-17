@@ -241,6 +241,15 @@ final: prev:
         ]
       , extra_ignore ? [ ]
       }: final.nix-gitignore.gitignoreSource (default_ignores ++ extra_ignore) path;
+
+    exportFilterPath = names:
+      let
+        grepV = lib.concatMapStrings (n: " | grep -v ${n}") names;
+        tr = "${final.busybox}/bin/tr";
+      in
+      ''
+        export PATH=$(echo $PATH | ${tr} ':' '\n' ${grepV} | ${tr} '\n' ':')
+      '';
   }
 )
   
