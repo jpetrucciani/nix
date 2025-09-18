@@ -242,7 +242,7 @@ in
       '';
     });
 
-  inherit (final.python312Packages) ty;
+  inherit (final.python313Packages) ty;
 
   # allow 3proxy on darwin?
   _3proxy = prev._3proxy.overrideAttrs (old: {

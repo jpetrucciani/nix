@@ -4,6 +4,19 @@ let
   inherit (final.stdenv) isDarwin;
 in
 rec {
+  tkinter =
+    if pythonOlder "3.12" then
+      let
+        inherit (final) python py;
+      in
+      final.buildPythonPackage
+        {
+          pname = "tkinter";
+          inherit (python) version;
+          src = py;
+          format = "other";
+        } else prev.tkinter;
+
   sqlalchemy_1 =
     let
       version = "1.4.48";
