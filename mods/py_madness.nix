@@ -394,7 +394,7 @@ let
               ln -sf ${uvEnvVars._UV_SITE} .direnv/site
             '';
             repo = "$(${final.git}/bin/git rev-parse --show-toplevel)";
-          } // (final.lib.listToAttrs (map (x: { name = x; value = wrap { name = x; }; }) _base));
+          } // (final.lib.listToAttrs (map (x: { name = x; value = final.lib.setPrio (-8) (wrap { name = x; }); }) _base));
       };
 
     buildUvPackage =
