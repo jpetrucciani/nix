@@ -62,6 +62,10 @@ This overlay provides the `hax` library, which contains useful functions and oth
 
 This overlay provides more packages and scripts for use in my setup. This is also used in my repo's modified comma, exposing the binaries and scripts in this overlay directly through comma.
 
+### [java.nix](./java.nix)
+
+this overlay injects gross java hackery
+
 ### [js.nix](./js.nix)
 
 this overlay injects various javascript helpers into scope

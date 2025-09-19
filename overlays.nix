@@ -49,6 +49,7 @@
   # after all
   (import ./scripts.nix)
   (import ./mods/containers.nix)
+  (import ./mods/java.nix)
   (import ./mods/js.nix)
   (import ./mods/snowball.nix)
   (import ./mods/py_madness.nix)
