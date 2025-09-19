@@ -70,24 +70,41 @@ let
         ];
         nixLayer = with pkgs; [ nix ];
       };
-      fn = {
-        inherit (pkgs.nix2container.nix2container) buildLayer;
-        perm =
-          { path
-          , user ? "user"
-          , group ? "user"
-          , uid ? "1000"
-          , gid ? "1000"
-          , regex ? ".*"
-          , mode ? "0744"
-          }: {
-            inherit mode path regex;
-            uname = user;
-            gname = group;
-            uid = toInt uid;
-            gid = toInt gid;
-          };
-      };
+      fn =
+        let
+          inherit (pkgs.nix2container.nix2container) buildLayer;
+        in
+        {
+          inherit buildLayer;
+          perm =
+            { path
+            , user ? "user"
+            , group ? "user"
+            , uid ? "1000"
+            , gid ? "1000"
+            , regex ? ".*"
+            , mode ? "0744"
+            }: {
+              inherit mode path regex;
+              uname = user;
+              gname = group;
+              uid = toInt uid;
+              gid = toInt gid;
+            };
+          foldImageLayers =
+            let
+              mergeToLayer = priorLayers: component:
+                assert builtins.isList priorLayers;
+                assert builtins.isAttrs component; let
+                  layer = buildLayer (component
+                    // {
+                    layers = priorLayers;
+                  });
+                in
+                priorLayers ++ [ layer ];
+            in
+            layers: pkgs.lib.foldl mergeToLayer [ ] layers;
+        };
       drvs = {
         mkFolders = pkgs.runCommand "folders" { } ''
           mkdir -p $out/tmp
@@ -161,7 +178,6 @@ let
         , extraConfig ? { }
         }:
         let
-          allLayers = with _layers; [ baseLayer ] ++ (optionals sysLayer [ coreLayer ]) ++ (optionals enableNix [ nixLayer ]) ++ layers;
           mkUser = drvs.mkUser {
             inherit user group uid gid substituters trusted-public-keys;
             extraMkUser =
@@ -221,20 +237,28 @@ let
               regex = x;
             }))
             extraMkUserPaths);
-          layers = [
-            (fn.buildLayer {
-              copyToRoot = [ drvs.mkFolders ];
-              reproducible = false;
-              perms = [
-                (fn.perm {
-                  inherit uid gid user group;
-                  path = drvs.mkFolders;
-                  regex = "/tmp";
-                  mode = "1777";
-                })
-              ];
-            })
-          ] ++ (map (deps: fn.buildLayer { copyToRoot = [ (pkgs.buildEnv { inherit pathsToLink; name = "layer"; paths = deps; }) ]; }) allLayers) ++ raw_layers;
+          layers =
+            let
+              fsLayer = {
+                copyToRoot = [ drvs.mkFolders ];
+                reproducible = false;
+                perms = [
+                  (fn.perm {
+                    inherit uid gid user group;
+                    path = drvs.mkFolders;
+                    regex = "/tmp";
+                    mode = "1777";
+                  })
+                ];
+              };
+            in
+            fn.foldImageLayers
+              ([
+                fsLayer
+                { copyToRoot = _layers.baseLayer; }
+                (optionals sysLayer { copyToRoot = _layers.coreLayer; })
+                (optionals enableNix { copyToRoot = _layers.nixLayer; })
+              ] ++ (map (x: { copyToRoot = pkgs.buildEnv { inherit pathsToLink; name = "custom-layer"; paths = x; }; }) layers)) ++ raw_layers;
           initializeNixDatabase = enableNix;
           nixUid = toInt uid;
           nixGid = toInt gid;
