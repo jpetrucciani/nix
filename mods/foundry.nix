@@ -256,9 +256,11 @@ let
               ([
                 fsLayer
                 { copyToRoot = _layers.baseLayer; }
-                (optionals sysLayer { copyToRoot = _layers.coreLayer; })
-                (optionals enableNix { copyToRoot = _layers.nixLayer; })
-              ] ++ (map (x: { copyToRoot = pkgs.buildEnv { inherit pathsToLink; name = "custom-layer"; paths = x; }; }) layers)) ++ raw_layers;
+              ]
+              ++ (optionals sysLayer [{ copyToRoot = _layers.coreLayer; }])
+              ++ (optionals enableNix [{ copyToRoot = _layers.nixLayer; }])
+              ++ (map (x: { copyToRoot = pkgs.buildEnv { inherit pathsToLink; name = "custom-layer"; paths = x; }; }) layers))
+            ++ raw_layers;
           initializeNixDatabase = enableNix;
           nixUid = toInt uid;
           nixGid = toInt gid;
