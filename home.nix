@@ -104,6 +104,7 @@ in
         nanorc
         netcat-gnu
         nil
+        detsys.nix
         nix-info
         nix-output-monitor
         nix-prefetch-github
@@ -114,7 +115,6 @@ in
         nixfmt-rfc-style
         nixpkgs-fmt
         nixpkgs-review
-        lix
         openssh
         p7zip
         patch
@@ -175,7 +175,7 @@ in
         # lsps
         (with nodePackages; [
           # bash-language-server
-          dockerfile-language-server-nodejs
+          dockerfile-language-server
           vscode-json-languageserver
           yaml-language-server
           # vlang

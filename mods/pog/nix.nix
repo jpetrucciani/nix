@@ -273,7 +273,7 @@ rec {
       rm -f ./nixcache.log
       for i in $(${final.coreutils}/bin/seq $#); do
           index=$((i-1))
-          ${final.nix}/bin/nix copy --refresh --to "$uri" "''${files[$index]}" >>nixcache.log
+          ${final._nix}/bin/nix copy --refresh --to "$uri" "''${files[$index]}" >>nixcache.log
           echo "$i"
       done | ${final.python313Packages.tqdm}/bin/tqdm --total "$#" >>/dev/null
       echo "cached $# builds!"

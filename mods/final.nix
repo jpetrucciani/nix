@@ -151,7 +151,7 @@ in
   inherit _treefmt;
   jfmt = _treefmt;
 
-  _nix = final.lix;
+  _nix = final.detsys.nix;
 
   llama-cpp-cuda = prev.llama-cpp.override { cudaSupport = true; };
   llama-cpp-cuda-latest = llama-cpp-latest.override { cudaSupport = true; };
@@ -238,7 +238,7 @@ in
           --fish <($out/bin/colmena gen-completions fish)
 
         wrapProgram $out/bin/colmena \
-          --prefix PATH ":" "${final.lib.makeBinPath [ final.lix ]}"
+          --prefix PATH ":" "${final.lib.makeBinPath [ final._nix ]}"
       '';
     });
 

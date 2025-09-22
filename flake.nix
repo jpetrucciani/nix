@@ -5,6 +5,7 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    determinate.url = "github:DeterminateSystems/nix-src";
     flake-compat = {
       flake = false;
       url = "github:edolstra/flake-compat";

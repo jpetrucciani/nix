@@ -16,6 +16,7 @@ in
   inherit (common) zramSwap swapDevices;
 
   nix = common.nix-be // {
+    package = pkgs.detsys.nix;
     nixPath = [
       "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
       "nixos-config=/home/jacobi/cfg/hosts/${hostname}/configuration.nix"
