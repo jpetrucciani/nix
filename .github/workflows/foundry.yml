@@ -32,7 +32,7 @@ jobs:
             extra-substituters = https://cache.g7c.us
             extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
       - run: nix run .#skopeo -- login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-      - run: nix run .#foundry.${{ matrix.image }}.copyToRegistry
+      - run: nix run --impure .#foundry.${{ matrix.image }}.copyToRegistry
       - run: |
           export IMAGE="docker://$(nix eval --raw .#foundry.${{ matrix.image }}.imageName)"
           export TAG="$(nix eval --raw .#foundry.${{ matrix.image }}.imageTag)"
