@@ -34,7 +34,7 @@ jobs:
       - run: nix run .#skopeo -- login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
       - run: nix run --impure .#foundry.${{ matrix.image }}.copyToRegistry
       - run: |
-          export IMAGE="docker://$(nix eval --raw .#foundry.${{ matrix.image }}.imageName)"
-          export TAG="$(nix eval --raw .#foundry.${{ matrix.image }}.imageTag)"
+          export IMAGE="docker://$(nix eval --impure --raw .#foundry.${{ matrix.image }}.imageName)"
+          export TAG="$(nix eval --impure --raw .#foundry.${{ matrix.image }}.imageTag)"
           skopeo --insecure-policy copy "$IMAGE:$TAG" "$IMAGE:$(date +"%F")"
           skopeo --insecure-policy copy "$IMAGE:$TAG" "$IMAGE:latest"
