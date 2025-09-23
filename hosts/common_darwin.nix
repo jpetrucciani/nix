@@ -103,7 +103,7 @@ in
             "discord"
           ];
           util = [
-            "docker"
+            "docker-desktop"
             "ghostty"
             "insomnia"
             "karabiner-elements"
