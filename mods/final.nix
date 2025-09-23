@@ -1,7 +1,7 @@
 # This overlay acts as the last overlay, allowing me to add attributes after every other overlay in this repo
 final: prev:
 let
-  inherit (final.lib) elem all id isDerivation;
+  inherit (final.lib) elem all id isDerivation recursiveUpdate;
   inherit (final.lib.attrsets) filterAttrs;
   checked_packages = filterAttrs
     (_: pkg: all id [
@@ -100,20 +100,24 @@ let
         , defaultGlobalExcludes
         , extraGlobalExcludes
         , extraFormatter
+        , extraTreefmt ? { }
+        , projectRootFile ? ".git/config"
         }:
         let
-          _t = prev.treefmt-nix.mkWrapper prev {
-            projectRootFile = ".git/config";
-            programs = final.lib.recursiveUpdate defaultPrograms extraPrograms;
-            settings.global.excludes = defaultGlobalExcludes ++ extraGlobalExcludes;
-            settings.formatter = { shellcheck.options = [ "-x" ]; } // extraFormatter;
-          };
+          _t = prev.treefmt-nix.mkWrapper prev (recursiveUpdate
+            {
+              inherit projectRootFile;
+              programs = recursiveUpdate defaultPrograms extraPrograms;
+              settings.global.excludes = defaultGlobalExcludes ++ extraGlobalExcludes;
+              settings.formatter = { shellcheck.options = [ "-x" ]; } // extraFormatter;
+            }
+            extraTreefmt);
         in
         final.writeShellScriptBin binName ''${_t}/bin/treefmt "$@"'';
       result = fn defaults;
       treefmt = result // {
         override = newArgs: fn (defaults // newArgs);
-        overrideWithDefaults = newArgs: fn (final.lib.recursiveUpdate defaults newArgs);
+        overrideWithDefaults = newArgs: fn (recursiveUpdate defaults newArgs);
       };
     in
     treefmt // {
