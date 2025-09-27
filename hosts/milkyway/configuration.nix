@@ -62,7 +62,7 @@ in
     hostName = hostname;
   };
   nix = common.nix-cuda // {
-    package = pkgs.detsys.nix;
+    package = pkgs._nix;
     nixPath = [
       "nixpkgs=/etc/nixpkgs-path"
       "nixos-config=/home/jacobi/cfg/hosts/${hostname}/configuration.nix"

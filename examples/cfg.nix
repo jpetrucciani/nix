@@ -1,8 +1,8 @@
 { pkgs ? import
     (fetchTarball {
-      name = "jpetrucciani-2025-01-22";
-      url = "https://github.com/jpetrucciani/nix/archive/823936a22b0f0e545b1fa8e88f24343967f18330.tar.gz";
-      sha256 = "0d01ipxvgyyr0akyfr6phl080sg5rnsw2bwbffcxrng2yna4z8ap";
+      name = "jpetrucciani-2025-09-19";
+      url = "https://github.com/jpetrucciani/nix/archive/a98858e842d0dd04a98d081a20646e42826d1f5d.tar.gz";
+      sha256 = "06skqwk3zcgbwc9wczbaa18dcrjq3izykvmizqadgwrql6cybk6a";
     })
     { }
 }:

@@ -125,8 +125,7 @@ let
   _base_nix_options = ''
     max-jobs = auto
     narinfo-cache-negative-ttl = 10
-    extra-experimental-features = nix-command flakes parallel-eval
-    eval-cores = 0
+    extra-experimental-features = nix-command flakes
   '';
   subs = {
     nix-community = {
@@ -144,10 +143,6 @@ let
     medable = {
       url = "https://medable-nix.s3.us-west-1.amazonaws.com";
       key = "medable-nix.s3.us-west-1.amazonaws.com:dtdREarYUM5iVkNgmcJyL1aYfzVL2Pgfq4a5godxCVk=";
-    };
-    detsys = {
-      url = "https://install.determinate.systems";
-      key = "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM=";
     };
   };
 in

@@ -15,7 +15,6 @@ import nixpkgs {
     (final: _: { inherit (import flake.inputs.pog { pkgs = final; }) _ pog; })
     (final: _: let _hex = import flake.inputs.hex { pkgs = final; }; in { inherit (_hex) hex hexcast nixrender; hex_deps = _hex.deps; })
     (_: _: { inherit (import ./hosts/constants.nix) machines; })
-    (final: _: { detsys = flake.inputs.determinate.packages.${system}; })
   ] ++ (import ./overlays.nix) ++ overlays;
   config = {
     allowUnfree = true;

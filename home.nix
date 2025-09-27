@@ -104,7 +104,7 @@ in
         nanorc
         netcat-gnu
         nil
-        detsys.nix
+        _nix
         nix-info
         nix-output-monitor
         nix-prefetch-github
