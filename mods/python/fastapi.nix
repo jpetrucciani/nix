@@ -219,6 +219,11 @@ rec {
 
     nativeBuildInputs = with final; [
       poetry-core
+      pythonRelaxDepsHook
+    ];
+
+    pythonRelaxDeps = [
+      "pscript"
     ];
 
     propagatedBuildInputs = with final; [
@@ -298,12 +303,12 @@ rec {
 
   nicegui = buildPythonPackage rec {
     pname = "nicegui";
-    version = "2.23.2";
+    version = "2.24.2";
     pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-dhV7GMMg5njWgaZIbRGajdPR2vGDasSMDLzbZiCP7kE=";
+      hash = "sha256-IediDJmu61NWZegeRe8vnu2pX2qeNc7lQkFKELvmG3c=";
     };
 
     postPatch = ''
