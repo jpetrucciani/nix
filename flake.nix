@@ -35,6 +35,7 @@
     poetry2nix = {
       url = "github:nix-community/poetry2nix";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.treefmt-nix.follows = "treefmt-nix";
     };
     pog.url = "github:jpetrucciani/pog";
     treefmt-nix.url = "github:numtide/treefmt-nix";
