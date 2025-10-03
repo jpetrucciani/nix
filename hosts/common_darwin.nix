@@ -90,7 +90,7 @@ in
             "font-monaspace"
           ];
           fun = [
-            "mgba"
+            "mgba-app"
             "spotify"
             "steam"
           ];
