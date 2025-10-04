@@ -8,7 +8,7 @@ uv-nix.buildUvPackage rec {
   version = "0.11.0";
 
   lockUrl = "https://static.g7c.us/lock/uv/vllm/${version}.lock";
-  lockHash = "sha256-TJvkRp5DEZH+5SxXm0HMWHGhDHudzL7jVGoDCo2qEco=";
+  lockHash = "sha256-z7va7PqfO1kbAHihtmIG5WppHNuSRi32MzuVR7OJSk4=";
   extraDependencies = [ "flashinfer-python==0.3.1.post1" "qwen-vl-utils==0.0.14" ];
   cudaSupport = true;
 
