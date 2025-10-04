@@ -112,6 +112,7 @@ let
       , _pkgs ? final
       }@args:
       let
+        hacks = final.callPackage final.pyproject-nix.build.hacks { };
         cudaOverrides = _final: _prev: {
           bitsandbytes = _prev.bitsandbytes.overrideAttrs (_: {
             buildInputs = with _pkgs.cudaPackages; [
@@ -188,6 +189,7 @@ let
               addAutoPatchelfSearchPath "${_final.torch}"
             '';
           });
+          sentencepiece = hacks.nixpkgsPrebuilt { from = python.pkgs.sentencepiece; };
           fastdeploy-gpu = _prev.fastdeploy-gpu.overrideAttrs (_: {
             buildInputs = with _pkgs.cudaPackages; [
               cuda_cudart
