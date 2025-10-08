@@ -1,6 +1,8 @@
 # This module makes some AWS related tools with `pog`.
 final: prev:
-with prev;
+let
+  inherit (final) _ pog awscli2;
+in
 rec {
   aws_id = pog {
     name = "aws_id";
@@ -39,8 +41,8 @@ rec {
 
   ec2_spot_interrupt =
     let
-      python = pkgs.python311.withPackages (p: with p; [ requests tabulate ]);
-      spots.py = writeTextFile {
+      python = final.python313.withPackages (p: with p; [ requests tabulate ]);
+      spots.py = final.writers.writeTextFile {
         name = "spots.py";
         text = ''
           import json
