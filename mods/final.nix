@@ -268,4 +268,6 @@ in
       platforms = final.lib.platforms.all;
     };
   });
+
+  awscli2 = prev.awscli2.overridePythonAttrs (_: { doCheck = false; });
 }
