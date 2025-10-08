@@ -3,21 +3,22 @@
 , pog
 }:
 let
-  version = "1.34.0";
+  version = "1.36.0";
   jar = builtins.fetchurl {
     url = "https://cobi.dev/static/jar/sbe/sbe-all-${version}-SNAPSHOT.jar";
-    sha256 = "1mlawqkggd1yzhhis4gk1vy52va2ffb9hm5h2fg6763h8x5mgsyd";
+    sha256 = "0y3alrh0b4j213n9g9kq9dva5gbk09qwid0ib1gybfhxjfrs41nm";
   };
 in
 pog {
   inherit version;
   name = "sbe-tool";
+  description = "a nix wrapper around the aeron-io/simple-binary-encoding tool for generating code";
   flags =
     let
-      langFlag = name: { inherit name; bool = true; short = ""; };
+      langFlag = name: { inherit name; bool = true; short = ""; description = "generate ${name} code for this sbe schema"; };
     in
     [
-      { name = "extraflags"; default = ""; }
+      { name = "extraflags"; default = ""; description = "extra flags to pass through to the underlying sbe-tool"; }
       (langFlag "c")
       (langFlag "cpp")
       (langFlag "csharp")
