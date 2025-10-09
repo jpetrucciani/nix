@@ -1,8 +1,7 @@
 # experimental webapps
 final: prev:
-with prev;
 {
-  json-crack = prev.callPackage
+  json-crack = final.callPackage
     ({ fetchFromGitHub, mkYarnPackage }:
       let
         version = "2.6.0";

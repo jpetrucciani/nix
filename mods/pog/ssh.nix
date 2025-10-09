@@ -1,6 +1,8 @@
 # this set of pog scripts creates some wrappers around ssh to make things easier
 final: prev:
-with prev;
+let
+  inherit (final) _ pog;
+in
 rec {
   pogproxy = pog {
     name = "pogproxy";

@@ -1,6 +1,5 @@
 # This overlay provides a [caddy web server](https://caddyserver.com/v2) builder function called `_zaddy` and a set of default plugins that you can use to build any flavor of caddy that you'd like!
 final: prev:
-with prev;
 rec {
   _zaddy =
     let
@@ -70,7 +69,7 @@ rec {
         '')
         allPlugins;
       zaddy = prev.caddy.override {
-        buildGo125Module = args: buildGo125Module (args // {
+        buildGo125Module = args: final.buildGo125Module (args // {
           # inherit version src;
           inherit vendorHash;
           overrideModAttrs = _: {

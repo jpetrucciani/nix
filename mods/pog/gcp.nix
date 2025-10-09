@@ -1,6 +1,8 @@
 # This module makes some GCP related tools with `pog`.
 final: prev:
-with prev;
+let
+  inherit (final) _ pog;
+in
 rec {
   glist = pog {
     name = "glist";
@@ -103,7 +105,7 @@ rec {
     let
       mktemp = "${final.coreutils}/bin/mktemp --suffix=.json";
       gcloud = ''${final.google-cloud-sdk}/bin/gcloud --project "$project"'';
-      first = ''${pkgs.gawk}/bin/awk '{ print $1 }' '';
+      first = ''${final.gawk}/bin/awk '{ print $1 }' '';
       jq = "${final.jq}/bin/jq";
       grep = "${final.gnugrep}/bin/grep";
       dyff = "${final.dyff}/bin/dyff between --omit-header";

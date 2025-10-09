@@ -146,10 +146,10 @@ let
 in
 {
   inherit llama-cpp-latest;
-  foundry = import ./foundry.nix { pkgs = prev; };
-  __j_custom = prev.buildEnv {
+  foundry = import ./foundry.nix { pkgs = final; };
+  __j_custom = final.buildEnv {
     name = "__j_custom";
-    paths = (prev.lib.attrsets.attrValues checked_packages) ++ [ prev.hex prev.nix (prev.python313.withPackages prev.hax.basePythonPackages) ];
+    paths = (final.lib.attrsets.attrValues checked_packages) ++ [ final.hex final.nix (final.python313.withPackages final.hax.basePythonPackages) ];
   };
 
   inherit _treefmt;

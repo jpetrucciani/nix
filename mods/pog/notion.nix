@@ -1,6 +1,8 @@
 # this pog module includes tools to interact with notion
 final: prev:
-with prev;
+let
+  inherit (final) curl pog;
+in
 rec {
   notioncurl = pog {
     name = "notioncurl";
