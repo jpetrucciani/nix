@@ -327,7 +327,7 @@ let
     name = "k8s-aws";
     description = "a lightweight image with just bash, kubectl + ktools, and awscliv2";
     layers = with pkgs; [
-      [ (awscli2.override { python3 = python311; }) ]
+      [ awscli2 ]
       [ kubectl ]
       ktools
     ];
@@ -336,7 +336,7 @@ let
     name = "certbot";
     description = "a full certbot image with a few different providers";
     layers = with pkgs; [
-      [ (awscli2.override { python3 = python311; }) ]
+      [ awscli2 ]
       [
         zertbot.withAll
       ]
@@ -346,7 +346,7 @@ let
     name = "certbot-aws";
     description = "a lightweight image with awscliv2 and certbot configured to work with route53";
     layers = with pkgs; [
-      [ (awscli2.override { python3 = python311; }) ]
+      [ awscli2 ]
       [
         (zertbot.withPlugins (p: with p; [
           certbot-dns-route53
