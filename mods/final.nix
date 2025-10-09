@@ -270,4 +270,13 @@ in
   });
 
   awscli2 = prev.awscli2.overridePythonAttrs (_: { doCheck = false; });
+
+  time =
+    if final.stdenv.isDarwin then
+      prev.time.overrideAttrs
+        (_: {
+          postPatch = ''
+            sed -E -i 's#__sighandler_t#sighandler_t#g' src/time.c
+          '';
+        }) else prev.time;
 }
