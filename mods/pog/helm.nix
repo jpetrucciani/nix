@@ -379,6 +379,12 @@ rec {
     chart_url = "https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts/{1}/csi-driver-smb-{1}.tgz";
   };
 
+  chart_scan_onyx = _chart_scan {
+    name = "onyx-stack";
+    base_url = "https://onyx-dot-app.github.io/onyx";
+    chart_url = "https://onyx-dot-app.github.io/onyx/onyx-stack-{1}.tgz";
+  };
+
   helm_pog_scripts = [
     chart_scan_alloy
     chart_scan_argo-cd
@@ -405,6 +411,7 @@ rec {
     chart_scan_odoo
     chart_scan_oncall
     chart_scan_oneuptime
+    chart_scan_onyx
     chart_scan_open-webui
     chart_scan_otf
     chart_scan_plane
