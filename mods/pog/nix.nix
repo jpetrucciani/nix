@@ -118,7 +118,7 @@ rec {
           fi
           py=""
           if [ "$with_python" = "1" ]; then
-            py="python = [ruff${"\n"}(python311.withPackages ( p: with p; [${"\n"}black]))];"
+            py="python = [ruff${"\n"}(python313.withPackages ( p: with p; [${"\n"}black]))];"
             gitignore="$gitignore${"\n"}# python${"\n"}${gitignore.python}"
           fi
           poetry=""
