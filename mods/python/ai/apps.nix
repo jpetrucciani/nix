@@ -444,23 +444,15 @@ in
     };
   };
 
-  # fix issue with transformers?
-  # https://github.com/huggingface/optimum/issues/2277
-  optimum = prev.optimum.overridePythonAttrs (_: {
-    postInstall = ''
-      sed -i -E 's#(if is\_transformers\_version\(">=", ")4.49#\16.0#g' $out/lib/python*/site-packages/optimum/bettertransformer/__init__.py
-    '';
-  });
-
   infinity-emb = buildPythonPackage rec {
     pname = "infinity-emb";
-    version = "0.0.76";
+    version = "0.0.77";
     pyproject = true;
 
     src = fetchPypi {
       pname = "infinity_emb";
       inherit version;
-      hash = "sha256-/lq8bEPPH8GN8l/ca3dhv6QCAiXLNXh/Pcgy2rHg8ew=";
+      hash = "sha256-9xQ7FiUwxUMfRDnRg25NgH2vFq14GcnaWIXp1DudnII=";
     };
 
     build-system = with final; [
@@ -481,7 +473,6 @@ in
       httptools
       huggingface-hub
       numpy
-      optimum
       orjson
       pillow
       prometheus-fastapi-instrumentator
@@ -498,9 +489,6 @@ in
     optional-dependencies = with final; {
       onnxruntime-gpu = [
         onnxruntime-gpu
-      ];
-      optimum = [
-        optimum
       ];
       tensorrt = [
         tensorrt
