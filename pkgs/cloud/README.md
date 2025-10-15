@@ -45,7 +45,3 @@ gke-gcloud-auth-plugin is a required plugin for using kubectl with Google's GKE 
 ### [stree.nix](./stree.nix)
 
 [stree](https://github.com/orangekame3/stree) is a directory tree tool for s3
-
-### [terraform-cloud-exporter.nix](./terraform-cloud-exporter.nix)
-
-[terraform-cloud-exporter](https://github.com/pacoguzman/terraform-cloud-exporter) is a prometheus exporter for terraform cloud

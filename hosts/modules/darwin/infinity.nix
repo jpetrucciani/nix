@@ -13,7 +13,7 @@ in
     enable = mkEnableOption "infinity server launchd service";
     package = mkOption {
       type = package;
-      default = pkgs.python312Packages.infinity-emb;
+      default = pkgs.python313Packages.infinity-emb;
       defaultText = literalExpression "pkgs.python312Packages.infinity-emb";
       description = "The package to use for infinity";
     };

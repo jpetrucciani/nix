@@ -295,7 +295,8 @@ rec {
         rm -f "$MYSQLDATA"/undo_*
       fi
 
-      cleanup() {
+      # shellcheck disable=SC2329
+      _cleanup() {
         echo "Shutting down MySQL..."
         if [ -f "$MYSQLDATA/mysql.pid" ]; then
           kill "$(cat "$MYSQLDATA/mysql.pid")"
@@ -303,7 +304,7 @@ rec {
         fi
         exit 0
       }
-      trap cleanup TERM
+      trap _cleanup TERM
 
       red "mysqld starting - use ctrl+\ (SIGQUIT) to kill!"
       ${mysql}/bin/mysqld \
@@ -334,6 +335,18 @@ rec {
 
       ${final.portwatch}/bin/portwatch "$MYSQLPORT" && ${mysql}/bin/mysql --defaults-file="$TMPCNF" ${extra_flags}
     '';
+  };
+
+  __pg_magic = {
+    pg = __pg { };
+    bootstrap = __pg_bootstrap { };
+    shell = __pg_shell { };
+  };
+
+  __mysql_magic = {
+    mysql = __mysql { };
+    bootstrap = __mysql_bootstrap { };
+    shell = __mysql_shell { };
   };
 
   db_pog_scripts = [
