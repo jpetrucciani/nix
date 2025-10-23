@@ -3,7 +3,7 @@ let
   inherit (final) buildPythonPackage fetchPypi;
   inherit (final) poetry-core;
   inherit (final.lib) licenses maintainers;
-  inherit (final.pkgs) fetchFromGitHub rustPlatform autoPatchelfHook bash;
+  inherit (final.pkgs) fetchFromGitHub rustPlatform;
 in
 rec {
   systemdunitparser = buildPythonPackage rec {
