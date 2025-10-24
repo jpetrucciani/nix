@@ -36,5 +36,5 @@ jobs:
       - run: |
           export IMAGE="docker://$(nix eval --impure --raw .#foundry.${{ matrix.image }}.imageName)"
           export TAG="$(nix eval --impure --raw .#foundry.${{ matrix.image }}.imageTag)"
-          skopeo --insecure-policy copy "$IMAGE:$TAG" "$IMAGE:$(date +"%F")"
-          skopeo --insecure-policy copy "$IMAGE:$TAG" "$IMAGE:latest"
+          skopeo --insecure-policy copy --retry-times 2 "$IMAGE:$TAG" "$IMAGE:$(date +"%F")"
+          skopeo --insecure-policy copy --retry-times 2 "$IMAGE:$TAG" "$IMAGE:latest"
