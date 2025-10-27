@@ -33,6 +33,7 @@ in
       }
     ];
     script = h: with h; ''
+      export SSL_CERT_FILE="''${SSL_CERT_FILE:=${final.cacert}/etc/ssl/certs/ca-bundle.crt}"
       parse_tags() {
         local tags="$1"
         tags=$(echo "$tags" | ${final.gnused}/bin/sed -E 's/^[,\s]+|[,\s]+$//g')
@@ -54,7 +55,7 @@ in
         if [[ "$(uname)" == "Darwin" ]]; then
           ip=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo "unknown")
         else
-          ip=$(ip route get 1.1.1.1 | ${final.gnused}/bin/sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
+          ip=$(${final.busybox}/bin/ip route get 1.1.1.1 | ${final.gnused}/bin/sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
         fi
         echo "$ip"
       }
