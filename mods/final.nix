@@ -150,6 +150,7 @@ in
   __j_custom = final.buildEnv {
     name = "__j_custom";
     paths = (final.lib.attrsets.attrValues checked_packages) ++ [ final.hex final.nix (final.python313.withPackages final.hax.basePythonPackages) ];
+    ignoreCollisions = true;
   };
 
   inherit _treefmt;
