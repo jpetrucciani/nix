@@ -26,15 +26,12 @@ let
     playwright
 
     # ai
-    # langchain
-    # langchainhub
     openai
     pdf2image
     qdrant-client
     sentence-transformers
     tokenizers
     transformers
-    whisper-cpp-python
 
     # data
     numpy
