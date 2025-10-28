@@ -57,6 +57,7 @@ in
     stateVersion = "22.11";
     packages = with pkgs;
       lib.flatten [
+        _nix
         bash-completion
         bashInteractive
         bat
@@ -89,6 +90,7 @@ in
         gron
         gum
         gzip
+        hgrep
         html-to-markdown
         htmlq
         ivy
@@ -104,7 +106,6 @@ in
         nanorc
         netcat-gnu
         nil
-        _nix
         nix-info
         nix-output-monitor
         nix-prefetch-github
@@ -130,8 +131,8 @@ in
         spacer
         statix
         time
-        uv
         unzip
+        uv
         vale
         watch
         wget
