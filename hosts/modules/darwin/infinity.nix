@@ -14,7 +14,7 @@ in
     package = mkOption {
       type = package;
       default = pkgs.python313Packages.infinity-emb;
-      defaultText = literalExpression "pkgs.python312Packages.infinity-emb";
+      defaultText = literalExpression "pkgs.python313Packages.infinity-emb";
       description = "The package to use for infinity";
     };
     address = mkOption {

@@ -67,6 +67,7 @@ in
         coreutils-full
         cowsay
         curl
+        delta
         diffutils
         dogdns
         dos2unix
@@ -80,7 +81,6 @@ in
         fq
         gawk
         genpass
-        gitAndTools.delta
         glow
         gnugrep
         gnumake
@@ -189,7 +189,7 @@ in
           terraform-ls
 
           # python
-          (python312.withPackages pkgs.hax.basePythonPackages)
+          (python313.withPackages pkgs.hax.basePythonPackages)
 
           # keef's stuff
           hax.comma
@@ -688,7 +688,7 @@ in
     in
     {
       enable = true;
-      package = pkgs.gitAndTools.gitFull;
+      package = pkgs.gitFull;
       settings = {
         user = {
           name = "${firstName} ${lastName}";

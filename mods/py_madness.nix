@@ -21,7 +21,7 @@ let
       , extraBuildInputs ? [ ]
       , editablePackageSources ? { }
       , extraMkPoetryEnv ? { }
-      , python ? final.python312
+      , python ? final.python313
       , ignoreCollisions ? true
       , preferWheels ? true
       }:

@@ -113,7 +113,7 @@ rec {
           fi
           pulumi=""
           if [ "$with_pulumi" = "1" ]; then
-            py="python = [(python312.withPackages ( p: with p; [${"\n"}pulumi]))];"
+            py="python = [(python313.withPackages ( p: with p; [${"\n"}pulumi]))];"
             pulumi="pulumi = [pulumi];"
           fi
           py=""
@@ -123,8 +123,8 @@ rec {
           fi
           poetry=""
           if [ "$with_poetry" = "1" ]; then
-            py="python = [ruff${"\n"}(poetry.override (_: { python3 = python312; }))];"
-            poetry="python = pkgs.poetry-helpers.mkEnv {${"\n"}projectDir = ./.; python = pkgs.python312; extraOverrides = [(final: prev: { })];};${"\n"}"
+            py="python = [ruff${"\n"}(poetry.override (_: { python3 = python313; }))];"
+            poetry="python = pkgs.poetry-helpers.mkEnv {${"\n"}projectDir = ./.; python = pkgs.python313; extraOverrides = [(final: prev: { })];};${"\n"}"
             _env="python.env.overrideAttrs (_: {${"\n"} buildInputs = paths; });"
             gitignore="$gitignore${"\n"}# python${"\n"}${gitignore.python}"
           fi
