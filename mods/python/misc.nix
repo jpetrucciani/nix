@@ -1065,13 +1065,13 @@ rec {
 
 
   pulp-glue = buildPythonPackage rec {
-    pname = "pulp-glue";
-    version = "0.26.0";
+    pname = "pulp_glue";
+    version = "0.36.1";
     pyproject = true;
 
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-yzc3GC36hKEuRiRaJAhqYxDzL4wK5KGSlCJ7yIH3NsQ=";
+      hash = "sha256-lBixZACqru2t8+fkXKXdwy7A7rKPU+SlCjabJdTINQk=";
     };
 
     nativeBuildInputs = with final; [
@@ -1087,6 +1087,7 @@ rec {
 
     propagatedBuildInputs = with final; [
       importlib-resources
+      multidict
       packaging
       requests
     ];
@@ -1103,13 +1104,13 @@ rec {
 
   pulp-cli = buildPythonPackage
     rec {
-      pname = "pulp-cli";
-      version = "0.26.0";
+      pname = "pulp_cli";
+      version = "0.36.1";
       pyproject = true;
 
       src = fetchPypi {
         inherit pname version;
-        hash = "sha256-8204Dt2PtolWMImV8a5/X6nTD7LzdxKNle6thHXCBpA=";
+        hash = "sha256-XtCFapdIaCnkh2Oeis9Y+BAk7iUSd94gq9K9NUALEps=";
       };
 
       nativeBuildInputs = with final; [
@@ -1125,6 +1126,7 @@ rec {
         pyyaml
         schema
         toml
+        tomli-w
       ];
 
       passthru.optional-dependencies = with final; {
