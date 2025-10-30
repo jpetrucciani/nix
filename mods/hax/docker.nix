@@ -21,7 +21,7 @@ let
   defaultPkgs =
     with pkgs;
     [
-      nix
+      nixVersions.nix_2_32
       bashInteractive
       coreutils-full
       gnutar
