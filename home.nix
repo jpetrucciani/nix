@@ -783,6 +783,12 @@ in
         signer = "gpg";
         signByDefault = true;
       };
+      ignores = [
+        "*.pcap"
+        "*.swp"
+        "*~"
+        ".cursor"
+      ];
     };
 
   programs.tmux = {
