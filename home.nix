@@ -149,7 +149,7 @@ in
         gke-gcloud-auth-plugin
 
         # secrets
-        flake.inputs.agenix.packages.${pkgs.system}.default
+        flake.inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
 
         # load in my custom checked pog scripts
         (
