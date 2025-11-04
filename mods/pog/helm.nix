@@ -385,6 +385,12 @@ rec {
     chart_url = "https://onyx-dot-app.github.io/onyx/onyx-stack-{1}.tgz";
   };
 
+  chart_scan_livekit = _chart_scan {
+    name = "livekit-server";
+    base_url = "https://helm.livekit.io";
+    chart_url = "https://helm.livekit.io/livekit-server-{1}.tgz";
+  };
+
   helm_pog_scripts = [
     chart_scan_alloy
     chart_scan_argo-cd
@@ -404,6 +410,7 @@ rec {
     chart_scan_langflow-runtime
     chart_scan_linkerd-control-plane
     chart_scan_linkerd-crds
+    chart_scan_livekit
     chart_scan_loki
     chart_scan_mimir
     chart_scan_mongo-operator
