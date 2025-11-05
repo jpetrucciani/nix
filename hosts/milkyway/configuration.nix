@@ -58,6 +58,7 @@ in
   networking = {
     extraHosts = ''
       100.88.176.6 llm.cobi.dev
+      100.88.33.20 o.cobi.dev
     '';
     hostName = hostname;
   };
