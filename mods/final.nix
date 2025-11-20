@@ -230,15 +230,15 @@ in
         owner = "zhaofengli";
         repo = pname;
         # rev = "v${version}";
-        rev = "2370d4336eda2a9ef29fce10fa7076ae011983ab";
-        sha256 = "sha256-hPSLvw6AZQYrZyGI6Uq4XgST7benF/0zcCpugn/P0yM=";
+        rev = "349b035a5027f23d88eeb3bc41085d7ee29f18ed";
+        sha256 = "sha256-QVey3iP3UEoiFVXgypyjTvCrsIlA4ecx6Acaz5C8/PQ=";
       };
     in
     prev.colmena.overrideAttrs (_: {
       inherit src version;
       cargoDeps = final.rustPlatform.fetchCargoVendor {
         inherit pname version src;
-        hash = "sha256-fuo2qDORVfUfmLWux9GYh2O0GbrQSaBLOFTE4dReOGQ=";
+        hash = "sha256-v5vv66x+QiDhSa3iJ3Kf7PC8ZmK1GG8QdVD2a1L0r6M=";
       };
       patches = [ ];
       postInstall = final.lib.optionalString (final.stdenv.buildPlatform.canExecute final.stdenv.hostPlatform) ''
