@@ -6,7 +6,7 @@
 , hostPlatform ? system
 }:
 import nixpkgs {
-  inherit hostPlatform;
+  inherit hostPlatform system;
   overlays = [
     (_: _: { inherit flake; nixpkgsRev = nixpkgs.rev; })
     (_: _: { _std = flake.inputs.nix-std.lib; })
