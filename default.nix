@@ -3,9 +3,10 @@
 , overlays ? [ ]
 , config ? { }
 , system ? builtins.currentSystem
+, hostPlatform ? system
 }:
 import nixpkgs {
-  inherit system;
+  inherit hostPlatform;
   overlays = [
     (_: _: { inherit flake; nixpkgsRev = nixpkgs.rev; })
     (_: _: { _std = flake.inputs.nix-std.lib; })
