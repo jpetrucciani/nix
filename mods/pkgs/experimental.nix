@@ -5,7 +5,7 @@ let
 in
 {
   ggml = callPackage
-    ({ lib, system, clangStdenv, fetchFromGitHub, cmake, git }:
+    ({ lib, stdenv, clangStdenv, fetchFromGitHub, cmake, git }:
       clangStdenv.mkDerivation rec {
         name = "ggml";
         version = "0.0.0";
@@ -16,7 +16,7 @@ in
           rev = "2a75bd43113702fe096c75408b300d106be90a58";
           hash = "sha256-3IgIes8x5yoHwcVJV67kizV95ZocrTd29bmrbKJBRzU=";
         };
-        cmakeFlags = lib.optionals (system == "aarch64-darwin") [
+        cmakeFlags = lib.optionals (stdenv.hostPlatform.system == "aarch64-darwin") [
           "-DCMAKE_C_FLAGS=-D__ARM_FEATURE_DOTPROD=1"
         ];
 

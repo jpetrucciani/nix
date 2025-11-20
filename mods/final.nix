@@ -6,7 +6,7 @@ let
   checked_packages = filterAttrs
     (_: pkg: all id [
       (isDerivation pkg)
-      (elem final.system pkg.meta.platforms or [ final.system ])
+      (elem final.stdenv.hostPlatform.system pkg.meta.platforms or [ final.stdenv.hostPlatform.system ])
       (!pkg.meta.broken or false)
       (!pkg.meta.skipBuild or false)
     ])
