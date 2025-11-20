@@ -129,7 +129,7 @@ let
       version = "7103";
       hash = "sha256-g25efgDt99wFT/SplCmmPJp/gwh+n3y73CLLPvbR6KM=";
     in
-    prev.llama-cpp.overrideAttrs (_: {
+    prev.llama-cpp.overrideAttrs (old: {
       inherit version;
       src = final.fetchFromGitHub {
         inherit hash;
@@ -142,6 +142,11 @@ let
           find "$out" -name .git -print0 | xargs -0 rm -rf
         '';
       };
+      # hack for mac dylib?
+      cmakeFlags =
+        if final.stdenv.isDarwin then old.cmakeFlags ++ [
+          "-DLLAMA_BUILD_NUMBER=1"
+        ] else old.cmakeFlags;
     });
 in
 {
