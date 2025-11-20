@@ -285,4 +285,8 @@ in
             sed -E -i 's#__sighandler_t#sighandler_t#g' src/time.c
           '';
         }) else prev.time;
+
+  htop-noaffinity = prev.htop.overrideAttrs (old: {
+    configureFlags = (final.lib.lists.remove [ "--enable-affinity" ] (old.configureFlags or [ ])) ++ [ "--disable-affinity" ];
+  });
 }
