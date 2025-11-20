@@ -34,7 +34,7 @@ in
       ref = "refs/heads/nixpkgs-unstable";
       rev = "976fa3369d722e76f37c77493d99829540d43845";
     })
-    { inherit (final) system; };
+    { inherit (final.stdenv.hostPlatform) system; };
 
 
   questdb = prev.questdb.overrideAttrs (old: {
