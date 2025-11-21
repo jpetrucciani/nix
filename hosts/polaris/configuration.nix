@@ -99,6 +99,7 @@ in
       open = false;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
       modesetting.enable = true;
+      nvidiaPersistenced = true;
     };
     nvidia-container-toolkit.enable = true;
     graphics = {
