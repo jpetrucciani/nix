@@ -8,7 +8,7 @@
       supportedFilesystems = [ "nfs" ];
       kernelModules = [ "nfs" ];
     };
-    kernelModules = [ ];
+    kernelModules = [ "nvidia" ];
     extraModulePackages = [ ];
     supportedFilesystems = [ "nfs" "zfs" ];
   };
