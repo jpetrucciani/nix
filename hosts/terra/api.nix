@@ -7,7 +7,7 @@ let
     feedparser
     gamble
     geoip2
-    GitPython
+    gitpython
     httpx
     paramiko
     pygithub
