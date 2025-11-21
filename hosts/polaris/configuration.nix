@@ -99,6 +99,7 @@ in
     nvidia = {
       open = false;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
+      modeset.enable = false;
     };
     nvidia-container-toolkit.enable = true;
     graphics = {

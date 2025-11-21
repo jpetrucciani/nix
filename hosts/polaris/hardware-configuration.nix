@@ -1,4 +1,4 @@
-{ config, lib, modulesPath, ... }:
+{ config, lib, modulesPath, pkgs, ... }:
 
 {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
@@ -9,6 +9,7 @@
       kernelModules = [ "nfs" ];
     };
     kernelModules = [ "nvidia" ];
+    kernelPackages = pkgs.linuxPackages_latest;
     extraModulePackages = [ ];
     supportedFilesystems = [ "nfs" "zfs" ];
   };
@@ -25,7 +26,6 @@
 
   swapDevices = [ ];
   networking.useDHCP = lib.mkDefault true;
-
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
