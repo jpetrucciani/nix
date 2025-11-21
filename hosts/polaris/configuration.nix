@@ -48,7 +48,6 @@ in
       cudaPackages.cudatoolkit
       nvidia-docker
       nvtopPackages.nvidia
-      linuxPackages.nvidia_x11
     ];
   };
 
@@ -99,7 +98,7 @@ in
     nvidia = {
       open = false;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
-      modesetting.enable = false;
+      modesetting.enable = true;
     };
     nvidia-container-toolkit.enable = true;
     graphics = {
