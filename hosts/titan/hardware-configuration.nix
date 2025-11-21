@@ -2,11 +2,15 @@
 {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
   boot = {
-    initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
-    initrd.kernelModules = [ "nvidia" ];
+    initrd = {
+      availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
+      supportedFilesystems = [ "nfs" ];
+      kernelModules = [ "nfs" ];
+    };
     kernelModules = [ "kvm-amd" "nvidia" ];
     kernelPackages = pkgs.linuxPackages_latest;
     extraModulePackages = [ ];
+    supportedFilesystems = [ "nfs" "zfs" ];
   };
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/5f99f1f8-1b07-4e16-9ce5-8eaa984bbe7f";
