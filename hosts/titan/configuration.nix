@@ -52,6 +52,7 @@ in
   time.timeZone = common.timeZone;
 
   networking = {
+    hostId = "1e35326f"; # copied from first 8 chars of /etc/machine-id - https://discourse.nixos.org/t/how-to-set-the-hostid-when-migrating-to-flakes/25607
     hostName = hostname;
     useDHCP = true;
     interfaces.enp5s0.useDHCP = true;
