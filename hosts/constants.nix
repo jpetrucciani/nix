@@ -5,6 +5,7 @@ let
       "edge"
       "luna"
       "milkyway"
+      "voyager"
       "neptune"
       "phobos"
       "polaris"
@@ -60,6 +61,7 @@ let
     nyx0 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIg9CfLq9fHbwfg16W2k8A9rXw7AUGQWDk4qwikDrikj jacobi@nyx0";
     styx = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3gO1YSpzqJ5aheyC/gx53lK9Wu21dA88+VrvPqMoRD jacobi@styx";
     mercury = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKLAJdW+XxljUGrFMXJdc1ULVYOYR+/aeEddl+7mjOCG jacobi@mercury";
+    voyager = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIIejYkuLdJ3OslVRfKfr9w+MUfhAvRhoM2agNdxlTn/ jacobi@voyager";
 
     # android
     s21 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICLuqazOtTUHVkywIMHWXizCLmSaEl2C8Oyb9t5LmslD jacobi@s21";
@@ -92,6 +94,7 @@ let
       phobos
       luna
       milkyway
+      voyager
       styx
       terra
       titan
@@ -117,6 +120,7 @@ let
     usual = [
       galaxyboss
       milkyway
+      voyager
       pluto
       proteus
     ] ++ mobile;
@@ -193,6 +197,7 @@ in
         edge = "100.69.215.126";
         luna = "100.78.40.10";
         milkyway = "100.83.252.130";
+        # voyager = "";
         styx = "100.102.221.30";
         phobos = "100.116.153.116";
         mercury = "100.92.180.69";

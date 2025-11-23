@@ -6,9 +6,9 @@ This directory contains my nixos configurations for each of my nixos machines, a
 
 ## In this directory
 
-### [andromeda/](./andromeda)
+### [edge/](./edge/)
 
-This is an experimental nixos install inside a VM using the apple virtualization framework.
+this is a big vm
 
 ### [foundry/](./foundry/)
 
@@ -62,6 +62,18 @@ This is a bare-metal nixos server with a modern dedicated GPU!
 
 This is my second largest nixos based machine
 
+### [voyager/](./voyager/)
+
+This is a nixos install running on top of wsl2!
+
 ### [common.nix](./common.nix)
 
 This file serves as a nice way to reduce duplication across nixos configurations. It contains all my common env setup and services.
+
+### [common-darwin.nix](./common-darwin.nix)
+
+shared values for darwin boxes
+
+### [constants.nix](./constants.nix)
+
+shared values for more than just me!

@@ -26,6 +26,7 @@ in
     openssh.authorizedKeys.keys = with common.pubkeys; [
       galaxyboss
       milkyway
+      voyager
       pluto
     ];
   };
