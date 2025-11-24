@@ -27,6 +27,7 @@ buildGoModule {
     description = "Remote Desktop Gateway in Go for deploying on Linux/BSD/Kubernetes";
     homepage = "https://github.com/bolkedebruin/rdpgw";
     license = lib.licenses.asl20;
+    platforms = lib.platforms.linux;
     maintainers = with lib.maintainers; [ jpetrucciani ];
     mainProgram = "rdpgw";
   };
