@@ -1,6 +1,5 @@
 # [rdpgw](https://github.com/bolkedebruin/rdpgw) is a Remote Desktop Gateway in Go for deploying on Linux/BSD/Kubernetes
 { lib
-, fetchurl
 , buildGoModule
 , fetchFromGitHub
 , pam
