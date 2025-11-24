@@ -26,6 +26,14 @@ This directory contains specific servers
 
 [poglets](https://github.com/jpetrucciani/poglets) is a TCP tunneling system
 
+### [pogocache.nix](./pogocache.nix)
+
+[pogocache](https://github.com/pogocache/pogocache) is Fast caching software with a focus on low latency and cpu efficiency
+
+### [rdpgw.nix](./rdpgw.nix)
+
+[rdpgw](https://github.com/bolkedebruin/rdpgw) is a Remote Desktop Gateway in Go for deploying on Linux/BSD/Kubernetes
+
 ### [smoothmq.nix](./smoothmq.nix)
 
 [smoothmq](https://github.com/poundifdef/SmoothMQ) is A drop-in replacement for SQS designed for great developer experience and efficiency
