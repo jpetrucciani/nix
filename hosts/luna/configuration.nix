@@ -28,7 +28,10 @@ in
     initrd.systemd.network.wait-online.enable = false;
     kernel.sysctl = { } // common.sysctl_opts;
     loader = {
-      systemd-boot.enable = true;
+      systemd-boot = {
+        enable = true;
+        configurationLimit = 3;
+      };
       efi = {
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot/efi";

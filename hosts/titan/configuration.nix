@@ -29,7 +29,10 @@ in
 
   boot = {
     loader = {
-      systemd-boot.enable = true;
+      systemd-boot = {
+        enable = true;
+        configurationLimit = 3;
+      };
       efi.canTouchEfiVariables = true;
     };
     kernel.sysctl = { } // common.sysctl_opts;
