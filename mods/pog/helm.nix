@@ -361,6 +361,12 @@ rec {
     chart_url = "https://github.com/redpanda-data/helm-charts/releases/download/operator-{1}/operator-{1}.tgz";
   };
 
+  chart_scan_retool = _chart_scan {
+    name = "retool";
+    base_url = "https://charts.retool.com";
+    chart_url = "https://charts.retool.com/retool-{1}.tgz";
+  };
+
   chart_scan_questdb = _chart_scan {
     name = "questdb";
     base_url = "https://helm.questdb.io";
@@ -435,6 +441,7 @@ rec {
     chart_scan_questdb
     chart_scan_redis-operator
     chart_scan_redpanda
+    chart_scan_retool
     chart_scan_robusta
     chart_scan_searxng
     chart_scan_semaphore
