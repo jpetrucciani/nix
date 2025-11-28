@@ -270,7 +270,7 @@ let
   foundry_nix = foundry {
     name = "nix";
     description = "a baseline image with common tools and a working nix install";
-    layers = with pkgs; [
+    layers = [
       (_base_pkgs pkgs)
     ];
   };
