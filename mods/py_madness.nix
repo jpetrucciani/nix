@@ -157,9 +157,8 @@ let
           cupy-cuda12x = _prev.cupy-cuda12x.overrideAttrs (_: {
             buildInputs = with _pkgs.cudaPackages; [
               cuda_nvrtc
-              cudnn_8_9
-              cutensor
               libcufft
+              libcutensor
               libcurand
               libcusolver
               libcusparse
@@ -168,6 +167,7 @@ let
             postFixup = ''
               addAutoPatchelfSearchPath "${_final.nvidia-cusparselt-cu12}"
             '';
+            autoPatchelfIgnoreMissingDeps = [ "libcudnn.so.8" ];
           });
           xformers = _prev.xformers.overrideAttrs (_: {
             postFixup = ''
@@ -179,15 +179,30 @@ let
               cuda_nvcc
             ]);
           });
+          nvidia-cutlass-dsl = _prev.nvidia-cutlass-dsl.overrideAttrs (_: {
+            buildInputs = (with _final; [ torch setuptools ]) ++ (with _pkgs.cudaPackages; [
+              cuda_nvcc
+            ]);
+            autoPatchelfIgnoreMissingDeps = [
+              "libcuda.so.1" # this will be found at runtime?
+            ];
+          });
           lmcache = _prev.lmcache.overrideAttrs (_: {
             postFixup = ''
               addAutoPatchelfSearchPath "${_final.torch}"
             '';
           });
           vllm = _prev.vllm.overrideAttrs (_: {
+            buildInputs = (with _final; [ torch setuptools ]) ++ (with _pkgs.cudaPackages; [ libnvshmem ]);
             postFixup = ''
               addAutoPatchelfSearchPath "${_final.torch}"
             '';
+            autoPatchelfIgnoreMissingDeps = [
+              "libcuda.so.1" # this will be found at runtime?
+              "libnvjitlink.so"
+              "libnvidia-ml.so.1"
+            ];
+
           });
           sentencepiece = hacks.nixpkgsPrebuilt { from = python.pkgs.sentencepiece; };
           fastdeploy-gpu = _prev.fastdeploy-gpu.overrideAttrs (_: {
@@ -198,26 +213,26 @@ let
             autoPatchelfIgnoreMissingDeps = [ "libibverbs.so.1" ];
             postFixup = ''
               addAutoPatchelfSearchPath "${_final.paddlepaddle-gpu}"
-              substituteInPlace $out/lib/python*/site-packages/fastdeploy/__init__.py --replace "ImportError" "Exception"
+              substituteInPlace $out/${python.sitePackages}/fastdeploy/__init__.py --replace "ImportError" "Exception"
             '';
           });
           paddlepaddle-gpu = _prev.paddlepaddle-gpu.overrideAttrs (_: {
             autoPatchelfIgnoreMissingDeps = [ "libmlx5.so.1" ];
             postInstall = ''
-              sed -i -E 's#(input_rank = len\(x\.shape\))#\1\n    if input_rank == 1:\n        x = x.unsqueeze(0)\n        input_rank += 1#g' $out/lib/python*/site-packages/paddle/incubate/nn/functional/fused_rms_norm.py
+              sed -i -E 's#(input_rank = len\(x\.shape\))#\1\n    if input_rank == 1:\n        x = x.unsqueeze(0)\n        input_rank += 1#g' $out/${python.sitePackages}/paddle/incubate/nn/functional/fused_rms_norm.py
             '';
             buildInputs = with _pkgs.cudaPackages; [
               _final.setuptools
-              cuda_nvrtc
-              cudnn
               cuda_cudart
-              libcublas
-              cutensor
+              cuda_nvrtc
               cuda_nvtx
+              cudnn
+              libcublas
               libcufft
               libcurand
               libcusolver
               libcusparse
+              libcutensor
               nccl
             ];
           });
@@ -233,13 +248,18 @@ let
           });
           torch =
             let
-              baseInputs = (python.pkgs.torch.override { cudaSupport = true; }).buildInputs;
+              baseInputs = (python.pkgs.torch.override { cudaSupport = true; }).buildInputs ++ (with _pkgs.cudaPackages; [ libnvshmem ]);
             in
             _prev.torch.overrideAttrs (_: {
-              buildInputs = baseInputs ++ (with _pkgs.cudaPackages; [ libcufile ]);
+              buildInputs = baseInputs;
               postFixup = ''
                 addAutoPatchelfSearchPath "${_final.nvidia-cusparselt-cu12}"
               '';
+              autoPatchelfIgnoreMissingDeps = [
+                "libcuda.so.1" # this will be found at runtime?
+                "libnvjitlink.so"
+                "libnvidia-ml.so.1"
+              ];
             });
           torchaudio =
             let
@@ -414,6 +434,7 @@ let
       , lockUrl ? null
       , lockHash ? null
       , pyprojectOverrides ? null
+      , includePin ? true
       , extraDependencies ? [ ]
       , cudaSupport ? final.config.cudaSupport
       , ...
@@ -430,9 +451,10 @@ let
             pyprojectTOML = final.writers.writeTOML "${pname}-pyproject.toml" {
               project = {
                 name = pname;
-                inherit version;
+                # inherit version;
+                version = "0.0.0";
                 description = "${finalAttrs.pname} package in uv2nix";
-                dependencies = [ "${pname}==${version}" ] ++ extraDependencies;
+                dependencies = let pin = if includePin then "==${version}" else ""; in [ "${pname}${pin}" ] ++ extraDependencies;
               };
             };
             uvLock = if lockUrl != null then (final.fetchurl { url = lockUrl; hash = lockHash; }) else lockFile;
