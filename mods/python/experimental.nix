@@ -6,14 +6,14 @@ in
 rec {
   ty = buildPythonPackage rec {
     pname = "ty";
-    version = "0.0.1-alpha.29";
+    version = "0.0.1-alpha.30";
     pyproject = true;
 
     src = fetchFromGitHub {
       owner = "astral-sh";
       repo = "ty";
       rev = "refs/tags/${version}";
-      hash = "sha256-64/SE+B5fIaPS2qWHBNza8w14ID9xUVH8GhXSSB8Fbw=";
+      hash = "sha256-HzTUhBtL7SVWwexoyIFpypoC4gY4PXNobEjYu7uFgRg=";
       fetchSubmodules = true;
     };
 
@@ -26,7 +26,7 @@ rec {
       lockFile = "${src}/ruff/Cargo.lock";
       outputHashes = {
         "lsp-types-0.95.1" = "sha256-8Oh299exWXVi6A39pALOISNfp8XBya8z+KT/Z7suRxQ=";
-        "salsa-0.24.0" = "sha256-wW426vkiQHqVq3G74zYwbkHiJJeAHOse24npVQwARyM=";
+        "salsa-0.24.0" = "sha256-jgAUw0bqEl+Xf2cQagAuuH6fpf3xcE+3c6AyDlxwmRc=";
       };
     };
 
