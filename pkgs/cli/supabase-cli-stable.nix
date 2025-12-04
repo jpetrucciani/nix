@@ -9,16 +9,16 @@
 
 buildGoModule rec {
   pname = "supabase-cli-stable";
-  version = "2.58.5";
+  version = "2.65.3";
 
   src = fetchFromGitHub {
     owner = "supabase";
     repo = "cli";
     rev = "v${version}";
-    hash = "sha256-+ECiqkkFLcBOgl98NGI4oUxVbMYRtgiOFUjYppeYxlA=";
+    hash = "sha256-cdrzXIqoujffc/qpDWkrhWVG0cszxOrg6xUw8uPWusc=";
   };
 
-  vendorHash = "sha256-UMj2s3b/HbMF4gywQMC9SKdvKh7S8Re7/EbyE+eRF9A=";
+  vendorHash = "sha256-qHQRintufdrNkAT3f7H0wOuhqjKaNBs2+2IIPnVrdlY=";
 
   ldflags = [
     "-s"
@@ -40,7 +40,7 @@ buildGoModule rec {
       --zsh <($out/bin/supabase completion zsh)
   '';
 
-  excludedPackages = [ "pkg" ];
+  excludedPackages = [ "pkg" "fsevents" ];
 
   passthru = {
     tests.version = testers.testVersion {
