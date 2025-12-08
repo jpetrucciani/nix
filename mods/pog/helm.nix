@@ -461,6 +461,7 @@ rec {
     chart_scan_loki
     chart_scan_mimir
     chart_scan_mongo-operator
+    chart_scan_nats
     chart_scan_netbox
     chart_scan_nfs
     chart_scan_odoo
