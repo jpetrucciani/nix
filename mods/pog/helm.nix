@@ -16,6 +16,28 @@ let
     base_url = "https://prometheus-community.github.io/helm-charts";
     chart_url = "https://github.com/prometheus-community/helm-charts/releases/download/${prefix}${name}-{1}/${name}-{1}.tgz";
   };
+
+  ocihash = final.pog {
+    name = "ocihash";
+    flags = [
+      { name = "url"; }
+      { name = "tag"; }
+    ];
+    script = ''
+      url="''${url#oci://}"
+      url="''${url}:''${tag}"
+      tmpDir=$(mktemp -d)
+      # shellcheck disable=SC2064
+      trap "rm -rf $tmpDir" EXIT
+      ${final.skopeo}/bin/skopeo --insecure-policy copy --format oci "docker://$url" "dir:$tmpDir"
+      largest_blob=$(${final.jq}/bin/jq -r '.layers[] | select(.mediaType == "application/vnd.cncf.helm.chart.content.v1.tar+gzip") | .digest' "$tmpDir/manifest.json" | cut -d: -f2)
+      outDir="$tmpDir/chart"
+      mkdir -p "$outDir"
+      ${final.gnutar}/bin/tar -xzf "$tmpDir/$largest_blob" --strip-components=1 -C "$outDir"
+      ${final._nix}/bin/nix-hash --type sha256 --base32 "$outDir"
+    '';
+  };
+
   _chart_scan =
     { name
     , exe_name ? name
@@ -90,12 +112,17 @@ let
         echo "version,date,sha256" >>"$temp_csv"
         # shellcheck disable=SC2016
         ${jq} -r '.[] | (.version + " " + .date)' <"$temp_json" |
-            ${parallel} --rpl '{strip_plus} s/(.*)\+.*/\1/;' --rpl '{ymd} s/(.*)T.*/\1/;' 'echo -n "{1},{=2 uq(); =},"; nix-prefetch-url --unpack "${chart_url}" 2>/dev/null' >>"$temp_csv"
+            ${parallel} --rpl '{strip_plus} s/(.*)\+.*/\1/;' --rpl '{ymd} s/(.*)T.*/\1/;' 'echo -n "{1},{=2 uq(); =},"; nix-prefetch-url --unpack "${chart_url}" 2>/dev/null || echo ERR_404' >>"$temp_csv"
 
         debug "formed json into csv at $temp_csv"
+        err_404="$(<"$temp_csv" ${final.gnugrep}/bin/grep 'ERR_404')"
+        if [ -n "$err_404" ]; then
+          debug "chart files not found for the following versions:"
+          debug "$err_404"
+        fi
 
         # format as json
-        ${yq} "$temp_csv" -p=csv -o=json >"$final_json"
+        ${final.gnugrep}/bin/grep -v 'ERR_404' "$temp_csv" | ${yq} -p=csv -o=json >"$final_json"
 
         if ${flag "vformat"}; then
           ${final.python3}/bin/python ${v_format} "$final_json"
@@ -106,7 +133,7 @@ let
     };
 in
 rec {
-  inherit _chart_scan;
+  inherit _chart_scan ocihash;
 
   chart_scan_argo-cd = _chart_scan {
     name = "argo-cd";
@@ -115,17 +142,17 @@ rec {
     last = 100;
   };
 
+  chart_scan_argo-workflows = _chart_scan {
+    name = "argo-workflows";
+    base_url = "https://argoproj.github.io/argo-helm";
+    chart_url = "https://github.com/argoproj/argo-helm/releases/download/argo-workflows-{1}/argo-workflows-{1}.tgz";
+  };
+
   chart_scan_authentik = _chart_scan {
     name = "authentik";
     base_url = "https://charts.goauthentik.io";
     chart_url = "https://github.com/goauthentik/helm/releases/download/authentik-{1}/authentik-{1}.tgz";
   };
-
-  # chart_scan_datadog = _chart_scan {
-  #   name = "datadog";
-  #   base_url = "https://helm.datadoghq.com";
-  #   chart_url = "https://github.com/DataDog/helm-charts/releases/download/datadog-{1}/datadog-{1}.tgz";
-  # };
 
   chart_scan_fleet = _chart_scan {
     name = "fleet";
@@ -358,7 +385,8 @@ rec {
   chart_scan_redpanda = _chart_scan {
     name = "operator";
     base_url = "https://charts.redpanda.com";
-    chart_url = "https://github.com/redpanda-data/helm-charts/releases/download/operator-{1}/operator-{1}.tgz";
+    chart_url = "https://github.com/redpanda-data/redpanda-operator/releases/download/operator/v{1}/operator-{1}.tgz";
+    filter_out = "beta";
   };
 
   chart_scan_retool = _chart_scan {
@@ -385,21 +413,34 @@ rec {
     chart_url = "https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts/{1}/csi-driver-smb-{1}.tgz";
   };
 
-  chart_scan_onyx = _chart_scan {
-    name = "onyx-stack";
-    base_url = "https://onyx-dot-app.github.io/onyx";
-    chart_url = "https://onyx-dot-app.github.io/onyx/onyx-stack-{1}.tgz";
-  };
-
   chart_scan_livekit = _chart_scan {
     name = "livekit-server";
     base_url = "https://helm.livekit.io";
     chart_url = "https://helm.livekit.io/livekit-server-{1}.tgz";
   };
 
+  chart_scan_airflow = _chart_scan {
+    name = "airflow";
+    base_url = "https://airflow.apache.org";
+    chart_url = "https://downloads.apache.org/airflow/helm-chart/{1}/airflow-{1}.tgz";
+  };
+
+  chart_scan_nats = _chart_scan {
+    name = "nats";
+    base_url = "https://nats-io.github.io/k8s/helm/charts";
+    chart_url = "https://github.com/nats-io/k8s/releases/download/nats-{1}/nats-{1}.tgz";
+  };
+
+  chart_scan_netbox = _chart_scan {
+    name = "netbox";
+    base_url = "https://charts.netbox.oss.netboxlabs.com";
+    chart_url = "https://github.com/netbox-community/netbox-chart/releases/download/netbox-{1}/netbox-{1}.tgz";
+  };
+
   helm_pog_scripts = [
     chart_scan_alloy
     chart_scan_argo-cd
+    chart_scan_argo-workflows
     chart_scan_authentik
     chart_scan_aws_mountpoint-s3-csi-driver
     chart_scan_csi-driver-smb
@@ -420,11 +461,11 @@ rec {
     chart_scan_loki
     chart_scan_mimir
     chart_scan_mongo-operator
+    chart_scan_netbox
     chart_scan_nfs
     chart_scan_odoo
     chart_scan_oncall
     chart_scan_oneuptime
-    chart_scan_onyx
     chart_scan_open-webui
     chart_scan_otf
     chart_scan_plane
