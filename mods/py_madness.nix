@@ -435,6 +435,7 @@ let
       , lockHash ? null
       , pyprojectOverrides ? null
       , includePin ? true
+      , includeSelf ? true
       , extraDependencies ? [ ]
       , cudaSupport ? final.config.cudaSupport
       , ...
@@ -454,7 +455,7 @@ let
                 # inherit version;
                 version = "0.0.0";
                 description = "${finalAttrs.pname} package in uv2nix";
-                dependencies = let pin = if includePin then "==${version}" else ""; in [ "${pname}${pin}" ] ++ extraDependencies;
+                dependencies = (if includeSelf then let pin = if includePin then "==${version}" else ""; in [ "${pname}${pin}" ] else [ ]) ++ extraDependencies;
               };
             };
             uvLock = if lockUrl != null then (final.fetchurl { url = lockUrl; hash = lockHash; }) else lockFile;

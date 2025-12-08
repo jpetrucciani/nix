@@ -165,6 +165,7 @@ in
 
   llama-cpp-cuda = prev.llama-cpp.override { cudaSupport = true; };
   llama-cpp-cuda-latest = llama-cpp-latest.override { cudaSupport = true; };
+  koboldcpp-cuda = prev.koboldcpp.override { config.cudaSupport = true; };
 
   getpwuid_hack = final.stdenv.mkDerivation rec {
     name = "pwuid-override";
