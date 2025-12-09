@@ -439,6 +439,7 @@ rec {
 
   helm_pog_scripts = [
     chart_scan_alloy
+    chart_scan_airflow
     chart_scan_argo-cd
     chart_scan_argo-workflows
     chart_scan_authentik
