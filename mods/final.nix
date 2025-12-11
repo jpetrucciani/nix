@@ -306,8 +306,9 @@ in
         final.lib.concatStringsSep "|" tests;
     in
     prev.bomber-go.overrideAttrs (_: {
-      passthru.latest = prev.bomber-go.overrideAttrs (_: {
+      passthru.latest = prev.bomber-go.overrideAttrs (old: {
         inherit version vendorHash;
+        inherit (old) passthru;
         src = final.fetchFromGitHub {
           inherit hash;
           owner = "devops-kung-fu";
