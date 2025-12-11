@@ -290,4 +290,35 @@ in
   htop-noaffinity = prev.htop.overrideAttrs (old: {
     configureFlags = (final.lib.lists.remove [ "--enable-affinity" ] (old.configureFlags or [ ])) ++ [ "--disable-affinity" ];
   });
+
+  bomber-go =
+    let
+      version = "0.5.1";
+      hash = "sha256-D3xs8lVhrRKVVQYzHN7CQNw5NTC+AxgsWvJxnV0lwGY=";
+      vendorHash = "sha256-mhGnuNuvMvX4WsqnS7QkWcrPfWEyaQsSKDUOpg9YrO8=";
+      skipTests =
+        let
+          tests = [
+            "TestEnrich"
+            "TestScanner_enrichVulnerabilities"
+          ];
+        in
+        final.lib.concatStringsSep "|" tests;
+    in
+    prev.bomber-go.overrideAttrs (_: {
+      passthru.latest = prev.bomber-go.overrideAttrs (_: {
+        inherit version vendorHash;
+        src = final.fetchFromGitHub {
+          inherit hash;
+          owner = "devops-kung-fu";
+          repo = "bomber";
+          tag = "v${version}";
+        };
+        checkPhase = ''
+          runHook preCheck
+          go test -skip='${skipTests}' ./...
+          runHook postCheck
+        '';
+      });
+    });
 }
