@@ -69,7 +69,8 @@ in
     valheim = {
       enable = true;
       # worldName = "trello_gold";
-      worldName = "RPGWorld";
+      # worldName = "RPGWorld";
+      worldName = "jack_and_leb";
     };
     palworld.enable = false;
     promtail = common.templates.promtail { inherit hostname; };
