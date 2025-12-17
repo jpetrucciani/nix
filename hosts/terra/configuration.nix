@@ -340,7 +340,11 @@ in
     };
     ntfy-sh = {
       enable = true;
-      settings.base-url = "https://ntfy.cobi.dev";
+      settings = {
+        base-url = "https://ntfy.cobi.dev";
+        enable-metrics = true;
+        upstream-base-url = "https://ntfy.sh";
+      };
     };
     promtail = common.templates.promtail {
       inherit hostname;
