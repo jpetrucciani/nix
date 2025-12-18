@@ -126,11 +126,6 @@ let
     ] ++ mobile;
     all = desktop ++ server ++ mobile ++ laptop;
   };
-  _base_nix_options = ''
-    max-jobs = auto
-    narinfo-cache-negative-ttl = 10
-    extra-experimental-features = nix-command flakes
-  '';
   subs = {
     nix-community = {
       url = "https://nix-community.cachix.org";
@@ -149,33 +144,39 @@ let
       key = "medable-nix.s3.us-west-1.amazonaws.com:dtdREarYUM5iVkNgmcJyL1aYfzVL2Pgfq4a5godxCVk=";
     };
   };
+  ghFlake = { owner, repo }: {
+    to = {
+      inherit owner repo;
+      type = "github";
+    };
+  };
+  jacobi = repo: ghFlake { inherit repo; owner = "jpetrucciani"; };
+  mkNix = extraSubs:
+    let
+      allSubs = [ subs.g7c ] ++ extraSubs;
+    in
+    {
+      settings = {
+        max-jobs = "auto";
+        keep-going = true;
+        trusted-users = [ "root" "jacobi" ];
+        extra-experimental-features = [ "nix-command" "flakes" ];
+        narinfo-cache-negative-ttl = 10;
+        extra-substituters = map (s: s.url) allSubs;
+        extra-trusted-public-keys = map (s: s.key) allSubs;
+      };
+      registry = {
+        j = jacobi "nix";
+        hex = jacobi "hex";
+        pog = jacobi "pog";
+      };
+    };
 in
 {
   inherit ports pubkeys machines subs;
-  nix = {
-    extraOptions = ''
-      ${_base_nix_options}
-      extra-substituters = ${subs.g7c.url}
-      extra-trusted-public-keys = ${subs.g7c.key}
-    '';
-    settings.trusted-users = [ "root" "jacobi" ];
-  };
-  nix-be = {
-    extraOptions = ''
-      ${_base_nix_options}
-      extra-substituters = ${subs.g7c.url} ${subs.be.url}
-      extra-trusted-public-keys = ${subs.g7c.key} ${subs.be.key}
-    '';
-    settings.trusted-users = [ "root" "jacobi" ];
-  };
-  nix-cuda = {
-    extraOptions = ''
-      ${_base_nix_options}
-      extra-substituters = ${subs.g7c.url} ${subs.nix-community.url}
-      extra-trusted-public-keys = ${subs.g7c.key} ${subs.nix-community.key}
-    '';
-    settings.trusted-users = [ "root" "jacobi" ];
-  };
+  nix = mkNix [ ];
+  nix-be = mkNix [ subs.be ];
+  nix-cuda = mkNix [ subs.nix-community ];
 
   sysctl_opts = {
     "fs.inotify.max_user_watches" = 1048576;
