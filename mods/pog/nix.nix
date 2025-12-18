@@ -320,6 +320,23 @@ rec {
     '';
   };
 
+  rehydrate = pog {
+    name = "rehydrate";
+    arguments = [{ name = "binary"; }];
+    script = ''
+      target="$1"
+      paths=$( (${final.patchelf}/bin/patchelf --print-rpath "$target" | ${_.tr} ':' '\n'; ${final.glibc.bin}/bin/ldd "$target" | ${final.gnugrep}/bin/grep -o '/nix/store/[^/ ]*') | ${_.sort} -u)
+      for path in $paths; do
+          if [ ! -e "$path" ]; then
+              echo "fetching missing path: $path"
+              ${final._nix}/bin/nix-store -r "$path"
+          else
+              echo "already exists: $path"
+          fi
+      done
+    '';
+  };
+
   nix_pog_scripts = [
     final.hex
     final.hexcast
@@ -331,6 +348,7 @@ rec {
     nixcache
     nupdate
     nupdate_latest_github
+    # rehydrate
     y2n
   ];
 }

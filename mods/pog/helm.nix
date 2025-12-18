@@ -87,6 +87,10 @@ let
           description = "print in v format for updating the hex source";
           bool = true;
         }
+        {
+          name = "upsert";
+          description = "upsert the chart versions into a json file. creates if it doesn't exist";
+        }
       ];
       shortDefaultFlags = false;
       script = helpers: with helpers; ''
@@ -123,6 +127,20 @@ let
 
         # format as json
         ${final.gnugrep}/bin/grep -v 'ERR_404' "$temp_csv" | ${yq} -p=csv -o=json >"$final_json"
+
+        if [[ -n "''${upsert:-}" ]]; then
+          ${jq} -s '
+            (.[0] + .[1])
+            | group_by(.version)
+            | map(max_by(.date))
+            | sort_by(.date)
+            | reverse
+          ' <(if [[ -f "$upsert" ]]; then cat "$upsert"; else echo '[]'; fi) \
+            "$final_json" > "''${upsert}.tmp"
+
+          mv "''${upsert}.tmp" "$upsert"
+          exit 0
+        fi
 
         if ${flag "vformat"}; then
           ${final.python3}/bin/python ${v_format} "$final_json"
