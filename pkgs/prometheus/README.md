@@ -6,6 +6,10 @@ This directory contains prometheus exporters
 
 ## In this directory
 
+### [cursor-admin-api-exporter.nix](./cursor-admin-api-exporter.nix)
+
+[cursor-admin-api-exporter](https://github.com/matanbaruch/cursor-admin-api-exporter) is a tool for exporting Cursor AI stats
+
 ### [github_exporter.nix](./github_exporter.nix)
 
 [github_exporter](https://github.com/promhippie/github_exporter) is a prometheus exporter for github
