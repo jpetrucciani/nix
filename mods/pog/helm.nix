@@ -455,6 +455,12 @@ rec {
     chart_url = "https://github.com/netbox-community/netbox-chart/releases/download/netbox-{1}/netbox-{1}.tgz";
   };
 
+  chart_scan_deepgram = _chart_scan {
+    name = "deepgram-self-hosted";
+    base_url = "https://deepgram.github.io/self-hosted-resources";
+    chart_url = "https://github.com/deepgram/self-hosted-resources/releases/download/deepgram-self-hosted-{1}/deepgram-self-hosted-{1}.tgz";
+  };
+
   helm_pog_scripts = [
     chart_scan_alloy
     chart_scan_airflow
