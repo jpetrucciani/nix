@@ -699,11 +699,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1763730745,
-        "narHash": "sha256-uszTW+GZLQEyYMPSu8YmruthipwAdKuNgLV8e5hSK4A=",
+        "lastModified": 1766183181,
+        "narHash": "sha256-TSrf3Q4bZ0rEZwmaYj2O58EepEfWsfZ7Nm+Gid7FRsE=",
         "owner": "jpetrucciani",
         "repo": "pog",
-        "rev": "1a2e81e1b9410230fbc6852d400b46413ecee404",
+        "rev": "b0012cd093b7d97fd5ab5c2dc9e32195a94f7411",
         "type": "github"
       },
       "original": {
