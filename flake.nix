@@ -20,7 +20,7 @@
       };
     };
     nix-darwin.flake = true;
-    nix2container.url = "github:nlewo/nix2container";
+    nix2container.url = "github:nlewo/nix2container?ref=e5496ab66e9de9e3f67dc06f692dfbc471b6316e";
     nixos-hardware.flake = true;
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
