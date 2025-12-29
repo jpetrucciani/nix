@@ -455,6 +455,12 @@ rec {
     chart_url = "https://github.com/netbox-community/netbox-chart/releases/download/netbox-{1}/netbox-{1}.tgz";
   };
 
+  chart_scan_netbox_diode = _chart_scan {
+    name = "diode";
+    base_url = "https://netboxlabs.github.io/diode/charts";
+    chart_url = "https://github.com/netboxlabs/diode/releases/download/helm-chart-diode-{1}/diode-{1}.tgz";
+  };
+
   chart_scan_deepgram = _chart_scan {
     name = "deepgram-self-hosted";
     base_url = "https://deepgram.github.io/self-hosted-resources";
