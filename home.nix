@@ -124,6 +124,7 @@ in
         pssh
         re2c
         rlwrap
+        rsync
         ruff
         scc
         scrypt
