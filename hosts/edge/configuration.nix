@@ -117,7 +117,7 @@ in
         ];
       in
       {
-        enable = true;
+        enable = false;
         role = "server";
         extraFlags = "--disable traefik --tls-san '${ts_ip}' ${oidc_flags} --kubelet-arg=config=/etc/rancher/k3s/kubelet.config";
       };
