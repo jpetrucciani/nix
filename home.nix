@@ -70,7 +70,7 @@ in
         curl
         delta
         diffutils
-        dogdns
+        doggo
         dos2unix
         duckdb
         dyff
