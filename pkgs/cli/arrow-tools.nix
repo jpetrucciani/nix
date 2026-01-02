@@ -7,16 +7,16 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "arrow-tools";
-  version = "0.22.3";
+  version = "0.24.4";
 
   src = fetchFromGitHub {
     owner = "domoritz";
     repo = "arrow-tools";
     rev = "v${version}";
-    hash = "sha256-RtckvxFP4mZ/0OowrAok5QICIsrzhozaVcfrf/ejaLE=";
+    hash = "sha256-TZWR7oRPdxZyz2rZ/qI/ou4niqQBSU1RAIpoYbtLhiw=";
   };
 
-  cargoHash = "sha256-WWZmAhb98jhtSDeihUbTTMNgziglQQnDaBP5c+xv2BI=";
+  cargoHash = "sha256-95HiCkXkiPDpo7MyW4k+fQPzhARO6KvF8fPnuyFEfTI=";
 
   nativeBuildInputs = [
     pkg-config
