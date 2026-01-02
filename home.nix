@@ -110,6 +110,7 @@ in
         nix-output-monitor
         nix-prefetch-github
         nix-prefetch-scripts
+        nix-sweep
         nix-tree
         nix-update
         nixd
