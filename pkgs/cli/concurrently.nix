@@ -4,6 +4,8 @@
 , makeWrapper
 , nodejs
 , pnpm_8
+, fetchPnpmDeps
+, pnpmConfigHook
 }:
 let
   pnpm = pnpm_8;
@@ -19,7 +21,7 @@ stdenv.mkDerivation (finalAttrs: {
     hash = "sha256-voPL3qw7oWJP1NqGgkYGCFZ/RhBdBitp4Y1LXSuaeEo=";
   };
 
-  pnpmDeps = pnpm.fetchDeps {
+  pnpmDeps = (fetchPnpmDeps.override { inherit pnpm; }) {
     inherit (finalAttrs) pname version src;
     hash = "sha256-q+EBUEODZvjsLAHfAN/EaANICjbmTl1x6OPedrSGRnk=";
     fetcherVersion = 2;
@@ -28,7 +30,8 @@ stdenv.mkDerivation (finalAttrs: {
   nativeBuildInputs = [
     makeWrapper
     nodejs
-    pnpm.configHook
+    pnpm
+    (pnpmConfigHook.override { inherit pnpm; })
   ];
 
   buildPhase = ''
