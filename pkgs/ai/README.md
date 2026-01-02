@@ -24,8 +24,8 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 ### [mods.nix](./mods.nix)
 
+[`mods`](https://github.com/charmbracelet/mods) is a CLI tool to interact with AI APIs
+
 ### [maestro-go.nix](./maestro-go.nix)
 
 [`maestro`](https://github.com/pluja/maestro) converts natural language instructions into cli commands with LLMs
-
-[`mods`](https://github.com/charmbracelet/mods) is a CLI tool to interact with AI APIs

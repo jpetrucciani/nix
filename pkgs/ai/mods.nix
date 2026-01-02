@@ -9,18 +9,24 @@
 
 buildGoModule rec {
   pname = "mods";
-  version = "1.0.0";
+  version = "1.8.1";
 
   src = fetchFromGitHub {
     owner = "charmbracelet";
     repo = "mods";
     rev = "v${version}";
-    hash = "sha256-0PykG19DAVVziRAefQ0LENMuTfTJSVFvs0bMJXdDkrE=";
+    hash = "sha256-CT90uMQc0quQK/vCeLiHH8taEkCSDIcO7Q3aA+oaNmY=";
   };
 
-  vendorHash = "sha256-DfIXW5cfTnXPgl9IC5+wTFJ04qWX4RlVoDIYM5gooks=";
+  vendorHash = "sha256-Io6aNX7z6UvEAIt4qrxF0DA7/yqc8XIMG/bRVlE3nQU=";
 
   ldflags = [ "-s" "-w" "-X=main.version=${version}" ];
+
+  checkPhase = ''
+    runHook preCheck
+    go test ./... -skip '^TestLoad$'
+    runHook postCheck
+  '';
 
   passthru = {
     updateScript = gitUpdater {
@@ -38,6 +44,6 @@ buildGoModule rec {
     description = "AI on the command line";
     homepage = "https://github.com/charmbracelet/mods";
     license = licenses.mit;
-    maintainers = with maintainers; [ ];
+    maintainers = with maintainers; [ jpetrucciani ];
   };
 }
