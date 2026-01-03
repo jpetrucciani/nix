@@ -257,11 +257,11 @@
         "pog": "pog"
       },
       "locked": {
-        "lastModified": 1767394381,
-        "narHash": "sha256-qxh9BiHvxB22IadQjRujKPPjLdPvx1LNqsi4W1+gyv8=",
+        "lastModified": 1767407760,
+        "narHash": "sha256-/2V6YUGxN/c6dWBGSnLbzemhNibMBN7Tx6kidRGmWPk=",
         "owner": "jpetrucciani",
         "repo": "hex",
-        "rev": "cb464d4b0f1788299a02526794cde989e1e8a64a",
+        "rev": "6ca7520ae7367b40db321fbeefb8b41d0d120e80",
         "type": "github"
       },
       "original": {
@@ -503,11 +503,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1759381078,
-        "narHash": "sha256-gTrEEp5gEspIcCOx9PD8kMaF1iEmfBcTbO0Jag2QhQs=",
+        "lastModified": 1767116409,
+        "narHash": "sha256-5vKw92l1GyTnjoLzEagJy5V5mDFck72LiQWZSOnSicw=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "7df7ff7d8e00218376575f0acdcc5d66741351ee",
+        "rev": "cad22e7d996aea55ecab064e84834289143e44a0",
         "type": "github"
       },
       "original": {
