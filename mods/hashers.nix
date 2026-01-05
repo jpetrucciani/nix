@@ -56,5 +56,6 @@ in
   nix_hash_pog = _nix_hash "jpetrucciani/pog" "main" "pog";
   nix_hash_magicschool = _nix_hash "MagicSchoolAi/nix-ops" "main" "magicschool";
   nix_hash_medable = _nix_hash "Medable/nix" "main" "medable";
+  nix_hash_rust-overlay = _nix_hash "oxalica/rust-overlay" "master" "rust-overlay";
   home-packages = (import ../home.nix { }).home.packages;
 }

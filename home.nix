@@ -233,6 +233,7 @@ in
         nix_hash_medable
         nix_hash_hex
         nix_hash_pog
+        nix_hash_rust-overlay
         nixup
       ];
   };
