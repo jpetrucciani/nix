@@ -129,14 +129,19 @@ let
         ${final.gnugrep}/bin/grep -v 'ERR_404' "$temp_csv" | ${yq} -p=csv -o=json >"$final_json"
 
         if [[ -n "''${upsert:-}" ]]; then
-          ${jq} -s '
-            (.[0] + .[1])
+          existing='[]'
+          if [[ -f "$upsert" ]] && [[ -s "$upsert" ]]; then
+            existing="$(cat "$upsert")"
+          fi
+
+          # shellcheck disable=SC2016
+          ${jq} -n --argjson existing "$existing" --slurpfile new "$final_json" '
+            $existing + $new[0]
             | group_by(.version)
             | map(max_by(.date))
             | sort_by(.date)
             | reverse
-          ' <(if [[ -f "$upsert" ]]; then cat "$upsert"; else echo '[]'; fi) \
-            "$final_json" > "''${upsert}.tmp"
+          ' > "''${upsert}.tmp"
 
           mv "''${upsert}.tmp" "$upsert"
           exit 0
