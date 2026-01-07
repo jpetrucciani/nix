@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  python = (pkgs.python313.withPackages (p: with p;[
+  python = (pkgs.python314.withPackages (p: with p;[
     aiocron
     delegator-py
     discordpy

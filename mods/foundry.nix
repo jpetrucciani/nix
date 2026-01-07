@@ -323,6 +323,15 @@ let
       (_python_pkgs pkgs.python313 pkgs)
     ];
   };
+  foundry_python_314 = foundry {
+    name = "python-3.14";
+    # note: broken at the moment!
+    description = "a baseline python 3.14 image with common tools and a working nix install";
+    layers = [
+      (_base_pkgs pkgs)
+      (_python_pkgs pkgs.python314 pkgs)
+    ];
+  };
   foundry_k8s_aws = foundry {
     name = "k8s-aws";
     description = "a lightweight image with just bash, kubectl + ktools, and awscliv2";
@@ -492,5 +501,6 @@ in
   python311 = foundry_python_311;
   python312 = foundry_python_312;
   python313 = foundry_python_313;
+  python314 = foundry_python_314;
   zaddy = foundry_zaddy;
 }

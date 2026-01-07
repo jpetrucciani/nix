@@ -179,7 +179,7 @@ rec {
       { name = "sql_file"; }
     ];
     script = ''
-      ${pkgs.python313Packages.sqlparse}/bin/sqlformat -k upper -r "$1"
+      ${pkgs.python314Packages.sqlparse}/bin/sqlformat -k upper -r "$1"
       echo
     '';
   };

@@ -193,7 +193,7 @@ in
           terraform-ls
 
           # python
-          (python313.withPackages pkgs.hax.basePythonPackages)
+          (python314.withPackages pkgs.hax.basePythonPackages)
 
           # keef's stuff
           hax.comma

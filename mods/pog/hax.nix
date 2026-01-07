@@ -24,7 +24,7 @@ in
       }
     ];
     script = helpers: ''
-      ${final.python313Packages.mitmproxy2swagger}/bin/mitmproxy2swagger -i "$flows" -o "$spec" -p "$baseurl"
+      ${final.python314Packages.mitmproxy2swagger}/bin/mitmproxy2swagger -i "$flows" -o "$spec" -p "$baseurl"
       ${_.yq} -i e 'del(.paths.[].options)' "$spec"
     '';
   };

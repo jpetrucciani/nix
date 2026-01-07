@@ -40,7 +40,7 @@ let
     ];
     python = [
       ruff
-      (python313.withPackages (p: with p; [
+      (python314.withPackages (p: with p; [
         black
         httpx
       ]))

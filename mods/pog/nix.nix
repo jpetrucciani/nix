@@ -113,18 +113,18 @@ rec {
           fi
           pulumi=""
           if [ "$with_pulumi" = "1" ]; then
-            py="python = [(python313.withPackages ( p: with p; [${"\n"}pulumi]))];"
+            py="python = [(python314.withPackages ( p: with p; [${"\n"}pulumi]))];"
             pulumi="pulumi = [pulumi];"
           fi
           py=""
           if [ "$with_python" = "1" ]; then
-            py="python = [ruff${"\n"}(python313.withPackages ( p: with p; [${"\n"}black]))];"
+            py="python = [ruff${"\n"}(python314.withPackages ( p: with p; [${"\n"}black]))];"
             gitignore="$gitignore${"\n"}# python${"\n"}${gitignore.python}"
           fi
           poetry=""
           if [ "$with_poetry" = "1" ]; then
-            py="python = [ruff${"\n"}(poetry.override (_: { python3 = python313; }))];"
-            poetry="python = pkgs.poetry-helpers.mkEnv {${"\n"}projectDir = ./.; python = pkgs.python313; extraOverrides = [(final: prev: { })];};${"\n"}"
+            py="python = [ruff${"\n"}(poetry.override (_: { python3 = python314; }))];"
+            poetry="python = pkgs.poetry-helpers.mkEnv {${"\n"}projectDir = ./.; python = pkgs.python314; extraOverrides = [(final: prev: { })];};${"\n"}"
             _env="python.env.overrideAttrs (_: {${"\n"} buildInputs = paths; });"
             gitignore="$gitignore${"\n"}# python${"\n"}${gitignore.python}"
           fi
@@ -147,7 +147,7 @@ rec {
           if [ "$with_uv" = "1" ]; then
             extra_env_overrides="// uvEnv.uvEnvVars"
             uv="uv = [uv uvEnv];"
-            uv_top="uvEnv = pkgs.uv-nix.mkEnv {${"\n"}inherit name; python = pkgs.python313; workspaceRoot = pkgs.hax.filterSrc { path = ./.; }; pyprojectOverrides = final: prev: { }; };${"\n"}"
+            uv_top="uvEnv = pkgs.uv-nix.mkEnv {${"\n"}inherit name; python = pkgs.python314; workspaceRoot = pkgs.hax.filterSrc { path = ./.; }; pyprojectOverrides = final: prev: { }; };${"\n"}"
             gitignore="$gitignore${"\n"}# python${"\n"}${gitignore.python}"
           fi
           vlang=""
@@ -275,7 +275,7 @@ rec {
           index=$((i-1))
           ${final._nix}/bin/nix copy --refresh --to "$uri" "''${files[$index]}" >>nixcache.log
           echo "$i"
-      done | ${final.python313Packages.tqdm}/bin/tqdm --total "$#" >>/dev/null
+      done | ${final.python314Packages.tqdm}/bin/tqdm --total "$#" >>/dev/null
       echo "cached $# builds!"
     '';
   };

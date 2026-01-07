@@ -21,6 +21,7 @@ jobs:
           - python311
           - python312
           - python313
+          - python314
           - zaddy
     name: foundry-${{ matrix.image }}
     runs-on: ubuntu-24.04

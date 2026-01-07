@@ -21,7 +21,7 @@ let
       , extraBuildInputs ? [ ]
       , editablePackageSources ? { }
       , extraMkPoetryEnv ? { }
-      , python ? final.python313
+      , python ? final.python314
       , ignoreCollisions ? true
       , preferWheels ? true
       }:
@@ -101,7 +101,7 @@ let
       { name
       , workspaceRoot
       , envName ? "${name}-env"
-      , python ? final.python313
+      , python ? final.python314
       , sourcePreference ? "wheel"
       , pyprojectOverrides ? null
       , darwinSdkVersion ? "15.1"
@@ -312,6 +312,7 @@ let
             _setuptools_required = [
               "aiohttp"
               "antlr4-python3-runtime"
+              "coverage"
               "crcmod"
               "curated-tokenizers"
               "distance"
@@ -326,6 +327,7 @@ let
               "jsonpath-rw"
               "markupsafe"
               "multitasking"
+              "numpy"
               "peewee"
               "py-lets-be-rational"
               "py-vollib"
@@ -360,6 +362,12 @@ let
               postInstall = ''
                 substituteInPlace $out/lib/python*/site-packages/soundfile.py --replace "_find_library('sndfile')" "'${final.libsndfile.out}/lib/libsndfile${final.stdenv.hostPlatform.extensions.sharedLibrary}'"
               '';
+            });
+            pandas = _prev.pandas.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ cython distutils numpy setuptools wheel ]);
+            });
+            pyarrow = _prev.pyarrow.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ cython distutils numpy setuptools wheel ]);
             });
           } // setuptools_required;
 
@@ -429,7 +437,7 @@ let
       { pname
       , bins ? [ pname ]
       , version
-      , python ? final.python313
+      , python ? final.python314
       , lockFile ? null
       , lockUrl ? null
       , lockHash ? null

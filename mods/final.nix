@@ -154,7 +154,7 @@ in
   foundry = import ./foundry.nix { pkgs = final; };
   __j_custom = final.buildEnv {
     name = "__j_custom";
-    paths = (final.lib.attrsets.attrValues checked_packages) ++ [ final.hex final.nix (final.python313.withPackages final.hax.basePythonPackages) ];
+    paths = (final.lib.attrsets.attrValues checked_packages) ++ [ final.hex final.nix (final.python314.withPackages final.hax.basePythonPackages) ];
     ignoreCollisions = true;
   };
 
@@ -253,7 +253,7 @@ in
       '';
     });
 
-  inherit (final.python313Packages) ty;
+  inherit (final.python314Packages) ty;
 
   # allow 3proxy on darwin?
   _3proxy = prev._3proxy.overrideAttrs (old: {
