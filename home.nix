@@ -111,10 +111,11 @@ in
         nix-prefetch-github
         nix-prefetch-scripts
         nix-sweep
+        nix-top
         nix-tree
         nix-update
         nixd
-        nixfmt-rfc-style
+        nixfmt
         nixpkgs-fmt
         nixpkgs-review
         openssh
@@ -226,6 +227,12 @@ in
             ]
           )
         ])
+
+        (
+          optList (machine-name == "voyager") [
+            go
+          ]
+        )
         # overlays
         nix_hash_unstable
         nix_hash_jpetrucciani
