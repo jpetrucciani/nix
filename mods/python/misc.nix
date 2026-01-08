@@ -6,6 +6,39 @@ let
   inherit (final.pkgs) fetchFromGitHub rustPlatform;
 in
 rec {
+  puccinialin = buildPythonPackage rec {
+    pname = "puccinialin";
+    version = "0.1.8";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-4Z9jFpZ64QC/P7ktivlePOwRzg3lis0vGgvKg1QDo5Q=";
+    };
+
+    build-system = with final;[
+      flit-core
+    ];
+
+    dependencies = with final;[
+      filelock
+      httpx
+      platformdirs
+      tqdm
+    ];
+
+    pythonImportsCheck = [
+      "puccinialin"
+    ];
+
+    meta = {
+      description = "Install rust into a temporary directory for boostrapping a rust-based build backend";
+      homepage = "https://pypi.org/project/puccinialin";
+      license = with licenses; [ asl20 mit ];
+      maintainers = with maintainers; [ jpetrucciani ];
+    };
+  };
+
   systemdunitparser = buildPythonPackage rec {
     pname = "systemdunitparser";
     version = "0.2";

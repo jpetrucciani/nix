@@ -1,5 +1,5 @@
 # [mcpo](https://github.com/open-webui/mcpo) is a simple, secure MCP-to-OpenAPI proxy server
-{ stdenv, lib, fetchFromGitHub, python314, rsync, uv-nix }:
+{ stdenv, lib, fetchFromGitHub, python313, rsync, uv-nix }:
 let
   name = "mcpo";
   version = "0.0.13";
@@ -12,7 +12,7 @@ let
   };
   uvEnv = uv-nix.mkEnv {
     inherit name;
-    python = python314;
+    python = python313;
     workspaceRoot = src;
     pyprojectOverrides = final: prev: { };
   };

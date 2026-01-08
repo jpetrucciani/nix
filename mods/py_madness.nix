@@ -312,6 +312,7 @@ let
             _setuptools_required = [
               "aiohttp"
               "antlr4-python3-runtime"
+              "cffi"
               "coverage"
               "crcmod"
               "curated-tokenizers"
@@ -364,10 +365,17 @@ let
               '';
             });
             pandas = _prev.pandas.overrideAttrs (old: {
-              buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ cython distutils numpy setuptools wheel ]);
+              buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ cython numpy setuptools wheel ]);
             });
             pyarrow = _prev.pyarrow.overrideAttrs (old: {
-              buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ cython distutils numpy setuptools wheel ]);
+              buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ cython numpy setuptools wheel ]);
+            });
+            cffi = _prev.cffi.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ ([ final.libffi _final.setuptools ]);
+              nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ ([ final.pkg-config ]);
+            });
+            pydantic-core = _prev.pydantic-core.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ python.pkgs.puccinialin cython setuptools maturin ]);
             });
           } // setuptools_required;
 
