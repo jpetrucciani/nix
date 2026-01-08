@@ -371,8 +371,8 @@ let
               buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ cython numpy setuptools wheel ]);
             });
             cffi = _prev.cffi.overrideAttrs (old: {
-              buildInputs = (old.buildInputs or [ ]) ++ ([ final.libffi _final.setuptools ]);
-              nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ ([ final.pkg-config ]);
+              buildInputs = (old.buildInputs or [ ]) ++ [ final.libffi _final.setuptools ];
+              nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.pkg-config ];
             });
             pydantic-core = _prev.pydantic-core.overrideAttrs (old: {
               buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ python.pkgs.puccinialin cython setuptools maturin ]);
