@@ -318,9 +318,9 @@ rec {
   chart_scan_coroot-node-agent = coroot_chart { name = "node-agent"; };
 
   chart_scan_otf = _chart_scan rec {
-    name = "otf";
-    base_url = "https://jpetrucciani.github.io/otf-charts";
-    chart_url = "https://github.com/jpetrucciani/otf-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
+    name = "otfd";
+    base_url = "https://leg100.github.io/otf-charts";
+    chart_url = "https://github.com/leg100/otf-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
   };
 
   chart_scan_mongo-operator = _chart_scan rec {
