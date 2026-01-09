@@ -98,7 +98,7 @@ in
     };
     postgresql = {
       enable = true;
-      package = pkgs.postgresql_14;
+      package = pkgs.postgresql_18;
       enableTCPIP = true;
       authentication = pkgs.lib.mkOverride 10 ''
         local all all trust
