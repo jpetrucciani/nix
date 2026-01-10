@@ -276,8 +276,6 @@ in
     };
   });
 
-  awscli2 = prev.awscli2.overridePythonAttrs (_: { doCheck = false; });
-
   time =
     if final.stdenv.isDarwin then
       prev.time.overrideAttrs
