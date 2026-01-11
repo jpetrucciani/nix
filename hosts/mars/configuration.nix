@@ -83,7 +83,6 @@ in
 
   services.tailscale.enable = true;
   services.openssh.enable = true;
-  system.copySystemConfiguration = true;
   networking.firewall.enable = false;
   system.stateVersion = "25.11";
   security.sudo = common.security.sudo;
