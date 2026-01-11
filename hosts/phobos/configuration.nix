@@ -55,7 +55,7 @@ in
         inherit (common) extraGroups;
         isNormalUser = true;
         hashedPasswordFile = "/etc/passwordFile-jacobi";
-        openssh.authorizedKeys.keys = with common.pubkeys; [ mars ] ++ usual;
+        openssh.authorizedKeys.keys = with common.pubkeys; usual;
       };
     };
   };

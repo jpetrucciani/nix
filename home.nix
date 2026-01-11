@@ -885,4 +885,6 @@ in
     ] else [ ];
 
   ${attrIf isLinux "services"}.vscode-server.enable = isLinux;
+
+  wayland.windowManager.hyprland.systemd.enable = false; # disable in general
 }

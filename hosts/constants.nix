@@ -6,6 +6,7 @@ let
       "luna"
       "milkyway"
       "voyager"
+      "mars"
       "neptune"
       "phobos"
       "polaris"
@@ -52,7 +53,7 @@ let
     # jupiter = "";
     saturn = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPY2sNJE5ysSTeFzTv2U+zIeIB5LMhbUaP+yC5VDgEHD jacobi@saturn";
     neptune = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPqXt2116T/hpMpdmlh3QquPcF/COXPtJS4BkjwECf++ jacobi@neptune";
-    mars = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBMW7fOdfDeI+9TwYHPUzApYDlNFOfLkl9NC06Du23mP jacobi@mars";
+    mars = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK+iFCAHMWtKEltX5iJZt7fwyB8xaw5zPFosELp122eN jacobi@mars";
     phobos = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID7CSn6s/Wuxa2sC4NXCIXGvX3oz8BN1vsyaZGd3wJED jacobi@phobos";
     polaris = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKkq80OeQLD7QBlE81EYUC+ZOgNZT1+Vc8oGP6y3mTFm jacobi@polaris";
     luna = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINOoY9vE2hPcBtoI/sE9pmk4ocO+QWZv2lvtxcPs9oha jacobi@luna";
