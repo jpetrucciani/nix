@@ -44,7 +44,7 @@ in
       foot
       kitty
       waybar
-      hyperpaper
+      hyprpaper
       git
     ];
     variables = {
