@@ -1,0 +1,50 @@
+From 6ee6a23f166f9fac094450d99a2203f6b56628a9 Mon Sep 17 00:00:00 2001
+From: paul <423357+toothbrush@users.noreply.github.com>
+Date: Wed, 15 Oct 2025 13:54:56 +0930
+Subject: [PATCH] For insecure-cors, always return Access-Control-Allow-Origin.
+
+Per MDN [1], we should always return Access-Control-Allow-Origin, not just
+on preflight requests.
+
+1. https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS#simple_requests
+
+Co-authored-by: Blake Williams <code@shabbyrobe.org>
+---
+ cors.go      | 7 ++++---
+ cors_test.go | 4 ++--
+ 2 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/cors.go b/cors.go
+index eeff6ad..5681700 100644
+--- a/cors.go
++++ b/cors.go
+@@ -64,10 +64,11 @@ func (s *withCORS) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+ 		r.Header.Get("Access-Control-Request-Method") != "" &&
+ 		r.Header.Get("Origin") != ""
+ 
++	if s.origin != "" {
++		w.Header().Set("Access-Control-Allow-Origin", s.origin)
++	}
++
+ 	if isPreflight {
+-		if s.origin != "" {
+-			w.Header().Set("Access-Control-Allow-Origin", s.origin)
+-		}
+ 		if s.methods != "" {
+ 			w.Header().Set("Access-Control-Allow-Methods", s.methods)
+ 		}
+diff --git a/cors_test.go b/cors_test.go
+index ef037a4..323eef7 100644
+--- a/cors_test.go
++++ b/cors_test.go
+@@ -52,8 +52,8 @@ func TestWrapInsecureCORSGetRequest(t *testing.T) {
+ 	}
+ 
+ 	headers := resp.Header()
+-	if _, ok := headers["Access-Control-Allow-Origin"]; ok {
+-		t.Errorf("expected no Access-Control-Allow-Origin header")
++	if headers.Get("Access-Control-Allow-Origin") != "*" {
++		t.Errorf("Expected Access-Control-Allow-Origin: *; got %v", headers.Get("Access-Control-Allow-Origin"))
+ 	}
+ 	if _, ok := headers["Access-Control-Allow-Methods"]; ok {
+ 		t.Errorf("expected no Access-Control-Allow-Methods header")
