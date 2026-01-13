@@ -33,6 +33,7 @@ in
 
   system.stateVersion = 4;
   nix = common.nix // {
+    enable = false;
     nixPath = [
       "darwin=${common.nix-darwin}"
       "darwin-config=${configPath}"
