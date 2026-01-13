@@ -34,14 +34,10 @@ in
 
   system.stateVersion = 4;
   nix = common.nix // {
-    package = pkgs._nix;
     nixPath = [
       "darwin=${common.nix-darwin}"
       "darwin-config=${configPath}"
     ];
-    settings = {
-      trusted-users = [ "root" "jacobi" ];
-    };
   };
 
   # services.llama-server.servers.llama3 = {
