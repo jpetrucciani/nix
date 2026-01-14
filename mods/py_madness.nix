@@ -445,7 +445,7 @@ let
       { pname
       , bins ? [ pname ]
       , version
-      , python ? final.python314
+      , python ? final.python313
       , lockFile ? null
       , lockUrl ? null
       , lockHash ? null
