@@ -168,6 +168,21 @@ in
 
       # examples
       amazon-ssm-agent = _snowball { name = "amazon-ssm-agent"; conf = { services.amazon-ssm-agent.enable = true; }; };
+      earlyoom = _snowball {
+        name = "earlyoom";
+        conf = {
+          services.earlyoom = {
+            enable = true;
+            freeSwapThreshold = 10;
+            freeMemThreshold = 10;
+            extraArgs = [
+              "-g"
+              "--avoid '(^|/)(sshd|systemd|kubelet)$'"
+              "--prefer '(^|/)(python.*|node)$'"
+            ];
+          };
+        };
+      };
 
       _examples = {
         example_jobset = _snowball { name = "job_test"; conf = _merge [ job_x job_y job_z ]; };
