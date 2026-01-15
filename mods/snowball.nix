@@ -171,6 +171,7 @@ in
       earlyoom = _snowball {
         name = "earlyoom";
         conf = {
+          systemd.services.earlyoom.serviceConfig.ExecStart = "${final.earlyoom}/bin/earlyoom";
           services.earlyoom = {
             enable = true;
             freeSwapThreshold = 10;
