@@ -74,7 +74,18 @@
       inherit (nix2containerPkgs) nix2container;
       pins = self.inputs;
       devShells = forAllSystems (
-        system: let pkgs = packages.${system}; in { default = pkgs.mkShell { name = "nix"; buildInputs = with pkgs; [ jfmt nixup ]; }; }
+        system:
+        let pkgs = packages.${system}; in {
+          default = pkgs.mkShell {
+            name = "nix";
+            buildInputs = with pkgs; [ jfmt nixup ];
+            # https://github.com/NixOS/nixpkgs/issues/376958#issuecomment-3471021813
+            shellHook =
+              if pkgs.stdenv.isDarwin then ''
+                unset DEVELOPER_DIR
+              '' else "";
+          };
+        }
       );
 
       nixosConfigurations = builtins.listToAttrs

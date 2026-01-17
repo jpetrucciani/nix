@@ -101,7 +101,7 @@ let
       { name
       , workspaceRoot
       , envName ? "${name}-env"
-      , python ? final.python314
+      , python ? final.python313
       , sourcePreference ? "wheel"
       , pyprojectOverrides ? null
       , darwinSdkVersion ? "15.1"
@@ -318,6 +318,7 @@ let
               "curated-tokenizers"
               "distance"
               "docx2txt"
+              "docopt"
               "encodec"
               "etcd3"
               "filterpy"
@@ -341,6 +342,8 @@ let
               "seqeval"
               "svglib"
               "swifter"
+              "unidic-lite"
+              "unidic"
               "wikipedia"
               "xalglib"
               "zmq"
@@ -369,6 +372,13 @@ let
             });
             pyarrow = _prev.pyarrow.overrideAttrs (old: {
               buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ cython numpy setuptools wheel ]);
+            });
+            pyopenjtalk = _prev.pyopenjtalk.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ cython numpy setuptools ]);
+              nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.cmake ];
+            });
+            mojimoji = _prev.mojimoji.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ cython setuptools ]);
             });
             cffi = _prev.cffi.overrideAttrs (old: {
               buildInputs = (old.buildInputs or [ ]) ++ [ final.libffi _final.setuptools ];
