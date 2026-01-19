@@ -96,6 +96,7 @@ in
         ivy
         jq
         just
+        kyanite
         libarchive
         libnotify
         lsof

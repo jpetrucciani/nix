@@ -70,6 +70,10 @@ This directory contains cli tools
 
 [hunt](https://github.com/LyonSyonII/hunt-rs) is a simplified find command in rust
 
+### [kyanite.nix](./kyanite.nix)
+
+[kyanite](https://github.com/gemologic/kyanite) is a high-performance parallel command execution tool for Rust, inspired by GNU parallel and xargs
+
 ### [lastresort.nix](./lastresort.nix)
 
 [lastresort](https://github.com/ctsrc/Base256) is a base256 encoder/decoder
