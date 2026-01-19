@@ -1,7 +1,7 @@
 # this file provides some pog wrappers around curl to make it a bit more ergonomic
 final: prev:
 let
-  inherit (final) pog curl;
+  inherit (final) _ pog curl;
 in
 rec {
   jiracurl = pog {
@@ -124,12 +124,71 @@ rec {
     '';
   };
 
+  ntfy_publish = pog {
+    name = "ntfy_publish";
+    description = "publish a message to an ntfy topic with headers mapped to flags";
+    shortDefaultFlags = false;
+    flags = [
+      { name = "url"; envVar = "NTFY_URL"; description = "ntfy publish api URL"; required = true; }
+      { name = "topic"; envVar = "NTFY_TOPIC"; description = "the topic to publish to"; required = true; short = ""; }
+      { name = "message"; envVar = "NTFY_MESSAGE"; description = "message body to send"; required = true; }
+      { name = "title"; envVar = "NTFY_TITLE"; description = "message title"; short = ""; }
+      { name = "priority"; envVar = "NTFY_PRIORITY"; description = "message priority (1-5)"; short = ""; }
+      { name = "tags"; envVar = "NTFY_TAGS"; description = "comma-separated tags or emojis"; }
+      { name = "delay"; envVar = "NTFY_DELAY"; description = "delivery delay (e.g., 10m, 2024-01-01T00:00:00Z)"; }
+      { name = "actions"; envVar = "NTFY_ACTIONS"; description = "actions JSON array or short format"; short = ""; }
+      { name = "click"; envVar = "NTFY_CLICK"; description = "URL to open on click"; }
+      { name = "attach"; envVar = "NTFY_ATTACH"; description = "attachment URL"; short = ""; }
+      { name = "markdown"; envVar = "NTFY_MARKDOWN"; bool = true; description = "enable markdown formatting"; short = ""; }
+      { name = "icon"; envVar = "NTFY_ICON"; description = "icon URL"; }
+      { name = "filename"; envVar = "NTFY_FILENAME"; description = "attachment filename"; }
+      { name = "email"; envVar = "NTFY_EMAIL"; description = "email address for notifications"; }
+      { name = "call"; envVar = "NTFY_CALL"; description = "phone number for call notifications"; short = ""; }
+      { name = "no_cache"; envVar = "NTFY_NO_CACHE"; bool = true; description = "disable message caching"; short = ""; }
+      { name = "no_firebase"; envVar = "NTFY_NO_FIREBASE"; bool = true; description = "disable Firebase forwarding"; short = ""; }
+      { name = "unifiedpush"; envVar = "NTFY_UNIFIEDPUSH"; bool = true; description = "enable UnifiedPush mode"; short = ""; }
+      { name = "content_type"; envVar = "NTFY_CONTENT_TYPE"; description = "override Content-Type header"; short = ""; }
+      { name = "token"; envVar = "NTFY_TOKEN"; description = "bearer token for Authorization header"; short = ""; }
+      { name = "username"; envVar = "NTFY_USERNAME"; description = "basic auth username"; short = ""; }
+      { name = "password"; envVar = "NTFY_PASSWORD"; description = "basic auth password"; short = ""; }
+    ];
+    script = h: ''
+      curl_args=( -sS -X POST --data-binary "$message" )
+      headers=()
+
+      ${h.var.notEmpty "title"} && headers+=( -H "X-Title: $title" )
+      ${h.var.notEmpty "priority"} && headers+=( -H "X-Priority: $priority" )
+      ${h.var.notEmpty "tags"} && headers+=( -H "X-Tags: $tags" )
+      ${h.var.notEmpty "delay"} && headers+=( -H "X-Delay: $delay" )
+      ${h.var.notEmpty "actions"} && headers+=( -H "X-Actions: $actions" )
+      ${h.var.notEmpty "click"} && headers+=( -H "X-Click: $click" )
+      ${h.var.notEmpty "attach"} && headers+=( -H "X-Attach: $attach" )
+      ${h.var.notEmpty "icon"} && headers+=( -H "X-Icon: $icon" )
+      ${h.var.notEmpty "filename"} && headers+=( -H "X-Filename: $filename" )
+      ${h.var.notEmpty "email"} && headers+=( -H "X-Email: $email" )
+      ${h.var.notEmpty "call"} && headers+=( -H "X-Call: $call" )
+      ${h.var.notEmpty "content_type"} && headers+=( -H "Content-Type: $content_type" )
+      ''${markdown:+headers+=( -H "X-Markdown: 1" )}
+      ''${no_cache:+headers+=( -H "X-Cache: no" )}
+      ''${no_firebase:+headers+=( -H "X-Firebase: no" )}
+      ''${unifiedpush:+headers+=( -H "X-UnifiedPush: 1" )}
+
+      if ${h.var.notEmpty "token"}; then
+        headers+=( -H "Authorization: Bearer $token" )
+      elif ${h.var.notEmpty "username"} && ${h.var.notEmpty "password"}; then
+        curl_args+=( -u "$username:$password" )
+      fi
+
+      ${_.curl} "''${headers[@]}" "''${curl_args[@]}" "$url"
+    '';
+  };
+
   curl_pog_scripts = [
     baymaxcurl
     githubcurl
     github_create_release
     gitlabcurl
     jiracurl
+    ntfy_publish
   ];
 }
-
