@@ -126,15 +126,15 @@ let
 
   llama-cpp-latest =
     let
-      version = "7480";
-      hash = "sha256-8eouJT+JK8cDKC+VMzea0EL247tuuxKjFDDjvBAvYdc=";
+      version = "7782";
+      hash = "sha256-EDhNtAoCsIP4XMRSObhdOSC0O1uzfyF5MS9y8tRELeo=";
     in
     prev.llama-cpp.overrideAttrs (old: {
       inherit version;
       src = final.fetchFromGitHub {
         inherit hash;
         tag = "b${version}";
-        owner = "ggerganov";
+        owner = "ggml-org";
         repo = "llama.cpp";
         leaveDotGit = true;
         postFetch = ''
@@ -143,10 +143,7 @@ let
         '';
       };
       # hack for mac dylib?
-      cmakeFlags =
-        if final.stdenv.isDarwin then old.cmakeFlags ++ [
-          "-DLLAMA_BUILD_NUMBER=1"
-        ] else old.cmakeFlags;
+      cmakeFlags = if final.stdenv.isDarwin then old.cmakeFlags ++ [ "-DLLAMA_BUILD_NUMBER=1" ] else old.cmakeFlags;
     });
 in
 {

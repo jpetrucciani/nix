@@ -89,7 +89,7 @@ in
         # FIXME: This isn't triggered until a reboot, and probably won't work between suspends.
         wantedBy = [ "multi-user.target" ];
 
-        serviceConfig = with cfg; {
+        serviceConfig = {
           User = cfg.localUser;
         } // (if cfg.persist then
           {
