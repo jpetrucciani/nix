@@ -216,18 +216,18 @@ in
           ${security_block {}}
           ${security_block {name="SECURITY_WITH_FRAME"; allow_frame = true;}}
         '';
-        virtualHosts = {
+        virtualHosts = let lo = "localhost:8010"; in {
           "api.cobi.dev" = reverse_proxy "localhost:10000";
           "z.cobi.dev" = reverse_proxy "localhost:8080";
           "ntfy.cobi.dev" = reverse_proxy "localhost:2586";
-          "invoice.cobi.dev" = reverse_proxy_with_iframe "localhost:8010";
+          "invoice.cobi.dev" = reverse_proxy_with_iframe lo;
           "llm.cobi.dev" = ts_terra_k8s;
           "chat.cobi.dev" = ts_terra_k8s;
           "lobe.cobi.dev" = ts_terra_k8s;
-          "otf.cobi.dev" = reverse_proxy "localhost:8010";
-          "auth.cobi.dev" = reverse_proxy "localhost:8010";
+          "otf.cobi.dev" = reverse_proxy lo;
+          "auth.cobi.dev" = reverse_proxy lo;
           "audiobook.cobi.dev" = reverse_proxy "localhost:9888";
-          "search.cobi.dev" = reverse_proxy "localhost:8010";
+          "search.cobi.dev" = reverse_proxy lo;
           "netdata.cobi.dev" = ts_reverse_proxy "localhost:${toString common.ports.netdata}";
           "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
           "n8n.cobi.dev" = ts_terra_k8s;
@@ -236,6 +236,7 @@ in
           "x.hexa.dev" = reverse_proxy "neptune:8421";
           "meme.x.hexa.dev" = reverse_proxy "neptune:8420";
           "edge.be.hexa.dev" = reverse_proxy "edge:10000";
+          "lode.gemologic.dev" = reverse_proxy lo;
           "countdown.cobi.dev" = secure_geo ''
             rewrite * /countdown{uri}
             reverse_proxy /* {
