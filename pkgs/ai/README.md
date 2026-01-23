@@ -18,10 +18,6 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 [`genai-toolbox`](https://github.com/googleapis/genai-toolbox) is an open source MCP server for databases, designed and built with enterprise-quality and production-grade usage in mind
 
-### [goose-ai.nix](./goose-ai.nix)
-
-[`goose`](https://github.com/block/goose) is an open-source, extensible AI agent that goes beyond code suggestions.
-
 ### [mods.nix](./mods.nix)
 
 [`mods`](https://github.com/charmbracelet/mods) is a CLI tool to interact with AI APIs
