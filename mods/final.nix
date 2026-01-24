@@ -126,8 +126,8 @@ let
 
   llama-cpp-latest =
     let
-      version = "7782";
-      hash = "sha256-EDhNtAoCsIP4XMRSObhdOSC0O1uzfyF5MS9y8tRELeo=";
+      version = "7819";
+      hash = "sha256-W3OEiD9rtnL5g+xVkO/9iMHSD0FyeBI3R0aTlNlLMN0=";
     in
     prev.llama-cpp.overrideAttrs (old: {
       inherit version;
