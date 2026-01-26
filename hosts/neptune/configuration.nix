@@ -222,6 +222,18 @@ in
       };
     };
     promtail = common.templates.promtail { inherit hostname; };
+    postgresql = {
+      enable = true;
+      package = pkgs.postgresql_18;
+      enableTCPIP = true;
+      extensions = with pkgs.postgresql18Packages; [ pgvector ];
+      authentication = pkgs.lib.mkOverride 10 ''
+        local all all trust
+        host all all 127.0.0.1/32 trust
+        host all all ::1/128 trust
+        host all all 100.64.0.0/10 trust
+      '';
+    };
   } // common.services;
 
   # https://github.com/NixOS/nixpkgs/issues/103158
