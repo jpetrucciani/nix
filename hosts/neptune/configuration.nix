@@ -42,7 +42,17 @@ in
   networking = {
     hostName = hostname;
     useDHCP = false;
-    interfaces.enp9s0.useDHCP = true;
+    interfaces.enp9s0 = {
+      useDHCP = false;
+      ipv4.addresses = [
+        {
+          address = "142.132.149.106";
+          prefixLength = 26;
+        }
+      ];
+    };
+    defaultGateway = "142.132.149.65";
+    nameservers = [ "1.1.1.1" "8.8.8.8" ];
     firewall = {
       enable = true;
       trustedInterfaces = [ "tailscale0" ];
