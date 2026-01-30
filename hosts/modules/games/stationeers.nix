@@ -51,7 +51,7 @@ in
     };
     secretFile = mkOption {
       type = path;
-      default = "/etc/default/stationeers";
+      default = "-/etc/default/stationeers";
       description = "the secret file";
     };
   };

@@ -26,7 +26,7 @@ in
     };
     secretFile = mkOption {
       type = path;
-      default = "/etc/default/goto";
+      default = "-/etc/default/goto";
       description = ''secret env variables for goto'';
     };
 

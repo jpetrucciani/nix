@@ -53,8 +53,7 @@ in
     };
     secretFile = mkOption {
       type = nullOr path;
-      default = null;
-      # default = "/etc/default/infinity";
+      default = "-/etc/default/infinity";
       description = ''secret env variables for infinity'';
     };
     user = mkOption {

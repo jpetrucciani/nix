@@ -41,7 +41,7 @@ in
     };
     secretFile = mkOption {
       type = nullOr path;
-      default = "/etc/default/valheim";
+      default = "-/etc/default/valheim";
       description = ''
         this file contains any additional secrets you might want to pass in.
 

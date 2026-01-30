@@ -26,8 +26,7 @@ in
     };
     secretFile = mkOption {
       type = nullOr path;
-      default = null;
-      # default = "/etc/default/zinc";
+      default = "-/etc/default/zinc";
       description = ''secret env variables for zinc'';
     };
     package = mkOption {

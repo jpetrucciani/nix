@@ -37,7 +37,7 @@ in
     };
     secretFile = mkOption {
       type = nullOr path;
-      default = "/etc/default/palworld";
+      default = "-/etc/default/palworld";
       description = "";
     };
     serverBinary = mkOption {

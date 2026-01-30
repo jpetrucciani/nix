@@ -26,7 +26,7 @@ in
     };
     secretFile = mkOption {
       type = path;
-      default = "/etc/default/poglets";
+      default = "-/etc/default/poglets";
       description = ''secret env variables for poglets'';
     };
     package = mkOption {
