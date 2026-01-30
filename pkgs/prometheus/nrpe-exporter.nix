@@ -3,18 +3,20 @@
 , buildGoModule
 , fetchFromGitHub
 , pkg-config
-, openssl_1_1
+, openssl_3
 }:
 
-buildGoModule rec {
+buildGoModule {
   pname = "nrpe-exporter";
   version = "0.2.6";
 
   src = fetchFromGitHub {
-    owner = "canonical";
+    # owner = "canonical";
+    owner = "jpetrucciani";
     repo = "nrpe_exporter";
-    rev = version;
-    hash = "sha256-vy0D44Q0syZYPuAuP34ptg84Gfe8c9cNZZX2TjofKlg=";
+    rev = "5671dd3f048cd82e0b6e06908265178151dbf4ec"; # openssl3 support
+    hash = "sha256-1TTIvUme0+hQMFa+r9XynaPYyNFddOYep9BabqP2Zps=";
+    # hash = "sha256-vy0D44Q0syZYPuAuP34ptg84Gfe8c9cNZZX2TjofKlg=";
   };
 
   nativeBuildInputs = [
@@ -22,7 +24,7 @@ buildGoModule rec {
   ];
 
   buildInputs = [
-    openssl_1_1
+    openssl_3
   ];
 
   vendorHash = null;
