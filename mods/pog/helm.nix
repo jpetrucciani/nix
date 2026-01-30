@@ -472,6 +472,13 @@ rec {
     chart_url = "https://github.com/deepgram/self-hosted-resources/releases/download/deepgram-self-hosted-{1}/deepgram-self-hosted-{1}.tgz";
   };
 
+  chart_scan_cert-manager = _chart_scan {
+    name = "cert-manager";
+    base_url = "https://charts.jetstack.io";
+    chart_url = "https://charts.jetstack.io/charts/cert-manager-{1}.tgz";
+    filter_out = "alpha|beta|dev";
+  };
+
   helm_pog_scripts = [
     chart_scan_alloy
     chart_scan_airflow
@@ -479,6 +486,7 @@ rec {
     chart_scan_argo-workflows
     chart_scan_authentik
     chart_scan_aws_mountpoint-s3-csi-driver
+    chart_scan_cert-manager
     chart_scan_csi-driver-smb
     chart_scan_dask-kubernetes-operator
     chart_scan_external-secrets
