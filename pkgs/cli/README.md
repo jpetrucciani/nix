@@ -74,6 +74,10 @@ This directory contains cli tools
 
 [kyanite](https://github.com/gemologic/kyanite) is a high-performance parallel command execution tool for Rust, inspired by GNU parallel and xargs
 
+### [mermaid-rs-renderer.nix](./mermaid-rs-renderer.nix)
+
+[mermaid-rs-renderer](https://github.com/1jehuang/mermaid-rs-renderer) is a fast native rust mermaid diagram renderer
+
 ### [lastresort.nix](./lastresort.nix)
 
 [lastresort](https://github.com/ctsrc/Base256) is a base256 encoder/decoder
