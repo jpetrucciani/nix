@@ -386,7 +386,7 @@ in
   };
 
   programs.nushell = {
-    enable = true;
+    enable = false;
   };
 
   programs.readline = {
