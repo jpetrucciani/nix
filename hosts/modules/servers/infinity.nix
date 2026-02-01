@@ -53,7 +53,7 @@ in
     };
     secretFile = mkOption {
       type = nullOr path;
-      default = "-/etc/default/infinity";
+      default = "/etc/default/infinity";
       description = ''secret env variables for infinity'';
     };
     user = mkOption {
@@ -108,7 +108,7 @@ in
         };
 
         serviceConfig = {
-          ${if cfg.secretFile != null then "EnvironmentFile" else null} = cfg.secretFile;
+          ${if cfg.secretFile != null then "EnvironmentFile" else null} = "-${cfg.secretFile}";
           ExecStart = serve;
           Restart = "on-failure";
           StateDirectory = "infinity";

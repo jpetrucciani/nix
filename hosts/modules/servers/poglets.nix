@@ -26,7 +26,7 @@ in
     };
     secretFile = mkOption {
       type = path;
-      default = "-/etc/default/poglets";
+      default = "/etc/default/poglets";
       description = ''secret env variables for poglets'';
     };
     package = mkOption {
@@ -81,7 +81,7 @@ in
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        EnvironmentFile = cfg.secretFile;
+        EnvironmentFile = "-${cfg.secretFile}";
         ExecStart = ''
           ${cfg.package}/bin/poglets server \
             --port ${toString cfg.port} \

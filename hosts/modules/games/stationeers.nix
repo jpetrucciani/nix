@@ -51,7 +51,7 @@ in
     };
     secretFile = mkOption {
       type = path;
-      default = "-/etc/default/stationeers";
+      default = "/etc/default/stationeers";
       description = "the secret file";
     };
   };
@@ -68,7 +68,7 @@ in
     systemd.services.stationeers = {
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        EnvironmentFile = cfg.secretFile;
+        EnvironmentFile = "-${cfg.secretFile}";
         ExecStartPre = ''
           ${pkgs.steamcmd}/bin/steamcmd \
             +force_install_dir ${cfg.dataDir} \

@@ -41,7 +41,7 @@ in
     };
     secretFile = mkOption {
       type = nullOr path;
-      default = "-/etc/default/valheim";
+      default = "/etc/default/valheim";
       description = ''
         this file contains any additional secrets you might want to pass in.
 
@@ -64,7 +64,7 @@ in
     systemd.services.valheim = {
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        ${if cfg.secretFile != null then "EnvironmentFile" else null} = cfg.secretFile;
+        ${if cfg.secretFile != null then "EnvironmentFile" else null} = "-${cfg.secretFile}";
         ExecStartPre = ''
           ${pkgs.steamcmd}/bin/steamcmd \
             +force_install_dir ${cfg.dataDir} \

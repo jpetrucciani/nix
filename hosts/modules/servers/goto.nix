@@ -26,7 +26,7 @@ in
     };
     secretFile = mkOption {
       type = path;
-      default = "-/etc/default/goto";
+      default = "/etc/default/goto";
       description = ''secret env variables for goto'';
     };
 
@@ -50,7 +50,7 @@ in
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        EnvironmentFile = cfg.secretFile;
+        EnvironmentFile = "-${cfg.secretFile}";
         ExecStart = cfg.execFile;
         Restart = "on-failure";
         StateDirectory = "goto";
