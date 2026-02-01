@@ -94,7 +94,7 @@ in
     };
     resolved = {
       enable = true;
-      fallbackDns = [ "10.31.65.200" "10.31.155.10" "1.1.1.1" ];
+      settings.Resolve.FallbackDNS = [ "10.31.65.200" "10.31.155.10" "1.1.1.1" ];
     };
     postgresql = {
       enable = true;
