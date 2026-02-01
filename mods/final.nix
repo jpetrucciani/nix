@@ -318,4 +318,11 @@ in
         '';
       });
     });
+
+  proxysql-2 = (import
+    (fetchTarball {
+      url = "https://github.com/NixOS/nixpkgs/archive/8243a08149705f52dde1b310e07a679c32422695.tar.gz";
+      sha256 = "00gjkaayapgi11k0dgngv51fcbkbahk659vlf4ffgi5qlvc7ni5a";
+    })
+    { inherit (final.stdenv.hostPlatform) system; }).proxysql;
 }
