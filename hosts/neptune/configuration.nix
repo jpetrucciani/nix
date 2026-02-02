@@ -57,6 +57,8 @@ in
       enable = true;
       trustedInterfaces = [ "tailscale0" ];
       allowedTCPPorts = with common.ports; [
+        80
+        443
         # k3s?
         6443
       ] ++ usual;
@@ -84,6 +86,21 @@ in
   environment.systemPackages = [ pkgs.k3s ];
 
   services = {
+    services.caddy = {
+      enable = true;
+      package = pkgs.zaddy;
+      config = ''
+        {
+          auto_https off
+        }
+        :80 {
+          reverse_proxy 127.0.0.1:8010
+        }
+        :443 {
+          reverse_proxy 127.0.0.1:8011
+        }
+      '';
+    };
     k3s = {
       enable = true;
       role = "server";
