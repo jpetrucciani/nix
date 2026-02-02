@@ -109,6 +109,7 @@ let
       , extraSetuptools ? [ ]
       , gitignore ? true
       , enableCuda ? false
+      , withDev ? false
       , _pkgs ? final
       }@args:
       let
@@ -403,7 +404,20 @@ let
               ] else [ ]))
             );
 
-        virtualenv = (pythonSet.mkVirtualEnv envName workspace.deps.all).overrideAttrs (_: { inherit venvIgnoreCollisions; });
+        _virtualenv = (pythonSet.mkVirtualEnv envName workspace.deps.all).overrideAttrs (_: { inherit venvIgnoreCollisions; });
+        libpython = final.runCommand "libpython" { } ''
+          mkdir -p $out/lib
+          cp -L ${python}/lib/*.so $out/lib/
+        '';
+        virtualenv =
+          if withDev then
+            (final.symlinkJoin {
+              name = "wrapped-uv-env";
+              paths = [
+                libpython
+                _virtualenv
+              ];
+            }) else _virtualenv;
       in
       virtualenv // rec {
         uvEnvVars = {
@@ -415,11 +429,7 @@ let
           _UV_SITE = "${virtualenv}/lib/python${python.pythonVersion}/site-packages";
         };
         internal = {
-          inherit args;
-          libpython = final.runCommand "libpython" { } ''
-            mkdir -p $out/lib
-            cp -L ${python}/lib/*.so $out/lib/
-          '';
+          inherit args libpython;
         };
         wrappers =
           let
@@ -435,6 +445,8 @@ let
           in
           {
             shell_hook = ''
+              mkdir -p .direnv
+              rm -f .direnv/site
               ln -sf ${uvEnvVars._UV_SITE} .direnv/site
             '';
             repo = "$(${final.git}/bin/git rev-parse --show-toplevel)";
