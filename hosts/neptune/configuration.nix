@@ -97,7 +97,7 @@ in
           reverse_proxy 127.0.0.1:8010
         }
         :443 {
-          reverse_proxy 127.0.0.1:8011
+          reverse_proxy 127.0.0.1:8443
         }
       '';
     };
