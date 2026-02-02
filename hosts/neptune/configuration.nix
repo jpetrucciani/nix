@@ -89,10 +89,10 @@ in
     caddy = {
       enable = true;
       package = pkgs.zaddy;
-      config = ''
-        {
-          auto_https off
-        }
+      globalConfig = ''
+        auto_https off
+      '';
+      extraConfig = ''
         :80 {
           reverse_proxy 127.0.0.1:8010
         }
