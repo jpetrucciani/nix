@@ -86,7 +86,7 @@ in
   environment.systemPackages = [ pkgs.k3s ];
 
   services = {
-    services.caddy = {
+    caddy = {
       enable = true;
       package = pkgs.zaddy;
       config = ''
