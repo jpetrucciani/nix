@@ -86,21 +86,6 @@ in
   environment.systemPackages = [ pkgs.k3s ];
 
   services = {
-    caddy = {
-      enable = true;
-      package = pkgs.zaddy;
-      globalConfig = ''
-        auto_https off
-      '';
-      extraConfig = ''
-        :80 {
-          reverse_proxy 127.0.0.1:8010
-        }
-        :443 {
-          reverse_proxy 127.0.0.1:8443
-        }
-      '';
-    };
     k3s = {
       enable = true;
       role = "server";
