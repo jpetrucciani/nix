@@ -6,13 +6,13 @@
 
 buildGoModule rec {
   pname = "fake-gcs-server";
-  version = "1.53.0";
+  version = "1.53.1";
 
   src = fetchFromGitHub {
     owner = "fsouza";
     repo = "fake-gcs-server";
     rev = "v${version}";
-    hash = "sha256-Gary07HxkmnJ6zlKSIa/x0tT7X0KqfqThmoMIFCHbL8=";
+    hash = "sha256-UNXmbfCmLfY3gvstR2sEQ5SmHJy7PBe38JMCnc2GTz8=";
   };
 
   doCheck = false;
