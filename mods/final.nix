@@ -146,9 +146,36 @@ let
       # hack for mac dylib?
       cmakeFlags = if final.stdenv.isDarwin then old.cmakeFlags ++ [ "-DLLAMA_BUILD_NUMBER=1" ] else old.cmakeFlags;
     });
+  codex-latest =
+    let
+      version = "0.98.0";
+      fixedPkgs = import
+        (final.fetchFromGitHub {
+          owner = "NixOS";
+          repo = "nixpkgs";
+          rev = "c0621c48faea317868eff53d80158eaa8f196693";
+          hash = "sha256-ucfx4mvWT/PhBalLXQhXIJGNf62ppnuD2K8m5VuQkyQ=";
+        })
+        { inherit (final) system; };
+      src = final.fetchFromGitHub {
+        owner = "openai";
+        repo = "codex";
+        tag = "rust-v${version}";
+        hash = "sha256-rP5Qo70n5lNrdR6ycE63VObLwcMNRlk8sY/kuJ4Qw9Y=";
+      };
+    in
+    prev.codex.overrideAttrs (oldAttrs: {
+      inherit version src;
+
+      cargoDeps = fixedPkgs.rustPlatform.fetchCargoVendor {
+        inherit src;
+        sourceRoot = "${src.name}/codex-rs";
+        hash = "sha256-DTLC+s9OfWXkjK2Ab5RKPxRB5SfWNqDLA38jvcraZvg=";
+      };
+    });
 in
 {
-  inherit llama-cpp-latest;
+  inherit llama-cpp-latest codex-latest;
   foundry = import ./foundry.nix { pkgs = final; };
   __j_custom = final.buildEnv {
     name = "__j_custom";
