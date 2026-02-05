@@ -16,6 +16,11 @@ let
     base_url = "https://prometheus-community.github.io/helm-charts";
     chart_url = "https://github.com/prometheus-community/helm-charts/releases/download/${prefix}${name}-{1}/${name}-{1}.tgz";
   };
+  prefect_chart = { name }: _chart_scan {
+    inherit name;
+    base_url = "https://prefecthq.github.io/prefect-helm";
+    chart_url = "https://prefecthq.github.io/prefect-helm/charts/${name}-{1}.tgz";
+  };
 
   ocihash = final.pog {
     name = "ocihash";
@@ -479,6 +484,9 @@ rec {
     filter_out = "alpha|beta|dev";
   };
 
+  chart_scan_prefect-agent = prefect_chart { name = "prefect-agent"; };
+  chart_scan_prefect-server = prefect_chart { name = "prefect-server"; };
+
   helm_pog_scripts = [
     chart_scan_alloy
     chart_scan_airflow
@@ -516,6 +524,8 @@ rec {
     chart_scan_plane
     chart_scan_postgres-operator
     chart_scan_postgres-operator-ui
+    chart_scan_prefect-agent
+    chart_scan_prefect-server
     chart_scan_prometheus-adapter
     chart_scan_prometheus-cloudwatch-exporter
     chart_scan_prometheus-elasticsearch-exporter
