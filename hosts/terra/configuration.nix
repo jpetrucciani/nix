@@ -275,6 +275,9 @@ in
             handle_path /x/* {
               redir https://github.com/jpetrucciani/nix/archive/{path.0}.tar.gz
             }
+            handle_path /nixpkgs/* {
+              redir https://github.com/nixos/nixpkgs/archive/{path.0}.tar.gz
+            }
             handle_path /p/* {
               hax {
                 enable_tarball
