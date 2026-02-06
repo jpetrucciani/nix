@@ -484,8 +484,8 @@ rec {
     filter_out = "alpha|beta|dev";
   };
 
-  chart_scan_prefect-agent = prefect_chart { name = "prefect-agent"; };
   chart_scan_prefect-server = prefect_chart { name = "prefect-server"; };
+  chart_scan_prefect-worker = prefect_chart { name = "prefect-worker"; };
 
   helm_pog_scripts = [
     chart_scan_alloy
@@ -524,7 +524,7 @@ rec {
     chart_scan_plane
     chart_scan_postgres-operator
     chart_scan_postgres-operator-ui
-    chart_scan_prefect-agent
+    chart_scan_prefect-worker
     chart_scan_prefect-server
     chart_scan_prometheus-adapter
     chart_scan_prometheus-cloudwatch-exporter
