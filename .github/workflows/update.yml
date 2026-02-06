@@ -24,5 +24,8 @@ jobs:
           commit-message: automatic update
           branch: automatic-update
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - if: ${{ steps.pr.outputs.pull-request-number }}
-        run: gh pr merge --auto --squash ${{ steps.pr.outputs.pull-request-url }}
+      - name: automerge
+        if: ${{ steps.pr.outputs.pull-request-number }}
+        env:
+          PR_URL: ${{ steps.pr.outputs.pull-request-url }}
+        run: nix run .#github_automerge
