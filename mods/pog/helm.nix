@@ -193,6 +193,7 @@ rec {
     name = "external-secrets";
     base_url = "https://charts.external-secrets.io";
     chart_url = "https://github.com/external-secrets/external-secrets/releases/download/helm-chart-{1}/external-secrets-{1}.tgz";
+    filter_out = "alpha|beta|dev|rc";
   };
 
   chart_scan_gitlab-runner = _chart_scan {
