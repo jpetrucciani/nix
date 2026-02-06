@@ -14,6 +14,7 @@ in
 rec {
   batwhich = pog {
     name = "batwhich";
+    description = "a pog script to quickly inspect a script on your path";
     argumentCompletion = "executables";
     script = ''
       ${_.bat} "$(${_.which} "$1")"
@@ -22,6 +23,7 @@ rec {
 
   get_cert = pog {
     name = "get_cert";
+    description = "a pog script to get a TLS cert from a server host";
     script = ''
       ${_.curl} --insecure -I -vvv "$1" 2>&1 |
         ${_.awk} 'BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }'

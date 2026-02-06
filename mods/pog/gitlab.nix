@@ -58,6 +58,7 @@ rec {
     in
     pog {
       name = "checkstyle2junit";
+      description = "a pog script to convert checkstyle output to junit output";
       script = ''
         ${final.xmlstarlet}/bin/xmlstarlet tr ${template}
       '';

@@ -24,6 +24,7 @@ let
 
   ocihash = final.pog {
     name = "ocihash";
+    description = "hash helm charts from an oci registry";
     flags = [
       { name = "url"; }
       { name = "tag"; }

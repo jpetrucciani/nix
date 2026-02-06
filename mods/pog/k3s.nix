@@ -6,6 +6,7 @@ in
 rec {
   k3s_gc = pog {
     name = "k3s_gc";
+    description = "a pog script to do garbage collection on a k3s node";
     script = ''
       ${final.k3s}/bin/k3s crictl rmi --prune
     '';

@@ -196,6 +196,7 @@ rec {
 
   faxify = pog {
     name = "faxify";
+    description = "a pog script to make a pdf or image look like it's been faxed/scanned";
     flags = [
       {
         name = "output";
