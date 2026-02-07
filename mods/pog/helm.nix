@@ -261,6 +261,7 @@ rec {
   chart_scan_airbyte = _chart_scan {
     name = "airbyte";
     base_url = "https://airbytehq.github.io/helm-charts";
+    filter_out = "alpha|beta|rc";
   };
 
   chart_scan_sentry = _chart_scan {
