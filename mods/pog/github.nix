@@ -63,7 +63,7 @@ rec {
       name = "github_automerge";
       description = "";
       flags = [
-        { name = "maxattempts"; description = "max retry attempts to merge"; default = "3"; }
+        { name = "maxattempts"; description = "max retry attempts to merge"; default = "5"; }
         { name = "pr"; envVar = "PR_URL"; description = "the url for the PR to merge"; }
       ];
       script = ''
