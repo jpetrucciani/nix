@@ -16,7 +16,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     env:
-      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      S3_BUCKET: ${{ secrets.MICA_S3_BUCKET }}
       S3_PREFIX: mica
       S3_ENDPOINT_URL: ${{ secrets.MICA_ENDPOINT_URL }}
       AWS_ACCESS_KEY_ID: ${{ secrets.MICA_ACCESS_KEY_ID }}
@@ -36,14 +36,10 @@ jobs:
           extra_nix_config: |
             extra-substituters = https://cache.g7c.us
             extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
-      - name: export base package set
-        run: |
-          set -euo pipefail
-          nix-env -f . -qaP --json --meta > "$RUNNER_TEMP/nixpkgs.json"
       - name: build index.db
         run: |
           set -euo pipefail
-          nix run .#mica -- index rebuild "$RUNNER_TEMP/nixpkgs.json" --output "$RUNNER_TEMP/index.db"
+          nix run .#mica -- index rebuild-local . --output "$RUNNER_TEMP/index.db"
       - name: upload to bucket
         run: |
           set -euo pipefail

@@ -6,10 +6,6 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 ## In this directory
 
-### [betterchatgpt.nix](./betterchatgpt.nix)
-
-[`BetterChatGPT`](https://github.com/ztjhz/BetterChatGPT) is an alternative UI for OpenAI's ChatGPT.
-
 ### [chatbot-ui.nix](./chatbot-ui.nix)
 
 [`chatbot-ui`](https://github.com/mckaywrigley/chatbot-ui) is a popular frontend for OpenAI compliant APIs. It is designed to look similar to OpenAI's ChatGPT UI.

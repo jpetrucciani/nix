@@ -4,18 +4,17 @@
 , pkg-config
 , sqlite
 , stdenv
-, darwin
 }:
 
 rustPlatform.buildRustPackage rec {
   pname = "mica";
-  version = "0.0.1";
+  version = "0.0.2";
 
   src = fetchFromGitHub {
     owner = "gemologic";
     repo = "mica";
     rev = "v${version}";
-    hash = "sha256-tA77aoqlSdOkN+gscHUV8+LIoLALt5z10ovpPVL3Svc=";
+    hash = "sha256-sSO4GNgMPJZ6HgmoMugNID/sCNwV3xq0KhIwWsPjFEE=";
   };
 
   cargoHash = "sha256-kJK+akh9/IlJ2zhuz3SvPAh3ajEGmzjHMhN9JWSi3go=";
@@ -26,8 +25,6 @@ rustPlatform.buildRustPackage rec {
 
   buildInputs = [
     sqlite
-  ] ++ lib.optionals stdenv.isDarwin [
-    darwin.apple_sdk.frameworks.Security
   ];
 
   meta = {
