@@ -8,13 +8,13 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "mica";
-  version = "0.0.2";
+  version = "0.0.3";
 
   src = fetchFromGitHub {
     owner = "gemologic";
     repo = "mica";
     rev = "v${version}";
-    hash = "sha256-sSO4GNgMPJZ6HgmoMugNID/sCNwV3xq0KhIwWsPjFEE=";
+    hash = "sha256-CXxwv3CYIOlcYJzMCsqMpQCPEE0MbOTSRNa4oBCMrVw=";
   };
 
   cargoHash = "sha256-kJK+akh9/IlJ2zhuz3SvPAh3ajEGmzjHMhN9JWSi3go=";
