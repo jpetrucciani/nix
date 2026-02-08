@@ -206,7 +206,7 @@ rec {
       name = "traefik";
       base_url = base;
       chart_url = "${base}/traefik/traefik-{1}.tgz";
-      filter_out = "ea|alpha";
+      filter_out = "ea|rc|alpha";
     };
 
   chart_scan_langflow-ide =
