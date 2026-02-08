@@ -3,7 +3,7 @@
 , fetchFromGitHub
 , pkg-config
 , sqlite
-, stdenv
+
 }:
 
 rustPlatform.buildRustPackage rec {
