@@ -148,7 +148,7 @@ let
     });
   codex-latest =
     let
-      version = "0.99.0";
+      version = "0.100.0";
       fixedPkgs = import
         (final.fetchFromGitHub {
           owner = "NixOS";
@@ -161,16 +161,16 @@ let
         owner = "openai";
         repo = "codex";
         tag = "rust-v${version}";
-        hash = "sha256-yGq+vMExpJOXgiZem1HFfhu2JZO/zw4V/GRnMjC5VCo=";
+        hash = "sha256-sPSHLWF239dgP6+bZfF6MkHV6nlwJ2Cd74K34M0AqPg=";
       };
     in
-    prev.codex.overrideAttrs (oldAttrs: {
+    prev.codex.overrideAttrs (old: {
       inherit version src;
-
+      buildInputs = (old.buildInputs or [ ]) ++ [ final.libcap ];
       cargoDeps = fixedPkgs.rustPlatform.fetchCargoVendor {
         inherit src;
         sourceRoot = "${src.name}/codex-rs";
-        hash = "sha256-/hneaM/1VierRpEA4KkKnvViBYh4uuo57ydcwrRZkbI=";
+        hash = "sha256-529wJm8zms7jdMS7hiGbVlGnZzmOq+yObk+VXHMWWls=";
       };
     });
 in
