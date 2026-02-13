@@ -98,8 +98,9 @@ in
     daemon.settings.features.cdi = true;
     daemon.settings.cdi-spec-dirs = [ "/etc/cdi" ];
     # https://github.com/nix-community/NixOS-WSL/issues/578
-    ### sudo mkdir -p /etc/cdi
-    ### LD_LIBRARY_PATH=/usr/lib/wsl/lib nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml
+    ### sudo su:
+    #### mkdir -p /etc/cdi
+    #### LD_LIBRARY_PATH=/usr/lib/wsl/lib nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml --mode wsl --nvidia-ctk-path /run/current-system/sw/bin/nvidia-ctk
   };
 
   hardware = {

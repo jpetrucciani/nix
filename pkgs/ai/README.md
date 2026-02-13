@@ -6,10 +6,6 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 ## In this directory
 
-### [betterchatgpt.nix](./betterchatgpt.nix)
-
-[`BetterChatGPT`](https://github.com/ztjhz/BetterChatGPT) is an alternative UI for OpenAI's ChatGPT.
-
 ### [chatbot-ui.nix](./chatbot-ui.nix)
 
 [`chatbot-ui`](https://github.com/mckaywrigley/chatbot-ui) is a popular frontend for OpenAI compliant APIs. It is designed to look similar to OpenAI's ChatGPT UI.
@@ -17,10 +13,6 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 ### [genai-toolbox.nix](./genai-toolbox.nix)
 
 [`genai-toolbox`](https://github.com/googleapis/genai-toolbox) is an open source MCP server for databases, designed and built with enterprise-quality and production-grade usage in mind
-
-### [goose-ai.nix](./goose-ai.nix)
-
-[`goose`](https://github.com/block/goose) is an open-source, extensible AI agent that goes beyond code suggestions.
 
 ### [mods.nix](./mods.nix)
 

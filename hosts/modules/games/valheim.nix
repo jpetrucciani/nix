@@ -64,7 +64,7 @@ in
     systemd.services.valheim = {
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        ${if cfg.secretFile != null then "EnvironmentFile" else null} = cfg.secretFile;
+        ${if cfg.secretFile != null then "EnvironmentFile" else null} = "-${cfg.secretFile}";
         ExecStartPre = ''
           ${pkgs.steamcmd}/bin/steamcmd \
             +force_install_dir ${cfg.dataDir} \

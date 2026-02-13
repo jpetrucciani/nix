@@ -16,9 +16,15 @@ let
     base_url = "https://prometheus-community.github.io/helm-charts";
     chart_url = "https://github.com/prometheus-community/helm-charts/releases/download/${prefix}${name}-{1}/${name}-{1}.tgz";
   };
+  prefect_chart = { name }: _chart_scan {
+    inherit name;
+    base_url = "https://prefecthq.github.io/prefect-helm";
+    chart_url = "https://prefecthq.github.io/prefect-helm/charts/${name}-{1}.tgz";
+  };
 
   ocihash = final.pog {
     name = "ocihash";
+    description = "hash helm charts from an oci registry";
     flags = [
       { name = "url"; }
       { name = "tag"; }
@@ -187,6 +193,7 @@ rec {
     name = "external-secrets";
     base_url = "https://charts.external-secrets.io";
     chart_url = "https://github.com/external-secrets/external-secrets/releases/download/helm-chart-{1}/external-secrets-{1}.tgz";
+    filter_out = "alpha|beta|dev|rc";
   };
 
   chart_scan_gitlab-runner = _chart_scan {
@@ -199,6 +206,7 @@ rec {
       name = "traefik";
       base_url = base;
       chart_url = "${base}/traefik/traefik-{1}.tgz";
+      filter_out = "ea|rc|alpha";
     };
 
   chart_scan_langflow-ide =
@@ -254,6 +262,7 @@ rec {
   chart_scan_airbyte = _chart_scan {
     name = "airbyte";
     base_url = "https://airbytehq.github.io/helm-charts";
+    filter_out = "alpha|beta|rc";
   };
 
   chart_scan_sentry = _chart_scan {
@@ -472,6 +481,16 @@ rec {
     chart_url = "https://github.com/deepgram/self-hosted-resources/releases/download/deepgram-self-hosted-{1}/deepgram-self-hosted-{1}.tgz";
   };
 
+  chart_scan_cert-manager = _chart_scan {
+    name = "cert-manager";
+    base_url = "https://charts.jetstack.io";
+    chart_url = "https://charts.jetstack.io/charts/cert-manager-{1}.tgz";
+    filter_out = "alpha|beta|dev";
+  };
+
+  chart_scan_prefect-server = prefect_chart { name = "prefect-server"; };
+  chart_scan_prefect-worker = prefect_chart { name = "prefect-worker"; };
+
   helm_pog_scripts = [
     chart_scan_alloy
     chart_scan_airflow
@@ -479,6 +498,7 @@ rec {
     chart_scan_argo-workflows
     chart_scan_authentik
     chart_scan_aws_mountpoint-s3-csi-driver
+    chart_scan_cert-manager
     chart_scan_csi-driver-smb
     chart_scan_dask-kubernetes-operator
     chart_scan_external-secrets
@@ -508,6 +528,8 @@ rec {
     chart_scan_plane
     chart_scan_postgres-operator
     chart_scan_postgres-operator-ui
+    chart_scan_prefect-worker
+    chart_scan_prefect-server
     chart_scan_prometheus-adapter
     chart_scan_prometheus-cloudwatch-exporter
     chart_scan_prometheus-elasticsearch-exporter

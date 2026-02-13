@@ -10,6 +10,13 @@ let
   personalEmail = "j@cobi.dev";
   workEmail = "jpetrucciani@blackedge.com";
   medableEmail = "jacobi.petrucciani@medable.com";
+  gitUser = {
+    name = "${firstName} ${lastName}";
+    email =
+      if machine-name == "m1max" then medableEmail
+      else if machine-name == "edge" then workEmail
+      else personalEmail;
+  };
 
   onAws = builtins.getEnv "USER" == "ubuntu";
   promptChar = if isDarwin then "ᛗ" else "ᛥ";
@@ -386,7 +393,7 @@ in
   };
 
   programs.nushell = {
-    enable = true;
+    enable = false;
   };
 
   programs.readline = {
@@ -686,6 +693,10 @@ in
   };
 
   # gitconfig
+  programs.jujutsu = {
+    enable = true;
+    settings.user = gitUser;
+  };
   programs.git =
     let
       gs = text:
@@ -702,13 +713,7 @@ in
       enable = true;
       package = pkgs.gitFull;
       settings = {
-        user = {
-          name = "${firstName} ${lastName}";
-          email =
-            if machine-name == "m1max" then medableEmail
-            else if machine-name == "edge" then workEmail
-            else personalEmail;
-        };
+        user = gitUser;
         alias = {
           A = "add -A";
           pu = "pull";

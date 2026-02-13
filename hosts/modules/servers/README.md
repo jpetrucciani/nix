@@ -30,6 +30,10 @@ This NixOS module contains a service for [poglets](https://github.com/jpetruccia
 
 nixos module for [questdb](https://github.com/questdb/questdb)
 
+### [proxysql.nix](./proxysql.nix)
+
+nixos module for [proxysql](https://github.com/sysown/proxysql)
+
 ### [zinc.nix](./zinc.nix)
 
 This NixOS module contains a service for [zinc](https://github.com/zinclabs/zincsearch)

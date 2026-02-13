@@ -50,7 +50,7 @@ in
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        EnvironmentFile = cfg.secretFile;
+        EnvironmentFile = "-${cfg.secretFile}";
         ExecStart = cfg.execFile;
         Restart = "on-failure";
         StateDirectory = "goto";

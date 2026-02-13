@@ -81,7 +81,7 @@ in
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        EnvironmentFile = cfg.secretFile;
+        EnvironmentFile = "-${cfg.secretFile}";
         ExecStart = ''
           ${cfg.package}/bin/poglets server \
             --port ${toString cfg.port} \

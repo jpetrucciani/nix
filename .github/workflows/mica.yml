@@ -1,0 +1,58 @@
+name: publish mica index
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: publish-index-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      S3_BUCKET: ${{ secrets.MICA_S3_BUCKET }}
+      S3_PREFIX: mica
+      S3_ENDPOINT_URL: ${{ secrets.MICA_ENDPOINT_URL }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.MICA_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.MICA_SECRET_ACCESS_KEY }}
+      AWS_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6
+        with:
+          repository: gemologic/mica
+          path: mica
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            extra-substituters = https://cache.g7c.us
+            extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
+      - name: build index.db
+        run: |
+          set -euo pipefail
+          nix run .#mica -- index rebuild-local . --output "$RUNNER_TEMP/index.db"
+      - name: upload to bucket
+        run: |
+          set -euo pipefail
+          prefix="${S3_PREFIX#/}"
+          commit="${GITHUB_SHA}"
+          if [ -n "$prefix" ]; then
+            dest="s3://${S3_BUCKET}/${prefix%/}/${commit}.db"
+          else
+            dest="s3://${S3_BUCKET}/${commit}.db"
+          fi
+
+          aws --endpoint-url "$S3_ENDPOINT_URL" s3 cp "$RUNNER_TEMP/index.db" "$dest" \
+            --content-type "application/vnd.sqlite3" \
+            --cache-control "public, max-age=31536000, immutable"
+
+          echo "uploaded: $dest"

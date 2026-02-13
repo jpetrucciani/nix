@@ -91,6 +91,7 @@ in
       in
       pog {
         name = "latent-consistency";
+        description = "a pog script to run latent-consistency";
         script = ''
           ${python}/bin/python ${script} "$@"
         '';

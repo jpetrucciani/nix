@@ -42,11 +42,23 @@ in
   networking = {
     hostName = hostname;
     useDHCP = false;
-    interfaces.enp9s0.useDHCP = true;
+    interfaces.enp9s0 = {
+      useDHCP = false;
+      ipv4.addresses = [
+        {
+          address = "142.132.149.106";
+          prefixLength = 26;
+        }
+      ];
+    };
+    defaultGateway = "142.132.149.65";
+    nameservers = [ "1.1.1.1" "8.8.8.8" ];
     firewall = {
       enable = true;
       trustedInterfaces = [ "tailscale0" ];
       allowedTCPPorts = with common.ports; [
+        80
+        443
         # k3s?
         6443
       ] ++ usual;
@@ -222,6 +234,19 @@ in
       };
     };
     promtail = common.templates.promtail { inherit hostname; };
+    postgresql = {
+      enable = true;
+      package = pkgs.postgresql_18;
+      enableTCPIP = true;
+      extensions = with pkgs.postgresql18Packages; [ pgvector ];
+      authentication = pkgs.lib.mkOverride 10 ''
+        local all all trust
+        host all all 127.0.0.1/32 trust
+        host all all ::1/128 trust
+        host all all 100.64.0.0/10 md5
+        host all all 10.42.0.0/16 md5
+      '';
+    };
   } // common.services;
 
   # https://github.com/NixOS/nixpkgs/issues/103158

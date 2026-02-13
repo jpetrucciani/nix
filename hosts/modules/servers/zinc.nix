@@ -26,8 +26,7 @@ in
     };
     secretFile = mkOption {
       type = nullOr path;
-      default = null;
-      # default = "/etc/default/zinc";
+      default = "/etc/default/zinc";
       description = ''secret env variables for zinc'';
     };
     package = mkOption {
@@ -100,7 +99,7 @@ in
       };
 
       serviceConfig = {
-        ${if cfg.secretFile != null then "EnvironmentFile" else null} = cfg.secretFile;
+        ${if cfg.secretFile != null then "EnvironmentFile" else null} = "-${cfg.secretFile}";
         ExecStart = ''
           ${cfg.package}/bin/zinc
         '';

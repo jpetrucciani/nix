@@ -307,6 +307,7 @@ rec {
 
   ndiff = pog {
     name = "ndiff";
+    description = "a pog script to diff my repo's attrs vs upstream";
     arguments = [{ name = "attribute"; }];
     flags = [
       { name = "nixpkgs"; default = final.nixpkgsRev; }
@@ -322,6 +323,7 @@ rec {
 
   rehydrate = pog {
     name = "rehydrate";
+    description = "a pog script to restore libraries from the nix-store on a binary that's been copied to a new box";
     arguments = [{ name = "binary"; }];
     script = ''
       target="$1"

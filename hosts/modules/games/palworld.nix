@@ -391,7 +391,7 @@ in
         {
           wantedBy = [ "multi-user.target" ];
           serviceConfig = {
-            ${if cfg.secretFile != null then "EnvironmentFile" else null} = cfg.secretFile;
+            ${if cfg.secretFile != null then "EnvironmentFile" else null} = "-${cfg.secretFile}";
             ExecStartPre = "${pkgs.bash}/bin/bash -c '${pre_command}'";
             ExecStart = join [
               "${pkgs.steam-run}/bin/steam-run ${dir}/Pal/Binaries/Linux/${cfg.serverBinary} Pal"

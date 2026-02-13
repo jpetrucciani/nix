@@ -126,15 +126,15 @@ let
 
   llama-cpp-latest =
     let
-      version = "7480";
-      hash = "sha256-8eouJT+JK8cDKC+VMzea0EL247tuuxKjFDDjvBAvYdc=";
+      version = "7911";
+      hash = "sha256-4YvvhDgfGRsTq4DX5gdyK/UnxJQk+vWonnTAX0lmmS8=";
     in
     prev.llama-cpp.overrideAttrs (old: {
       inherit version;
       src = final.fetchFromGitHub {
         inherit hash;
         tag = "b${version}";
-        owner = "ggerganov";
+        owner = "ggml-org";
         repo = "llama.cpp";
         leaveDotGit = true;
         postFetch = ''
@@ -142,15 +142,40 @@ let
           find "$out" -name .git -print0 | xargs -0 rm -rf
         '';
       };
+      npmDepsHash = "sha256-bbv0e3HZmqpFwKELiEFBgoMr72jKbsX20eceH4XjfBA=";
       # hack for mac dylib?
-      cmakeFlags =
-        if final.stdenv.isDarwin then old.cmakeFlags ++ [
-          "-DLLAMA_BUILD_NUMBER=1"
-        ] else old.cmakeFlags;
+      cmakeFlags = if final.stdenv.isDarwin then old.cmakeFlags ++ [ "-DLLAMA_BUILD_NUMBER=1" ] else old.cmakeFlags;
+    });
+  codex-latest =
+    let
+      version = "0.100.0";
+      fixedPkgs = import
+        (final.fetchFromGitHub {
+          owner = "NixOS";
+          repo = "nixpkgs";
+          rev = "c0621c48faea317868eff53d80158eaa8f196693";
+          hash = "sha256-ucfx4mvWT/PhBalLXQhXIJGNf62ppnuD2K8m5VuQkyQ=";
+        })
+        { inherit (final) system; };
+      src = final.fetchFromGitHub {
+        owner = "openai";
+        repo = "codex";
+        tag = "rust-v${version}";
+        hash = "sha256-sPSHLWF239dgP6+bZfF6MkHV6nlwJ2Cd74K34M0AqPg=";
+      };
+    in
+    prev.codex.overrideAttrs (old: {
+      inherit version src;
+      buildInputs = (old.buildInputs or [ ]) ++ [ final.libcap ];
+      cargoDeps = fixedPkgs.rustPlatform.fetchCargoVendor {
+        inherit src;
+        sourceRoot = "${src.name}/codex-rs";
+        hash = "sha256-529wJm8zms7jdMS7hiGbVlGnZzmOq+yObk+VXHMWWls=";
+      };
     });
 in
 {
-  inherit llama-cpp-latest;
+  inherit llama-cpp-latest codex-latest;
   foundry = import ./foundry.nix { pkgs = final; };
   __j_custom = final.buildEnv {
     name = "__j_custom";
@@ -320,4 +345,11 @@ in
         '';
       });
     });
+
+  proxysql-2 = (import
+    (fetchTarball {
+      url = "https://github.com/NixOS/nixpkgs/archive/8243a08149705f52dde1b310e07a679c32422695.tar.gz";
+      sha256 = "00gjkaayapgi11k0dgngv51fcbkbahk659vlf4ffgi5qlvc7ni5a";
+    })
+    { inherit (final.stdenv.hostPlatform) system; }).proxysql;
 }

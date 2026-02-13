@@ -16,7 +16,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: cachix/install-nix-action@v31
@@ -25,7 +25,7 @@ jobs:
             extra-substituters = https://cache.g7c.us
             extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
       - run: nix run .#${{ matrix.attrs.cmd }} ${{ matrix.attrs.attr }}
-      - uses: peter-evans/create-pull-request@v8.0.0
+      - uses: peter-evans/create-pull-request@v8.1.0
         id: pr
         with:
           delete-branch: true
@@ -34,5 +34,8 @@ jobs:
           commit-message: automatic update (${{ matrix.attrs.attr }})
           branch: automatic-update-${{ matrix.attrs.attr }}
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - if: ${{ steps.pr.outputs.pull-request-number }}
-        run: gh pr merge --auto --squash ${{ steps.pr.outputs.pull-request-url }}
+      - name: automerge
+        if: ${{ steps.pr.outputs.pull-request-number }}
+        env:
+          PR_URL: ${{ steps.pr.outputs.pull-request-url }}
+        run: nix run .#github_automerge
