@@ -61,6 +61,7 @@ let
             swifter = add_setuptools prev.swifter;
             wikipedia = add_setuptools prev.wikipedia;
             xalglib = add_setuptools prev.xalglib;
+            julius = add_setuptools prev.julius;
 
             # other required propagations
             jupyterlab-miami-nights = add_propagated prev.jupyterlab-miami-nights [ prev.jupyter-packaging ];
