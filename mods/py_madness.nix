@@ -423,7 +423,7 @@ let
       in
       virtualenv // rec {
         uvEnvVars = {
-          inherit _UV_SITE;
+          # inherit _UV_SITE;
           UV_NO_MANAGED_PYTHON = "true";
           UV_NO_SYNC = "1";
           UV_PYTHON = python.interpreter;
