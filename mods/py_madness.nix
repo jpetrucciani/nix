@@ -427,7 +427,7 @@ let
           UV_PYTHON = python.interpreter;
           UV_PYTHON_DOWNLOADS = "never";
           UV_SYSTEM_PYTHON = "true";
-          _UV_SITE = "${_virtualenv}/lib/python${python.pythonVersion}/site-packages";
+          _UV_SITE = "${_virtualenv}/${python.sitePackages}";
         };
         internal = {
           inherit args libpython;
