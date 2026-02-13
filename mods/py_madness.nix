@@ -419,15 +419,16 @@ let
                 _virtualenv
               ];
             }) else _virtualenv;
+        _UV_SITE = "${virtualenv}/lib/python${python.pythonVersion}/site-packages";
       in
       virtualenv // rec {
         uvEnvVars = {
+          inherit _UV_SITE;
           UV_NO_MANAGED_PYTHON = "true";
           UV_NO_SYNC = "1";
           UV_PYTHON = python.interpreter;
           UV_PYTHON_DOWNLOADS = "never";
           UV_SYSTEM_PYTHON = "true";
-          _UV_SITE = "${_virtualenv}/${python.sitePackages}";
         };
         internal = {
           inherit args libpython;
