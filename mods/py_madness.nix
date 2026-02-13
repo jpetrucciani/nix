@@ -326,6 +326,7 @@ let
               "gensim"
               "html2text"
               "jieba"
+              "julius"
               "jsonpath-rw"
               "markupsafe"
               "multitasking"
