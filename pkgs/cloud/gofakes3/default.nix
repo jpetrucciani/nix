@@ -7,11 +7,10 @@ buildGo125Module rec {
   src = fetchFromGitHub {
     owner = "johannesboyne";
     repo = pname;
-    rev = "refs/tags/${version}";
-    hash = "sha256-eEhshcxMDTFagAeOKYox4K/c93Sd2SvIMaz7kwfQArU=";
+    rev = "4c385a1f6a730dfb271fc0530400ed8c4d6a1eb8"; # this contains our patch! but is not yet released
+    # rev = "refs/tags/${version}";
+    hash = "sha256-JaFQBgQlJoo9PZvelPxIF3yeBfRTvC1uVo3Y7HPmBJI=";
   };
-
-  patches = [ ./cors.patch ];
 
   ldflags = [
     "-s"
