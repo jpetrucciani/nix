@@ -96,16 +96,17 @@ let
           && (!builtins.isList (pkg.passthru.dependencies or null))
           && builtins.isAttrs (pkg.passthru.dependencies or null)
         then
-          pkg.overrideAttrs (old: {
-            passthru = (old.passthru or { }) // {
-              dependencies =
-                builtins.filter builtins.isDerivation (
-                  map
-                    (name: final.${name} or null)
-                    (builtins.attrNames old.passthru.dependencies)
-                );
-            };
-          })
+          pkg.overrideAttrs
+            (old: {
+              passthru = (old.passthru or { }) // {
+                dependencies =
+                  builtins.filter builtins.isDerivation (
+                    map
+                      (name: final.${name} or null)
+                      (builtins.attrNames old.passthru.dependencies)
+                  );
+              };
+            })
         else
           pkg;
 
@@ -345,12 +346,13 @@ let
         normalizeResolverDependencies =
           deps:
           if builtins.isList deps then
-            final.lib.listToAttrs (map
-              (name: {
-                inherit name;
-                value = [ ];
-              })
-              (builtins.filter final.lib.isString deps))
+            final.lib.listToAttrs
+              (map
+                (name: {
+                  inherit name;
+                  value = [ ];
+                })
+                (builtins.filter final.lib.isString deps))
           else
             deps;
         normalizeResolverPackage =
@@ -360,11 +362,12 @@ let
             && (builtins.isList (pkg.passthru.dependencies or null))
           then
             if pkg ? overrideAttrs then
-              pkg.overrideAttrs (old: {
-                passthru = (old.passthru or { }) // {
-                  dependencies = normalizeResolverDependencies old.passthru.dependencies;
-                };
-              })
+              pkg.overrideAttrs
+                (old: {
+                  passthru = (old.passthru or { }) // {
+                    dependencies = normalizeResolverDependencies old.passthru.dependencies;
+                  };
+                })
             else
               pkg // {
                 passthru = (pkg.passthru or { }) // {
@@ -480,15 +483,15 @@ let
         # their original passthru schema.
         resolveVirtualEnv =
           spec:
-            map
-              (name: basePythonSet.${name})
-              (final.pyproject-nix.build.lib.resolvers.resolveCyclic
-                (final.lib.mapAttrs (_: normalizeResolverPackage) basePythonSet)
-                spec);
+          map
+            (name: basePythonSet.${name})
+            (final.pyproject-nix.build.lib.resolvers.resolveCyclic
+              (final.lib.mapAttrs (_: normalizeResolverPackage) basePythonSet)
+              spec);
         pythonSet =
           basePythonSet
           // {
-            resolveVirtualEnv = resolveVirtualEnv;
+            inherit resolveVirtualEnv;
             mkVirtualEnv = name: spec:
               basePythonSet.stdenv.mkDerivation (finalAttrs: {
                 inherit name;
