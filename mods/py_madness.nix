@@ -87,6 +87,28 @@ let
       add_buildinputs = build_inputs: pkg: pkg.overrideAttrs (old: { buildInputs = (old.buildInputs or [ ]) ++ build_inputs; });
       add_setuptools = add_buildinputs [ final.setuptools ];
 
+      # Nixpkgs Python packages use a different passthru convention than
+      # pyproject.nix; normalize to the uv2nix expectation:
+      # passthru.dependencies must be a list of derivations.
+      normalizeNixpkgsDependencies = pkg:
+        if
+          (pkg ? passthru)
+          && (!builtins.isList (pkg.passthru.dependencies or null))
+          && builtins.isAttrs (pkg.passthru.dependencies or null)
+        then
+          pkg.overrideAttrs (old: {
+            passthru = (old.passthru or { }) // {
+              dependencies =
+                builtins.filter builtins.isDerivation (
+                  map
+                    (name: final.${name} or null)
+                    (builtins.attrNames old.passthru.dependencies)
+                );
+            };
+          })
+        else
+          pkg;
+
       # this is a hack to filter out nvidia deps for torch! it takes in a base package, like pkgs.python311Packages.torchWithoutCuda
       torchHack = { from ? pkgs.python311Packages.torchWithoutCuda }: hacks.nixpkgsPrebuilt {
         inherit from;
@@ -110,6 +132,7 @@ let
       , gitignore ? true
       , enableCuda ? false
       , withDev ? false
+      , _deps ? null
       , _pkgs ? final
       }@args:
       let
@@ -293,7 +316,22 @@ let
           });
         };
         gitignoreRecursiveSource = final.nix-gitignore.gitignoreFilterSourcePure (_: _: true) [ ];
-        workspace = final.uv2nix.lib.workspace.loadWorkspace { workspaceRoot = if gitignore then gitignoreRecursiveSource workspaceRoot else workspaceRoot; };
+        workspaceRoot' = if gitignore then gitignoreRecursiveSource workspaceRoot else workspaceRoot;
+        workspaceLock = final.uv2nix.lib.lock1.parseLock (final.lib.importTOML (workspaceRoot' + "/uv.lock"));
+        workspaceLocalProjects = final.uv2nix.lib.lock1.getLocalProjects {
+          lock = workspaceLock;
+          workspaceRoot = workspaceRoot';
+        };
+        workspace = final.uv2nix.lib.workspace.loadWorkspace { workspaceRoot = workspaceRoot'; };
+        missingWorkspaceProjects = final.lib.attrNames (final.lib.filterAttrs (_: project: !builtins.pathExists project.projectRoot) workspaceLocalProjects);
+        _uvWorkspaceCheck = final.lib.assertMsg (missingWorkspaceProjects == [ ]) ''
+          uv2nix could not load workspace members from workspaceRoot.
+
+          Missing local project directories:
+          ${final.lib.concatMapStringsSep "\n" (m: "- ${m}") missingWorkspaceProjects}
+
+          Ensure your workspaceRoot includes all entries from tool.uv.workspace (e.g. "lib/*").
+        '';
         overlay = workspace.mkPyprojectOverlay {
           # Prefer prebuilt binary wheels as a package source.
           # Sdists are less likely to "just work" because of the metadata missing from uv.lock.
@@ -304,6 +342,38 @@ let
           #   platform_release = "5.10.65";
           # };
         };
+        normalizeResolverDependencies =
+          deps:
+          if builtins.isList deps then
+            final.lib.listToAttrs (map
+              (name: {
+                inherit name;
+                value = [ ];
+              })
+              (builtins.filter final.lib.isString deps))
+          else
+            deps;
+        normalizeResolverPackage =
+          pkg:
+          if
+            (pkg ? passthru)
+            && (builtins.isList (pkg.passthru.dependencies or null))
+          then
+            if pkg ? overrideAttrs then
+              pkg.overrideAttrs (old: {
+                passthru = (old.passthru or { }) // {
+                  dependencies = normalizeResolverDependencies old.passthru.dependencies;
+                };
+              })
+            else
+              pkg // {
+                passthru = (pkg.passthru or { }) // {
+                  dependencies = normalizeResolverDependencies pkg.passthru.dependencies;
+                };
+              }
+          else
+            pkg;
+
         _pyprojectOverrides = _final: _prev:
           let
             add_buildinputs = build_inputs: pkg: pkg.overrideAttrs (old: {
@@ -381,7 +451,7 @@ let
             });
           } // setuptools_required;
 
-        pythonSet =
+        basePythonSet =
           # Use base package set from pyproject.nix builders
           (final.callPackage final.pyproject-nix.build.packages {
             inherit python;
@@ -404,8 +474,43 @@ let
                 pyprojectOverrides
               ] else [ ]))
             );
+        # Resolve from a resolver-local package set so bad passthru.dependencies shapes
+        # (e.g. lists) do not break uv virtualenv dependency resolution.
+        # Keep `pythonSet` as the unmodified set so normal package derivations keep
+        # their original passthru schema.
+        resolveVirtualEnv =
+          spec:
+            map
+              (name: basePythonSet.${name})
+              (final.pyproject-nix.build.lib.resolvers.resolveCyclic
+                (final.lib.mapAttrs (_: normalizeResolverPackage) basePythonSet)
+                spec);
+        pythonSet =
+          basePythonSet
+          // {
+            resolveVirtualEnv = resolveVirtualEnv;
+            mkVirtualEnv = name: spec:
+              basePythonSet.stdenv.mkDerivation (finalAttrs: {
+                inherit name;
+                dontConfigure = true;
+                dontUnpack = true;
+                dontBuild = true;
+                dontPatch = true;
+                venvSkip = [ ];
+                venvIgnoreCollisions = [ ];
+                nativeBuildInputs = [ basePythonSet.pyprojectMakeVenvHook ];
+                env = {
+                  NIX_PYPROJECT_DEPS = final.lib.concatStringsSep ":" (resolveVirtualEnv spec);
+                  dontMoveLib64 = true;
+                  mkVirtualenvFlags = final.lib.concatStringsSep " " (
+                    map (path: "--skip ${path}") finalAttrs.venvSkip
+                    ++ map (pat: "--ignore-collisions ${pat}") finalAttrs.venvIgnoreCollisions
+                  );
+                };
+              });
+          };
 
-        _virtualenv = (pythonSet.mkVirtualEnv envName workspace.deps.all).overrideAttrs (_: { inherit venvIgnoreCollisions; });
+        _virtualenv = (pythonSet.mkVirtualEnv envName (if _deps == null then workspace.deps.all else _deps)).overrideAttrs (_: { inherit venvIgnoreCollisions; });
         libpython = final.runCommand "libpython" { } ''
           mkdir -p $out/lib
           cp -L ${python}/lib/*.so $out/lib/
@@ -421,6 +526,7 @@ let
             }) else _virtualenv;
         _UV_SITE = "${virtualenv}/lib/python${python.pythonVersion}/site-packages";
       in
+      assert _uvWorkspaceCheck;
       virtualenv // rec {
         uvEnvVars = {
           inherit _UV_SITE;
