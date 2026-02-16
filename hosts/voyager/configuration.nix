@@ -69,7 +69,15 @@ in
   };
   programs = {
     command-not-found.enable = false;
-    nix-ld.enable = true;
+    nix-ld = {
+      enable = true;
+      libraries = with pkgs; [
+        libcap
+        xz
+        openssl
+        zlib
+      ];
+    };
   };
 
   security.sudo = common.security.sudo;
