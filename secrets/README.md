@@ -4,6 +4,45 @@ this directory contains encrypted secrets that use [agenix](https://github.com/r
 
 ---
 
+## workflow
+
+### edit an existing secret
+
+```bash
+agenix -e secrets/miniflux.age
+```
+
+### add a new secret
+
+1. Create/edit the encrypted file with agenix:
+
+```bash
+agenix -e secrets/<service>.age
+```
+
+2. Add recipient mapping in [`secrets.nix`](./secrets.nix).
+3. Reference the secret from a host/module config:
+
+```nix
+age.secrets.<service>.file = ../../secrets/<service>.age;
+```
+
+## file naming rules
+
+- use lowercase service-oriented names like `<service>.age`.
+- keep one secret domain per file when practical.
+- never commit plaintext secrets.
+
+## safe update checklist
+
+1. Ensure recipient keys in [`secrets.nix`](./secrets.nix) include every host/user that needs decryption.
+2. Re-encrypt with agenix, do not edit encrypted files manually.
+3. Run a targeted build for affected hosts before merging.
+
+```bash
+nix build .#nixosConfigurations.terra.config.system.build.toplevel
+```
+
 ## In this directory
 
 ### [authelia.age](./authelia.age)

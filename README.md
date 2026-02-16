@@ -4,6 +4,21 @@
 
 _jacobi's nixpkgs configurations, overlays, documentation, and other magic_
 
+## where to start
+
+If you are here for the first time and want to make a safe change:
+
+1. Enter the dev shell with `nix develop`.
+2. Inspect available outputs with `nix flake show`.
+3. Pick an area:
+   - hosts and machine configs: [`hosts/README.md`](./hosts/README.md)
+   - overlays: [`mods/README.md`](./mods/README.md)
+   - package definitions: [`pkgs/README.md`](./pkgs/README.md)
+4. Build the thing you touched:
+   - linux host: `nix build .#nixosConfigurations.<host>.config.system.build.toplevel`
+   - darwin host: `nix build .#darwinConfigurations.<host>.system`
+5. Run full checks before sending a PR: `nix flake check`.
+
 ## interesting stuff
 
 ### [pog](https://pog.gemologic.dev/)

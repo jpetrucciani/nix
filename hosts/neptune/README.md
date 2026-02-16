@@ -10,8 +10,13 @@ This is a bare-metal server running nixos.
 # generate ssh key, add to github
 ssh-keygen -o -a 100 -t ed25519 -C "jacobi@neptune"
 
-# TODO
-# add our user, add to wheel group, add nix.conf to our user conf dir
+# first boot user setup (run as root on the fresh host)
+useradd -m -G wheel -s /run/current-system/sw/bin/bash jacobi
+passwd jacobi
+mkdir -p /home/jacobi/.config/nix
+printf "experimental-features = nix-command flakes\n" >/home/jacobi/.config/nix/nix.conf
+chown -R jacobi:users /home/jacobi/.config
+su - jacobi
 
 # clone repo
 nix-shell -p git
