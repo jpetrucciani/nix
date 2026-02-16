@@ -219,7 +219,15 @@ in
   security.sudo = common.security.sudo;
   programs = {
     command-not-found.enable = false;
-    nix-ld.enable = true;
+    nix-ld = {
+      enable = true;
+      libraries = with pkgs; [
+        libcap
+        xz
+        openssl
+        zlib
+      ];
+    };
   };
   security.pam.loginLimits = [
     { domain = "*"; item = "nofile"; type = "-"; value = "131072"; }
