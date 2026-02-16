@@ -37,7 +37,7 @@ I maintain a large number of nix python packages that are available as overlays 
 
 ### [zaddy](./mods/pkgs/zaddy.nix)
 
-This is a custom build system for the [caddy](https://caddyserver.com/) web server that supports including caddy plugins as part of nix derivations! You can build your own (check out the examples in that module), or use one of my presets `zaddy` (caddy with [caddy-security](sha256-ww1mWXRKD53S8ytFbyKGn7vXZ5rJjvjOFQpdeDWJz4c=), an s3 proxy, geoip blocking, some of my own plugins, etc.) and `zaddy-browser` (just caddy-security and s3 plugins). I also maintain a list of popular plugins that can be included in your build.
+This is a custom build system for the [caddy](https://caddyserver.com/) web server that supports including caddy plugins as part of nix derivations! You can build your own (check out the examples in that module), or use one of my presets `zaddy` (caddy with [`caddy-security`](https://github.com/greenpau/caddy-security), an s3 proxy, geoip blocking, some of my own plugins, etc.) and `zaddy-browser` (just [`caddy-security`](https://github.com/greenpau/caddy-security) and s3 plugins). I also maintain a list of popular plugins that can be included in your build.
 
 ## directories
 

@@ -20,7 +20,7 @@ This directory contains nix packages that I've built that are not yet ready for 
 
 ### [pog/](./pog/)
 
-This directory contains overlays containing tools with my [`pog`](./pog.nix) module! The pog module can create powerful, best practices CLI tools.
+This directory contains overlays containing tools with my [`pog`](https://github.com/jpetrucciani/pog) module! The pog module can create powerful, best practices CLI tools.
 
 ### [python/](./python/)
 

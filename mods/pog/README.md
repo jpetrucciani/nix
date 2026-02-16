@@ -1,12 +1,12 @@
 # pog
 
-This directory contains overlays that create tools with my [`pog`](../pog.nix) module!
+This directory contains overlays that create tools with my [`pog`](https://github.com/jpetrucciani/pog) module!
 
 ---
 
 ## In this directory
 
-### [hex/](./hex/)
+### [hex](https://github.com/jpetrucciani/hex)
 
 Hex is a nix module system that allows us to create powerful abstractions of other languages and configurations via nix! At the moment, this is the most useful for things like kubernetes specs!
 

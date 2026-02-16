@@ -18,33 +18,13 @@ this overlay contains [autogluon packages](https://github.com/autogluon/autogluo
 
 this overlay contains native and api bindings for AI/LLM tooling
 
-### [dataset.nix](./dataset.nix)
-
-this overlay contains dataset and evaluation related packages.
-
-### [deployment.nix](./deployment.nix)
-
-this overlay contains deployment specific packages for AI/LLM stuff
-
 ### [deps.nix](./deps.nix)
 
 this overlay contains random dependencies we need to add for the other libraries in this directory
 
-### [eval.nix](./eval.nix)
-
-this overlay contains evaluation packages, like langfuse
-
 ### [kagi.nix](./kagi.nix)
 
 this overlay contains libraries owned by [kagi](https://github.com/kagisearch/)
-
-### [langchain.nix](./langchain.nix)
-
-this overlay contains python packages for [langchain](https://github.com/langchain-ai/langchain)
-
-### [llama-index.nix](./llama-index.nix)
-
-this overlay contains python packages for [llama-index](https://github.com/run-llama/llama_index)
 
 ### [prompts.nix](./prompts.nix)
 

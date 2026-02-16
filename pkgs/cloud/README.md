@@ -26,7 +26,7 @@ gke-gcloud-auth-plugin is a required plugin for using kubectl with Google's GKE 
 
 [goaws](https://github.com/Admiral-Piett/goaws) is a SQS/SNS Clone for Development testing
 
-### [gofakes3.nix](./gofakes3.nix)
+### [gofakes3/](./gofakes3/)
 
 [gofakes3](https://github.com/johannesboyne/gofakes3) is a fake s3 server
 

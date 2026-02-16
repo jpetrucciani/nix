@@ -70,7 +70,7 @@ This is a nixos install running on top of wsl2!
 
 This file serves as a nice way to reduce duplication across nixos configurations. It contains all my common env setup and services.
 
-### [common-darwin.nix](./common-darwin.nix)
+### [common_darwin.nix](./common_darwin.nix)
 
 shared values for darwin boxes
 

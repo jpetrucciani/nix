@@ -26,10 +26,6 @@ $(nix build --no-link --print-out-paths --extra-experimental-features nix-comman
 
 ## In this directory
 
-### [api.nix](./api.nix)
-
-This file defines the api systemd service
-
 ### [configuration.nix](./configuration.nix)
 
 This file defines the OS configuration for the `neptune` machine.
