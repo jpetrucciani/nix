@@ -1,175 +1,44 @@
 # cli
 
-This directory contains cli tools
+This directory contains cli tools.
+
+Because this directory has many entries, this README intentionally highlights representative tools instead of listing every package.
+
+For the complete list, browse [`pkgs/cli`](./).
 
 ---
 
-## In this directory
-
-### [10mb-video.nix](./10mb-video.nix)
-
-[10mb.video](https://github.com/ugjka/10mb.video) is a tool to help hyper-compress videos!
-
-### [ahab.nix](./ahab.nix)
-
-[ahab](https://github.com/jpetrucciani/ahab) is a tool that allows you to tail one or more docker containers
-
-### [anakin.nix](./anakin.nix)
-
-[anakin](https://github.com/Timmmm/anakin/) is a tool to kill orphan processes
-
-### [arrow-tools.nix](./arrow-tools.nix)
-
-[arrow-tools](https://github.com/domoritz/arrow-tools) is a cli utility for converting CSV/JSON to Apache Arrow and Parquet
-
-### [aws-secretsmanager-agent.nix](./aws-secretsmanager-agent.nix)
-
-[aws-secretsmanager-agent](https://github.com/aws/aws-secretsmanager-agent) is a local HTTP service that you can install and use in your compute environments to read secrets from Secrets Manager and cache them in memory
-
-### [bkt.nix](./bkt.nix)
-
-[bkt](https://github.com/dimo414/bkt) is a subprocess caching utility
-
-### [bonk.nix](./bonk.nix)
-
-[bonk](https://github.com/elliot40404/bonk) is an alternative to the touch command
-
-### [brows.nix](./brows.nix)
-
-[brows](https://github.com/rubysolo/brows) is a CLI tool to browse github releases
-
-### [comcast.nix](./comcast.nix)
-
-[comcast](https://github.com/tylertreat/comcast) is a tool to help in simulating shitty network connections
-
-### [concurrently.nix](./concurrently.nix)
-
-[concurrently](https://github.com/open-cli-tools/concurrently) is a tool for running commands concurrently
-
-### [cronv.nix](./cronv.nix)
-
-[cronv](https://github.com/takumakanari/cronv) is a visualizer for crontab entries
-
-### [dep-tree.nix](./dep-tree.nix)
-
-[dep-tree](https://github.com/gabotechs/dep-tree) allows visualizing code base dependencies
-
-### [dirdiff.nix](./dirdiff.nix)
-
-[dirdiff](https://github.com/ocamlpro/dirdiff) is a tool to compute the differences between two directories
-
-### [e2b-cli.nix](./e2b-cli.nix)
-
-[e2b-cli](https://github.com/e2b-dev/e2b) is the command line client for e2b sandboxes
-
-### [gitlab-ci-verify.nix](./gitlab-ci-verify.nix)
-
-[gitlab-ci-verify](https://github.com/timo-reymann/gitlab-ci-verify) is a tool to help validate/lint gitlab ci files
-
-### [gonzo.nix](./gonzo.nix)
-
-[gonzo](https://github.com/control-theory/gonzo) is the Go based TUI log analysis tool
-
-### [helm-oci.nix](./helm-oci.nix)
-
-[helm-oci](https://github.com/ikimpriv/helm-oci) is a command line tool that is useful for listing helm charts in oci repos
-
-### [html-to-markdown.nix](./html-to-markdown.nix)
-
-[html-to-markdown](https://github.com/JohannesKaufmann/html-to-markdown) is a quick way to convert arbitrary html to markdown documents
-
-### [hunt.nix](./hunt.nix)
-
-[hunt](https://github.com/LyonSyonII/hunt-rs) is a simplified find command in rust
-
-### [kyanite.nix](./kyanite.nix)
-
-[kyanite](https://github.com/gemologic/kyanite) is a high-performance parallel command execution tool for Rust, inspired by GNU parallel and xargs
-
-### [mermaid-rs-renderer.nix](./mermaid-rs-renderer.nix)
-
-[mermaid-rs-renderer](https://github.com/1jehuang/mermaid-rs-renderer) is a fast native rust mermaid diagram renderer
-
-### [mica.nix](./mica.nix)
-
-[mica](https://github.com/gemologic/mica) is an experimental tui for managing nix environments
-
-### [lastresort.nix](./lastresort.nix)
-
-[lastresort](https://github.com/ctsrc/Base256) is a base256 encoder/decoder
-
-### [ov.nix](./ov.nix)
-
-[ov](https://github.com/noborus/ov) is a Feature-rich terminal-based text viewer.
-
-### [pql.nix](./pql.nix)
-
-[pql](https://github.com/runreveal/pql) is a pipeline to sql tool
-
-### [pypipe.nix](./pypipe.nix)
-
-[pypipe](https://github.com/bugen/pypipe) is a python pipe cli tool
-
-### [rainfrog.nix](./rainfrog.nix)
-
-[rainfrog](https://github.com/achristmascarl/rainfrog) is a database management tui for postgres
-
-### [rare.nix](./rare.nix)
-
-[rare](https://github.com/zix99/rare) is a realtime regex extraction and aggregation cli tool
-
-### [sideko.nix](./sideko.nix)
-
-[sideko](https://github.com/Sideko-Inc/sideko) is a tool to generate SDKs and docs for APIs
-
-### [sig.nix](./sig.nix)
-
-[sig](https://github.com/ynqa/sig) is an Interactive grep (for streaming)
-
-### [slack-notifier.nix](./slack-notifier.nix)
-
-[slack-notifier](https://github.com/cloudposse/slack-notifier) is a cli util to send slack messages
-
-### [supabase-cli-stable.nix](./supabase-cli-stable.nix)
-
-[supabase-cli](https://github.com/supabase/cli) is the main CLI interface for [supabase](https://supabase.com). This is updated independently
-
-### [t.nix](./t.nix)
-
-[t](https://github.com/alecthomas/t) is a concise language for manipulating text
-
-### [terraform_1-5-5/](./terraform_1-5-5/)
-
-this directory contains a pinned [terraform](https://github.com/hashicorp/terraform) 1.5.5 build with local patching
-
-### [terramaid.nix](./terramaid.nix)
-
-[terramaid](https://github.com/RoseSecurity/Terramaid) is a utility for generating Mermaid diagrams from Terraform configurations
-
-### [tlsh-go.nix](./tlsh-go.nix)
-
-[tlsh](https://github.com/glaslos/tlsh) is a tlsh implementation in go
-
-### [todo-reminder.nix](./todo-reminder.nix)
-
-[todo-reminder](https://github.com/leo108/todo-reminder) is a command-line tool that scans codebases for TODO comments, tracking deadlines and formatting issues.
-
-### [uesave-rs.nix](./uesave-rs.nix)
-
-[uesave](https://github.com/trumank/uesave-rs) is a rust library for reading and writing UE save files
-
-### [windwarden.nix](./windwarden.nix)
-
-[windwarden](https://github.com/MagicSchoolAi/windwarden) is a cli tool for linting tailwind
-
-### [wush.nix](./wush.nix)
-
-[wush](https://github.com/coder/wush) is a fast way to transfer files between computers with wireguard
-
-### [xlsxsql.nix](./xlsxsql.nix)
-
-[xlsxsql](https://github.com/noborus/xlsxsql) is a cli tool for executing SQL queries on excel files
-
-### [zertbot.nix](./zertbot.nix)
-
-This is my own override of certbot to fix issues in upstream nixpkgs
+## Curated Highlights
+
+### Developer Workflow
+
+- [concurrently.nix](./concurrently.nix): run multiple commands in parallel.
+- [t.nix](./t.nix): concise text transformation language.
+- [hunt.nix](./hunt.nix): simplified fast file search.
+- [sig.nix](./sig.nix): interactive streaming grep.
+- [dep-tree.nix](./dep-tree.nix): visualize codebase dependency graphs.
+
+### Cloud and Infrastructure
+
+- [aws-secretsmanager-agent.nix](./aws-secretsmanager-agent.nix): local cached access to AWS Secrets Manager.
+- [helm-oci.nix](./helm-oci.nix): list and inspect helm charts in OCI registries.
+- [supabase-cli-stable.nix](./supabase-cli-stable.nix): pinned stable Supabase CLI track.
+- [terraform_1-5-5/](./terraform_1-5-5/): patched Terraform 1.5.5 build for legacy workflows.
+- [e2b-cli.nix](./e2b-cli.nix): command line interface for e2b sandbox workflows.
+- [gitlab-ci-verify.nix](./gitlab-ci-verify.nix): validate and lint GitLab CI files.
+
+### Data and Visualization
+
+- [arrow-tools.nix](./arrow-tools.nix): convert CSV/JSON into Arrow/Parquet data formats.
+- [pql.nix](./pql.nix): pipeline-to-SQL query tool.
+- [mermaid-rs-renderer.nix](./mermaid-rs-renderer.nix): fast native mermaid rendering.
+- [terramaid.nix](./terramaid.nix): render terraform into mermaid diagrams.
+- [xlsxsql.nix](./xlsxsql.nix): run SQL queries against Excel files.
+
+### Ops and Diagnostics
+
+- [wush.nix](./wush.nix): fast file transfer between machines over WireGuard.
+- [comcast.nix](./comcast.nix): simulate degraded network conditions locally.
+- [gonzo.nix](./gonzo.nix): TUI log analysis for incident debugging.
+- [rare.nix](./rare.nix): realtime regex extraction and aggregation.
+- [todo-reminder.nix](./todo-reminder.nix): scan code for TODO deadlines and formatting issues.

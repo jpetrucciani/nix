@@ -2,98 +2,47 @@
 
 This directory contains overlays that create tools with my [`pog`](https://github.com/jpetrucciani/pog) module!
 
+Because this directory has many modules, this README highlights the most commonly useful ones instead of listing every file.
+
+For the complete list, browse [`mods/pog`](./).
+
 ---
 
-## In this directory
+## Curated Highlights
 
 ### [hex](https://github.com/jpetrucciani/hex)
 
 Hex is a nix module system that allows us to create powerful abstractions of other languages and configurations via nix! At the moment, this is the most useful for things like kubernetes specs!
 
-### [aws.nix](./aws.nix)
+### Cloud and Cluster Ops
 
-This module makes some AWS related tools with `pog`.
+- [aws.nix](./aws.nix): AWS-focused wrappers for common operations.
+- [gcp.nix](./gcp.nix): GCP-focused wrappers for common operations.
+- [k8s.nix](./k8s.nix): Kubernetes productivity wrappers.
+- [k3s.nix](./k3s.nix): k3s-specific maintenance and operational helpers.
+- [helm.nix](./helm.nix): Helm chart and repository analysis helpers.
 
-### [curl.nix](./curl.nix)
+### Local Development
 
-this file provides some pog wrappers around curl to make it a bit more ergonomic
+- [db.nix](./db.nix): local database helpers for postgres, redis, and friends.
+- [docker.nix](./docker.nix): docker wrappers for routine container workflows.
+- [nix.nix](./nix.nix): helper commands for creating and managing nix environments.
+- [ignore.nix](./ignore.nix): reusable gitignore line generators for common stacks.
+- [general.nix](./general.nix): miscellaneous day-to-day helper commands.
 
-### [db.nix](./db.nix)
+### API and Automation
 
-this set of pog scripts allows us to use postgres, redis, etc. in local dev environments via nix
+- [curl.nix](./curl.nix): ergonomic wrappers around curl usage patterns.
+- [github.nix](./github.nix): CLI helpers for interacting with GitHub.
+- [gitlab.nix](./gitlab.nix): CLI helpers for interacting with GitLab.
+- [notion.nix](./notion.nix): wrappers for Notion API interactions.
+- [discord.nix](./discord.nix): wrappers for Discord automation tasks.
+- [loki.nix](./loki.nix): log query wrappers for Loki endpoints.
+- [ssh.nix](./ssh.nix): wrappers around SSH operations.
 
-### [discord.nix](./discord.nix)
+### Media and Utility Modules
 
-this file provides some pog wrappers for discord features
-
-### [docker.nix](./docker.nix)
-
-This module creates some `pog` tools that help make you more productive in Docker!
-
-### [ebook.nix](./ebook.nix)
-
-This module provides `pog` helpers for ebook tooling workflows.
-
-### [ffmpeg.nix](./ffmpeg.nix)
-
-This module provides some shorthand `pog` helpers that simplify some ffmpeg workflows!
-
-### [gcp.nix](./gcp.nix)
-
-This module makes some GCP related tools with `pog`.
-
-### [general.nix](./general.nix)
-
-This module provides miscellaneous `pog` implemented tools
-
-### [github.nix](./github.nix)
-
-This module provides some tools that interact with GitHub
-
-### [gitlab.nix](./gitlab.nix)
-
-This module provides some tools that interact with Gitlab
-
-### [hax.nix](./hax.nix)
-
-This module provides some hacky `pog` tools!
-
-### [helm.nix](./helm.nix)
-
-This module provides some tools for analyzing helm repos and charts!
-
-### [ignore.nix](./ignore.nix)
-
-this module sets up a list of gitignore lines for various languages
-
-### [k3s.nix](./k3s.nix)
-
-This module creates some `pog` tools specific to [k3s](https://github.com/k3s-io/k3s) cluster maintenance!
-
-### [k8s.nix](./k8s.nix)
-
-This module creates some `pog` tools that help make you more productive in [Kubernetes](https://kubernetes.io/)!
-
-### [loki.nix](./loki.nix)
-
-this file provides some pog wrappers around curl for communicating with loki
-
-### [nix.nix](./nix.nix)
-
-This module configures some helper tools for creating new nix environments!
-
-### [notion.nix](./notion.nix)
-
-this pog module includes tools to interact with notion
-
-### [resources/](./resources/)
-
-This directory contains static resources used by some `pog` modules.
-
-### [sound.nix](./sound.nix)
-
-This module contains a `soundScript` wrapper that uses `pog` to create command line sound bites!
-
-### [ssh.nix](./ssh.nix)
-
-this set of pog scripts creates some wrappers around ssh to make things easier
+- [ffmpeg.nix](./ffmpeg.nix): media conversion shortcuts around ffmpeg.
+- [sound.nix](./sound.nix): sound bite CLI wrappers.
+- [ebook.nix](./ebook.nix): ebook tooling helpers.
+- [resources/](./resources/): static assets used by selected pog modules.
