@@ -17,3 +17,7 @@ This script is a shorthand to load up nix (on non-nixos linux, windows with WSL2
 ```bash
 curl -L https://cobi.dev/nixup | bash
 ```
+
+### [files/](./files/)
+
+supporting static files used by scripts and host bootstrap flows.

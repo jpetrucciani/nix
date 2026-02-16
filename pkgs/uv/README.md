@@ -17,3 +17,7 @@ this directory contains apps built with uv2nix using my wrapper
 ### [vllm.nix](./vllm.nix)
 
 [vllm](https://github.com/vllm-project/vllm) is a high-throughput and memory-efficient inference and serving engine for LLMs
+
+### [zit-api/](./zit-api/)
+
+workspace for future uv2nix packaging related to zit-api

@@ -74,6 +74,10 @@ this overlay injects various javascript helpers into scope
 
 This overlay provides new helpers for programming languages (like [vlang](https://vlang.io/) and [nim](https://nim-lang.org)). These helpers provide a default set of packages, and a way to build environments that link these packages into the build environment.
 
+### [ocaml/](./ocaml/)
+
+This directory contains OCaml-specific overlay packages and helpers.
+
 ### [override.nix](./override.nix)
 
 This overlay provides some overrides/fixes for various packages

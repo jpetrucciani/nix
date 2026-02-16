@@ -18,6 +18,10 @@ This directory contains cli tools
 
 [anakin](https://github.com/Timmmm/anakin/) is a tool to kill orphan processes
 
+### [arrow-tools.nix](./arrow-tools.nix)
+
+[arrow-tools](https://github.com/domoritz/arrow-tools) is a cli utility for converting CSV/JSON to Apache Arrow and Parquet
+
 ### [aws-secretsmanager-agent.nix](./aws-secretsmanager-agent.nix)
 
 [aws-secretsmanager-agent](https://github.com/aws/aws-secretsmanager-agent) is a local HTTP service that you can install and use in your compute environments to read secrets from Secrets Manager and cache them in memory
@@ -38,6 +42,10 @@ This directory contains cli tools
 
 [comcast](https://github.com/tylertreat/comcast) is a tool to help in simulating shitty network connections
 
+### [concurrently.nix](./concurrently.nix)
+
+[concurrently](https://github.com/open-cli-tools/concurrently) is a tool for running commands concurrently
+
 ### [cronv.nix](./cronv.nix)
 
 [cronv](https://github.com/takumakanari/cronv) is a visualizer for crontab entries
@@ -49,6 +57,10 @@ This directory contains cli tools
 ### [dirdiff.nix](./dirdiff.nix)
 
 [dirdiff](https://github.com/ocamlpro/dirdiff) is a tool to compute the differences between two directories
+
+### [e2b-cli.nix](./e2b-cli.nix)
+
+[e2b-cli](https://github.com/e2b-dev/e2b) is the command line client for e2b sandboxes
 
 ### [gitlab-ci-verify.nix](./gitlab-ci-verify.nix)
 
@@ -77,6 +89,10 @@ This directory contains cli tools
 ### [mermaid-rs-renderer.nix](./mermaid-rs-renderer.nix)
 
 [mermaid-rs-renderer](https://github.com/1jehuang/mermaid-rs-renderer) is a fast native rust mermaid diagram renderer
+
+### [mica.nix](./mica.nix)
+
+[mica](https://github.com/gemologic/mica) is an experimental tui for managing nix environments
 
 ### [lastresort.nix](./lastresort.nix)
 
@@ -122,6 +138,10 @@ This directory contains cli tools
 
 [t](https://github.com/alecthomas/t) is a concise language for manipulating text
 
+### [terraform_1-5-5/](./terraform_1-5-5/)
+
+this directory contains a pinned [terraform](https://github.com/hashicorp/terraform) 1.5.5 build with local patching
+
 ### [terramaid.nix](./terramaid.nix)
 
 [terramaid](https://github.com/RoseSecurity/Terramaid) is a utility for generating Mermaid diagrams from Terraform configurations
@@ -137,6 +157,10 @@ This directory contains cli tools
 ### [uesave-rs.nix](./uesave-rs.nix)
 
 [uesave](https://github.com/trumank/uesave-rs) is a rust library for reading and writing UE save files
+
+### [windwarden.nix](./windwarden.nix)
+
+[windwarden](https://github.com/MagicSchoolAi/windwarden) is a cli tool for linting tailwind
 
 ### [wush.nix](./wush.nix)
 

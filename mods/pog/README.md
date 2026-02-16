@@ -30,6 +30,10 @@ this file provides some pog wrappers for discord features
 
 This module creates some `pog` tools that help make you more productive in Docker!
 
+### [ebook.nix](./ebook.nix)
+
+This module provides `pog` helpers for ebook tooling workflows.
+
 ### [ffmpeg.nix](./ffmpeg.nix)
 
 This module provides some shorthand `pog` helpers that simplify some ffmpeg workflows!
@@ -81,6 +85,10 @@ This module configures some helper tools for creating new nix environments!
 ### [notion.nix](./notion.nix)
 
 this pog module includes tools to interact with notion
+
+### [resources/](./resources/)
+
+This directory contains static resources used by some `pog` modules.
 
 ### [sound.nix](./sound.nix)
 

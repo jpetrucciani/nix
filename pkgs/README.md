@@ -37,3 +37,7 @@ This directory contains prometheus exporters
 ### [server/](./server/)
 
 This directory contains specific servers
+
+### [uv/](./uv/)
+
+This directory contains apps built with uv2nix using my wrapper

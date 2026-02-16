@@ -22,6 +22,10 @@ This is a bare-metal physical nixos server!
 
 This is my work M1 Max Macbook, running MacOS and using nix-darwin and home-manager to manage things.
 
+### [mars/](./mars)
+
+This is a bare-metal physical nixos server!
+
 ### [milkyway/](./milkyway/)
 
 This is a nixos install running on top of wsl2!
@@ -49,6 +53,10 @@ This is my personal M2 Max Macbook, running MacOS and using nix-darwin and home-
 ### [polaris/](./polaris)
 
 This is a _large_ bare-metal nixos server with dual rtx a6000s!
+
+### [proteus/](./proteus)
+
+This is a small nixos laptop!
 
 ### [styx/](./styx)
 
