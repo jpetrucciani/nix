@@ -11,6 +11,18 @@ jobs:
             extra-substituters = https://cache.g7c.us
             extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
       - run: nix run .#jfmt -- --ci
+  docs:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            extra-substituters = https://cache.g7c.us
+            extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
+      - run: nix --show-trace build .#scripts.check_doc_links .#scripts.check_readme_index
+      - run: nix --show-trace run .#scripts.check_doc_links
+      - run: nix --show-trace run .#scripts.check_readme_index
   vale:
     runs-on: ubuntu-24.04
     steps:

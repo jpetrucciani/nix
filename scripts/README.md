@@ -2,6 +2,8 @@
 
 This directory contains various random scripts that I use in this repo, or in packages created by this repo.
 
+Docs validation helpers are defined in [`../scripts.nix`](../scripts.nix) as `writeBashBinChecked` derivations and exposed as `.#scripts.*` flake outputs.
+
 ---
 
 ## In this directory
