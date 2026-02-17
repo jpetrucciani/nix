@@ -21,6 +21,11 @@ let
     base_url = "https://prefecthq.github.io/prefect-helm";
     chart_url = "https://prefecthq.github.io/prefect-helm/charts/${name}-{1}.tgz";
   };
+  trino_chart = { name }: _chart_scan {
+    inherit name;
+    base_url = "https://trinodb.github.io/charts";
+    chart_url = "https://github.com/trinodb/charts/releases/download/${name}-{1}/${name}-{1}.tgz";
+  };
 
   ocihash = final.pog {
     name = "ocihash";
@@ -491,6 +496,9 @@ rec {
   chart_scan_prefect-server = prefect_chart { name = "prefect-server"; };
   chart_scan_prefect-worker = prefect_chart { name = "prefect-worker"; };
 
+  chart_scan_trino = trino_chart { name = "trino"; };
+  chart_scan_trino-gateway = trino_chart { name = "trino-gateway"; };
+
   helm_pog_scripts = [
     chart_scan_alloy
     chart_scan_airflow
@@ -551,5 +559,7 @@ rec {
     chart_scan_stackstorm
     chart_scan_tempo
     chart_scan_traefik
+    chart_scan_trino
+    chart_scan_trino-gateway
   ];
 }
