@@ -317,6 +317,7 @@ rec {
   chart_scan_prometheus-elasticsearch-exporter = prometheus_chart { name = "prometheus-elasticsearch-exporter"; };
   chart_scan_prometheus-mongodb-exporter = prometheus_chart { name = "prometheus-mongodb-exporter"; last = 10; };
   chart_scan_prometheus-mysql-exporter = prometheus_chart { name = "prometheus-mysql-exporter"; last = 10; };
+  chart_scan_prometheus-nats-exporter = prometheus_chart { name = "prometheus-nats-exporter"; last = 10; };
   chart_scan_prometheus-postgres-exporter = prometheus_chart { name = "prometheus-postgres-exporter"; };
   chart_scan_prometheus-pushgateway = prometheus_chart { name = "prometheus-pushgateway"; last = 10; };
   chart_scan_prometheus-redis-exporter = prometheus_chart { name = "prometheus-redis-exporter"; last = 10; };
@@ -543,6 +544,7 @@ rec {
     chart_scan_prometheus-elasticsearch-exporter
     chart_scan_prometheus-mongodb-exporter
     chart_scan_prometheus-mysql-exporter
+    chart_scan_prometheus-nats-exporter
     chart_scan_prometheus-postgres-exporter
     chart_scan_prometheus-pushgateway
     chart_scan_prometheus-redis-exporter
