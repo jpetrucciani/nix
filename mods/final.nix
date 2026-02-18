@@ -148,7 +148,7 @@ let
     });
   codex-latest =
     let
-      version = "0.103.0";
+      version = "0.104.0";
       fixedPkgs = import
         (final.fetchFromGitHub {
           owner = "NixOS";
@@ -161,7 +161,7 @@ let
         owner = "openai";
         repo = "codex";
         tag = "rust-v${version}";
-        hash = "sha256-uvDeyOfD7sYHH3ekDRITfDkeAFj/iCCzc4Dg1itnvZs=";
+        hash = "sha256-spWb/msjl9am7E4UkZfEoH0diFbvAfydJKJQM1N1aoI=";
       };
     in
     prev.codex.overrideAttrs (old: {
