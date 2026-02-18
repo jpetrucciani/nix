@@ -126,8 +126,8 @@ let
 
   llama-cpp-latest =
     let
-      version = "8074";
-      hash = "sha256-obqdvzQORihX/yqK0PgPQqRgiKabv4ClUfha3ffTP8I=";
+      version = "8093";
+      hash = "sha256-/LO6DsAi4SfQfJkDTS++7gCDizsZFEw1/2yDlcKwvmM=";
     in
     prev.llama-cpp.overrideAttrs (old: {
       inherit version;
@@ -142,7 +142,7 @@ let
           find "$out" -name .git -print0 | xargs -0 rm -rf
         '';
       };
-      npmDepsHash = "sha256-bbv0e3HZmqpFwKELiEFBgoMr72jKbsX20eceH4XjfBA=";
+      npmDepsHash = "sha256-FKjoZTKm0ddoVdpxzYrRUmTiuafEfbKc4UD2fz2fb8A=";
       # hack for mac dylib?
       cmakeFlags = if final.stdenv.isDarwin then old.cmakeFlags ++ [ "-DLLAMA_BUILD_NUMBER=1" ] else old.cmakeFlags;
     });
