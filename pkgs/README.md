@@ -30,6 +30,10 @@ This directory contains derivations that are just libraries for other derivation
 
 This is a catch-all directory, for anything that doesn't fit nicely into other directories
 
+### [mcp/](./mcp/)
+
+This directory contains Model Context Protocol (MCP) servers
+
 ### [prometheus/](./prometheus/)
 
 This directory contains prometheus exporters

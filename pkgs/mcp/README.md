@@ -1,6 +1,6 @@
 # mcp
 
-This directory contains Model Context Protocol (MCP) servers.
+This directory contains Model Context Protocol (MCP) servers
 
 ---
 
