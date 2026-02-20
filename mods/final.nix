@@ -166,7 +166,7 @@ let
     in
     prev.codex.overrideAttrs (old: {
       inherit version src;
-      buildInputs = (old.buildInputs or [ ]) ++ [ final.libcap ];
+      buildInputs = (old.buildInputs or [ ]) ++ (final.lib.optionals final.stdenv.isLinux [ final.libcap ]);
       cargoDeps = fixedPkgs.rustPlatform.fetchCargoVendor {
         inherit src;
         sourceRoot = "${src.name}/codex-rs";
