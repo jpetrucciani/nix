@@ -18,7 +18,6 @@ jobs:
           - k8s_gcp
           - nix
           # - pypi
-          - python311
           - python312
           - python313
           - python314
