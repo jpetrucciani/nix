@@ -17,6 +17,8 @@ rec {
           format = "other";
         } else prev.tkinter;
 
+  sphinx = if pythonOlder "3.12" then null else prev.sphinx;
+
   sqlalchemy_1 =
     let
       version = "1.4.48";
