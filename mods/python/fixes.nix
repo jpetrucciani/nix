@@ -17,7 +17,17 @@ rec {
           format = "other";
         } else prev.tkinter;
 
-  sphinx = if pythonOlder "3.12" then null else prev.sphinx;
+  sphinx =
+    if pythonOlder "3.12" then
+      final.buildPythonPackage
+        {
+          pname = "sphinx";
+          version = "9.1.0";
+          format = "other";
+          dontUnpack = true;
+          dontBuild = true;
+          installPhase = "mkdir -p $out/lib/python3.11/site-packages";
+        } else prev.sphinx;
 
   sqlalchemy_1 =
     let
