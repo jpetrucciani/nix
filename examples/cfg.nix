@@ -1,8 +1,8 @@
 { pkgs ? import
     (fetchTarball {
-      name = "jpetrucciani-2025-09-19";
-      url = "https://github.com/jpetrucciani/nix/archive/a98858e842d0dd04a98d081a20646e42826d1f5d.tar.gz";
-      sha256 = "06skqwk3zcgbwc9wczbaa18dcrjq3izykvmizqadgwrql6cybk6a";
+      name = "jpetrucciani-2026-02-24";
+      url = "https://github.com/jpetrucciani/nix/archive/c759c89863772065f4c257c56b029d0c67ce0673.tar.gz";
+      sha256 = "1wr033lxrcqsizbgmz2p2mhca8wz6c6wsfdmfzfrxx7wzf5r2dmf";
     })
     { }
 }:
@@ -22,7 +22,7 @@ let
       jq
       just
       moreutils
-      nodePackages.prettier
+      oxfmt
       scc
       yq-go
       (writeShellScriptBin "hms" ''

@@ -928,15 +928,15 @@
         "nixpkgs": "nixpkgs_8"
       },
       "locked": {
-        "lastModified": 1770228511,
-        "narHash": "sha256-wQ6NJSuFqAEmIg2VMnLdCnUc0b7vslUohqqGGD+Fyxk=",
-        "owner": "numtide",
+        "lastModified": 1771968063,
+        "narHash": "sha256-6NzJE4Wv4hc4oekOePtJOGIKzMXAdvpoUJVBbcjhkXc=",
+        "owner": "jpetrucciani",
         "repo": "treefmt-nix",
-        "rev": "337a4fe074be1042a35086f15481d763b8ddc0e7",
+        "rev": "c8df0e67b8b9db15bb7d343da4772b402fd14d3a",
         "type": "github"
       },
       "original": {
-        "owner": "numtide",
+        "owner": "jpetrucciani",
         "repo": "treefmt-nix",
         "type": "github"
       }

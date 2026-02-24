@@ -503,6 +503,10 @@ in
       target = "prettier.config.js";
       text = builtins.readFile ./prettier.config.js;
     };
+    oxfmt_config = {
+      target = ".oxfmtrc.json";
+      text = builtins.toJSON pkgs._oxfmt;
+    };
     ${attrIf isLinux "gpgconf"} = {
       target = ".gnupg/gpg.conf";
       text = ''

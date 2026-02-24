@@ -38,7 +38,7 @@
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
     pog.url = "github:jpetrucciani/pog";
-    treefmt-nix.url = "github:numtide/treefmt-nix";
+    treefmt-nix.url = "github:jpetrucciani/treefmt-nix";
     vscode-server = {
       url = "github:nix-community/nixos-vscode-server";
       inputs.nixpkgs.follows = "nixpkgs";

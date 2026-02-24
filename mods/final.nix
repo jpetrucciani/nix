@@ -12,6 +12,20 @@ let
     ])
     final.custom;
 
+  _oxfmt = {
+    printWidth = 120;
+    arrowParens = "always";
+    singleQuote = true;
+    tabWidth = 2;
+    useTabs = false;
+    semi = true;
+    bracketSpacing = true;
+    bracketSameLine = false;
+    proseWrap = "preserve";
+    trailingComma = "all";
+    ignorePatterns = [ "flake.lock" ];
+  };
+
   _treefmt =
     let
       defaults = {
@@ -31,21 +45,9 @@ let
           statix.enable = true;
 
           # js/md/yaml/etc.
-          prettier = {
+          oxfmt = {
             enable = true;
-            settings = {
-              printWidth = 120;
-              arrowParens = "always";
-              singleQuote = true;
-              tabWidth = 2;
-              useTabs = false;
-              semi = true;
-              bracketSpacing = true;
-              bracketSameLine = false;
-              requirePragma = false;
-              proseWrap = "preserve";
-              trailingComma = "all";
-            };
+            settings = _oxfmt;
           };
 
           # bash
@@ -183,7 +185,7 @@ in
     ignoreCollisions = true;
   };
 
-  inherit _treefmt;
+  inherit _treefmt _oxfmt;
   jfmt = _treefmt;
 
   _nix = final.nixVersions.nix_2_32;
