@@ -121,10 +121,8 @@ in
         User = cfg.user;
         Group = cfg.group;
 
-        NoNewPrivileges = true;
         PrivateTmp = true;
         PrivateDevices = false;
-        ProtectSystem = "strict";
         ProtectHome = true;
 
         DeviceAllow = [ "/dev/nvme* rw" "/dev/ng* rw" ];
