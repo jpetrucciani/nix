@@ -125,10 +125,7 @@ in
         PrivateDevices = false;
         ProtectHome = true;
 
-        DeviceAllow = [ "/dev/nvme* rw" "/dev/ng* rw" ];
-
         AmbientCapabilities = "CAP_SYS_RAWIO";
-        CapabilityBoundingSet = "CAP_SYS_RAWIO";
       };
     };
   };
