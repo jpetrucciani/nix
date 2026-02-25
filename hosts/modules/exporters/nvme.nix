@@ -123,11 +123,11 @@ in
 
         NoNewPrivileges = true;
         PrivateTmp = true;
-        PrivateDevices = false; # matches `PrivateDevices=no`
+        PrivateDevices = false;
         ProtectSystem = "strict";
         ProtectHome = true;
 
-        DeviceAllow = [ "/dev/nvme* r" ];
+        DeviceAllow = [ "/dev/nvme* rw" "/dev/ng* rw" ];
 
         AmbientCapabilities = "CAP_SYS_RAWIO";
         CapabilityBoundingSet = "CAP_SYS_RAWIO";
