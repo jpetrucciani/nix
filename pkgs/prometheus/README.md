@@ -22,6 +22,10 @@ This directory contains prometheus exporters
 
 [nrpe-exporter](https://github.com/canonical/nrpe_exporter) is a Prometheus exporter for generating metrics from commands executed by a running NRPE daemon
 
+### [nvme-exporter.nix](./nvme-exporter.nix)
+
+[nvme-exporter](https://github.com/jpetrucciani/nvme-exporter) is a lightweight nvme stats exporter
+
 ### [prometheus-folder-size-exporter.nix](./prometheus-folder-size-exporter.nix)
 
 [prometheus-folder-size-exporter](https://github.com/MindFlavor/prometheus_folder_size_exporter) is a prometheus exporter for directory sizes

@@ -28,11 +28,12 @@ let
     , postInstall ? ""
     , prePack ? ""
     , postPack ? ""
+    , imports ? [ ]
     }:
     let
       defaults = { system.stateVersion = final.lib.mkDefault "25.05"; };
       empty = final.nixos defaults;
-      os = final.nixos { imports = [ defaults conf ]; };
+      os = final.nixos { imports = [ defaults ] ++ imports ++ [ conf ]; };
       uniqueKeys = a: b: filter (k: !hasAttr k b) (attrNames a);
       systemd-units = uniqueKeys os.config.systemd.units empty.config.systemd.units;
       enable_units = filter (x: !(hasSuffix ".target" x)) systemd-units;
@@ -168,6 +169,7 @@ in
 
       # examples
       amazon-ssm-agent = _snowball { name = "amazon-ssm-agent"; conf = { services.amazon-ssm-agent.enable = true; }; };
+      nvme-exporter = _snowball { name = "nvme-exporter"; conf = { imports = [ ../hosts/modules/exporters/nvme.nix ]; services.nvme-exporter.enable = true; }; };
       earlyoom = _snowball {
         name = "earlyoom";
         conf = {
