@@ -14,6 +14,10 @@ configuration modules
 
 this directory contains modules for nix-darwin!
 
+### [exporters/](./exporters/)
+
+this directory contains modules for prometheus exporters
+
 ### [games/](./games/)
 
 This directory contains games and game servers as nix modules!
