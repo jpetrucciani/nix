@@ -86,6 +86,29 @@ in
   environment.systemPackages = [ pkgs.k3s ];
 
   services = {
+    nats =
+      let
+        megs = x: 1024 * 1024 * x;
+      in
+      {
+        enable = true;
+        port = 4222;
+        serverName = "neptune";
+        settings = {
+          max_connections = 100;
+          max_payload = megs 1;
+          http_port = 8222;
+          debug = false;
+          trace = false;
+          logtime = true;
+          jetstream = {
+            enabled = true;
+            store_dir = "/var/lib/nats";
+            max_memory_store = megs 1024;
+            max_file_store = megs 10240;
+          };
+        };
+      };
     k3s = {
       enable = true;
       role = "server";
@@ -96,7 +119,7 @@ in
       port = 8420;
       controlPort = 8421;
     };
-    infinity.enable = true;
+    infinity.enable = false;
     ombi = {
       enable = true;
       port = 5999;
