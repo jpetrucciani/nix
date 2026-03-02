@@ -6,14 +6,14 @@ in
 rec {
   ty = buildPythonPackage rec {
     pname = "ty";
-    version = "0.0.19";
+    version = "0.0.20";
     pyproject = true;
 
     src = fetchFromGitHub {
       owner = "astral-sh";
       repo = "ty";
       rev = "refs/tags/${version}";
-      hash = "sha256-KBpbkwmbUzuNDcoUyf4Osz5HSW21d6gBu2mOqdOH+ng=";
+      hash = "sha256-NJ2RA12NZDmYdrSK9p+KfYiE36KA1RkolSchMRU7pHQ=";
       fetchSubmodules = true;
     };
 
@@ -25,7 +25,7 @@ rec {
     cargoDeps = rustPlatform.importCargoLock {
       lockFile = "${src}/ruff/Cargo.lock";
       outputHashes = {
-        "lsp-types-0.95.1" = "sha256-8Oh299exWXVi6A39pALOISNfp8XBya8z+KT/Z7suRxQ=";
+        "lsp-types-0.95.1" = "sha256-2F43Qa6mXhpCF97cWoi1R0PDgutkEypbyDGtHZerpxM=";
         "salsa-0.26.0" = "sha256-aQVI2iaBwVhHDN5sPjyqeRy1Mhh0HZEDms/NpaSAS4A=";
       };
     };
