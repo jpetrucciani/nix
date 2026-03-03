@@ -276,6 +276,33 @@ in
   systemd.services.k3s.after = [ "network-online.service" "firewall.service" ];
   systemd.services.k3s.serviceConfig.KillMode = pkgs.lib.mkForce "control-group";
 
+  # iolite
+  systemd.services.iolite-eod-backfill = {
+    description = "Iolite EOD backfill";
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      User = "jacobi";
+      WorkingDirectory = "/home/jacobi/svc/iolite";
+    };
+    script = ''
+      set -euo pipefail
+      cd /home/jacobi/svc/iolite
+      ${pkgs.direnv}/bin/direnv exec . eod_backfill
+    '';
+  };
+
+  systemd.timers.iolite-eod-backfill = {
+    description = "Nightly iolite eod_backfill";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      Unit = "iolite-eod-backfill.service";
+      OnCalendar = "*-*-* 01:30:00 UTC";
+      Persistent = true;
+    };
+  };
+
   # https://github.com/NixOS/nixpkgs/issues/98766
   boot.kernelModules = [ "br_netfilter" "ip_conntrack" "ip_vs" "ip_vs_rr" "ip_vs_wrr" "ip_vs_sh" "overlay" ];
   networking.firewall.extraCommands = ''
