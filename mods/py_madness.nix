@@ -403,6 +403,7 @@ let
               "jsonpath-rw"
               "markupsafe"
               "multitasking"
+              "mysqlclient"
               "numpy"
               "peewee"
               "py-lets-be-rational"
