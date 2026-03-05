@@ -450,9 +450,17 @@ let
               buildInputs = (old.buildInputs or [ ]) ++ [ final.libffi _final.setuptools ];
               nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.pkg-config ];
             });
-            pydantic-core = _prev.pydantic-core.overrideAttrs (old: {
-              buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ python.pkgs.puccinialin cython setuptools maturin ]);
-            });
+            pydantic-core =
+              let
+                inherit (_prev) pydantic-core;
+              in
+              if (pydantic-core.passthru.format or null) == "pyproject" then
+                pydantic-core.overrideAttrs
+                  (old: {
+                    buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ python.pkgs.puccinialin cython setuptools maturin ]);
+                  })
+              else
+                pydantic-core;
           } // setuptools_required;
 
         basePythonSet =
