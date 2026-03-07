@@ -19,7 +19,7 @@ hero:
 features:
   - icon: ❄️
     title: One Pinned Base
-    details: 'The repo starts from one pinned <code>nixpkgs</code>, Nix''s main package collection, then layers flake inputs and local overlays on top so packages and machines share the same foundation.'
+    details: "The repo starts from one pinned <code>nixpkgs</code>, Nix's main package collection, then layers flake inputs and local overlays on top so packages and machines share the same foundation."
     link: /architecture
     linkText: Read the architecture
 

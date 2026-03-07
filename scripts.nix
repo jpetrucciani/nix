@@ -20,9 +20,84 @@ in
         fi
       }
 
+      is_docs_markdown() {
+        case "$1" in
+          docs/*)
+            return 0
+            ;;
+          *)
+            return 1
+            ;;
+        esac
+      }
+
+      file_exists() {
+        [ -f "$1" ] || [ -L "$1" ]
+      }
+
+      docs_route_exists() {
+        local route="$1"
+
+        route="''${route#/}"
+        route="''${route%/}"
+
+        if [ -z "$route" ]; then
+          file_exists "docs/index.md"
+          return
+        fi
+
+        file_exists "docs/public/$route" \
+          || file_exists "docs/$route" \
+          || file_exists "docs/$route.md" \
+          || file_exists "docs/$route/index.md"
+      }
+
+      docs_relative_exists() {
+        local dir="$1"
+        local target="$2"
+        local route="$target"
+
+        route="''${route%/}"
+        if [ -z "$route" ]; then
+          route="."
+        fi
+
+        file_exists "$dir/$target" \
+          || file_exists "$dir/$route.md" \
+          || file_exists "$dir/$route/index.md"
+      }
+
+      link_exists() {
+        local md="$1"
+        local target="$2"
+        local dir resolved
+
+        dir="$(dirname "$md")"
+
+        if is_docs_markdown "$md"; then
+          case "$target" in
+            /*)
+              docs_route_exists "$target"
+              return
+              ;;
+            *)
+              docs_relative_exists "$dir" "$target"
+              return
+              ;;
+          esac
+        fi
+
+        if [ "''${target#/}" != "$target" ]; then
+          resolved=".$target"
+        else
+          resolved="$dir/$target"
+        fi
+
+        [ -e "$resolved" ]
+      }
+
       while IFS= read -r md; do
         [ -z "$md" ] && continue
-        dir="$(dirname "$md")"
 
         while IFS= read -r match; do
           target="$(printf '%s\n' "$match" | sed -E 's#^.*\(([^)]*)\)$#\1#')"
@@ -35,13 +110,7 @@ in
               ;;
           esac
 
-          if [ "''${target#/}" != "$target" ]; then
-            resolved=".$target"
-          else
-            resolved="$dir/$target"
-          fi
-
-          if [ ! -e "$resolved" ]; then
+          if ! link_exists "$md" "$target"; then
             printf '%s -> %s\n' "$md" "$target"
             broken_links=$((broken_links + 1))
           fi

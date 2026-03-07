@@ -5,7 +5,7 @@
 ## Why It Matters Here
 
 - This repo packages `mica` at `pkgs/cli/mica.nix`, so it is available as part of the same pinned package set.
-- It fits the repo's broader goal of making Nix more ergonomic, not just more correct.
+- It fits the repo's broader goal of making Nix more ergonomic.
 - It is a good on-ramp for people who want reproducible package environments before they are ready for a full Home Manager setup.
 
 ## A Lightweight Alternative To Home Manager, For Packages

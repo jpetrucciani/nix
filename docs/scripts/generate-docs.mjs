@@ -83,7 +83,8 @@ const packagePurposeOverrides = {
   'pkgs/mcp/prom-mcp.nix': 'Builds an MCP server for Prometheus queries and metrics workflows.',
   'pkgs/server/obligator.nix': 'Builds the `obligator` self-hosted OpenID Connect server.',
   'pkgs/server/poglets.nix': 'Builds `poglets`, a TCP tunneling system with shell completion support.',
-  'pkgs/server/vercel-log-drain.nix': 'Builds `vercel-log-drain`, a service for exporting Vercel logs to additional outputs.',
+  'pkgs/server/vercel-log-drain.nix':
+    'Builds `vercel-log-drain`, a service for exporting Vercel logs to additional outputs.',
   'pkgs/uv/vllm.nix': 'Builds a packaged `vllm` inference and serving runtime for large language models.',
 };
 
@@ -312,7 +313,11 @@ function friendlyModuleLabel(repoPath) {
 function friendlyPackageLabel(repoPath) {
   const parts = repoPath.split('/');
   const category = parts[1] || 'misc';
-  const remainder = parts.slice(2).join('/').replace(/\/default\.nix$/, '').replace(/\.nix$/, '');
+  const remainder = parts
+    .slice(2)
+    .join('/')
+    .replace(/\/default\.nix$/, '')
+    .replace(/\.nix$/, '');
   return `${category}/${remainder}`;
 }
 
@@ -380,13 +385,9 @@ function summarizeScript(entry) {
 function summarizeWorkflow(repoPath) {
   const metadata = extractWorkflowMetadata(readRepoText(repoPath));
   const jobsText =
-    metadata.jobs.length > 0
-      ? `jobs ${metadata.jobs.map((value) => `\`${value}\``).join(', ')}`
-      : 'configured jobs';
+    metadata.jobs.length > 0 ? `jobs ${metadata.jobs.map((value) => `\`${value}\``).join(', ')}` : 'configured jobs';
   const triggersText =
-    metadata.events.length > 0
-      ? ` on ${metadata.events.map((value) => `\`${value}\``).join(', ')}`
-      : '';
+    metadata.events.length > 0 ? ` on ${metadata.events.map((value) => `\`${value}\``).join(', ')}` : '';
   return `Runs ${jobsText}${triggersText} in GitHub Actions.`;
 }
 
@@ -425,16 +426,18 @@ function collectHosts() {
 }
 
 function collectModules() {
-  return walkFiles(path.join(repoRoot, 'hosts/modules'), (absolutePath) => absolutePath.endsWith('.nix')).map((absolutePath) => {
-    const repoPath = repoPathFromAbsolute(absolutePath);
-    return {
-      label: friendlyModuleLabel(repoPath),
-      group: repoPath.split('/')[2] || 'other',
-      repoPath,
-      repoUrl: toBlobUrl(repoPath),
-      summary: summarizeModule(repoPath),
-    };
-  });
+  return walkFiles(path.join(repoRoot, 'hosts/modules'), (absolutePath) => absolutePath.endsWith('.nix')).map(
+    (absolutePath) => {
+      const repoPath = repoPathFromAbsolute(absolutePath);
+      return {
+        label: friendlyModuleLabel(repoPath),
+        group: repoPath.split('/')[2] || 'other',
+        repoPath,
+        repoUrl: toBlobUrl(repoPath),
+        summary: summarizeModule(repoPath),
+      };
+    },
+  );
 }
 
 function collectPackages() {
