@@ -21,7 +21,7 @@ in
       }
 
       is_docs_markdown() {
-        case "$1" in
+        case "''${1#./}" in
           docs/*)
             return 0
             ;;
@@ -33,6 +33,17 @@ in
 
       file_exists() {
         [ -f "$1" ] || [ -L "$1" ]
+      }
+
+      docs_generated_route_exists() {
+        local route="$1"
+
+        [ -f "docs/scripts/generate-docs.mjs" ] || return 1
+
+        route="''${route#/}"
+        route="''${route%/}"
+
+        grep -qF "file: '$route.md'" "docs/scripts/generate-docs.mjs"
       }
 
       docs_route_exists() {
@@ -49,7 +60,8 @@ in
         file_exists "docs/public/$route" \
           || file_exists "docs/$route" \
           || file_exists "docs/$route.md" \
-          || file_exists "docs/$route/index.md"
+          || file_exists "docs/$route/index.md" \
+          || docs_generated_route_exists "$route"
       }
 
       docs_relative_exists() {
