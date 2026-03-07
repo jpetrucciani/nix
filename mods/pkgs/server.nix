@@ -26,8 +26,8 @@ rec {
   };
 
   bigquery-emulator = prev.callPackage
-    ({ lib, buildGo124Module, fetchFromGitHub, clangStdenv }:
-      (buildGo124Module.override { stdenv = clangStdenv; }) rec {
+    ({ lib, buildGoLatestModule, fetchFromGitHub, clangStdenv }:
+      (buildGoLatestModule.override { stdenv = clangStdenv; }) rec {
         pname = "bigquery-emulator";
         version = "0.2.12";
         commit = "f21fa982972a8be6444c23459a88df58de7b14b4";
