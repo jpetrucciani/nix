@@ -1,5 +1,5 @@
 # [vllm](https://github.com/vllm-project/vllm) is a high-throughput and memory-efficient inference and serving engine for LLMs
-{ vllm, lib, uv-nix, cudatoolkit, clang, version ? "0.16.0", lockHash ? "sha256-AfgQbxBNtZ0XsyuSCEsEZBXnMbxy4HfRyywcA/1lqIQ=", isWSL ? false, includePin ? false }:
+{ vllm, lib, uv-nix, cudatoolkit, clang, version ? "0.17.0", lockHash ? "sha256-OeN2U64p11V3Ds1nqkdYC4O2umcgySwYOoz83jYuwTI=", isWSL ? false, includePin ? false }:
 let
   ldPath = if isWSL then "/usr/lib/wsl/lib" else "/run/opengl-driver/lib";
 in
@@ -8,7 +8,7 @@ uv-nix.buildUvPackage rec {
   pname = "vllm";
 
   lockUrl = "https://static.g7c.us/lock/uv/vllm/${version}.lock";
-  extraDependencies = [ "flashinfer-python==0.5.3" "qwen-vl-utils==0.0.14" ];
+  extraDependencies = [ "flashinfer-python==0.6.4" "qwen-vl-utils==0.0.14" ];
   cudaSupport = true;
 
   postInstall = ''
