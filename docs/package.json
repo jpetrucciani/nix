@@ -1,0 +1,15 @@
+{
+  "name": "cfg-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docs:gen": "bun scripts/generate-docs.mjs",
+    "docs:dev": "bun run docs:gen && vitepress dev .",
+    "docs:build": "bun run docs:gen && vitepress build .",
+    "docs:preview": "vitepress preview ."
+  },
+  "devDependencies": {
+    "markdown-it-footnote": "^4.0.0",
+    "vitepress": "^1.4.2"
+  }
+}

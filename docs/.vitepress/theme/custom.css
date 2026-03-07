@@ -1,0 +1,50 @@
+:root {
+  --vp-layout-max-width: 1680px;
+  --vp-sidebar-width: clamp(240px, 20vw, 300px);
+}
+
+.VPHomeFeatures .details a {
+  color: var(--vp-c-brand-1);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.VPHomeFeatures .details a:hover {
+  color: var(--vp-c-brand-2);
+}
+
+@media (min-width: 1280px) {
+  .VPDoc.has-aside .content {
+    width: min(1180px, calc(100vw - var(--vp-sidebar-width) - 224px - 96px)) !important;
+    max-width: none !important;
+    min-width: 720px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .VPDoc.has-aside .content-container {
+    max-width: none !important;
+    width: 100%;
+    margin: 0 !important;
+  }
+
+  .VPDoc .aside {
+    max-width: 208px;
+    padding-left: 24px;
+  }
+
+  .VPDoc .aside.left-aside {
+    padding-right: 24px;
+  }
+
+  .VPDoc .aside-container,
+  .VPDoc .aside-curtain {
+    width: 176px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .VPSidebar {
+    padding-left: 24px;
+  }
+}

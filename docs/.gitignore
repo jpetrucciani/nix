@@ -1,0 +1,10 @@
+# dependencies
+node_modules/
+
+# vitepress artifacts
+.vitepress/dist/
+.vitepress/cache/
+.vitepress/temp/
+
+# generated reference docs output
+reference/generated-*.md
