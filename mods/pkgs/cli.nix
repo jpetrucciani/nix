@@ -71,8 +71,8 @@ in
     { };
 
   cgapp = final.callPackage
-    ({ lib, buildGo124Module, fetchFromGitHub }:
-      buildGo124Module rec {
+    ({ lib, buildGoLatestModule, fetchFromGitHub }:
+      buildGoLatestModule rec {
         pname = "cgapp";
         version = "3.6.2";
 
@@ -112,8 +112,8 @@ in
     { };
 
   migrate-go = final.callPackage
-    ({ lib, buildGo124Module, fetchFromGitHub }:
-      buildGo124Module rec {
+    ({ lib, buildGoLatestModule, fetchFromGitHub }:
+      buildGoLatestModule rec {
         pname = "migrate";
         version = "4.15.2";
 
@@ -157,8 +157,8 @@ in
     { };
 
   buffalo = final.callPackage
-    ({ lib, buildGo124Module, fetchFromGitHub }:
-      buildGo124Module rec {
+    ({ lib, buildGoLatestModule, fetchFromGitHub }:
+      buildGoLatestModule rec {
         pname = "buffalo";
         version = "0.18.14";
 

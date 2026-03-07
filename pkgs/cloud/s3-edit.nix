@@ -1,6 +1,6 @@
 # [s3-edit](https://github.com/tsub/s3-edit) is a cli tool for editing s3 files directly
-{ lib, buildGo124Module, fetchFromGitHub }:
-buildGo124Module rec {
+{ lib, buildGoLatestModule, fetchFromGitHub }:
+buildGoLatestModule rec {
   pname = "s3-edit";
   version = "0.0.16";
 

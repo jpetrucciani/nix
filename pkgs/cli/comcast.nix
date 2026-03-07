@@ -1,6 +1,6 @@
 # [comcast](https://github.com/tylertreat/comcast) is a tool to help in simulating shitty network connections
-{ lib, buildGo124Module, fetchFromGitHub }:
-buildGo124Module {
+{ lib, buildGoLatestModule, fetchFromGitHub }:
+buildGoLatestModule {
   pname = "comcast";
   version = "1.0.1";
 

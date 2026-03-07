@@ -1,6 +1,6 @@
 # [goaws](https://github.com/Admiral-Piett/goaws) is a SQS/SNS Clone for Development testing
-{ lib, buildGo124Module, fetchFromGitHub }:
-buildGo124Module rec {
+{ lib, buildGoLatestModule, fetchFromGitHub }:
+buildGoLatestModule rec {
   pname = "goaws";
   version = "0.4.6";
 

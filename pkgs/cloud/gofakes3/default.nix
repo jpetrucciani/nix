@@ -1,6 +1,6 @@
 # [gofakes3](https://github.com/johannesboyne/gofakes3) is a fake s3 server
-{ lib, buildGo125Module, fetchFromGitHub }:
-buildGo125Module rec {
+{ lib, buildGoLatestModule, fetchFromGitHub }:
+buildGoLatestModule rec {
   pname = "gofakes3";
   version = "1.0.0";
 
