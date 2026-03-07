@@ -333,4 +333,148 @@ rec {
       maintainers = with lib.maintainers; [ jpetrucciani ];
     };
   };
+
+  falkordblite = buildPythonPackage (finalAttrs: {
+    pname = "falkordblite";
+    version = "0.9.0";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit (finalAttrs) pname version;
+      hash = "sha256-FOs09heoR5J+HFXVTAKwERWtPbh/Fq2uTsVOL1QNrGQ=";
+    };
+
+    build-system = with final; [
+      setuptools
+      wheel
+    ];
+
+    dependencies = with final; [
+      falkordb
+      psutil
+      redis
+      setuptools
+    ];
+
+    pythonImportsCheck = [
+      "redislite"
+      "redislite.falkordb_client"
+    ];
+
+    meta = {
+      description = "FalkorDB embedded in a Python package";
+      homepage = "https://pypi.org/project/falkordblite";
+      maintainers = with lib.maintainers; [ jpetrucciani ];
+    };
+  });
+
+  falkordb = buildPythonPackage (finalAttrs: {
+    pname = "falkordb";
+    version = "1.6.0";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit (finalAttrs) pname version;
+      hash = "sha256-XDB9lz8/w5h6GEeOvViC9+hC1CJUY6jvXgJpcOv7qMY=";
+    };
+
+    build-system = with final; [
+      hatchling
+    ];
+
+    postPatch = ''
+      substituteInPlace falkordb/falkordb.py \
+        --replace-fail "from redis.driver_info import DriverInfo" "" \
+        --replace-fail "driver_info=DriverInfo(lib_name, lib_version or get_package_version())," \
+          "lib_name=lib_name, lib_version=lib_version or get_package_version(),"
+
+      substituteInPlace falkordb/asyncio/falkordb.py \
+        --replace-fail "from redis.driver_info import DriverInfo" "" \
+        --replace-fail "driver_info=DriverInfo(lib_name, lib_version or get_package_version())," \
+          "lib_name=lib_name, lib_version=lib_version or get_package_version(),"
+    '';
+
+    dependencies = with final; [
+      python-dateutil
+      redis
+    ];
+
+    optional-dependencies = with final; {
+      test = [
+        pytest
+        pytest-asyncio
+        pytest-cov
+      ];
+    };
+
+    pythonImportsCheck = [
+      "falkordb"
+      "falkordb.asyncio"
+    ];
+
+    meta = {
+      description = "Python client for interacting with FalkorDB database";
+      homepage = "https://pypi.org/project/falkordb";
+      license = lib.licenses.mit;
+      maintainers = with lib.maintainers; [ jpetrucciani ];
+    };
+  });
+
+  codegraphcontext = buildPythonPackage (finalAttrs: {
+    pname = "codegraphcontext";
+    version = "0.2.8";
+    pyproject = true;
+
+    src = fetchPypi {
+      inherit (finalAttrs) pname version;
+      hash = "sha256-9EEUELl4GAkuGhNmRRKteF+RLk4HMNZv2zpApaPJyys=";
+    };
+
+    build-system = with final; [
+      setuptools
+    ];
+
+    dependencies = with final; [
+      falkordb
+      falkordblite
+      inquirerpy
+      nbconvert
+      nbformat
+      neo4j
+      pathspec
+      pytest
+      python-dotenv
+      pyyaml
+      rich
+      stdlibs
+      tree-sitter
+      tree-sitter-language-pack
+      typer
+      watchdog
+    ];
+
+    optional-dependencies = with final; {
+      dev = [
+        black
+        pytest
+        pytest-asyncio
+      ];
+      parsing = [
+        tree-sitter
+        tree-sitter-language-pack
+      ];
+    };
+
+    pythonImportsCheck = [
+      "codegraphcontext"
+    ];
+
+    meta = {
+      description = "An MCP server that indexes local code into a graph database to provide context to AI assistants";
+      homepage = "https://pypi.org/project/codegraphcontext";
+      license = lib.licenses.mit;
+      maintainers = with lib.maintainers; [ jpetrucciani ];
+      mainProgram = "cgc";
+    };
+  });
 }
