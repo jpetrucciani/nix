@@ -1,4 +1,5 @@
-{ writeShellApplication
+{ lib
+, writeShellApplication
 , bun
 , chromium
 , coreutils
@@ -31,4 +32,7 @@ writeShellApplication {
       --chrome-arg="--no-sandbox" \
       "$@"
   '';
+  meta = {
+    platforms = lib.platforms.linux;
+  };
 }
