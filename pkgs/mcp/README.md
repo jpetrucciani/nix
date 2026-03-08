@@ -6,6 +6,10 @@ This directory contains Model Context Protocol (MCP) servers
 
 ## In this directory
 
+### [chrome-devtools-mcp-headless.nix](./chrome-devtools-mcp-headless.nix)
+
+[`chrome-devtools-mcp`](https://www.npmjs.com/package/chrome-devtools-mcp) runs the Chrome DevTools MCP server with the bundled Chromium in headless mode.
+
 ### [loki-mcp.nix](./loki-mcp.nix)
 
 [`loki-mcp`](https://github.com/jpetrucciani/loki-mcp) is an MCP server for querying Loki logs.
