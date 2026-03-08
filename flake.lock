@@ -257,11 +257,11 @@
         "pog": "pog"
       },
       "locked": {
-        "lastModified": 1772841966,
-        "narHash": "sha256-DPvw/NUSKJYa3Up6uWwBr6uajlYZt2cwO/IZC0RU7lE=",
+        "lastModified": 1772928314,
+        "narHash": "sha256-N8sMOrp4lGkERgUFIROwTq0A8bkiMZGQWgqykYtCrgE=",
         "owner": "jpetrucciani",
         "repo": "hex",
-        "rev": "794d5a4223912a9f143bd5511129b625952961de",
+        "rev": "a913a29ff10b7c92dfa9b81f6a8a8a26f7d0ab10",
         "type": "github"
       },
       "original": {
@@ -298,11 +298,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772807318,
-        "narHash": "sha256-Qjw6ILt8cb2HQQpCmWNLMZZ63wEo1KjTQt+1BcQBr7k=",
+        "lastModified": 1772845525,
+        "narHash": "sha256-Dp5Ir2u4jJDGCgeMRviHvEQDe+U37hMxp6RSNOoMMPc=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "daa2c221320809f5514edde74d0ad0193ad54ed8",
+        "rev": "27b93804fbef1544cb07718d3f0a451f4c4cd6c0",
         "type": "github"
       },
       "original": {
@@ -566,11 +566,11 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1772820052,
-        "narHash": "sha256-qXEI8n+4eXT+BqMzUMuKFdkltE82TjgIceiJCpdjzD4=",
+        "lastModified": 1772906963,
+        "narHash": "sha256-jT3m0eiRH9TLqMsMVblze5/DPupInp8Qc8Gop8Zxfho=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d78e468770f4ab5e00c5015f4d77c1a499a76dc8",
+        "rev": "5a60c0dff24e7109c0e87fd53e5bbc0032fa0cbd",
         "type": "github"
       },
       "original": {
@@ -745,11 +745,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771518446,
-        "narHash": "sha256-nFJSfD89vWTu92KyuJWDoTQJuoDuddkJV3TlOl1cOic=",
+        "lastModified": 1772865871,
+        "narHash": "sha256-/ZTSg97aouL0SlPHaokA4r3iuH9QzHVuWPACD2CUCFY=",
         "owner": "pyproject-nix",
         "repo": "pyproject.nix",
-        "rev": "eb204c6b3335698dec6c7fc1da0ebc3c6df05937",
+        "rev": "e537db02e72d553cea470976b9733581bcf5b3ed",
         "type": "github"
       },
       "original": {
@@ -928,11 +928,11 @@
         "nixpkgs": "nixpkgs_8"
       },
       "locked": {
-        "lastModified": 1771969195,
-        "narHash": "sha256-mM9Rz/gOPxbj/Nm3j6/pJ80qYUSeBsF+tMg/oc/bZ3Y=",
+        "lastModified": 1772853024,
+        "narHash": "sha256-aVH6n8UgO0E/flJV+AcyBzbI5wjZf+lsf4NaIQ5WP5I=",
         "owner": "jpetrucciani",
         "repo": "treefmt-nix",
-        "rev": "7e74494d652fcc82eec5c7762a68ae2abe35ddf2",
+        "rev": "0d330a74570a4d0c8257ac375383ecf2f7367105",
         "type": "github"
       },
       "original": {
