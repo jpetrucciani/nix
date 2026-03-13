@@ -1,7 +1,6 @@
 { config, flake, machine-name, pkgs, ... }:
 let
   hostname = "cy1-nix-01";
-  ts_ip = "";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
 in
 {
