@@ -2,6 +2,7 @@ let
   machines = {
     nixos = [
       "andromeda"
+      "cy1-nix-01"
       "edge"
       "luna"
       "milkyway"
@@ -83,6 +84,7 @@ let
     edge = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILkME8cVp908fLcQiSYmwSruCBcm4iBR8CS87s8AqNmK jacobi@edge";
     edgewin = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGRFawIUexIkAJ6yovZIJjz/AvWuZLCwTAp4I1Wv5afY jacobi@edgewin";
     hub2 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPC6SkLgq4GVlyskAEih+B3aCrIB5PczUOmokdhKSZLC jacobi@hub2";
+    cy1-nix-01 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDhEenjqGEiybWJZFYcaPSLNbcufZga6TRQ6Um3v5Kwy jacobi@cy1-nix-01";
 
     desktop = [
       galaxyboss
