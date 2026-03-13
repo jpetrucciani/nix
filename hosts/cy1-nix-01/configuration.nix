@@ -29,12 +29,7 @@ in
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot";
       };
-      grub = {
-        enable = true;
-        device = "nodev";
-        efiSupport = true;
-        efiInstallAsRemovable = true;
-      };
+      systemd-boot.enable = true;
     };
     kernel.sysctl = { } // common.sysctl_opts;
     tmp.useTmpfs = true;
