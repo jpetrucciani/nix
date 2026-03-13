@@ -25,10 +25,15 @@ in
 
   boot = {
     loader = {
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot";
+      };
       grub = {
         enable = true;
-        device = "/dev/sda";
-        useOSProber = true;
+        device = "nodev";
+        efiSupport = true;
+        efiInstallAsRemovable = true;
       };
     };
     kernel.sysctl = { } // common.sysctl_opts;
