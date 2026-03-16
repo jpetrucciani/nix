@@ -6,6 +6,10 @@ This directory contains my nixos configurations for each of my nixos machines, a
 
 ## In this directory
 
+### [cy1-nix-01/](./cy1-nix-01/)
+
+This is a NixOS work machine on the BlackEdge network.
+
 ### [edge/](./edge/)
 
 this is a big vm

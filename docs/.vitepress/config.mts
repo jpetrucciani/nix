@@ -61,6 +61,7 @@ export default defineConfig({
           { text: 'pog', link: '/tooling/pog' },
           { text: 'hex', link: '/tooling/hex' },
           { text: 'snowball', link: '/tooling/snowball' },
+          { text: 'foundry', link: '/tooling/foundry' },
           { text: 'mica', link: '/tooling/mica' },
           { text: 'hms and hmx', link: '/tooling/hms-and-hmx' },
           { text: 'scripts Outputs', link: '/tooling/scripts' }

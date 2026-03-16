@@ -60,6 +60,7 @@ nix build .#zaddy
 - Machine configs: [Hosts](/hosts/index) and [Modules](/modules/index)
 - User environment: [Home Manager](/home-manager)
 - Package-focused setup: [mica](/tooling/mica)
+- Image and container builders: [foundry](/tooling/foundry)
 - Package layer: [Packages](/packages/index)
 - Repo-specific tools: [Tooling](/tooling/index)
 - Operational commands: [Daily Workflows](/daily-workflows)

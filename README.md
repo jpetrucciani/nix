@@ -14,6 +14,7 @@ If you are here for the first time and want to make a safe change:
    - hosts and machine configs: [`hosts/README.md`](./hosts/README.md)
    - overlays: [`mods/README.md`](./mods/README.md)
    - package definitions: [`pkgs/README.md`](./pkgs/README.md)
+   - curated docs site source: [`docs/`](./docs/)
 4. Build the thing you touched:
    - linux host: `nix build .#nixosConfigurations.<host>.config.system.build.toplevel`
    - darwin host: `nix build .#darwinConfigurations.<host>.system`
@@ -63,6 +64,10 @@ This directory contains my GitHub actions, which automatically check for updates
 ### [examples/](./examples/)
 
 This directory contains examples of use of my repo as a source for other tools/environments!
+
+### [docs/](./docs/)
+
+This directory contains the VitePress documentation site for the repo, including curated guides plus generated reference indexes.
 
 ### [hosts/](./hosts/)
 

@@ -6,7 +6,7 @@ This repo uses GitHub Actions for formatting, builds, linting, package publishin
 
 - `check.yml`: `jfmt`, docs checks, `vale`.
 - `build.yml`: cross-platform package builds and cache push.
-- `foundry.yml`: foundry image builds and registry publishing.
+- `foundry.yml`: foundry image builds and registry publishing. See [foundry](/tooling/foundry) for what those outputs are.
 - `update.yml`: scheduled flake input updates with PR automation.
 - `update_pkgs.yml`: targeted package update automation.
 - `mica.yml`: publish index artifacts for mica.

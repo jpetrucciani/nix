@@ -16,6 +16,12 @@ Hosts are intentionally thin. Shared behavior belongs in modules and overlays, w
 - **NixOS hosts** have a `hardware-configuration.nix` and build through `.#nixosConfigurations.<host>.config.system.build.toplevel`.
 - **nix-darwin hosts** build through `.#darwinConfigurations.<host>.system`.
 
+## Representative Examples
+
+- [`hosts/cy1-nix-01/configuration.nix`](https://github.com/jpetrucciani/nix/blob/main/hosts/cy1-nix-01/configuration.nix), a work-network NixOS machine with BlackEdge-specific networking and shared storage mounts.
+- [`hosts/voyager/configuration.nix`](https://github.com/jpetrucciani/nix/blob/main/hosts/voyager/configuration.nix), a WSL-focused NixOS setup.
+- [`hosts/pluto/configuration.nix`](https://github.com/jpetrucciani/nix/blob/main/hosts/pluto/configuration.nix), a nix-darwin laptop setup.
+
 ## Host Vs Module
 
 - A host is specific, one machine, one set of choices.

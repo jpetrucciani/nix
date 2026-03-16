@@ -35,7 +35,7 @@ features:
 
   - icon: 🖥️
     title: Repo-Specific Tooling
-    details: '<a href="/tooling/pog"><code>pog</code></a>, <a href="/tooling/hex"><code>hex</code></a>, <a href="/tooling/snowball"><code>snowball</code></a>, <a href="/tooling/hms-and-hmx"><code>hms</code></a>, and <a href="/tooling/scripts">checked script outputs</a> are part of the story, not side quests. Start with the <a href="/tooling/index">tooling overview</a>.'
+    details: '<a href="/tooling/pog"><code>pog</code></a>, <a href="/tooling/hex"><code>hex</code></a>, <a href="/tooling/snowball"><code>snowball</code></a>, <a href="/tooling/foundry"><code>foundry</code></a>, <a href="/tooling/hms-and-hmx"><code>hms</code></a>, and <a href="/tooling/scripts">checked script outputs</a> are part of the story, not side quests. Start with the <a href="/tooling/index">tooling overview</a>.'
 
   - icon: 🔐
     title: Multi-Host Layering
