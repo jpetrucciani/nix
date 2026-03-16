@@ -5,6 +5,8 @@ let
   inherit (pkgs.hax) attrIf words;
   inherit (pkgs.lib) mkForce;
 
+  constants = import ./hosts/constants.nix;
+
   firstName = "jacobi";
   lastName = "petrucciani";
   personalEmail = "j@cobi.dev";
@@ -325,6 +327,8 @@ in
         [[ -e $HOME/.asdf/completions/asdf.bash ]] && source $HOME/.asdf/completions/asdf.bash
       ''
     ) + ''
+      ${constants.bash_funcs.wezterm_title}
+
       _kube_contexts() {
         local curr_arg;
         curr_arg=''${COMP_WORDS[COMP_CWORD]}

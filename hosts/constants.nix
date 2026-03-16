@@ -349,4 +349,47 @@ in
       systemd.enable = true;
     };
   };
+
+  bash_funcs = {
+    wezterm_title = ''
+      __wezterm_title() {
+        local last_rc="$1"
+        local user_host="''${USER}@''${HOSTNAME%%.*}"
+        local cwd="''${PWD/#$HOME/\~}"
+        local git_branch=""
+        local venv=""
+        local k8s=""
+
+        # git branch (reads .git/HEAD directly — no subprocess)
+        if [ -f .git/HEAD ]; then
+          git_branch=$(sed 's|ref: refs/heads/||' .git/HEAD 2>/dev/null)
+        elif [ -d .git ]; then
+          # detached HEAD
+          git_branch=$(git rev-parse --short HEAD 2>/dev/null)
+        fi
+
+        # python venv
+        if [ -n "$VIRTUAL_ENV" ]; then
+          venv=$(basename "$VIRTUAL_ENV")
+        fi
+
+        # k8s context (only if KUBECONFIG is set — avoids slow kubectl calls)
+        if [ -n "$KUBECONFIG" ] && command -v kubectl &>/dev/null; then
+          k8s=$(kubectl config current-context 2>/dev/null)
+        fi
+
+        # build title: base part
+        local title="''${user_host}: ''${cwd}"
+
+        # append optional tags
+        [ -n "$git_branch" ]          && title="''${title}|git:''${git_branch}"
+        [ -n "$venv" ]                && title="''${title}|venv:''${venv}"
+        [ -n "$k8s" ]                 && title="''${title}|k8s:''${k8s}"
+        [ "$last_rc" != "0" ]         && title="''${title}|rc:''${last_rc}"
+
+        # set terminal title via OSC 0
+        echo -ne "\033]0;''${title}\007"
+      }
+    '';
+  };
 }
