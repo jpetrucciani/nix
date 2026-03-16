@@ -4,7 +4,7 @@
 [cC]ron
 sudo
 su
-isos?
+(?i)isos?
 (?i)systemd
 (?i)hetzner
 (?i)cli
