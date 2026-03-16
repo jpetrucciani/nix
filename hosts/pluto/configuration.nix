@@ -32,7 +32,7 @@ in
     ];
   };
 
-  system.stateVersion = 4;
+  system.stateVersion = 5;
   nix = common.nix // {
     nixPath = [
       "darwin=${common.nix-darwin}"

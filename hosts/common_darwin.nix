@@ -118,9 +118,7 @@ in
       in
       {
         enable = true;
-        taps = [
-          "homebrew/services"
-        ];
+        taps = [ ];
         brews = [
           "openconnect"
           "readline"
