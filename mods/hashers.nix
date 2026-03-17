@@ -59,4 +59,29 @@ in
   nix_hash_medable = _nix_hash "Medable/nix" "main" "medable";
   nix_hash_rust-overlay = _nix_hash "oxalica/rust-overlay" "master" "rust-overlay";
   home-packages = (import ../home.nix { }).home.packages;
+
+  consistentSelect = key: xs:
+    let
+      hex = builtins.substring 52 12 (builtins.hashString "sha256" key);
+      digit = {
+        "0" = 0;
+        "1" = 1;
+        "2" = 2;
+        "3" = 3;
+        "4" = 4;
+        "5" = 5;
+        "6" = 6;
+        "7" = 7;
+        "8" = 8;
+        "9" = 9;
+        "a" = 10;
+        "b" = 11;
+        "c" = 12;
+        "d" = 13;
+        "e" = 14;
+        "f" = 15;
+      };
+      n = final.lib.foldl' (acc: c: acc * 16 + digit.${c}) 0 (final.lib.stringToCharacters hex);
+    in
+    builtins.elemAt xs (final.lib.mod n (builtins.length xs));
 }
