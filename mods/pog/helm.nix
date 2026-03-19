@@ -376,12 +376,6 @@ rec {
     chart_url = "https://github.com/makeplane/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
   };
 
-  # chart_scan_quickwit = _chart_scan rec {
-  #   name = "quickwit";
-  #   base_url = "https://helm.quickwit.io";
-  #   chart_url = "https://github.com/quickwit-oss/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
-  # };
-
   chart_scan_dask-kubernetes-operator = _chart_scan rec {
     name = "dask-kubernetes-operator";
     base_url = "https://helm.dask.org";
