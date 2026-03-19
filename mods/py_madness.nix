@@ -571,13 +571,58 @@ let
               "ruff"
               "ty"
             ];
-          in
-          {
-            shell_hook = ''
+            site_hook = ''
               mkdir -p .direnv
               rm -f .direnv/site
               ln -sf ${uvEnvVars._UV_SITE} .direnv/site
             '';
+            interpreter_hook = ''
+              mkdir -p .direnv
+              ln -sfnT "${virtualenv}/bin/python" .direnv/python
+            '';
+            jupyter_hook = { PYTHONPATH ? "", LD_LIBRARY_PATH ? "" }: ''
+              mkdir -p .direnv/share/jupyter/kernels
+              export d=$(pwd)
+              export JUPYTER_PATH="$d/.direnv/share/jupyter''${JUPYTER_PATH:+:$JUPYTER_PATH}"
+              ${virtualenv}/bin/python - <<'PY'
+              import json
+              import os
+              from pathlib import Path
+
+              root = Path(os.environ["d"])
+              kernel_dir = root / ".direnv" / "share" / "jupyter" / "kernels" / "${name}"
+              kernel_spec = {
+                  "argv": [
+                      str(root / ".direnv" / "python"),
+                      "-m",
+                      "ipykernel_launcher",
+                      "-f",
+                      "{connection_file}",
+                  ],
+                  "display_name": "${name} (nix)",
+                  "language": "python",
+                  "metadata": {"debugger": True},
+                  "env": {
+                      "PYTHONPATH": os.environ.get("PYTHONPATH", "${PYTHONPATH}"),
+                      "LD_LIBRARY_PATH": os.environ.get("LD_LIBRARY_PATH", "${LD_LIBRARY_PATH}"),
+                      "JUPYTER_PATH": os.environ["JUPYTER_PATH"],
+                  },
+              }
+              kernel_dir.mkdir(parents=True, exist_ok=True)
+              kernel_json = json.dumps(kernel_spec, indent=2) + "\n"
+              kernel_path = kernel_dir / "kernel.json"
+              if not kernel_path.exists() or kernel_path.read_text() != kernel_json:
+                  kernel_path.write_text(kernel_json)
+              PY
+            '';
+          in
+          {
+            inherit site_hook interpreter_hook jupyter_hook;
+            shell_hook = ''
+              ${site_hook}
+              ${interpreter_hook}
+            '';
+
             repo = "$(${final.git}/bin/git rev-parse --show-toplevel)";
           } // (final.lib.listToAttrs (map (x: { name = x; value = final.lib.setPrio (-8) (wrap { name = x; }); }) _base));
       };
