@@ -188,7 +188,7 @@ in
   inherit _treefmt _oxfmt;
   jfmt = _treefmt;
 
-  _nix = final.nixVersions.nix_2_32;
+  _nix = final.nixVersions.nix_2_34;
 
   llama-cpp-cuda = prev.llama-cpp.override { cudaSupport = true; };
   llama-cpp-cuda-latest = llama-cpp-latest.override { cudaSupport = true; };
