@@ -212,27 +212,6 @@ rec {
       'with import ${final.pkgs.path} {}; lib.generators.toPretty {} (builtins.fromJSON (builtins.getEnv "json"))'
   '';
 
-  cache = pog {
-    name = "cache";
-    description = "an easy tool to build nix configs and cache them to cachix!";
-    flags = [
-      {
-        name = "cache_name";
-        description = "the cachix to push to";
-        default = "medable";
-      }
-      {
-        name = "oldmac";
-        description = "optionally build for x86_64-darwin (mac only)";
-        bool = true;
-      }
-    ];
-    script = ''
-      ${final._nix}/bin/nix-build ''${oldmac:+--system x86_64-darwin} | ${_.cachix} push "$cache_name"
-    '';
-  };
-
-
   nixsum = pog {
     name = "nixsum";
     description = "my lazy helper function to summarize a dir of nix scripts";
@@ -343,7 +322,6 @@ rec {
     final.hex
     final.hexcast
     final.nixrender
-    cache
     ndiff
     nixup
     nixsum

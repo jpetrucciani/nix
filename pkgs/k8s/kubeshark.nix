@@ -12,11 +12,6 @@ let
       short = "linux";
       sha256 = "1fpwg605j7w1r9zw35i8d4mz5126nhaipmhrhf91hj5p4v9aq2hv";
     };
-    x86_64-darwin = {
-      arch = "amd64";
-      short = "darwin";
-      sha256 = "1dn71d0is2j85z88zh2qv2z0dzk1i34msq0i4ac1vm850i34hbmp";
-    };
     x86_64-linux = {
       arch = "amd64";
       short = "linux";

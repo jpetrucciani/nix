@@ -94,8 +94,6 @@ rec {
         ${nurl} "${base_url}darwin-arm-$version.tar.gz" 2>/dev/null
         echo "arm64 linux"
         ${nurl} "${base_url}linux-arm-$version.tar.gz" 2>/dev/null
-        echo "x86_64 darwin"
-        ${nurl} "${base_url}darwin-x86_64-$version.tar.gz" 2>/dev/null
         echo "x86_64 linux"
         ${nurl} "${base_url}linux-x86_64-$version.tar.gz" 2>/dev/null
       '';

@@ -315,10 +315,6 @@ rec {
           platform = "manylinux_2_17_aarch64.manylinux2014_aarch64";
           hash = "sha256-pje5o7MIYMYeaKe46mUOCYfYnoL3O2o98atmKmQ4/do=";
         };
-        x86_64-darwin = {
-          platform = "macosx_10_15_universal2";
-          hash = "sha256-WE9EsDR0ppkGvnEaWXpNUWJjpVvjHkn8B75QPchAaCE=";
-        };
         x86_64-linux = {
           platform = "manylinux_2_17_x86_64.manylinux2014_x86_64";
           hash = "sha256-tKGH/cX+vPFvclF53PLEdvMe7r2DU3lNkXVKMgLdUHI=";
