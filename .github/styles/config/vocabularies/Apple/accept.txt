@@ -1,6 +1,6 @@
-[mM]ac
-[mM]acOS
-[mM]acbook
+(?i)mac
+(?i)macOS
+(?i)macbook
 iPhone
 iOS
 (?i)iterm

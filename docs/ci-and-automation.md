@@ -14,7 +14,7 @@ This repo uses GitHub Actions for formatting, docs validation, site deployment, 
 
 ## Docs Quality Gates
 
-There are two separate docs-related checks in CI.
+Two separate docs-related checks exist in CI.
 
 `check.yml` builds and runs the local docs guardrails:
 
