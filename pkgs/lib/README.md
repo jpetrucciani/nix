@@ -1,6 +1,6 @@
 # lib
 
-This directory contains derivations that are just libraries for other derivations
+This directory contains derivations that are just libraries for other derivations.
 
 ---
 
@@ -8,4 +8,4 @@ This directory contains derivations that are just libraries for other derivation
 
 ### [falconn.nix](./falconn.nix)
 
-[falconn](https://github.com/FALCONN-LIB/FALCONN) is a header only NN lookup tool
+[falconn](https://github.com/FALCONN-LIB/FALCONN) is a header-only nearest-neighbor lookup library.

@@ -1,6 +1,12 @@
 # hosts
 
-This directory contains my nixos configurations for each of my nixos machines, as well as a `common.nix` file that contains shared configurations for all of my nixos machines.
+This directory contains concrete machine definitions, shared host defaults, and reusable host modules.
+
+Most entries here are one of three things:
+
+- a NixOS host directory with `configuration.nix` and `hardware-configuration.nix`
+- a nix-darwin host directory with `configuration.nix`
+- a shared profile or helper file used by several machines
 
 ---
 
@@ -12,11 +18,11 @@ This is a NixOS work machine on the BlackEdge network.
 
 ### [edge/](./edge/)
 
-this is a big vm
+This is a large VM-oriented NixOS host.
 
 ### [foundry/](./foundry/)
 
-this directory contains builders for cloud VM images and isos
+This directory contains the shared image-builder profile used for cloud images and ISOs.
 
 ### [luna/](./luna)
 
@@ -24,7 +30,7 @@ This is a bare-metal physical nixos server!
 
 ### [m1max/](./m1max)
 
-This is my work M1 Max Macbook, running MacOS and using nix-darwin and home-manager to manage things.
+This is my work M1 Max MacBook, managed with nix-darwin and Home Manager.
 
 ### [mars/](./mars)
 
@@ -32,11 +38,11 @@ This is a bare-metal physical nixos server!
 
 ### [milkyway/](./milkyway/)
 
-This is a nixos install running on top of wsl2!
+This is a NixOS install running on top of WSL2.
 
 ### [modules/](./modules)
 
-additional modules for use in the various host configurations for nixos and nix-darwin machines.
+Additional modules for use in the various NixOS and nix-darwin host configurations.
 
 ### [neptune/](./neptune)
 
@@ -44,7 +50,7 @@ This is a bare-metal nixos server.
 
 ### [nyx0/](./nyx0)
 
-This is a m4 mac mini
+This is an M4 Mac mini managed with nix-darwin.
 
 ### [phobos/](./phobos)
 
@@ -52,7 +58,7 @@ This is an experimental nixos install inside a VM.
 
 ### [pluto/](./pluto)
 
-This is my personal M2 Max Macbook, running MacOS and using nix-darwin and home-manager to manage things.
+This is my personal M2 Max MacBook, managed with nix-darwin and Home Manager.
 
 ### [polaris/](./polaris)
 
@@ -64,7 +70,7 @@ This is a small nixos laptop!
 
 ### [styx/](./styx)
 
-This is a M2 Ultra Mac Studio server
+This is an M2 Ultra Mac Studio server managed with nix-darwin.
 
 ### [titan/](./titan)
 
@@ -72,20 +78,20 @@ This is a bare-metal nixos server with a modern dedicated GPU!
 
 ### [terra/](./terra)
 
-This is my second largest nixos based machine
+This is one of my larger NixOS machines.
 
 ### [voyager/](./voyager/)
 
-This is a nixos install running on top of wsl2!
+This is a NixOS install running on top of WSL2.
 
 ### [common.nix](./common.nix)
 
-This file serves as a nice way to reduce duplication across nixos configurations. It contains all my common env setup and services.
+This file reduces duplication across NixOS configurations and contains common environment setup and services.
 
 ### [common_darwin.nix](./common_darwin.nix)
 
-shared values for darwin boxes
+Shared defaults for nix-darwin machines.
 
 ### [constants.nix](./constants.nix)
 
-shared values for more than just me!
+Shared host names, ports, machine groups, and key material.

@@ -139,11 +139,16 @@ in
     check_readme_index = writeBashBinChecked "check-readme-index" ''
       set -euo pipefail
 
-      exhaustive_limit="''${README_INDEX_EXHAUSTIVE_LIMIT:-12}"
+      exhaustive_limit="''${README_INDEX_EXHAUSTIVE_LIMIT:-0}"
       issues=0
       tmp_dir="$(mktemp -d)"
       trap 'rm -rf "$tmp_dir"' EXIT
       idx=0
+
+      if ! printf '%s\n' "$exhaustive_limit" | grep -Eq '^[0-9]+$'; then
+        printf 'README_INDEX_EXHAUSTIVE_LIMIT must be an integer, got: %s\n' "$exhaustive_limit" >&2
+        exit 1
+      fi
 
       readme_files() {
         if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -177,7 +182,7 @@ in
           | sort -u >"$fs_entries"
 
         entry_count="$(wc -l < "$fs_entries")"
-        if [ "$entry_count" -gt "$exhaustive_limit" ]; then
+        if [ "$exhaustive_limit" -gt 0 ] && [ "$entry_count" -gt "$exhaustive_limit" ]; then
           continue
         fi
 
@@ -205,7 +210,11 @@ in
         exit 1
       fi
 
-      echo "No README index drift issues for directories with <= $exhaustive_limit entries."
+      if [ "$exhaustive_limit" -gt 0 ]; then
+        echo "No README index drift issues for directories with <= $exhaustive_limit entries."
+      else
+        echo "No README index drift issues found."
+      fi
     '';
     ci_cache = writeBashBinChecked "ci_cache" ''
       mkdir -p ~/.aws

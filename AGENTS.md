@@ -3,7 +3,8 @@
 ## Project Structure & Module Organization
 
 - `flake.nix`, `default.nix`, `overlays.nix`, `home.nix`: core entrypoints for the flake, pinned nixpkgs, overlays, and home-manager config.
-- `hosts/`: per-machine NixOS and Darwin configs; shared bits live in `hosts/common.nix` and `hosts/common_darwin.nix`.
+- `docs/`: VitePress docs source, including curated guides plus generated reference indexes.
+- `hosts/`: per-machine NixOS and nix-darwin configs; shared bits live in `hosts/common.nix` and `hosts/common_darwin.nix`.
 - `hosts/modules/`: reusable NixOS/Darwin modules grouped by domain (e.g., `servers/`, `darwin/`, `conf/`).
 - `mods/`: overlays and helper modules; language-specific overlays in `mods/lang/` and `mods/python/`.
 - `pkgs/`: custom packages and overlays not upstreamed to nixpkgs yet.
@@ -14,8 +15,13 @@
 
 - `nix develop`: enter the dev shell (includes `jfmt` and `nixup`).
 - `nix flake show`: inspect available outputs and package names.
-- `nix build .#nixosConfigurations.voyager.config.system.build.toplevel`: build a specific host (replace `luna` with a host from `hosts/constants.nix`).
+- `nix run .#jfmt -- --ci`: run the repo formatter in CI mode.
+- `nix run .#scripts.check_doc_links`: validate local markdown links.
+- `nix run .#scripts.check_readme_index`: validate `README.md` directory indexes.
+- `nix build .#nixosConfigurations.voyager.config.system.build.toplevel`: build a specific Linux host.
 - `nix build .#darwinConfigurations.pluto.system`: build a macOS host config.
+- `cd docs && bun run docs:gen`: regenerate generated docs reference pages.
+- `cd docs && bun run docs:build`: build the docs site.
 - `nix flake check`: run flake evaluation checks (use before PRs when possible).
 
 ## Coding Style & Naming Conventions
@@ -27,8 +33,9 @@
 
 ## Testing Guidelines
 
-- There is no dedicated test suite yet; rely on `nix flake check` and targeted `nix build` for the affected host/module.
+- There is no dedicated test suite yet; rely on docs checks, targeted `nix build`, and `nix flake check` for the affected host/module.
 - When adding packages, prefer a local build of that derivation to validate dependencies.
+- When touching docs or READMEs, run `nix run .#scripts.check_doc_links`, `nix run .#scripts.check_readme_index`, and regenerate/build the docs site when needed.
 
 ## Commit & Pull Request Guidelines
 
