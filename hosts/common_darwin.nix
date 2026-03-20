@@ -105,7 +105,7 @@ in
             "karabiner-elements"
             "obsidian"
             "parsec"
-            "qlvideo"
+            "quicklook-video"
             "raycast"
             "rectangle"
             "utm"
