@@ -30,6 +30,32 @@ let
     pyprojectOverrides = final: prev: { };
   };
 
+  hermesPackageDirs = [
+    "acp_adapter"
+    "agent"
+    "cron"
+    "gateway"
+    "hermes_cli"
+    "honcho_integration"
+    "tools"
+  ];
+
+  hermesModules = [
+    "batch_runner.py"
+    "cli.py"
+    "hermes_constants.py"
+    "hermes_state.py"
+    "hermes_time.py"
+    "mini_swe_runner.py"
+    "model_tools.py"
+    "rl_cli.py"
+    "run_agent.py"
+    "toolset_distributions.py"
+    "toolsets.py"
+    "trajectory_compressor.py"
+    "utils.py"
+  ];
+
   site = python313.sitePackages;
 
   runtimePath = lib.makeBinPath [
@@ -54,18 +80,18 @@ stdenv.mkDerivation {
     ${rsync}/bin/rsync -a --exclude='bin/' ${uvEnv}/ $out
     find $out/${site} -type d -exec chmod u+w '{}' +
 
-    rm $out/${site}/tools
-    cp -r ${src}/tools $out/${site}/tools
+    for packageDir in ${lib.escapeShellArgs hermesPackageDirs}; do
+      rm -r "$out/${site}/$packageDir"
+      cp -r "${src}/$packageDir" "$out/${site}/$packageDir"
+      find "$out/${site}/$packageDir" -type d -exec chmod u+w '{}' +
+    done
 
-    rm $out/${site}/mini_swe_runner.py
-    install -Dm644 ${src}/mini_swe_runner.py $out/${site}/mini_swe_runner.py
-
-    rm $out/${site}/hermes_cli
-    cp -r ${src}/hermes_cli $out/${site}/hermes_cli
+    for module in ${lib.escapeShellArgs hermesModules}; do
+      rm "$out/${site}/$module"
+      install -Dm644 "${src}/$module" "$out/${site}/$module"
+    done
 
     cp -r ${src}/mini-swe-agent/src/minisweagent $out/${site}/minisweagent
-    chmod u+w $out/${site}/tools
-    chmod u+w $out/${site}/hermes_cli
     chmod u+w $out/${site}/tools/terminal_tool.py
     chmod u+w $out/${site}/mini_swe_runner.py
     chmod u+w $out/${site}/hermes_cli/doctor.py
