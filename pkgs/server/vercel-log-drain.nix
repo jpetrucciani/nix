@@ -25,6 +25,7 @@ rustPlatform.buildRustPackage {
   buildInputs = [ openssl ];
 
   meta = with lib; {
+    broken = true;
     description = "A simple log-drain you can deploy to export log messages from Vercel to one or more outputs";
     homepage = "https://github.com/dacbd/vercel-log-drain";
     license = licenses.mit;
