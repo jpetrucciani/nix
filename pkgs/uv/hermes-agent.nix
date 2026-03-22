@@ -7,6 +7,7 @@
 , makeWrapper
 , ffmpeg
 , git
+, libopus
 , nodejs_22
 , ripgrep
 , uv-nix
@@ -57,6 +58,8 @@ let
   ];
 
   site = python313.sitePackages;
+  inherit (python313.pkgs) pynacl;
+  opusLibPath = "${lib.getLib libopus}/lib/libopus${stdenv.hostPlatform.extensions.sharedLibrary}.0";
 
   runtimePath = lib.makeBinPath [
     ffmpeg
@@ -64,6 +67,7 @@ let
     nodejs_22
     ripgrep
   ];
+  runtimeLibraryPath = lib.makeLibraryPath [ libopus ];
 in
 stdenv.mkDerivation {
   inherit version src;
@@ -95,6 +99,7 @@ stdenv.mkDerivation {
     chmod u+w $out/${site}/tools/terminal_tool.py
     chmod u+w $out/${site}/mini_swe_runner.py
     chmod u+w $out/${site}/hermes_cli/doctor.py
+    chmod u+w $out/${site}/gateway/platforms/discord.py
     substituteInPlace $out/${site}/tools/terminal_tool.py \
       --replace-fail \
       'from minisweagent_path import ensure_minisweagent_on_path' \
@@ -107,13 +112,23 @@ stdenv.mkDerivation {
       --replace-fail \
       $'    mini_swe_dir = PROJECT_ROOT / "mini-swe-agent"\n    if mini_swe_dir.exists() and (mini_swe_dir / "pyproject.toml").exists():\n        try:\n            __import__("minisweagent")\n            check_ok("mini-swe-agent", "(terminal backend)")\n        except ImportError:\n            check_warn("mini-swe-agent found but not installed", "(run: uv pip install -e ./mini-swe-agent)")\n            issues.append("Install mini-swe-agent: uv pip install -e ./mini-swe-agent")\n    else:\n        check_warn("mini-swe-agent not found", "(run: git submodule update --init --recursive)")' \
       $'    mini_swe_dir = PROJECT_ROOT / "mini-swe-agent"\n    try:\n        __import__("minisweagent")\n        check_ok("mini-swe-agent", "(terminal backend)")\n    except ImportError:\n        if mini_swe_dir.exists() and (mini_swe_dir / "pyproject.toml").exists():\n            check_warn("mini-swe-agent found but not installed", "(run: uv pip install -e ./mini-swe-agent)")\n            issues.append("Install mini-swe-agent: uv pip install -e ./mini-swe-agent")\n        else:\n            check_warn("mini-swe-agent not found", "(run: git submodule update --init --recursive)")'
+    substituteInPlace $out/${site}/gateway/platforms/discord.py \
+      --replace-fail \
+      '            opus_path = ctypes.util.find_library("opus")' \
+      '            opus_path = os.environ.get("HERMES_OPUS_LIBRARY") or ctypes.util.find_library("opus")'
     cp ${uvEnv}/bin/hermes $out/bin/hermes
     cp ${uvEnv}/bin/hermes-agent $out/bin/hermes-agent
     wrapProgram $out/bin/hermes \
       --prefix PATH : ${runtimePath} \
+      --prefix LD_LIBRARY_PATH : ${runtimeLibraryPath} \
+      --set-default HERMES_OPUS_LIBRARY ${opusLibPath} \
+      --prefix PYTHONPATH : ${pynacl}/${site} \
       --prefix PYTHONPATH : $out/${site}
     wrapProgram $out/bin/hermes-agent \
       --prefix PATH : ${runtimePath} \
+      --prefix LD_LIBRARY_PATH : ${runtimeLibraryPath} \
+      --set-default HERMES_OPUS_LIBRARY ${opusLibPath} \
+      --prefix PYTHONPATH : ${pynacl}/${site} \
       --prefix PYTHONPATH : $out/${site}
     runHook postInstall
   '';
