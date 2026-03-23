@@ -111,20 +111,29 @@ let
           pkg;
 
       # Filter out nvidia deps for torch while keeping a CPU-only nixpkgs torch.
-      # nixpkgs jinja2 exports a passthru.doc derivation that pulls sphinxHook,
-      # which breaks evaluation on python3.11 when torchWithoutCuda is imported.
+      # nixpkgs runtime deps frequently carry doc/test baggage that we do not
+      # want when we are only borrowing their prebuilt outputs. For torch on
+      # python3.11 this shows up through:
+      #   jinja2.passthru.doc -> sphinxHook
+      #   fsspec nativeCheckInputs -> aiohttp -> ... -> pyopenssl -> sphinxHook
       torchHack =
         { from ? null }:
         let
+          stripEvalBaggage = pkg:
+            pkg.overridePythonAttrs (old: {
+              doCheck = false;
+              nativeCheckInputs = [ ];
+              checkInputs = [ ];
+              passthru = builtins.removeAttrs (old.passthru or { }) [
+                "doc"
+                "tests"
+              ];
+            });
           defaultFrom =
             (pkgs.python311.override {
               packageOverrides = _: prevPy: {
-                jinja2 = prevPy.jinja2.overrideAttrs (old: {
-                  passthru = builtins.removeAttrs (old.passthru or { }) [
-                    "doc"
-                    "tests"
-                  ];
-                });
+                jinja2 = stripEvalBaggage prevPy.jinja2;
+                fsspec = stripEvalBaggage prevPy.fsspec;
               };
             }).pkgs.torchWithoutCuda;
           from' = if from == null then defaultFrom else from;
