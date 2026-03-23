@@ -110,15 +110,42 @@ let
         else
           pkg;
 
-      # this is a hack to filter out nvidia deps for torch! it takes in a base package, like pkgs.python311Packages.torchWithoutCuda
-      torchHack = { from ? pkgs.python311Packages.torchWithoutCuda }: hacks.nixpkgsPrebuilt {
-        inherit from;
-        prev = prev.torch.overrideAttrs (old: {
-          passthru = old.passthru // {
-            dependencies = pkgs.lib.filterAttrs (name: _: ! pkgs.lib.hasPrefix "nvidia" name) old.passthru.dependencies;
-          };
-        });
-      };
+      # Filter out nvidia deps for torch while keeping a CPU-only nixpkgs torch.
+      # nixpkgs runtime deps frequently carry doc/test baggage that we do not
+      # want when we are only borrowing their prebuilt outputs. For torch on
+      # python3.11 this shows up through:
+      #   jinja2.passthru.doc -> sphinxHook
+      #   fsspec nativeCheckInputs -> aiohttp -> ... -> pyopenssl -> sphinxHook
+      torchHack =
+        { from ? null }:
+        let
+          stripEvalBaggage = pkg:
+            pkg.overridePythonAttrs (old: {
+              doCheck = false;
+              nativeCheckInputs = [ ];
+              checkInputs = [ ];
+              passthru = builtins.removeAttrs (old.passthru or { }) [
+                "doc"
+                "tests"
+              ];
+            });
+          defaultFrom =
+            (pkgs.python311.override {
+              packageOverrides = _: prevPy: {
+                jinja2 = stripEvalBaggage prevPy.jinja2;
+                fsspec = stripEvalBaggage prevPy.fsspec;
+              };
+            }).pkgs.torchWithoutCuda;
+          from' = if from == null then defaultFrom else from;
+        in
+        hacks.nixpkgsPrebuilt {
+          from = from';
+          prev = prev.torch.overrideAttrs (old: {
+            passthru = old.passthru // {
+              dependencies = pkgs.lib.filterAttrs (name: _: ! pkgs.lib.hasPrefix "nvidia" name) old.passthru.dependencies;
+            };
+          });
+        };
     };
     mkEnv =
       { name
