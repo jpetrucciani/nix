@@ -110,15 +110,33 @@ let
         else
           pkg;
 
-      # this is a hack to filter out nvidia deps for torch! it takes in a base package, like pkgs.python311Packages.torchWithoutCuda
-      torchHack = { from ? pkgs.python311Packages.torchWithoutCuda }: hacks.nixpkgsPrebuilt {
-        inherit from;
-        prev = prev.torch.overrideAttrs (old: {
-          passthru = old.passthru // {
-            dependencies = pkgs.lib.filterAttrs (name: _: ! pkgs.lib.hasPrefix "nvidia" name) old.passthru.dependencies;
-          };
-        });
-      };
+      # Filter out nvidia deps for torch while keeping a CPU-only nixpkgs torch.
+      # nixpkgs jinja2 exports a passthru.doc derivation that pulls sphinxHook,
+      # which breaks evaluation on python3.11 when torchWithoutCuda is imported.
+      torchHack =
+        { from ? null }:
+        let
+          defaultFrom =
+            (pkgs.python311.override {
+              packageOverrides = _: prevPy: {
+                jinja2 = prevPy.jinja2.overrideAttrs (old: {
+                  passthru = builtins.removeAttrs (old.passthru or { }) [
+                    "doc"
+                    "tests"
+                  ];
+                });
+              };
+            }).pkgs.torchWithoutCuda;
+          from' = if from == null then defaultFrom else from;
+        in
+        hacks.nixpkgsPrebuilt {
+          from = from';
+          prev = prev.torch.overrideAttrs (old: {
+            passthru = old.passthru // {
+              dependencies = pkgs.lib.filterAttrs (name: _: ! pkgs.lib.hasPrefix "nvidia" name) old.passthru.dependencies;
+            };
+          });
+        };
     };
     mkEnv =
       { name
