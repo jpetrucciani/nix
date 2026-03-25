@@ -802,11 +802,11 @@ in
         };
       };
       lfs.enable = true;
-      ${attrIf (!isLinux) "signing"} = {
-        key = "03C0CBEA6EAB9258";
-        signer = "gpg";
-        signByDefault = true;
-      };
+      # ${attrIf (!isLinux) "signing"} = {
+      #   key = "03C0CBEA6EAB9258";
+      #   signer = "gpg";
+      #   signByDefault = true;
+      # };
       ignores = [
         "*.pcap"
         "*.swp"
