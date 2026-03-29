@@ -354,14 +354,4 @@ in
       sha256 = "00gjkaayapgi11k0dgngv51fcbkbahk659vlf4ffgi5qlvc7ni5a";
     })
     { inherit (final.stdenv.hostPlatform) system; }).proxysql;
-
-  # temp fix from https://github.com/NixOS/nixpkgs/pull/502769
-  direnv =
-    if final.stdenv.isDarwin then
-      prev.direnv.overrideAttrs
-        (_: {
-          postPatch = ''
-            substituteInPlace GNUmakefile --replace-fail " -linkmode=external" ""
-          '';
-        }) else final.direnv;
 }
