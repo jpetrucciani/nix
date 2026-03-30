@@ -14,10 +14,14 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 [`genai-toolbox`](https://github.com/googleapis/genai-toolbox) is an open source MCP server for databases, designed and built with enterprise-quality and production-grade usage in mind
 
-### [mods.nix](./mods.nix)
+### [geode.nix](./geode.nix)
 
-[`mods`](https://github.com/charmbracelet/mods) is a CLI tool to interact with AI APIs
+geode is an experimental semantic indexing tool
 
 ### [maestro-go.nix](./maestro-go.nix)
 
 [`maestro`](https://github.com/pluja/maestro) converts natural language instructions into cli commands with LLMs
+
+### [mods.nix](./mods.nix)
+
+[`mods`](https://github.com/charmbracelet/mods) is a CLI tool to interact with AI APIs

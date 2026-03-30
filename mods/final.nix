@@ -150,7 +150,8 @@ let
     });
   codex-latest =
     let
-      version = "0.116.0";
+      version = "0.117.0";
+      v8Version = "146.4.0";
       fixedPkgs = import
         (final.fetchFromGitHub {
           owner = "NixOS";
@@ -158,12 +159,25 @@ let
           rev = "c0621c48faea317868eff53d80158eaa8f196693";
           hash = "sha256-ucfx4mvWT/PhBalLXQhXIJGNf62ppnuD2K8m5VuQkyQ=";
         })
-        { inherit (final) system; };
+        { inherit (final.stdenv.hostPlatform) system; };
       src = final.fetchFromGitHub {
         owner = "openai";
         repo = "codex";
         tag = "rust-v${version}";
-        hash = "sha256-PTsKphg3gPlBUs5oMM34RhJJ4jxvD6hand5aVjXcuZ4=";
+        hash = "sha256-Ezd8KaEMVeJPKC74CSPhecPLZghm0v6JkQTCPhr/2nY=";
+      };
+      # `rusty_v8` tries to fetch this archive during the build, which fails in
+      # Nix's sandbox. Pre-fetch it instead and point the build script at it.
+      librustyV8 = final.fetchurl {
+        name = "librusty_v8-${v8Version}";
+        url = "https://github.com/denoland/rusty_v8/releases/download/v${v8Version}/librusty_v8_release_${final.stdenv.hostPlatform.rust.rustcTarget}.a.gz";
+        hash =
+          {
+            aarch64-darwin = "sha256-v+LJvjKlbChUbw+WWCXuaPv2BkBfMQzE4XtEilaM+Yo=";
+            aarch64-linux = "sha256-2/FlsHyBvbBUvARrQ9I+afz3vMGkwbW0d2mDpxBi7Ng=";
+            x86_64-linux = "sha256-5ktNmeSuKTouhGJEqJuAF4uhA4LBP7WRwfppaPUpEVM=";
+          }.${final.stdenv.hostPlatform.system}
+            or (throw "Unsupported system for codex-latest librusty_v8: ${final.stdenv.hostPlatform.system}");
       };
     in
     prev.codex.overrideAttrs (old: {
@@ -172,7 +186,10 @@ let
       cargoDeps = fixedPkgs.rustPlatform.fetchCargoVendor {
         inherit src;
         sourceRoot = "${src.name}/codex-rs";
-        hash = "sha256-X5Yh8+3UrCZfzIplb4OzFfcfoklMu3FikU9vZ6CJbfc=";
+        hash = "sha256-YbE6SQn8zWQUfSpEO2IynXzJhLl+AHc6sfh7E6PxYJk=";
+      };
+      env = (old.env or { }) // {
+        RUSTY_V8_ARCHIVE = librustyV8;
       };
     });
 in
