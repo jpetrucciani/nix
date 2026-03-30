@@ -1,7 +1,7 @@
 { lib, stdenvNoCC, fetchurl, installShellFiles }:
 let
   version = "0.1.0";
-  system = stdenvNoCC.hostPlatform.system;
+  inherit (stdenvNoCC.hostPlatform) system;
 
   artifacts = {
     x86_64-linux = {
