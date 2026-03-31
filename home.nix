@@ -186,15 +186,6 @@ in
 
         discord_webhook
 
-        # lsps
-        (with nodePackages; [
-          # bash-language-server
-          dockerfile-language-server
-          vscode-json-languageserver
-          yaml-language-server
-          # vlang
-        ])
-
         (optList (!isBarebones) [
           docker-client
           google-cloud-sdk

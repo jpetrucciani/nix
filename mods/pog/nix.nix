@@ -95,7 +95,7 @@ rec {
           node=""
           if [ "$with_node" = "1" ]; then
             toplevel="node = pkgs.nodejs_22;${"\n"}$toplevel"
-            node="node = [node];npm = with node.pkgs; [];"
+            node="node = [node];"
             gitignore="$gitignore${"\n"}# node${"\n"}${gitignore.node}"
           fi
           php=""
