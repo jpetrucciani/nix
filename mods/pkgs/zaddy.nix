@@ -6,7 +6,7 @@ rec {
       builtins = {
         caddy-cgi = { name = "github.com/aksdb/caddy-cgi"; version = "7cf2523251ffeef310868d8ed03e17a929236f2e"; };
         caddy-exec = { name = "github.com/abiosoft/caddy-exec"; version = "06d4f7218eb886ab9664e63c3f56010992e93fb9"; };
-        caddy-security = { name = "github.com/greenpau/caddy-security"; version = "v1.1.56"; };
+        caddy-security = { name = "github.com/greenpau/caddy-security"; version = "v1.1.57"; };
         caddy-webhook = { name = "github.com/WingLim/caddy-webhook"; version = "v1.0.8"; };
         certmagic-storage-dynamodb = { name = "github.com/silinternational/certmagic-storage-dynamodb"; version = "3.0.0"; };
 
@@ -112,7 +112,7 @@ rec {
       googleclouddns
       route53
     ];
-    vendorHash = "sha256-lZU+NzAfMkjEL+4KxSU0gYGzN9fK5FxIhelH3Zy9p/w=";
+    vendorHash = "sha256-qQPExLgkvT8CKX+RJPHdnAOBuyLcTMU2T1XAd25o/7E=";
   };
 
   # caddy with s3-browser plugin

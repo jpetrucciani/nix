@@ -14,13 +14,13 @@
 }:
 let
   name = "hermes-agent";
-  version = "2026.3.23";
+  version = "2026.3.30";
 
   src = fetchFromGitHub {
     owner = "NousResearch";
     repo = name;
     rev = "refs/tags/v${version}";
-    hash = "sha256-dKilXoJbu5thhCRpDYKTX9fAOq1JTqdBvuf9Ji1iY64=";
+    hash = "sha256-ipfIXPikYDpJC+Hjxh2soo20WXw1i09p8pQVCtpfVMg=";
     fetchSubmodules = true;
   };
 
@@ -28,7 +28,31 @@ let
     inherit name;
     python = python313;
     workspaceRoot = src;
-    pyprojectOverrides = final: prev: { };
+    pyprojectOverrides =
+      final: prev:
+      let
+        addBuildInputs = buildInputs: pkg: pkg.overrideAttrs (old: {
+          buildInputs = (old.buildInputs or [ ]) ++ buildInputs;
+        });
+        hatchBuildInputs = [
+          final.hatchling
+          final.packaging
+          final.pathspec
+          final.pluggy
+          final."trove-classifiers"
+        ];
+      in
+      {
+        atomicwrites = addBuildInputs [ final.setuptools ] prev.atomicwrites;
+        atroposlib = addBuildInputs hatchBuildInputs prev.atroposlib;
+        "python-olm" = addBuildInputs [ final.setuptools ] prev."python-olm";
+        tinker = addBuildInputs
+          (hatchBuildInputs ++ [
+            final."hatch-fancy-pypi-readme"
+          ])
+          prev.tinker;
+        "yc-bench" = addBuildInputs hatchBuildInputs prev."yc-bench";
+      };
   };
 
   hermesPackageDirs = [
@@ -85,33 +109,18 @@ stdenv.mkDerivation {
     find $out/${site} -type d -exec chmod u+w '{}' +
 
     for packageDir in ${lib.escapeShellArgs hermesPackageDirs}; do
-      rm -r "$out/${site}/$packageDir"
+      rm -rf "$out/${site}/$packageDir"
       cp -r "${src}/$packageDir" "$out/${site}/$packageDir"
       find "$out/${site}/$packageDir" -type d -exec chmod u+w '{}' +
     done
 
     for module in ${lib.escapeShellArgs hermesModules}; do
-      rm "$out/${site}/$module"
+      rm -f "$out/${site}/$module"
       install -Dm644 "${src}/$module" "$out/${site}/$module"
     done
 
-    cp -r ${src}/mini-swe-agent/src/minisweagent $out/${site}/minisweagent
     chmod u+w $out/${site}/tools/terminal_tool.py
-    chmod u+w $out/${site}/mini_swe_runner.py
-    chmod u+w $out/${site}/hermes_cli/doctor.py
     chmod u+w $out/${site}/gateway/platforms/discord.py
-    substituteInPlace $out/${site}/tools/terminal_tool.py \
-      --replace-fail \
-      'from minisweagent_path import ensure_minisweagent_on_path' \
-      $'try:\n    from minisweagent_path import ensure_minisweagent_on_path\nexcept ImportError:\n    def ensure_minisweagent_on_path(_repo_root=None):\n        return None'
-    substituteInPlace $out/${site}/mini_swe_runner.py \
-      --replace-fail \
-      'from minisweagent_path import ensure_minisweagent_on_path' \
-      $'try:\n    from minisweagent_path import ensure_minisweagent_on_path\nexcept ImportError:\n    def ensure_minisweagent_on_path(_repo_root=None):\n        return None'
-    substituteInPlace $out/${site}/hermes_cli/doctor.py \
-      --replace-fail \
-      $'    mini_swe_dir = PROJECT_ROOT / "mini-swe-agent"\n    if mini_swe_dir.exists() and (mini_swe_dir / "pyproject.toml").exists():\n        try:\n            __import__("minisweagent")\n            check_ok("mini-swe-agent", "(terminal backend)")\n        except ImportError:\n            check_warn("mini-swe-agent found but not installed", "(run: uv pip install -e ./mini-swe-agent)")\n            issues.append("Install mini-swe-agent: uv pip install -e ./mini-swe-agent")\n    else:\n        check_warn("mini-swe-agent not found", "(run: git submodule update --init --recursive)")' \
-      $'    mini_swe_dir = PROJECT_ROOT / "mini-swe-agent"\n    try:\n        __import__("minisweagent")\n        check_ok("mini-swe-agent", "(terminal backend)")\n    except ImportError:\n        if mini_swe_dir.exists() and (mini_swe_dir / "pyproject.toml").exists():\n            check_warn("mini-swe-agent found but not installed", "(run: uv pip install -e ./mini-swe-agent)")\n            issues.append("Install mini-swe-agent: uv pip install -e ./mini-swe-agent")\n        else:\n            check_warn("mini-swe-agent not found", "(run: git submodule update --init --recursive)")'
     substituteInPlace $out/${site}/gateway/platforms/discord.py \
       --replace-fail \
       '            opus_path = ctypes.util.find_library("opus")' \
