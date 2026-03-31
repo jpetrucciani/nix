@@ -96,22 +96,6 @@
     "flake-compat_4": {
       "flake": false,
       "locked": {
-        "lastModified": 1751685974,
-        "narHash": "sha256-NKw96t+BgHIYzHUjkTK95FqYRVKB8DHpVhefWSz/kTw=",
-        "ref": "refs/heads/main",
-        "rev": "549f2762aebeff29a2e5ece7a7dc0f955281a1d1",
-        "revCount": 92,
-        "type": "git",
-        "url": "https://git.lix.systems/lix-project/flake-compat"
-      },
-      "original": {
-        "type": "git",
-        "url": "https://git.lix.systems/lix-project/flake-compat"
-      }
-    },
-    "flake-compat_5": {
-      "flake": false,
-      "locked": {
         "lastModified": 1767039857,
         "narHash": "sha256-vNpUSpF5Nuw8xvDLj2KCwwksIbjua2LZCqhV1LNRDns=",
         "owner": "edolstra",
@@ -125,7 +109,7 @@
         "type": "github"
       }
     },
-    "flake-compat_6": {
+    "flake-compat_5": {
       "flake": false,
       "locked": {
         "lastModified": 1767039857,
@@ -310,55 +294,7 @@
         "type": "indirect"
       }
     },
-    "kwb": {
-      "inputs": {
-        "flake-compat": "flake-compat_4",
-        "home-manager": [
-          "home-manager"
-        ],
-        "nix-darwin": "nix-darwin",
-        "nixos-hardware": [
-          "nixos-hardware"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1774823593,
-        "narHash": "sha256-8DDmCvZXzh9Z23QGMhoEW5eakDeMmoSqPSd5iUBa+eU=",
-        "owner": "kwbauson",
-        "repo": "cfg",
-        "rev": "22a96f00d534c27fb8f09158b8f18d0940fbacbe",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kwbauson",
-        "repo": "cfg",
-        "type": "github"
-      }
-    },
     "nix-darwin": {
-      "inputs": {
-        "nixpkgs": [
-          "kwb",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1773000227,
-        "narHash": "sha256-zm3ftUQw0MPumYi91HovoGhgyZBlM4o3Zy0LhPNwzXE=",
-        "owner": "LnL7",
-        "repo": "nix-darwin",
-        "rev": "da529ac9e46f25ed5616fd634079a5f3c579135f",
-        "type": "github"
-      },
-      "original": {
-        "id": "nix-darwin",
-        "type": "indirect"
-      }
-    },
-    "nix-darwin_2": {
       "inputs": {
         "nixpkgs": "nixpkgs_3"
       },
@@ -482,7 +418,7 @@
     },
     "nixos-wsl": {
       "inputs": {
-        "flake-compat": "flake-compat_5",
+        "flake-compat": "flake-compat_4",
         "nixpkgs": [
           "nixpkgs"
         ]
@@ -694,7 +630,7 @@
     },
     "pog_2": {
       "inputs": {
-        "flake-compat": "flake-compat_6",
+        "flake-compat": "flake-compat_5",
         "flake-utils": "flake-utils_5",
         "nixpkgs": "nixpkgs_7"
       },
@@ -785,8 +721,7 @@
         "flake-compat": "flake-compat",
         "hex": "hex",
         "home-manager": "home-manager_2",
-        "kwb": "kwb",
-        "nix-darwin": "nix-darwin_2",
+        "nix-darwin": "nix-darwin",
         "nix-std": "nix-std",
         "nix2container": "nix2container",
         "nixos-generators": "nixos-generators",

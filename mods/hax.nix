@@ -27,8 +27,6 @@ final: prev:
     ifIsDarwin = attrIf isDarwin;
     ifIsM1 = attrIf isM1;
 
-    chief_keef = flake.inputs.kwb.packages.${pkgs.stdenv.hostPlatform.system};
-
     pythonPackageOverlay =
       overlay: attr: self: super:
       let
@@ -71,43 +69,6 @@ final: prev:
           ${optionalString isDarwin mac_meme}
       '';
     };
-
-    comma = (pog {
-      name = ",";
-      description = "a quick and easy way to run software that you don't have!";
-      flags = [
-        {
-          name = "package";
-          description = "a specific package to use for this binary";
-        }
-        {
-          name = "unset";
-          description = "unset the saved package selection for this invocation";
-          bool = true;
-        }
-        {
-          name = "overlay";
-          description = "an additional overlay to include in comma";
-        }
-        {
-          name = "description";
-          description = "print out the description of the package";
-          bool = true;
-        }
-      ];
-      arguments = [
-        { name = "binary"; }
-      ];
-      script = ''
-        exec ${chief_keef.better-comma}/bin/, \
-          ''${overlay:+--overlay $overlay} \
-          ''${unset:+-u} \
-          ''${description:+-d} \
-          ''${package:+-p $package} \
-          "$@"
-      '';
-    }).overrideAttrs (_: { name = "better-comma"; });
-    vanilla_comma = chief_keef.better-comma;
 
     mapAttrValues = f: mapAttrs (_: f);
     fakePlatform = x:

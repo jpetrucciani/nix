@@ -196,9 +196,6 @@ in
           # python
           (python314.withPackages pkgs.hax.basePythonPackages)
 
-          # keef's stuff
-          hax.comma
-
           # sounds
           meme_sounds
           # mac specific
