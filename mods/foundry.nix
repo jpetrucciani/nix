@@ -68,7 +68,7 @@ let
           which
           yq-go
         ];
-        nixLayer = with pkgs; [ nixVersions.nix_2_32 ];
+        nixLayer = with pkgs; [ nixVersions.nix_2_34 ];
       };
       fn =
         let
