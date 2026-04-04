@@ -23,6 +23,7 @@ uv-nix.buildUvPackage rec {
       --set CUDA_PATH "${cudatoolkit}" \
       --prefix CPATH : "${cudatoolkit}/include" \
       --prefix CPLUS_INCLUDE_PATH : "${cudatoolkit}/include" \
+      --prefix LIBRARY_PATH : "${cudatoolkit}/lib" \
       --set TRITON_LIBCUDA_PATH "${ldPath}" \
       --set TRITON_PTXAS_PATH "${cudatoolkit}/bin/ptxas" \
       --prefix PATH : ${lib.makeBinPath [ cudatoolkit clang ninja ]}
