@@ -746,7 +746,7 @@ let
       , ...
       }@args:
       let
-        attrs = removeAttrs args [ "lockUrl" "lockHash" "extraDependencies" ];
+        attrs = removeAttrs args [ "lockUrl" "lockHash" "extraDependencies" "pyprojectOverrides" ];
       in
       assert (lockFile != null || (lockUrl != null && lockHash != null)) || throw "you must specify either a 'lockFile' or a 'lockUrl' and 'lockHash'!";
       final.stdenv.mkDerivation (finalAttrs: attrs // {
