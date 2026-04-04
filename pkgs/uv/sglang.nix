@@ -1,5 +1,5 @@
 # [sglang](https://github.com/sgl-project/sglang) is a high-performance serving framework for large language models and multimodal models.
-{ sglang, lib, uv-nix, cudatoolkit, clang, python313, version ? "0.5.6-dflash", lockHash ? "sha256-58eN5oohBiNzhHiNZAOzmWyQqwBJeRKynfvJItspsrM=", isWSL ? false, includePin ? false }:
+{ sglang, lib, uv-nix, cudatoolkit, clang, ninja, python313, version ? "0.5.6-dflash", lockHash ? "sha256-58eN5oohBiNzhHiNZAOzmWyQqwBJeRKynfvJItspsrM=", isWSL ? false, includePin ? false }:
 let
   ldPath = if isWSL then "/usr/lib/wsl/lib" else "/run/opengl-driver/lib";
   runtimePythonPath = lib.concatStringsSep ":" [
@@ -26,7 +26,7 @@ uv-nix.buildUvPackage rec {
       --prefix PYTHONPATH : "${runtimePythonPath}" \
       --set TRITON_LIBCUDA_PATH "${ldPath}" \
       --set TRITON_PTXAS_PATH "${cudatoolkit}/bin/ptxas" \
-      --prefix PATH : ${clang}/bin
+      --prefix PATH : ${lib.makeBinPath [ clang ninja ]}
   '';
 
   passthru = {
