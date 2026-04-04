@@ -15,3 +15,4 @@ pynixify/
 tmp
 .env
 nixcache.log
+__pycache__

@@ -256,7 +256,6 @@ in
         };
       };
     };
-    promtail = common.templates.promtail { inherit hostname; };
     postgresql = {
       enable = true;
       package = pkgs.postgresql_18;

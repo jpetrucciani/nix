@@ -298,48 +298,6 @@ in
   };
 
   templates = {
-    promtail =
-      { hostname
-      , loki_ip ? "loki-internal.cobi.dev"
-      , promtail_port ? ports.promtail
-      , loki_port ? 443
-      , tls ? true
-      , extra_scrape_configs ? [ ]
-      }: {
-        enable = true;
-        configuration = {
-          server = {
-            http_listen_port = promtail_port;
-            grpc_listen_port = 0;
-          };
-          positions = {
-            filename = "/tmp/positions.yaml";
-          };
-          clients = [{
-            url = "http${if tls then "s" else ""}://${loki_ip}:${toString loki_port}/loki/api/v1/push";
-          }];
-          scrape_configs = [{
-            job_name = "journal";
-            journal = {
-              max_age = "12h";
-              labels = {
-                job = "systemd-journal";
-                host = hostname;
-              };
-            };
-            relabel_configs = [{
-              source_labels = [ "__journal__systemd_unit" ];
-              target_label = "unit";
-            }];
-          }] ++ extra_scrape_configs;
-        };
-      };
-    promtail_scrapers = {
-      caddy = { path ? "/var/log/caddy/*.log" }: {
-        job_name = "caddy";
-        static_configs = [{ targets = [ "localhost" ]; labels = { job = "caddylogs"; __path__ = path; }; }];
-      };
-    };
     prometheus_exporters = _: {
       node = {
         enable = true;

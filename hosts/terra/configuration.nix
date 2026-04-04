@@ -346,10 +346,6 @@ in
         upstream-base-url = "https://ntfy.sh";
       };
     };
-    promtail = common.templates.promtail {
-      inherit hostname;
-      extra_scrape_configs = [ (common.templates.promtail_scrapers.caddy { }) ];
-    };
     prometheus.exporters = common.templates.prometheus_exporters { };
     minifluxng = {
       enable = false;
