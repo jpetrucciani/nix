@@ -1,5 +1,5 @@
 # [sglang](https://github.com/sgl-project/sglang) is a high-performance serving framework for large language models and multimodal models.
-{ sglang, lib, uv-nix, cudatoolkit, clang, ninja, python313, fetchurl, stdenv, version ? "0.5.6-dflash", lockHash ? "sha256-58eN5oohBiNzhHiNZAOzmWyQqwBJeRKynfvJItspsrM=", isWSL ? false, includePin ? false }:
+{ sglang, lib, uv-nix, cudatoolkit, clang, ninja, python313, fetchurl, stdenv, version ? "0.5.6-dflash.1", lockHash ? "sha256-o9Q/PP1xuk3JjXjYQzdVmMcFMqr60sfVGOTJqo80nKE=", isWSL ? false, includePin ? false }:
 let
   ldPath = if isWSL then "/usr/lib/wsl/lib" else "/run/opengl-driver/lib";
   runtimePythonPath = lib.concatStringsSep ":" [
