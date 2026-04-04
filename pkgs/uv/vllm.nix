@@ -12,8 +12,13 @@ uv-nix.buildUvPackage rec {
   cudaSupport = true;
 
   postInstall = ''
+    sitePackages=$(echo "$out"/lib/python*/site-packages)
+    wheelCudaLibs="$sitePackages/torch/lib"
+    for libdir in "$sitePackages"/nvidia/*/lib; do
+      wheelCudaLibs="$wheelCudaLibs:$libdir"
+    done
     wrapProgram $out/bin/vllm \
-      --set LD_LIBRARY_PATH "${ldPath}" \
+      --set LD_LIBRARY_PATH "$wheelCudaLibs:${ldPath}" \
       --set TRITON_LIBCUDA_PATH "${ldPath}" \
       --set TRITON_PTXAS_PATH "${cudatoolkit}/bin/ptxas" \
       --prefix PATH : ${clang}/bin
