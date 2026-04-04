@@ -24,9 +24,13 @@ uv-nix.buildUvPackage rec {
     wrapProgram $out/bin/sglang \
       --set LD_LIBRARY_PATH "$wheelCudaLibs:${ldPath}" \
       --prefix PYTHONPATH : "${runtimePythonPath}" \
+      --set CUDA_HOME "${cudatoolkit}" \
+      --set CUDA_PATH "${cudatoolkit}" \
+      --prefix CPATH : "${cudatoolkit}/include" \
+      --prefix CPLUS_INCLUDE_PATH : "${cudatoolkit}/include" \
       --set TRITON_LIBCUDA_PATH "${ldPath}" \
       --set TRITON_PTXAS_PATH "${cudatoolkit}/bin/ptxas" \
-      --prefix PATH : ${lib.makeBinPath [ clang ninja ]}
+      --prefix PATH : ${lib.makeBinPath [ cudatoolkit clang ninja ]}
   '';
 
   passthru = {
