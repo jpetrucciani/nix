@@ -164,6 +164,14 @@ let
       , _pkgs ? final
       }@args:
       let
+        FFMPEG_ROOT = final.symlinkJoin {
+          name = "ffmpeg";
+          paths = with final; [
+            ffmpeg_6-full.bin
+            ffmpeg_6-full.dev
+            ffmpeg_6-full.lib
+          ];
+        };
         hacks = final.callPackage final.pyproject-nix.build.hacks { };
         cudaOverrides = _final: _prev:
           let
@@ -322,25 +330,14 @@ let
                   "libnvidia-ml.so.1"
                 ];
               });
-            torchaudio =
-              let
-                FFMPEG_ROOT = final.symlinkJoin {
-                  name = "ffmpeg";
-                  paths = with final; [
-                    ffmpeg_6-full.bin
-                    ffmpeg_6-full.dev
-                    ffmpeg_6-full.lib
-                  ];
-                };
-              in
-              _prev.torchaudio.overrideAttrs (old: {
-                buildInputs = (old.buildInputs or [ ]) ++ [ final.sox ];
-                inherit FFMPEG_ROOT;
-                autoPatchelfIgnoreMissingDeps = true;
-                postFixup = ''
-                  addAutoPatchelfSearchPath "${_final.torch}/${python.sitePackages}/torch/lib"
-                '';
-              });
+            torchaudio = _prev.torchaudio.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ [ final.sox ];
+              inherit FFMPEG_ROOT;
+              autoPatchelfIgnoreMissingDeps = true;
+              postFixup = ''
+                addAutoPatchelfSearchPath "${_final.torch}/${python.sitePackages}/torch/lib"
+              '';
+            });
             torchvision = _prev.torchvision.overrideAttrs (_: {
               postFixup = ''
                 addAutoPatchelfSearchPath "${_final.torch}/${python.sitePackages}/torch/lib"
@@ -351,6 +348,85 @@ let
                 sed -i -E 's#minor == 6#minor >= 6#g' $out/${python.sitePackages}/triton/backends/nvidia/compiler.py
               '';
             });
+
+            "outlines-core" = let hacks = _pkgs.callPackage _pkgs.pyproject-nix.build.hacks { }; in hacks.nixpkgsPrebuilt {
+              from = python.pkgs."outlines-core";
+            };
+            sglang = _prev.sglang.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ (with _final; [
+                setuptools
+                wheel
+              ]);
+            });
+            "torch-memory-saver" = _prev."torch-memory-saver".overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ (with _pkgs.cudaPackages; [
+                cuda_cudart
+              ]);
+              autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
+                "libcuda.so.1"
+              ];
+            });
+            "sgl-kernel" = _prev."sgl-kernel".overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ [
+                _pkgs.numactl
+              ] ++ (with _pkgs.cudaPackages; [
+                cuda_cudart
+                cuda_nvrtc
+                libcublas
+              ]);
+              postFixup = ''
+                addAutoPatchelfSearchPath "${_final.torch}/${python.sitePackages}/torch/lib"
+              '' + (old.postFixup or "");
+              autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
+                "libcuda.so.1"
+              ];
+            });
+            torchao = _prev.torchao.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ (with _pkgs.cudaPackages; [
+                cuda_cudart
+              ]);
+              postFixup = ''
+                addAutoPatchelfSearchPath "${_final.torch}/${python.sitePackages}/torch/lib"
+              '' + (old.postFixup or "");
+            });
+            torchcodec = _prev.torchcodec.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ [
+                FFMPEG_ROOT
+              ];
+              postFixup = ''
+                addAutoPatchelfSearchPath "${_final.torch}/${python.sitePackages}/torch/lib"
+              '' + (old.postFixup or "");
+              autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
+                "libavutil.so.56"
+                "libavutil.so.57"
+                "libavutil.so.59"
+                "libavutil.so.60"
+                "libavcodec.so.58"
+                "libavcodec.so.59"
+                "libavcodec.so.61"
+                "libavcodec.so.62"
+                "libavformat.so.58"
+                "libavformat.so.59"
+                "libavformat.so.61"
+                "libavformat.so.62"
+                "libavdevice.so.58"
+                "libavdevice.so.59"
+                "libavdevice.so.61"
+                "libavdevice.so.62"
+                "libavfilter.so.7"
+                "libavfilter.so.8"
+                "libavfilter.so.10"
+                "libavfilter.so.11"
+                "libswscale.so.5"
+                "libswscale.so.6"
+                "libswscale.so.8"
+                "libswscale.so.9"
+                "libswresample.so.3"
+                "libswresample.so.5"
+                "libswresample.so.6"
+              ];
+            });
+
           };
         gitignoreRecursiveSource = final.nix-gitignore.gitignoreFilterSourcePure (_: _: true) [ ];
         workspaceRoot' = if gitignore then gitignoreRecursiveSource workspaceRoot else workspaceRoot;

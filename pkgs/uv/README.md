@@ -14,6 +14,10 @@ this directory contains apps built with uv2nix using my wrapper
 
 [mcpo](https://github.com/open-webui/mcpo) is a simple, secure MCP-to-OpenAPI proxy server
 
+### [sglang.nix](./sglang.nix)
+
+[sglang](https://github.com/sgl-project/sglang) is a high-performance serving framework for large language models and multimodal models.
+
 ### [vllm-nightly.nix](./vllm-nightly.nix)
 
 [vllm](https://github.com/vllm-project/vllm) is a high-throughput and memory-efficient inference and serving engine for LLMs (nightly builds)
