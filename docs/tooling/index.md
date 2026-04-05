@@ -7,6 +7,7 @@ You do not need to understand every tool here on a first read. For newcomers, th
 ## Key Surfaces
 
 - [`pog`](/tooling/pog), the CLI wrapper system used throughout [`mods/pog/*`](https://github.com/jpetrucciani/nix/tree/main/mods/pog).
+- [`kshell`](/tooling/kshell), a fast Kubernetes debug-shell wrapper with enough pod-spec control to be genuinely useful.
 - [`hex`](/tooling/hex), the Nix-driven spec and render workflow used here for Kubernetes-oriented configuration.
 - [`snowball`](/tooling/snowball), a targeted way to package up and deploy portable systemd service bundles via [`mods/snowball.nix`](https://github.com/jpetrucciani/nix/blob/main/mods/snowball.nix).
 - [`foundry`](/tooling/foundry), the repo's shared image-building surface for cloud/installer OS images and task-focused container images.

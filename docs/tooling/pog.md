@@ -25,6 +25,7 @@
 
 ## Read Next
 
+- [kshell](/tooling/kshell)
 - [Tooling Overview](/tooling/index)
 - [hex](/tooling/hex)
 - [hms and hmx](/tooling/hms-and-hmx)

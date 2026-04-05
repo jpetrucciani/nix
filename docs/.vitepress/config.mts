@@ -59,6 +59,7 @@ export default defineConfig({
         items: [
           { text: 'Tooling Overview', link: '/tooling/index' },
           { text: 'pog', link: '/tooling/pog' },
+          { text: 'kshell', link: '/tooling/kshell' },
           { text: 'hex', link: '/tooling/hex' },
           { text: 'snowball', link: '/tooling/snowball' },
           { text: 'foundry', link: '/tooling/foundry' },

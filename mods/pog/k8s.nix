@@ -77,12 +77,62 @@ rec {
 
   kshell = pog {
     name = "kshell";
-    version = "0.0.1";
+    version = "0.0.2";
     description = "a quick and easy way to pop into an ephemeral shell on k8s!";
     flags = [
       _.flags.k8s.namespace
       _.flags.k8s.serviceaccount
       _.flags.docker.image
+      {
+        name = "labels";
+        short = "";
+        description = "comma-separated pod labels in key=value form";
+      }
+      {
+        name = "env";
+        short = "";
+        description = "comma-separated container env vars in KEY=value form";
+      }
+      {
+        name = "envfromsecret";
+        short = "";
+        description = "comma-separated secret names to expose via envFrom";
+      }
+      {
+        name = "imagepullsecrets";
+        short = "";
+        description = "comma-separated image pull secret names to attach to the pod";
+      }
+      {
+        name = "nodeselector";
+        short = "";
+        description = "comma-separated node selector labels in key=value form";
+      }
+      {
+        name = "requests";
+        short = "";
+        description = "comma-separated resource requests like cpu=250m,memory=512Mi";
+      }
+      {
+        name = "limits";
+        short = "";
+        description = "comma-separated resource limits like cpu=1,memory=1Gi";
+      }
+      {
+        name = "tolerations";
+        short = "";
+        description = "quoted semicolon-separated tolerations, each as comma-separated key=value fields";
+      }
+      {
+        name = "volumesecrets";
+        short = "";
+        description = "comma-separated secret mounts in secret-name=/mount/path form";
+      }
+      {
+        name = "volumeconfigmaps";
+        short = "";
+        description = "comma-separated configmap mounts in configmap-name=/mount/path form";
+      }
       {
         name = "podtimeout";
         default = "1m";
@@ -90,14 +140,205 @@ rec {
       }
     ];
     script = ''
+      jq="${final.jq}/bin/jq"
       debug "''${GREEN}running image '$image' on the '$namespace' namespace!''${RESET}"
       pod_name="$(echo "''${USER:-user}-kshell-''$(${final.util-linux}/bin/uuidgen | ${_.head} -c 8)" | tr -cd '[:alnum:]-')"
-      overrides="$(echo "json.spec.serviceAccount = \"$serviceaccount\";" | gron -u | tr -d '\n')"
+      split_csv_lines() {
+        printf '%s' "$1" |
+          ${_.tr} ',' '\n' |
+          ${_.sed} -E 's/^[[:space:]]+//; s/[[:space:]]+$//' |
+          ${_.sed} '/^$/d'
+      }
+
+      parse_csv_map() {
+        split_csv_lines "$1" |
+          "$jq" -R -s -c '
+            split("\n")
+            | map(select(length > 0))
+            | map(capture("^(?<key>[^=]+)=(?<value>.*)$"))
+            | from_entries
+          '
+      }
+
+      parse_named_array() {
+        split_csv_lines "$1" |
+          "$jq" -R -s -c '
+            split("\n")
+            | map(select(length > 0))
+            | map({name: .})
+          '
+      }
+
+      parse_env_array() {
+        split_csv_lines "$1" |
+          "$jq" -R -s -c '
+            split("\n")
+            | map(select(length > 0))
+            | map(capture("^(?<name>[^=]+)=(?<value>.*)$"))
+          '
+      }
+
+      parse_envfrom_secret_array() {
+        split_csv_lines "$1" |
+          "$jq" -R -s -c '
+            split("\n")
+            | map(select(length > 0))
+            | map({secretRef: {name: .}})
+          '
+      }
+
+      parse_tolerations_array() {
+        # shellcheck disable=SC2016
+        "$jq" -Rn -c --arg raw "$1" '
+          $raw
+          | split(";")
+          | map(gsub("^\\s+|\\s+$"; ""))
+          | map(select(length > 0))
+          | map(
+              split(",")
+              | map(gsub("^\\s+|\\s+$"; ""))
+              | map(select(length > 0))
+              | map(capture("^(?<key>[^=]+)=(?<value>.*)$"))
+              | from_entries
+              | with_entries(
+                  if .key == "tolerationSeconds" then
+                    .value |= tonumber
+                  else
+                    .
+                  end
+                )
+            )
+        '
+      }
+
+      add_mounts() {
+        raw="$1"
+        kind="$2"
+        prefix="$3"
+
+        [ -z "$raw" ] && return 0
+
+        # shellcheck disable=SC2016
+        mounts_json="$(
+          split_csv_lines "$raw" |
+            "$jq" -R -s -c --arg prefix "$prefix" '
+              split("\n")
+              | map(select(length > 0))
+              | map(capture("^(?<source>[^=]+)=(?<mountPath>.+)$"))
+              | map(
+                  .name = (
+                    ($prefix + "-" + .source)
+                    | ascii_downcase
+                    | gsub("[^a-z0-9-]"; "-")
+                    | gsub("-+"; "-")
+                    | gsub("^-+"; "")
+                    | gsub("-+$"; "")
+                  )
+                )
+            '
+        )" || die "$prefix mounts must be comma-separated source=/mount/path entries"
+
+        # shellcheck disable=SC2016
+        volumes_json="$(printf '%s' "$mounts_json" | "$jq" -c --arg kind "$kind" '
+          map(
+            if $kind == "secret" then
+              {name, secret: {secretName: .source}}
+            else
+              {name, configMap: {name: .source}}
+            end
+          )
+        ')"
+
+        volume_mounts_json="$(printf '%s' "$mounts_json" | "$jq" -c '
+          map({name, mountPath, readOnly: true})
+        ')"
+
+        # shellcheck disable=SC2016
+        overrides="$(printf '%s' "$overrides" | "$jq" -c \
+          --argjson volumes "$volumes_json" \
+          --argjson volumeMounts "$volume_mounts_json" '
+            .spec.volumes = ((.spec.volumes // []) + $volumes)
+            | .spec.containers[0].volumeMounts = ((.spec.containers[0].volumeMounts // []) + $volumeMounts)
+          ')"
+      }
+
+      # shellcheck disable=SC2016
+      overrides="$("$jq" -cn --arg podName "$pod_name" --arg serviceaccount "$serviceaccount" '
+        {
+          metadata: {
+            labels: {
+              "app.kubernetes.io/name": "kshell",
+              "app.kubernetes.io/managed-by": "pog"
+            }
+          },
+          spec: {
+            serviceAccountName: $serviceaccount,
+            containers: [
+              {
+                name: $podName
+              }
+            ]
+          }
+        }
+      ')"
+
+      if [ -n "$labels" ]; then
+        labels_json="$(parse_csv_map "$labels")" || die "labels must be comma-separated key=value entries"
+        # shellcheck disable=SC2016
+        overrides="$(printf '%s' "$overrides" | "$jq" -c --argjson labels "$labels_json" '.metadata.labels += $labels')"
+      fi
+
+      if [ -n "$env" ]; then
+        env_json="$(parse_env_array "$env")" || die "env must be comma-separated KEY=value entries"
+        # shellcheck disable=SC2016
+        overrides="$(printf '%s' "$overrides" | "$jq" -c --argjson env "$env_json" '.spec.containers[0].env = $env')"
+      fi
+
+      if [ -n "$envfromsecret" ]; then
+        envfrom_json="$(parse_envfrom_secret_array "$envfromsecret")" || die "envfromsecret must be a comma-separated list of secret names"
+        # shellcheck disable=SC2016
+        overrides="$(printf '%s' "$overrides" | "$jq" -c --argjson envFrom "$envfrom_json" '.spec.containers[0].envFrom = $envFrom')"
+      fi
+
+      if [ -n "$imagepullsecrets" ]; then
+        image_pull_secrets="$(parse_named_array "$imagepullsecrets")" || die "imagepullsecrets must be a comma-separated list of secret names"
+        # shellcheck disable=SC2016
+        overrides="$(printf '%s' "$overrides" | "$jq" -c --argjson imagePullSecrets "$image_pull_secrets" '.spec.imagePullSecrets = $imagePullSecrets')"
+      fi
+
+      if [ -n "$nodeselector" ]; then
+        node_selector="$(parse_csv_map "$nodeselector")" || die "nodeselector must be comma-separated key=value entries"
+        # shellcheck disable=SC2016
+        overrides="$(printf '%s' "$overrides" | "$jq" -c --argjson nodeSelector "$node_selector" '.spec.nodeSelector = $nodeSelector')"
+      fi
+
+      if [ -n "$requests" ]; then
+        requests_json="$(parse_csv_map "$requests")" || die "requests must be comma-separated key=value entries"
+        # shellcheck disable=SC2016
+        overrides="$(printf '%s' "$overrides" | "$jq" -c --argjson requests "$requests_json" '.spec.containers[0].resources.requests = $requests')"
+      fi
+
+      if [ -n "$limits" ]; then
+        limits_json="$(parse_csv_map "$limits")" || die "limits must be comma-separated key=value entries"
+        # shellcheck disable=SC2016
+        overrides="$(printf '%s' "$overrides" | "$jq" -c --argjson limits "$limits_json" '.spec.containers[0].resources.limits = $limits')"
+      fi
+
+      if [ -n "$tolerations" ]; then
+        tolerations_json="$(parse_tolerations_array "$tolerations")" || die "tolerations must be quoted semicolon-separated toleration specs"
+        # shellcheck disable=SC2016
+        overrides="$(printf '%s' "$overrides" | "$jq" -c --argjson tolerations "$tolerations_json" '.spec.tolerations = $tolerations')"
+      fi
+
+      add_mounts "$volumesecrets" secret secret
+      add_mounts "$volumeconfigmaps" configMap configmap
+
       ${_.k} run \
         --stdin \
         --tty \
         --rm \
         --restart Never \
+        --override-type=strategic \
         --overrides="$overrides" \
         --namespace "$namespace" \
         --image-pull-policy=Always \
