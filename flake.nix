@@ -82,6 +82,31 @@
         }
       );
 
+      checks = forAllSystems (
+        system:
+        let
+          pkgs = packages.${system};
+        in
+        lib.optionalAttrs pkgs.stdenv.isLinux {
+          snowball-api-manifest = pkgs.snowball.api.tests.manifest;
+          snowball-api-script = pkgs.snowball.api.tests.script;
+          snowball-api-rpm = pkgs.snowball.api.tests.rpm;
+          snowball-api-rpm-portable = pkgs.snowball.api.tests.rpmPortable;
+          snowball-api-uv-manifest = pkgs.snowball.api-uv.tests.manifest;
+          snowball-api-uv-script = pkgs.snowball.api-uv.tests.script;
+          snowball-api-uv-rpm = pkgs.snowball.api-uv.tests.rpm;
+          snowball-api-uv-rpm-portable = pkgs.snowball.api-uv.tests.rpmPortable;
+          snowball-manifest = pkgs.snowball.earlyoom.tests.manifest;
+          snowball-script = pkgs.snowball.earlyoom.tests.script;
+          snowball-rpm = pkgs.snowball.earlyoom.tests.rpm;
+          snowball-rpm-portable = pkgs.snowball.earlyoom.tests.rpmPortable;
+          snowball-nvme-manifest = pkgs.snowball.nvme-exporter.tests.manifest;
+          snowball-nvme-script = pkgs.snowball.nvme-exporter.tests.script;
+          snowball-nvme-rpm = pkgs.snowball.nvme-exporter.tests.rpm;
+          snowball-nvme-rpm-portable = pkgs.snowball.nvme-exporter.tests.rpmPortable;
+        }
+      );
+
       nixosConfigurations = builtins.listToAttrs
         (map
           (name:
