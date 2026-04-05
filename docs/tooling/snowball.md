@@ -56,7 +56,7 @@ Unit ownership can still be auto-discovered by diffing the generated `systemd.un
 
 ## RPM Variants
 
-There are two RPM backends because there are really two different deployment stories.
+Two RPM backends exist because there are really two different deployment stories.
 
 - `rpm` is the conservative path. It packages the realized runtime closure directly as `/nix/store/...` files inside the RPM payload, alongside the rendered systemd units and manifest. The target host does not need Nix installed, but the package will own Nix-style store paths.
 - `rpmPortable` is the prettier path. It stages the same closure under `/usr/lib/snowball/<name>/store` and rewrites symlinks, text references, ELF interpreters, and RPATHs away from `/nix/store`.

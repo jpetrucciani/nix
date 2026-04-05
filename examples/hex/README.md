@@ -15,7 +15,7 @@ hex tries to implement a plan and apply workflow with the given specs, similar t
 
 ## caveat emptor!
 
-there are some tradeoffs when doing things with hex!
+some tradeoffs when doing things with hex:
 
 hex does not track the expected state between applies (like terraform does with a state file or state store). This means that hex is not able to detect things that need to be deleted (yet)!
 

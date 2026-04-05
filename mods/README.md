@@ -26,6 +26,10 @@ This directory contains overlays containing tools with my [`pog`](https://github
 
 This directory provides my python package overlays.
 
+### [snowball/](./snowball/)
+
+This directory contains some snowball-related resources.
+
 ### [\_pkgs.nix](./_pkgs.nix)
 
 This overlay allows me to load the custom packages I've built in my [pkgs/](../pkgs/) directory
