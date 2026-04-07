@@ -804,7 +804,7 @@ let
             # postInstall
             echo "[${name}] postInstall" >&2
             ${postInstall}
-          '').overrideAttrs { name = "snowball_${name}_install"; };
+          '').overrideAttrs { name = "snowball_${name}_install"; meta.mainProgram = "install"; };
           pack = (writeBashBin "pack" ''
             _install=${install}
             ${vars}
