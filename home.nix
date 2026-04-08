@@ -67,6 +67,7 @@ in
     packages = with pkgs;
       lib.flatten [
         _nix
+        aq
         bash-completion
         bashInteractive
         bat
