@@ -38,7 +38,7 @@ buildGoLatestModule (finalAttrs: {
   ];
 
   passthru = {
-    agent-deck-conductor-python-discord = mkPyWrapped { pname = "agent-deck-conductor-python-discord"; withPackages = (p: with p; [ toml discordpy ]); };
+    agent-deck-conductor-python-discord = mkPyWrapped { pname = "agent-deck-conductor-python-discord"; withPackages = p: with p; [ toml discordpy ]; };
   };
 
   meta = {
