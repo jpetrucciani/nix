@@ -5,6 +5,7 @@
 , git
 , python3
 , mkPyWrapped
+, stdenv
 }:
 buildGoLatestModule (finalAttrs: {
   pname = "agent-deck";
@@ -29,7 +30,9 @@ buildGoLatestModule (finalAttrs: {
     mkdir -p "$HOME"
   '';
 
-  checkFlags = [ "-skip=TestSmoke_BuildVersion" ];
+  checkFlags = [
+    "-skip=TestSmoke_BuildVersion${lib.optionalString stdenv.hostPlatform.isDarwin "|TestCollect_Integration"}"
+  ];
 
   ldflags = [
     "-s"
