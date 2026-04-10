@@ -6,6 +6,10 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 ## In this directory
 
+### [agent-deck.nix](./agent-deck.nix)
+
+[`agent-deck`](https://github.com/asheshgoplani/agent-deck) is a terminal session manager for AI coding agents. One TUI for Claude, Gemini, OpenCode, Codex, and more
+
 ### [chatbot-ui.nix](./chatbot-ui.nix)
 
 [`chatbot-ui`](https://github.com/mckaywrigley/chatbot-ui) is a popular frontend for OpenAI compliant APIs. It is designed to look similar to OpenAI's ChatGPT UI.

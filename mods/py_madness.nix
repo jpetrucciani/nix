@@ -790,8 +790,38 @@ let
           '';
       });
   };
+  mkPyWrapped =
+    { pname
+    , version ? "0.0.0"
+    , pkgs ? final
+    , python ? pkgs.python314
+    , withPackages ? (p: with p; [
+        httpx
+      ])
+    , binaryName ? pname
+    }:
+    let
+      pythonEnv = python.withPackages withPackages;
+    in
+    pkgs.stdenv.mkDerivation {
+      inherit pname version;
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+      dontUnpack = true;
+      installPhase = ''
+        runHook preInstall
+        mkdir -p $out/bin
+        makeWrapper ${pythonEnv}/bin/python3 $out/bin/${binaryName} \
+          --set PYTHONNOUSERSITE 1
+        runHook postInstall
+      '';
+      outputs = [ "out" ];
+      meta = {
+        description = "custom wrapped python ${python.version} environment with ${binaryName} binary";
+        mainProgram = binaryName;
+      };
+    };
 in
 {
-  inherit poetry-helpers uv-nix;
+  inherit poetry-helpers uv-nix mkPyWrapped;
   poetry-nix = poetry-helpers; # i'd like to rename this permanently?
 }
