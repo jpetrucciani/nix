@@ -150,21 +150,13 @@ let
     });
   codex-latest =
     let
-      version = "0.118.0";
+      version = "0.120.0";
       v8Version = "146.4.0";
-      fixedPkgs = import
-        (final.fetchFromGitHub {
-          owner = "NixOS";
-          repo = "nixpkgs";
-          rev = "c0621c48faea317868eff53d80158eaa8f196693";
-          hash = "sha256-ucfx4mvWT/PhBalLXQhXIJGNf62ppnuD2K8m5VuQkyQ=";
-        })
-        { inherit (final.stdenv.hostPlatform) system; };
       src = final.fetchFromGitHub {
         owner = "openai";
         repo = "codex";
         tag = "rust-v${version}";
-        hash = "sha256-FdtV+CIqTInnegcXrXBxw4aE0JnNDh4GdYKwUDjSk9Y=";
+        hash = "sha256-kj8WWFNk0/ZIefA7xgDox8zvW3y4tyLT2lyi1SyeHz8=";
       };
       # `rusty_v8` tries to fetch this archive during the build, which fails in
       # Nix's sandbox. Pre-fetch it instead and point the build script at it.
@@ -183,10 +175,10 @@ let
     prev.codex.overrideAttrs (old: {
       inherit version src;
       buildInputs = (old.buildInputs or [ ]) ++ (final.lib.optionals final.stdenv.isLinux [ final.libcap ]);
-      cargoDeps = fixedPkgs.rustPlatform.fetchCargoVendor {
+      cargoDeps = final.rustPlatform.fetchCargoVendor {
         inherit src;
         sourceRoot = "${src.name}/codex-rs";
-        hash = "sha256-7rexlmc79eUkwcqTa8rN3GFDy1dWs+0h/SUllZqAcpM=";
+        hash = "sha256-VY97UmTju9p+0rjdHXPaIq7JWTebZCrFzzrxyIjxaOg=";
       };
       env = (old.env or { }) // {
         RUSTY_V8_ARCHIVE = librustyV8;
