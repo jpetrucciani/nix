@@ -171,6 +171,29 @@ let
           }.${final.stdenv.hostPlatform.system}
             or (throw "Unsupported system for codex-latest librusty_v8: ${final.stdenv.hostPlatform.system}");
       };
+      # `webrtc-sys` also tries to fetch a platform archive during the build.
+      # Pre-fetch it so Darwin builds stay sandbox-compatible.
+      webrtcPrebuilt =
+        let
+          bundle =
+            {
+              aarch64-darwin = {
+                hash = "sha256-eb5cwV5uBjPEOA4z4XLX6/Gm3Og+ngmXYdYQPw1+tsE=";
+                triple = "mac-arm64-release";
+              };
+            }.${final.stdenv.hostPlatform.system}
+              or (throw "Unsupported system for codex-latest webrtc bundle: ${final.stdenv.hostPlatform.system}");
+          archive = final.fetchurl {
+            name = "webrtc-${bundle.triple}.zip";
+            url = "https://github.com/livekit/rust-sdks/releases/download/webrtc-24f6822-2/webrtc-${bundle.triple}.zip";
+            inherit (bundle) hash;
+          };
+        in
+        final.runCommand "webrtc-${bundle.triple}" { nativeBuildInputs = [ final.unzip ]; } ''
+          mkdir -p "$TMPDIR/unpack" "$out"
+          unzip -q ${archive} -d "$TMPDIR/unpack"
+          cp -R "$TMPDIR/unpack/${bundle.triple}/." "$out/"
+        '';
     in
     prev.codex.overrideAttrs (old: {
       inherit version src;
@@ -180,9 +203,14 @@ let
         sourceRoot = "${src.name}/codex-rs";
         hash = "sha256-VY97UmTju9p+0rjdHXPaIq7JWTebZCrFzzrxyIjxaOg=";
       };
-      env = (old.env or { }) // {
-        RUSTY_V8_ARCHIVE = librustyV8;
-      };
+      env =
+        (old.env or { })
+        // {
+          RUSTY_V8_ARCHIVE = librustyV8;
+        }
+        // final.lib.optionalAttrs final.stdenv.isDarwin {
+          LK_CUSTOM_WEBRTC = webrtcPrebuilt;
+        };
     });
 in
 {
