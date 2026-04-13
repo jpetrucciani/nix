@@ -10,6 +10,10 @@ This directory contains Model Context Protocol (MCP) servers
 
 [`chrome-devtools-mcp`](https://www.npmjs.com/package/chrome-devtools-mcp) runs the Chrome DevTools MCP server with the bundled Chromium in headless mode.
 
+### [ferry.nix](./ferry.nix)
+
+[`ferry`](https://github.com/jpetrucciani/ferry) is a stdio/sse/streamable http transport to ferry your mcp access across the network/proxies
+
 ### [loki-mcp.nix](./loki-mcp.nix)
 
 [`loki-mcp`](https://github.com/jpetrucciani/loki-mcp) is an MCP server for querying Loki logs.
