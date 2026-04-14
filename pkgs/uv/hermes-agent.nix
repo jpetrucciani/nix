@@ -14,13 +14,13 @@
 }:
 let
   name = "hermes-agent";
-  version = "2026.3.30";
+  version = "2026.4.13";
 
   src = fetchFromGitHub {
     owner = "NousResearch";
     repo = name;
     rev = "refs/tags/v${version}";
-    hash = "sha256-ipfIXPikYDpJC+Hjxh2soo20WXw1i09p8pQVCtpfVMg=";
+    hash = "sha256-UAINZejP343p47xv31hgY0v5weZpmh8MFXqWPSJ6pA8=";
     fetchSubmodules = true;
   };
 
@@ -55,30 +55,14 @@ let
       };
   };
 
-  hermesPackageDirs = [
-    "acp_adapter"
-    "agent"
-    "cron"
-    "gateway"
-    "hermes_cli"
-    "honcho_integration"
-    "tools"
+  hermesDataDirs = [
+    "skills"
+    "optional-skills"
   ];
 
-  hermesModules = [
-    "batch_runner.py"
-    "cli.py"
-    "hermes_constants.py"
-    "hermes_state.py"
-    "hermes_time.py"
-    "mini_swe_runner.py"
-    "model_tools.py"
-    "rl_cli.py"
-    "run_agent.py"
-    "toolset_distributions.py"
-    "toolsets.py"
-    "trajectory_compressor.py"
-    "utils.py"
+  hermesSupportFiles = [
+    ".env.example"
+    "cli-config.yaml.example"
   ];
 
   site = python313.sitePackages;
@@ -108,15 +92,38 @@ stdenv.mkDerivation {
     ${rsync}/bin/rsync -a --exclude='bin/' ${uvEnv}/ $out
     find $out/${site} -type d -exec chmod u+w '{}' +
 
-    for packageDir in ${lib.escapeShellArgs hermesPackageDirs}; do
-      rm -rf "$out/${site}/$packageDir"
-      cp -r "${src}/$packageDir" "$out/${site}/$packageDir"
-      find "$out/${site}/$packageDir" -type d -exec chmod u+w '{}' +
+    copy_source_dir() {
+      local src_path="$1"
+      local name
+      name="$(basename "$src_path")"
+      rm -rf "$out/${site}/$name"
+      cp -r "$src_path" "$out/${site}/$name"
+      find "$out/${site}/$name" -type d -exec chmod u+w '{}' +
+    }
+
+    for packagePath in ${src}/*; do
+      if [ -d "$packagePath" ] && [ -e "$packagePath/__init__.py" ]; then
+        copy_source_dir "$packagePath"
+      fi
     done
 
-    for module in ${lib.escapeShellArgs hermesModules}; do
-      rm -f "$out/${site}/$module"
-      install -Dm644 "${src}/$module" "$out/${site}/$module"
+    for modulePath in ${src}/*.py; do
+      moduleName="$(basename "$modulePath")"
+      rm -f "$out/${site}/$moduleName"
+      install -Dm644 "$modulePath" "$out/${site}/$moduleName"
+    done
+
+    for dataDir in ${lib.escapeShellArgs hermesDataDirs}; do
+      if [ -d "${src}/$dataDir" ]; then
+        copy_source_dir "${src}/$dataDir"
+      fi
+    done
+
+    for supportFile in ${lib.escapeShellArgs hermesSupportFiles}; do
+      if [ -f "${src}/$supportFile" ]; then
+        rm -f "$out/${site}/$supportFile"
+        install -Dm644 "${src}/$supportFile" "$out/${site}/$supportFile"
+      fi
     done
 
     chmod u+w $out/${site}/tools/terminal_tool.py
