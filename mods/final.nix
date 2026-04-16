@@ -150,13 +150,13 @@ let
     });
   codex-latest =
     let
-      version = "0.120.0";
+      version = "0.121.0";
       v8Version = "146.4.0";
       src = final.fetchFromGitHub {
         owner = "openai";
         repo = "codex";
         tag = "rust-v${version}";
-        hash = "sha256-kj8WWFNk0/ZIefA7xgDox8zvW3y4tyLT2lyi1SyeHz8=";
+        hash = "sha256-wjiUMox9V5tFggNgaFyHXWhRlpPerK7W+U/eR2Ddbbc=";
       };
       # `rusty_v8` tries to fetch this archive during the build, which fails in
       # Nix's sandbox. Pre-fetch it instead and point the build script at it.
@@ -201,7 +201,7 @@ let
       cargoDeps = final.rustPlatform.fetchCargoVendor {
         inherit src;
         sourceRoot = "${src.name}/codex-rs";
-        hash = "sha256-VY97UmTju9p+0rjdHXPaIq7JWTebZCrFzzrxyIjxaOg=";
+        hash = "sha256-zpQ0vg9XuarLfdZYiRIhcwLHUOdunNbOb5xLW3MPzp8=";
       };
       env =
         (old.env or { })
