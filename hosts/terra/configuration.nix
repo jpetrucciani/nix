@@ -171,6 +171,7 @@ in
       in
       {
         enable = true;
+        enableReload = false;
         package = pkgs.zaddy;
         email = common.emails.personal;
         globalConfig = ''
