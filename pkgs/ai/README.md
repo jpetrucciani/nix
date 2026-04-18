@@ -22,6 +22,10 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 geode is an experimental semantic indexing tool
 
+### [jeeves.nix](./jeeves.nix)
+
+[`jeeves`](https://github.com/robinovitch61/jeeves) is an AI agent conversation history browser
+
 ### [maestro-go.nix](./maestro-go.nix)
 
 [`maestro`](https://github.com/pluja/maestro) converts natural language instructions into cli commands with LLMs
