@@ -148,6 +148,23 @@ let
       # hack for mac dylib?
       cmakeFlags = if final.stdenv.isDarwin then old.cmakeFlags ++ [ "-DLLAMA_BUILD_NUMBER=1" ] else old.cmakeFlags;
     });
+
+  stable-diffusion-cpp-latest =
+    let
+      version = "master-585-44cca3d";
+      hash = "sha256-ExriJzuVfU+ubLaj9sJK/yrW/3RWAjZ0RK4kgmsDY9g=";
+    in
+    prev.stable-diffusion-cpp.overrideAttrs (old: {
+      inherit version;
+      src = final.fetchFromGitHub {
+        inherit hash;
+        owner = "leejet";
+        repo = "stable-diffusion.cpp";
+        rev = version;
+        fetchSubmodules = true;
+      };
+    });
+
   codex-latest =
     let
       version = "0.121.0";
@@ -214,7 +231,7 @@ let
     });
 in
 {
-  inherit llama-cpp-latest codex-latest;
+  inherit llama-cpp-latest codex-latest stable-diffusion-cpp-latest;
   foundry = import ./foundry.nix { pkgs = final; };
   __j_custom = final.buildEnv {
     name = "__j_custom";
@@ -229,6 +246,7 @@ in
 
   llama-cpp-cuda = prev.llama-cpp.override { cudaSupport = true; };
   llama-cpp-cuda-latest = llama-cpp-latest.override { cudaSupport = true; };
+  stable-diffusion-cpp-cuda-latest = stable-diffusion-cpp-latest.override { cudaSupport = true; };
   koboldcpp-cuda = prev.koboldcpp.override { config.cudaSupport = true; };
 
   getpwuid_hack = final.stdenv.mkDerivation rec {
