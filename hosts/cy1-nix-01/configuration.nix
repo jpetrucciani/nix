@@ -109,10 +109,9 @@ in
   };
 
   virtualisation.docker.enable = true;
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
   security.sudo = common.security.sudo;
   programs = {
-    command-not-found.enable = false;
     nix-ld = {
       enable = true;
       libraries = with pkgs; [
