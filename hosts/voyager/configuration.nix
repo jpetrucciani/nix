@@ -46,8 +46,8 @@ in
     enable = true;
     defaultUser = "jacobi";
     startMenuLaunchers = true;
+    useWindowsDriver = true;
     wslConf.automount.root = "/mnt";
-
     wslConf.network.generateHosts = false;
     interop.register = true;
   };
@@ -68,7 +68,6 @@ in
     ];
   };
   programs = {
-    command-not-found.enable = false;
     nix-ld = {
       enable = true;
       libraries = with pkgs; [
@@ -81,7 +80,7 @@ in
   };
 
   security.sudo = common.security.sudo;
-  system.stateVersion = "23.11";
+  system.stateVersion = "26.05";
   time.timeZone = common.timeZone;
 
   users.users.jacobi = {
@@ -122,6 +121,8 @@ in
       package = config.boot.kernelPackages.nvidiaPackages.stable;
     };
   };
+
+  systemd.services.nvidia-container-toolkit-cdi-generator.serviceConfig.Environment = lib.mkForce "LD_LIBRARY_PATH=/usr/lib/wsl/lib";
 
   fileSystems."/mnt/jupiter" = {
     device = "100.84.224.73:/volume1/network";
