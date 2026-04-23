@@ -14,10 +14,6 @@
     nix-darwin.flake = true;
     nix2container.url = "github:nlewo/nix2container?ref=d6d89f6dd7ed98b56f7dd783047983ef941bf4f9";
     nixos-hardware.flake = true;
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nix-std.url = "github:chessai/nix-std";
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL";
@@ -56,10 +52,23 @@
     let
       inherit (self.inputs.nixpkgs) lib;
       inherit (import ./hosts/constants.nix) machines;
-      forAllSystems = lib.genAttrs lib.systems.flakeExposed;
+      forAllSystems = lib.genAttrs [
+        "aarch64-darwin"
+        "aarch64-linux"
+        "x86_64-linux"
+      ];
       nix2containerPkgs = self.inputs.nix2container.packages.x86_64-linux;
       packages = forAllSystems
         (system: import ./. { flake = self; inherit system; });
+      foundryConfiguration = self.inputs.nixpkgs.lib.nixosSystem {
+        pkgs = packages.x86_64-linux;
+        specialArgs = { flake = self; machine-name = "foundry"; };
+        modules = [
+          ./hosts/foundry/configuration.nix
+          ./hosts/foundry/images.nix
+        ];
+      };
+      foundryImageVariants = foundryConfiguration.config.system.build.images;
     in
     {
       inherit packages;
@@ -142,29 +151,19 @@
           machines.darwin
         );
 
-      osGenerators = builtins.listToAttrs
-        (map
-          (name: {
-            inherit name;
-            value = self.inputs.nixos-generators.nixosGenerate {
-              pkgs = self.packages.x86_64-linux;
-              specialArgs = { flake = self; machine-name = name; };
-              modules = [ ./hosts/foundry/configuration.nix ];
-              format = name;
-            };
-          })
-          [
-            "amazon"
-            "azure"
-            "do"
-            "gce"
-            "hyperv"
-            "install-iso"
-            "install-iso-hyperv"
-            "iso"
-            "proxmox"
-            "virtualbox"
-            "vmware"
-          ]);
+      osImages = lib.getAttrs [
+        "amazon"
+        "azure"
+        "digital-ocean"
+        "google-compute"
+        "google-compute-cuda"
+        "hyperv"
+        "iso"
+        "iso-installer"
+        "proxmox"
+        "virtualbox"
+        "vmware"
+      ]
+        foundryImageVariants;
     };
 }

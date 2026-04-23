@@ -1,10 +1,9 @@
-{ pkgs, config, flake, machine-name, modulesPath, ... }:
+{ pkgs, config, flake, machine-name, ... }:
 let
   common = import ../common.nix { inherit config flake machine-name pkgs; };
 in
 {
   inherit (common) nix;
-  imports = [ "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix" ];
 
   boot = {
     kernel.sysctl = { "net.ipv4.ip_forward" = 1; } // common.sysctl_opts;
@@ -49,7 +48,7 @@ in
     group = "users";
     extraGroups = [ "wheel" "networkmanager" "docker" ];
     useDefaultShell = true;
-    openssh.authorizedKeys.keys = with common.pubkeys; [ milkyway pluto ];
+    openssh.authorizedKeys.keys = with common.pubkeys; [ voyager pluto ];
     initialHashedPassword = "$y$j9T$sBRLvlFhZSD07thGM.zC3/$CwyHjx3d9hM2kT/A2dvIs9JPoPs1ipQoEwUcdnvy9o4";
   };
 
@@ -59,6 +58,6 @@ in
     tailscale.enable = true;
   };
 
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.11";
   programs.command-not-found.enable = false;
 }

@@ -21,6 +21,10 @@ imports = [
 
 Adds Blackedge-focused auth and access config, including SSSD, Kerberos, LDAP, and related ssh/sudo policies.
 
+### [nvidia-cuda.nix](./nvidia-cuda.nix)
+
+Adds shared NVIDIA driver, CUDA toolkit, and container runtime config for GPU-capable NixOS hosts or image builds.
+
 ### [ssh-remote-bind.nix](./ssh-remote-bind.nix)
 
 Provides a persistent reverse-ssh systemd service via `services.ssh-remote-bind.*` options.

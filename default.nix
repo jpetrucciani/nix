@@ -13,8 +13,20 @@ import nixpkgs {
     flake.inputs.poetry2nix.overlays.default
     (_: _: { treefmt-nix = flake.inputs.treefmt-nix.lib; })
     (_: _: { inherit (flake.inputs) uv2nix pyproject-nix pyproject-build-systems; })
-    (final: _: { inherit (import flake.inputs.pog { pkgs = final; }) _ pog; })
-    (final: _: let _hex = import flake.inputs.hex { pkgs = final; }; in { inherit (_hex) hex hexcast nixrender; hex_deps = _hex.deps; })
+    (final: _: {
+      inherit (import flake.inputs.pog {
+        pkgs = final;
+        inherit (final.stdenv.hostPlatform) system;
+      }) _ pog;
+    })
+    (final: _:
+      let
+        _hex = import flake.inputs.hex {
+          pkgs = final;
+          inherit (final.stdenv.hostPlatform) system;
+        };
+      in
+      { inherit (_hex) hex hexcast nixrender; hex_deps = _hex.deps; })
     (_: _: { inherit (import ./hosts/constants.nix) machines; })
   ] ++ (import ./overlays.nix) ++ overlays;
   config = {
