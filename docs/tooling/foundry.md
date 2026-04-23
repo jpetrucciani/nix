@@ -4,7 +4,7 @@
 
 It covers two related jobs:
 
-- building cloud and installer operating system images from [`hosts/foundry/configuration.nix`](https://github.com/jpetrucciani/nix/blob/main/hosts/foundry/configuration.nix) through the `osGenerators.<format>` flake outputs
+- building cloud and installer operating system images from [`hosts/foundry/configuration.nix`](https://github.com/jpetrucciani/nix/blob/main/hosts/foundry/configuration.nix) through the `osImages.<variant>` flake outputs
 - building task-focused container images from [`mods/foundry.nix`](https://github.com/jpetrucciani/nix/blob/main/mods/foundry.nix) through the `foundry.<name>` package family
 
 The name is shared because both surfaces are about "forge a practical image from the repo's package universe", but they solve different deployment problems.
@@ -20,15 +20,16 @@ The name is shared because both surfaces are about "forge a practical image from
 
 ### OS images
 
-[`flake.nix`](https://github.com/jpetrucciani/nix/blob/main/flake.nix) exposes `osGenerators.<format>` outputs such as:
+[`flake.nix`](https://github.com/jpetrucciani/nix/blob/main/flake.nix) exposes `osImages.<variant>` outputs such as:
 
-- `.#osGenerators.iso`
-- `.#osGenerators.install-iso`
-- `.#osGenerators.amazon`
-- `.#osGenerators.gce`
-- `.#osGenerators.proxmox`
+- `.#osImages.iso`
+- `.#osImages.iso-installer`
+- `.#osImages.amazon`
+- `.#osImages.google-compute`
+- `.#osImages.google-compute-cuda`
+- `.#osImages.proxmox`
 
-All of those use [`hosts/foundry/configuration.nix`](https://github.com/jpetrucciani/nix/blob/main/hosts/foundry/configuration.nix) as the shared base profile. That profile keeps things intentionally practical: SSH access, Tailscale, common shell/debug tools, and enough network driver coverage to boot on varied targets.
+All of those use [`hosts/foundry/configuration.nix`](https://github.com/jpetrucciani/nix/blob/main/hosts/foundry/configuration.nix) as the shared base profile, with [`hosts/foundry/images.nix`](https://github.com/jpetrucciani/nix/blob/main/hosts/foundry/images.nix) extending nixpkgs' native `system.build.images` variant set. That profile keeps things intentionally practical: SSH access, Tailscale, common shell/debug tools, and enough network driver coverage to boot on varied targets.
 
 Typical use case: build a machine image that you will import into a cloud or boot directly as installation media.
 
@@ -59,8 +60,8 @@ The OS-image side is not a registry publishing flow. It is a build surface for a
 Build an operating system image:
 
 ```bash
-nix build .#osGenerators.iso
-nix build .#osGenerators.amazon
+nix build .#osImages.iso
+nix build .#osImages.amazon
 ```
 
 Build one of the container images:

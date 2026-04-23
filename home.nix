@@ -801,6 +801,8 @@ in
         "*.swp"
         "*~"
         ".cursor"
+        ".codex"
+        "result*"
       ];
     };
 
