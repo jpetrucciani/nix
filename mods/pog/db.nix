@@ -2,7 +2,7 @@
 final: prev:
 let
   inherit (final) pog stdenv writeTextFile;
-  inherit (final) coreutils postgresql_16;
+  inherit (final) coreutils postgresql_18;
   inherit (final.lib) optionalString boolToString;
   flags = {
     redis_port = {
@@ -27,7 +27,7 @@ rec {
     , db_name ? name
     , password ? name
     , extensions ? [ "pgcrypto" "uuid-ossp" ]
-    , postgres ? postgresql_16
+    , postgres ? postgresql_18
     , extra_bootstrap ? ""
     }: pog {
       name = "__pg_bootstrap";
@@ -67,7 +67,7 @@ rec {
           [ ! -d "$PGDATA" ] && bootstrap
         '';
     };
-  __pg = { postgres ? postgresql_16, extra_flags ? "" }: pog {
+  __pg = { postgres ? postgresql_18, extra_flags ? "" }: pog {
     name = "__pg";
     description = "run your local postgres db from $PGDATA";
     script = ''
@@ -75,7 +75,7 @@ rec {
       ${postgres}/bin/postgres -k "$PGDATA" -D "$PGDATA" -p "$PGPORT" ${extra_flags}
     '';
   };
-  __pg_shell = { name ? "db", postgres ? postgresql_16, extra_flags ? "" }: pog {
+  __pg_shell = { name ? "db", postgres ? postgresql_18, extra_flags ? "" }: pog {
     name = "__pg_shell";
     description = "run a psql shell into postgres locally";
     script = ''${final.portwatch}/bin/portwatch "$PGPORT" && ${postgres}/bin/psql -h localhost -p "$PGPORT" -U ${name} -d ${name} ${extra_flags}'';
