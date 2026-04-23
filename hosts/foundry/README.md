@@ -95,3 +95,15 @@ This requires the AWS VM Import/Export prerequisites, especially an S3 bucket in
 ### [configuration.nix](./configuration.nix)
 
 This contains the base NixOS configuration shared by the generated cloud and installer images.
+
+### [google-compute-cuda.nix](./google-compute-cuda.nix)
+
+This layers the shared NVIDIA and CUDA module onto the Google Compute image variant.
+
+### [images.nix](./images.nix)
+
+This extends `system.build.images` with foundry-specific image variants and overrides.
+
+### [variants/](./variants/)
+
+This directory contains per-variant fixups for upstream image formats.
