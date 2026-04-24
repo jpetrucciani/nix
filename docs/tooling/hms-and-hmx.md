@@ -15,6 +15,7 @@ Here, `switch` means "build the configuration and activate it on the machine".
 
 - Uses `nvd diff` before switching.
 - Supports forced switching with `POG_FORCE=1`.
+- On NixOS, `POG_BOOT_ONLY=1` updates the system profile but runs `switch-to-configuration boot` instead of `switch`.
 - Handles both NixOS and darwin activation flows.
 
 ## Typical Usage

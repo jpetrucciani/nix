@@ -7,10 +7,14 @@ let
   nbuild = "nix build --no-link --print-out-paths --extra-experimental-features nix-command --extra-experimental-features flakes";
   _nixos-switch = host: writeBashBinChecked "switch" ''
     toplevel="$(${nbuild} ~/cfg#nixosConfigurations.${host}.config.system.build.toplevel)"
+    switch_action=switch
+    if [[ "''${POG_BOOT_ONLY:-}" == "1" ]];then
+      switch_action=boot
+    fi
     if [[ $(realpath /run/current-system) != "$toplevel" || "$POG_FORCE" == "1" ]];then
       ${nvd}/bin/nvd diff /run/current-system "$toplevel"
       sudo nix-env -p /nix/var/nix/profiles/system --set "$toplevel"
-      sudo "$toplevel"/bin/switch-to-configuration switch
+      sudo "$toplevel"/bin/switch-to-configuration "$switch_action"
     fi
   '';
   _darwin-switch = host:
