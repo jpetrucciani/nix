@@ -796,6 +796,7 @@ in
       #   signer = "gpg";
       #   signByDefault = true;
       # };
+      signing.format = null;
       ignores = [
         "*.pcap"
         "*.swp"

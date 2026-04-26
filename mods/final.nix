@@ -175,18 +175,13 @@ let
         tag = "rust-v${version}";
         hash = "sha256-q175gmBw+edb5+w8TM36yUeFsyIdB1/IwWzbxBbBmoA=";
       };
-      # `rusty_v8` tries to fetch this archive during the build, which fails in
-      # Nix's sandbox. Pre-fetch it instead and point the build script at it.
-      librustyV8 = final.fetchurl {
-        name = "librusty_v8-${v8Version}";
-        url = "https://github.com/denoland/rusty_v8/releases/download/v${v8Version}/librusty_v8_release_${final.stdenv.hostPlatform.rust.rustcTarget}.a.gz";
-        hash =
-          {
-            aarch64-darwin = "sha256-v+LJvjKlbChUbw+WWCXuaPv2BkBfMQzE4XtEilaM+Yo=";
-            aarch64-linux = "sha256-2/FlsHyBvbBUvARrQ9I+afz3vMGkwbW0d2mDpxBi7Ng=";
-            x86_64-linux = "sha256-5ktNmeSuKTouhGJEqJuAF4uhA4LBP7WRwfppaPUpEVM=";
-          }.${final.stdenv.hostPlatform.system}
-            or (throw "Unsupported system for codex-latest librusty_v8: ${final.stdenv.hostPlatform.system}");
+      librustyV8 = final.fetchLibrustyV8 {
+        version = v8Version;
+        hashes = {
+          aarch64-darwin = "sha256-v+LJvjKlbChUbw+WWCXuaPv2BkBfMQzE4XtEilaM+Yo=";
+          aarch64-linux = "sha256-2/FlsHyBvbBUvARrQ9I+afz3vMGkwbW0d2mDpxBi7Ng=";
+          x86_64-linux = "sha256-5ktNmeSuKTouhGJEqJuAF4uhA4LBP7WRwfppaPUpEVM=";
+        };
       };
       # `webrtc-sys` also tries to fetch a platform archive during the build.
       # Pre-fetch it so Darwin builds stay sandbox-compatible.

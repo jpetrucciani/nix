@@ -22,6 +22,10 @@ This directory contains specific servers
 
 [obligator](https://github.com/lastlogin-net/obligator) is an OIDC server designed for self-hosters
 
+### [obscura.nix](./obscura.nix)
+
+[obscura](https://github.com/h4ckf0r0day/obscura) is the headless browser for AI agents and web scraping
+
 ### [poglets.nix](./poglets.nix)
 
 [poglets](https://github.com/jpetrucciani/poglets) is a TCP tunneling system
