@@ -31,7 +31,7 @@ let
       if pathIsDirectory p
       then mapAttrs (p': _: _custom (p + "/${p'}")) (readDir p)
       else null;
-  custom = mapAttrs (_: p: callPackage p { inherit fetchLibrustyV8; }) (listToAttrs (collect (x: x.__stop or false) (_custom ../pkgs)));
+  custom = mapAttrs (_: p: callPackage p { }) (listToAttrs (collect (x: x.__stop or false) (_custom ../pkgs)));
 in
 {
   inherit custom fetchLibrustyV8;
