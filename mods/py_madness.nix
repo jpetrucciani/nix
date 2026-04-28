@@ -231,11 +231,13 @@ let
             });
             nvidia-cudnn-cu13 = addBuildAndSearchInputs [ _final.nvidia-cublas ] _prev.nvidia-cudnn-cu13;
             nvidia-cufft = addBuildAndSearchInputs [ _final.nvidia-nvjitlink ] _prev.nvidia-cufft;
-            nvidia-cusolver = addBuildAndSearchInputs (with _final; [
-              nvidia-cublas
-              nvidia-cusparse
-              nvidia-nvjitlink
-            ]) _prev.nvidia-cusolver;
+            nvidia-cusolver = addBuildAndSearchInputs
+              (with _final; [
+                nvidia-cublas
+                nvidia-cusparse
+                nvidia-nvjitlink
+              ])
+              _prev.nvidia-cusolver;
             nvidia-cusparse-cu12 = _prev.nvidia-cusparse-cu12.overrideAttrs (_: {
               buildInputs = [ _pkgs.cudaPackages.libnvjitlink ];
             });
