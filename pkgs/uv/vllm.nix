@@ -1,5 +1,5 @@
 # [vllm](https://github.com/vllm-project/vllm) is a high-throughput and memory-efficient inference and serving engine for LLMs
-{ vllm, lib, uv-nix, cudatoolkit, clang, ninja, version ? "0.19.1", lockHash ? "sha256-ZfnmvCY0hurclVMno6K5HNvyQ4S0/Je/eYv4ma7ojCs=", isWSL ? false, includePin ? false }:
+{ vllm, lib, uv-nix, cudatoolkit, clang, ninja, version ? "0.20.0", lockHash ? "sha256-vqkVRYCWZ3gCPsWKVZOwWZfVFsm4dH68TdtX3rubQA4=", isWSL ? false, includePin ? false }:
 let
   ldPath = if isWSL then "/usr/lib/wsl/lib" else "/run/opengl-driver/lib";
 in
