@@ -14,13 +14,13 @@
 }:
 let
   name = "hermes-agent";
-  version = "2026.4.13";
+  version = "2026.4.30";
 
   src = fetchFromGitHub {
     owner = "NousResearch";
     repo = name;
     rev = "refs/tags/v${version}";
-    hash = "sha256-UAINZejP343p47xv31hgY0v5weZpmh8MFXqWPSJ6pA8=";
+    hash = "sha256-TRkpkqDwNEdCTh75DLUb6KIRnq9OJ9j6XTQjdYMmNc8=";
     fetchSubmodules = true;
   };
 
@@ -34,18 +34,16 @@ let
         addBuildInputs = buildInputs: pkg: pkg.overrideAttrs (old: {
           buildInputs = (old.buildInputs or [ ]) ++ buildInputs;
         });
-        hatchBuildInputs = [
-          final.hatchling
-          final.packaging
-          final.pathspec
-          final.pluggy
-          final."trove-classifiers"
+        hatchBuildInputs = with final; [
+          hatchling
+          packaging
+          pathspec
+          pluggy
+          trove-classifiers
         ];
       in
       {
-        atomicwrites = addBuildInputs [ final.setuptools ] prev.atomicwrites;
         atroposlib = addBuildInputs hatchBuildInputs prev.atroposlib;
-        "python-olm" = addBuildInputs [ final.setuptools ] prev."python-olm";
         tinker = addBuildInputs
           (hatchBuildInputs ++ [
             final."hatch-fancy-pypi-readme"

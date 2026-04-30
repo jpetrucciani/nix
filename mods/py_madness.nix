@@ -577,7 +577,13 @@ let
             add_setuptools = add_buildinputs [ _final.setuptools ];
             _setuptools_required = [
               "aiohttp"
+              "alibabacloud-credentials-api"
+              "alibabacloud-endpoint-util"
+              "alibabacloud-gateway-dingtalk"
+              "alibabacloud-gateway-spi"
+              "alibabacloud-tea"
               "antlr4-python3-runtime"
+              "atomicwrites"
               "cffi"
               "coverage"
               "crcmod"
@@ -603,6 +609,7 @@ let
               "pyautogui"
               "pymongo"
               "pypika"
+              "python-olm"
               "pyyaml"
               "s3tokenizer"
               "scapy"
