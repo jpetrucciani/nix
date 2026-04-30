@@ -116,6 +116,8 @@ in
           ldap_user_extra_attrs = altSecurityIdentities:altSecurityIdentities
           ldap_user_ssh_public_key = altSecurityIdentities
           ldap_use_tokengroups = True
+          ldap_sasl_mech = GSSAPI
+          ldap_channel_binding = true
         '';
       };
       nscd.config = ''
