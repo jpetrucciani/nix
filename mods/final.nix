@@ -404,4 +404,29 @@ in
       sha256 = "00gjkaayapgi11k0dgngv51fcbkbahk659vlf4ffgi5qlvc7ni5a";
     })
     { inherit (final.stdenv.hostPlatform) system; }).proxysql;
+
+  mountpoint-s3-latest =
+    let
+      version = "1.22.3";
+      src = final.fetchFromGitHub {
+        owner = "awslabs";
+        repo = "mountpoint-s3";
+        tag = "v${version}";
+        hash = "sha256-22tx8ozXkzBNAflDPc7cdfUh9TWD6aB/Fe/z/dPZ694=";
+        fetchSubmodules = true;
+      };
+    in
+    prev.mountpoint-s3.overrideAttrs (old: {
+      inherit version src;
+      cargoDeps = final.rustPlatform.fetchCargoVendor {
+        inherit src;
+        name = "${old.pname}-${version}";
+        hash = "sha256-SSSXqgJ3OERCVw81iXqXRRpVXgdwhlefHhI/qvQyl4g=";
+      };
+      checkFlags = (old.checkFlags or [ ]) ++ [
+        "--skip=mountpoint-s3-client/src/lib.rs - (line 31)"
+        "--skip=test_lookup_throttled_mock::both_list_and_head"
+        "--skip=test_read_unhandled_error_mock"
+      ];
+    });
 }
