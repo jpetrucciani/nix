@@ -313,7 +313,7 @@ rec {
     meta = {
       description = "ALGLIB is a cross-platform numerical analysis and data processing library";
       homepage = "https://www.alglib.net/";
-      license = with licenses; [ ];
+      license = with licenses; [ jpetrucciani ];
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
