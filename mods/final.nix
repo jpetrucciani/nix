@@ -210,6 +210,18 @@ let
     prev.codex.overrideAttrs (old: {
       inherit version src;
       buildInputs = (old.buildInputs or [ ]) ++ (final.lib.optionals final.stdenv.isLinux [ final.libcap ]);
+      postPatch = ''
+        # webrtc-sys asks rustc to link libwebrtc statically by default,
+        # but nixpkgs provides libwebrtc as a shared library.
+        substituteInPlace $cargoDepsCopy/*/webrtc-sys-*/build.rs \
+          --replace-fail "cargo:rustc-link-lib=static=webrtc" "cargo:rustc-link-lib=dylib=webrtc"
+      '' + final.lib.optionalString final.stdenv.isLinux ''
+        # nixpkgs drops the upstream release-profile size optimizations to
+        # speed Linux builds, but Darwin needs the smaller linked binary.
+        substituteInPlace Cargo.toml \
+          --replace-fail 'lto = "fat"' "" \
+          --replace-fail 'codegen-units = 1' ""
+      '';
       cargoDeps = final.rustPlatform.fetchCargoVendor {
         inherit src;
         sourceRoot = "${src.name}/codex-rs";
@@ -222,6 +234,8 @@ let
         }
         // final.lib.optionalAttrs final.stdenv.isDarwin {
           LK_CUSTOM_WEBRTC = webrtcPrebuilt;
+          # Apple Silicon source builds can exceed the new linker's branch range.
+          RUSTFLAGS = "-C link-arg=-ld_classic";
         };
     });
 in
