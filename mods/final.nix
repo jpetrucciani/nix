@@ -167,20 +167,20 @@ let
 
   codex-latest =
     let
-      version = "0.128.0";
-      v8Version = "146.4.0";
+      version = "0.129.0";
+      v8Version = "147.4.0";
       src = final.fetchFromGitHub {
         owner = "openai";
         repo = "codex";
         tag = "rust-v${version}";
-        hash = "sha256-v2W0eslPOPHxHX76+bnkE/f4y+MnQuopeOoAC5X16TA=";
+        hash = "sha256-IvBeuDiP1vMzCGVxi4CWKcYajP+IkNIyHmREO5gz2dU=";
       };
       librustyV8 = final.fetchLibrustyV8 {
         version = v8Version;
         hashes = {
-          aarch64-darwin = "sha256-v+LJvjKlbChUbw+WWCXuaPv2BkBfMQzE4XtEilaM+Yo=";
-          aarch64-linux = "sha256-2/FlsHyBvbBUvARrQ9I+afz3vMGkwbW0d2mDpxBi7Ng=";
-          x86_64-linux = "sha256-5ktNmeSuKTouhGJEqJuAF4uhA4LBP7WRwfppaPUpEVM=";
+          aarch64-darwin = "sha256-fnR0DD7woOj8DiaKJYYSPpg0D+lDVmjNwSiPrvtzYq4=";
+          aarch64-linux = "sha256-lMPw/eAFFAT8obaR8opJbXjbgw58+0maBEyxpeOllFU=";
+          x86_64-linux = "sha256-Cd3vbFEZKv/wVBExoO+cAPgxhdI5HaqxgDgqOr82rJU=";
         };
       };
       # `webrtc-sys` also tries to fetch a platform archive during the build.
@@ -225,7 +225,7 @@ let
       cargoDeps = final.rustPlatform.fetchCargoVendor {
         inherit src;
         sourceRoot = "${src.name}/codex-rs";
-        hash = "sha256-3NQ4UCfBpANhyoJJatd8m31cEugsd42Ye2BXuzlKC0c=";
+        hash = "sha256-H4iqXfcT9mvU6O4j5TybfyKEpx522iaggS68AC1jbU8=";
       };
       env =
         (old.env or { })
