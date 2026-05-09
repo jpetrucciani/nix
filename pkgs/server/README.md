@@ -42,6 +42,10 @@ This directory contains specific servers
 
 [smoothmq](https://github.com/poundifdef/SmoothMQ) is A drop-in replacement for SQS designed for great developer experience and efficiency
 
+### [titanite.nix](./titanite.nix)
+
+titanite is a policy-aware DNS service for homelabs and small production networks
+
 ### [vercel-log-drain.nix](./vercel-log-drain.nix)
 
 [vercel-log-drain](https://github.com/dacbd/vercel-log-drain) is a log-drain for vercel that supports multiple drivers to ship logs out to various sources

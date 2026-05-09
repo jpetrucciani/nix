@@ -1,4 +1,4 @@
-{ lib, stdenvNoCC, fetchurl, installShellFiles, libiconv, darwin, cctools }:
+{ lib, stdenvNoCC, fetchurl, installShellFiles }:
 let
   version = "0.0.1";
   inherit (stdenvNoCC.hostPlatform) system;
@@ -41,7 +41,7 @@ stdenvNoCC.mkDerivation {
   '';
 
   meta = with lib; {
-    description = "";
+    description = "titanite is a policy-aware DNS service for homelabs and small production networks";
     mainProgram = "titanite";
     platforms = [ "x86_64-linux" ];
     maintainers = with lib.maintainers; [ jpetrucciani ];
