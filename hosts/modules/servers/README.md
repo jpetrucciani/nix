@@ -34,6 +34,10 @@ nixos module for [questdb](https://github.com/questdb/questdb)
 
 nixos module for [proxysql](https://github.com/sysown/proxysql)
 
+### [titanite.nix](./titanite.nix)
+
+NixOS module for the Titanite DNS resolver
+
 ### [zinc.nix](./zinc.nix)
 
 This NixOS module contains a service for [zinc](https://github.com/zinclabs/zincsearch)
