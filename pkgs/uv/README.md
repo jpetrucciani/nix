@@ -14,6 +14,10 @@ this directory contains apps built with uv2nix using my wrapper
 
 [mcpo](https://github.com/open-webui/mcpo) is a simple, secure MCP-to-OpenAPI proxy server
 
+### [paddleocr.nix](./paddleocr.nix)
+
+[paddleocr](https://github.com/PaddlePaddle/PaddleOCR) turns any PDF or image document into structured data
+
 ### [sglang.nix](./sglang.nix)
 
 [sglang](https://github.com/sgl-project/sglang) is a high-performance serving framework for large language models and multimodal models.
