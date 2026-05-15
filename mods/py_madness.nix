@@ -328,6 +328,20 @@ let
                 "libcuda.so.1" # this will be found at runtime?
               ];
             });
+            tokenspeed-mla = _prev.tokenspeed-mla.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ (with _final; [
+                apache-tvm-ffi
+                nvidia-cutlass-dsl
+                nvidia-cutlass-dsl-libs-base
+              ]);
+              preFixup = (old.preFixup or "") + ''
+                ${addAutoPatchelfSearchInputs (with _final; [
+                  apache-tvm-ffi
+                  nvidia-cutlass-dsl
+                  nvidia-cutlass-dsl-libs-base
+                ])}
+              '';
+            });
             tilelang = _prev.tilelang.overrideAttrs (old: {
               buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ apache-tvm-ffi torch setuptools z3-solver ]) ++ (with _pkgs.cudaPackages; [
                 cuda_nvcc
@@ -445,6 +459,12 @@ let
               autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
                 "libcuda.so.1"
               ];
+            });
+            xgrammar = _prev.xgrammar.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ apache-tvm-ffi ]);
+              preFixup = (old.preFixup or "") + ''
+                ${addAutoPatchelfSearchInputs (with _final; [ apache-tvm-ffi ])}
+              '';
             });
             "sgl-kernel" = _prev."sgl-kernel".overrideAttrs (old: {
               buildInputs = (old.buildInputs or [ ]) ++ [
