@@ -635,6 +635,7 @@ let
               "pyyaml"
               "s3tokenizer"
               "scapy"
+              "semble"
               "seqeval"
               "svglib"
               "swifter"

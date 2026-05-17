@@ -18,6 +18,10 @@ this directory contains apps built with uv2nix using my wrapper
 
 [paddleocr](https://github.com/PaddlePaddle/PaddleOCR) turns any PDF or image document into structured data
 
+### [semble.nix](./semble.nix)
+
+[semble](https://github.com/MinishLab/semble) is Fast and Accurate Code Search for Agents
+
 ### [sglang.nix](./sglang.nix)
 
 [sglang](https://github.com/sgl-project/sglang) is a high-performance serving framework for large language models and multimodal models.
