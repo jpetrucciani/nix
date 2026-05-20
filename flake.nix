@@ -29,7 +29,7 @@
     treefmt-nix.url = "github:jpetrucciani/treefmt-nix";
     vscode-server = {
       url = "github:nix-community/nixos-vscode-server";
-      inputs.nixpkgs.follows = "nixpkgs";
+      flake = false;
     };
     # uv
     uv2nix = {
