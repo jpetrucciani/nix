@@ -168,13 +168,13 @@ let
 
   codex-latest =
     let
-      version = "0.132.0";
+      version = "0.133.0";
       v8Version = "147.4.0";
       src = final.fetchFromGitHub {
         owner = "openai";
         repo = "codex";
         tag = "rust-v${version}";
-        hash = "sha256-T+iPhi0/h6+tIGZy04e8l8xjxUBH/aUQ21pXbunLYxM=";
+        hash = "sha256-RTxhhZjZ/64N60pmbNVzLwcSBomn67pPDpOjkL6RPUw=";
       };
       librustyV8 = final.fetchLibrustyV8 {
         version = v8Version;
@@ -226,7 +226,7 @@ let
       cargoDeps = final.rustPlatform.fetchCargoVendor {
         inherit src;
         sourceRoot = "${src.name}/codex-rs";
-        hash = "sha256-UHgiDC/YgVgXlK+6aw8in+rOClz9D92VgKbbd+yEWHs=";
+        hash = "sha256-J4wvPn4lSTSsJrTG56vkhJe2F2b+fUvJLEd+qKQ9LUg=";
       };
       env =
         (old.env or { })
