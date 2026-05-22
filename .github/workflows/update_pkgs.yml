@@ -10,8 +10,6 @@ jobs:
             cmd: nupdate
           - attr: slack-notifier
             cmd: nupdate
-          - attr: supabase-cli-stable
-            cmd: nupdate_latest_github -- --owner supabase --repo cli
     runs-on: ubuntu-24.04
     env:
       GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
