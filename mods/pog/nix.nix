@@ -206,10 +206,29 @@ rec {
     };
 
   y2n = final.hax.writeBashBinChecked "y2n" ''
-    yaml="$1"
-    json=$(${_.y2j} "$yaml") \
-      nix eval --raw --impure --expr \
-      'with import ${final.pkgs.path} {}; lib.generators.toPretty {} (builtins.fromJSON (builtins.getEnv "json"))'
+    set -euo pipefail
+
+    if [ "$#" -gt 1 ]; then
+      echo "usage: y2n [yaml-file|-]" >&2
+      exit 64
+    fi
+
+    yaml="''${1:--}"
+
+    json_to_nix() {
+      json="$1" ${final._nix}/bin/nix eval --raw --impure --expr \
+        'with import ${final.pkgs.path} {}; lib.generators.toPretty {} (builtins.fromJSON (builtins.getEnv "json"))'
+      printf '\n'
+    }
+
+    first=1
+    AQ_FLAGS="" ${lib.getExe final.aq} -o json -c '.' -- "$yaml" | while IFS= read -r json; do
+      if [ "$first" = "0" ]; then
+        printf '\n'
+      fi
+      first=0
+      json_to_nix "$json"
+    done
   '';
 
   nixsum = pog {
