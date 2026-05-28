@@ -36,16 +36,6 @@ jobs:
       - name: skopeo fixes
         run: |
           mkdir -p /tmp/containers
-          cat >/tmp/containers/registries.conf <<'EOF'
-          [registries.search]
-          registries = ["docker.io", "ghcr.io"]
-
-          [registries.insecure]
-          registries = []
-
-          [registries.block]
-          registries = []
-          EOF
       - run: nix run .#skopeo -- login $REGS_CONF -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
       - run: nix run --impure .#foundry.${{ matrix.image }}.copyToRegistry
       - run: |
