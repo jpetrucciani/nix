@@ -33,8 +33,8 @@ jobs:
             extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
       - name: skopeo fixes
         run: |
-          mkdir -p /tmp/containers
-          cat >/tmp/containers/registries.conf <<'EOF'
+          mkdir -p /etc/containers
+          cat >/etc/containers/registries.conf <<'EOF'
           [registries.search]
           registries = ["docker.io", "ghcr.io"]
 
@@ -44,7 +44,6 @@ jobs:
           [registries.block]
           registries = []
           EOF
-          echo "REGISTRIES_CONFIG_PATH=/tmp/containers/registries.conf" >> "$GITHUB_ENV"
       - run: nix run .#skopeo -- login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
       - run: nix run --impure .#foundry.${{ matrix.image }}.copyToRegistry
       - run: |
