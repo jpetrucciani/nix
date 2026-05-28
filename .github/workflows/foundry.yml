@@ -2,6 +2,8 @@ name: foundry
 on: { workflow_dispatch, push: { branches: [main] } }
 jobs:
   build_v2:
+    env:
+      REGS_CONF: "--registries-conf=/tmp/containers/registries.conf"
     strategy:
       fail-fast: false
       matrix:
@@ -31,13 +33,23 @@ jobs:
           extra_nix_config: |
             extra-substituters = https://cache.g7c.us
             extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
-      - name: skopeo debug
+      - name: skopeo fixes
         run: |
-          cat >/etc/containers/registries.conf\
-      - run: nix run .#skopeo -- login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+          mkdir -p /tmp/containers
+          cat >/tmp/containers/registries.conf <<'EOF'
+          [registries.search]
+          registries = ["docker.io", "ghcr.io"]
+
+          [registries.insecure]
+          registries = []
+
+          [registries.block]
+          registries = []
+          EOF
+      - run: nix run .#skopeo -- login $REGS_CONF -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
       - run: nix run --impure .#foundry.${{ matrix.image }}.copyToRegistry
       - run: |
           export IMAGE="docker://$(nix eval --impure --raw .#foundry.${{ matrix.image }}.imageName)"
           export TAG="$(nix eval --impure --raw .#foundry.${{ matrix.image }}.imageTag)"
-          skopeo --insecure-policy copy --retry-times 2 "$IMAGE:$TAG" "$IMAGE:$(date +"%F")"
-          skopeo --insecure-policy copy --retry-times 2 "$IMAGE:$TAG" "$IMAGE:latest"
+          skopeo $REGS_CONF --insecure-policy copy --retry-times 2 "$IMAGE:$TAG" "$IMAGE:$(date +"%F")"
+          skopeo $REGS_CONF --insecure-policy copy --retry-times 2 "$IMAGE:$TAG" "$IMAGE:latest"
