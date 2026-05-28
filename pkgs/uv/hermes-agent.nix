@@ -14,13 +14,13 @@
 }:
 let
   name = "hermes-agent";
-  version = "2026.5.16";
+  version = "2026.5.28";
 
   src = fetchFromGitHub {
     owner = "NousResearch";
     repo = name;
     rev = "refs/tags/v${version}";
-    hash = "sha256-d9qhrTy45Q5UsmjapqMHOVi9e+gR9zE8Nq9Z0wObLmc=";
+    hash = "sha256-xga5EYW+P/nP6OstGQ5W/XButRZK0ua41t1+9mbYOys=";
     fetchSubmodules = true;
   };
 
@@ -125,11 +125,19 @@ stdenv.mkDerivation {
     done
 
     chmod u+w $out/${site}/tools/terminal_tool.py
-    chmod u+w $out/${site}/gateway/platforms/discord.py
-    substituteInPlace $out/${site}/gateway/platforms/discord.py \
-      --replace-fail \
-      '            opus_path = ctypes.util.find_library("opus")' \
-      '            opus_path = os.environ.get("HERMES_OPUS_LIBRARY") or ctypes.util.find_library("opus")'
+    if [ -f "$out/${site}/gateway/platforms/discord.py" ]; then
+      chmod u+w "$out/${site}/gateway/platforms/discord.py"
+      substituteInPlace "$out/${site}/gateway/platforms/discord.py" \
+        --replace-fail \
+        '            opus_path = ctypes.util.find_library("opus")' \
+        '            opus_path = os.environ.get("HERMES_OPUS_LIBRARY") or ctypes.util.find_library("opus")'
+    elif [ -f "$out/${site}/plugins/platforms/discord/adapter.py" ]; then
+      chmod u+w "$out/${site}/plugins/platforms/discord/adapter.py"
+      substituteInPlace "$out/${site}/plugins/platforms/discord/adapter.py" \
+        --replace-fail \
+        '            opus_path = ctypes.util.find_library("opus")' \
+        '            opus_path = os.environ.get("HERMES_OPUS_LIBRARY") or ctypes.util.find_library("opus")'
+    fi
     cp ${uvEnv}/bin/hermes $out/bin/hermes
     cp ${uvEnv}/bin/hermes-agent $out/bin/hermes-agent
     wrapProgram $out/bin/hermes \
