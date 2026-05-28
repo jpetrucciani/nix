@@ -3,7 +3,7 @@ on: { workflow_dispatch, push: { branches: [main] } }
 jobs:
   build_v2:
     env:
-      REGS_CONF: "--registries-conf=/tmp/containers/registries.conf"
+      REGS_CONF: '--registries-conf=/tmp/containers/registries.conf'
     strategy:
       fail-fast: false
       matrix:
@@ -36,6 +36,7 @@ jobs:
       - name: skopeo fixes
         run: |
           mkdir -p /tmp/containers
+          touch /tmp/containers/registries.conf
       - run: nix run .#skopeo -- login $REGS_CONF -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
       - run: nix run --impure .#foundry.${{ matrix.image }}.copyToRegistry
       - run: |
