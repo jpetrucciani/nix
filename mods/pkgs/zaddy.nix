@@ -55,8 +55,8 @@ rec {
     in
     { plugins
     , vendorHash
-    , version ? "2.11.3"
-    , hash ? "sha256-7Hgmo7ldDtbwl/acEY/4RNhSGnK/NNcXn+eIm1I8HKg="
+    , version ? "2.11.4"
+    , hash ? "sha256-wzk8KRZfDCbbjRlBwkoKAoMjOhV4xF3yuXUueqtl1xM="
     }:
     let
       src = final.fetchFromGitHub {
@@ -112,7 +112,7 @@ rec {
       googleclouddns
       route53
     ];
-    vendorHash = "sha256-ZK29fcNoMc5dRszK0+NuyE9ln7EHLWNukB0Rzd0E4Qk=";
+    vendorHash = "sha256-ZIOdn8zEBOBcN4CwMmqaI5H4LFAV3hlMA0JS8Rvk/Lg=";
   };
 
   # caddy with s3-browser plugin
