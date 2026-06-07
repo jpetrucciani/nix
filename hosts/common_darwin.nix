@@ -129,6 +129,9 @@ in
           autoUpdate = true;
           cleanup = "zap";
           upgrade = true;
+          extraFlags = [
+            "--force-cleanup"
+          ];
         };
         casks = if work.enable then casks.all_work else casks.all_personal;
         # masApps = {
