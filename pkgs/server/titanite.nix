@@ -1,12 +1,12 @@
 { lib, stdenvNoCC, fetchurl, installShellFiles }:
 let
-  version = "0.0.1";
+  version = "0.1.1";
   inherit (stdenvNoCC.hostPlatform) system;
 
   artifacts = {
     x86_64-linux = {
       url = "https://static.g7c.us/titanite/${version}/bin/x86_64-linux/titanite";
-      sha256 = "sha256-g+TxONjLB/5U7w+i3Y/xZ1EIiyh3vRdWS3J+mZVdrMI=";
+      sha256 = "sha256-U6+AyDb2Y1GEuEqQB1vsJ4Er7ZPROdPj7hdIclBX3O0=";
     };
   };
   artifact = artifacts.${system} or (throw "titanite: unsupported system ${system}, supported: x86_64-linux, aarch64-darwin");
