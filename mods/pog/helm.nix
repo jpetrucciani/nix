@@ -40,12 +40,42 @@ let
       tmpDir=$(mktemp -d)
       # shellcheck disable=SC2064
       trap "rm -rf $tmpDir" EXIT
-      ${final.skopeo}/bin/skopeo --insecure-policy copy --format oci "docker://$url" "dir:$tmpDir"
+      ${final.skopeo}/bin/skopeo --insecure-policy copy --format oci "docker://$url" "dir:$tmpDir" >&2
       largest_blob=$(${final.jq}/bin/jq -r '.layers[] | select(.mediaType == "application/vnd.cncf.helm.chart.content.v1.tar+gzip") | .digest' "$tmpDir/manifest.json" | cut -d: -f2)
       outDir="$tmpDir/chart"
       mkdir -p "$outDir"
       ${final.gnutar}/bin/tar -xzf "$tmpDir/$largest_blob" --strip-components=1 -C "$outDir"
       ${final._nix}/bin/nix-hash --type sha256 --base32 "$outDir"
+    '';
+  };
+
+  v_format = final.writeTextFile {
+    name = "v_format.py";
+    text = ''
+      import json
+      import sys
+      from datetime import datetime
+
+      data = json.load(open(sys.argv[1]))
+
+      def _format_date(raw: str) -> str:
+          if not raw:
+              return ""
+          try:
+              return datetime.fromisoformat(raw.replace("Z", "+00:00")).strftime("%Y-%m-%d")
+          except ValueError:
+              return raw.split("T")[0]
+
+      def _format(entry: dict[str, str]) -> str:
+          version = entry["version"]
+          sha256 = entry["sha256"]
+          date = _format_date(entry.get("date", ""))
+          attr = version.replace(".", "-").strip().split("+")[0]
+          prefix = "v" if attr[0] != "v" else ""
+          suffix = f" # {date}" if date else ""
+          return f'{prefix}{attr} = _v "{version}" "{sha256}";{suffix}'
+
+      print("\n".join(_format(x) for x in data))
     '';
   };
 
@@ -64,25 +94,6 @@ let
       yq = "${final.yq-go}/bin/yq";
       parallel = "${final.parallel}/bin/parallel --will-cite --keep-order -j0 --colsep ' '";
       _filter = if (builtins.stringLength filter_out) > 0 then ''${final.gnused}/bin/sed -E -e '/${filter_out}/,+1d' | '' else "";
-      v_format = final.writeTextFile {
-        name = "v_format.py";
-        text = ''
-          import json
-          import sys
-          from datetime import datetime
-
-          data = json.load(open(sys.argv[1]))
-          def _format(entry: dict[str, str]) -> str:
-              version = entry["version"]
-              sha256 = entry["sha256"]
-              date = datetime.fromisoformat(entry["date"]).strftime("%Y-%m-%d")
-              attr = version.replace(".", "-").strip().split("+")[0]
-              prefix = "v" if attr[0] != "v" else ""
-              return f'{prefix}{attr} = _v "{version}" "{sha256}"; # {date}'
-
-          print("\n".join(_format(x) for x in data))
-        '';
-      };
     in
     final.pog {
       name = "chart_scan_${exe_name}";
@@ -165,9 +176,115 @@ let
         fi
       '';
     };
+
+  _oci_chart_scan =
+    { name
+    , exe_name ? name
+    , repo
+    , last ? 20
+    , filter_out ? ""
+    }:
+    let
+      inherit (final.lib) getExe removePrefix;
+      jq = getExe final.jaq;
+      yq = "${final.yq-go}/bin/yq";
+      oras = getExe final.oras;
+      ocihash_bin = getExe ocihash;
+      registry = removePrefix "oci://" repo;
+      parallel = "${final.parallel}/bin/parallel --will-cite --keep-order -j0 --colsep ' '";
+      _filter = if (builtins.stringLength filter_out) > 0 then ''${final.gnused}/bin/sed -E -e '/${filter_out}/d' | '' else "";
+      scan_oci_tag = final.writeShellScript "scan-oci-helm-chart-tag" ''
+        set -euo pipefail
+
+        repo="$1"
+        tag="$2"
+        date="$(${oras} manifest fetch --format json "$repo:$tag" 2>/dev/null | ${jq} -r '.content.annotations["org.opencontainers.image.created"] // ""' || true)"
+        if ! sha256="$(${ocihash_bin} --url "oci://$repo" --tag "$tag" 2>/dev/null | ${final.coreutils}/bin/tail -n 1)"; then
+          printf '%s,%s,ERR_OCI\n' "$tag" "$date"
+          exit 0
+        fi
+        printf '%s,%s,%s\n' "$tag" "$date" "$sha256"
+      '';
+    in
+    final.pog {
+      name = "chart_scan_${exe_name}";
+      description = "a quick and easy way to get the latest x releases of the '${exe_name}' OCI chart!";
+      flags = [
+        {
+          name = "last";
+          description = "the number of chart versions to load and hash";
+          default = toString last;
+        }
+        {
+          name = "vformat";
+          description = "print in v format for updating the hex source";
+          bool = true;
+        }
+        {
+          name = "upsert";
+          description = "upsert the chart versions into a json file. creates if it doesn't exist";
+        }
+      ];
+      shortDefaultFlags = false;
+      script = helpers: with helpers; ''
+        temp_tags=${tmp.json}
+        temp_versions=${tmp.txt}
+        temp_csv=${tmp.csv}
+        final_json=${tmp.json}
+
+        ${oras} repo tags --exclude-digest-tags --format json '${registry}' >"$temp_tags"
+
+        debug "pulled OCI chart tags to $temp_tags"
+
+        ${jq} -r '.tags[]' <"$temp_tags" |
+            ${_filter}
+            ${final.coreutils}/bin/sort -V |
+            ${final.coreutils}/bin/tail -n "$last" |
+            ${final.coreutils}/bin/tac >"$temp_versions"
+
+        debug "selected OCI chart versions into $temp_versions"
+
+        echo "version,date,sha256" >>"$temp_csv"
+        ${parallel} '${scan_oci_tag} "${registry}" "{1}"' <"$temp_versions" >>"$temp_csv"
+
+        debug "formed json into csv at $temp_csv"
+        err_oci="$(<"$temp_csv" ${final.gnugrep}/bin/grep 'ERR_OCI' || true)"
+        if [ -n "$err_oci" ]; then
+          debug "OCI chart artifacts not found for the following versions:"
+          debug "$err_oci"
+        fi
+
+        ${final.gnugrep}/bin/grep -v 'ERR_OCI' "$temp_csv" | ${yq} -p=csv -o=json >"$final_json"
+
+        if [[ -n "''${upsert:-}" ]]; then
+          existing='[]'
+          if [[ -f "$upsert" ]] && [[ -s "$upsert" ]]; then
+            existing="$(cat "$upsert")"
+          fi
+
+          # shellcheck disable=SC2016
+          ${jq} -n --argjson existing "$existing" --slurpfile new "$final_json" '
+            $existing + $new[0]
+            | group_by(.version)
+            | map(max_by(.date))
+            | sort_by(.date)
+            | reverse
+          ' > "''${upsert}.tmp"
+
+          mv "''${upsert}.tmp" "$upsert"
+          exit 0
+        fi
+
+        if ${flag "vformat"}; then
+          ${final.python3}/bin/python ${v_format} "$final_json"
+        else
+          ${yq} "$final_json"
+        fi
+      '';
+    };
 in
 rec {
-  inherit _chart_scan ocihash;
+  inherit _chart_scan _oci_chart_scan ocihash;
 
   chart_scan_argo-cd = _chart_scan {
     name = "argo-cd";
@@ -481,6 +598,12 @@ rec {
     chart_url = "https://github.com/deepgram/self-hosted-resources/releases/download/deepgram-self-hosted-{1}/deepgram-self-hosted-{1}.tgz";
   };
 
+  chart_scan_dremio = _oci_chart_scan {
+    name = "dremio";
+    repo = "quay.io/dremio/dremio-helm";
+    filter_out = "public-preview";
+  };
+
   chart_scan_cert-manager = _chart_scan {
     name = "cert-manager";
     base_url = "https://charts.jetstack.io";
@@ -504,6 +627,7 @@ rec {
     chart_scan_cert-manager
     chart_scan_csi-driver-smb
     chart_scan_dask-kubernetes-operator
+    chart_scan_dremio
     chart_scan_external-secrets
     chart_scan_fission
     chart_scan_fleet
