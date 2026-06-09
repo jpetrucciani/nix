@@ -1,6 +1,7 @@
 { config, flake, machine-name, pkgs, ... }:
 let
   hostname = "cy1-nix-01";
+  ts_ip = "100.127.34.123";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
 in
 {
@@ -100,8 +101,8 @@ in
     titanite = {
       enable = true;
       settings = {
-        listen_udp = "0.0.0.0:53";
-        listen_tcp = "0.0.0.0:53";
+        listen_udp = "${ts_ip}:53";
+        listen_tcp = "${ts_ip}:53";
         upstream_timeout_ms = 2000;
         upstreams = [
           {
@@ -137,7 +138,7 @@ in
               let
                 record = name: value: { inherit name value; type = "A"; ttl = 300; };
                 records = {
-                  "meme.x" = "100.127.34.123";
+                  "meme.x" = ts_ip;
                 };
               in
               pkgs.lib.mapAttrsToList record records;
