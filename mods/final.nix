@@ -168,20 +168,27 @@ let
 
   codex-latest =
     let
-      version = "0.137.0";
-      v8Version = "147.4.0";
+      version = "0.138.0";
+      v8Version = "149.2.0";
       src = final.fetchFromGitHub {
         owner = "openai";
         repo = "codex";
         tag = "rust-v${version}";
-        hash = "sha256-puszZqi1lZeq8iXWAD9U9+WMnNvzMYKf6wVT9mtjSUU=";
+        hash = "sha256-FYoAcX0sdhaE31H3JwgZetyYaFKJyxJ0dmuZmitoWSQ=";
       };
       librustyV8 = final.fetchLibrustyV8 {
         version = v8Version;
+        # Generate hashes with:
+        # version=149.2.0; for target in aarch64-apple-darwin aarch64-unknown-linux-gnu x86_64-unknown-linux-gnu; do \
+        #   file=$(mktemp); \
+        #   curl -L --fail --silent --show-error -o "$file" \
+        #     "https://github.com/denoland/rusty_v8/releases/download/v${version}/librusty_v8_release_${target}.a.gz"; \
+        #   printf '%s ' "$target"; nix hash file --type sha256 --sri "$file"; rm "$file"; \
+        # done
         hashes = {
-          aarch64-darwin = "sha256-fnR0DD7woOj8DiaKJYYSPpg0D+lDVmjNwSiPrvtzYq4=";
-          aarch64-linux = "sha256-lMPw/eAFFAT8obaR8opJbXjbgw58+0maBEyxpeOllFU=";
-          x86_64-linux = "sha256-Cd3vbFEZKv/wVBExoO+cAPgxhdI5HaqxgDgqOr82rJU=";
+          aarch64-darwin = "sha256-+rsuyNO6Wm3qY9uaNalg3FypheujLzQrm6Sqocc0sv4=";
+          aarch64-linux = "sha256-+XdRJ8pk3MSjZi0BpSGizvuluY+DOUOog9hHc7Kv88U=";
+          x86_64-linux = "sha256-iu2YY323533Iv7i7R1nsW95HLQv3lD9Y4OYqNQlFxVk=";
         };
       };
       # `webrtc-sys` also tries to fetch a platform archive during the build.
@@ -220,13 +227,12 @@ let
         # nixpkgs drops the upstream release-profile size optimizations to
         # speed Linux builds, but Darwin needs the smaller linked binary.
         substituteInPlace Cargo.toml \
-          --replace-fail 'lto = "fat"' "" \
           --replace-fail 'codegen-units = 1' ""
       '';
       cargoDeps = final.rustPlatform.fetchCargoVendor {
         inherit src;
         sourceRoot = "${src.name}/codex-rs";
-        hash = "sha256-SX5LMO+IWismbH61Jd0g1mgykfav8DrqG+wjyNCWyCo=";
+        hash = "sha256-IgQwUYqKTb+qbCQ0/O855HkbK9CayhFN8mONCYMiINw=";
       };
       env =
         (old.env or { })
