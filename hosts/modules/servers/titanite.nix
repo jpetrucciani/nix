@@ -78,8 +78,18 @@ in
       default = {
         listen_udp = "0.0.0.0:5353";
         listen_tcp = "0.0.0.0:5353";
-        upstream = "1.1.1.1:53";
         upstream_timeout_ms = 2000;
+        upstreams = [
+          {
+            address = "1.1.1.1:53";
+            priority = 0;
+          }
+          {
+            address = "1.0.0.1:53";
+            priority = 10;
+          }
+        ];
+        forward_zones = [ ];
         observe = {
           metrics.listen = "127.0.0.1:9191";
           logging.structured = false;
@@ -96,14 +106,30 @@ in
       };
       description = ''
         Titanite TOML settings. This is rendered to a generated config file
-        unless configFile is set.
+        unless configFile is set. Use upstreams for the default recursive pool
+        and forward_zones for suffix-specific internal resolvers.
       '';
       example = literalExpression ''
         {
           listen_udp = "0.0.0.0:53";
           listen_tcp = "0.0.0.0:53";
-          upstream = "1.1.1.1:53";
           upstream_timeout_ms = 2000;
+          upstreams = [
+            {
+              address = "1.1.1.1:53";
+              priority = 0;
+            }
+            {
+              address = "1.0.0.1:53";
+              priority = 10;
+            }
+          ];
+          forward_zones = [
+            {
+              name = "ad.home.arpa";
+              upstream = "192.168.1.10:53";
+            }
+          ];
           observe = {
             metrics.listen = "127.0.0.1:9191";
             logging.structured = true;

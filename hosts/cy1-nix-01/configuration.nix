@@ -96,6 +96,65 @@ in
         auth = [ "none" ];
       }];
     };
+    titanite = {
+      enable = true;
+      settings = {
+        listen_udp = "0.0.0.0:53";
+        listen_tcp = "0.0.0.0:53";
+        upstream_timeout_ms = 2000;
+        upstreams = [
+          {
+            address = "1.1.1.1:53";
+            priority = 0;
+          }
+          {
+            address = "1.0.0.1:53";
+            priority = 10;
+          }
+        ];
+        forward_zones = [
+          {
+            name = "blackedge.local";
+            upstream = "10.31.155.10:53";
+          }
+        ];
+        observe = {
+          metrics.listen = "127.0.0.1:9191";
+          logging.structured = true;
+          passive_dns = {
+            enabled = false;
+            path = "/var/log/titanite/passive.jsonl";
+            deduplicate_window = "1h";
+            retention = "30d";
+            anonymize_client_ip = true;
+          };
+        };
+        zones = [
+          {
+            name = "x";
+            records =
+              let
+                record = name: value: { inherit name value; type = "A"; ttl = 300; };
+                records = {
+                  "meme.x" = "100.127.34.123";
+                };
+              in
+              [ ] ++ (pkgs.lib.mapAttrsToList record records);
+          }
+        ];
+        plugins = [
+          {
+            name = "toys";
+            type = "toys";
+            zone = "toy";
+            enabled_toys = [ "ip" "time" "cidr" "uuid" "rand" "epoch" "hash" "health" "stats" "version" ];
+            priority = -1;
+            fail_open = true;
+            timeout = "50ms";
+          }
+        ];
+      };
+    };
   } // common.services;
 
   fileSystems."/mnt/win" = {
