@@ -8,6 +8,7 @@ in
     "${common.home-manager}/nixos"
     ./hardware-configuration.nix
     ../modules/conf/blackedge.nix
+    ../modules/servers/titanite.nix
   ];
 
   inherit (common) zramSwap swapDevices;
