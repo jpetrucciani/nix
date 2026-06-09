@@ -140,7 +140,7 @@ in
                   "meme.x" = "100.127.34.123";
                 };
               in
-              [ ] ++ (pkgs.lib.mapAttrsToList record records);
+              pkgs.lib.mapAttrsToList record records;
           }
         ];
         plugins = [
