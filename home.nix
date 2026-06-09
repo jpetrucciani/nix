@@ -133,6 +133,7 @@ in
         p7zip
         patch
         pigz
+        prism
         procps
         pssh
         re2c
