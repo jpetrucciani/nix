@@ -35,16 +35,47 @@ let
       { name = "tag"; }
     ];
     script = ''
+      set -euo pipefail
+
+      if [ -z "''${url:-}" ]; then
+        die "--url is required"
+      fi
+      if [ -z "''${tag:-}" ]; then
+        die "--tag is required"
+      fi
+
       url="''${url#oci://}"
-      url="''${url}:''${tag}"
+      ref="''${url}:''${tag}"
       tmpDir=$(mktemp -d)
       # shellcheck disable=SC2064
       trap "rm -rf $tmpDir" EXIT
-      ${final.skopeo}/bin/skopeo --insecure-policy copy --format oci "docker://$url" "dir:$tmpDir" >&2
-      largest_blob=$(${final.jq}/bin/jq -r '.layers[] | select(.mediaType == "application/vnd.cncf.helm.chart.content.v1.tar+gzip") | .digest' "$tmpDir/manifest.json" | cut -d: -f2)
+      ${final.skopeo}/bin/skopeo --insecure-policy copy --format oci "docker://$ref" "dir:$tmpDir" >&2
+
+      manifest="$tmpDir/manifest.json"
+      if [ ! -s "$manifest" ]; then
+        die "skopeo did not write an OCI manifest for $ref"
+      fi
+
+      chart_blob=$(${final.jq}/bin/jq -er '
+        [
+          .layers[]
+          | select(.mediaType == "application/vnd.cncf.helm.chart.content.v1.tar+gzip")
+          | .digest
+          | sub("^sha256:"; "")
+        ][0] // empty
+      ' "$manifest")
+      blob_path="$tmpDir/$chart_blob"
+      if [ ! -f "$blob_path" ]; then
+        die "chart blob $chart_blob from $ref is missing after skopeo copy"
+      fi
+
       outDir="$tmpDir/chart"
       mkdir -p "$outDir"
-      ${final.gnutar}/bin/tar -xzf "$tmpDir/$largest_blob" --strip-components=1 -C "$outDir"
+      ${final.gnutar}/bin/tar -xzf "$blob_path" --strip-components=1 -C "$outDir"
+      if [ -z "$(${final.coreutils}/bin/ls -A "$outDir")" ]; then
+        die "extracted chart for $ref is empty"
+      fi
+
       ${final._nix}/bin/nix-hash --type sha256 --base32 "$outDir"
     '';
   };
@@ -204,7 +235,16 @@ let
         repo="$1"
         tag="$2"
         date="$(${oras} manifest fetch --format json "$repo:$tag" 2>/dev/null | ${jq} -r '.content.annotations["org.opencontainers.image.created"] // ""' || true)"
-        if ! sha256="$(${ocihash_bin} --url "oci://$repo" --tag "$tag" 2>/dev/null | ${final.coreutils}/bin/tail -n 1)"; then
+        err_log="$(${final.coreutils}/bin/mktemp)"
+        trap 'rm -f "$err_log"' EXIT
+        if ! sha256="$(${ocihash_bin} --url "oci://$repo" --tag "$tag" 2>"$err_log" | ${final.coreutils}/bin/tail -n 1)"; then
+          ${final.coreutils}/bin/cat "$err_log" >&2
+          printf '%s,%s,ERR_OCI\n' "$tag" "$date"
+          exit 0
+        fi
+        if [ -z "$sha256" ]; then
+          ${final.coreutils}/bin/cat "$err_log" >&2
+          printf 'ocihash returned no hash for %s:%s\n' "$repo" "$tag" >&2
           printf '%s,%s,ERR_OCI\n' "$tag" "$date"
           exit 0
         fi
