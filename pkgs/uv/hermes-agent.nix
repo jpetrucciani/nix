@@ -14,13 +14,13 @@
 }:
 let
   name = "hermes-agent";
-  version = "2026.5.28";
+  version = "2026.6.5";
 
   src = fetchFromGitHub {
     owner = "NousResearch";
     repo = name;
     rev = "refs/tags/v${version}";
-    hash = "sha256-xga5EYW+P/nP6OstGQ5W/XButRZK0ua41t1+9mbYOys=";
+    hash = "sha256-ngpkopVczNrT0bfCXHm38QjgrZT96Bm/rO89NA/ls3Y=";
     fetchSubmodules = true;
   };
 
