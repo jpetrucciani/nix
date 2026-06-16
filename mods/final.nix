@@ -168,13 +168,13 @@ let
 
   codex-latest =
     let
-      version = "0.139.0";
+      version = "0.140.0";
       v8Version = "149.2.0";
       src = final.fetchFromGitHub {
         owner = "openai";
         repo = "codex";
         tag = "rust-v${version}";
-        hash = "sha256-XjzlkBUkBey+P3tFLDYB3ae5oseUfW5tmzhLzqlqj2E=";
+        hash = "sha256-VuvNXgyftiQke8qLA7HEySkP4S2TvMR++rrVJAfVc4Y=";
       };
       librustyV8 = final.fetchLibrustyV8 {
         version = v8Version;
@@ -223,16 +223,11 @@ let
         # but nixpkgs provides libwebrtc as a shared library.
         substituteInPlace $cargoDepsCopy/*/webrtc-sys-*/build.rs \
           --replace-fail "cargo:rustc-link-lib=static=webrtc" "cargo:rustc-link-lib=dylib=webrtc"
-      '' + final.lib.optionalString final.stdenv.isLinux ''
-        # nixpkgs drops the upstream release-profile size optimizations to
-        # speed Linux builds, but Darwin needs the smaller linked binary.
-        substituteInPlace Cargo.toml \
-          --replace-fail 'codegen-units = 1' ""
       '';
       cargoDeps = final.rustPlatform.fetchCargoVendor {
         inherit src;
         sourceRoot = "${src.name}/codex-rs";
-        hash = "sha256-8mN4OTRJvt2mBYHQXZS55PSOChLqEIiXwPu2y+2MZ9o=";
+        hash = "sha256-8nvIfbq2EKqbF4fyzB5wakQilV4NU5S2wSXJk1KGnB0=";
       };
       env =
         (old.env or { })
