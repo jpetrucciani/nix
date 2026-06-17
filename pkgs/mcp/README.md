@@ -22,6 +22,10 @@ This directory contains Model Context Protocol (MCP) servers
 
 [`prom-mcp`](https://github.com/jpetrucciani/prom-mcp) is an MCP server for querying Prometheus metrics.
 
+### [roslyn-mcp/](./roslyn-mcp/)
+
+[`roslyn-mcp`](https://github.com/carquiza/RoslynMCP) is an MCP server for C# code analysis and navigation using Roslyn.
+
 ### [ntfy-mcp.nix](./ntfy-mcp.nix)
 
 [`ntfy-mcp`](https://github.com/jpetrucciani/ntfy-mcp) is a lightweight MCP server for ntfy notifications.
