@@ -611,7 +611,11 @@ let
       base_url = "https://helm.stackstorm.com";
     };
 
-    tempo = grafana_chart { name = "tempo-distributed"; filter_out = "weekly|rc"; };
+    tempo = _oci_chart_scan {
+      name = "tempo-distributed";
+      repo = "oci://ghcr.io/grafana-community/helm-charts/tempo-distributed";
+      filter_out = "weekly|rc";
+    };
 
     traefik = let base = "https://traefik.github.io/charts"; in
       _chart_scan {
