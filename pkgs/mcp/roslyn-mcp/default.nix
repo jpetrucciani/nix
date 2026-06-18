@@ -14,18 +14,16 @@ buildDotnetModule (finalAttrs: {
   src = fetchFromGitHub {
     owner = "jpetrucciani";
     repo = "RoslynMCP";
-    rev = "54a8b6db99cc1fcf73568bd89636e1ddbc04a406";
-    hash = "sha256-jvuZhh2jXlFnq5HhUGkR4bs39hBLw+j+utt7UADOeSI=";
+    rev = "c3dacbf84363ab6ae916326ea1f9c68b98a267e3";
+    hash = "sha256-fqh0RKJhJRD9HxUftjISh/nFAyKZSqphuj6aJAUHJmI=";
   };
 
   projectFile = "RoslynMcpServer/RoslynMcpServer.csproj";
   nugetDeps = ./deps.json;
 
-  postPatch = ''
-    substituteInPlace RoslynMcpServer/RoslynMcpServer.csproj \
-      --replace-fail '<TargetFramework>net8.0</TargetFramework>' \
-      '<TargetFramework>net10.0</TargetFramework>'
-  '';
+  dotnetRestoreFlags = [ "-p:TargetFrameworks=net10.0" ];
+  dotnetBuildFlags = [ "--framework" "net10.0" ];
+  dotnetInstallFlags = [ "--framework" "net10.0" ];
 
   inherit dotnet-sdk;
   dotnet-runtime = dotnet-sdk;
