@@ -236,8 +236,6 @@ let
         }
         // final.lib.optionalAttrs final.stdenv.isDarwin {
           LK_CUSTOM_WEBRTC = webrtcPrebuilt;
-          # Apple Silicon source builds can exceed the new linker's branch range.
-          RUSTFLAGS = "-C link-arg=-ld_classic";
         };
     });
 in
