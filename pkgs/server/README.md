@@ -38,6 +38,10 @@ This directory contains specific servers
 
 [rdpgw](https://github.com/bolkedebruin/rdpgw) is a Remote Desktop Gateway in Go for deploying on Linux/BSD/Kubernetes
 
+### [semaphore.nix](./semaphore.nix)
+
+[semaphore](https://github.com/semaphoreui/semaphore) is a web UI for Ansible, Terraform/OpenTofu, PowerShell, and shell tasks
+
 ### [smoothmq.nix](./smoothmq.nix)
 
 [smoothmq](https://github.com/poundifdef/SmoothMQ) is A drop-in replacement for SQS designed for great developer experience and efficiency

@@ -34,6 +34,10 @@ nixos module for [questdb](https://github.com/questdb/questdb)
 
 nixos module for [proxysql](https://github.com/sysown/proxysql)
 
+### [semaphore.nix](./semaphore.nix)
+
+NixOS module for [Semaphore UI](https://github.com/semaphoreui/semaphore)
+
 ### [titanite.nix](./titanite.nix)
 
 NixOS module for the Titanite DNS resolver
