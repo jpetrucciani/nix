@@ -24,7 +24,7 @@ This directory contains Model Context Protocol (MCP) servers
 
 ### [roslyn-mcp/](./roslyn-mcp/)
 
-[`roslyn-mcp`](https://github.com/carquiza/RoslynMCP) is an MCP server for C# code analysis and navigation using Roslyn.
+[`roslyn-mcp`](https://github.com/jpetrucciani/RoslynMCP) is an MCP server for C# code analysis and navigation using Roslyn.
 
 ### [ntfy-mcp.nix](./ntfy-mcp.nix)
 
