@@ -823,6 +823,9 @@ in
         "*~"
         ".cursor"
         ".codex"
+        "AGENTS.md"
+        "SPEC.md"
+        "TODO.md"
         "result*"
       ];
     };
