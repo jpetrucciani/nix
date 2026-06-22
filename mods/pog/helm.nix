@@ -611,6 +611,13 @@ let
       base_url = "https://helm.stackstorm.com";
     };
 
+    superset = _chart_scan {
+      name = "superset";
+      chart_name = "superset";
+      base_url = "http://apache.github.io/superset";
+      chart_url = "https://github.com/apache/superset/releases/download/superset-helm-chart-{1}/superset-{1}.tgz";
+    };
+
     tempo = _oci_chart_scan {
       name = "tempo-distributed";
       repo = "oci://ghcr.io/grafana-community/helm-charts/tempo-distributed";
