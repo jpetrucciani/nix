@@ -233,7 +233,7 @@ in
           "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
           "n8n.cobi.dev" = ts_terra_k8s;
           "ombi.cobi.dev" = reverse_proxy "neptune:5999";
-          "rss.cobi.dev" = reverse_proxy "localhost:8099";
+          "home.cobi.dev" = reverse_proxy "100.64.214.128:8123";
           "x.hexa.dev" = reverse_proxy "neptune:8421";
           "meme.x.hexa.dev" = reverse_proxy "neptune:8420";
           "edge.be.hexa.dev" = reverse_proxy "edge:10000";
