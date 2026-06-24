@@ -405,6 +405,12 @@ let
       filter_out = "alpha|beta|dev";
     };
 
+    keda = _chart_scan {
+      name = "keda";
+      base_url = "https://kedacore.github.io/charts";
+      chart_url = "https://kedacore.github.io/charts/keda-{1}.tgz";
+    };
+
     kong-ingress = _chart_scan {
       name = "ingress";
       base_url = "https://charts.konghq.com";
