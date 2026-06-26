@@ -57,7 +57,7 @@ in
 
   networking = {
     hostName = hostname;
-    nameservers = [ "10.31.65.200" "1.1.1.1" ];
+    nameservers = [ ts_ip ];
     search = [ "blackedge.local" ];
     useDHCP = false;
     interfaces.ens2f0np0.useDHCP = true;
@@ -88,7 +88,8 @@ in
     };
     resolved = {
       enable = true;
-      settings.Resolve.FallbackDNS = [ "10.31.65.200" "10.31.155.10" "1.1.1.1" ];
+      settings.Resolve.FallbackDNS = [ ts_ip ];
+      # settings.Resolve.FallbackDNS = [ "10.31.65.200" "10.31.155.10" "1.1.1.1" ];
     };
     rpcbind.enable = true;
     _3proxy = {
@@ -96,6 +97,7 @@ in
       services = [{
         type = "socks";
         auth = [ "none" ];
+        maxConnections = 200;
       }];
     };
     titanite = {
