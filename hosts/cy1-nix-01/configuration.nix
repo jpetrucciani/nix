@@ -89,6 +89,8 @@ in
     resolved = {
       enable = true;
       settings.Resolve.FallbackDNS = [ ts_ip ];
+      Domains = [ "blackedge.local" "~." ];
+      ResolveUnicastSingleLabel = false;
       # settings.Resolve.FallbackDNS = [ "10.31.65.200" "10.31.155.10" "1.1.1.1" ];
     };
     rpcbind.enable = true;
@@ -105,15 +107,17 @@ in
       settings = {
         listen_udp = "${ts_ip}:53";
         listen_tcp = "${ts_ip}:53";
-        upstream_timeout_ms = 2000;
+        upstream_timeout_ms = 500;
         upstreams = [
           {
             address = "1.1.1.1:53";
             priority = 0;
+            timeout_ms = 500;
           }
           {
             address = "1.0.0.1:53";
-            priority = 10;
+            priority = 0;
+            timeout_ms = 500;
           }
         ];
         forward_zones = [
