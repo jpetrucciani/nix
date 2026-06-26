@@ -91,6 +91,8 @@ in
       settings.Resolve = {
         FallbackDNS = [ ts_ip ];
         Domains = [ "blackedge.local" "~." ];
+        LLMNR = false;
+        MulticastDNS = false;
         ResolveUnicastSingleLabel = false;
       };
     };
