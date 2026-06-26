@@ -88,10 +88,11 @@ in
     };
     resolved = {
       enable = true;
-      settings.Resolve.FallbackDNS = [ ts_ip ];
-      Domains = [ "blackedge.local" "~." ];
-      ResolveUnicastSingleLabel = false;
-      # settings.Resolve.FallbackDNS = [ "10.31.65.200" "10.31.155.10" "1.1.1.1" ];
+      settings.Resolve = {
+        FallbackDNS = [ ts_ip ];
+        Domains = [ "blackedge.local" "~." ];
+        ResolveUnicastSingleLabel = false;
+      };
     };
     rpcbind.enable = true;
     _3proxy = {
