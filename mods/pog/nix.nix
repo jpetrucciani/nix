@@ -7,7 +7,7 @@ in
 rec {
   nixup =
     let
-      version = "0.0.10";
+      version = "0.0.11";
       _flags = {
         with_bun = "include bun with dependencies";
         with_crystal = "include crystal with dependencies";
@@ -57,6 +57,8 @@ rec {
           _env="pkgs.buildEnv {${"\n"} inherit name paths; buildInputs = paths; };"
           extra_env=""
           extra_env_overrides=""
+          pkgs_import_args="{}"
+          rust_overlay_arg=""
           gitignore="${gitignore.nix}"
           crystal=""
           if [ "$with_crystal" = "1" ]; then
@@ -134,7 +136,10 @@ rec {
           fi
           rust=""
           if [ "$with_rust" = "1" ]; then
-            rust="rust = [cargo${"\n"}clang rust-analyzer rustc rustfmt${"\n"}# deps${"\n"}pkg-config openssl];"
+            rust_overlay_arg=", _rust ? import${"\n"}  $(${final.nix_hash_rust-overlay}/bin/nix_hash_rust-overlay --fetchtarball)"
+            pkgs_import_args="{ overlays = [ _rust ]; }"
+            rust="rust = [${"\n"}cargo-zigbuild${"\n"}rust${"\n"}pkg-config${"\n"}openssl${"\n"}];"
+            toplevel="target = \"x86_64-unknown-linux-musl\";${"\n"}rust = pkgs.rust-bin.selectLatestNightlyWith (toolchain: toolchain.default.override {${"\n"}extensions = [ \"rust-src\" \"rustc-dev\" \"rust-analyzer\" ];${"\n"}targets = [ target ];${"\n"}});${"\n"}rustPlatform = pkgs.makeRustPlatform {${"\n"}cargo = rust;${"\n"}rustc = rust;${"\n"}};${"\n"}$toplevel"
             gitignore="$gitignore${"\n"}# rust${"\n"}${gitignore.rust}"
           fi
           terraform=""
@@ -177,7 +182,8 @@ rec {
           fi
           ${final.coreutils}/bin/cat -s <<EOF | ${_.sed} -E 's#(fetchTarball \{) (name)#\1\n\2#' | ${_.nixpkgs-fmt}
             { pkgs ? import
-                (''${ftb}) {}
+                (''${ftb}) ''${pkgs_import_args}
+            ''${rust_overlay_arg}
             }:
             let
               name = "$directory";
