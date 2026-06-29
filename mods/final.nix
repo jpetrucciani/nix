@@ -168,13 +168,13 @@ let
 
   codex-latest =
     let
-      version = "0.142.3";
+      version = "0.142.4";
       v8Version = "149.2.0";
       src = final.fetchFromGitHub {
         owner = "openai";
         repo = "codex";
         tag = "rust-v${version}";
-        hash = "sha256-dxkyaWpgzqpAVFojDYQ6JpMPNBIX+d7xjIyLic4Cs8A=";
+        hash = "sha256-cYkdLy0+KMjcx0k7IDACsiTK3ZZks6cmwbeDMheN6WY=";
       };
       librustyV8 = final.fetchLibrustyV8 {
         version = v8Version;
