@@ -6,7 +6,7 @@ rec {
       builtins = {
         caddy-cgi = { name = "github.com/aksdb/caddy-cgi"; version = "7cf2523251ffeef310868d8ed03e17a929236f2e"; };
         caddy-exec = { name = "github.com/abiosoft/caddy-exec"; version = "06d4f7218eb886ab9664e63c3f56010992e93fb9"; };
-        caddy-security = { name = "github.com/greenpau/caddy-security"; version = "v1.1.62"; };
+        caddy-security = { name = "github.com/greenpau/caddy-security"; version = "v1.1.64"; };
         caddy-webhook = { name = "github.com/WingLim/caddy-webhook"; version = "v1.0.8"; };
         certmagic-storage-dynamodb = { name = "github.com/silinternational/certmagic-storage-dynamodb"; version = "3.0.0"; };
 
@@ -82,8 +82,8 @@ rec {
             inherit src vendorHash;
             overrideModAttrs = _: {
               preBuild = ''
-                ${caddyPatchMain}
                 ${caddyPatchGoGet}
+                go mod tidy
               '';
               postInstall = "cp go.mod go.sum $out/";
             };
@@ -112,7 +112,7 @@ rec {
       googleclouddns
       route53
     ];
-    vendorHash = "sha256-ZIOdn8zEBOBcN4CwMmqaI5H4LFAV3hlMA0JS8Rvk/Lg=";
+    vendorHash = "sha256-GnwYEuO0oASTi+siFtfDFW0phBL3S+/NPaRG2FrUprQ=";
   };
 
   # caddy with s3-browser plugin
