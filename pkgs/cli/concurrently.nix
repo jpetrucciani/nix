@@ -3,27 +3,27 @@
 , fetchFromGitHub
 , makeWrapper
 , nodejs
-, pnpm_8
+, pnpm_10
 , fetchPnpmDeps
 , pnpmConfigHook
 }:
 let
-  pnpm = pnpm_8;
+  pnpm = pnpm_10;
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "concurrently";
-  version = "9.2.0";
+  version = "10.0.3";
 
   src = fetchFromGitHub {
     owner = "open-cli-tools";
     repo = "concurrently";
     rev = "refs/tags/v${finalAttrs.version}";
-    hash = "sha256-voPL3qw7oWJP1NqGgkYGCFZ/RhBdBitp4Y1LXSuaeEo=";
+    hash = "sha256-D8peccE3jtBh8MaP9GdqyvTPtynWph59yLGmyqNum+s=";
   };
 
   pnpmDeps = (fetchPnpmDeps.override { inherit pnpm; }) {
     inherit (finalAttrs) pname version src;
-    hash = "sha256-6F1i+9a/Dz4eGQrARd5kHo8YbpzOzbEefic2CiRYrbU=";
+    hash = "sha256-fCTuDggoLEZCXrpYXW5xjMLmZ0/hjs+a6WVDebRNz2Q=";
     fetcherVersion = 3;
   };
 
