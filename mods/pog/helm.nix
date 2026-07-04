@@ -513,6 +513,7 @@ let
       name = "open-webui";
       base_url = "https://helm.openwebui.com";
       chart_url = "https://github.com/open-webui/helm-charts/releases/download/${name}-{1}/${name}-{1}.tgz";
+      filter_out = "dev";
       last = 10;
     };
 
