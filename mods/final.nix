@@ -217,6 +217,14 @@ let
     in
     prev.codex.overrideAttrs (old: {
       inherit version src;
+      cargoBuildFlags = (old.cargoBuildFlags or [ ]) ++ [
+        "--package"
+        "codex-code-mode-host"
+      ];
+      cargoCheckFlags = (old.cargoCheckFlags or [ ]) ++ [
+        "--package"
+        "codex-code-mode-host"
+      ];
       buildInputs = (old.buildInputs or [ ]) ++ (final.lib.optionals final.stdenv.isLinux [ final.libcap ]);
       postPatch = ''
         # webrtc-sys asks rustc to link libwebrtc statically by default,
@@ -237,6 +245,11 @@ let
         // final.lib.optionalAttrs final.stdenv.isDarwin {
           LK_CUSTOM_WEBRTC = webrtcPrebuilt;
         };
+      postFixup = ''
+        wrapProgram $out/bin/codex --prefix PATH : "$out/bin:${
+          final.lib.makeBinPath ([ final.ripgrep ] ++ final.lib.optionals final.stdenv.hostPlatform.isLinux [ final.bubblewrap ])
+        }"
+      '';
     });
 in
 {
