@@ -78,22 +78,23 @@ rec {
         allPlugins;
       zaddy = prev.caddy.override {
         buildGoModule = args:
-          let _args = args { inherit version; }; in final.buildGoLatestModule (_args // {
-            inherit src vendorHash;
-            overrideModAttrs = _: {
-              preBuild = ''
-                ${caddyPatchGoGet}
-                go mod tidy
+          final.buildGoLatestModule (finalAttrs:
+            let _args = args finalAttrs; in _args // {
+              inherit src vendorHash;
+              overrideModAttrs = _: {
+                preBuild = ''
+                  ${caddyPatchGoGet}
+                  go mod tidy
+                '';
+                postInstall = "cp go.mod go.sum $out/";
+              };
+              postInstall = ''
+                ${_args.postInstall}
+                sed -i -E '/Group=caddy/aEnvironmentFile=-/etc/default/caddy\nTimeoutSec=180' $out/lib/systemd/system/caddy.service
               '';
-              postInstall = "cp go.mod go.sum $out/";
-            };
-            postInstall = ''
-              ${_args.postInstall}
-              sed -i -E '/Group=caddy/aEnvironmentFile=-/etc/default/caddy\nTimeoutSec=180' $out/lib/systemd/system/caddy.service
-            '';
-            postPatch = caddyPatchMain;
-            preBuild = "cp vendor/go.mod vendor/go.sum .";
-          });
+              postPatch = caddyPatchMain;
+              preBuild = "cp vendor/go.mod vendor/go.sum .";
+            });
       };
     in
     zaddy;
