@@ -358,6 +358,11 @@ let
                 ${addTorchLibs}
               '';
             });
+            pynvvideocodec = _prev.pynvvideocodec.overrideAttrs (old: {
+              autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
+                "libcuda.so.1"
+              ];
+            });
             vllm = _prev.vllm.overrideAttrs (_: {
               buildInputs = (with _final; [ torch setuptools ]) ++ (with _pkgs.cudaPackages; [ libnvshmem ]);
               postFixup = ''
