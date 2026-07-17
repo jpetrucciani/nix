@@ -123,23 +123,17 @@ in
           domains = ${cfg.domain}
 
           [domain/${cfg.domain}]
-          access_provider = simple
+          access_provider = ad
           ad_domain = ${cfg.domain}
           ad_server = ${cfg.adDomain}
-          auth_provider = ldap
+          auth_provider = ad
           fallback_homedir = /home/%u
-          id_provider = ldap
+          id_provider = ad
           krb5_realm = ${cfg.krbDomain}
-          ldap_default_authtok = $LDAP_BIND_PW
-          ldap_default_authtok_type = password
-          ldap_default_bind_dn = ${cfg.bindUser}
-          ldap_group_search_base = ${suffix}
           ldap_id_mapping = True
           ldap_referrals = false
           ldap_schema = AD
-          ldap_search_base = ${suffix}
           ldap_uri = ldap${if cfg.tls then "s" else ""}://${cfg.adDomain}
-          ldap_user_search_base = ${suffix}
           ad_use_ldaps = True
           ldap_tls_cacert = ${cfg.caPath}
           simple_allow_groups = ${concatStringsSep "," cfg.allowedGroups}
@@ -147,8 +141,6 @@ in
           ldap_user_extra_attrs = altSecurityIdentities:altSecurityIdentities
           ldap_user_ssh_public_key = altSecurityIdentities
           ldap_use_tokengroups = True
-          ldap_sasl_mech = GSSAPI
-          ldap_channel_binding = true
           ${cfg.extraSssd}
         '';
       };
