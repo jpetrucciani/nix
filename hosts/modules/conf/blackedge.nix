@@ -116,7 +116,7 @@ in
       sssd = {
         enable = true;
         sshAuthorizedKeysIntegration = true;
-        config = let suffix = "ou=Users,ou=blackedge,dc=blackedge,dc=local"; in ''
+        config = ''
           [sssd]
           config_file_version = 2
           services = nss, pam, ssh, sudo
