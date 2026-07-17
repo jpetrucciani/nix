@@ -106,7 +106,7 @@ in
         X11Forwarding = lib.mkForce false;
       };
       extraConfig = ''
-        AllowGroups wheel ${concatStringsSep " " cfg.allowedGroups}
+        AllowGroups wheel ${concatStringsSep " " (map lib.toLower cfg.allowedGroups)}
       '';
     };
     services = {
@@ -141,6 +141,7 @@ in
           ldap_user_extra_attrs = altSecurityIdentities:altSecurityIdentities
           ldap_user_ssh_public_key = altSecurityIdentities
           ldap_use_tokengroups = True
+          use_fully_qualified_names = False
           ${cfg.extraSssd}
         '';
       };
