@@ -62,6 +62,7 @@ in
       "d /var/cache/realmd 0755 root root -"
     ];
     security = {
+      polkit.enable = true;
       pam.services.systemd-user.makeHomeDir = true;
       sudo.extraRules = [
         { groups = cfg.allowedGroups; commands = [{ command = "ALL"; options = [ "NOPASSWD" ]; }]; }
