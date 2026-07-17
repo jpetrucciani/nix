@@ -1,7 +1,7 @@
-{ config, lib, ... }:
+{ pkgs, config, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption mkOption concatStringsSep;
-  inherit (lib.types) str listOf;
+  inherit (lib.types) bool str listOf;
   cfg = config.conf.blackedge;
 in
 {
@@ -14,6 +14,10 @@ in
     domain = mkOption {
       type = str;
       default = "blackedge.local";
+    };
+    tls = mkOption {
+      type = bool;
+      default = false;
     };
     adDomain = mkOption {
       type = str;
@@ -37,9 +41,25 @@ in
     };
   };
   config = mkIf cfg.enable {
+    environment.systemPackages = with pkgs; [
+      realmd
+      sssd
+      adcli
+      oddjob
+      samba
+      krb5
+    ];
+    systemd.services.realmd.environment = {
+      REALMD_CACHE_DIR = "/var/cache/realmd";
+    };
     # hack to get ldap login working
     systemd.tmpfiles.rules = [
       "L /bin/bash - - - - /run/current-system/sw/bin/bash"
+      "L /usr/sbin/oddjobd - - - - ${pkgs.oddjob}/bin/oddjobd"
+      "L /usr/libexec/oddjob/mkhomedir - - - - ${pkgs.oddjob}/libexec/oddjob/mkhomedir"
+      "L /usr/sbin/sssd - - - - ${pkgs.sssd}/bin/sssd"
+      "L /usr/sbin/adcli - - - - ${pkgs.adcli}/bin/adcli"
+      "d /var/cache/realmd 0755 root root -"
     ];
     security = {
       pam.services.systemd-user.makeHomeDir = true;
@@ -64,6 +84,9 @@ in
             forwardable = true;
             default_ccache_name = "KEYRING:persistent:%{uid}";
             rdns = false;
+            permitted_enctypes = "aes256-cts-hmac-sha1-96 aes128-cts-hmac-sha1-96 aes256-cts-hmac-sha256-128 aes128-cts-hmac-sha256-128";
+            default_tkt_enctypes = "aes256-cts-hmac-sha1-96 aes128-cts-hmac-sha1-96";
+            default_tgs_enctypes = "aes256-cts-hmac-sha1-96 aes128-cts-hmac-sha1-96";
           };
         };
       };
@@ -82,6 +105,9 @@ in
       '';
     };
     services = {
+      realmd = {
+        enable = true;
+      };
       sssd = {
         enable = true;
         sshAuthorizedKeysIntegration = true;
@@ -107,7 +133,7 @@ in
           ldap_referrals = false
           ldap_schema = AD
           ldap_search_base = ${suffix}
-          ldap_uri = ldap://${cfg.adDomain}
+          ldap_uri = ldap${if cfg.tls then "s" else ""}://${cfg.adDomain}
           ldap_user_search_base = ${suffix}
           ad_use_ldaps = True
           ldap_tls_cacert = ${cfg.caPath}
