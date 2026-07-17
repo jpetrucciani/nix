@@ -39,6 +39,10 @@ in
       type = str;
       default = "/etc/default/ldap_ca.pem";
     };
+    extraSssd = mkOption {
+      type = str;
+      default = "";
+    };
   };
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
@@ -145,6 +149,7 @@ in
           ldap_use_tokengroups = True
           ldap_sasl_mech = GSSAPI
           ldap_channel_binding = true
+          ${cfg.extraSssd}
         '';
       };
       nscd.config = ''
