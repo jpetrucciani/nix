@@ -223,11 +223,11 @@
         "pog": "pog"
       },
       "locked": {
-        "lastModified": 1784251312,
-        "narHash": "sha256-thv4O3eS5UA2vRiUw48KZVRUtj1ahWVqvxAjUg0IwT0=",
+        "lastModified": 1784337249,
+        "narHash": "sha256-EZ+AUoTWn+VvTXE53bOie8YuxQiYNo4CvJmWt+5VbXs=",
         "owner": "jpetrucciani",
         "repo": "hex",
-        "rev": "fa6032917b79c8b5e518d15bdb60810e681c2d1e",
+        "rev": "f139f4961a2b3ab4a1c8dfb821731e2380d0fb70",
         "type": "github"
       },
       "original": {
@@ -353,11 +353,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1784100666,
-        "narHash": "sha256-HF/mrw5NYQfKFZgkfV2h1UL5/E3ccfsE2XJ1AbbLLJ0=",
+        "lastModified": 1784310968,
+        "narHash": "sha256-rkSPTePrKqs4dg+i7ZFCq93+HrClac6oSwXX927SVjA=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "fccfa9031a85b78a437f2f153c1f6449f3bc3185",
+        "rev": "779c32a00155994c86cde8213a8dd4df139d4355",
         "type": "github"
       },
       "original": {
@@ -464,11 +464,11 @@
     },
     "nixpkgs_6": {
       "locked": {
-        "lastModified": 1784224299,
-        "narHash": "sha256-WrlW4CsLPbuytFrTZ5t/MtVafZLXN620DfXPH5VfTjI=",
-        "rev": "fd40dc70a9554de4370b6d5d08b858f7c4e49e30",
+        "lastModified": 1784326432,
+        "narHash": "sha256-jJ74JfVA5/L0PgR0GuE0NHOiKhorsetkdkKoaTq0zm8=",
+        "rev": "1f622082bee30eee91f6ad47512fd13e176d29ee",
         "type": "tarball",
-        "url": "https://releases.nixos.org/nixos/unstable-small/nixos-26.11pre1036057.fd40dc70a955/nixexprs.tar.xz"
+        "url": "https://releases.nixos.org/nixos/unstable-small/nixos-26.11pre1036728.1f622082bee3/nixexprs.tar.xz"
       },
       "original": {
         "id": "nixpkgs",
@@ -845,11 +845,11 @@
     "vscode-server": {
       "flake": false,
       "locked": {
-        "lastModified": 1770124655,
-        "narHash": "sha256-yHmd2B13EtBUPLJ+x0EaBwNkQr9LTne1arLVxT6hSnY=",
+        "lastModified": 1784312229,
+        "narHash": "sha256-2uHCSUw341o3my1R0U0YCfbnMEazylxb58evWsjGL50=",
         "owner": "nix-community",
         "repo": "nixos-vscode-server",
-        "rev": "92ce71c3ba5a94f854e02d57b14af4997ab54ef0",
+        "rev": "2f984dfbe7e5271b5c413d3e734374cc1306c921",
         "type": "github"
       },
       "original": {
