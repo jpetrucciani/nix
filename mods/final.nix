@@ -168,13 +168,13 @@ let
 
   codex-latest =
     let
-      version = "0.144.6";
+      version = "0.145.0";
       v8Version = "149.2.0";
       src = final.fetchFromGitHub {
         owner = "openai";
         repo = "codex";
         tag = "rust-v${version}";
-        hash = "sha256-S25nhnF4lEJQdiyKDV38ORbjm+BNsswLoE5ivF0SE2U=";
+        hash = "sha256-/r4mBoJhHB1v5NTA4Hk565/D5B0deYJf9xJW330hyf0=";
       };
       librustyV8 = final.fetchLibrustyV8 {
         version = v8Version;
@@ -191,65 +191,22 @@ let
           x86_64-linux = "sha256-iu2YY323533Iv7i7R1nsW95HLQv3lD9Y4OYqNQlFxVk=";
         };
       };
-      # `webrtc-sys` also tries to fetch a platform archive during the build.
-      # Pre-fetch it so Darwin builds stay sandbox-compatible.
-      webrtcPrebuilt =
-        let
-          bundle =
-            {
-              aarch64-darwin = {
-                hash = "sha256-eb5cwV5uBjPEOA4z4XLX6/Gm3Og+ngmXYdYQPw1+tsE=";
-                triple = "mac-arm64-release";
-              };
-            }.${final.stdenv.hostPlatform.system}
-              or (throw "Unsupported system for codex-latest webrtc bundle: ${final.stdenv.hostPlatform.system}");
-          archive = final.fetchurl {
-            name = "webrtc-${bundle.triple}.zip";
-            url = "https://github.com/livekit/rust-sdks/releases/download/webrtc-24f6822-2/webrtc-${bundle.triple}.zip";
-            inherit (bundle) hash;
-          };
-        in
-        final.runCommand "webrtc-${bundle.triple}" { nativeBuildInputs = [ final.unzip ]; } ''
-          mkdir -p "$TMPDIR/unpack" "$out"
-          unzip -q ${archive} -d "$TMPDIR/unpack"
-          cp -R "$TMPDIR/unpack/${bundle.triple}/." "$out/"
-        '';
     in
     prev.codex.overrideAttrs (old: {
       inherit version src;
-      cargoBuildFlags = (old.cargoBuildFlags or [ ]) ++ [
-        "--package"
-        "codex-code-mode-host"
-      ];
-      cargoCheckFlags = (old.cargoCheckFlags or [ ]) ++ [
-        "--package"
-        "codex-code-mode-host"
-      ];
-      buildInputs = (old.buildInputs or [ ]) ++ (final.lib.optionals final.stdenv.isLinux [ final.libcap ]);
       postPatch = ''
-        # webrtc-sys asks rustc to link libwebrtc statically by default,
-        # but nixpkgs provides libwebrtc as a shared library.
-        substituteInPlace $cargoDepsCopy/*/webrtc-sys-*/build.rs \
-          --replace-fail "cargo:rustc-link-lib=static=webrtc" "cargo:rustc-link-lib=dylib=webrtc"
+        substituteInPlace Cargo.toml \
+          --replace-fail 'lto = "thin"' "" \
+          --replace-fail 'codegen-units = 4' ""
       '';
       cargoDeps = final.rustPlatform.fetchCargoVendor {
         inherit src;
         sourceRoot = "${src.name}/codex-rs";
-        hash = "sha256-S4dsZXfmKvJItL2XYKyxfhqdCMATEG6oPjrtVRwkuYc=";
+        hash = "sha256-t9IMRK9R+Z67ThEcgBI0HQU0E4aJHcOjKp22RFclh9U=";
       };
-      env =
-        (old.env or { })
-        // {
-          RUSTY_V8_ARCHIVE = librustyV8;
-        }
-        // final.lib.optionalAttrs final.stdenv.isDarwin {
-          LK_CUSTOM_WEBRTC = webrtcPrebuilt;
-        };
-      postFixup = ''
-        wrapProgram $out/bin/codex --prefix PATH : "$out/bin:${
-          final.lib.makeBinPath ([ final.ripgrep ] ++ final.lib.optionals final.stdenv.hostPlatform.isLinux [ final.bubblewrap ])
-        }"
-      '';
+      env = builtins.removeAttrs (old.env or { }) [ "LK_CUSTOM_WEBRTC" ] // {
+        RUSTY_V8_ARCHIVE = librustyV8;
+      };
     });
 in
 {
