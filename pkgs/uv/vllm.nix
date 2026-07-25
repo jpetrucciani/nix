@@ -1,5 +1,15 @@
 # [vllm](https://github.com/vllm-project/vllm) is a high-throughput and memory-efficient inference and serving engine for LLMs
-{ vllm, lib, uv-nix, cudatoolkit, clang, ninja, version ? "0.25.1", lockHash ? "sha256-4kqWj1aDejvW9hRiiMG1O9fBk+nnubu4UspKOWiAMR4=", isWSL ? false, includePin ? false }:
+{ vllm
+, lib
+, uv-nix
+, cudatoolkit
+, clang
+, ninja
+, version ? "0.26.0"
+, lockHash ? "sha256-0iocJOewzAJHTv/xMFDSA5S5jep+vGDPYy9orIwa9fI="
+, isWSL ? false
+, includePin ? false
+}:
 let
   ldPath = if isWSL then "/usr/lib/wsl/lib" else "/run/opengl-driver/lib";
 in
@@ -30,7 +40,13 @@ uv-nix.buildUvPackage rec {
       --prefix LIBRARY_PATH : "${cudatoolkit}/lib" \
       --set TRITON_LIBCUDA_PATH "${ldPath}" \
       --set TRITON_PTXAS_PATH "${cudatoolkit}/bin/ptxas" \
-      --prefix PATH : ${lib.makeBinPath [ cudatoolkit clang ninja ]}
+      --prefix PATH : ${
+        lib.makeBinPath [
+          cudatoolkit
+          clang
+          ninja
+        ]
+      }
   '';
 
   passthru = {
