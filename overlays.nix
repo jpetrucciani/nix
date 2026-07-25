@@ -1,3 +1,56 @@
+let
+  modulesIn = directory:
+    let
+      entries = builtins.readDir directory;
+      moduleFor = name:
+        let
+          path = directory + "/${name}";
+          nixFile = builtins.match "(.*)\\.nix" name;
+          default = path + "/default.nix";
+        in
+        if entries.${name} == "regular" && nixFile != null
+        then [{ name = builtins.head nixFile; inherit path; }]
+        else if entries.${name} == "directory" && builtins.pathExists default
+        then [{ inherit name; path = default; }]
+        else [ ];
+      modules = builtins.concatLists (builtins.map moduleFor (builtins.attrNames entries));
+      names = builtins.map (module: module.name) modules;
+      duplicateNames = builtins.filter
+        (name: builtins.length (builtins.filter (other: other == name) names) > 1)
+        names;
+    in
+    if duplicateNames == [ ]
+    then modules
+    else throw "Duplicate module names in ${toString directory}: ${builtins.toJSON duplicateNames}";
+  importOverlays = directory: builtins.map (module: import module.path) (modulesIn directory);
+  packageOverlays = importOverlays ./mods/pkgs;
+  pogOverlays =
+    builtins.filter builtins.isFunction (
+      importOverlays ./mods/pog
+    );
+  patchOverlays = builtins.map
+    (module:
+      final: prev:
+        let
+          previous = prev.${module.name} or (throw "Cannot patch missing package ${module.name}");
+          scope = final // {
+            inherit final;
+            prev = previous;
+          };
+          _overlay = {
+            inherit final;
+            inherit (module) name path;
+            prev = previous;
+          };
+        in
+        {
+          ${module.name} = final.lib.callPackageWith
+            (scope // { inherit _overlay scope; })
+            module.path
+            { };
+        })
+    (modulesIn ./mods/patches);
+in
 [
   (import ./mods/hax.nix)
   (import ./mods/_pkgs.nix)
@@ -15,37 +68,7 @@
   (import ./mods/ocaml/default.nix)
 
   # sub-overlays
-  (import ./mods/pkgs/ai.nix)
-  (import ./mods/pkgs/cli.nix)
-  (import ./mods/pkgs/cloud.nix)
-  (import ./mods/pkgs/experimental.nix)
-  (import ./mods/pkgs/k8s.nix)
-  (import ./mods/pkgs/server.nix)
-  (import ./mods/pkgs/webapp.nix)
-  (import ./mods/pkgs/zaddy.nix)
-
-  # pog sub-overlays
-  (import ./mods/pog/aws.nix)
-  (import ./mods/pog/db.nix)
-  (import ./mods/pog/curl.nix)
-  (import ./mods/pog/discord.nix)
-  (import ./mods/pog/docker.nix)
-  (import ./mods/pog/ebook.nix)
-  (import ./mods/pog/ffmpeg.nix)
-  (import ./mods/pog/gcp.nix)
-  (import ./mods/pog/general.nix)
-  (import ./mods/pog/github.nix)
-  (import ./mods/pog/gitlab.nix)
-  (import ./mods/pog/hax.nix)
-  (import ./mods/pog/helm.nix)
-  (import ./mods/pog/k3s.nix)
-  (import ./mods/pog/k8s.nix)
-  (import ./mods/pog/loki.nix)
-  (import ./mods/pog/nix.nix)
-  (import ./mods/pog/notion.nix)
-  (import ./mods/pog/sound.nix)
-  (import ./mods/pog/ssh.nix)
-
+] ++ packageOverlays ++ patchOverlays ++ pogOverlays ++ [
   # after all
   (import ./scripts.nix)
   (import ./mods/containers.nix)

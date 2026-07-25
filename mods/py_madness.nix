@@ -328,17 +328,24 @@ let
                 "libcuda.so.1" # this will be found at runtime?
               ];
             });
+            nvidia-cutlass-dsl-libs-base = _prev.nvidia-cutlass-dsl-libs-base.overrideAttrs (old: {
+              autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
+                "libcuda.so.1"
+              ];
+            });
             tokenspeed-mla = _prev.tokenspeed-mla.overrideAttrs (old: {
               buildInputs = (old.buildInputs or [ ]) ++ (with _final; [
                 apache-tvm-ffi
                 nvidia-cutlass-dsl
                 nvidia-cutlass-dsl-libs-base
+                nvidia-cutlass-dsl-libs-cu13
               ]);
               preFixup = (old.preFixup or "") + ''
                 ${addAutoPatchelfSearchInputs (with _final; [
                   apache-tvm-ffi
                   nvidia-cutlass-dsl
                   nvidia-cutlass-dsl-libs-base
+                  nvidia-cutlass-dsl-libs-cu13
                 ])}
               '';
             });
