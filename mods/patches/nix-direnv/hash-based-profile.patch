@@ -1,0 +1,54 @@
+diff --git a/share/nix-direnv/direnvrc b/share/nix-direnv/direnvrc
+--- a/share/nix-direnv/direnvrc
++++ b/share/nix-direnv/direnvrc
+@@ -396,35 +396,8 @@
+     return 1
+   fi
+ 
+-  local layout_dir path version
++  local layout_dir version
+   layout_dir=$(direnv_layout_dir)
+-  # NB: macOS has realpath, but only supports -q
+-  if path=$(realpath "$(_nix eval --impure --expr "<nixpkgs>" 2>/dev/null)"); then
+-    if [[ -f "${path}/.version-suffix" ]]; then
+-      version=$(<"${path}/.version-suffix")
+-    elif [[ -f "${path}/.git/HEAD" ]]; then
+-      local head
+-      read -r head <"${path}/.git/HEAD"
+-      local regex="ref: (.*)"
+-      if [[ $head =~ $regex ]]; then
+-        read -r version <"${path}/.git/${BASH_REMATCH[1]}"
+-      else
+-        version="$head"
+-      fi
+-    elif [[ -f "${path}/.version" && ${path} == "/nix/store/"* ]]; then
+-      # borrow some bits from the store path
+-      local version_prefix
+-      read -r version_prefix < <(
+-        cat "${path}/.version"
+-        echo
+-      )
+-      version="${version_prefix}-${path:11:16}"
+-    fi
+-  fi
+-
+-  local profile
+-  profile="${layout_dir}/nix-profile-${version:-unknown}$(_nix_argsum_suffix "$*")"
+-  local profile_rc="${profile}.rc"
+ 
+   local in_packages=0
+   local attribute=
+@@ -438,6 +411,13 @@
+     nixfile="./default.nix"
+   fi
+ 
++  if [[ -n "$nixfile" ]]; then
++    version=$(_nix hash file --base32 "$nixfile")
++  fi
++  local profile
++  profile="${layout_dir}/nix-profile-${version:-unknown}$(_nix_argsum_suffix "$*")"
++  local profile_rc="${profile}.rc"
++
+   while [[ $# -gt 0 ]]; do
+     i="$1"
+     shift

@@ -14,6 +14,10 @@ This directory contains other various hacky things. please ignore!
 
 This directory contains package sets for specific languages that I overlay functionality on top of, like [vlang](https://vlang.io/) and [nim](https://nim-lang.org)
 
+### [patches/](./patches/)
+
+This directory contains path-named overrides for patching nixpkgs packages.
+
 ### [pkgs/](./pkgs/)
 
 This directory contains nix packages that I've built that are not yet ready for nixpkgs proper, or that don't make sense to open as a PR to nixpkgs proper
