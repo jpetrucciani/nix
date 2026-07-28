@@ -223,11 +223,11 @@
         "pog": "pog"
       },
       "locked": {
-        "lastModified": 1785115756,
-        "narHash": "sha256-Sd2uzPYtSFwy8q2XQpepqkm+dXOtLbZsUtn6HWqhak8=",
+        "lastModified": 1785201443,
+        "narHash": "sha256-9lMVpXVF+1xG081zA7y+DTQGtuqB+iBu5j23d8UmPTo=",
         "owner": "jpetrucciani",
         "repo": "hex",
-        "rev": "bf2b97e2121b9ecd198ca917712b497a513e8625",
+        "rev": "9f7bd7a08f8c74ce8258fb66833b039d476699e1",
         "type": "github"
       },
       "original": {
@@ -264,11 +264,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784913159,
-        "narHash": "sha256-JWq0BfjO4ktpH5USfQNQzdvHpIDT8fSKD5K7LvdMRFs=",
+        "lastModified": 1785168662,
+        "narHash": "sha256-kGJTc0oEUQuEwV66lSlMxYtOEtpk9N/HS43k+rFAvs8=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "079a3b5d1aa6a719920a51316253b7d6dd22738d",
+        "rev": "cbb77679b3d992c8b62f884cd3a84af534a28621",
         "type": "github"
       },
       "original": {
@@ -464,11 +464,11 @@
     },
     "nixpkgs_6": {
       "locked": {
-        "lastModified": 1785084702,
-        "narHash": "sha256-MQdcVcj+MOEfRlInNwnWtbWQt7SSWbvxGZqgLOUnFDU=",
-        "rev": "38352561a0b868ad8f31c8125de3c6395c70ff42",
+        "lastModified": 1785152149,
+        "narHash": "sha256-aj1ezGzbVJk2QgZSs26mpfgjOSWtSi3EhElkE2yXpeY=",
+        "rev": "aac3a899cc6ce8d928dfc5818dafc093b7936010",
         "type": "tarball",
-        "url": "https://releases.nixos.org/nixos/unstable-small/nixos-26.11pre1042086.38352561a0b8/nixexprs.tar.xz"
+        "url": "https://releases.nixos.org/nixos/unstable-small/nixos-26.11pre1042457.aac3a899cc6c/nixexprs.tar.xz"
       },
       "original": {
         "id": "nixpkgs",
@@ -829,11 +829,11 @@
         "pyproject-nix": "pyproject-nix_2"
       },
       "locked": {
-        "lastModified": 1784582828,
-        "narHash": "sha256-uPeuFNSYO429IEiud3iJKWIpN/xrH2CANj1uYNiDxqc=",
+        "lastModified": 1785147819,
+        "narHash": "sha256-udwe836AZe8BYU+YqVc51QLuOeWKoGEmPIMF0ImUfTQ=",
         "owner": "adisbladis",
         "repo": "uv2nix",
-        "rev": "49dac8d206c42175b069b7c6050ba27060a21106",
+        "rev": "0983f54345137c2dd528ce2c28cb56c2cbdceb2a",
         "type": "github"
       },
       "original": {
