@@ -42,12 +42,13 @@ let
             inherit (module) name path;
             prev = previous;
           };
+          patch = import module.path;
+          patchArgs = builtins.intersectAttrs
+            (builtins.functionArgs patch)
+            (scope // { inherit _overlay scope; });
         in
         {
-          ${module.name} = final.lib.callPackageWith
-            (scope // { inherit _overlay scope; })
-            module.path
-            { };
+          ${module.name} = patch patchArgs;
         })
     (modulesIn ./mods/patches);
 in

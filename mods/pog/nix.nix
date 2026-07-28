@@ -307,6 +307,242 @@ rec {
     '';
   };
 
+  refresh_codex_latest = pog {
+    name = "refresh_codex_latest";
+    description = "update codex-latest, refresh Rusty V8 and Cargo hashes, build it, and verify installed runtime helpers";
+    flags = [
+      {
+        name = "version";
+        short = "";
+        description = "target Codex version, with or without the rust-v prefix; defaults to the latest GitHub release";
+      }
+      {
+        name = "repo";
+        envVar = "CFG_REPO";
+        description = "cfg checkout to update; defaults to $HOME/cfg";
+      }
+    ];
+    script = ''
+      repo="''${repo:-$HOME/cfg}"
+      target_file="$repo/mods/final.nix"
+
+      if [ ! -f "$target_file" ]; then
+        echo "missing cfg package definition: $target_file" >&2
+        exit 2
+      fi
+
+      cd "$repo" || exit 1
+
+      if [ -z "$version" ]; then
+        latest_tag=$(
+          ${final.curl}/bin/curl --fail --silent --show-error \
+            https://api.github.com/repos/openai/codex/releases/latest \
+            | ${final.jq}/bin/jq -er '.tag_name'
+        )
+      else
+        latest_tag="$version"
+      fi
+
+      case "$latest_tag" in
+        rust-v*)
+          version="''${latest_tag#rust-v}"
+          ;;
+        v*)
+          version="''${latest_tag#v}"
+          ;;
+        *)
+          version="$latest_tag"
+          ;;
+      esac
+
+      if ! printf '%s\n' "$version" | ${final.gnugrep}/bin/grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.]+)?$'; then
+        echo "unexpected Codex version: $version" >&2
+        exit 2
+      fi
+
+      echo "updating codex-latest to $version"
+      ${final.nix-update}/bin/nix-update \
+        --flake \
+        --src-only \
+        --version "$version" \
+        codex-latest
+
+      source_path=$(${final._nix}/bin/nix eval --raw "path:$repo#codex-latest.src")
+      cargo_lock="$source_path/codex-rs/Cargo.lock"
+      if [ ! -f "$cargo_lock" ]; then
+        echo "missing Codex Cargo.lock: $cargo_lock" >&2
+        exit 1
+      fi
+
+      v8_version=$(
+        ${final.gawk}/bin/awk '
+          /^\[\[package\]\]$/ { is_v8 = 0 }
+          /^name = "v8"$/ { is_v8 = 1; next }
+          is_v8 && /^version = "/ {
+            gsub(/^version = "/, "")
+            gsub(/"$/, "")
+            print
+            exit
+          }
+        ' "$cargo_lock"
+      )
+      if [ -z "$v8_version" ]; then
+        echo "could not determine the Rusty V8 version from $cargo_lock" >&2
+        exit 1
+      fi
+
+      temp_dir=$(${final.coreutils}/bin/mktemp -d)
+      trap '${final.coreutils}/bin/rm -rf "$temp_dir"' EXIT
+      declare -A v8_hashes
+
+      while read -r nix_target rust_target; do
+        archive="$temp_dir/librusty_v8_$rust_target.a.gz"
+        ${final.curl}/bin/curl --location --fail --silent --show-error \
+          --output "$archive" \
+          "https://github.com/denoland/rusty_v8/releases/download/v$v8_version/librusty_v8_release_$rust_target.a.gz"
+        v8_hashes["$nix_target"]=$(${final._nix}/bin/nix hash file --type sha256 --sri "$archive")
+      done <<'TARGETS'
+      aarch64-darwin aarch64-apple-darwin
+      aarch64-linux aarch64-unknown-linux-gnu
+      x86_64-linux x86_64-unknown-linux-gnu
+      TARGETS
+
+      for pattern in \
+        'v8Version = "' \
+        'aarch64-darwin = "sha256-' \
+        'aarch64-linux = "sha256-' \
+        'x86_64-linux = "sha256-'
+      do
+        matches=$(${final.gnugrep}/bin/grep -c "$pattern" "$target_file" || true)
+        if [ "$matches" -ne 1 ]; then
+          echo "expected one '$pattern' assignment in $target_file, found $matches" >&2
+          exit 1
+        fi
+      done
+
+      V8_VERSION="$v8_version" \
+      AARCH64_DARWIN_HASH="''${v8_hashes[aarch64-darwin]}" \
+      AARCH64_LINUX_HASH="''${v8_hashes[aarch64-linux]}" \
+      X86_64_LINUX_HASH="''${v8_hashes[x86_64-linux]}" \
+        ${final.perl}/bin/perl -0pi -e '
+          s/(v8Version = ")[^"]+(";)/$1 . $ENV{V8_VERSION} . $2/e;
+          s/(aarch64-darwin = ")[^"]+(";)/$1 . $ENV{AARCH64_DARWIN_HASH} . $2/e;
+          s/(aarch64-linux = ")[^"]+(";)/$1 . $ENV{AARCH64_LINUX_HASH} . $2/e;
+          s/(x86_64-linux = ")[^"]+(";)/$1 . $ENV{X86_64_LINUX_HASH} . $2/e;
+        ' "$target_file"
+
+      ${lib.getExe final.jfmt} "$target_file"
+      ${final._nix}/bin/nix-instantiate --parse "$target_file" >/dev/null
+
+      ${final.nix-update}/bin/nix-update \
+        --flake \
+        --no-src \
+        --version skip \
+        codex-latest
+
+      ${lib.getExe final.jfmt} "$target_file"
+      ${final._nix}/bin/nix-instantiate --parse "$target_file" >/dev/null
+      ${final.git}/bin/git diff --check -- "$target_file"
+
+      output=$(
+        ${final._nix}/bin/nix build \
+          "path:$repo#codex-latest" \
+          --no-link \
+          --print-build-logs \
+          --print-out-paths
+      )
+
+      if [ ! -x "$output/bin/codex" ]; then
+        echo "built output is missing bin/codex: $output" >&2
+        exit 1
+      fi
+      if [ ! -x "$output/bin/codex-code-mode-host" ]; then
+        echo "built output is missing bin/codex-code-mode-host: $output" >&2
+        exit 1
+      fi
+
+      "$output/bin/codex" --version
+      echo "verified codex-code-mode-host in $output/bin"
+    '';
+  };
+
+  refresh_zaddy = pog {
+    name = "refresh_zaddy";
+    description = "refresh zaddy's vendor hash, build it, and verify every configured plugin in the vendored tree and binary";
+    flags = [
+      {
+        name = "repo";
+        envVar = "CFG_REPO";
+        description = "cfg checkout to update; defaults to $HOME/cfg";
+      }
+    ];
+    script = ''
+      repo="''${repo:-$HOME/cfg}"
+      target_file="$repo/mods/pkgs/zaddy.nix"
+
+      if [ ! -f "$target_file" ]; then
+        echo "missing zaddy package definition: $target_file" >&2
+        exit 2
+      fi
+
+      cd "$repo" || exit 1
+      ${final.nix-update}/bin/nix-update \
+        --flake \
+        --no-src \
+        --version skip \
+        zaddy
+
+      ${lib.getExe final.jfmt} "$target_file"
+      ${final._nix}/bin/nix-instantiate --parse "$target_file" >/dev/null
+      ${final.git}/bin/git diff --check -- "$target_file"
+
+      output=$(
+        ${final._nix}/bin/nix build \
+          "path:$repo#zaddy" \
+          --no-link \
+          --print-build-logs \
+          --print-out-paths
+      )
+      modules_output=$(
+        ${final._nix}/bin/nix build \
+          "path:$repo#zaddy.goModules" \
+          --no-link \
+          --print-out-paths
+      )
+      expected_plugins=$(
+        ${final._nix}/bin/nix eval \
+          --json \
+          "path:$repo#zaddy.zaddyPlugins"
+      )
+
+      if [ ! -x "$output/bin/caddy" ]; then
+        echo "built output is missing bin/caddy: $output" >&2
+        exit 1
+      fi
+
+      build_info=$("$output/bin/caddy" build-info)
+      missing=0
+      while IFS= read -r module; do
+        [ -z "$module" ] && continue
+        if ! printf '%s\n' "$build_info" | ${final.gnugrep}/bin/grep -F -q -- "$module"; then
+          echo "missing configured plugin from caddy build-info: $module" >&2
+          missing=1
+        fi
+        if ! ${final.gnugrep}/bin/grep -R -F -q -- "$module" "$modules_output"; then
+          echo "missing configured plugin from vendored modules: $module" >&2
+          missing=1
+        fi
+      done < <(printf '%s\n' "$expected_plugins" | ${final.jq}/bin/jq -r '.[].name')
+
+      if [ "$missing" -ne 0 ]; then
+        exit 1
+      fi
+
+      printf '%s\n' "$build_info"
+      echo "verified configured plugins in $modules_output and $output"
+    '';
+  };
+
   #  get_latest = "${curl}/bin/curl https://api.github.com/repos/supabase/cli/releases/latest | ${jq}/bin/jq '.tag_name'";
 
   ndiff = pog {
@@ -353,6 +589,8 @@ rec {
     nixcache
     nupdate
     nupdate_latest_github
+    refresh_codex_latest
+    refresh_zaddy
     # rehydrate
     y2n
   ];

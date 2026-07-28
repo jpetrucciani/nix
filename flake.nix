@@ -95,8 +95,39 @@
         system:
         let
           pkgs = packages.${system};
+          pogScriptGroups = lib.filterAttrs
+            (name: value: lib.hasSuffix "_pog_scripts" name && builtins.isList value)
+            pkgs;
+          pogScripts = lib.concatLists (builtins.attrValues pogScriptGroups);
+          pogScriptSources = map
+            (script:
+              pkgs.writeText
+                "${script.meta.mainProgram or script.name}.bash"
+                script.text)
+            pogScripts;
+          checkPogScripts = pkgs.runCommand "check-pog-scripts"
+            {
+              nativeBuildInputs = [ pkgs.shellcheck ];
+            }
+            ''
+              checked=0
+              for script in ${lib.escapeShellArgs pogScriptSources}; do
+                echo "checking $script"
+                ${pkgs.bash}/bin/bash -n "$script"
+                shellcheck --shell=bash "$script"
+                checked=$((checked + 1))
+              done
+
+              if [ "$checked" -eq 0 ]; then
+                echo "no exported pog scripts were discovered" >&2
+                exit 1
+              fi
+
+              printf 'validated %s pog scripts\n' "$checked" > "$out"
+            '';
         in
         lib.optionalAttrs pkgs.stdenv.isLinux {
+          check-pog-scripts = checkPogScripts;
           snowball-api-manifest = pkgs.snowball.api.tests.manifest;
           snowball-api-script = pkgs.snowball.api.tests.script;
           snowball-api-rpm = pkgs.snowball.api.tests.rpm;

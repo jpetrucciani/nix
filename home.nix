@@ -1,4 +1,4 @@
-{ pkgs ? import ./default.nix { }, flake ? null, machine-name ? "void", home-manager ? null, isBarebones ? false }:
+{ pkgs ? import ./default.nix { }, flake ? null, machine-name ? "void", isBarebones ? false }:
 let
   inherit (pkgs.hax) isDarwin isLinux isM1 isX86Mac;
   inherit (pkgs.hax) docker_aliases kubernetes_aliases;
@@ -38,8 +38,6 @@ let
     BASH_SILENCE_DEPRECATION_WARNING = "1";
     EDITOR = "nano";
     GIT_SSH_COMMAND = "${pkgs.openssh}/bin/ssh";
-    HISTCONTROL = "ignoreboth";
-    LESS = "-iR";
     PAGER = "less";
 
     # thanks google
@@ -52,14 +50,9 @@ in
   nixpkgs.overlays = import ./overlays.nix;
 
   programs = {
-    home-manager.enable = true;
-    home-manager.path = "${home-manager}";
     htop.enable = true;
     dircolors.enable = true;
   };
-
-  # broken manpages upstream, see: https://github.com/nix-community/home-manager/issues/3342
-  manual.manpages.enable = false;
 
   home = {
     inherit username homeDirectory sessionVariables;
@@ -68,8 +61,6 @@ in
       lib.flatten [
         _nix
         aq
-        bash-completion
-        bashInteractive
         bat
         bzip2
         cacert
@@ -129,7 +120,6 @@ in
         nixfmt
         nixpkgs-fmt
         nixpkgs-review
-        openssh
         p7zip
         patch
         pigz
@@ -200,13 +190,6 @@ in
 
           # sounds
           meme_sounds
-          # mac specific
-          (
-            optList isDarwin [
-              # lima
-            ]
-          )
-
           # all except old mac
           (
             optList (!isX86Mac) [
@@ -245,7 +228,10 @@ in
       ];
   };
 
-  programs.less.enable = true;
+  programs.less = {
+    enable = true;
+    options = [ "-iR" ];
+  };
   programs.lesspipe.enable = true;
   programs.lsd.enable = true;
 
@@ -262,8 +248,8 @@ in
   };
 
   programs.bash = {
-    inherit sessionVariables;
     enable = true;
+    historyControl = [ "ignoreboth" ];
     historyFileSize = -1;
     historySize = -1;
     shellAliases = {
@@ -289,7 +275,6 @@ in
         export PATH="$PATH:${homeDirectory}/.nix-profile/bin"
       '' else "";
     initExtra = ''
-      HISTCONTROL=ignoreboth
       set +h
       export PATH="$PATH:$HOME/.bin/"
       export PATH="$PATH:$HOME/.npm/bin/"
@@ -335,17 +320,14 @@ in
       [[ -e ~/.aliases ]] && source ~/.aliases
 
       # bash completions
-      export XDG_DATA_DIRS="$HOME/.nix-profile/share:''${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
-      source <(${pkgs.kubectl}/bin/kubectl completion bash)
-      source ~/.nix-profile/etc/profile.d/bash_completion.sh
-      source ~/.nix-profile/share/bash-completion/completions/git
-      source ~/.nix-profile/share/bash-completion/completions/ssh
+      source "${pkgs.kubectl}/share/bash-completion/completions/kubectl.bash"
+      source "${pkgs.gitFull}/share/bash-completion/completions/git"
       complete -o bashdefault -o default -o nospace -F __git_wrap__git_main g
       complete -F __start_kubectl k
       complete -F _kube_contexts kubectx kx
       complete -F _kube_namespaces kubens kns
     '' + (if (!isBarebones) then ''
-      source ~/.nix-profile/share/bash-completion/completions/docker.bash
+      source "${pkgs.docker-client}/share/bash-completion/completions/docker.bash"
       complete -F _docker d
     '' else "") +
     ''
@@ -386,10 +368,6 @@ in
     nix-direnv.enable = true;
   };
 
-  programs.nushell = {
-    enable = false;
-  };
-
   programs.readline = {
     enable = true;
     variables = {
@@ -417,7 +395,6 @@ in
   programs.helix = {
     enable = true;
     settings = {
-      # theme = "base16";
       editor = {
         lsp.display-messages = true;
         cursor-shape = {
@@ -539,126 +516,6 @@ in
         pinentry-program ${pkgs.pinentry_mac}/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac
       '';
     };
-    ${attrIf false "vscodeserver"} = {
-      target = ".vscode-server/data/Machine/settings.json";
-      text =
-        let
-          # options
-          formatOnSave = "editor.formatOnSave";
-          formatter = "editor.defaultFormatter";
-          tabSize = "editor.tabSize";
-
-          # vscode extensions
-          extensions = {
-            elixir-ls = "JakeBecker.elixir-ls";
-            nixpkgs-fmt = "B4dM4n.nixpkgs-fmt";
-            nix-ide = "jnoortheen.nix-ide";
-            prettier = "esbenp.prettier-vscode";
-            python = "ms-python.python";
-            rust = "statiolake.vscode-rustfmt";
-            shell-format = "foxundermoon.shell-format";
-            terraform = "hashicorp.terraform";
-          };
-          nix-bin = "${homeDirectory}/.nix-profile/bin";
-        in
-        ''
-          {
-            "telemetry.telemetryLevel": "off",
-            "${formatOnSave}": true,
-            "${formatter}": "${extensions.prettier}",
-            "python.formatting.blackPath": "${nix-bin}/black",
-            "python.linting.mypyPath": "${nix-bin}/mypy",
-            "python.linting.mypyEnabled": true,
-            "python.linting.flake8Args": ["--max-line-length=120", "--ignore=W503,W605"],
-            "python.languageServer": "Pylance",
-            "python.analysis.diagnosticSeverityOverrides": {
-              "reportMissingImports": "none",
-              "reportInvalidStringEscapeSequence": "none"
-            },
-            "python.formatting.provider": "black",
-            "ruff.path": ["${nix-bin}/ruff"],
-            "prettier.configPath": "${homeDirectory}/prettier.config.js",
-            "nix.enableLanguageServer": true,
-            "nix.serverPath": "${nix-bin}/nil",
-            "nix.serverSettings": {
-              "nil": {
-                "diagnostics": {
-                  "ignored": ["unused_binding", "unused_with"]
-                },
-                "formatting": {
-                  "command": ["nixpkgs-fmt"]
-                }
-              }
-            },
-            "nixEnvSelector.nixFile": "''${workspaceRoot}/default.nix",
-            "[nix]": {
-              "${formatter}": "${extensions.nix-ide}",
-              "${tabSize}": 2
-            },
-            "[terraform]": {
-              "${formatter}": "${extensions.terraform}",
-              "${formatOnSave}": true,
-              "${tabSize}": 2
-            },
-            "[json]": {
-              "${formatter}": "${extensions.prettier}",
-              "${formatOnSave}": true,
-              "${tabSize}": 2
-            },
-            "[jsonc]": {
-              "${formatter}": "${extensions.prettier}",
-              "${formatOnSave}": true,
-              "${tabSize}": 2
-            },
-            "[haskell]": {
-              "${formatter}": "haskell.haskell",
-              "${formatOnSave}": true
-            },
-            "[go]": {
-              "editor.defaultFormatter": "golang.go"
-            },
-            "[dockerfile]": { "${formatter}": "${extensions.prettier}" },
-            "[elixir]": {"${formatter}": "${extensions.elixir-ls}"},
-            "[ignore]": { "${formatter}": "${extensions.shell-format}" },
-            "[properties]": { "${formatter}": "${extensions.shell-format}" },
-            "[python]": {"${formatter}": "${extensions.python}"},
-            "[rust]": { "${formatter}": "${extensions.rust}" },
-            "[shellscript]": { "${formatter}": "${extensions.shell-format}" },
-            "[typescript]": {"${formatter}": "${extensions.prettier}"},
-            "[typescriptreact]": {"${formatter}": "${extensions.prettier}"},
-            "terraform.languageServer.enable": true,
-            "terraform.languageServer.args": ["serve"],
-            "terraform.languageServer.ignoreSingleFileWarning": false,
-            "terraform.languageServer.path": "${nix-bin}/terraform-ls",
-            "zircon.shell": "${nix-bin}/bash",
-            "shellformat.path": "${nix-bin}/shfmt",
-            "terminal.integrated.allowChords": false,
-            "autoDocstring.docstringFormat": "google-notypes",
-            "files.exclude": {
-              ".git": true,
-              "**/.terraform": true,
-              "**/.git": true,
-              "**/__pycache__": true,
-              "**/.mypy_cache": true,
-              "**/.ruff_cache": true,
-              "**/.direnv": true,
-              "**/.db": true,
-              "**/.pytest_cache": true
-            },
-            "search.exclude": {
-              ".git": true,
-              "**/.terraform": true,
-              "**/.git": true,
-              "**/__pycache__": true,
-              "**/.mypy_cache": true,
-              "**/.ruff_cache": true,
-              "**/.direnv": true,
-              "**/.db": true,
-              "**/.pytest_cache": true
-            }
-          }
-        '';
-    };
   };
 
   # starship config
@@ -675,9 +532,6 @@ in
         symbol = "go ";
       };
       directory.style = "fg:#d442f5";
-      localip = {
-        disabled = true;
-      };
       nix_shell = {
         pure_msg = "";
         impure_msg = "";
@@ -688,7 +542,6 @@ in
         style = "fg:#326ce5";
       };
       terraform = {
-        disabled = false;
         format = "via [$symbol $version]($style) ";
         symbol = "🌴";
       };
@@ -703,7 +556,6 @@ in
       # disabled plugins
       aws.disabled = true;
       battery.disabled = true;
-      cmd_duration.disabled = false;
       gcloud.disabled = true;
       package.disabled = true;
     };
@@ -774,8 +626,17 @@ in
             "!f() { CURRENT_BRANCH=$(git branch-name) && git checkout $1 && git pull origin $1 --ff-only && git checkout $CURRENT_BRANCH;  }; f";
           gone = gs ''git branch -vv | ${pkgs.gnused}/bin/sed -En "/: gone]/s/^..([^[:space:]]*)\s.*/\1/p"'';
           # Recreate your local branch based on the remote branch
-          recreate = ''
-            !f() { [[ -n $@ ]] && git checkout master && git branch -D "$@" && git pull origin "$@":"$@" && git checkout "$@"; }; f'';
+          recreate = gs ''
+            if [[ $# -ne 1 ]]; then
+              echo "usage: git recreate <branch>" >&2
+              exit 2
+            fi
+            branch=$1
+            git checkout "$(git default)"
+            git branch -D "$branch"
+            git fetch origin "$branch:$branch"
+            git checkout "$branch"
+          '';
           reset-submodule = "!git submodule update --init";
           s = gs "git br && git -c color.status=always status | grep -E --color=never '^\\s\\S|:$' || true";
           sl = "!git --no-pager log -n 15 --oneline --decorate";
@@ -796,7 +657,6 @@ in
           editor = if isDarwin then "code --wait" else "nano";
           pager = "delta --dark";
           autocrlf = "input";
-          # hooksPath = "/dev/null";
         };
         push = {
           autoSetupRemote = true;
@@ -811,11 +671,6 @@ in
         };
       };
       lfs.enable = true;
-      # ${attrIf (!isLinux) "signing"} = {
-      #   key = "03C0CBEA6EAB9258";
-      #   signer = "gpg";
-      #   signByDefault = true;
-      # };
       signing.format = null;
       ignores = [
         "*.pcap"
@@ -832,7 +687,6 @@ in
 
   programs.tmux = {
     enable = true;
-    tmuxp.enable = false;
     historyLimit = 500000;
     shortcut = "a";
     extraConfig = ''
@@ -842,7 +696,6 @@ in
       set -g status-keys vi
       setw -g mode-keys vi
       setw -g mouse on
-      setw -g monitor-activity on
 
       # Moving between windows.
       unbind [
@@ -901,7 +754,6 @@ in
       bind-key -n Home send Escape "OH"
       bind-key -n End send Escape "OF"
 
-      setw -g monitor-activity off
       setw -g monitor-activity on
       set-option -g bell-action none
     '';
@@ -913,7 +765,7 @@ in
       "${flake.inputs.vscode-server}/modules/vscode-server/home.nix"
     ] else [ ];
 
-  ${attrIf isLinux "services"}.vscode-server.enable = isLinux;
+  ${attrIf isLinux "services"}.vscode-server.enable = true;
 
   wayland.windowManager.hyprland.systemd.enable = false; # disable in general
 }

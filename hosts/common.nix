@@ -14,7 +14,7 @@ let
     });
 
   jacobi = import ../home.nix {
-    inherit home-manager flake machine-name pkgs isBarebones;
+    inherit flake machine-name pkgs isBarebones;
   };
   constants = import ./constants.nix;
   inherit (constants) ports;

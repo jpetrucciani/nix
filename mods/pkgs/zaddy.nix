@@ -97,7 +97,11 @@ rec {
             });
       };
     in
-    zaddy;
+    zaddy.overrideAttrs (old: {
+      passthru = (old.passthru or { }) // {
+        zaddyPlugins = allPlugins;
+      };
+    });
   caddy = prev.caddy.overrideAttrs (_: { passthru.withPackages = _zaddy; });
 
   # my preferred caddy install
