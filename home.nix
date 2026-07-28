@@ -328,7 +328,11 @@ in
       complete -F _kube_namespaces kubens kns
     '' + (if (!isBarebones) then ''
       source "${pkgs.docker-client}/share/bash-completion/completions/docker.bash"
-      complete -F _docker d
+      if [[ $(type -t compopt) = "builtin" ]]; then
+        complete -o default -F __start_docker d
+      else
+        complete -o default -o nospace -F __start_docker d
+      fi
     '' else "") +
     ''
       # there are often duplicate path entries on non-nixos; remove them

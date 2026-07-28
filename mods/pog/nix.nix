@@ -466,6 +466,97 @@ rec {
     '';
   };
 
+  refresh_llama-cpp_latest = pog {
+    name = "refresh_llama-cpp_latest";
+    description = "update llama-cpp-latest, refresh its source and UI dependency hashes, build it, and verify the CLI and server";
+    flags = [
+      {
+        name = "version";
+        short = "";
+        description = "target llama.cpp build, with or without the b prefix; defaults to the latest GitHub release";
+      }
+      {
+        name = "repo";
+        envVar = "CFG_REPO";
+        description = "cfg checkout to update; defaults to $HOME/cfg";
+      }
+    ];
+    script = ''
+      repo="''${repo:-$HOME/cfg}"
+      target_file="$repo/mods/final.nix"
+
+      if [ ! -f "$target_file" ]; then
+        echo "missing cfg package definition: $target_file" >&2
+        exit 2
+      fi
+
+      cd "$repo" || exit 1
+
+      if [ -z "$version" ]; then
+        latest_tag=$(
+          ${final.curl}/bin/curl --fail --silent --show-error \
+            https://api.github.com/repos/ggml-org/llama.cpp/releases/latest \
+            | ${final.jq}/bin/jq -er '.tag_name'
+        )
+      else
+        latest_tag="$version"
+      fi
+
+      case "$latest_tag" in
+        b*)
+          version="''${latest_tag#b}"
+          ;;
+        *)
+          version="$latest_tag"
+          ;;
+      esac
+
+      if ! printf '%s\n' "$version" | ${final.gnugrep}/bin/grep -Eq '^[0-9]+$'; then
+        echo "unexpected llama.cpp build: $version" >&2
+        exit 2
+      fi
+
+      echo "updating llama-cpp-latest to b$version"
+      ${final.nix-update}/bin/nix-update \
+        --flake \
+        --src-only \
+        --version "$version" \
+        llama-cpp-latest
+
+      ${lib.getExe final.jfmt} "$target_file"
+      ${final._nix}/bin/nix-instantiate --parse "$target_file" >/dev/null
+
+      ${final.nix-update}/bin/nix-update \
+        --flake \
+        --no-src \
+        --version skip \
+        llama-cpp-latest
+
+      ${lib.getExe final.jfmt} "$target_file"
+      ${final._nix}/bin/nix-instantiate --parse "$target_file" >/dev/null
+      ${final.git}/bin/git diff --check -- "$target_file"
+
+      output=$(
+        ${final._nix}/bin/nix build \
+          "path:$repo#llama-cpp-latest" \
+          --no-link \
+          --print-build-logs \
+          --print-out-paths
+      )
+
+      for binary in llama llama-server; do
+        if [ ! -x "$output/bin/$binary" ]; then
+          echo "built output is missing bin/$binary: $output" >&2
+          exit 1
+        fi
+      done
+
+      "$output/bin/llama" --version
+      "$output/bin/llama-server" --version
+      echo "verified llama and llama-server in $output/bin"
+    '';
+  };
+
   refresh_zaddy = pog {
     name = "refresh_zaddy";
     description = "refresh zaddy's vendor hash, build it, and verify every configured plugin in the vendored tree and binary";
@@ -590,6 +681,7 @@ rec {
     nupdate
     nupdate_latest_github
     refresh_codex_latest
+    refresh_llama-cpp_latest
     refresh_zaddy
     # rehydrate
     y2n
