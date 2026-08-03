@@ -275,6 +275,75 @@ let
                 "libibverbs.so.1"
               ];
             });
+            nixl-cu13 = _prev.nixl-cu13.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ (with _final; [
+                nvidia-cuda-runtime
+                nvidia-cufile
+                torch
+              ]) ++ (with _pkgs; [
+                libfabric
+                hwloc
+                openssl
+                rdma-core
+                zlib
+              ]);
+              preFixup = (old.preFixup or "") + ''
+                ${addAutoPatchelfSearchInputs ((with _final; [
+                  nvidia-cuda-runtime
+                  nvidia-cufile
+                  torch
+                ]) ++ (with _pkgs; [
+                  libfabric
+                  hwloc
+                  openssl
+                  rdma-core
+                  zlib
+                ]))}
+              '';
+              autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
+                # Supplied by the host driver at runtime.
+                "libcuda.so.1"
+                "libnvidia-ml.so.1"
+
+                # Optional NIXL plugins whose vendor SDKs are not in nixpkgs.
+                "libaws-cpp-sdk-core.so"
+                "libaws-cpp-sdk-s3-crt.so"
+                "libaws-cpp-sdk-s3.so"
+                "libaws-crt-cpp.so"
+                "libazure-core.so.1.17.0-beta.1"
+                "libazure-identity.so.1.14.0-beta.1"
+                "libazure-storage-blobs.so.12.15.0"
+                "libdoca_common.so.2"
+                "libdoca_gpunetio.so.2"
+                "libdoca_verbs.so.2"
+                "libefa.so.1"
+                "libred_async.so"
+                "libred_client.so.2"
+              ];
+            });
+            mooncake-transfer-engine-cuda13 = _prev.mooncake-transfer-engine-cuda13.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ (with _final; [
+                nvidia-cuda-runtime
+                torch
+              ]) ++ (with _pkgs; [
+                (lib.getLib curl)
+                numactl
+                rdma-core
+              ]);
+              preFixup = (old.preFixup or "") + ''
+                ${addAutoPatchelfSearchInputs ((with _final; [
+                  nvidia-cuda-runtime
+                  torch
+                ]) ++ (with _pkgs; [
+                  (lib.getLib curl)
+                  numactl
+                  rdma-core
+                ]))}
+              '';
+              autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
+                "libcuda.so.1"
+              ];
+            });
             infinistore = _prev.infinistore.overrideAttrs (_: {
               autoPatchelfIgnoreMissingDeps = [
                 "libibverbs.so.1"
@@ -319,6 +388,12 @@ let
               buildInputs = (with _final; [ torch setuptools ]) ++ (with _pkgs.cudaPackages; [
                 cuda_nvcc
               ]);
+            });
+            flashinfer-cubin = _prev.flashinfer-cubin.overrideAttrs (_: {
+              # This wheel contains static CUDA cubins, not host ELF objects.
+              # Running patchelf over thousands of them is both invalid and slow.
+              dontAutoPatchelf = true;
+              dontPatchELF = true;
             });
             nvidia-cutlass-dsl = _prev.nvidia-cutlass-dsl.overrideAttrs (_: {
               buildInputs = (with _final; [ torch setuptools ]) ++ (with _pkgs.cudaPackages; [
@@ -455,9 +530,17 @@ let
               '';
             });
 
-            "outlines-core" = let hacks = _pkgs.callPackage _pkgs.pyproject-nix.build.hacks { }; in hacks.nixpkgsPrebuilt {
-              from = python.pkgs."outlines-core";
-            };
+            "outlines-core" =
+              let
+                outlinesCore = python.pkgs."outlines-core".overridePythonAttrs (_: {
+                  doCheck = false;
+                  doInstallCheck = false;
+                  nativeCheckInputs = [ ];
+                  checkInputs = [ ];
+                });
+                hacks = _pkgs.callPackage _pkgs.pyproject-nix.build.hacks { };
+              in
+              hacks.nixpkgsPrebuilt { from = outlinesCore; };
             sglang = _prev.sglang.overrideAttrs (old: {
               buildInputs = (old.buildInputs or [ ]) ++ (with _final; [
                 setuptools
@@ -465,9 +548,12 @@ let
               ]);
             });
             "torch-memory-saver" = _prev."torch-memory-saver".overrideAttrs (old: {
-              buildInputs = (old.buildInputs or [ ]) ++ (with _pkgs.cudaPackages; [
+              buildInputs = (old.buildInputs or [ ]) ++ [ _final.nvidia-cuda-runtime ] ++ (with _pkgs.cudaPackages; [
                 cuda_cudart
               ]);
+              preFixup = (old.preFixup or "") + ''
+                ${addAutoPatchelfSearchInputs [ _final.nvidia-cuda-runtime ]}
+              '';
               autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
                 "libcuda.so.1"
               ];
@@ -489,6 +575,34 @@ let
               postFixup = ''
                 addAutoPatchelfSearchPath "${_final.torch}/${python.sitePackages}/torch/lib"
               '' + (old.postFixup or "");
+              autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
+                "libcuda.so.1"
+              ];
+            });
+            "sgl-deep-gemm" = addBuildAndSearchInputs
+              (with _final; [
+                apache-tvm-ffi
+                nvidia-cublas
+                nvidia-cuda-nvrtc
+                nvidia-cuda-runtime
+                torch
+              ])
+              _prev."sgl-deep-gemm";
+            "sglang-kernel" = _prev."sglang-kernel".overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ (with _final; [
+                nvidia-cublas
+                nvidia-cuda-nvrtc
+                nvidia-cuda-runtime
+                torch
+              ]) ++ [ _pkgs.numactl ];
+              preFixup = (old.preFixup or "") + ''
+                ${addAutoPatchelfSearchInputs ((with _final; [
+                  nvidia-cublas
+                  nvidia-cuda-nvrtc
+                  nvidia-cuda-runtime
+                  torch
+                ]) ++ [ _pkgs.numactl ])}
+              '';
               autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
                 "libcuda.so.1"
               ];
@@ -615,7 +729,9 @@ let
               "alibabacloud-gateway-spi"
               "alibabacloud-tea"
               "antlr4-python3-runtime"
+              "argbind"
               "atomicwrites"
+              "cdifflib"
               "cffi"
               "coverage"
               "crcmod"
@@ -631,10 +747,12 @@ let
               "jieba"
               "julius"
               "jsonpath-rw"
+              "logger"
               "markupsafe"
               "multitasking"
               "mysqlclient"
               "numpy"
+              "openai-whisper"
               "peewee"
               "pocr"
               "py-lets-be-rational"
@@ -645,12 +763,17 @@ let
               "pypika"
               "python-olm"
               "pyyaml"
+              "randomname"
+              "s3prl"
               "s3tokenizer"
               "scapy"
               "semble"
               "seqeval"
+              "sglang-omni"
+              "sox"
               "svglib"
               "swifter"
+              "wget"
               "wikipedia"
               "xalglib"
               "zmq"

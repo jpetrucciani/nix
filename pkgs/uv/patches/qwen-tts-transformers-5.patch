@@ -1,0 +1,41 @@
+diff --git a/qwen_tts/core/models/modeling_qwen3_tts.py b/qwen_tts/core/models/modeling_qwen3_tts.py
+--- a/qwen_tts/core/models/modeling_qwen3_tts.py
++++ b/qwen_tts/core/models/modeling_qwen3_tts.py
+@@ -1100,10 +1100,10 @@
+             # Prepare mask arguments
+             mask_kwargs = {
+                 "config": self.config,
+-                "input_embeds": inputs_embeds,
++                "inputs_embeds": inputs_embeds,
+                 "attention_mask": attention_mask,
+-                "cache_position": cache_position,
+                 "past_key_values": past_key_values,
++                "position_ids": position_ids,
+             }
+             # Create the masks
+             causal_mask_mapping = {
+@@ -1511,9 +1511,8 @@
+         mask_function = create_causal_mask if self.config.sliding_window is None else create_sliding_window_causal_mask
+         causal_mask = mask_function(
+             config=self.config,
+-            input_embeds=inputs_embeds,
++            inputs_embeds=inputs_embeds,
+             attention_mask=attention_mask,
+-            cache_position=cache_position,
+             past_key_values=past_key_values,
+             position_ids=text_position_ids,
+         )
+diff --git a/qwen_tts/core/tokenizer_12hz/modeling_qwen3_tts_tokenizer_v2.py b/qwen_tts/core/tokenizer_12hz/modeling_qwen3_tts_tokenizer_v2.py
+--- a/qwen_tts/core/tokenizer_12hz/modeling_qwen3_tts_tokenizer_v2.py
++++ b/qwen_tts/core/tokenizer_12hz/modeling_qwen3_tts_tokenizer_v2.py
+@@ -536,9 +536,8 @@
+             # Prepare mask arguments
+             mask_kwargs = {
+                 "config": self.config,
+-                "input_embeds": inputs_embeds,
++                "inputs_embeds": inputs_embeds,
+                 "attention_mask": attention_mask,
+-                "cache_position": cache_position,
+                 "past_key_values": past_key_values,
+                 "position_ids": position_ids,
+             }

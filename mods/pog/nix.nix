@@ -557,6 +557,281 @@ rec {
     '';
   };
 
+  generate_uv_lock = pog {
+    name = "generate_uv_lock";
+    description = "generate a publishable uv lock from one or more PEP 508 requirements";
+    arguments = [ "requirements..." ];
+    flags = [
+      {
+        name = "name";
+        short = "";
+        description = "artifact name used in the suggested static URL";
+      }
+      {
+        name = "version";
+        short = "";
+        description = "artifact version used in the suggested static URL";
+      }
+      {
+        name = "project_name";
+        short = "";
+        description = "synthetic root project name; defaults to the artifact name";
+      }
+      {
+        name = "project_version";
+        short = "";
+        default = "0.0.0";
+        description = "synthetic root project version recorded in the lock";
+      }
+      {
+        name = "python";
+        short = "";
+        default = "3.13";
+        description = "Python minor version used to resolve the lock (3.12, 3.13, or 3.14)";
+      }
+      {
+        name = "requires_python";
+        short = "";
+        description = "PEP 440 Python constraint; defaults to the selected Python minor";
+      }
+      {
+        name = "output";
+        short = "";
+        description = "lock path; defaults to NAME.lock in the current directory";
+      }
+      {
+        name = "overrides";
+        short = "";
+        description = "newline-separated tool.uv override requirements";
+      }
+      {
+        name = "no_dependencies";
+        short = "";
+        description = "newline-separated exact package pins whose dependency metadata should be ignored";
+      }
+      {
+        name = "public_url";
+        short = "";
+        envVar = "STATIC_G7C_PUBLIC_URL";
+        default = "https://static.g7c.us";
+        description = "public artifact base URL used in the printed upload metadata";
+      }
+    ];
+    script = ''
+      if [ -z "$name" ]; then
+        echo "--name is required" >&2
+        exit 2
+      fi
+      if [ -z "$version" ]; then
+        echo "--version is required" >&2
+        exit 2
+      fi
+      project_name="''${project_name:-$name}"
+      for value in "$name" "$version" "$project_name" "$project_version"; do
+        if ! printf '%s\n' "$value" | ${final.gnugrep}/bin/grep -Eq '^[0-9A-Za-z._+-]+$'; then
+          echo "names and versions may contain only letters, numbers, dot, underscore, plus, and hyphen" >&2
+          exit 2
+        fi
+      done
+      if [ "$#" -eq 0 ]; then
+        echo "at least one PEP 508 requirement is required" >&2
+        exit 2
+      fi
+
+      case "$python" in
+        3.12)
+          python_bin=${final.python312}/bin/python3.12
+          default_requires_python=">=3.12,<3.13"
+          ;;
+        3.13)
+          python_bin=${final.python313}/bin/python3.13
+          default_requires_python=">=3.13,<3.14"
+          ;;
+        3.14)
+          python_bin=${final.python314}/bin/python3.14
+          default_requires_python=">=3.14,<3.15"
+          ;;
+        *)
+          echo "unsupported Python minor: $python" >&2
+          exit 2
+          ;;
+      esac
+      requires_python="''${requires_python:-$default_requires_python}"
+      output="''${output:-$PWD/$name.lock}"
+
+      temp_dir=$(${final.coreutils}/bin/mktemp -d)
+      trap '${final.coreutils}/bin/rm -rf "$temp_dir"' EXIT
+      {
+        ${final.coreutils}/bin/printf '%s\n' \
+          '[project]' \
+          "name = \"$project_name\"" \
+          "version = \"$project_version\"" \
+          "requires-python = \"$requires_python\"" \
+          'dependencies = ['
+        for requirement in "$@"; do
+          if [ -z "$requirement" ]; then
+            echo "requirements may not be empty" >&2
+            exit 2
+          fi
+          encoded=$(printf '%s' "$requirement" | ${final.jq}/bin/jq -Rs '.')
+          printf '  %s,\n' "$encoded"
+        done
+        printf ']\n'
+
+        if [ -n "$overrides" ]; then
+          printf '\n[tool.uv]\noverride-dependencies = [\n'
+          while IFS= read -r override || [ -n "$override" ]; do
+            [ -z "$override" ] && continue
+            encoded=$(printf '%s' "$override" | ${final.jq}/bin/jq -Rs '.')
+            printf '  %s,\n' "$encoded"
+          done <<<"$overrides"
+          printf ']\n'
+        fi
+
+        if [ -n "$no_dependencies" ]; then
+          while IFS= read -r package_pin || [ -n "$package_pin" ]; do
+            [ -z "$package_pin" ] && continue
+            case "$package_pin" in
+              *==*)
+                package_name="''${package_pin%%==*}"
+                package_version="''${package_pin#*==}"
+                ;;
+              *)
+                echo "--no_dependencies entries must be exact NAME==VERSION pins: $package_pin" >&2
+                exit 2
+                ;;
+            esac
+            if ! printf '%s\n' "$package_name" | ${final.gnugrep}/bin/grep -Eq '^[0-9A-Za-z][0-9A-Za-z._-]*$'; then
+              echo "invalid package name in --no_dependencies: $package_name" >&2
+              exit 2
+            fi
+            if ! printf '%s\n' "$package_version" | ${final.gnugrep}/bin/grep -Eq '^[0-9A-Za-z][0-9A-Za-z.!+_-]*$'; then
+              echo "invalid package version in --no_dependencies: $package_version" >&2
+              exit 2
+            fi
+            encoded_name=$(printf '%s' "$package_name" | ${final.jq}/bin/jq -Rs '.')
+            encoded_version=$(printf '%s' "$package_version" | ${final.jq}/bin/jq -Rs '.')
+            printf '\n[[tool.uv.dependency-metadata]]\nname = %s\nversion = %s\nrequires-dist = []\n' \
+              "$encoded_name" "$encoded_version"
+          done <<<"$no_dependencies"
+        fi
+      } >"$temp_dir/pyproject.toml"
+
+      UV_PYTHON_DOWNLOADS=never ${lib.getExe final.uv} lock \
+        --upgrade \
+        --python "$python_bin" \
+        --directory "$temp_dir"
+      ${final.coreutils}/bin/install -D -m 0644 "$temp_dir/uv.lock" "$output"
+
+      lock_hash=$(${final._nix}/bin/nix hash file --type sha256 --sri "$output")
+      artifact_url="''${public_url%/}/lock/uv/$name/$version.lock"
+      printf 'name=%s\nversion=%s\nproject_name=%s\nproject_version=%s\npython=%s\nrequires_python=%s\nlock_file=%s\nlock_hash=%s\nlock_url=%s\n' \
+        "$name" "$version" "$project_name" "$project_version" "$python" "$requires_python" "$output" "$lock_hash" "$artifact_url"
+    '';
+  };
+
+  generate_sglang_omni_lock = pog {
+    name = "generate_sglang_omni_lock";
+    description = "resolve an SGLang-Omni branch, tag, or revision and generate its Python 3.12 uv lock";
+    flags = [
+      {
+        name = "ref";
+        short = "";
+        default = "main";
+        description = "SGLang-Omni branch, tag, or commit to lock";
+      }
+      {
+        name = "output";
+        short = "";
+        description = "lock path; defaults to pkgs/uv/sglang-omni.lock in the cfg checkout";
+      }
+      {
+        name = "repo";
+        short = "";
+        envVar = "CFG_REPO";
+        description = "cfg checkout containing pkgs/uv; defaults to $HOME/cfg";
+      }
+      {
+        name = "public_url";
+        short = "";
+        envVar = "STATIC_G7C_PUBLIC_URL";
+        default = "https://static.g7c.us";
+        description = "public artifact base URL used in the printed upload metadata";
+      }
+    ];
+    script = ''
+      repo="''${repo:-$HOME/cfg}"
+      output="''${output:-$repo/pkgs/uv/sglang-omni.lock}"
+      remote="https://github.com/sgl-project/sglang-omni.git"
+
+      if [ ! -d "$repo/pkgs/uv" ]; then
+        echo "missing cfg uv package directory: $repo/pkgs/uv" >&2
+        exit 2
+      fi
+      if ! printf '%s\n' "$ref" | ${final.gnugrep}/bin/grep -Eq '^[0-9A-Za-z._/-]+$'; then
+        echo "unexpected SGLang-Omni ref: $ref" >&2
+        exit 2
+      fi
+
+      tag_name="''${ref#refs/tags/}"
+      tag_lines=$(
+        ${final.git}/bin/git ls-remote --tags "$remote" \
+          "refs/tags/$tag_name" "refs/tags/$tag_name^{}"
+      )
+      if [ -n "$tag_lines" ]; then
+        rev=$(printf '%s\n' "$tag_lines" | ${final.gawk}/bin/awk '
+          /\^\{\}$/ { peeled = $1 }
+          !/\^\{\}$/ { direct = $1 }
+          END { if (peeled != "") print peeled; else print direct }
+        ')
+        snapshot_version=$(printf '%s' "''${tag_name#v}" | ${final.gnused}/bin/sed -E 's/[^0-9A-Za-z._+-]+/-/g')
+      else
+        branch_name="''${ref#refs/heads/}"
+        rev=$(
+          ${final.git}/bin/git ls-remote --heads "$remote" "refs/heads/$branch_name" \
+            | ${final.gawk}/bin/awk 'NR == 1 { print $1 }'
+        )
+        if [ -z "$rev" ]; then
+          if ! printf '%s\n' "$ref" | ${final.gnugrep}/bin/grep -Eq '^[0-9a-fA-F]{7,40}$'; then
+            echo "SGLang-Omni ref is not a branch, tag, or commit: $ref" >&2
+            exit 2
+          fi
+          rev="$ref"
+        fi
+        snapshot_version=""
+      fi
+
+      commit_json=$(
+        ${final.curl}/bin/curl --fail --silent --show-error \
+          "https://api.github.com/repos/sgl-project/sglang-omni/commits/$rev"
+      )
+      rev=$(printf '%s\n' "$commit_json" | ${final.jq}/bin/jq -er '.sha')
+      commit_date=$(printf '%s\n' "$commit_json" | ${final.jq}/bin/jq -er '.commit.committer.date | split("T")[0]')
+      short_rev=$(printf '%.7s' "$rev")
+      if [ -z "$snapshot_version" ]; then
+        snapshot_version="unstable-$commit_date-$short_rev"
+      fi
+
+      source_url="https://github.com/sgl-project/sglang-omni/archive/$rev.tar.gz"
+      ${generate_uv_lock}/bin/generate_uv_lock \
+        --name sglang-omni \
+        --version "$snapshot_version" \
+        --project_name s \
+        --python 3.12 \
+        --requires_python '>=3.12,<3.13' \
+        --output "$output" \
+        --overrides 'protobuf>=6.31.1,<7.0.0' \
+        --no_dependencies 'qwen-tts==0.1.1' \
+        --public_url "$public_url" \
+        "sglang-omni @ $source_url" \
+        'qwen-tts==0.1.1' \
+        sox \
+        einops \
+        onnxruntime
+      printf 'rev=%s\n' "$rev"
+    '';
+  };
+
   refresh_zaddy = pog {
     name = "refresh_zaddy";
     description = "refresh zaddy's vendor hash, build it, and verify every configured plugin in the vendored tree and binary";
@@ -680,6 +955,8 @@ rec {
     nixcache
     nupdate
     nupdate_latest_github
+    generate_sglang_omni_lock
+    generate_uv_lock
     refresh_codex_latest
     refresh_llama-cpp_latest
     refresh_zaddy

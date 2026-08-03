@@ -26,6 +26,10 @@ this directory contains apps built with uv2nix using my wrapper
 
 [sglang](https://github.com/sgl-project/sglang) is a high-performance serving framework for large language models and multimodal models.
 
+### [sglang-omni.nix](./sglang-omni.nix)
+
+[SGLang-Omni](https://github.com/sgl-project/sglang-omni) is a multi-stage serving runtime for omni, speech, and TTS models.
+
 ### [vllm-nightly.nix](./vllm-nightly.nix)
 
 [vllm](https://github.com/vllm-project/vllm) is a high-throughput and memory-efficient inference and serving engine for LLMs (nightly builds)
