@@ -18,6 +18,10 @@ this directory contains apps built with uv2nix using my wrapper
 
 [paddleocr](https://github.com/PaddlePaddle/PaddleOCR) turns any PDF or image document into structured data
 
+### [patches/](./patches/)
+
+Compatibility patches applied to uv2nix-managed Python dependencies
+
 ### [semble.nix](./semble.nix)
 
 [semble](https://github.com/MinishLab/semble) is Fast and Accurate Code Search for Agents
