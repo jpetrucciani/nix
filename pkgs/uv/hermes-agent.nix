@@ -2,7 +2,7 @@
 { stdenv
 , lib
 , fetchFromGitHub
-, python313
+, python311
 , rsync
 , makeWrapper
 , ffmpeg
@@ -14,19 +14,19 @@
 }:
 let
   name = "hermes-agent";
-  version = "2026.7.20";
+  version = "2026.8.3";
 
   src = fetchFromGitHub {
     owner = "NousResearch";
     repo = name;
     rev = "refs/tags/v${version}";
-    hash = "sha256-QJEiBOLAVGeYBym4EUtnDgeIyJyDQWgmat70/yujiz4=";
+    hash = "sha256-S6TSGgpf37N8YgbTv70dT+LaPiiaQ4/lJV+js2hnCPk=";
     fetchSubmodules = true;
   };
 
   uvEnv = uv-nix.mkEnv {
     inherit name;
-    python = python313;
+    python = python311;
     workspaceRoot = src;
     pyprojectOverrides =
       final: prev:
@@ -44,6 +44,24 @@ let
       in
       {
         atroposlib = addBuildInputs hatchBuildInputs prev.atroposlib;
+        "hermes-agent" = prev."hermes-agent".overrideAttrs (_: {
+          HERMES_NIX_BUILD = "1";
+        });
+        "sherpa-onnx" =
+          if stdenv.hostPlatform.isLinux then
+            prev."sherpa-onnx".overrideAttrs
+              (old: {
+                buildInputs = (old.buildInputs or [ ]) ++ [ final.onnxruntime ];
+                preFixup = (old.preFixup or "") + ''
+                  mkdir -p "$out/lib"
+                  ln -s \
+                    ${final.onnxruntime}/${python311.sitePackages}/onnxruntime/capi/libonnxruntime.so.${final.onnxruntime.version} \
+                    "$out/lib/libonnxruntime.so"
+                  addAutoPatchelfSearchPath "$out/lib"
+                '';
+              })
+          else
+            prev."sherpa-onnx";
         tinker = addBuildInputs
           (hatchBuildInputs ++ [
             final."hatch-fancy-pypi-readme"
@@ -63,8 +81,7 @@ let
     "cli-config.yaml.example"
   ];
 
-  site = python313.sitePackages;
-  inherit (python313.pkgs) pynacl;
+  site = python311.sitePackages;
   opusLibPath = "${lib.getLib libopus}/lib/libopus${stdenv.hostPlatform.extensions.sharedLibrary}.0";
 
   runtimePath = lib.makeBinPath [
@@ -144,13 +161,11 @@ stdenv.mkDerivation {
       --prefix PATH : ${runtimePath} \
       --prefix LD_LIBRARY_PATH : ${runtimeLibraryPath} \
       --set-default HERMES_OPUS_LIBRARY ${opusLibPath} \
-      --prefix PYTHONPATH : ${pynacl}/${site} \
       --prefix PYTHONPATH : $out/${site}
     wrapProgram $out/bin/hermes-agent \
       --prefix PATH : ${runtimePath} \
       --prefix LD_LIBRARY_PATH : ${runtimeLibraryPath} \
       --set-default HERMES_OPUS_LIBRARY ${opusLibPath} \
-      --prefix PYTHONPATH : ${pynacl}/${site} \
       --prefix PYTHONPATH : $out/${site}
     runHook postInstall
   '';
