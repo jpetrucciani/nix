@@ -78,7 +78,7 @@ in
     xserver.videoDrivers = [ "nvidia" ];
     prometheus.exporters = common.templates.prometheus_exporters { };
     qdrant = {
-      enable = true;
+      enable = false;
       settings = {
         service = {
           host = "0.0.0.0";
