@@ -3,6 +3,80 @@ let
   inherit (flake.inputs) nixos-hardware;
   hostname = "titan";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
+  speechServers = {
+    tts = {
+      modelPath = "Qwen/Qwen3-TTS-12Hz-1.7B-Base";
+      pipelineConfigClass = "Qwen3TTSPipelineConfig";
+      allowedMediaDomains = [
+        "huggingface.co"
+        "cas-bridge.xethub.hf.co"
+      ];
+      port = 8011;
+      memFractionStatic = 0.5;
+      extraEnv = { CUDA_VISIBLE_DEVICES = "1"; };
+    };
+    stt = {
+      modelPath = "Qwen/Qwen3-ASR-1.7B";
+      port = 8012;
+      memFractionStatic = 0.3;
+      extraEnv = { CUDA_VISIBLE_DEVICES = "1"; };
+    };
+  };
+  mkSpeechService = name:
+    { modelPath
+    , port
+    , memFractionStatic ? null
+    , pipelineConfigClass ? null
+    , allowedMediaDomains ? [ ]
+    , extraEnv ? { }
+    }:
+    let
+      pipelineConfig = pkgs.writeText "sglang-omni-${name}.yaml" ''
+        config_cls: ${pipelineConfigClass}
+        model_path: ${modelPath}
+      '';
+      arguments = [
+        (pkgs.lib.getExe pkgs.sglang-omni)
+        "serve"
+        "--model-path"
+        modelPath
+      ]
+      ++ pkgs.lib.optionals (pipelineConfigClass != null) [
+        "--config"
+        pipelineConfig
+      ]
+      ++ pkgs.lib.concatMap
+        (domain: [
+          "--allowed-media-domain"
+          domain
+        ])
+        allowedMediaDomains
+      ++ [
+        "--port"
+        (toString port)
+      ]
+      ++ pkgs.lib.optionals (memFractionStatic != null) [
+        "--mem-fraction-static"
+        (toString memFractionStatic)
+      ];
+    in
+    {
+      description = "SGLang-Omni ${pkgs.lib.toUpper name} server";
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
+      wantedBy = [ "multi-user.target" ];
+
+      environment = {
+        HOME = "/home/jacobi";
+      } // extraEnv;
+
+      serviceConfig = {
+        ExecStart = pkgs.lib.escapeShellArgs arguments;
+        Restart = "on-failure";
+        RestartSec = 10;
+        User = "jacobi";
+      };
+    };
 in
 {
   imports = [
@@ -122,6 +196,8 @@ in
       };
     };
   } // common.services;
+
+  systemd.services = pkgs.lib.mapAttrs mkSpeechService speechServers;
 
   system.stateVersion = "23.11";
   security.sudo = common.security.sudo;

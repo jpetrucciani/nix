@@ -21,6 +21,13 @@ cd ~/cfg
 $(nix build --no-link --print-out-paths --extra-experimental-features nix-command --extra-experimental-features flakes ~/cfg#hmx.titan)/bin/switch
 ```
 
+### more setup
+
+```bash
+nix shell ~/cfg#python313Packages.huggingface-hub --command hf download Qwen/Qwen3-TTS-12Hz-1.7B-Base
+nix shell ~/cfg#python313Packages.huggingface-hub --command hf download Qwen/Qwen3-ASR-1.7B
+```
+
 ---
 
 ## In this directory
