@@ -407,6 +407,14 @@ rec {
       x86_64-linux x86_64-unknown-linux-gnu
       TARGETS
 
+      for nix_target in aarch64-darwin aarch64-linux x86_64-linux; do
+        v8_hash="''${v8_hashes["$nix_target"]}"
+        if ! printf '%s\n' "$v8_hash" | ${final.gnugrep}/bin/grep -Eq '^sha256-[A-Za-z0-9+/]{43}=$'; then
+          echo "invalid Rusty V8 hash for $nix_target: $v8_hash" >&2
+          exit 1
+        fi
+      done
+
       for pattern in \
         'v8Version = "' \
         'aarch64-darwin = "sha256-' \
@@ -421,9 +429,9 @@ rec {
       done
 
       V8_VERSION="$v8_version" \
-      AARCH64_DARWIN_HASH="''${v8_hashes[aarch64-darwin]}" \
-      AARCH64_LINUX_HASH="''${v8_hashes[aarch64-linux]}" \
-      X86_64_LINUX_HASH="''${v8_hashes[x86_64-linux]}" \
+      AARCH64_DARWIN_HASH="''${v8_hashes['aarch64-darwin']}" \
+      AARCH64_LINUX_HASH="''${v8_hashes['aarch64-linux']}" \
+      X86_64_LINUX_HASH="''${v8_hashes['x86_64-linux']}" \
         ${final.perl}/bin/perl -0pi -e '
           s/(v8Version = ")[^"]+(";)/$1 . $ENV{V8_VERSION} . $2/e;
           s/(aarch64-darwin = ")[^"]+(";)/$1 . $ENV{AARCH64_DARWIN_HASH} . $2/e;
