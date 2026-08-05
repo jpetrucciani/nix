@@ -69,6 +69,7 @@ let
       environment = {
         HOME = "/home/jacobi";
       } // extraEnv;
+      path = [ config.hardware.nvidia.package.bin ];
 
       serviceConfig = {
         ExecStart = pkgs.lib.escapeShellArgs arguments;

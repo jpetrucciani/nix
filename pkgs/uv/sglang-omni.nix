@@ -2,6 +2,7 @@
 { sglang-omni
 , lib
 , uv-nix
+, bash
 , cudatoolkit
 , clang
 , ninja
@@ -34,6 +35,14 @@ uv-nix.buildUvPackage rec {
     "onnxruntime"
   ];
   pyprojectOverrides = _final: _prev: {
+    "nixl-cu13" = _prev."nixl-cu13".overrideAttrs (old: {
+      # The CUDA-specific wheel omits the `nixl` meta-package namespace that
+      # SGLang-Omni imports. This package is CUDA 13-only, so expose its backend
+      # under the expected name without pulling in the unused CUDA 12 wheel.
+      postInstall = (old.postInstall or "") + ''
+        ln -s nixl_cu13 "$out/${python312.sitePackages}/nixl"
+      '';
+    });
     "qwen-tts" = _prev."qwen-tts".overrideAttrs (old: {
       # SGLang-Omni deliberately keeps Transformers 5.12 while installing
       # qwen-tts without its Transformers 4.57 dependency. Patch the wheel
@@ -68,6 +77,7 @@ uv-nix.buildUvPackage rec {
         --set TRITON_PTXAS_PATH "${cudatoolkit}/bin/ptxas" \
         --set UCX_MODULE_DIR "$sitePackages/nixl_cu13.libs/ucx" \
         --prefix PATH : ${lib.makeBinPath [
+          bash
           cudatoolkit
           clang
           ninja
