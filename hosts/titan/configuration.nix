@@ -18,7 +18,7 @@ let
     stt = {
       modelPath = "Qwen/Qwen3-ASR-1.7B";
       port = 8012;
-      memFractionStatic = 0.42;
+      memFractionStatic = 0.5;
       extraEnv = { CUDA_VISIBLE_DEVICES = "1"; };
     };
   };
