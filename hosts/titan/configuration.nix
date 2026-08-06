@@ -12,13 +12,13 @@ let
         "cas-bridge.xethub.hf.co"
       ];
       port = 8011;
-      memFractionStatic = 0.5;
+      memFractionStatic = 0.4;
       extraEnv = { CUDA_VISIBLE_DEVICES = "1"; };
     };
     stt = {
       modelPath = "Qwen/Qwen3-ASR-1.7B";
       port = 8012;
-      memFractionStatic = 0.5;
+      memFractionStatic = 0.8;
       extraEnv = { CUDA_VISIBLE_DEVICES = "1"; };
     };
   };
