@@ -445,6 +445,19 @@ let
                 "libcuda.so.1"
               ];
             });
+            openai =
+              if name == "vllm" then
+                let
+                  nixpkgsOpenai = python.pkgs.openai;
+                in
+                assert final.lib.assertMsg (final.lib.versionAtLeast nixpkgsOpenai.version "2.25.0")
+                  "vllm requires openai>=2.25.0, but nixpkgs provides openai ${nixpkgsOpenai.version}";
+                hacks.nixpkgsPrebuilt {
+                  from = nixpkgsOpenai;
+                  prev = _prev.openai;
+                }
+              else
+                _prev.openai;
             vllm = _prev.vllm.overrideAttrs (_: {
               buildInputs = (with _final; [ torch setuptools ]) ++ (with _pkgs.cudaPackages; [ libnvshmem ]);
               postFixup = ''

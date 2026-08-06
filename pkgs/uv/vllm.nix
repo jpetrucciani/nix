@@ -6,7 +6,7 @@
 , clang
 , ninja
 , version ? "0.26.0"
-, lockHash ? "sha256-0iocJOewzAJHTv/xMFDSA5S5jep+vGDPYy9orIwa9fI="
+, lockHash ? "sha256-fCww8qyOjGfY4cEsE89nO/Nf+xUGPnqRhWbvmpepQyE="
 , isWSL ? false
 , includePin ? false
 }:
@@ -20,6 +20,7 @@ uv-nix.buildUvPackage rec {
   lockUrl = "https://static.g7c.us/lock/uv/vllm/${version}.lock";
   extraDependencies = [
     "flashinfer-python>=0.6.12"
+    "openai>=2.25.0"
     "transformers>=5.12.0"
     "qwen-vl-utils==0.0.14"
   ];
