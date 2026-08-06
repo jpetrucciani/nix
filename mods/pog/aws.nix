@@ -2,13 +2,58 @@
 final: prev:
 let
   inherit (final) _ pog awscli2;
+  completion = pog.completions;
+  awsProfileCompletion = completion.dynamic {
+    runtimeInputs = [ awscli2 ];
+    script = ''
+      AWS_PAGER= aws configure list-profiles 2>/dev/null || true
+    '';
+    cache = {
+      ttlSeconds = 300;
+      by = [
+        { env = "AWS_CONFIG_FILE"; }
+        { env = "AWS_SHARED_CREDENTIALS_FILE"; }
+      ];
+    };
+  };
+  awsRegionFlag = _.flags.aws.region // {
+    completion = _.globals.aws.regions;
+  };
+  eksClusterCompletion = completion.dynamic {
+    runtimeInputs = [ awscli2 final.coreutils ];
+    script = ''
+      profile="''${POG_COMPLETION_FLAG_PROFILE-}"
+      region="''${POG_COMPLETION_FLAG_REGION-}"
+      [ -n "$profile" ] || profile="''${AWS_PROFILE-}"
+      [ -n "$region" ] || region="''${AWS_REGION-}"
+
+      args=(eks list-clusters --query 'clusters[]' --output text)
+      [ -z "$profile" ] || args+=(--profile "$profile")
+      [ -z "$region" ] || args+=(--region "$region")
+
+      AWS_PAGER= aws "''${args[@]}" 2>/dev/null | tr '\t' '\n' || true
+    '';
+    cache = {
+      ttlSeconds = 60;
+      by = [
+        { flag = "profile"; }
+        { flag = "region"; }
+        { env = "AWS_PROFILE"; }
+        { env = "AWS_DEFAULT_PROFILE"; }
+        { env = "AWS_REGION"; }
+        { env = "AWS_DEFAULT_REGION"; }
+        { env = "AWS_CONFIG_FILE"; }
+        { env = "AWS_SHARED_CREDENTIALS_FILE"; }
+      ];
+    };
+  };
 in
 rec {
   aws_id = pog {
     name = "aws_id";
     description = "a quick and easy way to get your AWS account ID";
     flags = [
-      _.flags.aws.region
+      awsRegionFlag
     ];
     script = ''
       ${_.aws} sts get-caller-identity --query Account --output text --region "$region"
@@ -18,7 +63,7 @@ rec {
     name = "ecr_login";
     description = "a quick helper script to facilitate login to AWS ECR";
     flags = [
-      _.flags.aws.region
+      awsRegionFlag
     ];
     script = ''
       ${_.aws} ecr get-login-password --region "''${region}" |
@@ -30,7 +75,7 @@ rec {
     name = "ecr_login_public";
     description = "a quick helper script to facilitate login to AWS public ECR";
     flags = [
-      _.flags.aws.region
+      awsRegionFlag
     ];
     script = ''
       ${_.aws} ecr-public get-login-password --region "''${region}" |
@@ -125,7 +170,7 @@ rec {
       name = "ec2_spot_interrupt";
       description = "a quick and easy way to lookup aws ec2 spot interruption rates";
       flags = [
-        _.flags.aws.region
+        awsRegionFlag
         {
           name = "min_cpu";
           short = "c";
@@ -155,13 +200,16 @@ rec {
         name = "profile";
         description = "the profile to load the cluster from";
         envVar = "AWS_PROFILE";
+        completion = awsProfileCompletion;
       }
       {
         name = "cluster";
         description = "the cluster to load a kubeconfig for";
         envVar = "EKS_CLUSTER";
+        completion = eksClusterCompletion;
         prompt = ''
-          ${_.aws} eks list-clusters --region "$AWS_REGION" | ${_.jq} -r '.clusters[]' |
+          ${_.aws} eks list-clusters ''${profile:+--profile "$profile"} --region "$region" |
+          ${_.jq} -r '.clusters[]' |
           ${_.fzfqm} |
           ${_.awk} '{print $1}'
         '';
@@ -170,6 +218,7 @@ rec {
         name = "region";
         description = "the region of the cluster to load";
         envVar = "AWS_REGION";
+        completion = _.globals.aws.regions;
       }
     ];
     script = helpers: ''
@@ -187,6 +236,7 @@ rec {
         default = "wasabi";
         envVar = "WASABI_PROFILE";
         description = "the AWS profile to reference for wasabi";
+        completion = awsProfileCompletion;
       }
       {
         name = "region";
@@ -212,6 +262,7 @@ rec {
         default = "cloudflare";
         envVar = "CLOUDFLARE_R2_PROFILE";
         description = "the AWS profile to reference for cloudflare";
+        completion = awsProfileCompletion;
       }
       {
         name = "endpoint";

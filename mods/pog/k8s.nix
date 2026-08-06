@@ -2,6 +2,85 @@
 final: prev:
 let
   inherit (final) _ pog;
+  completion = pog.completions;
+  namespacedResourceCompletion = resource: completion.dynamic {
+    runtimeInputs = [ final.kubectl ];
+    script = ''
+      namespace="''${POG_COMPLETION_FLAG_NAMESPACE-}"
+      [ -n "$namespace" ] || namespace="''${POG_NAMESPACE:-default}"
+      kubectl --namespace "$namespace" get ${resource} \
+        -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' \
+        2>/dev/null || true
+    '';
+    cache = {
+      ttlSeconds = 10;
+      by = [
+        { flag = "namespace"; }
+        { env = "POG_NAMESPACE"; }
+        { env = "KUBECONFIG"; }
+      ];
+    };
+  };
+  clusterResourceCompletion = resource: completion.dynamic {
+    runtimeInputs = [ final.kubectl ];
+    script = ''
+      kubectl get ${resource} \
+        -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' \
+        2>/dev/null || true
+    '';
+    cache = {
+      ttlSeconds = 10;
+      by = [{ env = "KUBECONFIG"; }];
+    };
+  };
+  allResourcesCompletion = completion.dynamic {
+    runtimeInputs = [ final.kubectl ];
+    script = ''
+      namespace="''${POG_COMPLETION_FLAG_NAMESPACE-}"
+      [ -n "$namespace" ] || namespace="''${POG_NAMESPACE:-default}"
+      kubectl --namespace "$namespace" get all -o name 2>/dev/null || true
+    '';
+    cache = {
+      ttlSeconds = 10;
+      by = [
+        { flag = "namespace"; }
+        { env = "POG_NAMESPACE"; }
+        { env = "KUBECONFIG"; }
+      ];
+    };
+  };
+  logPodCompletion = completion.dynamic {
+    runtimeInputs = [ final.kubectl ];
+    script = ''
+      namespace="''${POG_COMPLETION_FLAG_NAMESPACE-}"
+      [ -n "$namespace" ] || namespace="''${POG_NAMESPACE:-default}"
+      args=(get pods -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.metadata.namespace}{"\n"}{end}')
+      if [ -n "''${POG_COMPLETION_FLAG_ALL_NAMESPACES-}" ]; then
+        args+=(--all-namespaces)
+      else
+        args+=(--namespace "$namespace")
+      fi
+      kubectl "''${args[@]}" 2>/dev/null || true
+    '';
+    cache = {
+      ttlSeconds = 10;
+      by = [
+        { flag = "all_namespaces"; }
+        { flag = "namespace"; }
+        { env = "POG_NAMESPACE"; }
+        { env = "KUBECONFIG"; }
+      ];
+    };
+  };
+  namespaceFlag = _.flags.k8s.namespace // {
+    completion = clusterResourceCompletion "namespaces";
+  };
+  nodeFlag = _.flags.k8s.nodes // {
+    completion = clusterResourceCompletion "nodes";
+  };
+  serviceAccountFlag = _.flags.k8s.serviceaccount // {
+    completion = namespacedResourceCompletion "serviceaccounts";
+  };
 in
 rec {
   ka = pog {
@@ -9,7 +88,7 @@ rec {
     version = "0.0.1";
     description = "a shorthand to see all pods";
     flags = [
-      _.flags.k8s.namespace
+      namespaceFlag
       { name = "allnamespaces"; short = "A"; description = "load from all namespaces"; bool = true; }
       { name = "json"; description = "shorthand for json output"; bool = true; }
     ];
@@ -31,7 +110,7 @@ rec {
     version = "0.0.1";
     description = "a quick and easy way to exec into a k8s pod!";
     flags = [
-      _.flags.k8s.namespace
+      namespaceFlag
       {
         name = "pod";
         description = "the id of the pod to exec into";
@@ -41,6 +120,7 @@ rec {
           ${_.k8s.get_id}
         '';
         promptError = "you must specify a pod id!";
+        completion = namespacedResourceCompletion "pods";
       }
     ];
     script = ''
@@ -53,7 +133,7 @@ rec {
     version = "0.0.1";
     description = "a quick and easy way to delete one or more pods on k8s!";
     flags = [
-      _.flags.k8s.namespace
+      namespaceFlag
       _.flags.common.force
     ];
     script = ''
@@ -80,8 +160,8 @@ rec {
     version = "0.0.2";
     description = "a quick and easy way to pop into an ephemeral shell on k8s!";
     flags = [
-      _.flags.k8s.namespace
-      _.flags.k8s.serviceaccount
+      namespaceFlag
+      serviceAccountFlag
       _.flags.docker.image
       {
         name = "labels";
@@ -97,11 +177,19 @@ rec {
         name = "envfromsecret";
         short = "";
         description = "comma-separated secret names to expose via envFrom";
+        completion = completion.uniqueList {
+          separator = ",";
+          completion = namespacedResourceCompletion "secrets";
+        };
       }
       {
         name = "imagepullsecrets";
         short = "";
         description = "comma-separated image pull secret names to attach to the pod";
+        completion = completion.uniqueList {
+          separator = ",";
+          completion = namespacedResourceCompletion "secrets";
+        };
       }
       {
         name = "nodeselector";
@@ -355,13 +443,13 @@ rec {
     version = "0.0.1";
     description = "a quick and easy way to roll a deployment's pods!";
     flags = [
-      _.flags.k8s.namespace
+      namespaceFlag
       {
         name = "deployment";
         description = "the deployment to roll. if not passed in, a dialog will pop up to select from";
         prompt = ''${_.k} --namespace "$namespace" get deployment -o wide | ${_.fzfq} --header-lines=1 | ${_.k8s.get_id}'';
         promptError = "you must specify a deployment to roll!";
-        completion = ''${_.k} get deployment | ${_.sed} '1d' | ${_.awk} '{print $1}' '';
+        completion = namespacedResourceCompletion "deployments";
       }
     ];
     script = ''
@@ -377,12 +465,13 @@ rec {
     version = "0.0.1";
     description = "a quick and easy way to describe k8s objects!";
     flags = [
-      _.flags.k8s.namespace
+      namespaceFlag
       {
         name = "object";
         description = "the object to describe";
         prompt = ''${_.k} --namespace "$namespace" get all | ${_.fzfq} | ${_.k8s.get_id}'';
         promptError = "you must specify an object to describe!";
+        completion = allResourcesCompletion;
       }
     ];
     script = ''
@@ -396,12 +485,13 @@ rec {
     version = "0.0.1";
     description = "a quick and easy way to edit k8s objects!";
     flags = [
-      _.flags.k8s.namespace
+      namespaceFlag
       {
         name = "object";
         description = "the object to edit";
         prompt = ''${_.k} --namespace "$namespace" get all | ${_.fzfq} | ${_.k8s.get_id}'';
         promptError = "you must specify an object to edit!";
+        completion = allResourcesCompletion;
       }
     ];
     script = ''
@@ -416,7 +506,7 @@ rec {
     description = "a quick and easy way to drain one or more nodes on k8s!";
     flags = [
       _.flags.common.force
-      _.flags.k8s.nodes
+      nodeFlag
     ];
     script = ''
       for node in $nodes; do
@@ -433,13 +523,13 @@ rec {
     arguments = [{ name = "FILTER"; }];
     flags = [
       _.flags.k8s.all_namespaces
-      _.flags.k8s.namespace
+      namespaceFlag
       {
         name = "containers";
         description = "one or more containers to tail";
         prompt = ''${_.k} get pods --namespace "$namespace" ''${all_namespaces:+-A} ${_.k8s.fmt.pod} | ${_.fzfqm} --header-lines=1 | ${_.k8s.get_id}'';
         promptError = "you must specify one or more pods to get logs from!";
-        completion = ''${_.k} get pods | ${_.sed} '1d' | ${_.awk} '{print $1}' '';
+        completion = logPodCompletion;
       }
       {
         name = "since";
@@ -459,9 +549,15 @@ rec {
     name = "kdiff";
     version = "0.0.1";
     description = "view a pretty diff of the file against the live cluster";
-    arguments = [{ name = "KUBESPEC"; }];
+    arguments = [{
+      name = "KUBESPEC";
+      description = "Kubernetes manifest to compare with the live cluster";
+      completion = completion.files {
+        extensions = [ ".json" ".yaml" ".yml" ];
+      };
+    }];
     flags = [
-      _.flags.k8s.namespace
+      namespaceFlag
       {
         name = "clientside";
         description = "run the diff on the clientside instead of serverside";
@@ -483,13 +579,13 @@ rec {
     version = "0.0.1";
     description = "edit a k8s secret quickly and easily, inline!";
     flags = [
-      _.flags.k8s.namespace
+      namespaceFlag
       {
         name = "secret";
         description = "the secret to edit. if not passed in, a dialog will pop up to select from";
         prompt = ''${_.k} --namespace "$namespace" get secret | ${_.fzfq} --header-lines=1 | ${_.k8s.get_id}'';
         promptError = "you must specify a secret to edit!";
-        completion = ''${_.k} get secret | ${_.sed} '1d' | ${_.awk} '{print $1}' '';
+        completion = namespacedResourceCompletion "secrets";
       }
     ];
     script = helpers: with helpers; ''
@@ -505,7 +601,7 @@ rec {
     name = "refresh_secret";
     description = "a quick and easy way to refresh external secrets!";
     flags = [
-      _.flags.k8s.namespace
+      namespaceFlag
       {
         name = "secret";
         description = "the secret to refresh";
@@ -515,6 +611,7 @@ rec {
             ${_.awk} '{ print $1 }'
         '';
         promptError = "you must specify an external secret to refresh!";
+        completion = namespacedResourceCompletion "externalsecrets.external-secrets.io";
       }
     ];
     script = ''
@@ -528,7 +625,7 @@ rec {
     version = "0.0.1";
     description = "a shorthand to see pod's images";
     flags = [
-      _.flags.k8s.namespace
+      namespaceFlag
       { name = "allnamespaces"; short = "A"; description = "load from all namespaces"; bool = true; }
     ];
     script = h: with h; ''

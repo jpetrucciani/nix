@@ -1,6 +1,42 @@
 # This module creates some `pog` tools that help make you more productive in Docker!
 final: prev:
 with prev;
+let
+  completion = pog.completions;
+  dockerContainerCompletion = completion.dynamic {
+    runtimeInputs = [ final.docker-client ];
+    script = ''
+      docker ps --all --format '{{.Names}}\t{{.Image}}' 2>/dev/null || true
+    '';
+    cache = {
+      ttlSeconds = 5;
+      by = [
+        { env = "DOCKER_CONTEXT"; }
+        { env = "DOCKER_HOST"; }
+      ];
+    };
+  };
+  dockerImageCompletion = completion.merge [
+    _.globals.images
+    (completion.dynamic {
+      runtimeInputs = [ final.docker-client final.gnugrep ];
+      script = ''
+        docker image ls --format '{{.Repository}}:{{.Tag}}\tlocal image' 2>/dev/null |
+          grep -v '<none>' || true
+      '';
+      cache = {
+        ttlSeconds = 10;
+        by = [
+          { env = "DOCKER_CONTEXT"; }
+          { env = "DOCKER_HOST"; }
+        ];
+      };
+    })
+  ];
+  dockerImageFlag = _.flags.docker.image // {
+    completion = dockerImageCompletion;
+  };
+in
 rec {
   da = pog {
     name = "da";
@@ -56,6 +92,7 @@ rec {
           ${_.d} ps -a | ${_.fzfq} --header-lines=1 | ${_.k8s.get_id}
         '';
         promptError = "you must specify a container to exec into!";
+        completion = dockerContainerCompletion;
       }
     ];
     script = ''
@@ -69,7 +106,7 @@ rec {
     version = "0.0.1";
     description = "a quick and easy way to pop a shell on docker!";
     flags = [
-      _.flags.docker.image
+      dockerImageFlag
       {
         name = "port";
         description = "a port to expose to the host";
@@ -125,6 +162,7 @@ rec {
           ${_.d} ps -a | ${_.fzfqm} --header-lines=1 | ${_.k8s.get_id}
         '';
         promptError = "you must specify one or more containers to log from!";
+        completion = dockerContainerCompletion;
       }
       {
         name = "since";
@@ -147,6 +185,7 @@ rec {
         name = "file";
         description = "the dockerfile to analyze";
         default = "./Dockerfile";
+        completion = completion.files { };
       }
     ];
     script = ''

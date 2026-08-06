@@ -2,6 +2,59 @@
 final: prev:
 let
   inherit (final) _ pog;
+  completion = pog.completions;
+  gcpProjectCompletion = completion.dynamic {
+    runtimeInputs = [ final.google-cloud-sdk ];
+    script = ''
+      gcloud --quiet projects list --format='value(projectId)' 2>/dev/null || true
+    '';
+    cache = {
+      ttlSeconds = 300;
+      by = [{ env = "CLOUDSDK_CONFIG"; }];
+    };
+  };
+  gkeClusterCompletion = completion.dynamic {
+    runtimeInputs = [ final.google-cloud-sdk ];
+    script = ''
+      project="''${POG_COMPLETION_FLAG_PROJECT-}"
+      [ -n "$project" ] || project="''${GCP_PROJECT-}"
+      [ -n "$project" ] || project="''${CLOUDSDK_CORE_PROJECT-}"
+
+      args=(--quiet container clusters list --format='value(name,location)')
+      [ -z "$project" ] || args+=(--project "$project")
+      gcloud "''${args[@]}" 2>/dev/null || true
+    '';
+    cache = {
+      ttlSeconds = 60;
+      by = [
+        { flag = "project"; }
+        { env = "GCP_PROJECT"; }
+        { env = "CLOUDSDK_CORE_PROJECT"; }
+        { env = "CLOUDSDK_CONFIG"; }
+      ];
+    };
+  };
+  gcpSecretCompletion = completion.dynamic {
+    runtimeInputs = [ final.google-cloud-sdk ];
+    script = ''
+      project="''${POG_COMPLETION_FLAG_PROJECT-}"
+      [ -n "$project" ] || project="''${GCP_PROJECT-}"
+      [ -n "$project" ] || project="''${CLOUDSDK_CORE_PROJECT-}"
+
+      args=(--quiet secrets list --format='value(name,createTime)')
+      [ -z "$project" ] || args+=(--project "$project")
+      gcloud "''${args[@]}" 2>/dev/null || true
+    '';
+    cache = {
+      ttlSeconds = 60;
+      by = [
+        { flag = "project"; }
+        { env = "GCP_PROJECT"; }
+        { env = "CLOUDSDK_CORE_PROJECT"; }
+        { env = "CLOUDSDK_CONFIG"; }
+      ];
+    };
+  };
 in
 rec {
   glist = pog {
@@ -21,21 +74,27 @@ rec {
         description = "the project to load the cluster from";
         envVar = "GCP_PROJECT";
         required = true;
+        completion = gcpProjectCompletion;
       }
       {
         name = "cluster";
         description = "the cluster to load a kubeconfig for";
         envVar = "CLOUDSDK_CONTAINER_CLUSTER";
+        completion = gkeClusterCompletion;
         prompt = ''
-          ${_.gcloud} container clusters list 2>/dev/null |
+          ${_.gcloud} container clusters list --project "$project" 2>/dev/null |
           ${_.fzfqm} --header-lines=1 |
           ${_.awk} '{print $1}'
         '';
       }
     ];
     script = helpers: ''
+      region="$(${_.gcloud} container clusters list \
+        --project "$project" \
+        --filter="name=$cluster" \
+        --format='value(location)' \
+        2>/dev/null | ${_.head} -n 1)"
       debug "getting cluster config for '$cluster' in '$region'"
-      region="$(${_.gcloud} container clusters list --project "$project" 2>/dev/null | grep -E "^$cluster " | ${_.awk} '{print $2}')"
 
       ${_.gcloud} \
         container clusters get-credentials \
@@ -54,6 +113,7 @@ rec {
         description = "the project to load permissions for";
         envVar = "GCP_PROJECT";
         required = true;
+        completion = gcpProjectCompletion;
       }
       {
         name = "email";
@@ -112,10 +172,11 @@ rec {
       name = "gcp_edit_json_secret";
       description = "";
       flags = [
-        { name = "project"; envVar = "GCP_PROJECT"; }
+        { name = "project"; envVar = "GCP_PROJECT"; completion = gcpProjectCompletion; }
         {
           name = "secret";
           envVar = "GCP_SECRET";
+          completion = gcpSecretCompletion;
           prompt = ''${gcloud} secrets list | ${_.fzfq} --header-lines=1 | ${first}'';
           promptError = "you must specify a secret to edit!";
         }
