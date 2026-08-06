@@ -42,6 +42,10 @@ in
     };
   };
 
+  systemd.tmpfiles.rules = [
+    "L+ /sbin/ldconfig - - - - ${pkgs.glibc.bin}/bin/ldconfig"
+  ];
+
   environment = {
     variables = {
       NIX_HOST = hostname;
