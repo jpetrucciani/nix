@@ -3,6 +3,10 @@ let
   inherit (flake.inputs) nixos-hardware;
   hostname = "polaris";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
+  # NixOS has no ld.so.cache; stub for tools that shell out to /sbin/ldconfig -p
+  ldconfigShim = pkgs.writeShellScript "ldconfig-shim" ''
+    exit 0
+  '';
 in
 {
   imports = [
@@ -43,7 +47,8 @@ in
   };
 
   systemd.tmpfiles.rules = [
-    "L+ /sbin/ldconfig - - - - ${pkgs.glibc.bin}/bin/ldconfig"
+    "d /sbin 0755 root root - -"
+    "L+ /sbin/ldconfig 0755 root root - ${ldconfigShim}"
   ];
 
   environment = {
