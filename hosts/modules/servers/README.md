@@ -10,6 +10,98 @@ This directory contains misc servers implemented as nix modules!
 
 a service to run + watch a local executable
 
+### [hermes-agent.nix](./hermes-agent.nix)
+
+Multi-instance Hermes Agent service with per-agent rootless Podman sandboxes
+
+Each instance has its own host user, Podman storage, Hermes state, CLI home,
+secret environment, package set, network, and bind-mount allowlist. The
+container runs Hermes' `local` terminal backend inside the outer Podman sandbox.
+
+See the [bootstrap guide](../../../docs/hermes-agent.md) for initial setup,
+plain-state credentials, and running commands inside a container.
+
+```nix
+{ config, pkgs, ... }:
+{
+  imports = [ ../modules/servers/hermes-agent.nix ];
+
+  age.secrets = {
+    hermes-coder-env = {
+      file = ./secrets/hermes-coder-env.age;
+      owner = "hermes-coder";
+      group = "hermes-coder";
+      mode = "0400";
+    };
+    hermes-coder-ssh = {
+      file = ./secrets/hermes-coder-ssh.age;
+      owner = "hermes-coder";
+      group = "hermes-coder";
+      mode = "0400";
+    };
+    hermes-research-env = {
+      file = ./secrets/hermes-research-env.age;
+      owner = "hermes-research";
+      group = "hermes-research";
+      mode = "0400";
+    };
+  };
+
+  services.hermes-agent = {
+    enable = true;
+    instances = {
+      coder = {
+        uid = 32001;
+        packages = with pkgs; [
+          gh
+          github-mcp-server
+          openssh
+        ];
+        environmentFiles = [ config.age.secrets.hermes-coder-env.path ];
+        settings = {
+          terminal = {
+            backend = "local";
+            cwd = "/workspace/cfg";
+            env_passthrough = [ "GITHUB_TOKEN" ];
+          };
+          mcp_servers.github = {
+            command = "github-mcp-server";
+            args = [ "stdio" ];
+            env.GITHUB_PERSONAL_ACCESS_TOKEN = "\${env:GITHUB_TOKEN}";
+          };
+          tool_loop_guardrails.hard_stop_enabled = true;
+        };
+        mounts = {
+          "/workspace/cfg" = {
+            source = "/srv/hermes/coder-workspace";
+            readOnly = false;
+          };
+          "/var/lib/hermes/home/.ssh/id_ed25519" = {
+            source = config.age.secrets.hermes-coder-ssh.path;
+          };
+        };
+        cpus = "2";
+        memory = "4g";
+      };
+
+      research = {
+        uid = 32002;
+        environmentFiles = [ config.age.secrets.hermes-research-env.path ];
+        mounts."/research".source = "/srv/research";
+      };
+    };
+  };
+}
+```
+
+Secret environment files use Podman's `KEY=value` format. They are read at
+service start and must be readable by the instance user. Keep MCP secrets in the
+environment file, then reference them from `settings.mcp_servers.<name>.env` as
+shown above so Hermes' MCP environment filter passes only the intended values.
+Host filesystem permissions still apply to bind mounts. Make writable workspace
+directories owned by the instance user/group, or grant access through
+`supplementaryGroups`; the module deliberately does not chown arbitrary mounts.
+
 ### [infinity.nix](./infinity.nix)
 
 [infinity](https://github.com/michaelfeil/infinity) embeddings server

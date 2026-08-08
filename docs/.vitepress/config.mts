@@ -72,6 +72,7 @@ export default defineConfig({
         text: 'Operations',
         items: [
           { text: 'Daily Workflows', link: '/daily-workflows' },
+          { text: 'Hermes Agent Sandboxes', link: '/hermes-agent' },
           { text: 'Secrets', link: '/secrets' },
           { text: 'CI and Automation', link: '/ci-and-automation' }
         ]
