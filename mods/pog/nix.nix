@@ -309,7 +309,7 @@ rec {
 
   refresh_codex_latest = pog {
     name = "refresh_codex_latest";
-    description = "update codex-latest, refresh Rusty V8 and Cargo hashes, build it, and verify installed runtime helpers";
+    description = "update codex-latest, refresh Rusty V8 archive, binding, and Cargo hashes, build it, and verify installed runtime helpers";
     flags = [
       {
         name = "version";
@@ -393,14 +393,21 @@ rec {
 
       temp_dir=$(${final.coreutils}/bin/mktemp -d)
       trap '${final.coreutils}/bin/rm -rf "$temp_dir"' EXIT
-      declare -A v8_hashes
+      declare -A v8_archive_hashes
+      declare -A v8_binding_hashes
+      v8_release_base="https://github.com/openai/codex/releases/download/rusty-v8-v$v8_version"
 
       while read -r nix_target rust_target; do
-        archive="$temp_dir/librusty_v8_$rust_target.a.gz"
+        archive="$temp_dir/librusty_v8_ptrcomp_sandbox_release_$rust_target.a.gz"
+        binding="$temp_dir/src_binding_ptrcomp_sandbox_release_$rust_target.rs"
         ${final.curl}/bin/curl --location --fail --silent --show-error \
           --output "$archive" \
-          "https://github.com/denoland/rusty_v8/releases/download/v$v8_version/librusty_v8_release_$rust_target.a.gz"
-        v8_hashes["$nix_target"]=$(${final._nix}/bin/nix hash file --type sha256 --sri "$archive")
+          "$v8_release_base/$(${final.coreutils}/bin/basename "$archive")"
+        ${final.curl}/bin/curl --location --fail --silent --show-error \
+          --output "$binding" \
+          "$v8_release_base/$(${final.coreutils}/bin/basename "$binding")"
+        v8_archive_hashes["$nix_target"]=$(${final._nix}/bin/nix hash file --type sha256 --sri "$archive")
+        v8_binding_hashes["$nix_target"]=$(${final._nix}/bin/nix hash file --type sha256 --sri "$binding")
       done <<'TARGETS'
       aarch64-darwin aarch64-apple-darwin
       aarch64-linux aarch64-unknown-linux-gnu
@@ -408,18 +415,22 @@ rec {
       TARGETS
 
       for nix_target in aarch64-darwin aarch64-linux x86_64-linux; do
-        v8_hash="''${v8_hashes["$nix_target"]}"
-        if ! printf '%s\n' "$v8_hash" | ${final.gnugrep}/bin/grep -Eq '^sha256-[A-Za-z0-9+/]{43}=$'; then
-          echo "invalid Rusty V8 hash for $nix_target: $v8_hash" >&2
+        v8_archive_hash="''${v8_archive_hashes["$nix_target"]}"
+        v8_binding_hash="''${v8_binding_hashes["$nix_target"]}"
+        if ! printf '%s\n' "$v8_archive_hash" | ${final.gnugrep}/bin/grep -Eq '^sha256-[A-Za-z0-9+/]{43}=$'; then
+          echo "invalid Rusty V8 archive hash for $nix_target: $v8_archive_hash" >&2
+          exit 1
+        fi
+        if ! printf '%s\n' "$v8_binding_hash" | ${final.gnugrep}/bin/grep -Eq '^sha256-[A-Za-z0-9+/]{43}=$'; then
+          echo "invalid Rusty V8 binding hash for $nix_target: $v8_binding_hash" >&2
           exit 1
         fi
       done
 
       for pattern in \
         'v8Version = "' \
-        'aarch64-darwin = "sha256-' \
-        'aarch64-linux = "sha256-' \
-        'x86_64-linux = "sha256-'
+        'v8ArchiveHashes = {' \
+        'v8BindingHashes = {'
       do
         matches=$(${final.gnugrep}/bin/grep -c "$pattern" "$target_file" || true)
         if [ "$matches" -ne 1 ]; then
@@ -429,15 +440,29 @@ rec {
       done
 
       V8_VERSION="$v8_version" \
-      AARCH64_DARWIN_HASH="''${v8_hashes['aarch64-darwin']}" \
-      AARCH64_LINUX_HASH="''${v8_hashes['aarch64-linux']}" \
-      X86_64_LINUX_HASH="''${v8_hashes['x86_64-linux']}" \
-        ${final.perl}/bin/perl -0pi -e '
-          s/(v8Version = ")[^"]+(";)/$1 . $ENV{V8_VERSION} . $2/e;
-          s/(aarch64-darwin = ")[^"]+(";)/$1 . $ENV{AARCH64_DARWIN_HASH} . $2/e;
-          s/(aarch64-linux = ")[^"]+(";)/$1 . $ENV{AARCH64_LINUX_HASH} . $2/e;
-          s/(x86_64-linux = ")[^"]+(";)/$1 . $ENV{X86_64_LINUX_HASH} . $2/e;
-        ' "$target_file"
+      AARCH64_DARWIN_ARCHIVE_HASH="''${v8_archive_hashes['aarch64-darwin']}" \
+      AARCH64_LINUX_ARCHIVE_HASH="''${v8_archive_hashes['aarch64-linux']}" \
+      X86_64_LINUX_ARCHIVE_HASH="''${v8_archive_hashes['x86_64-linux']}" \
+      AARCH64_DARWIN_BINDING_HASH="''${v8_binding_hashes['aarch64-darwin']}" \
+      AARCH64_LINUX_BINDING_HASH="''${v8_binding_hashes['aarch64-linux']}" \
+      X86_64_LINUX_BINDING_HASH="''${v8_binding_hashes['x86_64-linux']}" \
+        ${final.perl}/bin/perl -0pe '
+          (s/(v8Version = ")[^"]+(";)/$1 . $ENV{V8_VERSION} . $2/e) == 1
+            or die "expected one v8Version assignment\n";
+          (s/(v8ArchiveHashes = \{.*?aarch64-darwin = ")[^"]+(";)/$1 . $ENV{AARCH64_DARWIN_ARCHIVE_HASH} . $2/se) == 1
+            or die "expected one aarch64-darwin archive hash\n";
+          (s/(v8ArchiveHashes = \{.*?aarch64-linux = ")[^"]+(";)/$1 . $ENV{AARCH64_LINUX_ARCHIVE_HASH} . $2/se) == 1
+            or die "expected one aarch64-linux archive hash\n";
+          (s/(v8ArchiveHashes = \{.*?x86_64-linux = ")[^"]+(";)/$1 . $ENV{X86_64_LINUX_ARCHIVE_HASH} . $2/se) == 1
+            or die "expected one x86_64-linux archive hash\n";
+          (s/(v8BindingHashes = \{.*?aarch64-darwin = ")[^"]+(";)/$1 . $ENV{AARCH64_DARWIN_BINDING_HASH} . $2/se) == 1
+            or die "expected one aarch64-darwin binding hash\n";
+          (s/(v8BindingHashes = \{.*?aarch64-linux = ")[^"]+(";)/$1 . $ENV{AARCH64_LINUX_BINDING_HASH} . $2/se) == 1
+            or die "expected one aarch64-linux binding hash\n";
+          (s/(v8BindingHashes = \{.*?x86_64-linux = ")[^"]+(";)/$1 . $ENV{X86_64_LINUX_BINDING_HASH} . $2/se) == 1
+            or die "expected one x86_64-linux binding hash\n";
+        ' "$target_file" > "$temp_dir/final.nix"
+      ${final.coreutils}/bin/install -m 0644 "$temp_dir/final.nix" "$target_file"
 
       ${lib.getExe final.jfmt} "$target_file"
       ${final._nix}/bin/nix-instantiate --parse "$target_file" >/dev/null

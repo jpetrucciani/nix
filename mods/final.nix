@@ -168,28 +168,46 @@ let
 
   codex-latest =
     let
-      version = "0.146.1";
-      v8Version = "149.2.0";
+      version = "0.147.0";
+      v8Version = "150.4.0";
+      v8Features = [ "ptrcomp" "sandbox" ];
+      v8ReleaseBase = "https://github.com/openai/codex/releases/download/rusty-v8-v${v8Version}";
+      # Generate hashes with:
+      # v8_version=$(sed -n 's/.*v8Version = "\([^"]*\)";.*/\1/p' mods/final.nix); \
+      # for target in aarch64-apple-darwin aarch64-unknown-linux-gnu x86_64-unknown-linux-gnu; do \
+      #   for artifact in "librusty_v8_ptrcomp_sandbox_release_${target}.a.gz" "src_binding_ptrcomp_sandbox_release_${target}.rs"; do \
+      #     file=$(mktemp); curl -L --fail --silent --show-error -o "$file" \
+      #       "https://github.com/openai/codex/releases/download/rusty-v8-v${v8_version}/${artifact}"; \
+      #     printf '%s ' "$artifact"; nix hash file --type sha256 --sri "$file"; rm "$file"; \
+      #   done; \
+      # done
+      v8ArchiveHashes = {
+        aarch64-darwin = "sha256-AK27SHmISMd1UEQcaGc6XoUpuOG3PqvN7iMss5tA9KE=";
+        aarch64-linux = "sha256-0VF+7UBUaFNwKbAF1f6ZfsdNXI01H5FrOm3yC30oEbo=";
+        x86_64-linux = "sha256-o1x10fJuapg4haRbM0kKTr5U8FBQVosyuJz7QhswtYM=";
+      };
+      v8BindingHashes = {
+        aarch64-darwin = "sha256-ylrfDPicmnCtRgrnNkiy/om3SqETs8t/dXtqArdYOU8=";
+        aarch64-linux = "sha256-dyeCauR5vbZF6Acjn7EtH44uI956bPFvXuWSaQ0dhQY=";
+        x86_64-linux = "sha256-dyeCauR5vbZF6Acjn7EtH44uI956bPFvXuWSaQ0dhQY=";
+      };
       src = final.fetchFromGitHub {
         owner = "openai";
         repo = "codex";
         tag = "rust-v${version}";
-        hash = "sha256-aXK/hUz61STkD8xcVqvBzP1RYDu+kw7v1ufVZHyzN84=";
+        hash = "sha256-NKeOxp9vLcx7tpghqhpS3ocPqUDP2PircNwkJNpHBPo=";
       };
       librustyV8 = final.fetchLibrustyV8 {
         version = v8Version;
-        # Generate hashes with:
-        # version=149.2.0; for target in aarch64-apple-darwin aarch64-unknown-linux-gnu x86_64-unknown-linux-gnu; do \
-        #   file=$(mktemp); \
-        #   curl -L --fail --silent --show-error -o "$file" \
-        #     "https://github.com/denoland/rusty_v8/releases/download/v${version}/librusty_v8_release_${target}.a.gz"; \
-        #   printf '%s ' "$target"; nix hash file --type sha256 --sri "$file"; rm "$file"; \
-        # done
-        hashes = {
-          aarch64-darwin = "sha256-+rsuyNO6Wm3qY9uaNalg3FypheujLzQrm6Sqocc0sv4=";
-          aarch64-linux = "sha256-+XdRJ8pk3MSjZi0BpSGizvuluY+DOUOog9hHc7Kv88U=";
-          x86_64-linux = "sha256-iu2YY323533Iv7i7R1nsW95HLQv3lD9Y4OYqNQlFxVk=";
-        };
+        hashes = v8ArchiveHashes;
+        features = v8Features;
+        releaseBase = v8ReleaseBase;
+      };
+      rustyV8Binding = final.fetchRustyV8Binding {
+        version = v8Version;
+        hashes = v8BindingHashes;
+        features = v8Features;
+        releaseBase = v8ReleaseBase;
       };
     in
     prev.codex.overrideAttrs (old: {
@@ -202,10 +220,11 @@ let
       cargoDeps = final.rustPlatform.fetchCargoVendor {
         inherit src;
         sourceRoot = "${src.name}/codex-rs";
-        hash = "sha256-N9jbH/cgAyu2QxneSnpkdaF0MgV3ZtDmN9q6rr9u+hE=";
+        hash = "sha256-MJuM2QLxvL+r/Gw8QXLjtsLS25QGVCqcqU5GJssSoQ4=";
       };
       env = builtins.removeAttrs (old.env or { }) [ "LK_CUSTOM_WEBRTC" ] // {
         RUSTY_V8_ARCHIVE = librustyV8;
+        RUSTY_V8_SRC_BINDING_PATH = rustyV8Binding;
       };
     });
 in

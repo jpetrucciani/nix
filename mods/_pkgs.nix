@@ -10,6 +10,7 @@ let
     , hashes
     , features ? [ ]
     , profile ? "release"
+    , releaseBase ? "https://github.com/denoland/rusty_v8/releases/download/v${version}"
     }:
     let
       inherit (final.stdenv.hostPlatform) system;
@@ -17,12 +18,28 @@ let
     in
     final.fetchurl {
       name = "librusty_v8-${version}";
-      url = "https://github.com/denoland/rusty_v8/releases/download/v${version}/librusty_v8_${featureSuffix}${profile}_${final.stdenv.hostPlatform.rust.rustcTarget}.a.gz";
+      url = "${releaseBase}/librusty_v8_${featureSuffix}${profile}_${final.stdenv.hostPlatform.rust.rustcTarget}.a.gz";
       hash = hashes.${system} or (throw "Unsupported system for librusty_v8 ${version}: ${system}");
       meta = {
         inherit version;
         sourceProvenance = with final.lib.sourceTypes; [ binaryNativeCode ];
       };
+    };
+  fetchRustyV8Binding =
+    { version
+    , hashes
+    , features ? [ ]
+    , profile ? "release"
+    , releaseBase ? "https://github.com/denoland/rusty_v8/releases/download/v${version}"
+    }:
+    let
+      inherit (final.stdenv.hostPlatform) system;
+      featureSuffix = optionalString (features != [ ]) "${concatStringsSep "_" features}_";
+    in
+    final.fetchurl {
+      name = "rusty_v8_binding-${version}";
+      url = "${releaseBase}/src_binding_${featureSuffix}${profile}_${final.stdenv.hostPlatform.rust.rustcTarget}.rs";
+      hash = hashes.${system} or (throw "Unsupported system for rusty_v8 binding ${version}: ${system}");
     };
   _custom = p:
     if hasSuffix ".nix" p || pathExists (p + "/default.nix")
@@ -34,5 +51,5 @@ let
   custom = mapAttrs (_: p: callPackage p { }) (listToAttrs (collect (x: x.__stop or false) (_custom ../pkgs)));
 in
 {
-  inherit custom fetchLibrustyV8;
+  inherit custom fetchLibrustyV8 fetchRustyV8Binding;
 } // custom
