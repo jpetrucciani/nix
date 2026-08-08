@@ -185,8 +185,23 @@ let
             });
             addTorchLibs = ''addAutoPatchelfSearchPath "${_final.torch}"'';
             packagesIfPresent = names:
-              builtins.filter (pkg: pkg != null) (map (name: _final.${name} or null) names);
-            cuda13WheelRuntimeInputs = packagesIfPresent [
+              map (name: _final.${name}) (builtins.filter (name: builtins.hasAttr name _prev) names);
+            cudaWheelRuntimeInputs = packagesIfPresent [
+              "nvidia-cublas-cu12"
+              "nvidia-cuda-cupti-cu12"
+              "nvidia-cuda-nvrtc-cu12"
+              "nvidia-cuda-runtime-cu12"
+              "nvidia-cudnn-cu12"
+              "nvidia-cufft-cu12"
+              "nvidia-cufile-cu12"
+              "nvidia-curand-cu12"
+              "nvidia-cusolver-cu12"
+              "nvidia-cusparse-cu12"
+              "nvidia-cusparselt-cu12"
+              "nvidia-nccl-cu12"
+              "nvidia-nvjitlink-cu12"
+              "nvidia-nvshmem-cu12"
+              "nvidia-nvtx-cu12"
               "nvidia-cublas"
               "nvidia-cuda-cupti"
               "nvidia-cuda-nvrtc"
@@ -226,9 +241,13 @@ let
                 ${addTorchLibs}
               '';
             });
-            nvidia-cusolver-cu12 = _prev.nvidia-cusolver-cu12.overrideAttrs (_: {
-              buildInputs = [ _pkgs.cudatoolkit _pkgs.cudaPackages.libnvjitlink ];
-            });
+            nvidia-cusolver-cu12 = addBuildAndSearchInputs
+              (packagesIfPresent [
+                "nvidia-cublas-cu12"
+                "nvidia-cusparse-cu12"
+                "nvidia-nvjitlink-cu12"
+              ])
+              _prev.nvidia-cusolver-cu12;
             nvidia-cudnn-cu13 = addBuildAndSearchInputs [ _final.nvidia-cublas ] _prev.nvidia-cudnn-cu13;
             nvidia-cufft = addBuildAndSearchInputs [ _final.nvidia-nvjitlink ] _prev.nvidia-cufft;
             nvidia-cusolver = addBuildAndSearchInputs
@@ -238,9 +257,9 @@ let
                 nvidia-nvjitlink
               ])
               _prev.nvidia-cusolver;
-            nvidia-cusparse-cu12 = _prev.nvidia-cusparse-cu12.overrideAttrs (_: {
-              buildInputs = [ _pkgs.cudaPackages.libnvjitlink ];
-            });
+            nvidia-cusparse-cu12 = addBuildAndSearchInputs
+              (packagesIfPresent [ "nvidia-nvjitlink-cu12" ])
+              _prev.nvidia-cusparse-cu12;
             nvidia-cusparse = addBuildAndSearchInputs [ _final.nvidia-nvjitlink ] _prev.nvidia-cusparse;
             nvidia-nvshmem-cu12 = _prev.nvidia-nvshmem-cu12.overrideAttrs (_: {
               buildInputs = [ _pkgs.mpi ];
@@ -514,9 +533,9 @@ let
             });
             torch =
               _prev.torch.overrideAttrs (old: {
-                buildInputs = (old.buildInputs or [ ]) ++ cuda13WheelRuntimeInputs;
+                buildInputs = (old.buildInputs or [ ]) ++ cudaWheelRuntimeInputs;
                 preFixup = (old.preFixup or "") + ''
-                  ${addAutoPatchelfSearchInputs cuda13WheelRuntimeInputs}
+                  ${addAutoPatchelfSearchInputs cudaWheelRuntimeInputs}
                 '';
                 autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
                   "libcuda.so.1" # this will be found at runtime?
