@@ -5,8 +5,8 @@
 , cudatoolkit
 , clang
 , ninja
-, version ? "0.26.0"
-, lockHash ? "sha256-fCww8qyOjGfY4cEsE89nO/Nf+xUGPnqRhWbvmpepQyE="
+, version ? "0.27.0"
+, lockHash ? "sha256-lOvl4p3BR4N+vCFaD1KrotgJqciO/pfPYfwrXncynGQ="
 , isWSL ? false
 , includePin ? false
 }:
