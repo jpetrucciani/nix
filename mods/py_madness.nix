@@ -414,6 +414,18 @@ let
               dontAutoPatchelf = true;
               dontPatchELF = true;
             });
+            nccl4py =
+              let
+                ncclRuntimeInputs = packagesIfPresent [
+                  "nvidia-nccl-cu12"
+                  "nvidia-nccl-cu13"
+                ];
+              in
+              (addBuildAndSearchInputs ncclRuntimeInputs _prev.nccl4py).overrideAttrs (old: {
+                autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
+                  "libcuda.so.1"
+                ];
+              });
             nvidia-cutlass-dsl = _prev.nvidia-cutlass-dsl.overrideAttrs (_: {
               buildInputs = (with _final; [ torch setuptools ]) ++ (with _pkgs.cudaPackages; [
                 cuda_nvcc
