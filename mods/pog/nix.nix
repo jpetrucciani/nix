@@ -7,7 +7,7 @@ in
 rec {
   nixup =
     let
-      version = "0.0.11";
+      version = "0.0.12";
       _flags = {
         with_bun = "include bun with dependencies";
         with_crystal = "include crystal with dependencies";
@@ -202,8 +202,8 @@ rec {
             in
             (env.overrideAttrs (_: {
               inherit name;
-              NIXUP = "${version}"; $extra_env
-            }''${extra_env_overrides})) // {inherit scripts;}
+              env = {${"\n"}NIXUP = "${version}"; $extra_env } ''${extra_env_overrides};
+            })) // {inherit scripts;}
           EOF
           if [ ! -f .gitignore ]; then
             echo "$gitignore" > .gitignore
