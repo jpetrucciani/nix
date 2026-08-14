@@ -25,6 +25,7 @@ writeShellApplication {
     exec ${bun}/bin/bunx --bun chrome-devtools-mcp@latest \
       --headless \
       --isolated \
+      --no-usage-statistics --no-performance-crux \
       --executable-path "$CHROME_BIN" \
       --chrome-arg="--no-first-run" \
       --chrome-arg="--no-default-browser-check" \
