@@ -3,6 +3,7 @@ let
   inherit (flake.inputs) nixos-hardware;
   hostname = "titan";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
+  yamlFormat = pkgs.formats.yaml { };
   speechServers = {
     tts = {
       modelPath = "Qwen/Qwen3-TTS-12Hz-1.7B-Base";
@@ -17,9 +18,11 @@ let
     };
     music = {
       modelPath = "MiniMaxAI/MiniMax-Music3";
+      pipelineConfigClass = "MiniMaxMusic3DualGPUPipelineConfig";
       port = 8012;
-      # memFractionStatic = 0.5;
-      extraEnv = { CUDA_VISIBLE_DEVICES = "0"; };
+      memFractionStatic = 0.8;
+      runtimeOverrides.dit_dav.dtype = "bfloat16";
+      extraEnv = { CUDA_VISIBLE_DEVICES = "0,1"; };
     };
     # stt = {
     #   modelPath = "Qwen/Qwen3-ASR-1.7B";
@@ -33,14 +36,17 @@ let
     , port
     , memFractionStatic ? null
     , pipelineConfigClass ? null
+    , runtimeOverrides ? { }
     , allowedMediaDomains ? [ ]
     , extraEnv ? { }
     }:
     let
-      pipelineConfig = pkgs.writeText "sglang-omni-${name}.yaml" ''
-        config_cls: ${pipelineConfigClass}
-        model_path: ${modelPath}
-      '';
+      pipelineConfig = yamlFormat.generate "sglang-omni-${name}.yaml" ({
+        config_cls = pipelineConfigClass;
+        model_path = modelPath;
+      } // pkgs.lib.optionalAttrs (runtimeOverrides != { }) {
+        runtime_overrides = runtimeOverrides;
+      });
       arguments = [
         (pkgs.lib.getExe pkgs.sglang-omni)
         "serve"
