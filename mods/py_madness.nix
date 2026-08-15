@@ -869,7 +869,7 @@ let
           (final.callPackage final.pyproject-nix.build.packages {
             inherit python;
             stdenv = final.stdenv.override {
-              targetPlatform = final.stdenv.targetPlatform // (if final.stdenv.isDarwin then {
+              targetPlatform = final.stdenv.targetPlatform // (if final.stdenv.hostPlatform.isDarwin then {
                 # Sets MacOS SDK version to 15.1 which implies Darwin version 24.
                 # See https://en.wikipedia.org/wiki/MacOS_version_history#Releases for more background on version numbers.
                 inherit darwinSdkVersion;

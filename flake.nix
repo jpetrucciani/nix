@@ -126,7 +126,7 @@
               printf 'validated %s pog scripts\n' "$checked" > "$out"
             '';
         in
-        lib.optionalAttrs pkgs.stdenv.isLinux {
+        lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
           check-pog-scripts = checkPogScripts;
           snowball-api-manifest = pkgs.snowball.api.tests.manifest;
           snowball-api-script = pkgs.snowball.api.tests.script;

@@ -96,7 +96,7 @@ in
       });
       # darwin fixes
       caqti = osuper.caqti.overrideAttrs (old: {
-        nativeBuildInputs = old.nativeBuildInputs ++ optional stdenv.isDarwin [ darwin.sigtool ];
+        nativeBuildInputs = old.nativeBuildInputs ++ optional stdenv.hostPlatform.isDarwin [ darwin.sigtool ];
       });
       mirage-crypto-rng = osuper.mirage-crypto-rng.overrideAttrs (old: {
         doCheck = false;

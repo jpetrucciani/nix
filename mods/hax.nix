@@ -4,7 +4,7 @@ final: prev:
   with prev;
   with lib;
   lib // rec {
-    inherit (stdenv) isLinux isDarwin isAarch64;
+    inherit (stdenv.hostPlatform) isLinux isDarwin isAarch64;
     inherit (pkgs) fetchFromGitHub;
 
     isM1 = isDarwin && isAarch64;
@@ -213,4 +213,3 @@ final: prev:
       '';
   }
 )
-  

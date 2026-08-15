@@ -147,7 +147,7 @@ let
       npmRoot = "tools/ui";
       npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
       # hack for mac dylib?
-      cmakeFlags = if final.stdenv.isDarwin then old.cmakeFlags ++ [ "-DLLAMA_BUILD_NUMBER=1" ] else old.cmakeFlags;
+      cmakeFlags = if final.stdenv.hostPlatform.isDarwin then old.cmakeFlags ++ [ "-DLLAMA_BUILD_NUMBER=1" ] else old.cmakeFlags;
     });
 
   stable-diffusion-cpp-latest =
@@ -337,9 +337,9 @@ in
 
   # allow 3proxy on darwin?
   _3proxy = prev._3proxy.overrideAttrs (old: {
-    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ (if final.stdenv.isDarwin then [ final.pam ] else [ ]);
+    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ (if final.stdenv.hostPlatform.isDarwin then [ final.pam ] else [ ]);
     makeFlags =
-      if final.stdenv.isDarwin then [
+      if final.stdenv.hostPlatform.isDarwin then [
         "-f Makefile.FreeBSD"
         "INSTALL=install"
         "DESTDIR=${placeholder "out"}"
@@ -347,7 +347,7 @@ in
         # "CC:=$(CC)"
       ] else old.makeFlags;
     installPhase =
-      if final.stdenv.isDarwin then ''
+      if final.stdenv.hostPlatform.isDarwin then ''
         mkdir -p $out
         mv ./bin $out/.
       '' else (old.installPhase or "");
@@ -357,7 +357,7 @@ in
   });
 
   time =
-    if final.stdenv.isDarwin then
+    if final.stdenv.hostPlatform.isDarwin then
       prev.time.overrideAttrs
         (_: {
           postPatch = ''

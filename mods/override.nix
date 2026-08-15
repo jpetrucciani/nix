@@ -1,7 +1,7 @@
 # This overlay provides some overrides/fixes for various packages
 final: prev:
 let
-  inherit (final.stdenv) isDarwin;
+  inherit (final.stdenv.hostPlatform) isDarwin;
   zitadel_pr = import
     (builtins.fetchTarball {
       url = "https://github.com/jpetrucciani/nixpkgs/archive/535a908c603f65a6ceed636221a3148465cfb716.tar.gz";

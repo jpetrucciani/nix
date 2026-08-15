@@ -27,12 +27,12 @@ stdenvNoCC.mkDerivation {
 
   nativeBuildInputs = [
     installShellFiles
-  ] ++ lib.optionals stdenvNoCC.isDarwin [
+  ] ++ lib.optionals stdenvNoCC.hostPlatform.isDarwin [
     cctools
     darwin.autoSignDarwinBinariesHook
   ];
 
-  buildInputs = lib.optionals stdenvNoCC.isDarwin [ libiconv ];
+  buildInputs = lib.optionals stdenvNoCC.hostPlatform.isDarwin [ libiconv ];
 
   installPhase = ''
     runHook preInstall
@@ -41,7 +41,7 @@ stdenvNoCC.mkDerivation {
     cp $src $out/bin/geode
     chmod +x $out/bin/geode
 
-    ${lib.optionalString stdenvNoCC.isDarwin ''
+    ${lib.optionalString stdenvNoCC.hostPlatform.isDarwin ''
       old_libiconv="$(otool -L $out/bin/geode | awk '/libiconv\.2\.dylib/{print $1; exit}')"
       if [ -n "$old_libiconv" ] && [ "$old_libiconv" != "${libiconv}/lib/libiconv.2.dylib" ]; then
         install_name_tool -change "$old_libiconv" "${libiconv}/lib/libiconv.2.dylib" $out/bin/geode
