@@ -12,7 +12,7 @@
 , perl
 }:
 let
-  onlyDarwin = value: if stdenv.isDarwin then value else null;
+  onlyDarwin = value: if stdenv.hostPlatform.isDarwin then value else null;
 in
 stdenv.mkDerivation rec {
   pname = "pogocache";
@@ -28,11 +28,11 @@ stdenv.mkDerivation rec {
   ${onlyDarwin "NOURING"} = "1";
   ${onlyDarwin "NOOPENSSL"} = "1";
 
-  buildInputs = [ autoconf cmake git ] ++ (lib.optionals stdenv.isLinux [ perl liburing openssl ]);
+  buildInputs = [ autoconf cmake git ] ++ (lib.optionals stdenv.hostPlatform.isLinux [ perl liburing openssl ]);
 
   dontUseCmakeConfigure = true;
 
-  postPatch = (if stdenv.isLinux then ''
+  postPatch = (if stdenv.hostPlatform.isLinux then ''
     tar -xzf ${openssl.src}
     mv openssl-* deps/openssl
 

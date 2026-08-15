@@ -13,7 +13,7 @@ let
     };
   };
   LOCALE_ARCHIVE_2_27 = "${final.glibcLocales}/lib/locale/locale-archive";
-  locale_override = optionalString (!stdenv.isDarwin) "export LOCALE_ARCHIVE_2_27=${LOCALE_ARCHIVE_2_27}";
+  locale_override = optionalString (!stdenv.hostPlatform.isDarwin) "export LOCALE_ARCHIVE_2_27=${LOCALE_ARCHIVE_2_27}";
   force_flag = {
     name = "force";
     description = "remove database data directory before bootstraping";

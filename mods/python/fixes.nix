@@ -1,7 +1,7 @@
 final: prev:
 let
   inherit (final) pythonOlder;
-  inherit (final.stdenv) isDarwin;
+  inherit (final.stdenv.hostPlatform) isDarwin;
 in
 rec {
   tkinter =
@@ -32,7 +32,7 @@ rec {
         propagatedBuildInputs = final.lib.remove prev.sqlalchemy old.propagatedBuildInputs or [ ] ++ [ sqlalchemy_1 ];
       };
       disabledTestPaths = [ ];
-      disabledTests = final.lib.optionals final.stdenv.isDarwin [
+      disabledTests = final.lib.optionals final.stdenv.hostPlatform.isDarwin [
         "MemUsageWBackendTest"
         "MemUsageTest"
       ];

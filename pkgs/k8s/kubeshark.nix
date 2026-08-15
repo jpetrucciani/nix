@@ -32,7 +32,7 @@ stdenvNoCC.mkDerivation rec {
   };
 
   strictDeps = true;
-  nativeBuildInputs = [ installShellFiles ] ++ (lib.optionals stdenvNoCC.isLinux [ autoPatchelfHook ]);
+  nativeBuildInputs = [ installShellFiles ] ++ (lib.optionals stdenvNoCC.hostPlatform.isLinux [ autoPatchelfHook ]);
 
   dontConfigure = true;
   dontBuild = true;

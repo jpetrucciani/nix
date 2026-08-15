@@ -9,6 +9,10 @@ in
     enable = mkEnableOption "work";
   };
   config = {
+    environment.variables = {
+      LANG = "en_US.UTF-8";
+      LC_CTYPE = "en_US.UTF-8";
+    };
     documentation.enable = false;
     system = {
       primaryUser = mkDefault "jacobi";

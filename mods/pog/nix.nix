@@ -115,7 +115,7 @@ rec {
           fi
           pulumi=""
           if [ "$with_pulumi" = "1" ]; then
-            py="python = [(python314.withPackages ( p: with p; [${"\n"}pulumi]))];"
+            py="python = [(python313.withPackages ( p: with p; [${"\n"}pulumi]))];"
             pulumi="pulumi = [pulumi];"
           fi
           py=""
