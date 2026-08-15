@@ -334,8 +334,10 @@ let
                 "libazure-storage-blobs.so.12.15.0"
                 "libdoca_common.so.2"
                 "libdoca_gpunetio.so.2"
+                "libdoca_telemetry_exporter.so.2"
                 "libdoca_verbs.so.2"
                 "libefa.so.1"
+                "libflexio.so"
                 "libred_async.so"
                 "libred_client.so.2"
               ];

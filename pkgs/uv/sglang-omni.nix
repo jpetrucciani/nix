@@ -8,9 +8,9 @@
 , ninja
 , sox
 , python312
-, version ? "unstable-2026-08-03-c33d5c1"
-, rev ? "c33d5c1440d67252cf9b5f8a8645b82a83eb039e"
-, lockHash ? "sha256-DRkDfTHgxOhQoGG15EHweQXMVpfdCJCNe01ud5uXZCI="
+, version ? "unstable-2026-08-15-2d2ff50"
+, rev ? "2d2ff5056f8c321f1dbc2ff6584baf05996ce150"
+, lockHash ? "sha256-615SIRLYRxCxoNROMyXD2ee0yTxuvFZrUKJrF+2vf7o="
 , isWSL ? false
 , includePin ? false
 }:
