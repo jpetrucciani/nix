@@ -1,0 +1,117 @@
+diff --git a/acestep/acestep_v15_pipeline.py b/acestep/acestep_v15_pipeline.py
+index 6161460..8a10cf5 100644
+--- a/acestep/acestep_v15_pipeline.py
++++ b/acestep/acestep_v15_pipeline.py
+@@ -62 +62 @@ try:
+-    from .model_downloader import ensure_lm_model
++    from .model_downloader import ensure_lm_model, get_project_root
+@@ -84 +84 @@ except ImportError:
+-    from acestep.model_downloader import ensure_lm_model
++    from acestep.model_downloader import ensure_lm_model, get_project_root
+@@ -197,8 +197,7 @@ def main() -> None:
+         print("No GPU detected, running on CPU")
+ 
+     # Define local outputs directory
+-    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+-    output_dir = os.path.join(project_root, "gradio_outputs")
++    output_dir = os.path.join(get_project_root(), "gradio_outputs")
+     # Normalize path to use forward slashes for Gradio 6 compatibility on Windows
+     output_dir = output_dir.replace("\\", "/")
+     os.makedirs(output_dir, exist_ok=True)
+diff --git a/acestep/api_server.py b/acestep/api_server.py
+index 79d62f1..fd146cf 100644
+--- a/acestep/api_server.py
++++ b/acestep/api_server.py
+@@ -100,3 +100,6 @@ from acestep.ui.gradio.events.results_handlers import _build_generation_info
+ def _get_project_root() -> str:
++    configured_root = os.getenv("ACESTEP_PROJECT_ROOT", "").strip()
++    if configured_root:
++        return os.path.abspath(os.path.expanduser(configured_root))
+     current_file = os.path.abspath(__file__)
+     return os.path.dirname(os.path.dirname(current_file))
+diff --git a/acestep/api/lifespan_runtime.py b/acestep/api/lifespan_runtime.py
+index 66b17f0..220a7aa 100644
+--- a/acestep/api/lifespan_runtime.py
++++ b/acestep/api/lifespan_runtime.py
+@@ -59,2 +59,2 @@ def initialize_lifespan_runtime(
+-    project_root = get_project_root()
+-    cache_root = os.path.join(project_root, ".cache", "acestep")
++    cache_home = (os.getenv("XDG_CACHE_HOME") or os.path.join("~", ".cache")).strip()
++    cache_root = os.path.join(os.path.expanduser(cache_home), "acestep")
+     tmp_root = (os.getenv("ACESTEP_TMPDIR") or os.path.join(cache_root, "tmp")).strip()
+diff --git a/acestep/inference.py b/acestep/inference.py
+index ffb643f..41ef45e 100644
+--- a/acestep/inference.py
++++ b/acestep/inference.py
+@@ -20,6 +20,7 @@ import torch
+ 
+ from acestep.audio_utils import AudioSaver, apply_fade, generate_uuid_from_params, normalize_audio, get_lora_weights_hash
+ from acestep.constants import BPM_MIN, BPM_MAX, DURATION_MAX, TASK_TYPES, VALID_TIME_SIGNATURES
++from acestep.model_downloader import get_project_root
+ 
+ # HuggingFace Space environment detection
+ IS_HUGGINGFACE_SPACE = os.environ.get("SPACE_ID") is not None
+@@ -382,7 +383,7 @@ def _candidate_repaint_sidecars(src_audio: str) -> List[str]:
+     candidates = [os.path.splitext(expanded_audio)[0] + ".json"]
+     basename = os.path.splitext(os.path.basename(expanded_audio))[0]
+     if basename:
+-        results_root = os.path.join(os.getcwd(), "gradio_outputs")
++        results_root = os.path.join(get_project_root(), "gradio_outputs")
+         sidecars = glob.glob(
+             os.path.join(results_root, "batch_*", f"{glob.escape(basename)}.json")
+         )
+diff --git a/acestep/ui/gradio/api/api_routes.py b/acestep/ui/gradio/api/api_routes.py
+index 2d35900..528820e 100644
+--- a/acestep/ui/gradio/api/api_routes.py
++++ b/acestep/ui/gradio/api/api_routes.py
+@@ -19,1 +19,1 @@ from fastapi.responses import FileResponse
+-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
++PROJECT_ROOT = os.path.abspath(os.getenv("ACESTEP_PROJECT_ROOT") or os.getcwd())
+@@ -104,1 +104,2 @@ try:
+-    _cache_dir = os.path.join(os.path.dirname(__file__), ".cache", "api_results")
++    _cache_home = os.getenv("XDG_CACHE_HOME") or os.path.join("~", ".cache")
++    _cache_dir = os.path.join(os.path.expanduser(_cache_home), "acestep", "api_results")
+diff --git a/acestep/ui/gradio/events/results/generation_info.py b/acestep/ui/gradio/events/results/generation_info.py
+index 9859525..af6c81c 100644
+--- a/acestep/ui/gradio/events/results/generation_info.py
++++ b/acestep/ui/gradio/events/results/generation_info.py
+@@ -8,15 +8,12 @@ from typing import Dict, Any, Optional
+ 
+ from acestep.ui.gradio.i18n import t
++from acestep.model_downloader import get_project_root
+ 
+ # Platform detection for Windows-specific fixes
+ IS_WINDOWS = sys.platform == "win32"
+ 
+ # Global results directory inside project root
+-# This file is in acestep/ui/gradio/events/results/, need 6 levels up to project root
+-PROJECT_ROOT = os.path.dirname(
+-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
+-        os.path.dirname(os.path.abspath(__file__))))))
+-)
++PROJECT_ROOT = str(get_project_root())
+ DEFAULT_RESULTS_DIR = os.path.join(PROJECT_ROOT, "gradio_outputs").replace("\\", "/")
+ os.makedirs(DEFAULT_RESULTS_DIR, exist_ok=True)
+ 
+diff --git a/acestep/ui/gradio/events/results/session_artifacts.py b/acestep/ui/gradio/events/results/session_artifacts.py
+index 227f7b0..0eb8ba1 100644
+--- a/acestep/ui/gradio/events/results/session_artifacts.py
++++ b/acestep/ui/gradio/events/results/session_artifacts.py
+@@ -10,6 +10,8 @@ import numpy as np
+ import torch
+ from loguru import logger
+ 
++from acestep.model_downloader import get_project_root
++
+ 
+ ARTIFACT_KIND = "generation_intermediates_v1"
+ ARTIFACT_FIELD_MAP = {
+@@ -167,7 +169,7 @@ def _gradio_output_json_candidates(base: Path) -> list[Path]:
+     """Return newest matching JSON sidecars under ``gradio_outputs``."""
+     if base.suffix.lower() == ".json":
+         return []
+-    results_root = Path.cwd() / "gradio_outputs"
++    results_root = get_project_root() / "gradio_outputs"
+     if not results_root.exists():
+         return []
+     filename = base.with_suffix(".json").name

@@ -16,14 +16,6 @@ let
       memFractionStatic = 0.5;
       extraEnv = { CUDA_VISIBLE_DEVICES = "1"; };
     };
-    music = {
-      modelPath = "MiniMaxAI/MiniMax-Music3";
-      pipelineConfigClass = "MiniMaxMusic3DualGPUPipelineConfig";
-      port = 8012;
-      memFractionStatic = 0.8;
-      runtimeOverrides.dit_dav.dtype = "bfloat16";
-      extraEnv = { CUDA_VISIBLE_DEVICES = "0,1"; };
-    };
     # stt = {
     #   modelPath = "Qwen/Qwen3-ASR-1.7B";
     #   port = 8012;
@@ -95,6 +87,7 @@ in
   imports = [
     "${common.home-manager}/nixos"
     ./hardware-configuration.nix
+    ../modules/servers/ace-step.nix
   ] ++ (with nixos-hardware.nixosModules; [
     common-cpu-amd
     common-cpu-amd-pstate
@@ -163,6 +156,19 @@ in
 
   services = {
     xserver.videoDrivers = [ "nvidia" ];
+    ace-step = {
+      enable = true;
+      address = "0.0.0.0";
+      port = 8012;
+      gpuDevice = "0";
+      downloadModels = true;
+      loadModelsAtStartup = true;
+      languageModel = {
+        enable = true;
+        model = "acestep-5Hz-lm-1.7B";
+        backend = "vllm";
+      };
+    };
     prometheus.exporters = common.templates.prometheus_exporters { };
     qdrant = {
       enable = false;

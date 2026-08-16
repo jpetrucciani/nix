@@ -179,6 +179,12 @@ in
         find "$dir" -mindepth 1 -maxdepth 1 \( -type f -o -type d \) -printf '%f\n' \
           | grep -v '^README.md$' \
           | grep -v '^\.' \
+          | while IFS= read -r entry; do
+            if git check-ignore -q -- "$dir/$entry" 2>/dev/null; then
+              continue
+            fi
+            printf '%s\n' "$entry"
+          done \
           | sort -u >"$fs_entries"
 
         entry_count="$(wc -l < "$fs_entries")"

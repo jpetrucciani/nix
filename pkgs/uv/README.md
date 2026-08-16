@@ -6,6 +6,10 @@ this directory contains apps built with uv2nix using my wrapper
 
 ## In this directory
 
+### [ace-step.nix](./ace-step.nix)
+
+[ACE-Step](https://github.com/ace-step/ACE-Step-1.5) is an open-source music generation model and serving API
+
 ### [hermes-agent.nix](./hermes-agent.nix)
 
 [hermes-agent](https://github.com/NousResearch/hermes-agent) is an agent that grows with you

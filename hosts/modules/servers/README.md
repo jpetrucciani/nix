@@ -6,6 +6,32 @@ This directory contains misc servers implemented as nix modules!
 
 ## In this directory
 
+### [ace-step.nix](./ace-step.nix)
+
+A GPU-backed NixOS service for the [ACE-Step](https://github.com/ace-step/ACE-Step-1.5) music generation API.
+
+The module keeps checkpoints and generated output under `/var/lib/ace-step`, uses a separate writable cache, and can
+download the bundled model before starting the API. GPU visibility, eager loading, and the language-model planner are
+configurable:
+
+```nix
+{
+  imports = [ ../modules/servers/ace-step.nix ];
+
+  services.ace-step = {
+    enable = true;
+    address = "0.0.0.0";
+    port = 8012;
+    gpuDevice = "0";
+    languageModel = {
+      enable = true;
+      model = "acestep-5Hz-lm-1.7B";
+      backend = "vllm";
+    };
+  };
+}
+```
+
 ### [goto.nix](./goto.nix)
 
 a service to run + watch a local executable

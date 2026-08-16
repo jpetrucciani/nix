@@ -35,6 +35,19 @@ uv-nix.buildUvPackage rec {
     "onnxruntime"
   ];
   pyprojectOverrides = _final: _prev: {
+    "sglang-omni" = _prev."sglang-omni".overrideAttrs (old: {
+      # Music3 stores its acoustic checkpoint as FP32. Loading it directly on
+      # the GPU defeats the BF16 runtime override and adds a 9 GiB startup
+      # spike, so stage it in host RAM and transfer tensors at their final
+      # inference dtype.
+      postInstall = (old.postInstall or "") + ''
+        patch \
+          --fuzz=0 \
+          -d "$out/${python312.sitePackages}" \
+          -p1 \
+          < ${./patches/sglang-omni-minimax-music3-bf16-load.patch}
+      '';
+    });
     "nixl-cu13" = _prev."nixl-cu13".overrideAttrs (old: {
       # The CUDA-specific wheel omits the `nixl` meta-package namespace that
       # SGLang-Omni imports. This package is CUDA 13-only, so expose its backend
