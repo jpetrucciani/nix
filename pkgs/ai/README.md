@@ -26,7 +26,7 @@ geode is an experimental semantic indexing tool
 
 [`jeeves`](https://github.com/robinovitch61/jeeves) is an AI agent conversation history browser
 
-### [kimi-codex.nix](./kimi-codex.nix)
+### [kimi-code.nix](./kimi-code.nix)
 
 [`kimi-code`](https://github.com/MoonshotAI/kimi-code) is an AI coding agent for the terminal
 
