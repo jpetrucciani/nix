@@ -227,6 +227,7 @@ in
       echo "$S3_CREDS" | base64 -d >~/.aws/credentials
       echo "$PRIVKEY" | base64 -d >/tmp/cache.priv.pem
       nix run .#nixcache ./result*
+      nix flake archive --to "$POG_URI"
       rm /tmp/cache.priv.pem ~/.aws/credentials
     '';
   };

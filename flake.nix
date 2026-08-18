@@ -51,7 +51,8 @@
   outputs = { self, ... }:
     let
       inherit (self.inputs.nixpkgs) lib;
-      inherit (import ./hosts/constants.nix) machines;
+      inherit (constants) machines subs;
+      constants = import ./hosts/constants.nix;
       forAllSystems = lib.genAttrs [
         "aarch64-darwin"
         "aarch64-linux"
@@ -196,5 +197,10 @@
         "vmware"
       ]
         foundryImageVariants;
+
+      nixConfig = {
+        extra-substituters = [ subs.g7c.url ];
+        extra-trusted-public-keys = [ subs.g7c.key ];
+      };
     };
 }
