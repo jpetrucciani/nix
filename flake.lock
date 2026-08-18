@@ -223,11 +223,11 @@
         "pog": "pog"
       },
       "locked": {
-        "lastModified": 1786838736,
-        "narHash": "sha256-7GcGEVTlbpXB3Ev7YlTnZkU6Nw7MX8ljZn9bhEGWuFU=",
+        "lastModified": 1787011573,
+        "narHash": "sha256-DGXHVYa6rUjXkbSvtvkdHVOdQucsiRM/ASHZHqFE9Qw=",
         "owner": "jpetrucciani",
         "repo": "hex",
-        "rev": "aa367f4f517e91799c2b3ac7c85580f8e1f7973a",
+        "rev": "6b3d9b357245e006f06b64ee18f9e6e4e3969007",
         "type": "github"
       },
       "original": {
@@ -264,11 +264,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1786887553,
-        "narHash": "sha256-0J8EwNSJ/2OeyuvXgfG+k5uBT1gkg0ww7VEo+14xl50=",
+        "lastModified": 1786999651,
+        "narHash": "sha256-MTGMFlLDTklsXhCp4r5GXB4VAVadPdalXLvUjd/K7h0=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "5bd505963717a894b02a57cdbcc00db28d9b029f",
+        "rev": "353742587cbaf079b3caee743115d037bc51fea6",
         "type": "github"
       },
       "original": {
@@ -464,11 +464,11 @@
     },
     "nixpkgs_6": {
       "locked": {
-        "lastModified": 1786902364,
-        "narHash": "sha256-BHSqbhxhD2irU6V9xgrh9UWSi4LTNPWjf0h8XXmXycQ=",
-        "rev": "438ec6ed16d3446eaa8324f28831f7ddbeb467c9",
+        "lastModified": 1786987418,
+        "narHash": "sha256-LtSXCw8MqjPy+fUcPgej7S+JG7A2yP5DJtsM2S0qDw4=",
+        "rev": "2a747aca22036dce3677fd41877427e3cd33e87a",
         "type": "tarball",
-        "url": "https://releases.nixos.org/nixos/unstable-small/nixos-26.11pre1055885.438ec6ed16d3/nixexprs.tar.xz"
+        "url": "https://releases.nixos.org/nixos/unstable-small/nixos-26.11pre1056776.2a747aca2203/nixexprs.tar.xz"
       },
       "original": {
         "id": "nixpkgs",
@@ -622,11 +622,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1785730568,
-        "narHash": "sha256-NjSPsgjJ7MSpBtTkUcmNhRe6AFZ96+zsca2M8YuQi8Y=",
+        "lastModified": 1786936886,
+        "narHash": "sha256-8SFyOdmcG6Nsh/JzlH812lTI/v+ur06fpQhj/acNn8k=",
         "owner": "pyproject-nix",
         "repo": "build-system-pkgs",
-        "rev": "90fde00db3687922d39d95fc591475fd0bbbcd72",
+        "rev": "90ffdeee1a4929b231913df067448cd9803d3e07",
         "type": "github"
       },
       "original": {
