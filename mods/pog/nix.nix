@@ -428,9 +428,9 @@ rec {
       done
 
       for pattern in \
-        'v8Version = "' \
-        'v8ArchiveHashes = {' \
-        'v8BindingHashes = {'
+        '^[[:space:]]*v8Version = "' \
+        '^[[:space:]]*v8ArchiveHashes = {' \
+        '^[[:space:]]*v8BindingHashes = {'
       do
         matches=$(${final.gnugrep}/bin/grep -c "$pattern" "$target_file" || true)
         if [ "$matches" -ne 1 ]; then
