@@ -1025,7 +1025,7 @@ in
           systemd.services.earlyoom.serviceConfig.ExecStart = "${final.earlyoom}/bin/earlyoom";
           services.earlyoom = {
             enable = true;
-            freeSwapThreshold = 10;
+            freeSwapThreshold = 100; # ignore checking swap for any value
             freeMemThreshold = 10;
             extraArgs = [
               "-g"
