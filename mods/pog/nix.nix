@@ -7,7 +7,7 @@ in
 rec {
   nixup =
     let
-      version = "0.0.12";
+      version = "0.0.13";
       _flags = {
         with_bun = "include bun with dependencies";
         with_crystal = "include crystal with dependencies";
@@ -152,7 +152,7 @@ rec {
           if [ "$with_uv" = "1" ]; then
             extra_env_overrides="// uvEnv.uvEnvVars"
             uv="uv = [uv uvEnv];"
-            uv_top="uvEnv = pkgs.uv-nix.mkEnv {${"\n"}inherit name; python = pkgs.python314; workspaceRoot = pkgs.hax.filterSrc { path = ./.; }; pyprojectOverrides = final: prev: { }; };${"\n"}"
+            uv_top="uvEnv = pkgs.uv-nix.mkEnv {${"\n"}inherit name; python = pkgs.python313; workspaceRoot = pkgs.hax.filterSrc { path = ./.; }; pyprojectOverrides = final: prev: { }; };${"\n"}"
             gitignore="$gitignore${"\n"}# python${"\n"}${gitignore.python}"
           fi
           vlang=""
@@ -205,6 +205,35 @@ rec {
               env = {${"\n"}NIXUP = "${version}"; $extra_env } ''${extra_env_overrides};
             })) // {inherit scripts;}
           EOF
+          if [ "$with_uv" = "1" ] && [ ! -f pyproject.toml ]; then
+            project_name=$(printf '%s' "$directory" | ${_.sed} -E 's/[^a-zA-Z0-9._-]+/-/g; s/^[._-]+//; s/[._-]+$//')
+            if [ -z "$project_name" ]; then
+              project_name="project"
+            fi
+            ${final.coreutils}/bin/cat > pyproject.toml <<EOF
+          [project]
+          name = "$project_name"
+          version = "0.0.1"
+          description = ""
+          authors = []
+          requires-python = ">=3.13,<3.14"
+          dependencies = []
+
+          [tool.uv]
+          package = false
+
+          [tool.pytest.ini_options]
+          pythonpath = ["."]
+
+          [dependency-groups]
+          dev = [
+              "ptpython>=3.0.29",
+              "ruff>=0.16.0",
+              "ty>=0.0.73"
+          ]
+          EOF
+            echo "created pyproject.toml for '$project_name'" >&2
+          fi
           if [ ! -f .gitignore ]; then
             echo "$gitignore" > .gitignore
           fi
