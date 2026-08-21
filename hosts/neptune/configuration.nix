@@ -86,6 +86,14 @@ in
   environment.systemPackages = [ pkgs.k3s ];
 
   services = {
+    _3proxy = {
+      enable = true;
+      services = [{
+        type = "socks";
+        bindAddress = ts_ip;
+        auth = [ "none" ];
+      }];
+    };
     nats =
       let
         megs = x: 1024 * 1024 * x;
