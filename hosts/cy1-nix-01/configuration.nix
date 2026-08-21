@@ -83,6 +83,7 @@ in
   };
 
   services = {
+    cron.enable = true;
     logind.settings.Login = {
       RuntimeDirectorySize = "24G";
     };
