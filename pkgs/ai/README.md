@@ -14,6 +14,10 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 [`chatbot-ui`](https://github.com/mckaywrigley/chatbot-ui) is a popular frontend for OpenAI compliant APIs. It is designed to look similar to OpenAI's ChatGPT UI.
 
+### [deepseek-harness.nix](./deepseek-harness.nix)
+
+[`deepseek-harness`](https://github.com/deepseek-ai/deepseek-harness) is an open-source agent harness developed by DeepSeek AI
+
 ### [genai-toolbox.nix](./genai-toolbox.nix)
 
 [`genai-toolbox`](https://github.com/googleapis/genai-toolbox) is an open source MCP server for databases, designed and built with enterprise-quality and production-grade usage in mind
