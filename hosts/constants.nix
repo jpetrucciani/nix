@@ -348,6 +348,17 @@ in
         # set terminal title via OSC 0
         echo -ne "\033]0;''${title}\007"
       }
+
+      # starship owns PROMPT_COMMAND outright, so hook its documented precmd slot
+      # instead of fighting it. Without starship, prepend so $? is still intact.
+      if [ -n "''${STARSHIP_SHELL:-}" ] || command -v starship >/dev/null 2>&1; then
+        starship_precmd_user_func="__wezterm_title"
+      else
+        case "$PROMPT_COMMAND" in
+          *__wezterm_title*) ;;
+          *) PROMPT_COMMAND="__wezterm_title''${PROMPT_COMMAND:+;$PROMPT_COMMAND}" ;;
+        esac
+      fi
     '';
   };
 }
