@@ -26,7 +26,7 @@ in
   boot = {
     loader = {
       grub.enable = true;
-      grub.device = "/dev/nvme0n1";
+      grub.device = "/dev/disk/by-id/ata-QEMU_HARDDISK_QM00015";
     };
     kernel.sysctl = { } // common.sysctl_opts;
     tmp.useTmpfs = true;
@@ -42,7 +42,7 @@ in
   networking = {
     hostName = hostname;
     useDHCP = false;
-    interfaces.enp9s0 = {
+    interfaces.enp0s4 = {
       useDHCP = false;
       ipv4.addresses = [
         {

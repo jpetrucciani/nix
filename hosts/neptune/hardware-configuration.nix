@@ -15,7 +15,7 @@
   };
 
   fileSystems."/" = {
-    device = "/dev/nvme0n1p2";
+    device = "/dev/disk/by-uuid/628a5c0a-9a77-4add-9c0a-d665fe2678ff";
     fsType = "btrfs";
   };
 
@@ -28,7 +28,7 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   networking.useDHCP = lib.mkDefault false;
-  networking.interfaces.enp9s0.useDHCP = lib.mkDefault true;
+  networking.interfaces.enp0s4.useDHCP = lib.mkDefault true;
 
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
