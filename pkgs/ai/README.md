@@ -10,6 +10,13 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 
 [`agent-deck`](https://github.com/asheshgoplani/agent-deck) is a terminal session manager for AI coding agents. One TUI for Claude, Gemini, OpenCode, Codex, and more
 
+### [audio-cpp.nix](./audio-cpp.nix)
+
+[`audio.cpp`](https://github.com/0xShug0/audio.cpp) is a high-performance C++ audio inference framework powered by ggml
+
+The default build uses CPU inference on Linux and Metal on macOS. CUDA and ROCm builds are available as
+`audio-cpp.cuda` and `audio-cpp.rocm`, respectively.
+
 ### [chatbot-ui.nix](./chatbot-ui.nix)
 
 [`chatbot-ui`](https://github.com/mckaywrigley/chatbot-ui) is a popular frontend for OpenAI compliant APIs. It is designed to look similar to OpenAI's ChatGPT UI.
