@@ -43,16 +43,7 @@ in
   networking = {
     hostName = hostname;
     useDHCP = false;
-    interfaces.enp0s4 = {
-      useDHCP = false;
-      ipv4.addresses = [
-        {
-          address = "142.132.149.106";
-          prefixLength = 26;
-        }
-      ];
-    };
-    defaultGateway = "142.132.149.65";
+    useNetworkd = true;
     nameservers = [ "1.1.1.1" "8.8.8.8" ];
     firewall = {
       enable = true;
@@ -66,6 +57,15 @@ in
       allowedUDPPorts = [ ];
       checkReversePath = "loose";
     };
+  };
+
+  systemd.network.networks."10-uplink" = {
+    matchConfig.MACAddress = "a8:a1:59:94:0e:dc";
+    address = [ "142.132.149.106/32" ];
+    routes = [{
+      Gateway = "142.132.149.65";
+      GatewayOnLink = true;
+    }];
   };
 
   users = {
