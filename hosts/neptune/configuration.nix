@@ -27,6 +27,7 @@ in
     loader = {
       grub.enable = true;
       grub.device = "/dev/disk/by-id/ata-QEMU_HARDDISK_QM00015";
+      grub.configurationLimit = 5;
     };
     kernel.sysctl = { } // common.sysctl_opts;
     tmp.useTmpfs = true;
