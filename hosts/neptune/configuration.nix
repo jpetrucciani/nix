@@ -26,7 +26,7 @@ in
   boot = {
     loader = {
       grub.enable = true;
-      grub.device = "/dev/disk/by-id/ata-QEMU_HARDDISK_QM00015";
+      grub.device = "/dev/disk/by-id/nvme-eui.002538b811b5c561";
       grub.configurationLimit = 5;
     };
     kernel.sysctl = { } // common.sysctl_opts;
