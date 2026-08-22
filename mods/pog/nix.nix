@@ -7,7 +7,48 @@ in
 rec {
   nixup =
     let
-      version = "0.0.13";
+      version = "0.0.15";
+      updatePinFilter = ''
+        def blocks:
+          [match("fetchTarball\\s*\\{[^{}]*\\}"; "g")];
+        def pin_name:
+          try capture("name\\s*=\\s*\"(?<name>[^\"]+)\"\\s*;").name catch "";
+        . as $source
+        | blocks as $blocks
+        | [
+            $blocks[]
+            | select(
+                (.string | contains("# nixup: pin=" + $repo + ";"))
+                or (.string | contains("github.com/" + $repo + "/archive/"))
+                or (.string | contains("codeload.github.com/" + $repo + "/"))
+              )
+          ] as $exact
+        | [
+            $blocks[]
+            | . as $block
+            | ($block.string | pin_name) as $name
+            | select(
+                ($name | startswith($owner + "-"))
+                and (($name | ltrimstr($owner + "-")) | test("^[0-9]{4}-[0-9]{2}-[0-9]{2}$"))
+              )
+          ] as $legacy
+        | [
+            $legacy[]
+            | select(.string | contains("nix.cobi.dev/"))
+          ] as $cached
+        | (
+            if ($exact | length) > 0 then $exact
+            elif (($cached | length) > 0 and ($legacy | length) == 1) then $cached
+            else $legacy
+            end
+          ) as $matches
+        | if ($matches | length) != 1 then
+            error("expected exactly one pin for " + $repo + ", found " + (($matches | length) | tostring))
+          else
+            $matches[0] as $match
+            | $source[0:$match.offset] + $replacement + $source[($match.offset + $match.length):]
+          end
+      '';
       _flags = {
         with_bun = "include bun with dependencies";
         with_crystal = "include crystal with dependencies";
@@ -21,8 +62,6 @@ rec {
         with_node = "include node";
         with_ocaml = "include an ocaml environment";
         with_php = "include a php with packages";
-        with_poetry = "include python using poetry2nix";
-        with_pulumi = "include pulumi";
         with_python = "include a python with packages";
         with_ruby = "include ruby";
         with_rust = "include rust";
@@ -38,6 +77,7 @@ rec {
       inherit version;
       name = "nixup";
       description = "a quick tool to create/update a base default.nix environment! will also attempt to make you a baseline gitignore";
+      strict = true;
       flags = [
         { name = "srcpath"; description = "the fs path to import pkgs from if passed. if not passed in, will pin to the latest version of jpetrucciani/nix"; }
         { name = "update"; bool = true; description = "update the pin to jpetrucciani in the given file (argument 1) [default: ./default.nix]"; }
@@ -45,16 +85,31 @@ rec {
         { name = "branch"; description = "Branch to pin to"; default = "main"; }
       ] ++ flags;
       shortDefaultFlags = false;
+      beforeExit = ''
+        if [ -n "''${nixup_update_tmp:-}" ] && [ -f "$nixup_update_tmp" ]; then
+          ${final.coreutils}/bin/rm -f -- "$nixup_update_tmp"
+        fi
+      '';
       script = h:
         ''
-          directory="$(pwd | ${_.sed} 's#.*/##')"
-          repo_owner=$(echo "$repo" | cut -d'/' -f1)
-          repo_name=$(echo "$repo" | cut -d'/' -f2)
-          remote=$(${final.nix_hash}/bin/nix_hash --repo "$repo" --branch "$branch" 2>/dev/null);
-          rev=$(echo "$remote" | ${jaq} -r '.rev')
-          sha=$(echo "$remote" | ${jaq} -r '.sha256')
+          nixup_update_tmp=""
+          project_dir="$(${final.coreutils}/bin/pwd -P)"
+          directory="$(${final.coreutils}/bin/basename -- "$project_dir")"
+          name=$(printf '%s' "$directory" | ${_.sed} -E 's/[^a-zA-Z0-9._-]+/-/g; s/^[._-]+//; s/[._-]+$//')
+          if [ -z "$name" ]; then
+            name="project"
+          fi
+          nix_string() {
+            printf '%s' "$1" | ${jaq} -Rs .
+          }
+          name_nix=$(nix_string "$name")
+          source_name_nix=$(nix_string "$name-source")
+
+          if ${h.flag "update"} && ${h.var.notEmpty "srcpath"}; then
+            die "--update and --srcpath cannot be used together"
+          fi
+
           toplevel=""
-          _env="pkgs.buildEnv {${"\n"} inherit name paths; buildInputs = paths; };"
           extra_env=""
           extra_env_overrides=""
           pkgs_import_args="{}"
@@ -107,27 +162,15 @@ rec {
           dotnet=""
           if [ "$with_dotnet" = "1" ]; then
             dotnet="dotnet = [clang${"\n"}dotnet-sdk_9 dotnet-runtime_9 dotnetPackages.Nuget netcoredbg zlib];"
-            extra_env="$extra_env DOTNET_CLI_TELEMETRY_OPTOUT = 1; DOTNET_ROOT = \"\''${pkgs.dotnet-sdk_9}\";"
+            extra_env="$extra_env DOTNET_CLI_TELEMETRY_OPTOUT = \"1\"; DOTNET_ROOT = \"\''${pkgs.dotnet-sdk_9}\";"
           fi
           ocaml=""
           if [ "$with_ocaml" = "1" ]; then
             ocaml="ocaml = [bintools${"\n"}clang] ++ (with ocamlPackages; [dream${"\n"}dune_3 findlib ocaml ocaml-lsp ocamlformat]);"
           fi
-          pulumi=""
-          if [ "$with_pulumi" = "1" ]; then
-            py="python = [(python313.withPackages ( p: with p; [${"\n"}pulumi]))];"
-            pulumi="pulumi = [pulumi];"
-          fi
           py=""
           if [ "$with_python" = "1" ]; then
             py="python = [ruff${"\n"}(python314.withPackages ( p: with p; [${"\n"}black]))];"
-            gitignore="$gitignore${"\n"}# python${"\n"}${gitignore.python}"
-          fi
-          poetry=""
-          if [ "$with_poetry" = "1" ]; then
-            py="python = [ruff${"\n"}(poetry.override (_: { python3 = python314; }))];"
-            poetry="python = pkgs.poetry-helpers.mkEnv {${"\n"}projectDir = ./.; python = pkgs.python314; extraOverrides = [(final: prev: { })];};${"\n"}"
-            _env="python.env.overrideAttrs (_: {${"\n"} buildInputs = paths; });"
             gitignore="$gitignore${"\n"}# python${"\n"}${gitignore.python}"
           fi
           ruby=""
@@ -152,7 +195,7 @@ rec {
           if [ "$with_uv" = "1" ]; then
             extra_env_overrides="// uvEnv.uvEnvVars"
             uv="uv = [uv uvEnv];"
-            uv_top="uvEnv = pkgs.uv-nix.mkEnv {${"\n"}inherit name; python = pkgs.python313; workspaceRoot = pkgs.hax.filterSrc { path = ./.; }; pyprojectOverrides = final: prev: { }; };${"\n"}"
+            uv_top="uvEnv = pkgs.uv-nix.mkEnv {${"\n"}inherit name; python = pkgs.python313; workspaceRoot = pkgs.hax.filterSrc { name = $source_name_nix; path = ./.; }; pyprojectOverrides = final: prev: { }; };${"\n"}"
             gitignore="$gitignore${"\n"}# python${"\n"}${gitignore.python}"
           fi
           vlang=""
@@ -167,18 +210,58 @@ rec {
             toplevel="deps = with pkgs; [${"\n"}stdenv.cc.cc.lib ] ++ (with cudaPackages; [${"\n"}cudatoolkit]);${"\n"}$toplevel"
             extra_env="$extra_env LD_LIBRARY_PATH = \"\''${pkgs.hax.nvidiaLdPath}:\''${pkgs.lib.makeLibraryPath deps}\";${"\n"}CUDA_PATH = pkgs.cudatoolkit;"
           fi
-          ftb="fetchTarball { name = \"$repo_owner-$(date '+%F')\"; url = \"https://github.com/$repo/archive/$rev.tar.gz\"; sha256 = \"$sha\";}"
+          if ${h.var.notEmpty "srcpath"}; then
+            if [ ! -d "$srcpath" ]; then
+              die "the source path ('$srcpath') is not a directory"
+            fi
+            resolved_srcpath="$(${final.coreutils}/bin/realpath -e -- "$srcpath")"
+            ftb="builtins.toPath $(nix_string "$resolved_srcpath")"
+          else
+            remote=$(${final.nix_hash}/bin/nix_hash --repo "$repo" --branch "$branch")
+            pin_date=$(printf '%s' "$remote" | ${jaq} -er '.date | select(type == "string")')
+            rev=$(printf '%s' "$remote" | ${jaq} -er '.rev | select(type == "string")')
+            sha=$(printf '%s' "$remote" | ${jaq} -er '.sha256 | select(type == "string")')
+            archive_url=$(printf '%s' "$remote" | ${jaq} -er '.url | select(type == "string")')
+            if [[ ! "$pin_date" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+              die "nix_hash returned an invalid pin date"
+            fi
+            if [[ ! "$rev" =~ ^[0-9a-f]{40}$ ]]; then
+              die "nix_hash returned an invalid revision"
+            fi
+            if [[ ! "$sha" =~ ^[0-9abcdfghijklmnpqrsvwxyz]{52}$ ]] && [[ ! "$sha" =~ ^sha256-[A-Za-z0-9+/]{43}=$ ]]; then
+              die "nix_hash returned an invalid sha256"
+            fi
+            if [[ ! "$archive_url" =~ ^https://[^[:space:]]+$ ]]; then
+              die "nix_hash returned an invalid archive URL"
+            fi
+            repo_owner="''${repo%%/*}"
+            pin_name_nix=$(nix_string "$repo_owner-$pin_date")
+            archive_url_nix=$(nix_string "$archive_url")
+            sha_nix=$(nix_string "$sha")
+            ftb="fetchTarball {${"\n"}# nixup: pin=$repo;${"\n"}name = $pin_name_nix; url = $archive_url_nix; sha256 = $sha_nix;}"
+          fi
           if ${h.flag "update"}; then
             default_nix="''${1:-./default.nix}"
             ${h.file.notExists "default_nix"} && die "the nix file to update ('$default_nix') does not exist!"
-            echo "updating '$default_nix' to '$repo@$rev'"
-            ${_.sed} -i -E -z "s#(fetchTarball[\s]*).*(\/$repo_owner\/$repo_name|nix\.cobi\.dev\/)[^\}]*\}#$ftb#g" "$default_nix"
-            ${_.sed} -i -E 's#(fetchTarball \{) (name)#\1\n\2#' "$default_nix"
-            ${_.nixpkgs-fmt} "$default_nix" 2>/dev/null
+            default_nix="$(${final.coreutils}/bin/realpath -e -- "$default_nix")"
+            # shellcheck disable=SC2016
+            updated_content=$(${jaq} -Rsr \
+              --arg repo "$repo" \
+              --arg owner "$repo_owner" \
+              --arg replacement "$ftb" \
+              ${lib.escapeShellArg updatePinFilter} \
+              "$default_nix")
+            default_dir="$(${final.coreutils}/bin/dirname -- "$default_nix")"
+            default_name="$(${final.coreutils}/bin/basename -- "$default_nix")"
+            nixup_update_tmp="$(${final.coreutils}/bin/mktemp "$default_dir/.$default_name.nixup.XXXXXX")"
+            printf '%s\n' "$updated_content" >| "$nixup_update_tmp"
+            ${_.nixpkgs-fmt} "$nixup_update_tmp"
+            ${final._nix}/bin/nix-instantiate --parse "$nixup_update_tmp" >/dev/null
+            ${final.coreutils}/bin/chmod --reference="$default_nix" "$nixup_update_tmp"
+            ${final.coreutils}/bin/mv -- "$nixup_update_tmp" "$default_nix"
+            nixup_update_tmp=""
+            echo "updated '$default_nix' to '$repo@$rev'"
             exit 0
-          fi
-          if ${h.var.notEmpty "srcpath"}; then
-            ftb="$srcpath"
           fi
           ${final.coreutils}/bin/cat -s <<EOF | ${_.sed} -E 's#(fetchTarball \{) (name)#\1\n\2#' | ${_.nixpkgs-fmt}
             { pkgs ? import
@@ -186,30 +269,28 @@ rec {
             ''${rust_overlay_arg}
             }:
             let
-              name = "$directory";
-              ''${toplevel} ''${poetry} ''${uv_top}
+              name = ''${name_nix};
+              ''${toplevel} ''${uv_top}
+              envVars = {${"\n"}NIXUP = "${version}"; $extra_env } ''${extra_env_overrides};
               tools = with pkgs; {
                 cli = [
                   jfmt
                   nixup
-                ]; ''${bun} ''${crystal} ''${elixir} ''${golang} ''${nim} ''${node} ''${ocaml} ''${php} ''${dotnet} ''${java} ''${pulumi} ''${py} ''${ruby} ''${rust} ''${terraform} ''${uv} ''${vlang}
+                ]; ''${bun} ''${crystal} ''${elixir} ''${golang} ''${nim} ''${node} ''${ocaml} ''${php} ''${dotnet} ''${java} ''${py} ''${ruby} ''${rust} ''${terraform} ''${uv} ''${vlang}
                 scripts = pkgs.lib.attrsets.attrValues scripts;
               };
 
             scripts = with pkgs; {''${pg} ''${redis}};
             paths = pkgs.lib.flatten [ (builtins.attrValues tools) ];
-            env = ''${_env}
+            env = pkgs.buildEnv {${"\n"} inherit name paths; buildInputs = paths; };
             in
-            (env.overrideAttrs (_: {
+            (env.overrideAttrs (old: {
               inherit name;
-              env = {${"\n"}NIXUP = "${version}"; $extra_env } ''${extra_env_overrides};
+              env = (old.env or { }) // envVars;
             })) // {inherit scripts;}
           EOF
           if [ "$with_uv" = "1" ] && [ ! -f pyproject.toml ]; then
-            project_name=$(printf '%s' "$directory" | ${_.sed} -E 's/[^a-zA-Z0-9._-]+/-/g; s/^[._-]+//; s/[._-]+$//')
-            if [ -z "$project_name" ]; then
-              project_name="project"
-            fi
+            project_name="$name"
             ${final.coreutils}/bin/cat > pyproject.toml <<EOF
           [project]
           name = "$project_name"

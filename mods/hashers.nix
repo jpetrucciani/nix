@@ -4,6 +4,7 @@ let
   nix_hash = final.pog {
     name = "nix_hash";
     description = "grab the latest rev/sha256 from the specified repo and branch";
+    strict = true;
     flags = [
       {
         name = "repo";
@@ -20,6 +21,12 @@ let
         description = "print out this pin as a nix expression using fetchTarball";
         bool = true;
       }
+      {
+        name = "github_token";
+        description = "GitHub API token (also passable with GITHUB_TOKEN)";
+        envVar = "GITHUB_TOKEN";
+        short = "";
+      }
     ];
     script =
       let
@@ -27,21 +34,52 @@ let
         nix-prefetch = "${final._nix}/bin/nix-prefetch-url";
       in
       h: ''
-        repo_owner=$(echo "$repo" | cut -d'/' -f1)
-        rev=$(${curl} -s "https://api.github.com/repos/$repo/commits/$branch" | ${jq} -r '.sha')
-        sha=$(${nix-prefetch} --unpack "https://github.com/$repo/archive/$rev.tar.gz")
+        if [[ ! "$repo" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
+          die "repo must be in owner/repo format"
+        fi
+
+        repo_owner="''${repo%%/*}"
+        branch_encoded=$(${jq} -nr --arg ref "$branch" '$ref | @uri')
+        curl_args=(
+          --fail-with-body
+          --silent
+          --show-error
+          --location
+          --header "Accept: application/vnd.github+json"
+          --header "X-GitHub-Api-Version: 2022-11-28"
+        )
+        if [ -n "$github_token" ]; then
+          curl_args+=(--header "Authorization: Bearer $github_token")
+        fi
+        response=$(${curl} "''${curl_args[@]}" "https://api.github.com/repos/$repo/commits/$branch_encoded")
+        rev=$(printf '%s' "$response" | ${jq} -er '.sha | select(type == "string")')
+        if [[ ! "$rev" =~ ^[0-9a-f]{40}$ ]]; then
+          die "GitHub returned an invalid revision for '$repo@$branch'"
+        fi
+
+        archive_url="https://github.com/$repo/archive/$rev.tar.gz"
+        sha=$(${nix-prefetch} --unpack "$archive_url")
+        if [[ ! "$sha" =~ ^[0-9abcdfghijklmnpqrsvwxyz]{52}$ ]] && [[ ! "$sha" =~ ^sha256-[A-Za-z0-9+/]{43}=$ ]]; then
+          die "nix-prefetch-url returned an invalid sha256 for '$archive_url'"
+        fi
+
         d="$(${date} +%Y-%m-%d)"
         if ${h.flag "fetchtarball"}; then
-          cat <<EOF
+          ${final.coreutils}/bin/cat <<EOF
         (fetchTarball {
           name = "$repo_owner-$d";
-          url = "https://github.com/$repo/archive/$rev.tar.gz";
+          url = "$archive_url";
           sha256 = "$sha";
         })
         EOF
           exit 0
         fi
-        echo "{ \"date\": \"$d\", \"rev\": \"$rev\", \"sha256\": \"$sha\" }" | ${jq}
+        ${jq} -n \
+          --arg date "$d" \
+          --arg rev "$rev" \
+          --arg sha256 "$sha" \
+          --arg url "$archive_url" \
+          '{ date: $date, rev: $rev, sha256: $sha256, url: $url }'
       '';
   };
   _nix_hash = repo: branch: name: final.writers.writeBashBin "nix_hash_${name}" ''

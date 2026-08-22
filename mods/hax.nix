@@ -185,6 +185,7 @@ final: prev:
 
     filterSrc =
       { path
+      , name ? "source"
       , default_ignores ? [
           ".db"
           ".git"
@@ -201,7 +202,14 @@ final: prev:
           "venv"
         ]
       , extra_ignore ? [ ]
-      }: final.nix-gitignore.gitignoreSource (default_ignores ++ extra_ignore) path;
+      }:
+      builtins.path {
+        inherit name path;
+        filter = final.nix-gitignore.gitignoreFilterPure
+          (_: _: true)
+          (final.nix-gitignore.withGitignoreFile (default_ignores ++ extra_ignore) path)
+          path;
+      };
 
     exportFilterPath = names:
       let
