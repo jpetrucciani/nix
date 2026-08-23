@@ -1,4 +1,4 @@
-# [argus](https://github.com/jpetrucciani/argus) is a customizable http request logger with prometheus metrics 
+# [argus](https://github.com/jpetrucciani/argus) is a customizable http request logger with prometheus metrics
 { lib
 , rustPlatform
 , fetchFromGitHub

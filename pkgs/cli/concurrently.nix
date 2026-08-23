@@ -45,11 +45,17 @@ stdenv.mkDerivation (finalAttrs: {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p "$out/bin" "$out/lib/concurrently"
-    cp -r dist node_modules "$out/lib/concurrently"
+    mkdir -p "$out/bin" "$out/lib"
+    pnpm --filter concurrently \
+      --prod \
+      --offline \
+      --ignore-scripts \
+      --config.inject-workspace-packages=true \
+      deploy \
+      "$out/lib/concurrently"
     makeWrapper "${lib.getExe nodejs}" "$out/bin/concurrently" \
-      --add-flags "$out/lib/concurrently/dist/bin/concurrently.js"
-    ln -s "$out/bin/concurrently" "$out/bin/con"
+      --add-flags "$out/lib/concurrently/dist/bin/index.js"
+    ln -s "$out/bin/concurrently" "$out/bin/conc"
 
     runHook postInstall
   '';

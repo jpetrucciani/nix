@@ -129,36 +129,6 @@ rec {
     '';
   };
 
-  gcp_get_gke_build =
-    let
-      inherit (final._) curl head jq;
-      nurl = "${final._nix}/bin/nix-prefetch-url";
-      base_url = "https://dl.google.com/dl/cloudsdk/channels/rapid/components/google-cloud-sdk-gke-gcloud-auth-plugin-";
-    in
-    pog {
-      name = "gcp_get_gke_build";
-      description = "a way for us to get the build number and version of 'gke-gcloud-auth-plugin' because google hates us";
-      flags = [
-        {
-          name = "gversion";
-          description = "the version of gcloud we want to check resources for";
-          default = "506.0.0";
-        }
-      ];
-      script = ''
-        channel="https://dl.google.com/dl/cloudsdk/channels/rapid/components-v$gversion.json"
-        data=$(${curl} -s "$channel" | ${jq} -c '.components[] | select(.id|contains("gke-gcloud-auth-plugin-darwin")) | .version' | ${head} -1)
-        version=$(echo "$data" | ${jq} -r '.build_number')
-        echo "pulled data for: $data"
-        echo "arm64 darwin"
-        ${nurl} "${base_url}darwin-arm-$version.tar.gz" 2>/dev/null
-        echo "arm64 linux"
-        ${nurl} "${base_url}linux-arm-$version.tar.gz" 2>/dev/null
-        echo "x86_64 linux"
-        ${nurl} "${base_url}linux-x86_64-$version.tar.gz" 2>/dev/null
-      '';
-    };
-
   gcp_edit_json_secret =
     let
       mktemp = "${final.coreutils}/bin/mktemp --suffix=.json";
@@ -269,7 +239,6 @@ rec {
     glist
     gcp_perm
     gke_config
-    gcp_get_gke_build
     gcp_edit_json_secret
   ];
 }

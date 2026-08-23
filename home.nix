@@ -123,7 +123,7 @@ in
         p7zip
         patch
         pigz
-        prism
+        prism-rs
         procps
         pssh
         re2c

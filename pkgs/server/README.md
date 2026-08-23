@@ -6,7 +6,7 @@ This directory contains specific servers
 
 ## In this directory
 
-### [argus.nix](./argus.nix)
+### [argus-rs.nix](./argus-rs.nix)
 
 [argus](https://github.com/jpetrucciani/argus) is a customizable http request logger with prometheus metrics
 

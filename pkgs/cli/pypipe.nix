@@ -1,12 +1,12 @@
 # [pypipe](https://github.com/bugen/pypipe) is a python pipe cli tool
 { lib
-, stdenv
+, stdenvNoCC
 , fetchFromGitHub
 , python311
 , ...
 }:
 
-stdenv.mkDerivation rec {
+stdenvNoCC.mkDerivation rec {
   pname = "pypipe";
   version = "0.0.1";
 

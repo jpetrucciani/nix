@@ -22,6 +22,13 @@ This directory contains tooling related to various cloud providers
 
 gke-gcloud-auth-plugin is a required plugin for using kubectl with Google's GKE on GCP
 
+Run `nix run .#gke-gcloud-auth-plugin.updateScript` to update it from the component manifest matching the pinned
+Google Cloud SDK, or pass a specific SDK version after `--`.
+
+### [gke-gcloud-auth-plugin.json](./gke-gcloud-auth-plugin.json)
+
+Pinned plugin version, component-manifest revision, and platform archive metadata consumed by the package.
+
 ### [goaws.nix](./goaws.nix)
 
 [goaws](https://github.com/Admiral-Piett/goaws) is a SQS/SNS Clone for Development testing

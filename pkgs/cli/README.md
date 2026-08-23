@@ -13,10 +13,7 @@ For the complete list, browse [`pkgs/cli`](./).
 ### Developer Workflow
 
 - [concurrently.nix](./concurrently.nix): run multiple commands in parallel.
-- [t.nix](./t.nix): concise text transformation language.
-- [hunt.nix](./hunt.nix): simplified fast file search.
-- [sig.nix](./sig.nix): interactive streaming grep.
-- [dep-tree.nix](./dep-tree.nix): visualize codebase dependency graphs.
+- [t-rs.nix](./t-rs.nix): concise text transformation language.
 
 ### Cloud and Infrastructure
 
@@ -29,15 +26,11 @@ For the complete list, browse [`pkgs/cli`](./).
 ### Data and Visualization
 
 - [arrow-tools.nix](./arrow-tools.nix): convert CSV/JSON into Arrow/Parquet data formats.
-- [pql.nix](./pql.nix): pipeline-to-SQL query tool.
 - [mermaid-rs-renderer.nix](./mermaid-rs-renderer.nix): fast native mermaid rendering.
 - [terramaid.nix](./terramaid.nix): render terraform into mermaid diagrams.
-- [xlsxsql.nix](./xlsxsql.nix): run SQL queries against Excel files.
 
 ### Ops and Diagnostics
 
-- [wush.nix](./wush.nix): fast file transfer between machines over WireGuard.
 - [comcast.nix](./comcast.nix): simulate degraded network conditions locally.
-- [gonzo.nix](./gonzo.nix): TUI log analysis for incident debugging.
-- [rare.nix](./rare.nix): realtime regex extraction and aggregation.
+- [rare-go.nix](./rare-go.nix): realtime regex extraction and aggregation.
 - [todo-reminder.nix](./todo-reminder.nix): scan code for TODO deadlines and formatting issues.

@@ -1,11 +1,11 @@
 # [falconn](https://github.com/FALCONN-LIB/FALCONN) is a header only NN lookup tool
 { lib
-, stdenv
+, stdenvNoCC
 , fetchFromGitHub
 , ...
 }:
 
-stdenv.mkDerivation rec {
+stdenvNoCC.mkDerivation rec {
   pname = "falconn";
   version = "1.3.1";
 

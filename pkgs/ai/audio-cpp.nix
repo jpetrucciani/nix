@@ -143,6 +143,7 @@ stdenv.mkDerivation (finalAttrs: {
     license = lib.licenses.mit;
     maintainers = with lib.maintainers; [ jpetrucciani ];
     mainProgram = "audiocpp_cli";
+    skipBuild = true; # don't ever build this on github actions - it's quite heavy!
     platforms = [
       "x86_64-linux"
       "aarch64-linux"

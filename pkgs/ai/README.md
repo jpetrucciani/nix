@@ -17,10 +17,6 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 The default build uses CPU inference on Linux and Metal on macOS. CUDA and ROCm builds are available as
 `audio-cpp.cuda` and `audio-cpp.rocm`, respectively.
 
-### [chatbot-ui.nix](./chatbot-ui.nix)
-
-[`chatbot-ui`](https://github.com/mckaywrigley/chatbot-ui) is a popular frontend for OpenAI compliant APIs. It is designed to look similar to OpenAI's ChatGPT UI.
-
 ### [deepseek-harness.nix](./deepseek-harness.nix)
 
 [`deepseek-harness`](https://github.com/deepseek-ai/deepseek-harness) is an open-source agent harness developed by DeepSeek AI
@@ -44,7 +40,3 @@ geode is an experimental semantic indexing tool
 ### [maestro-go.nix](./maestro-go.nix)
 
 [`maestro`](https://github.com/pluja/maestro) converts natural language instructions into cli commands with LLMs
-
-### [mods.nix](./mods.nix)
-
-[`mods`](https://github.com/charmbracelet/mods) is a CLI tool to interact with AI APIs
