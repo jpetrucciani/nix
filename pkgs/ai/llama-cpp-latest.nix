@@ -1,4 +1,6 @@
-{ fetchFromGitHub
+{ config
+, cudaSupport ? config.cudaSupport
+, fetchFromGitHub
 , llama-cpp
 , refresh_llama-cpp_latest
 , stdenv
@@ -6,7 +8,7 @@
 let
   version = "10430";
 in
-llama-cpp.overrideAttrs (old: {
+(llama-cpp.override { inherit cudaSupport; }).overrideAttrs (old: {
   inherit version;
 
   src = fetchFromGitHub {
