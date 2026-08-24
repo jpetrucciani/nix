@@ -2,6 +2,7 @@
 { lib
 , buildGoModule
 , fetchFromGitHub
+, nix-update-script
 }:
 
 buildGoModule rec {
@@ -18,6 +19,8 @@ buildGoModule rec {
   vendorHash = null;
 
   ldflags = [ "-s" "-w" ];
+
+  passthru.updateScript = nix-update-script { };
 
   meta = with lib; {
     description = "Command line utility to send messages with attachments to Slack channels via Incoming Webhooks";

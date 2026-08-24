@@ -222,6 +222,17 @@ in
         echo "No README index drift issues found."
       fi
     '';
+    check_vale = writeBashBinChecked "check-vale" ''
+      set -euo pipefail
+
+      mapfile -d "" markdown_files < <(${final.git}/bin/git ls-files -z -- '*.md')
+      if [ "''${#markdown_files[@]}" -eq 0 ]; then
+        echo "no tracked Markdown files found" >&2
+        exit 1
+      fi
+
+      ${final.lib.getExe final.vale-ci} "''${markdown_files[@]}"
+    '';
     ci_cache = writeBashBinChecked "ci_cache" ''
       set -euo pipefail
 

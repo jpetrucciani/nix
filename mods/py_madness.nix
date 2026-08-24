@@ -593,17 +593,24 @@ let
                 wheel
               ]);
             });
-            "torch-memory-saver" = _prev."torch-memory-saver".overrideAttrs (old: {
-              buildInputs = (old.buildInputs or [ ]) ++ [ _final.nvidia-cuda-runtime ] ++ (with _pkgs.cudaPackages; [
-                cuda_cudart
-              ]);
-              preFixup = (old.preFixup or "") + ''
-                ${addAutoPatchelfSearchInputs [ _final.nvidia-cuda-runtime ]}
-              '';
-              autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
-                "libcuda.so.1"
-              ];
-            });
+            "torch-memory-saver" =
+              let
+                cudaRuntimeInputs = packagesIfPresent [
+                  "nvidia-cuda-runtime-cu12"
+                  "nvidia-cuda-runtime"
+                ];
+              in
+              _prev."torch-memory-saver".overrideAttrs (old: {
+                buildInputs = (old.buildInputs or [ ]) ++ cudaRuntimeInputs ++ (with _pkgs.cudaPackages; [
+                  cuda_cudart
+                ]);
+                preFixup = (old.preFixup or "") + ''
+                  ${addAutoPatchelfSearchInputs cudaRuntimeInputs}
+                '';
+                autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
+                  "libcuda.so.1"
+                ];
+              });
             xgrammar = _prev.xgrammar.overrideAttrs (old: {
               buildInputs = (old.buildInputs or [ ]) ++ (with _final; [ apache-tvm-ffi ]);
               preFixup = (old.preFixup or "") + ''

@@ -60,6 +60,16 @@ stdenv.mkDerivation (finalAttrs: {
     runHook postInstall
   '';
 
+  doInstallCheck = true;
+  installCheckPhase = ''
+    runHook preInstallCheck
+
+    "$out/bin/concurrently" --help >/dev/null
+    "$out/bin/conc" --help >/dev/null
+
+    runHook postInstallCheck
+  '';
+
   meta = {
     changelog = "https://github.com/open-cli-tools/concurrently/releases/tag/v${finalAttrs.version}";
     description = "Run commands concurrently";

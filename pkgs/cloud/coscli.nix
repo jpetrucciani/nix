@@ -18,6 +18,8 @@ buildGoLatestModule rec {
     "-w"
   ];
 
+  # Upstream only ships a credentialed Tencent COS integration test. Its
+  # package init reads ~/.cos.yaml before Go can filter individual tests.
   doCheck = false;
 
   meta = with lib; {

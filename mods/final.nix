@@ -3,14 +3,39 @@ final: prev:
 let
   inherit (final.lib) elem all id isDerivation recursiveUpdate;
   inherit (final.lib.attrsets) filterAttrs;
-  checked_packages = filterAttrs
+  evaluated_packages = filterAttrs
     (_: pkg: all id [
       (isDerivation pkg)
       (elem final.stdenv.hostPlatform.system pkg.meta.platforms or [ final.stdenv.hostPlatform.system ])
       (!pkg.meta.broken or false)
-      (!pkg.meta.skipBuild or false)
     ])
     final.custom;
+  checked_packages = filterAttrs (_: pkg: !(pkg.meta.skipBuild or false)) evaluated_packages;
+
+  vale-ci =
+    let
+      customStyles = final.runCommand "vale-custom-styles" { } ''
+        mkdir -p "$out/share/vale/styles/config"
+        cp -R ${../.github/styles/config}/. "$out/share/vale/styles/config/"
+      '';
+    in
+    final.symlinkJoin {
+      name = "vale-ci-${final.vale.version}";
+      paths = [
+        final.vale
+        final.valeStyles.alex
+        final.valeStyles.proselint
+        final.valeStyles.readability
+        final.valeStyles.write-good
+        customStyles
+      ];
+      nativeBuildInputs = [ final.makeBinaryWrapper ];
+      postBuild = ''
+        wrapProgram "$out/bin/vale" \
+          --set VALE_STYLES_PATH "$out/share/vale/styles/"
+      '';
+      meta.mainProgram = "vale";
+    };
 
   _oxfmt = {
     printWidth = 120;
@@ -144,8 +169,9 @@ let
 
 in
 {
-  inherit stable-diffusion-cpp-latest;
+  inherit stable-diffusion-cpp-latest vale-ci;
   foundry = import ./foundry.nix { pkgs = final; };
+  __j_eval_packages = evaluated_packages;
   __j_packages = checked_packages;
   __j_custom = final.buildEnv {
     name = "__j_custom";

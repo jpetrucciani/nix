@@ -1,7 +1,6 @@
 let
   machines = {
     nixos = [
-      "andromeda"
       "cy1-nix-01"
       "edge"
       "luna"

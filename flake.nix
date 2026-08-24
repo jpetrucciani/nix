@@ -48,10 +48,15 @@
     };
   };
 
+  nixConfig = {
+    extra-substituters = [ "https://cache.g7c.us" ];
+    extra-trusted-public-keys = [ "cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=" ];
+  };
+
   outputs = { self, ... }:
     let
       inherit (self.inputs.nixpkgs) lib;
-      inherit (constants) machines subs;
+      inherit (constants) machines;
       constants = import ./hosts/constants.nix;
       forAllSystems = lib.genAttrs [
         "aarch64-darwin"
@@ -73,6 +78,12 @@
           root = ./.;
           upstream = upstreamPackageSets.${system};
         });
+      customPackageDrvPaths = forAllSystems
+        (system: lib.mapAttrs (_: package: package.drvPath) packageSets.${system}.__j_eval_packages);
+      autoUpdatePackages = forAllSystems
+        (system: builtins.attrNames (lib.filterAttrs
+          (_: package: package ? passthru && package.passthru ? updateScript)
+          packageSets.${system}.__j_packages));
       packages = forAllSystems
         (system: packageSets.${system}.__j_packages);
       foundryConfiguration = self.inputs.nixpkgs.lib.nixosSystem {
@@ -88,7 +99,7 @@
     {
       inherit packages;
       legacyPackages = packageSets;
-      lib = lib // { inherit overlayDelta; };
+      lib = lib // { inherit autoUpdatePackages customPackageDrvPaths overlayDelta; };
       inherit (nix2containerPkgs) nix2container;
       pins = self.inputs;
       devShells = forAllSystems (
@@ -167,10 +178,10 @@
       nixosConfigurations = builtins.listToAttrs
         (map
           (name:
-            let sys = if name == "andromeda" then "aarch64-linux" else "x86_64-linux"; in {
+            {
               inherit name;
               value = self.inputs.nixpkgs.lib.nixosSystem {
-                pkgs = packageSets.${sys};
+                pkgs = packageSets.x86_64-linux;
                 specialArgs = { flake = self; machine-name = name; };
                 modules = [
                   ./hosts/modules/servers/infinity.nix
@@ -214,9 +225,5 @@
       ]
         foundryImageVariants;
 
-      nixConfig = {
-        extra-substituters = [ subs.g7c.url ];
-        extra-trusted-public-keys = [ subs.g7c.key ];
-      };
     };
 }

@@ -8,5 +8,4 @@ in
   "miniflux.age".publicKeys = default;
   "ntfy.age".publicKeys = default;
   "vaultwarden.age".publicKeys = default;
-  "zitadel.age".publicKeys = default;
 }

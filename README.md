@@ -22,10 +22,12 @@ If you want to make a safe change:
    - overlays and helpers: [`mods/README.md`](./mods/README.md)
    - package definitions: [`pkgs/README.md`](./pkgs/README.md)
    - scripts and automation helpers: [`scripts/README.md`](./scripts/README.md)
-4. Run the docs and formatting guardrails:
+4. Run the repository guardrails:
+   - `nix flake check --no-build --no-write-lock-file`
    - `nix run .#jfmt -- --ci`
    - `nix run .#scripts.check_doc_links`
    - `nix run .#scripts.check_readme_index`
+   - `nix run .#scripts.check_vale`
 5. Build the thing you touched:
    - Linux host: `nix build .#nixosConfigurations.<host>.config.system.build.toplevel`
    - Darwin host: `nix build .#darwinConfigurations.<host>.system`

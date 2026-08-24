@@ -2,6 +2,7 @@
 { lib
 , buildGoModule
 , fetchFromGitHub
+, nix-update-script
 }:
 
 buildGoModule rec {
@@ -14,8 +15,6 @@ buildGoModule rec {
     rev = "v${version}";
     hash = "sha256-jCQHVp+N9Hazz+ceuajCF1rRvxXkneL900pHLHOzzwA=";
   };
-
-  doCheck = false;
 
   postPatch = ''
     sed -i -E 's#"/var/tmp"#os.TempDir()#g' \
@@ -30,6 +29,8 @@ buildGoModule rec {
     "-s"
     "-w"
   ];
+
+  passthru.updateScript = nix-update-script { };
 
   meta = with lib; {
     description = "Google Cloud Storage emulator & testing library";

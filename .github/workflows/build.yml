@@ -5,18 +5,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - ubuntu-24.04
-          - macos-15
+        include:
+          - os: ubuntu-24.04
+            system: x86_64-linux
+          - os: macos-15
+            system: aarch64-darwin
     name: nix (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v7
-      - uses: cachix/install-nix-action@v31
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: cachix/install-nix-action@b85815f71a6de0ddee80b8a80a98d43f4bcc66c7 # v31
         with:
           extra_nix_config: |
             extra-substituters = https://cache.g7c.us https://nix-community.cachix.org
             extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
+      - run: nix eval --json --no-write-lock-file .#lib.customPackageDrvPaths.${{ matrix.system }} >/dev/null
       - run: nix --show-trace build .#__j_custom .#zaddy .#llama-cpp-latest
         if: ${{ matrix.os == 'macos-15' }}
       - run: nix --show-trace build .#__j_custom .#zaddy .#llama-cpp-latest .#llama-cpp-cuda-latest .#zertbot.withAll

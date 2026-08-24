@@ -16,6 +16,9 @@ buildGoModule rec {
   };
 
   vendorHash = "sha256-OdYmaDK/XY1MNXoEl9HKYg20KukE7auHmilmTjIGMYc=";
+
+  # Upstream's only test sends credentials and user data to a live Hasura
+  # endpoint, so it cannot run hermetically in the Nix sandbox.
   doCheck = false;
 
   ldflags = [ "-s" "-w" ];

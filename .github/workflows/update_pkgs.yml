@@ -1,36 +1,46 @@
 name: check for package updates
 on: { workflow_dispatch, schedule: [cron: '0 0 * * *'] }
 jobs:
-  update:
-    strategy:
-      fail-fast: false
-      matrix:
-        attrs:
-          - attr: fake-gcs-server
-            cmd: nupdate
-          - attr: slack-notifier
-            cmd: nupdate
+  discover:
     runs-on: ubuntu-24.04
-    env:
-      GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+    outputs:
+      attrs: ${{ steps.packages.outputs.attrs }}
     steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-      - uses: cachix/install-nix-action@v31
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: cachix/install-nix-action@b85815f71a6de0ddee80b8a80a98d43f4bcc66c7 # v31
         with:
           extra_nix_config: |
             extra-substituters = https://cache.g7c.us
             extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
-      - run: nix run .#${{ matrix.attrs.cmd }} ${{ matrix.attrs.attr }}
-      - uses: peter-evans/create-pull-request@v8.1.1
+      - id: packages
+        run: echo "attrs=$(nix eval --json --no-write-lock-file .#lib.autoUpdatePackages.x86_64-linux)" >> "$GITHUB_OUTPUT"
+  update:
+    needs: discover
+    strategy:
+      fail-fast: false
+      matrix:
+        attr: ${{ fromJSON(needs.discover.outputs.attrs) }}
+    runs-on: ubuntu-24.04
+    env:
+      GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: cachix/install-nix-action@b85815f71a6de0ddee80b8a80a98d43f4bcc66c7 # v31
+        with:
+          extra_nix_config: |
+            extra-substituters = https://cache.g7c.us
+            extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
+      - run: nix run .#nupdate -- "${{ matrix.attr }}"
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         id: pr
         with:
           delete-branch: true
           author: jacobi petrucciani <j@cobi.dev>
-          title: automatic update (${{ matrix.attrs.attr }})
-          commit-message: automatic update (${{ matrix.attrs.attr }})
-          branch: automatic-update-${{ matrix.attrs.attr }}
+          title: automatic update (${{ matrix.attr }})
+          commit-message: automatic update (${{ matrix.attr }})
+          branch: automatic-update-${{ matrix.attr }}
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: automerge
         if: ${{ steps.pr.outputs.pull-request-number }}

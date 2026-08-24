@@ -16,7 +16,16 @@ buildGoModule rec {
 
   vendorHash = "sha256-+5Y2sZJEo3s9WfzJOACsjnH3sCtmCoqTkr2+i1hyR6Y=";
 
-  doCheck = false;
+  postPatch = ''
+    patchShebangs internal/agent/testdata
+    substituteInPlace internal/run/cli_test.go \
+      --replace-fail 'assert.Regexp(t, `Extracted tarball to: /tmp/run-123-.*`, got.String())' \
+      'assert.Regexp(t, `Extracted tarball to: `+os.TempDir()+`/run-123-.*`, got.String())'
+  '';
+
+  # This package starts databases, daemons, browsers, and external providers.
+  excludedPackages = [ "internal/integration" ];
+  checkFlags = [ "-timeout=30s" ];
 
   ldflags = [
     "-s"

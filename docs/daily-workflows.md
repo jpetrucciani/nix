@@ -90,9 +90,18 @@ bun run docs:dev
 ## Run Repo Checks
 
 ```bash
+nix flake check --no-build --no-write-lock-file
 nix run .#jfmt -- --ci
 nix run .#scripts.check_doc_links
 nix run .#scripts.check_readme_index
+nix run .#scripts.check_vale
+```
+
+To evaluate every supported custom package, including heavy packages that are excluded from `__j_custom`:
+
+```bash
+nix eval --json --no-write-lock-file \
+  .#lib.customPackageDrvPaths.$(nix eval --raw --impure --expr builtins.currentSystem) >/dev/null
 ```
 
 ## Read More About the Helpers

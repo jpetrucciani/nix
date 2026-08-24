@@ -61,10 +61,6 @@ agenix-encrypted secret material for ntfy.
 
 agenix-encrypted secret material for vaultwarden.
 
-### [zitadel.age](./zitadel.age)
-
-agenix-encrypted secret material for zitadel.
-
 ### [secrets.nix](./secrets.nix)
 
 agenix mapping file that defines recipients for each encrypted secret.

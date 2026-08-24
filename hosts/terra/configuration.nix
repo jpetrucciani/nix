@@ -71,10 +71,6 @@ in
         owner = "ntfy-sh";
       };
       vaultwarden.file = ../../secrets/vaultwarden.age;
-      zitadel = {
-        file = ../../secrets/zitadel.age;
-        owner = "zitadel";
-      };
       # authelia = {
       #   file = ../../secrets/authelia.age;
       #   owner = "authelia-main";
@@ -379,15 +375,6 @@ in
       enable = true;
       role = "server";
       extraFlags = "--disable traefik";
-    };
-    zitadel = {
-      enable = true;
-      masterKeyFile = "/etc/default/zitadel";
-      settings = {
-        ExternalDomain = "z.cobi.dev";
-        ExternalPort = 443;
-      };
-      extraSettingsPaths = [ config.age.secrets.zitadel.path ];
     };
     authelia.instances.main = {
       enable = false;
