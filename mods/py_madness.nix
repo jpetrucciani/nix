@@ -82,6 +82,14 @@ let
   };
 
   uv-nix = {
+    # uv2nix imports workspace manifests during evaluation, so upstream
+    # workspaces must be fetched by the evaluator rather than a derivation.
+    fetchGitHubWorkspace =
+      { owner, repo, rev, hash }:
+      builtins.fetchTarball {
+        url = "https://github.com/${owner}/${repo}/archive/${rev}.tar.gz";
+        sha256 = hash;
+      };
     overrideHelpers = { pkgs, final, prev }: rec {
       hacks = pkgs.callPackage pkgs.pyproject-nix.build.hacks { };
       add_buildinputs = build_inputs: pkg: pkg.overrideAttrs (old: { buildInputs = (old.buildInputs or [ ]) ++ build_inputs; });

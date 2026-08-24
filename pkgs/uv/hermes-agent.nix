@@ -1,7 +1,6 @@
 # [hermes-agent](https://github.com/NousResearch/hermes-agent) is a self-improving AI agent CLI
 { stdenv
 , lib
-, fetchFromGitHub
 , python311
 , rsync
 , makeWrapper
@@ -16,16 +15,16 @@ let
   name = "hermes-agent";
   version = "2026.8.3";
 
-  src = fetchFromGitHub {
+  src = uv-nix.fetchGitHubWorkspace {
     owner = "NousResearch";
     repo = name;
     rev = "refs/tags/v${version}";
     hash = "sha256-S6TSGgpf37N8YgbTv70dT+LaPiiaQ4/lJV+js2hnCPk=";
-    fetchSubmodules = true;
   };
 
   uvEnv = uv-nix.mkEnv {
     inherit name;
+    gitignore = false;
     python = python311;
     workspaceRoot = src;
     pyprojectOverrides =

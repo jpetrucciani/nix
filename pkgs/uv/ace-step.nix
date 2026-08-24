@@ -2,7 +2,6 @@
 { ace-step
 , lib
 , stdenv
-, fetchFromGitHub
 , uv-nix
 , python311
 , rsync
@@ -21,14 +20,15 @@
 let
   cudaToolkit = cudaPackages_12_8.cudatoolkit;
   ldPath = if isWSL then "/usr/lib/wsl/lib" else "/run/opengl-driver/lib";
-  src = fetchFromGitHub {
+  src = uv-nix.fetchGitHubWorkspace {
     owner = "ace-step";
     repo = "ACE-Step-1.5";
-    tag = "v${version}";
+    rev = "refs/tags/v${version}";
     hash = srcHash;
   };
   uvEnv = uv-nix.mkEnv {
     name = "ace-step";
+    gitignore = false;
     python = python311;
     workspaceRoot = src;
     enableCuda = true;
