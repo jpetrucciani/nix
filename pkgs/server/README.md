@@ -32,6 +32,10 @@ Run `nix run .#obscura.updateScript` to refresh the pinned Linux and macOS relea
 
 Pinned release version and platform archive metadata consumed by the package.
 
+### [picomq.nix](./picomq.nix)
+
+[PicoMQ](https://github.com/picomq/picomq) provides durable real-time streams over HTTP backed by S3-compatible object storage
+
 ### [poglets.nix](./poglets.nix)
 
 [poglets](https://github.com/jpetrucciani/poglets) is a TCP tunneling system
