@@ -708,7 +708,13 @@ let
 
           };
         gitignoreRecursiveSource = final.nix-gitignore.gitignoreFilterSourcePure (_: _: true) [ ];
-        workspaceRoot' = if gitignore then gitignoreRecursiveSource workspaceRoot else workspaceRoot;
+        # filterSource is for local trees. Re-filtering derivation outputs can
+        # fail when evaluation and realization use different Nix stores.
+        workspaceRoot' =
+          if gitignore && !final.lib.isDerivation workspaceRoot then
+            gitignoreRecursiveSource workspaceRoot
+          else
+            workspaceRoot;
         workspaceLock = final.uv2nix.lib.lock1.parseLock (final.lib.importTOML (workspaceRoot' + "/uv.lock"));
         workspaceLocalProjects = final.uv2nix.lib.lock1.getLocalProjects {
           lock = workspaceLock;
