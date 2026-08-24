@@ -168,7 +168,7 @@ let
 
   codex-latest =
     let
-      version = "0.149.0";
+      version = "0.149.1";
       v8Version = "150.4.0";
       v8Features = [ "ptrcomp" "sandbox" ];
       v8ReleaseBase = "https://github.com/openai/codex/releases/download/rusty-v8-v${v8Version}";
@@ -195,7 +195,7 @@ let
         owner = "openai";
         repo = "codex";
         tag = "rust-v${version}";
-        hash = "sha256-SMVTW/CcGz4xxyeFe3KUf3Ns6jp+2SRMTvtA2o2+y7Q=";
+        hash = "sha256-nRJ48yuIkgHfIZQQY8vXW3oQEOCCoHACz5AsaIkI2ms=";
       };
       librustyV8 = final.fetchLibrustyV8 {
         version = v8Version;
