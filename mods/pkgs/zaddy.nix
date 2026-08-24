@@ -102,10 +102,12 @@ rec {
         zaddyPlugins = allPlugins;
       };
     });
-  caddy = prev.caddy.overrideAttrs (_: { passthru.withPackages = _zaddy; });
+  caddy = prev.caddy.overrideAttrs (old: {
+    passthru = (old.passthru or { }) // { withPackages = _zaddy; };
+  });
 
   # my preferred caddy install
-  zaddy = _zaddy {
+  zaddy = (_zaddy {
     plugins = p: with p; [
       caddy-security
       s3-proxy
@@ -118,7 +120,11 @@ rec {
       route53
     ];
     vendorHash = "sha256-GnwYEuO0oASTi+siFtfDFW0phBL3S+/NPaRG2FrUprQ=";
-  };
+  }).overrideAttrs (old: {
+    passthru = (old.passthru or { }) // {
+      updateScript = final.refresh_zaddy;
+    };
+  });
 
   # caddy with s3-browser plugin
   # zaddy-browser = _zaddy {

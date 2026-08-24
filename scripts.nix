@@ -223,12 +223,36 @@ in
       fi
     '';
     ci_cache = writeBashBinChecked "ci_cache" ''
-      mkdir -p ~/.aws
-      echo "$S3_CREDS" | base64 -d >~/.aws/credentials
-      echo "$PRIVKEY" | base64 -d >/tmp/cache.priv.pem
+      set -euo pipefail
+
+      credentials_file="$(mktemp)"
+      private_key_file="$(mktemp /tmp/cache.priv.pem.XXXXXX)"
+      cleanup() {
+        rm -f -- "$credentials_file" "$private_key_file"
+      }
+      trap cleanup EXIT
+
+      printf '%s' "$S3_CREDS" | base64 --decode >"$credentials_file"
+      printf '%s' "$PRIVKEY" | base64 --decode >"$private_key_file"
+      chmod 600 "$credentials_file" "$private_key_file"
+      export AWS_SHARED_CREDENTIALS_FILE="$credentials_file"
+
+      if [[ "$POG_URI" == *"secret-key=/tmp/cache.priv.pem"* ]]; then
+        POG_URI="''${POG_URI//secret-key=\/tmp\/cache.priv.pem/secret-key=$private_key_file}"
+      elif [[ "$POG_URI" != *"secret-key="* ]]; then
+        separator="?"
+        if [[ "$POG_URI" == *"?"* ]]; then
+          separator="&"
+        fi
+        POG_URI="''${POG_URI}''${separator}secret-key=$private_key_file"
+      else
+        echo "POG_URI contains an unexpected secret-key path" >&2
+        exit 1
+      fi
+      export POG_URI
+
       nix run .#nixcache ./result*
       nix flake archive --to "$POG_URI"
-      rm /tmp/cache.priv.pem ~/.aws/credentials
     '';
   };
 }

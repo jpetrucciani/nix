@@ -26,17 +26,36 @@ This directory contains specific servers
 
 [obscura](https://github.com/h4ckf0r0day/obscura) is the headless browser for AI agents and web scraping
 
+Run `nix run .#obscura.updateScript` to refresh the pinned Linux and macOS release archives.
+
+### [obscura.json](./obscura.json)
+
+Pinned release version and platform archive metadata consumed by the package.
+
 ### [poglets.nix](./poglets.nix)
 
 [poglets](https://github.com/jpetrucciani/poglets) is a TCP tunneling system
 
 ### [pogocache.nix](./pogocache.nix)
 
-[pogocache](https://github.com/pogocache/pogocache) is Fast caching software with a focus on low latency and cpu efficiency
+[pogocache](https://github.com/tidwall/pogocache) is fast caching software focused on low latency and CPU efficiency
+
+Run `nix run .#pogocache.updateScript` to refresh the pinned static Linux and macOS release archives.
+
+### [pogocache.json](./pogocache.json)
+
+Pinned release version and platform archive metadata consumed by the package.
 
 ### [rdpgw.nix](./rdpgw.nix)
 
 [rdpgw](https://github.com/bolkedebruin/rdpgw) is a Remote Desktop Gateway in Go for deploying on Linux/BSD/Kubernetes
+
+Run `nix run .#rdpgw.updateScript` to follow the fork's `add_go_sum` branch, refresh both hashes, and validate the
+candidate build before replacing the package expression.
+
+### [rdpgw-help.patch](./rdpgw-help.patch)
+
+Makes RDpgw treat an already-rendered help request as a successful exit instead of panicking.
 
 ### [semaphore.nix](./semaphore.nix)
 
@@ -49,7 +68,3 @@ This directory contains specific servers
 ### [titanite.nix](./titanite.nix)
 
 titanite is a policy-aware DNS service for homelabs and small production networks
-
-### [vercel-log-drain.nix](./vercel-log-drain.nix)
-
-[vercel-log-drain](https://github.com/dacbd/vercel-log-drain) is a log-drain for vercel that supports multiple drivers to ship logs out to various sources

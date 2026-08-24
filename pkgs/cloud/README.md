@@ -41,6 +41,12 @@ Pinned plugin version, component-manifest revision, and platform archive metadat
 
 [headscale-ui](https://github.com/gurucomputing/headscale-ui) is a web frontend for headscale management
 
+Run `nix run .#headscale-ui.updateScript` to refresh the pinned static-site release.
+
+### [headscale-ui.json](./headscale-ui.json)
+
+Pinned release version and archive metadata consumed by the package.
+
 ### [otfd.nix](./otfd.nix)
 
 [otfd](https://github.com/jpetrucciani/otf) is an open source terraform cloud
@@ -52,3 +58,9 @@ Pinned plugin version, component-manifest revision, and platform archive metadat
 ### [stree.nix](./stree.nix)
 
 [stree](https://github.com/orangekame3/stree) is a directory tree tool for s3
+
+Run `nix run .#nupdate -- stree` to update the source and Go dependency hashes.
+
+### [stree-version.patch](./stree-version.patch)
+
+Removes the misleading runtime-generated build timestamp from `stree --version`.

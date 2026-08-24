@@ -1,0 +1,9 @@
+{
+  "artifacts": {
+    "universal": {
+      "name": "headscale-ui.zip",
+      "sha256": "sha256-6Vnd6DVpIzqGQ5F+XFj1lrQzcJVWuG+emYxynQGmyyk="
+    }
+  },
+  "version": "2026.03.17"
+}

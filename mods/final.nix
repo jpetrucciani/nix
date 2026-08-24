@@ -126,30 +126,6 @@ let
       __functor = _: treefmt.override;
     };
 
-  llama-cpp-latest =
-    let
-      version = "10430";
-      hash = "sha256-jhMnyPKgHZfDAJUhjaZt38Hiflf9MnFb5xZutkJ/cTk=";
-    in
-    prev.llama-cpp.overrideAttrs (old: {
-      inherit version;
-      src = final.fetchFromGitHub {
-        inherit hash;
-        tag = "b${version}";
-        owner = "ggml-org";
-        repo = "llama.cpp";
-        leaveDotGit = true;
-        postFetch = ''
-          git -C "$out" rev-parse --short HEAD > $out/COMMIT
-          find "$out" -name .git -print0 | xargs -0 rm -rf
-        '';
-      };
-      npmRoot = "tools/ui";
-      npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
-      # hack for mac dylib?
-      cmakeFlags = if final.stdenv.hostPlatform.isDarwin then old.cmakeFlags ++ [ "-DLLAMA_BUILD_NUMBER=1" ] else old.cmakeFlags;
-    });
-
   stable-diffusion-cpp-latest =
     let
       version = "master-585-44cca3d";
@@ -166,74 +142,14 @@ let
       };
     });
 
-  codex-latest =
-    let
-      version = "0.149.1";
-      v8Version = "150.4.0";
-      v8Features = [ "ptrcomp" "sandbox" ];
-      v8ReleaseBase = "https://github.com/openai/codex/releases/download/rusty-v8-v${v8Version}";
-      # Generate hashes with:
-      # v8_version=$(sed -n 's/.*v8Version = "\([^"]*\)";.*/\1/p' mods/final.nix); \
-      # for target in aarch64-apple-darwin aarch64-unknown-linux-gnu x86_64-unknown-linux-gnu; do \
-      #   for artifact in "librusty_v8_ptrcomp_sandbox_release_${target}.a.gz" "src_binding_ptrcomp_sandbox_release_${target}.rs"; do \
-      #     file=$(mktemp); curl -L --fail --silent --show-error -o "$file" \
-      #       "https://github.com/openai/codex/releases/download/rusty-v8-v${v8_version}/${artifact}"; \
-      #     printf '%s ' "$artifact"; nix hash file --type sha256 --sri "$file"; rm "$file"; \
-      #   done; \
-      # done
-      v8ArchiveHashes = {
-        aarch64-darwin = "sha256-AK27SHmISMd1UEQcaGc6XoUpuOG3PqvN7iMss5tA9KE=";
-        aarch64-linux = "sha256-0VF+7UBUaFNwKbAF1f6ZfsdNXI01H5FrOm3yC30oEbo=";
-        x86_64-linux = "sha256-o1x10fJuapg4haRbM0kKTr5U8FBQVosyuJz7QhswtYM=";
-      };
-      v8BindingHashes = {
-        aarch64-darwin = "sha256-ylrfDPicmnCtRgrnNkiy/om3SqETs8t/dXtqArdYOU8=";
-        aarch64-linux = "sha256-dyeCauR5vbZF6Acjn7EtH44uI956bPFvXuWSaQ0dhQY=";
-        x86_64-linux = "sha256-dyeCauR5vbZF6Acjn7EtH44uI956bPFvXuWSaQ0dhQY=";
-      };
-      src = final.fetchFromGitHub {
-        owner = "openai";
-        repo = "codex";
-        tag = "rust-v${version}";
-        hash = "sha256-nRJ48yuIkgHfIZQQY8vXW3oQEOCCoHACz5AsaIkI2ms=";
-      };
-      librustyV8 = final.fetchLibrustyV8 {
-        version = v8Version;
-        hashes = v8ArchiveHashes;
-        features = v8Features;
-        releaseBase = v8ReleaseBase;
-      };
-      rustyV8Binding = final.fetchRustyV8Binding {
-        version = v8Version;
-        hashes = v8BindingHashes;
-        features = v8Features;
-        releaseBase = v8ReleaseBase;
-      };
-    in
-    prev.codex.overrideAttrs (old: {
-      inherit version src;
-      postPatch = ''
-        substituteInPlace Cargo.toml \
-          --replace-fail 'lto = "thin"' "" \
-          --replace-fail 'codegen-units = 4' ""
-      '';
-      cargoDeps = final.rustPlatform.fetchCargoVendor {
-        inherit src;
-        sourceRoot = "${src.name}/codex-rs";
-        hash = "sha256-K58PL588Hhk75FyXgU6b8IEAco8FIz8oGd1S0WgOjyQ=";
-      };
-      env = builtins.removeAttrs (old.env or { }) [ "LK_CUSTOM_WEBRTC" ] // {
-        RUSTY_V8_ARCHIVE = librustyV8;
-        RUSTY_V8_SRC_BINDING_PATH = rustyV8Binding;
-      };
-    });
 in
 {
-  inherit llama-cpp-latest codex-latest stable-diffusion-cpp-latest;
+  inherit stable-diffusion-cpp-latest;
   foundry = import ./foundry.nix { pkgs = final; };
+  __j_packages = checked_packages;
   __j_custom = final.buildEnv {
     name = "__j_custom";
-    paths = (final.lib.attrsets.attrValues checked_packages) ++ [ final.hex final.nix (final.python314.withPackages final.hax.basePythonPackages) ];
+    paths = (final.lib.attrsets.attrValues final.__j_packages) ++ [ final.hex final.nix (final.python314.withPackages final.hax.basePythonPackages) ];
     ignoreCollisions = true;
   };
 
@@ -243,7 +159,7 @@ in
   _nix = final.nixVersions.nix_2_34;
 
   llama-cpp-cuda = prev.llama-cpp.override { cudaSupport = true; };
-  llama-cpp-cuda-latest = llama-cpp-latest.override { cudaSupport = true; };
+  llama-cpp-cuda-latest = final.llama-cpp-latest.override { cudaSupport = true; };
   stable-diffusion-cpp-cuda-latest = stable-diffusion-cpp-latest.override { cudaSupport = true; };
   koboldcpp-cuda = prev.koboldcpp.override { config.cudaSupport = true; };
 

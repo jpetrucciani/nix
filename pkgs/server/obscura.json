@@ -1,0 +1,17 @@
+{
+  "artifacts": {
+    "aarch64-darwin": {
+      "name": "obscura-aarch64-macos.tar.gz",
+      "sha256": "sha256-UjPaZCbsFmZ9fkN0uCQYnG37OzJeXPP7XwTHvEi1Kg8="
+    },
+    "aarch64-linux": {
+      "name": "obscura-aarch64-linux.tar.gz",
+      "sha256": "sha256-ApfCbVg/WY8BJqcnHMQHUFmKmpy9htHW95srmQl9UkQ="
+    },
+    "x86_64-linux": {
+      "name": "obscura-x86_64-linux.tar.gz",
+      "sha256": "sha256-ahpms/GrEY+n0xMwiUqGhheupowG11Q22FE1bDnfHtM="
+    }
+  },
+  "version": "0.2.1"
+}

@@ -83,8 +83,6 @@ const packagePurposeOverrides = {
   'pkgs/mcp/prom-mcp.nix': 'Builds an MCP server for Prometheus queries and metrics workflows.',
   'pkgs/server/obligator.nix': 'Builds the `obligator` self-hosted OpenID Connect server.',
   'pkgs/server/poglets.nix': 'Builds `poglets`, a TCP tunneling system with shell completion support.',
-  'pkgs/server/vercel-log-drain.nix':
-    'Builds `vercel-log-drain`, a service for exporting Vercel logs to additional outputs.',
   'pkgs/uv/vllm.nix': 'Builds a packaged `vllm` inference and serving runtime for large language models.',
 };
 

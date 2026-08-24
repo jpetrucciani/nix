@@ -4,6 +4,7 @@
 result*
 .old/
 node_modules/
+/pkgs/cli/e2b-cli/package-lock.json
 .cq/
 cloudquery.log
 pb_data/

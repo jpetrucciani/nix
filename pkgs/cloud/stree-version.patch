@@ -1,0 +1,40 @@
+diff --git a/cmd/version.go b/cmd/version.go
+index 409ca4e..86d47b5 100644
+--- a/cmd/version.go
++++ b/cmd/version.go
+@@ -22,12 +22,10 @@ SOFTWARE.
+ */
+ package cmd
+ 
+-import "fmt"
+-
+ // Version is a version of this application.
+ const Version = "0.0.21"
+ 
+-// SetVersionInfo sets version and date to rootCmd
+-func SetVersionInfo(version, date string) {
+-	rootCmd.Version = fmt.Sprintf("%s (Built on %s)", version, date)
++// SetVersionInfo sets the version on rootCmd.
++func SetVersionInfo(version string) {
++	rootCmd.Version = version
+ }
+diff --git a/main.go b/main.go
+index c40c47d..d1639cd 100644
+--- a/main.go
++++ b/main.go
+@@ -21,14 +21,10 @@ SOFTWARE.
+ */
+ package main
+ 
+-import (
+-	"time"
+-
+-	"github.com/orangekame3/stree/cmd"
+-)
++import "github.com/orangekame3/stree/cmd"
+ 
+ func main() {
+-	cmd.SetVersionInfo(cmd.Version, time.Now().String())
++	cmd.SetVersionInfo(cmd.Version)
+ 	cmd.Execute()
+ }

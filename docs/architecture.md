@@ -47,6 +47,12 @@ An overlay is just a function that receives a package set and returns additions 
 - [`mods/pkgs/`](https://github.com/jpetrucciani/nix/tree/main/mods/pkgs) adds higher-level package families and composed outputs.
 - [`mods/final.nix`](https://github.com/jpetrucciani/nix/blob/main/mods/final.nix) is the last pass for final assembly, formatter setup, and selected overrides.
 
+`flake.nix` publishes supported, non-broken derivations discovered under `pkgs/` as `packages`, which keeps flake
+validation focused on repository-owned package definitions. The complete overlayed package universe remains under
+`legacyPackages`, so ordinary installables still resolve through the standard flake fallback. The structural overlay
+manifest lives at `lib.overlayDelta.<system>` and can be inspected with `overlay-diff` or built selectively with
+`overlay-check`.
+
 ## User and Machine Layers
 
 - [`home.nix`](https://github.com/jpetrucciani/nix/blob/main/home.nix) is the main [Home Manager](/home-manager) entry point for the user environment.

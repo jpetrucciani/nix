@@ -30,6 +30,8 @@ If you want to make a safe change:
    - Linux host: `nix build .#nixosConfigurations.<host>.config.system.build.toplevel`
    - Darwin host: `nix build .#darwinConfigurations.<host>.system`
    - Package: `nix build .#<package-name>`
+   - Overlay delta: `nix run .#overlay-diff`
+   - Selected overlay attributes: `nix run .#overlay-check -- <attribute>...`
 
 ## Repo Map
 

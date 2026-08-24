@@ -50,6 +50,35 @@ nix build .#zaddy
 nix build .#llama-cpp-latest
 ```
 
+## Inspect and Test the Local Overlay Delta
+
+Compare every top-level attribute declared by the local overlay stack with the exact `nixpkgs` revision in
+`flake.lock`:
+
+```bash
+nix run .#overlay-diff
+nix run .#overlay-diff -- --overrides
+nix run .#overlay-diff -- --json
+```
+
+For one overridden derivation, compare its derivation closure with the pinned upstream derivation:
+
+```bash
+nix run .#ndiff -- bkt
+```
+
+Build only named attributes from that manifest:
+
+```bash
+nix run .#overlay-check -- bkt concurrently caddy
+```
+
+Use `--dry-run` to inspect the build plan. `--all` builds every supported, non-broken package discovered under
+`pkgs/`; packages with `meta.skipBuild = true` stay out of that batch.
+
+The flake exposes this focused derivation set under `packages`, and keeps the complete overlayed nixpkgs universe
+under `legacyPackages`. Normal commands such as `nix build .#bun` still fall back to `legacyPackages`.
+
 ## Regenerate and Preview Docs
 
 ```bash

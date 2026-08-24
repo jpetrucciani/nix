@@ -26,7 +26,9 @@ Hex is a nix module system that allows us to create powerful abstractions of oth
 
 - [db.nix](./db.nix): local database helpers for postgres, redis, and friends.
 - [docker.nix](./docker.nix): docker wrappers for routine container workflows.
-- [nix.nix](./nix.nix): helper commands for creating and managing nix environments.
+- [nix.nix](./nix.nix): Nix environment helpers plus `overlay-diff` and `overlay-check` for focused overlay validation.
+- [refresh.nix](./refresh.nix): transactional package refreshers with shared Nix update, build, validation, and atomic
+  replacement helpers.
 - [ignore.nix](./ignore.nix): reusable gitignore line generators for common stacks.
 - [general.nix](./general.nix): miscellaneous day-to-day helper commands.
 

@@ -385,11 +385,10 @@ rec {
       files=( "$@" )
       echo "caching $# builds"
       rm -f ./nixcache.log
-      for i in $(${final.coreutils}/bin/seq $#); do
-          index=$((i-1))
-          ${final._nix}/bin/nix copy --refresh --to "$uri" "''${files[$index]}" >>nixcache.log
-          echo "$i"
-      done | ${final.python314Packages.tqdm}/bin/tqdm --total "$#" >>/dev/null
+      ${final._nix}/bin/nix copy \
+        --refresh \
+        --to "$uri" \
+        "''${files[@]}" >>nixcache.log
       echo "cached $# builds!"
     '';
   };
@@ -414,289 +413,6 @@ rec {
     script = ''
       latest_tag=$(${final.curl}/bin/curl "https://api.github.com/repos/$owner/$repo/releases/latest" | ${final.jq}/bin/jq -r '.tag_name')
       ${final.nix-update}/bin/nix-update --build --flake --version="$latest_tag" "$@"
-    '';
-  };
-
-  refresh_codex_latest = pog {
-    name = "refresh_codex_latest";
-    description = "update codex-latest, refresh Rusty V8 archive, binding, and Cargo hashes, build it, and verify installed runtime helpers";
-    flags = [
-      {
-        name = "version";
-        short = "";
-        description = "target Codex version, with or without the rust-v prefix; defaults to the latest GitHub release";
-      }
-      {
-        name = "repo";
-        envVar = "CFG_REPO";
-        description = "cfg checkout to update; defaults to $HOME/cfg";
-      }
-    ];
-    script = ''
-      repo="''${repo:-$HOME/cfg}"
-      target_file="$repo/mods/final.nix"
-
-      if [ ! -f "$target_file" ]; then
-        echo "missing cfg package definition: $target_file" >&2
-        exit 2
-      fi
-
-      cd "$repo" || exit 1
-
-      if [ -z "$version" ]; then
-        latest_tag=$(
-          ${final.curl}/bin/curl --fail --silent --show-error \
-            https://api.github.com/repos/openai/codex/releases/latest \
-            | ${final.jq}/bin/jq -er '.tag_name'
-        )
-      else
-        latest_tag="$version"
-      fi
-
-      case "$latest_tag" in
-        rust-v*)
-          version="''${latest_tag#rust-v}"
-          ;;
-        v*)
-          version="''${latest_tag#v}"
-          ;;
-        *)
-          version="$latest_tag"
-          ;;
-      esac
-
-      if ! printf '%s\n' "$version" | ${final.gnugrep}/bin/grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.]+)?$'; then
-        echo "unexpected Codex version: $version" >&2
-        exit 2
-      fi
-
-      echo "updating codex-latest to $version"
-      ${final.nix-update}/bin/nix-update \
-        --flake \
-        --src-only \
-        --version "$version" \
-        codex-latest
-
-      source_path=$(${final._nix}/bin/nix eval --raw "path:$repo#codex-latest.src")
-      cargo_lock="$source_path/codex-rs/Cargo.lock"
-      if [ ! -f "$cargo_lock" ]; then
-        echo "missing Codex Cargo.lock: $cargo_lock" >&2
-        exit 1
-      fi
-
-      v8_version=$(
-        ${final.gawk}/bin/awk '
-          /^\[\[package\]\]$/ { is_v8 = 0 }
-          /^name = "v8"$/ { is_v8 = 1; next }
-          is_v8 && /^version = "/ {
-            gsub(/^version = "/, "")
-            gsub(/"$/, "")
-            print
-            exit
-          }
-        ' "$cargo_lock"
-      )
-      if [ -z "$v8_version" ]; then
-        echo "could not determine the Rusty V8 version from $cargo_lock" >&2
-        exit 1
-      fi
-
-      temp_dir=$(${final.coreutils}/bin/mktemp -d)
-      trap '${final.coreutils}/bin/rm -rf "$temp_dir"' EXIT
-      declare -A v8_archive_hashes
-      declare -A v8_binding_hashes
-      v8_release_base="https://github.com/openai/codex/releases/download/rusty-v8-v$v8_version"
-
-      while read -r nix_target rust_target; do
-        archive="$temp_dir/librusty_v8_ptrcomp_sandbox_release_$rust_target.a.gz"
-        binding="$temp_dir/src_binding_ptrcomp_sandbox_release_$rust_target.rs"
-        ${final.curl}/bin/curl --location --fail --silent --show-error \
-          --output "$archive" \
-          "$v8_release_base/$(${final.coreutils}/bin/basename "$archive")"
-        ${final.curl}/bin/curl --location --fail --silent --show-error \
-          --output "$binding" \
-          "$v8_release_base/$(${final.coreutils}/bin/basename "$binding")"
-        v8_archive_hashes["$nix_target"]=$(${final._nix}/bin/nix hash file --type sha256 --sri "$archive")
-        v8_binding_hashes["$nix_target"]=$(${final._nix}/bin/nix hash file --type sha256 --sri "$binding")
-      done <<'TARGETS'
-      aarch64-darwin aarch64-apple-darwin
-      aarch64-linux aarch64-unknown-linux-gnu
-      x86_64-linux x86_64-unknown-linux-gnu
-      TARGETS
-
-      for nix_target in aarch64-darwin aarch64-linux x86_64-linux; do
-        v8_archive_hash="''${v8_archive_hashes["$nix_target"]}"
-        v8_binding_hash="''${v8_binding_hashes["$nix_target"]}"
-        if ! printf '%s\n' "$v8_archive_hash" | ${final.gnugrep}/bin/grep -Eq '^sha256-[A-Za-z0-9+/]{43}=$'; then
-          echo "invalid Rusty V8 archive hash for $nix_target: $v8_archive_hash" >&2
-          exit 1
-        fi
-        if ! printf '%s\n' "$v8_binding_hash" | ${final.gnugrep}/bin/grep -Eq '^sha256-[A-Za-z0-9+/]{43}=$'; then
-          echo "invalid Rusty V8 binding hash for $nix_target: $v8_binding_hash" >&2
-          exit 1
-        fi
-      done
-
-      for pattern in \
-        '^[[:space:]]*v8Version = "' \
-        '^[[:space:]]*v8ArchiveHashes = {' \
-        '^[[:space:]]*v8BindingHashes = {'
-      do
-        matches=$(${final.gnugrep}/bin/grep -c "$pattern" "$target_file" || true)
-        if [ "$matches" -ne 1 ]; then
-          echo "expected one '$pattern' assignment in $target_file, found $matches" >&2
-          exit 1
-        fi
-      done
-
-      V8_VERSION="$v8_version" \
-      AARCH64_DARWIN_ARCHIVE_HASH="''${v8_archive_hashes['aarch64-darwin']}" \
-      AARCH64_LINUX_ARCHIVE_HASH="''${v8_archive_hashes['aarch64-linux']}" \
-      X86_64_LINUX_ARCHIVE_HASH="''${v8_archive_hashes['x86_64-linux']}" \
-      AARCH64_DARWIN_BINDING_HASH="''${v8_binding_hashes['aarch64-darwin']}" \
-      AARCH64_LINUX_BINDING_HASH="''${v8_binding_hashes['aarch64-linux']}" \
-      X86_64_LINUX_BINDING_HASH="''${v8_binding_hashes['x86_64-linux']}" \
-        ${final.perl}/bin/perl -0pe '
-          (s/(v8Version = ")[^"]+(";)/$1 . $ENV{V8_VERSION} . $2/e) == 1
-            or die "expected one v8Version assignment\n";
-          (s/(v8ArchiveHashes = \{.*?aarch64-darwin = ")[^"]+(";)/$1 . $ENV{AARCH64_DARWIN_ARCHIVE_HASH} . $2/se) == 1
-            or die "expected one aarch64-darwin archive hash\n";
-          (s/(v8ArchiveHashes = \{.*?aarch64-linux = ")[^"]+(";)/$1 . $ENV{AARCH64_LINUX_ARCHIVE_HASH} . $2/se) == 1
-            or die "expected one aarch64-linux archive hash\n";
-          (s/(v8ArchiveHashes = \{.*?x86_64-linux = ")[^"]+(";)/$1 . $ENV{X86_64_LINUX_ARCHIVE_HASH} . $2/se) == 1
-            or die "expected one x86_64-linux archive hash\n";
-          (s/(v8BindingHashes = \{.*?aarch64-darwin = ")[^"]+(";)/$1 . $ENV{AARCH64_DARWIN_BINDING_HASH} . $2/se) == 1
-            or die "expected one aarch64-darwin binding hash\n";
-          (s/(v8BindingHashes = \{.*?aarch64-linux = ")[^"]+(";)/$1 . $ENV{AARCH64_LINUX_BINDING_HASH} . $2/se) == 1
-            or die "expected one aarch64-linux binding hash\n";
-          (s/(v8BindingHashes = \{.*?x86_64-linux = ")[^"]+(";)/$1 . $ENV{X86_64_LINUX_BINDING_HASH} . $2/se) == 1
-            or die "expected one x86_64-linux binding hash\n";
-        ' "$target_file" > "$temp_dir/final.nix"
-      ${final.coreutils}/bin/install -m 0644 "$temp_dir/final.nix" "$target_file"
-
-      ${lib.getExe final.jfmt} "$target_file"
-      ${final._nix}/bin/nix-instantiate --parse "$target_file" >/dev/null
-
-      ${final.nix-update}/bin/nix-update \
-        --flake \
-        --no-src \
-        --version skip \
-        codex-latest
-
-      ${lib.getExe final.jfmt} "$target_file"
-      ${final._nix}/bin/nix-instantiate --parse "$target_file" >/dev/null
-      ${final.git}/bin/git diff --check -- "$target_file"
-
-      output=$(
-        ${final._nix}/bin/nix build \
-          "path:$repo#codex-latest" \
-          --no-link \
-          --print-build-logs \
-          --print-out-paths
-      )
-
-      if [ ! -x "$output/bin/codex" ]; then
-        echo "built output is missing bin/codex: $output" >&2
-        exit 1
-      fi
-      if [ ! -x "$output/bin/codex-code-mode-host" ]; then
-        echo "built output is missing bin/codex-code-mode-host: $output" >&2
-        exit 1
-      fi
-
-      "$output/bin/codex" --version
-      echo "verified codex-code-mode-host in $output/bin"
-    '';
-  };
-
-  refresh_llama-cpp_latest = pog {
-    name = "refresh_llama-cpp_latest";
-    description = "update llama-cpp-latest, refresh its source and UI dependency hashes, build it, and verify the CLI and server";
-    flags = [
-      {
-        name = "version";
-        short = "";
-        description = "target llama.cpp build, with or without the b prefix; defaults to the latest GitHub release";
-      }
-      {
-        name = "repo";
-        envVar = "CFG_REPO";
-        description = "cfg checkout to update; defaults to $HOME/cfg";
-      }
-    ];
-    script = ''
-      repo="''${repo:-$HOME/cfg}"
-      target_file="$repo/mods/final.nix"
-
-      if [ ! -f "$target_file" ]; then
-        echo "missing cfg package definition: $target_file" >&2
-        exit 2
-      fi
-
-      cd "$repo" || exit 1
-
-      if [ -z "$version" ]; then
-        latest_tag=$(
-          ${final.curl}/bin/curl --fail --silent --show-error \
-            https://api.github.com/repos/ggml-org/llama.cpp/releases/latest \
-            | ${final.jq}/bin/jq -er '.tag_name'
-        )
-      else
-        latest_tag="$version"
-      fi
-
-      case "$latest_tag" in
-        b*)
-          version="''${latest_tag#b}"
-          ;;
-        *)
-          version="$latest_tag"
-          ;;
-      esac
-
-      if ! printf '%s\n' "$version" | ${final.gnugrep}/bin/grep -Eq '^[0-9]+$'; then
-        echo "unexpected llama.cpp build: $version" >&2
-        exit 2
-      fi
-
-      echo "updating llama-cpp-latest to b$version"
-      ${final.nix-update}/bin/nix-update \
-        --flake \
-        --src-only \
-        --version "$version" \
-        llama-cpp-latest
-
-      ${lib.getExe final.jfmt} "$target_file"
-      ${final._nix}/bin/nix-instantiate --parse "$target_file" >/dev/null
-
-      ${final.nix-update}/bin/nix-update \
-        --flake \
-        --no-src \
-        --version skip \
-        llama-cpp-latest
-
-      ${lib.getExe final.jfmt} "$target_file"
-      ${final._nix}/bin/nix-instantiate --parse "$target_file" >/dev/null
-      ${final.git}/bin/git diff --check -- "$target_file"
-
-      output=$(
-        ${final._nix}/bin/nix build \
-          "path:$repo#llama-cpp-latest" \
-          --no-link \
-          --print-build-logs \
-          --print-out-paths
-      )
-
-      for binary in llama llama-server; do
-        if [ ! -x "$output/bin/$binary" ]; then
-          echo "built output is missing bin/$binary: $output" >&2
-          exit 1
-        fi
-      done
-
-      "$output/bin/llama" --version
-      "$output/bin/llama-server" --version
-      echo "verified llama and llama-server in $output/bin"
     '';
   };
 
@@ -975,98 +691,231 @@ rec {
     '';
   };
 
-  refresh_zaddy = pog {
-    name = "refresh_zaddy";
-    description = "refresh zaddy's vendor hash, build it, and verify every configured plugin in the vendored tree and binary";
-    flags = [
-      {
-        name = "repo";
-        envVar = "CFG_REPO";
-        description = "cfg checkout to update; defaults to $HOME/cfg";
-      }
-    ];
-    script = ''
-      repo="''${repo:-$HOME/cfg}"
-      target_file="$repo/mods/pkgs/zaddy.nix"
-
-      if [ ! -f "$target_file" ]; then
-        echo "missing zaddy package definition: $target_file" >&2
-        exit 2
-      fi
-
-      cd "$repo" || exit 1
-      ${final.nix-update}/bin/nix-update \
-        --flake \
-        --no-src \
-        --version skip \
-        zaddy
-
-      ${lib.getExe final.jfmt} "$target_file"
-      ${final._nix}/bin/nix-instantiate --parse "$target_file" >/dev/null
-      ${final.git}/bin/git diff --check -- "$target_file"
-
-      output=$(
-        ${final._nix}/bin/nix build \
-          "path:$repo#zaddy" \
-          --no-link \
-          --print-build-logs \
-          --print-out-paths
-      )
-      modules_output=$(
-        ${final._nix}/bin/nix build \
-          "path:$repo#zaddy.goModules" \
-          --no-link \
-          --print-out-paths
-      )
-      expected_plugins=$(
-        ${final._nix}/bin/nix eval \
-          --json \
-          "path:$repo#zaddy.zaddyPlugins"
-      )
-
-      if [ ! -x "$output/bin/caddy" ]; then
-        echo "built output is missing bin/caddy: $output" >&2
-        exit 1
-      fi
-
-      build_info=$("$output/bin/caddy" build-info)
-      missing=0
-      while IFS= read -r module; do
-        [ -z "$module" ] && continue
-        if ! printf '%s\n' "$build_info" | ${final.gnugrep}/bin/grep -F -q -- "$module"; then
-          echo "missing configured plugin from caddy build-info: $module" >&2
-          missing=1
-        fi
-        if ! ${final.gnugrep}/bin/grep -R -F -q -- "$module" "$modules_output"; then
-          echo "missing configured plugin from vendored modules: $module" >&2
-          missing=1
-        fi
-      done < <(printf '%s\n' "$expected_plugins" | ${final.jq}/bin/jq -r '.[].name')
-
-      if [ "$missing" -ne 0 ]; then
-        exit 1
-      fi
-
-      printf '%s\n' "$build_info"
-      echo "verified configured plugins in $modules_output and $output"
-    '';
-  };
-
   #  get_latest = "${curl}/bin/curl https://api.github.com/repos/supabase/cli/releases/latest | ${jq}/bin/jq '.tag_name'";
 
   ndiff = pog {
     name = "ndiff";
-    description = "a pog script to diff my repo's attrs vs upstream";
+    description = "compare one local overlay derivation with the pinned upstream nixpkgs derivation";
     arguments = [{ name = "attribute"; }];
     flags = [
-      { name = "nixpkgs"; default = final.nixpkgsRev; }
+      {
+        name = "repo";
+        short = "";
+        envVar = "CFG_REPO";
+        description = "cfg checkout to inspect; defaults to the current directory";
+      }
+      {
+        name = "system";
+        short = "";
+        default = final.stdenv.hostPlatform.system;
+        description = "Nix system to compare";
+      }
+      {
+        name = "nixpkgs";
+        short = "";
+        description = "optional nixpkgs revision to compare instead of the flake input";
+      }
     ];
     script = helpers: with helpers; ''
       attribute="$1"
       ${var.empty "attribute"} && die "no attribute specified to diff!"
+      repo="''${repo:-$PWD}"
+      if [ ! -f "$repo/flake.nix" ]; then
+        die "cfg flake not found at '$repo'"
+      fi
+      repo="$(${final.coreutils}/bin/realpath -e -- "$repo")"
+
+      upstream="path:$repo#pins.nixpkgs.legacyPackages.$system.$attribute.drvPath"
+      if ${var.notEmpty "nixpkgs"}; then
+        upstream="github:NixOS/nixpkgs/$nixpkgs#legacyPackages.$system.$attribute.drvPath"
+      fi
       ${final.nvd}/bin/nvd diff \
-        "$(${final._nix}/bin/nix eval --raw "github:NixOS/nixpkgs/$nixpkgs#$attribute.drvPath")" \
-        "$(${final._nix}/bin/nix eval --raw "github:jpetrucciani/nix#$attribute.drvPath")"
+        "$(${final._nix}/bin/nix eval --raw --no-write-lock-file "$upstream")" \
+        "$(${final._nix}/bin/nix eval --raw --no-write-lock-file "path:$repo#legacyPackages.$system.$attribute.drvPath")"
+    '';
+  };
+
+  overlay-diff = pog {
+    name = "overlay-diff";
+    description = "show the top-level attributes declared by this repo's overlays compared with its pinned nixpkgs";
+    strict = true;
+    flags = [
+      {
+        name = "repo";
+        short = "";
+        envVar = "CFG_REPO";
+        description = "cfg checkout to inspect; defaults to the current directory";
+      }
+      {
+        name = "system";
+        short = "";
+        default = final.stdenv.hostPlatform.system;
+        description = "Nix system to compare";
+      }
+      {
+        name = "custom";
+        bool = true;
+        description = "show only packages discovered under pkgs/";
+      }
+      {
+        name = "overrides";
+        bool = true;
+        description = "show only attributes that also exist in upstream nixpkgs";
+      }
+      {
+        name = "json";
+        bool = true;
+        description = "emit the filtered manifest as JSON";
+      }
+    ];
+    script = h: ''
+      repo="''${repo:-$PWD}"
+      if [ ! -f "$repo/flake.nix" ]; then
+        die "cfg flake not found at '$repo'"
+      fi
+      repo="$(${final.coreutils}/bin/realpath -e -- "$repo")"
+
+      manifest=$(
+        ${final._nix}/bin/nix eval \
+          --json \
+          --no-write-lock-file \
+          "path:$repo#lib.overlayDelta.$system"
+      )
+      custom_only=0
+      overrides_only=0
+      if ${h.flag "custom"}; then
+        custom_only=1
+      fi
+      if ${h.flag "overrides"}; then
+        overrides_only=1
+      fi
+      manifest=$(
+        printf '%s\n' "$manifest" | ${final.jq}/bin/jq \
+          --argjson custom_only "$custom_only" \
+          --argjson overrides_only "$overrides_only" \
+          '
+            .entries |= map(select(
+              ($custom_only == 0 or .custom)
+              and ($overrides_only == 0 or .status == "overridden")
+            ))
+            | .summary = {
+                added: ([.entries[] | select(.status == "added")] | length),
+                custom: ([.entries[] | select(.custom)] | length),
+                declarations: (.entries | length),
+                overridden: ([.entries[] | select(.status == "overridden")] | length)
+              }
+          '
+      )
+
+      if ${h.flag "json"}; then
+        printf '%s\n' "$manifest"
+        exit 0
+      fi
+
+      printf '%s\n' "$manifest" | ${final.jq}/bin/jq -r '
+        "nixpkgs \(.nixpkgsRev) on \(.system)",
+        "\(.summary.declarations) declarations: \(.summary.added) added, \(.summary.overridden) overridden, \(.summary.custom) from pkgs/",
+        "",
+        "STATUS     SCOPE    ATTRIBUTE                        DECLARATION",
+        (.entries[] |
+          "\(.status | . + (" " * (10 - length))) "
+          + (if .custom then "pkgs/   " else "overlay " end)
+          + "\(.name | . + (" " * ([0, 32 - length] | max))) "
+          + (.declaration // "-"))
+      '
+    '';
+  };
+
+  overlay-check = pog {
+    name = "overlay-check";
+    description = "build selected overlay attributes, or every buildable package discovered under pkgs/";
+    strict = true;
+    arguments = [
+      {
+        name = "attribute";
+        description = "top-level overlay attribute to build";
+        variadic = true;
+      }
+    ];
+    flags = [
+      {
+        name = "repo";
+        short = "";
+        envVar = "CFG_REPO";
+        description = "cfg checkout to test; defaults to the current directory";
+      }
+      {
+        name = "system";
+        short = "";
+        default = final.stdenv.hostPlatform.system;
+        description = "Nix system to build";
+      }
+      {
+        name = "all";
+        bool = true;
+        description = "build every eligible package discovered under pkgs/";
+      }
+      {
+        name = "dry-run";
+        short = "";
+        bool = true;
+        description = "show what Nix would build without realizing it";
+      }
+    ];
+    script = h: ''
+      repo="''${repo:-$PWD}"
+      if [ ! -f "$repo/flake.nix" ]; then
+        die "cfg flake not found at '$repo'"
+      fi
+      repo="$(${final.coreutils}/bin/realpath -e -- "$repo")"
+
+      manifest=$(
+        ${final._nix}/bin/nix eval \
+          --json \
+          --no-write-lock-file \
+          "path:$repo#lib.overlayDelta.$system"
+      )
+
+      attributes=("$@")
+      if ${h.flag "all"}; then
+        if [ "''${#attributes[@]}" -ne 0 ]; then
+          die "--all cannot be combined with explicit attributes"
+        fi
+        mapfile -t attributes < <(
+          ${final._nix}/bin/nix eval \
+            --json \
+            --no-write-lock-file \
+            --apply builtins.attrNames \
+            "path:$repo#packages.$system" \
+            | ${final.jq}/bin/jq -r '.[]'
+        )
+      elif [ "''${#attributes[@]}" -eq 0 ]; then
+        die "pass one or more overlay attributes, or use --all for eligible pkgs/ packages"
+      fi
+
+      installables=()
+      for attribute in "''${attributes[@]}"; do
+        if ! printf '%s\n' "$manifest" | ${final.jq}/bin/jq \
+          --exit-status \
+          --arg attribute "$attribute" \
+          'any(.entries[]; .name == $attribute)' \
+          >/dev/null; then
+          die "'$attribute' is not declared by the local overlay stack"
+        fi
+        installables+=("path:$repo#legacyPackages.$system.$attribute")
+      done
+
+      printf 'building %s overlay attribute(s) for %s\n' "''${#installables[@]}" "$system"
+      build_args=(
+        --keep-going
+        --no-link
+        --no-write-lock-file
+        --print-build-logs
+      )
+      if ${h.flag "dry_run"}; then
+        build_args+=(--dry-run)
+      fi
+      ${final._nix}/bin/nix build "''${build_args[@]}" "''${installables[@]}"
     '';
   };
 
@@ -1093,6 +942,8 @@ rec {
     final.hexcast
     final.nixrender
     ndiff
+    overlay-check
+    overlay-diff
     nixup
     nixsum
     nixcache
@@ -1100,9 +951,6 @@ rec {
     nupdate_latest_github
     generate_sglang_omni_lock
     generate_uv_lock
-    refresh_codex_latest
-    refresh_llama-cpp_latest
-    refresh_zaddy
     # rehydrate
     y2n
   ];

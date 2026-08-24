@@ -1,5 +1,5 @@
 # [bkt](https://github.com/dimo414/bkt) is a subprocess caching utility
-{ lib, fetchFromGitHub, rustPlatform }:
+{ lib, fetchFromGitHub, rustPlatform, nix-update-script }:
 let
   pname = "bkt";
   version = "0.8.2";
@@ -15,12 +15,19 @@ rustPlatform.buildRustPackage rec {
   };
 
   cargoHash = "sha256-locf3k0jIT9RNQS9yCUtOpj4oKo5pOBU3CEYAJDbaPU=";
-  doCheck = false; # the tests are currently failing?
+
+  checkFlags = [
+    # The test shells out to sudo, which is intentionally absent from the sandbox.
+    "--skip=cli::cache_dirs_multi_user"
+  ];
+
+  passthru.updateScript = nix-update-script { };
 
   meta = with lib; {
     description = "subprocess caching utility";
     homepage = "https://github.com/dimo414/bkt";
     license = licenses.mit;
+    mainProgram = "bkt";
     maintainers = with maintainers; [ jpetrucciani ];
   };
 }

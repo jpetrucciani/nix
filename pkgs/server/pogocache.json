@@ -1,0 +1,17 @@
+{
+  "artifacts": {
+    "aarch64-darwin": {
+      "name": "pogocache-apple-arm64.tar.gz",
+      "sha256": "sha256-R6N4VGsLPzIhDMTC+jD/WBhSPWAyuicT9a8ZABvMJmY="
+    },
+    "aarch64-linux": {
+      "name": "pogocache-linux-arm64-musl.tar.gz",
+      "sha256": "sha256-HV6c+682ULpQwQ4CPCWrCIQ0BSFVx32qcux+eksYxQY="
+    },
+    "x86_64-linux": {
+      "name": "pogocache-linux-amd64-musl.tar.gz",
+      "sha256": "sha256-LRvN0XzEbXkiM1JTdrEU9lAJpjQf3MOG6fk4gXRtIso="
+    }
+  },
+  "version": "1.3.2"
+}

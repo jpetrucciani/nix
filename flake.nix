@@ -59,10 +59,24 @@
         "x86_64-linux"
       ];
       nix2containerPkgs = self.inputs.nix2container.packages.x86_64-linux;
-      packages = forAllSystems
+      packageSets = forAllSystems
         (system: import ./. { flake = self; inherit system; });
+      upstreamPackageSets = forAllSystems
+        (system: import self.inputs.nixpkgs {
+          inherit system;
+          config = packageSets.${system}.config;
+        });
+      overlayDelta = forAllSystems
+        (system: import ./overlay-delta.nix {
+          local = packageSets.${system};
+          overlays = import ./overlays.nix;
+          root = ./.;
+          upstream = upstreamPackageSets.${system};
+        });
+      packages = forAllSystems
+        (system: packageSets.${system}.__j_packages);
       foundryConfiguration = self.inputs.nixpkgs.lib.nixosSystem {
-        pkgs = packages.x86_64-linux;
+        pkgs = packageSets.x86_64-linux;
         specialArgs = { flake = self; machine-name = "foundry"; };
         modules = [
           ./hosts/foundry/configuration.nix
@@ -73,12 +87,14 @@
     in
     {
       inherit packages;
+      legacyPackages = packageSets;
+      lib = lib // { inherit overlayDelta; };
       inherit (nix2containerPkgs) nix2container;
       pins = self.inputs;
       devShells = forAllSystems (
         system:
         let
-          pkgs = packages.${system};
+          pkgs = packageSets.${system};
         in
         {
           default = pkgs.mkShell {
@@ -95,7 +111,7 @@
       checks = forAllSystems (
         system:
         let
-          pkgs = packages.${system};
+          pkgs = packageSets.${system};
           pogScriptGroups = lib.filterAttrs
             (name: value: lib.hasSuffix "_pog_scripts" name && builtins.isList value)
             pkgs;
@@ -154,7 +170,7 @@
             let sys = if name == "andromeda" then "aarch64-linux" else "x86_64-linux"; in {
               inherit name;
               value = self.inputs.nixpkgs.lib.nixosSystem {
-                pkgs = self.packages.${sys};
+                pkgs = packageSets.${sys};
                 specialArgs = { flake = self; machine-name = name; };
                 modules = [
                   ./hosts/modules/servers/infinity.nix
@@ -172,7 +188,7 @@
           (name: {
             inherit name;
             value = self.inputs.nix-darwin.lib.darwinSystem {
-              pkgs = self.packages.aarch64-darwin;
+              pkgs = packageSets.aarch64-darwin;
               specialArgs = { flake = self; machine-name = name; };
               modules = [
                 ./hosts/common_darwin.nix

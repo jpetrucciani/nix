@@ -1,29 +1,55 @@
 # [headscale-ui](https://github.com/gurucomputing/headscale-ui) is a web frontend for headscale management
-{ fetchFromGitHub, buildNpmPackage }:
+{ lib
+, stdenvNoCC
+, fetchurl
+, unzip
+, mkGitHubReleaseUpdater
+}:
 let
+  release = lib.importJSON ./headscale-ui.json;
+  artifact = release.artifacts.universal;
+  inherit (release) version;
+in
+stdenvNoCC.mkDerivation {
   pname = "headscale-ui";
-  version = "0.0.1";
-  src = fetchFromGitHub {
+  inherit version;
+
+  src = fetchurl {
+    url = "https://github.com/gurucomputing/headscale-ui/releases/download/${version}/${artifact.name}";
+    inherit (artifact) sha256;
+  };
+
+  strictDeps = true;
+  nativeBuildInputs = [ unzip ];
+
+  dontUnpack = true;
+  dontConfigure = true;
+  dontBuild = true;
+
+  installPhase = ''
+    runHook preInstall
+
+    mkdir -p "$out/dist"
+    unzip -q "$src" -d "$out/dist"
+    test -f "$out/dist/web/index.html"
+
+    runHook postInstall
+  '';
+
+  passthru.updateScript = mkGitHubReleaseUpdater {
+    pname = "headscale-ui";
     owner = "gurucomputing";
     repo = "headscale-ui";
-    rev = "63041fd673d81da56e60d2b528a4991981eab746";
-    hash = "sha256-pz7oDRfBf/dN+PMEqbMe+es6deQ4QP3pC191ASlyV7U=";
+    dataFile = "pkgs/cloud/headscale-ui.json";
+    tagPrefix = "";
+    assets.universal = "headscale-ui.zip";
   };
-in
-buildNpmPackage {
-  inherit src version;
-  name = pname;
-  npmDepsHash = "sha256-MePNbOPSe5wB8/6T3DLs+4+Qlr8f+7cCPs301il7iX8=";
-  buildPhase = ''
-    runHook preBuild
-    mkdir -p $out
-    npm run build
-    runHook postBuild
-  '';
-  installPhase = ''
-    mv ./build $out/dist
-  '';
-  makeCacheWritable = true;
-  dontFixup = true;
-  dontNpmBuild = true;
+
+  meta = {
+    description = "Web frontend for Headscale management";
+    homepage = "https://github.com/gurucomputing/headscale-ui";
+    license = lib.licenses.bsd3;
+    maintainers = with lib.maintainers; [ jpetrucciani ];
+    platforms = lib.platforms.all;
+  };
 }

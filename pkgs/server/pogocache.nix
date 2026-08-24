@@ -1,61 +1,67 @@
-# [pogocache](https://github.com/pogocache/pogocache) is Fast caching software with a focus on low latency and cpu efficiency
+# [pogocache](https://github.com/tidwall/pogocache) is fast caching software focused on low latency and CPU efficiency
 { lib
-, stdenv
-, fetchFromGitHub
-, git
-, autoconf
-, cmake
-, openssl
-, liburing
-, mimalloc
-, jemalloc
-, perl
+, stdenvNoCC
+, fetchurl
+, mkGitHubReleaseUpdater
 }:
 let
-  onlyDarwin = value: if stdenv.hostPlatform.isDarwin then value else null;
+  release = lib.importJSON ./pogocache.json;
+  artifact = release.artifacts.${stdenvNoCC.hostPlatform.system}
+    or (throw "pogocache: unsupported system ${stdenvNoCC.hostPlatform.system}");
+  archiveRoot = lib.removeSuffix ".tar.gz" artifact.name;
+  inherit (release) version;
 in
-stdenv.mkDerivation rec {
+stdenvNoCC.mkDerivation {
   pname = "pogocache";
-  version = "1.3.2";
+  inherit version;
 
-  src = fetchFromGitHub {
-    owner = "tidwall";
-    repo = "pogocache";
-    rev = version;
-    hash = "sha256-Kg5ql7td4JrsfHGBg1LtcBpeoJIVscejokjrCurIx0I=";
+  src = fetchurl {
+    url = "https://github.com/tidwall/pogocache/releases/download/${version}/${artifact.name}";
+    inherit (artifact) sha256;
   };
 
-  ${onlyDarwin "NOURING"} = "1";
-  ${onlyDarwin "NOOPENSSL"} = "1";
-
-  buildInputs = [ autoconf cmake git ] ++ (lib.optionals stdenv.hostPlatform.isLinux [ perl liburing openssl ]);
-
-  dontUseCmakeConfigure = true;
-
-  postPatch = (if stdenv.hostPlatform.isLinux then ''
-    tar -xzf ${openssl.src}
-    mv openssl-* deps/openssl
-
-    cp -r ${liburing.src} ./deps/liburing
-  '' else "") + ''
-    cp -r ${mimalloc.src} ./deps/mimalloc
-    cp -r ${jemalloc.src} ./deps/jemalloc
-
-    patchShebangs ./deps/*.sh ./deps/openssl/Configure
-    chmod -R +w ./deps
-  '';
+  strictDeps = true;
+  dontUnpack = true;
+  dontConfigure = true;
+  dontBuild = true;
 
   installPhase = ''
-    mkdir -p $out/bin
-    cp ./pogocache $out/bin/.
+    runHook preInstall
+
+    tar -xzf "$src"
+    install -Dm755 "${archiveRoot}/pogocache" "$out/bin/pogocache"
+    install -Dm644 "${archiveRoot}/LICENSE" "$out/share/licenses/pogocache/LICENSE"
+
+    runHook postInstall
   '';
 
+  doInstallCheck = true;
+  installCheckPhase = ''
+    runHook preInstallCheck
+    "$out/bin/pogocache" --version | grep -F "pogocache ${version}"
+    runHook postInstallCheck
+  '';
+
+  passthru.updateScript = mkGitHubReleaseUpdater {
+    pname = "pogocache";
+    owner = "tidwall";
+    repo = "pogocache";
+    dataFile = "pkgs/server/pogocache.json";
+    tagPrefix = "";
+    assets = {
+      aarch64-darwin = "pogocache-apple-arm64.tar.gz";
+      aarch64-linux = "pogocache-linux-arm64-musl.tar.gz";
+      x86_64-linux = "pogocache-linux-amd64-musl.tar.gz";
+    };
+  };
+
   meta = {
-    description = "Fast caching software with a focus on low latency and cpu efficiency";
+    description = "Fast caching software focused on low latency and CPU efficiency";
     homepage = "https://github.com/tidwall/pogocache";
-    license = lib.licenses.agpl3Only;
+    license = lib.licenses.mit;
     maintainers = with lib.maintainers; [ jpetrucciani ];
     mainProgram = "pogocache";
-    platforms = lib.platforms.all;
+    platforms = builtins.attrNames release.artifacts;
+    sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
   };
 }

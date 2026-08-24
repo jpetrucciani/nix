@@ -20,7 +20,9 @@ For the complete list, browse [`pkgs/cli`](./).
 - [aws-secretsmanager-agent.nix](./aws-secretsmanager-agent.nix): local cached access to AWS Secrets Manager.
 - [helm-oci.nix](./helm-oci.nix): list and inspect helm charts in OCI registries.
 - [terraform_1-5-5/](./terraform_1-5-5/): patched Terraform 1.5.5 build for legacy workflows.
-- [e2b-cli.nix](./e2b-cli.nix): command line interface for e2b sandbox workflows.
+- [e2b-cli/](./e2b-cli/): command line interface for E2B sandbox workflows, using a versioned npm lock hosted on
+  `static.g7c.us`. Run `nix run .#e2b-cli.updateScript` to generate and publish the next lock, update the package,
+  build it, and verify the CLI.
 - [gitlab-ci-verify.nix](./gitlab-ci-verify.nix): validate and lint GitLab CI files.
 
 ### Data and Visualization

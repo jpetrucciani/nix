@@ -17,6 +17,10 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 The default build uses CPU inference on Linux and Metal on macOS. CUDA and ROCm builds are available as
 `audio-cpp.cuda` and `audio-cpp.rocm`, respectively.
 
+### [codex-latest.nix](./codex-latest.nix)
+
+Latest packaged Codex release with its matching Rusty V8 archive and generated binding. Run `nix run .#codex-latest.updateScript` to refresh and validate it.
+
 ### [deepseek-harness.nix](./deepseek-harness.nix)
 
 [`deepseek-harness`](https://github.com/deepseek-ai/deepseek-harness) is an open-source agent harness developed by DeepSeek AI
@@ -36,6 +40,10 @@ geode is an experimental semantic indexing tool
 ### [kimi-code.nix](./kimi-code.nix)
 
 [`kimi-code`](https://github.com/MoonshotAI/kimi-code) is an AI coding agent for the terminal
+
+### [llama-cpp-latest.nix](./llama-cpp-latest.nix)
+
+Latest llama.cpp release with the web UI dependency set. Run `nix run .#llama-cpp-latest.updateScript` to refresh and validate it.
 
 ### [maestro-go.nix](./maestro-go.nix)
 
