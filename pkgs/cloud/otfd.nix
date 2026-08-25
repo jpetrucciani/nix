@@ -2,6 +2,7 @@
 { lib
 , buildGoModule
 , fetchFromGitHub
+, stdenv
 }:
 buildGoModule rec {
   pname = "otfd";
@@ -21,6 +22,14 @@ buildGoModule rec {
     substituteInPlace internal/run/cli_test.go \
       --replace-fail 'assert.Regexp(t, `Extracted tarball to: /tmp/run-123-.*`, got.String())' \
       'assert.Regexp(t, `Extracted tarball to: `+os.TempDir()+`/run-123-.*`, got.String())'
+
+    ${lib.optionalString stdenv.hostPlatform.isDarwin ''
+      # The downloader test selects its fixture using runtime.GOOS/runtime.GOARCH,
+      # but upstream only provides Linux archives containing the shared fake binary.
+      cp \
+        internal/releases/testdata/releases/terraform/1.2.3/terraform_1.2.3_linux_${stdenv.hostPlatform.go.GOARCH}.zip \
+        internal/releases/testdata/releases/terraform/1.2.3/terraform_1.2.3_darwin_${stdenv.hostPlatform.go.GOARCH}.zip
+    ''}
   '';
 
   # This package starts databases, daemons, browsers, and external providers.
