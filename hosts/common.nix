@@ -7,11 +7,10 @@
 let
   inherit (flake.inputs) home-manager nix-darwin;
 
-  mms = import
-    (fetchTarball {
-      url = "https://github.com/mkaito/nixos-modded-minecraft-servers/archive/68f2066499c035fd81c9dacfea2f512d6b0b62e5.tar.gz";
-      sha256 = "1nmw497ahb9hjjh0kwr1z782q41gcw5kw4dl4alg8pnyhgq141r1";
-    });
+  mms = fetchTarball {
+    url = "https://github.com/mkaito/nixos-modded-minecraft-servers/archive/68f2066499c035fd81c9dacfea2f512d6b0b62e5.tar.gz";
+    sha256 = "1nmw497ahb9hjjh0kwr1z782q41gcw5kw4dl4alg8pnyhgq141r1";
+  };
 
   jacobi = import ../home.nix {
     inherit flake machine-name pkgs isBarebones;
