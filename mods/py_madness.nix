@@ -168,6 +168,8 @@ let
       , gitignore ? true
       , enableCuda ? false
       , withDev ? false
+      , uvLock ? null
+      , pyproject ? null
       , _deps ? null
       , _pkgs ? final
       }@args:
@@ -723,12 +725,16 @@ let
             gitignoreRecursiveSource workspaceRoot
           else
             workspaceRoot;
-        workspaceLock = final.uv2nix.lib.lock1.parseLock (final.lib.importTOML (workspaceRoot' + "/uv.lock"));
+        workspaceLockTOML = if uvLock == null then final.lib.importTOML (workspaceRoot' + "/uv.lock") else uvLock;
+        workspaceLock = final.uv2nix.lib.lock1.parseLock workspaceLockTOML;
         workspaceLocalProjects = final.uv2nix.lib.lock1.getLocalProjects {
           lock = workspaceLock;
           workspaceRoot = workspaceRoot';
         };
-        workspace = final.uv2nix.lib.workspace.loadWorkspace { workspaceRoot = workspaceRoot'; };
+        workspace = final.uv2nix.lib.workspace.loadWorkspace ({
+          workspaceRoot = workspaceRoot';
+          uvLock = workspaceLockTOML;
+        } // final.lib.optionalAttrs (pyproject != null) { inherit pyproject; });
         missingWorkspaceProjects = final.lib.attrNames (final.lib.filterAttrs (_: project: !builtins.pathExists project.projectRoot) workspaceLocalProjects);
         _uvWorkspaceCheck = final.lib.assertMsg (missingWorkspaceProjects == [ ]) ''
           uv2nix could not load workspace members from workspaceRoot.
@@ -1059,34 +1065,37 @@ let
       }@args:
       let
         attrs = removeAttrs args [ "lockUrl" "lockHash" "extraDependencies" "pyprojectOverrides" ];
+        lockPath =
+          if lockUrl != null then
+            builtins.fetchurl
+              {
+                url = lockUrl;
+                sha256 = lockHash;
+              }
+          else
+            lockFile;
+        uvLock = final.lib.importTOML lockPath;
       in
       assert (lockFile != null || (lockUrl != null && lockHash != null)) || throw "you must specify either a 'lockFile' or a 'lockUrl' and 'lockHash'!";
       final.stdenv.mkDerivation (finalAttrs: attrs // {
         inherit pname version;
         dontUnpack = true;
-        workspaceRoot = final.runCommand "${pname}-uv-nix"
-          {
-            pyprojectTOML = final.writers.writeTOML "${pname}-pyproject.toml" {
-              project = {
-                name = pname;
-                # inherit version;
-                version = "0.0.0";
-                description = "${finalAttrs.pname} package in uv2nix";
-                dependencies = (if includeSelf then let pin = if includePin then "==${version}" else ""; in [ "${pname}${pin}" ] else [ ]) ++ extraDependencies;
-              };
-            };
-            uvLock = if lockUrl != null then (final.fetchurl { url = lockUrl; hash = lockHash; }) else lockFile;
-          }
-          ''
-            mkdir -p $out
-            cp $pyprojectTOML $out/pyproject.toml
-            cp $uvLock $out/uv.lock
-          '';
         uvEnv = uv-nix.mkEnv {
-          inherit python pyprojectOverrides;
+          inherit python pyprojectOverrides uvLock;
           name = finalAttrs.pname;
           enableCuda = cudaSupport;
-          inherit (finalAttrs) workspaceRoot;
+          gitignore = false;
+          # buildUvPackage locks use a virtual root and contain their complete
+          # dependency graph. The local path only anchors that virtual project.
+          workspaceRoot = ./.;
+          pyproject = {
+            project = {
+              name = pname;
+              version = "0.0.0";
+              description = "${finalAttrs.pname} package in uv2nix";
+              dependencies = (if includeSelf then let pin = if includePin then "==${version}" else ""; in [ "${pname}${pin}" ] else [ ]) ++ extraDependencies;
+            };
+          };
         };
         nativeBuildInputs = (attrs.nativeBuildInputs or [ ]) ++ [ final.rsync final.makeWrapper ];
         installPhase =
