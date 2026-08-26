@@ -426,6 +426,12 @@ let
               dontAutoPatchelf = true;
               dontPatchELF = true;
             });
+            "humming-kernels" =
+              (addBuildAndSearchInputs [ _final.torch ] _prev."humming-kernels").overrideAttrs (old: {
+                autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
+                  "libcuda.so.1"
+                ];
+              });
             nccl4py =
               let
                 ncclRuntimeInputs = packagesIfPresent [
@@ -678,10 +684,7 @@ let
                 addAutoPatchelfSearchPath "${_final.torch}/${python.sitePackages}/torch/lib"
               '' + (old.postFixup or "");
             });
-            torchcodec = _prev.torchcodec.overrideAttrs (old: {
-              buildInputs = (old.buildInputs or [ ]) ++ [
-                FFMPEG_ROOT
-              ];
+            torchcodec = (addBuildAndSearchInputs [ FFMPEG_ROOT _pkgs.libheif.lib ] _prev.torchcodec).overrideAttrs (old: {
               postFixup = ''
                 addAutoPatchelfSearchPath "${_final.torch}/${python.sitePackages}/torch/lib"
               '' + (old.postFixup or "");

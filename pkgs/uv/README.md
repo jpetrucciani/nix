@@ -45,3 +45,7 @@ Compatibility patches applied to uv2nix-managed Python dependencies
 ### [vllm.nix](./vllm.nix)
 
 [vllm](https://github.com/vllm-project/vllm) is a high-throughput and memory-efficient inference and serving engine for LLMs
+
+Run `nix run .#vllm.updateScript` to discover the latest PyPI release, generate and publish its immutable Python 3.13
+uv lock, update the version and lock hash, and evaluate the resulting derivation. Publishing uses
+`CLOUDFLARE_R2_ENDPOINT`, `CLOUDFLARE_R2_PROFILE`, and the configured AWS profile credentials.

@@ -8,6 +8,36 @@ let
     description = "cfg checkout to update; defaults to $HOME/cfg";
   };
 
+  r2ArtifactFlags = [
+    {
+      name = "bucket";
+      short = "";
+      envVar = "STATIC_G7C_R2_BUCKET";
+      default = "gemologic-static";
+      description = "R2 bucket backing static.g7c.us";
+    }
+    {
+      name = "endpoint";
+      short = "";
+      envVar = "CLOUDFLARE_R2_ENDPOINT";
+      description = "Cloudflare R2 S3 endpoint";
+    }
+    {
+      name = "profile";
+      short = "";
+      envVar = "CLOUDFLARE_R2_PROFILE";
+      default = "cloudflare";
+      description = "AWS profile containing the R2 credentials";
+    }
+    {
+      name = "public_url";
+      short = "";
+      envVar = "STATIC_G7C_PUBLIC_URL";
+      default = "https://static.g7c.us";
+      description = "public base URL for the published artifact";
+    }
+  ];
+
   mkCfgPackageRefresh =
     { name
     , description
@@ -407,34 +437,7 @@ rec {
         short = "";
         description = "target e2b-cli version; defaults to the npm latest tag";
       }
-      {
-        name = "bucket";
-        short = "";
-        envVar = "STATIC_G7C_R2_BUCKET";
-        default = "gemologic-static";
-        description = "R2 bucket backing static.g7c.us";
-      }
-      {
-        name = "endpoint";
-        short = "";
-        envVar = "CLOUDFLARE_R2_ENDPOINT";
-        description = "Cloudflare R2 S3 endpoint";
-      }
-      {
-        name = "profile";
-        short = "";
-        envVar = "CLOUDFLARE_R2_PROFILE";
-        default = "cloudflare";
-        description = "AWS profile containing the R2 credentials";
-      }
-      {
-        name = "public_url";
-        short = "";
-        envVar = "STATIC_G7C_PUBLIC_URL";
-        default = "https://static.g7c.us";
-        description = "public base URL for the published lock";
-      }
-    ];
+    ] ++ r2ArtifactFlags;
     script = ''
       ${publishImmutableR2}
 
@@ -539,6 +542,137 @@ rec {
       printf 'lock_hash=%s\nlock_url=%s\n' "$lock_hash" "$artifact_url"
     '';
   };
+
+  mkVllmRefresh =
+    { extraDependencies }:
+    mkCfgPackageRefresh {
+      name = "refresh_vllm";
+      description = "generate and publish vLLM's uv lock, then update and evaluate the package";
+      target = "pkgs/uv/vllm.nix";
+      flags = [
+        {
+          name = "version";
+          short = "";
+          description = "target vLLM version; defaults to the latest PyPI release";
+        }
+      ] ++ r2ArtifactFlags;
+      script = ''
+        ${publishImmutableR2}
+
+        if [ -n "$version" ]; then
+          if ! printf '%s\n' "$version" | ${final.gnugrep}/bin/grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.]+)?$'; then
+            echo "unexpected vLLM version: $version" >&2
+            exit 2
+          fi
+          metadata_url="https://pypi.org/pypi/vllm/$version/json"
+        else
+          metadata_url="https://pypi.org/pypi/vllm/json"
+        fi
+        metadata=$(
+          ${final.curl}/bin/curl --fail --silent --show-error --location --retry 3 \
+            "$metadata_url"
+        )
+        package_name=$(printf '%s\n' "$metadata" | ${final.jq}/bin/jq -er '.info.name')
+        if [ "$package_name" != "vllm" ]; then
+          echo "PyPI returned unexpected package name: $package_name" >&2
+          exit 1
+        fi
+        resolved_version=$(printf '%s\n' "$metadata" | ${final.jq}/bin/jq -er '.info.version')
+        if [ -n "$version" ] && [ "$resolved_version" != "$version" ]; then
+          echo "PyPI resolved $resolved_version, expected $version" >&2
+          exit 1
+        fi
+        version="$resolved_version"
+        if ! printf '%s\n' "$version" | ${final.gnugrep}/bin/grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.]+)?$'; then
+          echo "unexpected vLLM version from PyPI: $version" >&2
+          exit 1
+        fi
+
+        current_version=$(${final._nix}/bin/nix eval --raw "path:$repo#vllm.version")
+        if [ "$current_version" = "$version" ]; then
+          echo "vllm is already current at $version"
+          exit 0
+        fi
+
+        for platform in aarch64 x86_64; do
+          if ! printf '%s\n' "$metadata" | ${final.jq}/bin/jq -e \
+            --arg prefix "vllm-$version-" \
+            --arg platform "$platform" '
+              any(.urls[];
+                .packagetype == "bdist_wheel"
+                and (.filename as $filename
+                  | ($filename | startswith($prefix))
+                  and ($filename | contains("manylinux"))
+                  and ($filename | endswith("_\($platform).whl"))))
+            ' >/dev/null; then
+            echo "PyPI release $version has no manylinux wheel for $platform" >&2
+            exit 1
+          fi
+        done
+
+        lock_file="$temp_dir/vllm.lock"
+        lock_requirements=(
+          "vllm==$version"
+          ${lib.escapeShellArgs extraDependencies}
+        )
+        ${lib.getExe final.generate_uv_lock} \
+          --name vllm \
+          --version "$version" \
+          --project_name v \
+          --project_version 0.1.0 \
+          --python 3.13 \
+          --requires_python '>=3.13,<3.14' \
+          --output "$lock_file" \
+          --public_url "$public_url" \
+          "''${lock_requirements[@]}" \
+          >/dev/null
+        lock_hash=$(${final._nix}/bin/nix hash file --type sha256 --sri "$lock_file")
+        if ! printf '%s\n' "$lock_hash" | ${final.gnugrep}/bin/grep -Eq '^sha256-[A-Za-z0-9+/]{43}=$'; then
+          echo "invalid generated vLLM lock hash: $lock_hash" >&2
+          exit 1
+        fi
+
+        object_key="lock/uv/vllm/$version.lock"
+        publish_immutable_r2 "$lock_file" "$object_key" application/toml
+
+        for pattern in \
+          ', version ? "' \
+          ', lockHash ? "'
+        do
+          matches=$(${final.gnugrep}/bin/grep -F -c "$pattern" "$target_file" || true)
+          if [ "$matches" -ne 1 ]; then
+            echo "expected one '$pattern' assignment in $target_file, found $matches" >&2
+            exit 1
+          fi
+        done
+        VERSION="$version" LOCK_HASH="$lock_hash" ${final.perl}/bin/perl -0pe '
+          (s/(, version \? ")[^"]+("\n)/$1 . $ENV{VERSION} . $2/e) == 1
+            or die "expected one version default\n";
+          (s/(, lockHash \? ")[^"]+("\n)/$1 . $ENV{LOCK_HASH} . $2/e) == 1
+            or die "expected one lockHash default\n";
+        ' "$target_file" > "$temp_dir/vllm.nix"
+        ${final.coreutils}/bin/install -m 0644 "$temp_dir/vllm.nix" "$target_file"
+
+        format_target
+        evaluated_version=$(${final._nix}/bin/nix eval --raw "path:$repo#vllm.version")
+        evaluated_lock_hash=$(${final._nix}/bin/nix eval --raw "path:$repo#vllm.lockHash")
+        if [ "$evaluated_version" != "$version" ]; then
+          echo "evaluated vLLM version $evaluated_version does not match $version" >&2
+          exit 1
+        fi
+        if [ "$evaluated_lock_hash" != "$lock_hash" ]; then
+          echo "evaluated vLLM lock hash $evaluated_lock_hash does not match $lock_hash" >&2
+          exit 1
+        fi
+        drv_path=$(${final._nix}/bin/nix eval --raw "path:$repo#vllm.drvPath")
+        if ! printf '%s\n' "$drv_path" | ${final.gnugrep}/bin/grep -Eq '^/nix/store/[0-9a-z]{32}-.*\.drv$'; then
+          echo "unexpected evaluated vLLM derivation path: $drv_path" >&2
+          exit 1
+        fi
+
+        printf 'lock_hash=%s\nlock_url=%s\ndrv_path=%s\n' "$lock_hash" "$artifact_url" "$drv_path"
+      '';
+    };
 
   refresh_zaddy = mkCfgPackageRefresh {
     name = "refresh_zaddy";

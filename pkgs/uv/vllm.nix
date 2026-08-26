@@ -5,25 +5,27 @@
 , cudatoolkit
 , clang
 , ninja
-, version ? "0.27.1"
-, lockHash ? "sha256-zBHxxOJYqXVzSZ2qOsmcBHTimu3Qxqulbz1S1ZdvMCY="
+, mkVllmRefresh
+, version ? "0.28.0"
+, lockHash ? "sha256-E2WSIUSwk7uBi2Xi9wFzqkLmdo015nb7oDd4aP2n5mY="
 , isWSL ? false
 , includePin ? false
 }:
 let
   ldPath = if isWSL then "/usr/lib/wsl/lib" else "/run/opengl-driver/lib";
-in
-uv-nix.buildUvPackage rec {
-  inherit version lockHash includePin;
-  pname = "vllm";
-
-  lockUrl = "https://static.g7c.us/lock/uv/vllm/${version}.lock";
   extraDependencies = [
     "flashinfer-python>=0.6.12"
     "openai>=2.25.0"
     "transformers>=5.12.0"
     "qwen-vl-utils==0.0.14"
   ];
+in
+uv-nix.buildUvPackage rec {
+  inherit version lockHash includePin;
+  pname = "vllm";
+
+  lockUrl = "https://static.g7c.us/lock/uv/vllm/${version}.lock";
+  inherit extraDependencies;
   cudaSupport = true;
 
   postInstall = ''
@@ -51,6 +53,8 @@ uv-nix.buildUvPackage rec {
   '';
 
   passthru = {
+    inherit lockHash lockUrl;
+    updateScript = mkVllmRefresh { inherit extraDependencies; };
     wsl = vllm.override { isWSL = true; };
   };
 
