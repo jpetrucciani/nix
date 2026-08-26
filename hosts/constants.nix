@@ -173,9 +173,68 @@ let
         pog = jacobi "pog";
       };
     };
+  hostRecords = {
+    proxmox =
+      let
+        terra_lan = "192.168.69.10";
+      in
+      {
+        "api.cobi.dev" = terra_lan;
+        "auth.cobi.dev" = terra_lan;
+        "broadsword.tech" = terra_lan;
+        "cobi.dev" = terra_lan;
+        "hexa.dev" = terra_lan;
+        "invoice.cobi.dev" = terra_lan;
+        "nix.cobi.dev" = terra_lan;
+        "ntfy.cobi.dev" = terra_lan;
+        "oc.cobi.dev" = terra_lan;
+        "otf.cobi.dev" = terra_lan;
+        "search.cobi.dev" = terra_lan;
+        "searxng.cobi.dev" = terra_lan;
+        "vault.cobi.dev" = terra_lan;
+        "x.hexa.dev" = terra_lan;
+        "z.cobi.dev" = terra_lan;
+        bedrock = "192.168.69.70";
+        ben = "192.168.69.20";
+        granite = "192.168.69.72";
+        terra = terra_lan;
+      };
+    tailnet =
+      let
+        terra_traefik = "100.88.33.20";
+      in
+      {
+        "chat.cobi.dev" = terra_traefik;
+        "google-mcp.cobi.dev" = terra_traefik;
+        "grafana.cobi.dev" = terra_traefik;
+        "llm.cobi.dev" = "100.88.176.6";
+        "lobe.cobi.dev" = terra_traefik;
+        "loki-internal.cobi.dev" = terra_traefik;
+        "mcpo.cobi.dev" = terra_traefik;
+        "n8n.cobi.dev" = terra_traefik;
+        "ntfy-mcp.cobi.dev" = terra_traefik;
+        "o.cobi.dev" = terra_traefik;
+        "quest.cobi.dev" = terra_traefik;
+        "searxng.cobi.dev" = terra_traefik;
+        cy1-nix-01 = "100.127.34.123";
+        edge = "100.69.215.126";
+        jupiter = "100.84.224.73";
+        luna = "100.78.40.10";
+        mercury = "100.92.180.69";
+        milkyway = "100.83.252.130";
+        neptune = "100.101.139.41";
+        phobos = "100.116.153.116";
+        polaris = "100.65.145.59";
+        styx = "100.102.221.30";
+        terra = "100.88.176.6";
+        titan = "100.66.137.28";
+      };
+  };
+  renderHosts = records:
+    builtins.concatStringsSep "\n" (builtins.attrValues (builtins.mapAttrs (name: value: "${value} ${name}") records)) + "\n";
 in
 {
-  inherit ports pubkeys machines subs;
+  inherit hostRecords ports pubkeys machines subs;
   nix = mkNix [ ];
   nix-be = mkNix [ subs.be ];
   nix-cuda = mkNix [ subs.nix-community ];
@@ -187,65 +246,7 @@ in
     "net.core.rmem_max" = 2500000;
   };
 
-  extraHosts = {
-    proxmox =
-      let
-        terra = "192.168.69.10";
-        terra_tk = "100.88.33.20";
-        ben = "192.168.69.20";
-        bedrock = "192.168.69.70";
-        granite = "192.168.69.72";
-        jupiter = "100.84.224.73";
-        neptune = "100.101.139.41";
-        edge = "100.69.215.126";
-        luna = "100.78.40.10";
-        milkyway = "100.83.252.130";
-        # voyager = "";
-        styx = "100.102.221.30";
-        phobos = "100.116.153.116";
-        mercury = "100.92.180.69";
-        polaris = "100.65.145.59";
-        titan = "100.66.137.28";
-      in
-      ''
-        ${terra} api.cobi.dev
-        ${terra} auth.cobi.dev
-        ${terra} search.cobi.dev
-        ${terra} searxng.cobi.dev
-        ${terra} broadsword.tech
-        ${terra} cobi.dev
-        ${terra} hexa.dev
-        ${terra} invoice.cobi.dev
-        ${terra} nix.cobi.dev
-        ${terra} ntfy.cobi.dev
-        ${terra} oc.cobi.dev
-        ${terra} otf.cobi.dev
-        ${terra} terra
-        ${terra} vault.cobi.dev
-        ${terra} x.hexa.dev
-        ${terra} z.cobi.dev
-        ${terra_tk} llm.cobi.dev
-        ${terra_tk} quest.cobi.dev
-        ${terra_tk} k.cobi.dev
-        ${terra_tk} grafana.cobi.dev
-        ${terra_tk} lobe.cobi.dev
-        ${terra_tk} loki-internal.cobi.dev
-        ${terra_tk} search.cobi.dev
-        ${ben} ben
-        ${bedrock} bedrock
-        ${granite} granite
-        ${edge} edge
-        ${jupiter} jupiter
-        ${luna} luna
-        ${neptune} neptune
-        ${milkyway} milkyway
-        ${styx} styx
-        ${mercury} mercury
-        ${phobos} phobos
-        ${polaris} polaris
-        ${titan} titan
-      '';
-  };
+  extraHosts = builtins.mapAttrs (_: renderHosts) hostRecords;
 
   defaultLocale = "en_US.UTF-8";
   extraLocaleSettings = let utf8 = "en_US.UTF-8"; in

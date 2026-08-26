@@ -1,8 +1,8 @@
 { config, flake, machine-name, pkgs, ... }:
 let
   hostname = "cy1-nix-01";
-  ts_ip = "100.127.34.123";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
+  ts_ip = common.hostRecords.tailnet.${hostname};
 in
 {
   imports = [
@@ -141,19 +141,21 @@ in
             anonymize_client_ip = true;
           };
         };
-        zones = [
-          {
-            name = "x";
-            records =
-              let
-                record = name: value: { inherit name value; type = "A"; ttl = 300; };
-                records = {
-                  "meme.x" = ts_ip;
-                };
-              in
-              pkgs.lib.mapAttrsToList record records;
-          }
-        ];
+        zones =
+          let
+            record = name: value: { inherit name value; type = "A"; ttl = 300; };
+            zone = name: value: {
+              inherit name;
+              records = [ (record name value) ];
+            };
+          in
+          (pkgs.lib.mapAttrsToList zone common.hostRecords.tailnet)
+            ++ [
+            {
+              name = "x";
+              records = [ (record "meme.x" ts_ip) ];
+            }
+          ];
         plugins = [
           {
             name = "toys";

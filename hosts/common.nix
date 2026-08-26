@@ -19,7 +19,7 @@ let
   inherit (constants) ports;
 in
 {
-  inherit (constants) defaultLocale emails extraHosts extraLocaleSettings name nix nix-be nix-cuda ports pubkeys sysctl_opts templates timeZone tz;
+  inherit (constants) defaultLocale emails extraHosts extraLocaleSettings hostRecords name nix nix-be nix-cuda ports pubkeys sysctl_opts templates timeZone tz;
   inherit home-manager jacobi nix-darwin mms pkgs;
 
   extraGroups = [ "wheel" "networkmanager" "docker" "podman" ];
