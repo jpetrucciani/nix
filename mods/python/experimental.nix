@@ -6,14 +6,14 @@ in
 rec {
   ty = buildPythonPackage rec {
     pname = "ty";
-    version = "0.0.74";
+    version = "0.0.75";
     pyproject = true;
 
     src = fetchFromGitHub {
       owner = "astral-sh";
       repo = "ty";
       rev = "refs/tags/${version}";
-      hash = "sha256-6obXsyfHHgPPON7rZj2cYtMdg20sv33LR05gey/w56A=";
+      hash = "sha256-hzEgbimysGMH+bQoKmTOWZl8DgaW/G1QUkI5T18UMp4=";
       fetchSubmodules = true;
     };
 
