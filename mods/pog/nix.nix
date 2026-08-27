@@ -438,10 +438,35 @@ rec {
           ;;
       esac
 
+      use_update_script=( --use-update-script )
+      if update_script_kind=$(
+        ${final._nix}/bin/nix eval \
+          --raw \
+          --no-write-lock-file \
+          --apply 'script:
+            let
+              command = script.command or script;
+              commands = if builtins.isList command then command else [ command ];
+            in
+            if
+              builtins.length commands == 1
+              && builtins.baseNameOf (toString (builtins.head commands)) == "nix-update"
+            then
+              "generic"
+            else
+              "custom"' \
+          ".#$attribute.updateScript" \
+          2>/dev/null
+      ) && [ "$update_script_kind" = "generic" ]; then
+        # The generic update script recursively invokes nix-update without the
+        # flake context that resolved this legacyPackages attribute.
+        use_update_script=()
+      fi
+
       ${final.nix-update}/bin/nix-update \
         --build \
         --flake \
-        --use-update-script \
+        "''${use_update_script[@]}" \
         "$attribute" \
         "''${forwarded_args[@]}"
     '';
