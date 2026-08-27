@@ -398,7 +398,52 @@ rec {
     arguments = [{ name = "attribute"; }];
     description = "my lazy helper function to update an attribute in my nix repo";
     script = ''
-      ${final.nix-update}/bin/nix-update --build --flake --use-update-script "$@"
+      if (( $# == 0 )); then
+        echo "nupdate: no attribute specified" >&2
+        exit 2
+      fi
+      attribute=$1
+      shift
+
+      system=${lib.escapeShellArg final.stdenv.hostPlatform.system}
+      forwarded_args=()
+      while (( $# > 0 )); do
+        case "$1" in
+          --system)
+            if (( $# < 2 )); then
+              echo "nupdate: --system requires a value" >&2
+              exit 2
+            fi
+            system=$2
+            forwarded_args+=( "$1" "$2" )
+            shift 2
+            ;;
+          --system=*)
+            system="''${1#--system=}"
+            forwarded_args+=( "$1" )
+            shift
+            ;;
+          *)
+            forwarded_args+=( "$1" )
+            shift
+            ;;
+        esac
+      done
+
+      case "$attribute" in
+        legacyPackages.* | packages.*)
+          ;;
+        *)
+          attribute="legacyPackages.$system.$attribute"
+          ;;
+      esac
+
+      ${final.nix-update}/bin/nix-update \
+        --build \
+        --flake \
+        --use-update-script \
+        "$attribute" \
+        "''${forwarded_args[@]}"
     '';
   };
 
