@@ -31,7 +31,10 @@ in
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot";
       };
-      systemd-boot.enable = true;
+      systemd-boot = {
+        enable = true;
+        configurationLimit = 3;
+      };
     };
     kernel.sysctl = { } // common.sysctl_opts;
     tmp.useTmpfs = true;
