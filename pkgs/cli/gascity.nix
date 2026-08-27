@@ -22,7 +22,6 @@
 , procps
 , python3
 , sqlite
-, stdenv
 , tmux
 , util-linux
 }:
@@ -41,17 +40,11 @@ let
 
     vendorHash = "sha256-WWEwGpCwMPD7jaz02zN745RQQqYTQttehbcT3J9hayM=";
 
-    checkFlags =
-      let
-        skippedTests = [
-          # Git executes a generated #!/usr/bin/env hook, but /usr/bin/env is absent in the Nix sandbox.
-          "TestInstallHooksBeads_WorktreeAccess"
-        ]
-        ++ lib.optionals stdenv.hostPlatform.isDarwin [
-          "TestCleanupMergeArtifacts_CommandInjectionPrevention"
-        ];
-      in
-      [ "-skip=^(${lib.concatStringsSep "|" skippedTests})$" ];
+    # Match Beads' release build. Its generic Go check is disabled upstream because
+    # cmd/bd's process-backed suite requires the repository's sharded CI harness.
+    tags = [ "gms_pure_go" ];
+    buildInputs = [ ];
+    doCheck = false;
   });
   # Configured agent CLIs, herdr, host service managers, and daemons remain user-supplied.
   runtimeDependencies = [
