@@ -845,6 +845,7 @@ let
               "scapy"
               "semble"
               "seqeval"
+              "sgmllib3k"
               "sglang-omni"
               "sox"
               "svglib"
