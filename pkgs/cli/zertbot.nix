@@ -170,7 +170,8 @@ let
   _certbot = python.pkgs.toPythonApplication python.pkgs.certbot;
 in
 _certbot.overrideAttrs (old: {
-  passthru = (old.passthru or { }) // {
+  # Certbot's inherited updater targets the pinned nixpkgs source, not this package.
+  passthru = builtins.removeAttrs (old.passthru or { }) [ "updateScript" ] // {
     withAll = _certbot.withPlugins (p: with p; [
       certbot-dns-route53
       certbot-dns-cloudflare-latest

@@ -438,10 +438,12 @@ rec {
           ;;
       esac
 
+      attribute_args=( "$attribute" )
+      generic_update_args=()
       use_update_script=( --use-update-script )
-      if update_script_kind=$(
+      if generic_update_args_json=$(
         ${final._nix}/bin/nix eval \
-          --raw \
+          --json \
           --no-write-lock-file \
           --apply 'script:
             let
@@ -449,25 +451,33 @@ rec {
               commands = if builtins.isList command then command else [ command ];
             in
             if
-              builtins.length commands == 1
+              builtins.length commands >= 1
               && builtins.baseNameOf (toString (builtins.head commands)) == "nix-update"
             then
-              "generic"
+              map toString (builtins.tail commands)
             else
-              "custom"' \
+              null' \
           ".#$attribute.updateScript" \
           2>/dev/null
-      ) && [ "$update_script_kind" = "generic" ]; then
-        # The generic update script recursively invokes nix-update without the
-        # flake context that resolved this legacyPackages attribute.
+      ) && [ "$generic_update_args_json" != "null" ]; then
+        mapfile -d "" -t generic_update_args < <(
+          ${final.jq}/bin/jq --join-output '.[] | ., "\u0000"' <<<"$generic_update_args_json"
+        )
+        # Keep generic nix-update scripts in this flake context while preserving
+        # package-specific arguments such as --version=branch=main.
+        attribute_args=()
         use_update_script=()
       fi
 
-      ${final.nix-update}/bin/nix-update \
+      # nix-update imports <nixpkgs> when it runs a flake updateScript.
+      NIX_PATH=${lib.escapeShellArg "nixpkgs=${final.flake.inputs.nixpkgs.outPath}"} \
+        UPDATE_NIX_ATTR_PATH="$attribute" \
+        ${final.nix-update}/bin/nix-update \
         --build \
         --flake \
         "''${use_update_script[@]}" \
-        "$attribute" \
+        "''${generic_update_args[@]}" \
+        "''${attribute_args[@]}" \
         "''${forwarded_args[@]}"
     '';
   };
