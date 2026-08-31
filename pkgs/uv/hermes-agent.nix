@@ -13,13 +13,13 @@
 }:
 let
   name = "hermes-agent";
-  version = "2026.8.3";
+  version = "2026.8.31";
 
   src = uv-nix.fetchGitHubWorkspace {
     owner = "NousResearch";
     repo = name;
     rev = "refs/tags/v${version}";
-    hash = "sha256-S6TSGgpf37N8YgbTv70dT+LaPiiaQ4/lJV+js2hnCPk=";
+    hash = "0mvjvlbvq3cmwbsr2lgnhbw9jw43fh9bp685fg19nlnacwzp2br2";
   };
 
   uvEnv = uv-nix.mkEnv {
