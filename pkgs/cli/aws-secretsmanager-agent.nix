@@ -17,6 +17,9 @@ rustPlatform.buildRustPackage rec {
 
   cargoHash = "sha256-Y1K+U6y7p5VHvvG4/o+hSGf5DltaT6/lAcULlyCRDuU=";
 
+  # The test blocks its only Tokio worker, so its wall-clock overlap assertion races.
+  checkFlags = [ "--skip=tests::max_conn_test" ];
+
   buildInputs = [ cacert ];
 
   meta = with lib; {
