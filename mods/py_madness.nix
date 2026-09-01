@@ -237,7 +237,7 @@ let
                 libcusparse
               ];
               postFixup = ''
-                addAutoPatchelfSearchPath "${_final.nvidia-cusparselt-cu12}"
+                ${addAutoPatchelfSearchInputs (packagesIfPresent [ "nvidia-cusparselt-cu12" ])}
               '';
               autoPatchelfIgnoreMissingDeps = [
                 "libcudart.so.11.0"
@@ -391,7 +391,7 @@ let
                 nccl
               ];
               postFixup = ''
-                addAutoPatchelfSearchPath "${_final.nvidia-cusparselt-cu12}"
+                ${addAutoPatchelfSearchInputs (packagesIfPresent [ "nvidia-cusparselt-cu12" ])}
               '';
               autoPatchelfIgnoreMissingDeps = [ "libcudnn.so.8" ];
             });
@@ -406,7 +406,7 @@ let
                 nccl
               ];
               postFixup = ''
-                addAutoPatchelfSearchPath "${_final.nvidia-cusparselt-cu13}"
+                ${addAutoPatchelfSearchInputs (packagesIfPresent [ "nvidia-cusparselt-cu13" ])}
               '';
               autoPatchelfIgnoreMissingDeps = [ "libcudnn.so.8" ];
             });

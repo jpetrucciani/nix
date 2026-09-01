@@ -20,6 +20,7 @@ uv-nix.buildUvPackage rec {
     license = lib.licenses.asl20;
     maintainers = with lib.maintainers; [ jpetrucciani ];
     mainProgram = name;
+    platforms = [ "aarch64-darwin" "x86_64-linux" ];
     skipBuild = true; # don't ever build this on github actions - it's quite heavy!
   };
 }
