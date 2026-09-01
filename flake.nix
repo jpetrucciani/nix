@@ -153,8 +153,43 @@
 
               printf 'validated %s pog scripts\n' "$checked" > "$out"
             '';
+          localNixosModulePaths = lib.filter
+            (path:
+              let
+                pathString = toString path;
+              in
+              lib.hasSuffix ".nix" pathString
+              && !lib.hasInfix "/darwin/" pathString)
+            (lib.filesystem.listFilesRecursive ./hosts/modules);
+          nixosModuleCatalogue = self.inputs.nixpkgs.lib.nixosSystem {
+            pkgs = packageSets.x86_64-linux;
+            specialArgs = { flake = self; machine-name = "module-catalogue"; };
+            modules = localNixosModulePaths ++ [
+              self.inputs.agenix.nixosModules.default
+              { system.stateVersion = "26.05"; }
+            ];
+          };
+          isLocalModuleOption = option: builtins.any
+            (declaration: lib.hasInfix "/hosts/modules/" (toString declaration))
+            option.declarations;
+          localNixosModuleDocs = builtins.filter isLocalModuleOption
+            (lib.optionAttrSetToDocList nixosModuleCatalogue.options);
+          localDarwinModuleDocs = builtins.filter isLocalModuleOption
+            (lib.optionAttrSetToDocList self.darwinConfigurations.pluto.options);
+          checkModuleOptions = platform: docs:
+            let
+              optionCount = builtins.deepSeq docs (builtins.length docs);
+            in
+            pkgs.runCommand "check-${platform}-module-options" { } ''
+              if [ ${toString optionCount} -eq 0 ]; then
+                echo "no local ${platform} module options were discovered" >&2
+                exit 1
+              fi
+
+              printf 'validated %s local ${platform} module options\n' ${toString optionCount} > "$out"
+            '';
         in
-        lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
+        (lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
           check-pog-scripts = checkPogScripts;
           snowball-api-manifest = pkgs.snowball.api.tests.manifest;
           snowball-api-script = pkgs.snowball.api.tests.script;
@@ -172,7 +207,10 @@
           snowball-nvme-script = pkgs.snowball.nvme-exporter.tests.script;
           snowball-nvme-rpm = pkgs.snowball.nvme-exporter.tests.rpm;
           snowball-nvme-rpm-portable = pkgs.snowball.nvme-exporter.tests.rpmPortable;
-        }
+        }) // (lib.optionalAttrs (system == "x86_64-linux") {
+          module-options-darwin = checkModuleOptions "darwin" localDarwinModuleDocs;
+          module-options-nixos = checkModuleOptions "nixos" localNixosModuleDocs;
+        })
       );
 
       nixosConfigurations = builtins.listToAttrs

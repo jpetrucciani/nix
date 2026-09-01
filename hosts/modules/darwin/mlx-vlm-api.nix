@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  inherit (lib) mkEnableOption filterAttrs mkIf mkOption types;
+  inherit (lib) literalExpression mkEnableOption filterAttrs mkIf mkOption types;
   inherit (lib) mapAttrs' nameValuePair optionalString;
   cfg = config.services.mlx-vlm-api;
   defaultUser = "_mlxvlm";
@@ -15,9 +15,16 @@ in
       type = lib.types.attrsOf (lib.types.submodule (_: {
         options = {
           enable = mkEnableOption "mlx-vlm api launchd service";
+          package = mkOption {
+            type = types.package;
+            default = pkgs.python313Packages.mlx-vlm;
+            defaultText = literalExpression "pkgs.python313Packages.mlx-vlm";
+            description = "The mlx-vlm package to use";
+          };
           address = mkOption {
             type = types.str;
-            default = "0.0.0.0";
+            default = "127.0.0.1";
+            example = "0.0.0.0";
             description = ''the address to bind to'';
           };
           port = mkOption {
@@ -61,7 +68,10 @@ in
         text = lib.mkBefore ''
           # shellcheck disable=SC2174
           ${pkgs.coreutils}/bin/mkdir -p -m 0750 ${homeDir}
+          # shellcheck disable=SC2174
+          ${pkgs.coreutils}/bin/mkdir -p -m 0750 ${homeDir}/log
           ${pkgs.coreutils}/bin/chown ${cfg.user}:${cfg.group} ${homeDir}
+          ${pkgs.coreutils}/bin/chown ${cfg.user}:${cfg.group} ${homeDir}/log
         '';
       };
     };
@@ -69,11 +79,10 @@ in
       (name: conf: nameValuePair (mlxvlmName name) (
         let
           serve = pkgs.writers.writeBash "mlx-vlm-api-${mlxvlmName name}" ''
-            ${pkgs.uv}/bin/uv run \
-              --with 'numpy<2' \
-              --with 'git+https://github.com/huggingface/transformers' \
-              --with 'git+https://github.com/jpetrucciani/mlx-vlm@add_api' \
-              python -m mlx_vlm.api --model ${conf.model} --host 0.0.0.0 ${conf.extraFlags} --port ${toString conf.port}
+            ${lib.getExe' conf.package "mlx_vlm.server"} \
+              --model ${lib.escapeShellArg conf.model} \
+              --host ${lib.escapeShellArg conf.address} \
+              --port ${toString conf.port} ${conf.extraFlags}
           '';
         in
         {

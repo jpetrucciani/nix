@@ -342,6 +342,61 @@ let
   resolvedWriteSafeRoots = instance:
     if instance.writeSafeRoots == null then automaticWriteSafeRoots instance else instance.writeSafeRoots;
 
+  podmanInstanceCases = concatStringsSep "\n" (mapAttrsToList
+    (name: instance: ''
+      ${lib.escapeShellArg name})
+        user=${lib.escapeShellArg instance.user}
+        uid=${toString instance.uid}
+        podman_home=${lib.escapeShellArg instance.podmanHome}
+        container=${lib.escapeShellArg "hermes-agent-${name}"}
+        ;;
+    '')
+    enabledInstances);
+
+  hermesPodman = pkgs.pog {
+    name = "hermes_podman";
+    description = "run Podman commands for an isolated Hermes Agent";
+    arguments = [
+      {
+        name = "agent";
+        description = "Hermes Agent instance name";
+      }
+      {
+        name = "podman_args";
+        description = "Podman arguments, or shell for an interactive Bash session";
+        variadic = true;
+      }
+    ];
+    parsing = "non-interspersed";
+    strict = true;
+    script = helpers: with helpers; ''
+      [ "$#" -gt 0 ] || die "usage: hermes_podman AGENT {shell|PODMAN_ARGS...}"
+
+      agent="$1"
+      shift
+
+      case "$agent" in
+      ${podmanInstanceCases}
+        *) die "Hermes Agent does not exist or is disabled: $agent" ;;
+      esac
+
+      [ "$#" -gt 0 ] || die "usage: hermes_podman AGENT {shell|PODMAN_ARGS...}"
+
+      if [ "$1" = "shell" ]; then
+        [ "$#" -eq 1 ] || die "usage: hermes_podman AGENT shell"
+        set -- exec -it "$container" bash -li
+      fi
+
+      exec ${config.security.wrapperDir}/sudo -u "$user" \
+        ${pkgs.coreutils}/bin/env \
+          HOME="$podman_home" \
+          XDG_RUNTIME_DIR="/run/user/$uid" \
+          ${pkgs.bash}/bin/bash -c \
+            'cd "$HOME" && exec /run/current-system/sw/bin/podman "$@"' \
+            bash "$@"
+    '';
+  };
+
   mkContainer = name: instance:
     let
       containerName = "hermes-agent-${name}";
@@ -512,6 +567,8 @@ in
         )
         enabledInstances
     );
+
+    environment.systemPackages = [ hermesPodman ];
 
     virtualisation.oci-containers = {
       backend = "podman";

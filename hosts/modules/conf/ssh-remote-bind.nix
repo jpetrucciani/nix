@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   inherit (pkgs) openssh;
-  inherit (lib) mkIf mkOption types optionals;
+  inherit (lib) escapeShellArgs mkIf mkOption optionalString types;
   cfg = config.services.ssh-remote-bind;
 in
 {
@@ -19,7 +19,8 @@ in
         type = types.bool;
         default = false;
         description = ''
-          Enable this remote proxy to bind to all interfaces
+          Whether to request that the remote listener bind to all interfaces.
+          The remote SSH server must permit this with its GatewayPorts setting.
         '';
       };
 
@@ -38,12 +39,14 @@ in
       };
 
       localUser = mkOption {
+        type = types.str;
         description = ''
           Local user to connect as (i.e. the user with password-less SSH keys).
         '';
       };
 
       remoteHostname = mkOption {
+        type = types.str;
         description = ''
           The remote host to connect to. This should be the host outside of the
           firewall or NAT.
@@ -51,6 +54,7 @@ in
       };
 
       remotePort = mkOption {
+        type = types.port;
         default = 22;
         description = ''
           The port on which to connect to the remote host via SSH protocol.
@@ -58,12 +62,14 @@ in
       };
 
       remoteUser = mkOption {
+        type = types.str;
         description = ''
           The username to connect to the remote host as.
         '';
       };
 
       remoteBindPort = mkOption {
+        type = types.port;
         default = 2222;
         description = ''
           The port to bind and listen to on the remote host.
@@ -71,6 +77,7 @@ in
       };
 
       localBindPort = mkOption {
+        type = types.port;
         default = 2222;
         description = ''
           The port to listen to on the local host.
@@ -100,16 +107,29 @@ in
         else { }
         );
 
-        script = with cfg;  ''
-          ${openssh}/bin/ssh -NTC \
-            ${optionals cfg.bindAll "-o GatewayPorts=true"} \
-            -o ServerAliveInterval=30 \
-            -o ExitOnForwardFailure=yes \
-            -R ${toString remoteBindPort}:${if cfg.bindAll then "0.0.0.0" else "localhost"}:${toString localBindPort} \
-            -l ${remoteUser} \
-            -p ${toString remotePort} \
-            ${remoteHostname}
-        '';
+        script =
+          let
+            remoteForward = "${optionalString cfg.bindAll "*:"}${toString cfg.remoteBindPort}:localhost:${toString cfg.localBindPort}";
+            sshArgs = [
+              "-N"
+              "-T"
+              "-C"
+              "-o"
+              "ServerAliveInterval=30"
+              "-o"
+              "ExitOnForwardFailure=yes"
+              "-R"
+              remoteForward
+              "-l"
+              cfg.remoteUser
+              "-p"
+              (toString cfg.remotePort)
+              cfg.remoteHostname
+            ];
+          in
+          ''
+            exec ${openssh}/bin/ssh ${escapeShellArgs sshArgs}
+          '';
       };
   };
 }

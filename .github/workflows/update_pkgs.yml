@@ -1,8 +1,17 @@
 name: check for package updates
 on: { workflow_dispatch, schedule: [cron: '0 0 * * *'] }
+
+permissions:
+  contents: read
+
+concurrency:
+  group: package-updates
+  cancel-in-progress: false
+
 jobs:
   discover:
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     outputs:
       attrs: ${{ steps.packages.outputs.attrs }}
     steps:
@@ -16,6 +25,7 @@ jobs:
         run: echo "attrs=$(nix eval --json --no-write-lock-file .#lib.autoUpdatePackages.x86_64-linux)" >> "$GITHUB_OUTPUT"
   update:
     needs: discover
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:

@@ -1,8 +1,17 @@
 name: check for flake updates
 on: { workflow_dispatch, schedule: [cron: '0 0 * * *'] }
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flake-update
+  cancel-in-progress: false
+
 jobs:
   check-for-updates:
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     env:
       GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     steps:

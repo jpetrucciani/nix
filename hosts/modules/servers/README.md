@@ -46,6 +46,8 @@ container runs Hermes' `local` terminal backend inside the outer Podman sandbox.
 
 See the [bootstrap guide](../../../docs/hermes-agent.md) for initial setup,
 plain-state credentials, and running commands inside a container.
+The module installs `hermes_podman`; use `hermes_podman coder shell` for an
+interactive login shell in the coder container.
 
 ```nix
 { config, pkgs, ... }:

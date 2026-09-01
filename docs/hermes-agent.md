@@ -54,26 +54,16 @@ sudo systemctl status podman-hermes-agent-coder.service
 
 ## Run the setup wizard
 
-Podman storage belongs to the instance's system user. This shell helper supplies
-the user, home, and runtime directory needed to address the correct rootless
-Podman store:
-
-```bash
-hermes_podman() {
-  sudo -u hermes-coder env \
-    HOME=/var/lib/hermes-agent/coder/podman \
-    XDG_RUNTIME_DIR=/run/user/32001 \
-    /run/current-system/sw/bin/podman "$@"
-}
-```
+The module installs `hermes_podman`, which supplies the declared instance user,
+home, and runtime directory needed to address the correct rootless Podman store.
 
 Run Hermes' interactive setup inside the existing container, then restart the
 gateway so it reloads the new configuration:
 
 ```bash
-hermes_podman exec -it hermes-agent-coder hermes setup
+hermes_podman coder exec -it hermes-agent-coder hermes setup
 # Or use Nous Portal OAuth:
-hermes_podman exec -it hermes-agent-coder hermes setup --portal
+hermes_podman coder exec -it hermes-agent-coder hermes setup --portal
 
 sudo systemctl restart podman-hermes-agent-coder.service
 ```
@@ -87,11 +77,11 @@ The setup wizard writes non-secret settings to `config.yaml`, API keys to
 Use the same helper for an interactive shell or one-off commands:
 
 ```bash
-hermes_podman exec -it hermes-agent-coder bash
-hermes_podman exec -it hermes-agent-coder hermes config
-hermes_podman exec -it hermes-agent-coder hermes config check
-hermes_podman exec -it hermes-agent-coder hermes doctor
-hermes_podman logs -f hermes-agent-coder
+hermes_podman coder shell
+hermes_podman coder exec -it hermes-agent-coder hermes config
+hermes_podman coder exec -it hermes-agent-coder hermes config check
+hermes_podman coder exec -it hermes-agent-coder hermes doctor
+hermes_podman coder logs -f hermes-agent-coder
 ```
 
 Inside the shell, CLI credentials remain independent because `HOME` is the

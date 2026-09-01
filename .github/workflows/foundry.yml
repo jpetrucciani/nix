@@ -1,7 +1,17 @@
 name: foundry
 on: { workflow_dispatch, push: { branches: [main] } }
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build_v2:
+    timeout-minutes: 120
     env:
       REGISTRIES_CONF: /tmp/containers/registries.conf
     strategy:

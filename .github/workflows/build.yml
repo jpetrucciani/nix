@@ -1,16 +1,27 @@
 name: build
 on: { workflow_dispatch, push: { branches: [main] }, pull_request }
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
         include:
           - os: ubuntu-24.04
             system: x86_64-linux
+          - os: ubuntu-24.04-arm
+            system: aarch64-linux
           - os: macos-15
             system: aarch64-darwin
-    name: nix (${{ matrix.os }})
+    name: nix (${{ matrix.system }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -21,10 +32,11 @@ jobs:
             extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
       - run: nix eval --json --no-write-lock-file .#lib.customPackageDrvPaths.${{ matrix.system }} >/dev/null
       - run: nix --show-trace build .#__j_custom .#zaddy .#llama-cpp-latest
-        if: ${{ matrix.os == 'macos-15' }}
+        if: ${{ matrix.system == 'aarch64-darwin' }}
       - run: nix --show-trace build .#__j_custom .#zaddy .#llama-cpp-latest .#llama-cpp-cuda-latest .#zertbot.withAll
-        if: ${{ matrix.os == 'ubuntu-24.04' }}
-      - env:
+        if: ${{ matrix.system == 'x86_64-linux' || matrix.system == 'aarch64-linux' }}
+      - if: ${{ github.event_name != 'pull_request' }}
+        env:
           POG_URI: ${{ secrets.POG_URI }}
           PRIVKEY: ${{ secrets.G7C_CACHE_PRIVATE_KEY }}
           S3_CREDS: ${{ secrets.S3_CREDS }}

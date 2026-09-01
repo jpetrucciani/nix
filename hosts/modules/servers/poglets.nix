@@ -62,7 +62,7 @@ in
       type = lines;
       default = "";
       example = '' '';
-      description = lib ''
+      description = ''
         Additional lines of configuration appended to the automatically generated poglets config.
       '';
     };
