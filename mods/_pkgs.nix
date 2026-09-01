@@ -2,7 +2,7 @@
 final: prev:
 let
   inherit (builtins) pathExists readDir;
-  inherit (prev.lib) escapeShellArg hasSuffix listToAttrs pathIsDirectory removeSuffix;
+  inherit (prev.lib) escapeShellArg getExe hasSuffix listToAttrs pathIsDirectory removeSuffix;
   inherit (prev.lib.attrsets) collect mapAttrs;
   inherit (prev.pkgs) callPackage;
   mkGitHubReleaseUpdater =
@@ -13,7 +13,7 @@ let
     , assets
     , tagPrefix ? "v"
     }:
-    final.writeShellApplication {
+    getExe (final.writeShellApplication {
       name = "update-${pname}";
       runtimeInputs = with final; [
         coreutils
@@ -108,7 +108,7 @@ let
         candidate=""
         echo "updated ${pname} to $version"
       '';
-    };
+    });
   _custom = p:
     if hasSuffix ".nix" p || pathExists (p + "/default.nix")
     then { name = removeSuffix ".nix" (baseNameOf (toString p)); value = p; __stop = true; }
