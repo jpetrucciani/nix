@@ -94,7 +94,7 @@ buildGoModule (finalAttrs: {
 
   ldflags = [ "-s" "-w" ];
 
-  passthru.updateScript = updateScript;
+  passthru.updateScript = lib.getExe updateScript;
 
   meta = {
     description = "Remote Desktop Gateway in Go for deploying on Linux/BSD/Kubernetes";

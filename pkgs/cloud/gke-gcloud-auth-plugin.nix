@@ -132,7 +132,7 @@ stdenvNoCC.mkDerivation rec {
 
   passthru = {
     inherit (release) gcloudVersion manifestRevision;
-    inherit updateScript;
+    updateScript = lib.getExe updateScript;
   };
 
   meta = {

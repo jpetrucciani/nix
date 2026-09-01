@@ -385,12 +385,22 @@ rec {
       {
         name = "version";
         short = "";
-        description = "target llama.cpp build, with or without the b prefix; defaults to the latest GitHub release";
+        description = "target llama.cpp build, with or without the b prefix; defaults to the latest b-prefixed GitHub release";
       }
     ];
     script = ''
       if [ -z "$version" ]; then
-        latest_tag=$(latest_github_tag ggml-org llama.cpp)
+        latest_tag=$(
+          ${final.curl}/bin/curl --fail --silent --show-error \
+            "https://api.github.com/repos/ggml-org/llama.cpp/releases?per_page=100" \
+            | ${final.jq}/bin/jq -er '
+              [
+                .[].tag_name
+                | select(test("^b[0-9]+$"))
+              ]
+              | max_by(ltrimstr("b") | tonumber)
+            '
+        )
       else
         latest_tag="$version"
       fi
