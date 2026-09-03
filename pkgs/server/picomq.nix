@@ -47,7 +47,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     npm run build
     popd
 
-    test -s picomq/pico-frontend/_dashboard/index.html
+    test -s picomq/pico-http/_dashboard/index.html
   '';
 
   cargoBuildFlags = [
