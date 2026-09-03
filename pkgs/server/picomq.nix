@@ -5,22 +5,23 @@
 , nodejs
 , npmHooks
 , pkg-config
+, rdkafka
 , rustPlatform
 , sqlite
 }:
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "picomq";
-  version = "0.1.0-unstable-2026-08-23";
+  version = "unstable-2026-09-02";
 
   src = fetchFromGitHub {
     owner = "picomq";
     repo = "picomq";
-    rev = "b5302bebb6b77f5631def2861d4178847704aa6a";
-    hash = "sha256-1e5/ziT4Pucs5ZJPzDrEVd22FVQP3+YOWqyaUm8Xgow=";
+    rev = "f425605b920717b31dd10b6acea0e4411f0cea42";
+    hash = "sha256-KZ0SOuqVhLiW/fWWLaN5SHYv5aQr6HbjI9gOzwmKEuU=";
   };
 
-  cargoHash = "sha256-XPQV1hOWLFSOqzy2IoHO0WzQVXhvtzG5dU3/5a6x2H4=";
+  cargoHash = "sha256-PwT87wEN5GtTzrp18f4DIPcv1403n55hb/TxL9zIdgE=";
 
   npmRoot = "dashboard";
   npmDeps = fetchNpmDeps {
@@ -39,8 +40,11 @@ rustPlatform.buildRustPackage (finalAttrs: {
   ];
 
   buildInputs = [
+    rdkafka
     sqlite
   ];
+
+  CARGO_FEATURE_DYNAMIC_LINKING = 1;
 
   preBuild = ''
     pushd ${finalAttrs.npmRoot}
@@ -52,13 +56,16 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   cargoBuildFlags = [
     "--package"
-    "pico-cli"
+    "picomq-cli"
   ];
 
   cargoTestFlags = [
     "--package"
-    "pico-cli"
+    "picomq-cli"
   ];
+  # The CLI tests reserve ports before spawning their servers, so parallel
+  # cases can select each other's ports and fail with EADDRINUSE.
+  dontUseCargoParallelTests = true;
 
   doInstallCheck = true;
   installCheckPhase = ''
@@ -71,7 +78,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
   '';
 
   passthru.updateScript = nix-update-script {
-    extraArgs = [ "--version=branch=main" ];
+    extraArgs = [
+      "--version=branch=main"
+      "--version-regex=.*(unstable-[0-9-]+)$"
+    ];
   };
 
   meta = {
