@@ -48,3 +48,8 @@ Latest llama.cpp release with the web UI dependency set. Run `nix run .#llama-cp
 ### [maestro-go.nix](./maestro-go.nix)
 
 [`maestro`](https://github.com/pluja/maestro) converts natural language instructions into cli commands with LLMs
+
+### [whisper-cpp-latest.nix](./whisper-cpp-latest.nix)
+
+Latest semver whisper.cpp release. Run `nix run .#whisper-cpp-latest.updateScript` to refresh and validate it.
+CUDA builds are available as `whisper-cpp-cuda` and `whisper-cpp-cuda-latest`.

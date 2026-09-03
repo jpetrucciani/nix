@@ -437,6 +437,67 @@ rec {
     '';
   };
 
+  refresh_whisper-cpp_latest = mkCfgPackageRefresh {
+    name = "refresh_whisper-cpp_latest";
+    description = "update whisper-cpp-latest to the latest semver release, refresh its source hash, build it, and verify the CLI and server";
+    target = "pkgs/ai/whisper-cpp-latest.nix";
+    flags = [
+      {
+        name = "version";
+        short = "";
+        description = "target whisper.cpp release, with or without the v prefix; defaults to the latest semver GitHub release";
+      }
+    ];
+    script = ''
+      if [ -z "$version" ]; then
+        latest_tag=$(
+          ${final.curl}/bin/curl --fail --silent --show-error \
+            "https://api.github.com/repos/ggml-org/whisper.cpp/releases?per_page=100" \
+            | ${final.jq}/bin/jq -er '
+              [
+                .[]
+                | select(.draft == false)
+                | .tag_name
+                | select(test("^v[0-9]+\\.[0-9]+\\.[0-9]+$"))
+              ]
+              | max_by(ltrimstr("v") | split(".") | map(tonumber))
+            '
+        )
+      else
+        latest_tag="$version"
+      fi
+
+      case "$latest_tag" in
+        v*)
+          version="''${latest_tag#v}"
+          ;;
+        *)
+          version="$latest_tag"
+          ;;
+      esac
+
+      if ! printf '%s\n' "$version" | ${final.gnugrep}/bin/grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+        echo "unexpected whisper.cpp release: $version" >&2
+        exit 2
+      fi
+
+      echo "updating whisper-cpp-latest to v$version"
+      nix_update_source whisper-cpp-latest "$version"
+      output=$(build_attr whisper-cpp-latest)
+
+      for binary in whisper-cli whisper-server; do
+        if [ ! -x "$output/bin/$binary" ]; then
+          echo "built output is missing bin/$binary: $output" >&2
+          exit 1
+        fi
+      done
+
+      "$output/bin/whisper-cli" --help >/dev/null
+      "$output/bin/whisper-server" --help >/dev/null
+      echo "verified whisper-cli and whisper-server in $output/bin"
+    '';
+  };
+
   refresh_e2b_cli = mkCfgPackageRefresh {
     name = "refresh_e2b_cli";
     description = "generate and publish e2b-cli's npm lock, update the package, build it, and verify the CLI";
@@ -730,6 +791,7 @@ rec {
     refresh_codex_latest
     refresh_e2b_cli
     refresh_llama-cpp_latest
+    refresh_whisper-cpp_latest
     refresh_zaddy
   ];
 }

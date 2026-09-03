@@ -186,6 +186,8 @@ in
 
   llama-cpp-cuda = prev.llama-cpp.override { cudaSupport = true; };
   llama-cpp-cuda-latest = final.llama-cpp-latest.override { cudaSupport = true; };
+  whisper-cpp-cuda = prev.whisper-cpp.override { cudaSupport = true; };
+  whisper-cpp-cuda-latest = final.whisper-cpp-latest.override { cudaSupport = true; };
   stable-diffusion-cpp-cuda-latest = stable-diffusion-cpp-latest.override { cudaSupport = true; };
   koboldcpp-cuda = prev.koboldcpp.override { config.cudaSupport = true; };
 
@@ -242,8 +244,6 @@ in
       cp libpwuid_override.so $out/lib/
     '';
   };
-
-  openai-whisper-cpp-cuda = prev.openai-whisper-cpp.override { cudaSupport = true; };
 
   colmena-latest =
     let

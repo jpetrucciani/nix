@@ -369,7 +369,7 @@ let
     ];
     parsing = "non-interspersed";
     strict = true;
-    script = helpers: with helpers; ''
+    script = helpers: ''
       [ "$#" -gt 0 ] || die "usage: hermes_podman AGENT {shell|PODMAN_ARGS...}"
 
       agent="$1"

@@ -13,12 +13,22 @@ nix flake show
 If your local setup has `hms` available:
 
 ```bash
+# build and print the candidate system path
+hms build
+
+# preview system closure and service changes
+hms diff
+
+# build and activate, also the default when no action is given
+hms switch
 hms
 ```
 
 Equivalent behavior is defined in `mods/hms.nix`.
 
-Here, "switch" means "build the configuration and activate it on the target machine".
+On NixOS, `diff` combines `nvd diff` with the systemd activation plan from `dry-activate`. On nix-darwin it combines
+`nvd diff` with changed launchd plist definitions. Here, `switch` means "build the configuration and activate it on the
+target machine".
 
 ## Build or Switch a Specific Host
 
@@ -26,8 +36,10 @@ Here, "switch" means "build the configuration and activate it on the target mach
 # build explicit host switch helper
 nix build --no-link --print-out-paths --extra-experimental-features nix-command --extra-experimental-features flakes .#hmx.<host>
 
-# run switch binary
-$(nix build --no-link --print-out-paths --extra-experimental-features nix-command --extra-experimental-features flakes .#hmx.<host>)/bin/switch
+# build, diff, or switch through the host-specific wrapper
+$(nix build --no-link --print-out-paths --extra-experimental-features nix-command --extra-experimental-features flakes .#hmx.<host>)/bin/switch build
+$(nix build --no-link --print-out-paths --extra-experimental-features nix-command --extra-experimental-features flakes .#hmx.<host>)/bin/switch diff
+$(nix build --no-link --print-out-paths --extra-experimental-features nix-command --extra-experimental-features flakes .#hmx.<host>)/bin/switch switch
 ```
 
 ## Build a Host Without Switching

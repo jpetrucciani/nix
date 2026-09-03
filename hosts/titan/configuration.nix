@@ -3,91 +3,13 @@ let
   inherit (flake.inputs) nixos-hardware;
   hostname = "titan";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
-  yamlFormat = pkgs.formats.yaml { };
-  speechServers = {
-    tts = {
-      modelPath = "Qwen/Qwen3-TTS-12Hz-1.7B-Base";
-      pipelineConfigClass = "Qwen3TTSPipelineConfig";
-      allowedMediaDomains = [
-        "huggingface.co"
-        "cas-bridge.xethub.hf.co"
-      ];
-      port = 8011;
-      memFractionStatic = 0.5;
-      extraEnv = { CUDA_VISIBLE_DEVICES = "1"; };
-    };
-    # stt = {
-    #   modelPath = "Qwen/Qwen3-ASR-1.7B";
-    #   port = 8012;
-    #   memFractionStatic = 0.5;
-    #   extraEnv = { CUDA_VISIBLE_DEVICES = "1"; };
-    # };
-  };
-  mkSpeechService = name:
-    { modelPath
-    , port
-    , memFractionStatic ? null
-    , pipelineConfigClass ? null
-    , runtimeOverrides ? { }
-    , allowedMediaDomains ? [ ]
-    , extraEnv ? { }
-    }:
-    let
-      pipelineConfig = yamlFormat.generate "sglang-omni-${name}.yaml" ({
-        config_cls = pipelineConfigClass;
-        model_path = modelPath;
-      } // pkgs.lib.optionalAttrs (runtimeOverrides != { }) {
-        runtime_overrides = runtimeOverrides;
-      });
-      arguments = [
-        (pkgs.lib.getExe pkgs.sglang-omni)
-        "serve"
-        "--model-path"
-        modelPath
-      ]
-      ++ pkgs.lib.optionals (pipelineConfigClass != null) [
-        "--config"
-        pipelineConfig
-      ]
-      ++ pkgs.lib.concatMap
-        (domain: [
-          "--allowed-media-domain"
-          domain
-        ])
-        allowedMediaDomains
-      ++ [
-        "--port"
-        (toString port)
-      ]
-      ++ pkgs.lib.optionals (memFractionStatic != null) [
-        "--mem-fraction-static"
-        (toString memFractionStatic)
-      ];
-    in
-    {
-      description = "SGLang-Omni ${pkgs.lib.toUpper name} server";
-      after = [ "network-online.target" ];
-      wants = [ "network-online.target" ];
-      wantedBy = [ "multi-user.target" ];
-
-      environment = {
-        HOME = "/home/jacobi";
-      } // extraEnv;
-      path = [ config.hardware.nvidia.package.bin ];
-
-      serviceConfig = {
-        ExecStart = pkgs.lib.escapeShellArgs arguments;
-        Restart = "on-failure";
-        RestartSec = 10;
-        User = "jacobi";
-      };
-    };
 in
 {
   imports = [
     "${common.home-manager}/nixos"
     ./hardware-configuration.nix
     ../modules/servers/ace-step.nix
+    ../modules/servers/sglang-omni.nix
   ] ++ (with nixos-hardware.nixosModules; [
     common-cpu-amd
     common-cpu-amd-pstate
@@ -169,6 +91,61 @@ in
         backend = "vllm";
       };
     };
+    llama-cpp = {
+      enable = true;
+      package = pkgs.llama-cpp-cuda-latest;
+      settings = {
+        host = "0.0.0.0";
+        port = 8013;
+        hf-repo = "ggml-org/Qwen3-ASR-1.7B-GGUF:Q8_0";
+        gpu-layers = 99;
+        mmproj-offload = true;
+        flash-attn = "on";
+        parallel = 4;
+        ctx-size = 16384;
+        ubatch-size = 1024;
+        batch-size = 2048;
+        mtmd-batch-max-tokens = 4096;
+        cache-ram = 0;
+        no-cache-prompt = true;
+        temp = 0;
+        top-k = 1;
+        repeat-penalty = 1.0;
+        n-predict = 512;
+        no-webui = true;
+        metrics = true;
+      };
+    };
+    sglang-omni = {
+      enable = true;
+      user = "jacobi";
+      group = "users";
+      createUser = false;
+      homeDir = "/home/jacobi";
+      cacheDir = null;
+      extraPackages = [ config.hardware.nvidia.package.bin ];
+      instances = {
+        tts = {
+          modelPath = "Qwen/Qwen3-TTS-12Hz-1.7B-Base";
+          address = "0.0.0.0";
+          pipelineConfigClass = "Qwen3TTSPipelineConfig";
+          allowedMediaDomains = [
+            "huggingface.co"
+            "cas-bridge.xethub.hf.co"
+          ];
+          port = 8011;
+          memFractionStatic = 0.5;
+          extraEnvironment.CUDA_VISIBLE_DEVICES = "1";
+        };
+        # stt = {
+        #   modelPath = "Qwen/Qwen3-ASR-1.7B";
+        #   address = "0.0.0.0";
+        #   port = 8012;
+        #   memFractionStatic = 0.5;
+        #   extraEnvironment.CUDA_VISIBLE_DEVICES = "1";
+        # };
+      };
+    };
     prometheus.exporters = common.templates.prometheus_exporters { };
     qdrant = {
       enable = false;
@@ -216,7 +193,7 @@ in
     };
   } // common.services;
 
-  systemd.services = pkgs.lib.mapAttrs mkSpeechService speechServers;
+  systemd.services.llama-cpp.environment.CUDA_VISIBLE_DEVICES = "0";
 
   system.stateVersion = "23.11";
   security.sudo = common.security.sudo;

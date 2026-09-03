@@ -158,9 +158,58 @@ nixos module for [proxysql](https://github.com/sysown/proxysql)
 
 NixOS module for [Semaphore UI](https://github.com/semaphoreui/semaphore)
 
+### [sglang-omni.nix](./sglang-omni.nix)
+
+Multi-instance SGLang-Omni servers. Each entry produces a namespaced systemd unit such as
+`sglang-omni-tts.service`:
+
+```nix
+{
+  imports = [ ../modules/servers/sglang-omni.nix ];
+
+  services.sglang-omni = {
+    enable = true;
+    instances.tts = {
+      modelPath = "Qwen/Qwen3-TTS-12Hz-1.7B-Base";
+      pipelineConfigClass = "Qwen3TTSPipelineConfig";
+      port = 8011;
+      extraEnvironment.CUDA_VISIBLE_DEVICES = "0";
+    };
+  };
+}
+```
+
 ### [titanite.nix](./titanite.nix)
 
 NixOS module for the Titanite DNS resolver
+
+### [whisper-cpp.nix](./whisper-cpp.nix)
+
+Multi-instance whisper.cpp HTTP servers with one model, port, settings attrset, and systemd unit per entry. Use
+`pkgs.whisper-cpp-cuda-latest` plus the GPU groups for CUDA-backed instances:
+
+```nix
+{
+  imports = [ ../modules/servers/whisper-cpp.nix ];
+
+  services.whisper-cpp = {
+    enable = true;
+    package = pkgs.whisper-cpp-cuda-latest;
+    supplementaryGroups = [
+      "video"
+      "render"
+    ];
+    instances.large-v3-turbo = {
+      model = "/var/lib/whisper-cpp/models/ggml-large-v3-turbo.bin";
+      port = 8080;
+      settings = {
+        threads = 8;
+        language = "auto";
+      };
+    };
+  };
+}
+```
 
 ### [zinc.nix](./zinc.nix)
 
