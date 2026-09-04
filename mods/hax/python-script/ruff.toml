@@ -2,3 +2,4 @@ line-length = 88
 
 [lint]
 extend-select = ["ANN"]
+ignore = ["EXE001"]
