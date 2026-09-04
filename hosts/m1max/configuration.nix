@@ -66,14 +66,44 @@ in
 
   system.stateVersion = 4;
   nix = {
+    buildMachines = [
+      {
+        hostName = "neptune";
+        maxJobs = 8;
+        protocol = "ssh";
+        sshUser = "jacobi";
+        supportedFeatures = [ "big-parallel" ];
+        system = "x86_64-linux";
+      }
+    ];
     extraOptions = ''
       extra-experimental-features = nix-command flakes
       extra-substituters = ${subs.medable.url} ${subs.g7c.url}
       extra-trusted-public-keys = ${subs.medable.key} ${subs.g7c.key}
       keep-outputs = true
-      builders = ssh://jacobi@neptune x86_64-linux - 8 - big-parallel;
-      builders-use-substitutes = true
     '';
+    linux-builder = {
+      enable = true;
+      config = {
+        nix.settings = {
+          extra-substituters = [
+            subs.medable.url
+            subs.g7c.url
+          ];
+          extra-trusted-public-keys = [
+            subs.medable.key
+            subs.g7c.key
+          ];
+        };
+        virtualisation = {
+          cores = 8;
+          darwin-builder = {
+            diskSize = 128 * 1024;
+            memorySize = 32 * 1024;
+          };
+        };
+      };
+    };
     nixPath = [
       "darwin=${common.nix-darwin}"
       "darwin-config=${configPath}"
