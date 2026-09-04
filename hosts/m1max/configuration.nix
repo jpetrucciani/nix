@@ -4,6 +4,9 @@ let
   hostname = "m1max";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
   configPath = "/Users/jacobi/cfg/hosts/${hostname}/configuration.nix";
+  linuxBuilderPkgs = import flake.inputs.nix-darwin.inputs.nixpkgs {
+    localSystem = pkgs.stdenv.hostPlatform;
+  };
   username = "jacobi";
 in
 {
@@ -84,17 +87,8 @@ in
     '';
     linux-builder = {
       enable = true;
+      package = linuxBuilderPkgs.darwin.linux-builder;
       config = {
-        nix.settings = {
-          extra-substituters = [
-            subs.medable.url
-            subs.g7c.url
-          ];
-          extra-trusted-public-keys = [
-            subs.medable.key
-            subs.g7c.key
-          ];
-        };
         virtualisation = {
           cores = 8;
           darwin-builder = {
