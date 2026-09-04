@@ -3,6 +3,7 @@ let
   inherit (flake.inputs) nixos-hardware;
   hostname = "titan";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
+  whisperModelPath = "/var/lib/whisper-cpp/models/ggml-large-v3-turbo-q8_0.bin";
 in
 {
   imports = [
@@ -10,6 +11,7 @@ in
     ./hardware-configuration.nix
     ../modules/servers/ace-step.nix
     ../modules/servers/sglang-omni.nix
+    ../modules/servers/whisper-cpp.nix
   ] ++ (with nixos-hardware.nixosModules; [
     common-cpu-amd
     common-cpu-amd-pstate
@@ -91,29 +93,26 @@ in
         backend = "vllm";
       };
     };
-    llama-cpp = {
+    whisper-cpp = {
       enable = true;
-      package = pkgs.llama-cpp-cuda-latest;
-      settings = {
-        host = "0.0.0.0";
-        port = 8013;
-        hf-repo = "ggml-org/Qwen3-ASR-1.7B-GGUF:Q8_0";
-        gpu-layers = 99;
-        mmproj-offload = true;
-        flash-attn = "on";
-        parallel = 4;
-        ctx-size = 16384;
-        ubatch-size = 1024;
-        batch-size = 2048;
-        mtmd-batch-max-tokens = 4096;
-        cache-ram = 0;
-        no-cache-prompt = true;
-        temp = 0;
-        top-k = 1;
-        repeat-penalty = 1.0;
-        n-predict = 512;
-        no-webui = true;
-        metrics = true;
+      package = pkgs.whisper-cpp-cuda-latest;
+      supplementaryGroups = [
+        "video"
+        "render"
+      ];
+      instances.large-v3-turbo = {
+        model = whisperModelPath;
+        address = "0.0.0.0";
+        port = 8014;
+        settings = {
+          convert = true;
+          "flash-attn" = true;
+          "inference-path" = "/v1/audio/transcriptions";
+          language = "auto";
+          "no-timestamps" = true;
+        };
+        extraEnvironment.CUDA_VISIBLE_DEVICES = "0";
+        extraPackages = [ pkgs.ffmpeg-headless ];
       };
     };
     sglang-omni = {
