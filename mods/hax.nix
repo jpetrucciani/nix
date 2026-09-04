@@ -113,6 +113,83 @@ final: prev:
           shellcheck $out/bin/${name}
         '';
       };
+    pythonScriptRuffConfig = ./hax/python-script/ruff.toml;
+    pythonScriptTyConfig = ./hax/python-script/ty.toml;
+    writePythonApplication =
+      { name
+      , src ? null
+      , text ? null
+      , python ? final.python313
+      , pythonVersion ? python.pythonVersion
+      , libraries ? [ ]
+      , runtimeInputs ? [ ]
+      , runtimeEnv ? null
+      , inheritPath ? false
+      , ruffConfig ? pythonScriptRuffConfig
+      , tyConfig ? pythonScriptTyConfig
+      , meta ? { }
+      , passthru ? { }
+      }:
+      let
+        pythonVersionMatch = builtins.match "([0-9]+)\\.([0-9]+)" pythonVersion;
+        ruffPythonVersion = "py${concatStrings pythonVersionMatch}";
+        selectedLibraries =
+          if builtins.isFunction libraries then libraries python.pkgs else libraries;
+        pythonEnv =
+          if builtins.length selectedLibraries == 0
+          then python
+          else python.withPackages (_: selectedLibraries);
+        script = if src != null then src else writeText "${name}.py" text;
+        scriptArg = escapeShellArg "${script}";
+        pythonInterpreterArg = escapeShellArg pythonEnv.interpreter;
+        pythonVersionArg = escapeShellArg pythonVersion;
+        ruffConfigArg = escapeShellArg "${ruffConfig}";
+        ruffPythonVersionArg = escapeShellArg ruffPythonVersion;
+        tyConfigArg = escapeShellArg "${tyConfig}";
+        checkedScript = runCommandLocal "${name}-checked.py"
+          {
+            nativeBuildInputs = [ ruff ty ];
+          }
+          ''
+            export RUFF_CACHE_DIR="$TMPDIR/ruff-cache"
+
+            ${getExe ruff} check \
+              --config ${ruffConfigArg} \
+              --target-version ${ruffPythonVersionArg} \
+              ${scriptArg}
+            ${getExe ruff} format \
+              --check \
+              --config ${ruffConfigArg} \
+              --target-version ${ruffPythonVersionArg} \
+              ${scriptArg}
+            ${getExe' ty "ty"} check \
+              --color never \
+              --config-file ${tyConfigArg} \
+              --no-progress \
+              --python ${pythonInterpreterArg} \
+              --python-version ${pythonVersionArg} \
+              ${scriptArg}
+
+            cp ${scriptArg} "$out"
+          '';
+      in
+      assert assertMsg ((src == null) != (text == null))
+        "writePythonApplication requires exactly one of src or text";
+      assert assertMsg (pythonVersionMatch != null)
+        "writePythonApplication pythonVersion must be in major.minor form";
+      final.writeShellApplication {
+        inherit
+          inheritPath
+          name
+          runtimeEnv
+          runtimeInputs
+          ;
+        meta = { mainProgram = name; } // meta;
+        passthru = { inherit checkedScript; } // passthru;
+        text = ''
+          exec ${pythonInterpreterArg} ${escapeShellArg (toString checkedScript)} "$@"
+        '';
+      };
     getJson = url: sha256:
       let
         text = fetchurl {

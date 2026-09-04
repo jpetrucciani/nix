@@ -11,3 +11,7 @@ These files are not a separate public overlay layer on their own. They are imple
 ### [docker.nix](./docker.nix)
 
 This is a customized Docker image builder derived from the upstream Nix helper, with extra tools, user handling, and Nix bootstrap behavior that fit this repo's workflows.
+
+### [python-script/](./python-script/)
+
+Shared Ruff and ty configuration for Python scripts built with `pkgs.hax.writePythonApplication`.

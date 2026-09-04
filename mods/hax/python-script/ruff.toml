@@ -1,0 +1,4 @@
+line-length = 88
+
+[lint]
+extend-select = ["ANN"]
