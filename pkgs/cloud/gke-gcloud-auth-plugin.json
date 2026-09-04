@@ -13,7 +13,7 @@
       "source": "components/google-cloud-sdk-gke-gcloud-auth-plugin-linux-x86_64-20260717053915.tar.gz"
     }
   },
-  "gcloudVersion": "579.0.0",
-  "manifestRevision": 20260731054104,
+  "gcloudVersion": "581.0.0",
+  "manifestRevision": 20260814074256,
   "version": "0.5.18"
 }
