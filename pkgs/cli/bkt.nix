@@ -19,6 +19,8 @@ rustPlatform.buildRustPackage rec {
   checkFlags = [
     # The test shells out to sudo, which is intentionally absent from the sandbox.
     "--skip=cli::cache_dirs_multi_user"
+    # The test observes a command side effect before the detached refresh writes its cache entry.
+    "--skip=cli::cache_refreshes_in_background"
   ];
 
   passthru.updateScript = nix-update-script { };

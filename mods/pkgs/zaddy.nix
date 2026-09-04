@@ -78,7 +78,8 @@ rec {
         allPlugins;
       zaddy = prev.caddy.override {
         buildGoModule = args:
-          final.buildGoLatestModule (finalAttrs:
+          # Follow Caddy's nixpkgs toolchain instead of moving its test suite to a newer Go release.
+          final.buildGoModule (finalAttrs:
             let _args = args finalAttrs; in _args // {
               inherit src vendorHash;
               overrideModAttrs = _: {

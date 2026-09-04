@@ -7,7 +7,7 @@
 , stdenv
 }:
 let
-  version = "0.153.0";
+  version = "0.153.2";
   v8Version = "150.4.0";
   v8ReleaseBase = "https://github.com/openai/codex/releases/download/rusty-v8-v${v8Version}";
   v8ArchiveHashes = {
@@ -30,7 +30,7 @@ let
     owner = "openai";
     repo = "codex";
     tag = "rust-v${version}";
-    hash = "sha256-dSuFpqsMH248F+fdvN0wxMyhqFRHN92FLF7ufUpe0WE=";
+    hash = "sha256-R97lEHS2XfMQNbAc9k8v7EbcQCnwxND7zhnK3EBsI3Y=";
   };
   librustyV8 = fetchurl {
     name = "librusty_v8-${v8Version}";

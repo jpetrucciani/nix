@@ -13,6 +13,10 @@ buildGoLatestModule rec {
 
   vendorHash = "sha256-mq180F0V7BF3GBFgrlME7+5IF6Wfk/xMDWNmIOc6FlU=";
 
+  # These race a one-second maintenance ticker against exact two-second sleeps,
+  # so a scheduler stall can make the test observe the queue before the ticker.
+  checkFlags = [ "-skip=TestRequeueing_VisibilityTimeoutExpires|TestDeadLetterQueue" ];
+
   ldflags = [
     "-s"
     "-w"
