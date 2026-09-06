@@ -1,0 +1,21 @@
+name: check dated TODOs
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 13 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: cachix/install-nix-action@13d8dd58da0234aa297dedd986986ccb8e7f3e24 # v31
+        with:
+          extra_nix_config: |
+            extra-substituters = https://cache.g7c.us
+            extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
+      - run: nix run .#todo-reminder -- .github/todo-reminder.toml --check-due-only --no-tty

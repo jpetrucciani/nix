@@ -1,0 +1,8 @@
+[parameters]
+editor_url = "https://github.com/jpetrucciani/nix/blob/main/%%file%%#L%%line%%"
+
+[[rules]]
+paths = ["pkgs/server"]
+# todo-reminder has no Nix parser; its Bash parser recognizes Nix line comments.
+language = "bash"
+file_extensions = ["nix"]

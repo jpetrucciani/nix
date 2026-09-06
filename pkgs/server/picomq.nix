@@ -77,11 +77,14 @@ rustPlatform.buildRustPackage (finalAttrs: {
     runHook postInstallCheck
   '';
 
-  passthru.updateScript = nix-update-script {
-    extraArgs = [
-      "--version=branch=main"
-      "--version-regex=.*(unstable-[0-9-]+)$"
-    ];
+  # TODO: 2026-10-05 @jpetrucciani Remove this guard after confirming the updater succeeds with nixpkgs Rust 1.98.
+  passthru = lib.optionalAttrs (lib.versionAtLeast rustPlatform.rust.rustc.version "1.98") {
+    updateScript = nix-update-script {
+      extraArgs = [
+        "--version=branch=main"
+        "--version-regex=.*(unstable-[0-9-]+)$"
+      ];
+    };
   };
 
   meta = {
