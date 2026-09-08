@@ -82,6 +82,13 @@ this overlay injects various javascript helpers into scope
 
 This overlay provides new helpers for programming languages (like [vlang](https://vlang.io/) and [nim](https://nim-lang.org)). These helpers provide a default set of packages, and a way to build environments that link these packages into the build environment.
 
+### [mk-g7c-binary-release.nix](./mk-g7c-binary-release.nix)
+
+Shared builder and refresh script for raw, platform-specific binaries hosted on `static.g7c.us`.
+Callers always get a `refreshScript` that accepts an explicit version or reads the package's plain-text `latest`
+endpoint. Set `enableAutoUpdate = true` only after that endpoint is live to expose it as `updateScript` for scheduled
+discovery.
+
 ### [ocaml/](./ocaml/)
 
 This directory contains OCaml-specific overlay packages and helpers.

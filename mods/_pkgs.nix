@@ -2,7 +2,7 @@
 final: prev:
 let
   inherit (builtins) pathExists readDir;
-  inherit (prev.lib) escapeShellArg getExe hasSuffix listToAttrs pathIsDirectory removeSuffix;
+  inherit (prev.lib) callPackageWith escapeShellArg getExe hasSuffix listToAttrs pathIsDirectory removeSuffix;
   inherit (prev.lib.attrsets) collect mapAttrs;
   inherit (prev.pkgs) callPackage;
   mkGitHubReleaseUpdater =
@@ -117,7 +117,9 @@ let
       then mapAttrs (p': _: _custom (p + "/${p'}")) (readDir p)
       else null;
   customSources = listToAttrs (collect (x: x.__stop or false) (_custom ../pkgs));
-  custom = mapAttrs (_: p: callPackage p { }) customSources;
+  mkG7cBinaryRelease = callPackage ./mk-g7c-binary-release.nix { };
+  customCallPackage = callPackageWith (final // { inherit mkG7cBinaryRelease; });
+  custom = mapAttrs (_: p: customCallPackage p { }) customSources;
 in
 {
   __j_package_sources = customSources;

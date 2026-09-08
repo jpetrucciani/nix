@@ -183,6 +183,10 @@ Multi-instance SGLang-Omni servers. Each entry produces a namespaced systemd uni
 
 NixOS module for the Titanite DNS resolver
 
+### [viz.nix](./viz.nix)
+
+NixOS module for the Viz live-rendered Markdown notebook server
+
 ### [whisper-cpp.nix](./whisper-cpp.nix)
 
 Multi-instance whisper.cpp HTTP servers with one model, port, settings attrset, and systemd unit per entry. Use

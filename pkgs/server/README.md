@@ -72,3 +72,21 @@ Makes RDpgw treat an already-rendered help request as a successful exit instead 
 ### [titanite.nix](./titanite.nix)
 
 titanite is a policy-aware DNS service for homelabs and small production networks
+
+Run `nix run .#titanite.refreshScript -- VERSION` to refresh every platform artifact. Once the plain-text
+`https://static.g7c.us/titanite/latest` endpoint is published, `VERSION` may be omitted.
+
+### [titanite.json](./titanite.json)
+
+Pinned release version and platform hashes consumed by the package.
+
+### [viz.nix](./viz.nix)
+
+viz is an experimental markdown+mermaid scratch pad server
+
+Run `nix run .#viz.refreshScript -- VERSION` to refresh every platform artifact. Once the plain-text
+`https://static.g7c.us/viz/latest` endpoint is published, `VERSION` may be omitted.
+
+### [viz.json](./viz.json)
+
+Pinned release version and platform hashes consumed by the package.

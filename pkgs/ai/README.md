@@ -33,6 +33,13 @@ Latest packaged Codex release with its matching Rusty V8 archive and generated b
 
 geode is an experimental semantic indexing tool
 
+Run `nix run .#geode.refreshScript -- VERSION` to refresh every platform artifact. Once the plain-text
+`https://static.g7c.us/geode/latest` endpoint is published, `VERSION` may be omitted.
+
+### [geode.json](./geode.json)
+
+Pinned release version and platform hashes consumed by the package.
+
 ### [jeeves.nix](./jeeves.nix)
 
 [`jeeves`](https://github.com/robinovitch61/jeeves) is an AI agent conversation history browser
