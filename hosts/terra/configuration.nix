@@ -10,6 +10,7 @@ in
     ./hardware-configuration.nix
     ../modules/servers/minifluxng.nix
     ../modules/servers/obligator.nix
+    ../modules/servers/viz.nix
   ];
 
   inherit (common) zramSwap;
@@ -225,6 +226,7 @@ in
           "auth.cobi.dev" = reverse_proxy lo;
           "audiobook.cobi.dev" = reverse_proxy "localhost:9888";
           "search.cobi.dev" = reverse_proxy lo;
+          "viz.cobi.dev" = reverse_proxy "127.0.0.1:3000";
           "netdata.cobi.dev" = ts_reverse_proxy "localhost:${toString common.ports.netdata}";
           "flix.cobi.dev" = reverse_proxy "jupiter:${toString common.ports.plex}";
           "n8n.cobi.dev" = ts_terra_k8s;
@@ -334,6 +336,21 @@ in
     obligator = {
       enable = true;
       geoDbPath = "/var/lib/geoip-databases/GeoLite2-City.mmdb";
+    };
+    viz = {
+      enable = true;
+      settings = {
+        client.server = "https://viz.cobi.dev";
+        oidc.providers.google = {
+          issuer = "https://accounts.google.com";
+          client_id = "476718866899-janlc6gvdpvlcolhlk968tsdt044g150.apps.googleusercontent.com";
+          client_secret = "google_oidc";
+          redirect_uri = "https://viz.cobi.dev/api/auth/oidc/google/callback";
+          trusted_email_linking = true;
+        };
+        secrets.google_oidc.env = "VIZ_GOOGLE_CLIENT_SECRET";
+        server.trusted_proxies = [ "127.0.0.1" ];
+      };
     };
     ntfy-sh = {
       enable = true;
