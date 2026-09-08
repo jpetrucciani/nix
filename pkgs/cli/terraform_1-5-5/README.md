@@ -2,7 +2,7 @@
 
 This directory contains a pinned Terraform `1.5.5` build for legacy workflows that still need that exact track.
 
-The package uses the shared `mkTerraform` helper and applies a local provider path patch so older flows continue to behave the way this repo expects.
+The package builds Terraform directly from its tagged source and applies a local provider path patch so older flows continue to behave the way this repo expects. It retains the standard `withPlugins` interface without depending on nixpkgs' removed `mkTerraform` helper.
 
 ---
 
