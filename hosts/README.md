@@ -32,10 +32,6 @@ This is a bare-metal physical nixos server!
 
 This is my work M1 Max MacBook, managed with nix-darwin and Home Manager.
 
-### [mars/](./mars)
-
-This is a bare-metal physical nixos server!
-
 ### [milkyway/](./milkyway/)
 
 This is a NixOS install running on top of WSL2.
