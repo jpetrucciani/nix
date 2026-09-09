@@ -70,7 +70,8 @@ in
       enable = true;
       # worldName = "trello_gold";
       # worldName = "RPGWorld";
-      worldName = "jack_and_leb";
+      # worldName = "jack_and_leb";
+      worldName = "kek";
     };
     palworld.enable = false;
     prometheus.exporters = common.templates.prometheus_exporters { };
