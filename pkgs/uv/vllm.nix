@@ -6,8 +6,8 @@
 , clang
 , ninja
 , mkVllmRefresh
-, version ? "0.28.0"
-, lockHash ? "sha256-E2WSIUSwk7uBi2Xi9wFzqkLmdo015nb7oDd4aP2n5mY="
+, version ? "0.29.0"
+, lockHash ? "sha256-sIW8ybWY9ZIJupE9TGsDjcIYp0K0+cjAXutQR0M/91E="
 , isWSL ? false
 , includePin ? false
 }:
@@ -19,6 +19,7 @@ let
     "transformers>=5.12.0"
     "qwen-vl-utils==0.0.14"
   ];
+  refreshScript = mkVllmRefresh { inherit extraDependencies; };
 in
 uv-nix.buildUvPackage rec {
   inherit version lockHash includePin;
@@ -53,8 +54,8 @@ uv-nix.buildUvPackage rec {
   '';
 
   passthru = {
-    inherit lockHash lockUrl;
-    updateScript = mkVllmRefresh { inherit extraDependencies; };
+    inherit lockHash lockUrl refreshScript;
+    updateScript = lib.getExe refreshScript;
     wsl = vllm.override { isWSL = true; };
   };
 
