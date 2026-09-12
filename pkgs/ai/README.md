@@ -21,6 +21,10 @@ The default build uses CPU inference on Linux and Metal on macOS. CUDA and ROCm 
 
 Latest packaged Codex release with its matching Rusty V8 archive and generated binding. Run `nix run .#codex-latest.updateScript` to refresh and validate it.
 
+### [codex-nix-daemon.patch](./codex-nix-daemon.patch)
+
+Makes the Codex daemon use the Nix-packaged binary and disables its automatic updater.
+
 ### [deepseek-harness.nix](./deepseek-harness.nix)
 
 [`deepseek-harness`](https://github.com/deepseek-ai/deepseek-harness) is an open-source agent harness developed by DeepSeek AI
