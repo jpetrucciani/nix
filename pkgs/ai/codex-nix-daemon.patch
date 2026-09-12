@@ -1,0 +1,43 @@
+--- a/app-server-daemon/src/lib.rs
++++ b/app-server-daemon/src/lib.rs
+@@ -288,7 +288,10 @@
+             update_pid_file: state_dir.join(UPDATE_PID_FILE_NAME),
+             operation_lock_file: state_dir.join(OPERATION_LOCK_FILE_NAME),
+             settings_file: state_dir.join(SETTINGS_FILE_NAME),
+-            managed_codex_bin: managed_codex_bin(codex_home.as_path()),
++            managed_codex_bin: option_env!("CODEX_NIX_PACKAGE").map_or_else(
++                || managed_codex_bin(codex_home.as_path()),
++                |package| PathBuf::from(package).join("bin/codex"),
++            ),
+         })
+     }
+ 
+@@ -638,14 +641,16 @@
+         if updater.is_starting_or_running().await? {
+             updater.stop().await?;
+         }
+-        updater.start().await?;
++        if option_env!("CODEX_NIX_PACKAGE").is_none() {
++            updater.start().await?;
++        }
+ 
+         let info = self.wait_until_ready().await?;
+         let managed_codex_version = self.managed_codex_version_best_effort().await;
+         Ok(BootstrapOutput {
+             status: BootstrapStatus::Bootstrapped,
+             backend: BackendKind::Pid,
+-            auto_update_enabled: true,
++            auto_update_enabled: option_env!("CODEX_NIX_PACKAGE").is_none(),
+             remote_control_enabled: settings.remote_control_enabled,
+             managed_codex_path: self.managed_codex_bin.clone(),
+             managed_codex_version,
+@@ -689,6 +694,9 @@
+     }
+ 
+     async fn is_bootstrapped(&self, settings: &DaemonSettings) -> Result<bool> {
++        if option_env!("CODEX_NIX_PACKAGE").is_some() {
++            return Ok(self.running_backend(settings).await?.is_some());
++        }
+         let updater = backend::pid_update_loop_backend(self.backend_paths(settings));
+         updater.is_starting_or_running().await
+     }

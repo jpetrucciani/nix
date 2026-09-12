@@ -47,6 +47,13 @@ in
 codex.overrideAttrs (old: {
   inherit version src;
 
+  patches = (old.patches or [ ]) ++ [ ./codex-nix-daemon.patch ];
+
+  # The daemon must use this closure and leave executable updates to Nix.
+  preBuild = (old.preBuild or "") + ''
+    export CODEX_NIX_PACKAGE="$out"
+  '';
+
   postPatch = ''
     substituteInPlace Cargo.toml \
       --replace-fail 'lto = "thin"' "" \
