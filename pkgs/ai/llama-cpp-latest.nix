@@ -6,7 +6,7 @@
 , stdenv
 }:
 let
-  version = "10729";
+  version = "10969";
 in
 (llama-cpp.override { inherit cudaSupport; }).overrideAttrs (old: {
   inherit version;
@@ -15,7 +15,7 @@ in
     owner = "ggml-org";
     repo = "llama.cpp";
     tag = "b${version}";
-    hash = "sha256-7DQ6u9ZiFdPXuLF6YdLcoVoMxoykxLdZdXjEV2kEuBw=";
+    hash = "sha256-9w3dbaylNMlWkiV6KLmTUO4mXnQcUUcTjrCoRxwq7UQ=";
     leaveDotGit = true;
     postFetch = ''
       git -C "$out" rev-parse --short HEAD > $out/COMMIT
