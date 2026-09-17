@@ -2,13 +2,17 @@
 , cudaSupport ? config.cudaSupport
 , fetchFromGitHub
 , llama-cpp
+, nodejs_24
 , refresh_llama-cpp_latest
 , stdenv
 }:
 let
   version = "10969";
 in
-(llama-cpp.override { inherit cudaSupport; }).overrideAttrs (old: {
+(llama-cpp.override {
+  inherit cudaSupport;
+  nodejs_latest = nodejs_24;
+}).overrideAttrs (old: {
   inherit version;
 
   src = fetchFromGitHub {
