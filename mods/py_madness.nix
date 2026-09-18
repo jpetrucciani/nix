@@ -230,6 +230,23 @@ let
             ];
           in
           {
+            causal-conv1d =
+              let
+                cudaPackages =
+                  if builtins.hasAttr "nvidia-cuda-runtime" _prev
+                  then _pkgs.cudaPackages_13
+                  else _pkgs.cudaPackages;
+              in
+              (addBuildAndSearchInputs [ _final.torch ] _prev.causal-conv1d).overrideAttrs (old: {
+                nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ _pkgs.ninja _pkgs.autoPatchelfHook ];
+                buildInputs = (old.buildInputs or [ ]) ++ resolveVirtualEnv { torch = [ ]; packaging = [ ]; };
+                CUDA_HOME = cudaPackages.cudatoolkit;
+                # Upstream otherwise downloads a guessed wheel during bdist_wheel.
+                CAUSAL_CONV1D_FORCE_BUILD = "TRUE";
+                preBuild = (old.preBuild or "") + ''
+                  export MAX_JOBS="$NIX_BUILD_CORES"
+                '';
+              });
             bitsandbytes = _prev.bitsandbytes.overrideAttrs (_: {
               buildInputs = with _pkgs.cudaPackages; [
                 cuda_cudart
@@ -807,6 +824,7 @@ let
               "antlr4-python3-runtime"
               "argbind"
               "atomicwrites"
+              "causal-conv1d"
               "cdifflib"
               "cffi"
               "coverage"
