@@ -1,6 +1,6 @@
 --- a/app-server-daemon/src/lib.rs
 +++ b/app-server-daemon/src/lib.rs
-@@ -288,7 +288,10 @@
+@@ -311,7 +311,10 @@
              update_pid_file: state_dir.join(UPDATE_PID_FILE_NAME),
              operation_lock_file: state_dir.join(OPERATION_LOCK_FILE_NAME),
              settings_file: state_dir.join(SETTINGS_FILE_NAME),
@@ -11,33 +11,23 @@
 +            ),
          })
      }
- 
-@@ -638,14 +641,16 @@
-         if updater.is_starting_or_running().await? {
-             updater.stop().await?;
-         }
--        updater.start().await?;
-+        if option_env!("CODEX_NIX_PACKAGE").is_none() {
-+            updater.start().await?;
-+        }
- 
-         let info = self.wait_until_ready().await?;
-         let managed_codex_version = self.managed_codex_version_best_effort().await;
-         Ok(BootstrapOutput {
-             status: BootstrapStatus::Bootstrapped,
-             backend: BackendKind::Pid,
--            auto_update_enabled: true,
-+            auto_update_enabled: option_env!("CODEX_NIX_PACKAGE").is_none(),
-             remote_control_enabled: settings.remote_control_enabled,
-             managed_codex_path: self.managed_codex_bin.clone(),
-             managed_codex_version,
-@@ -689,6 +694,9 @@
-     }
- 
-     async fn is_bootstrapped(&self, settings: &DaemonSettings) -> Result<bool> {
-+        if option_env!("CODEX_NIX_PACKAGE").is_some() {
-+            return Ok(self.running_backend(settings).await?.is_some());
-+        }
+
+@@ -787,7 +790,7 @@
+
+     async fn ensure_managed_updater(&self, settings: &DaemonSettings) -> Result<bool> {
          let updater = backend::pid_update_loop_backend(self.backend_paths(settings));
-         updater.is_starting_or_running().await
+-        if !settings.auto_update_enabled {
++        if option_env!("CODEX_NIX_PACKAGE").is_some() || !settings.auto_update_enabled {
+             updater.stop().await?;
+             return Ok(false);
+         }
+@@ -857,7 +860,8 @@
      }
+
+     async fn is_bootstrapped(&self, settings: &DaemonSettings) -> Result<bool> {
+-        if !settings.auto_update_enabled
++        if option_env!("CODEX_NIX_PACKAGE").is_some()
++            || !settings.auto_update_enabled
+             || !self.is_stable_standalone_release()?
+             || !managed_install::supports_daemon_update_loop(&self.managed_codex_bin).await
+         {
