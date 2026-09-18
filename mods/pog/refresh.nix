@@ -745,6 +745,79 @@ rec {
       '';
     };
 
+  refresh_sglang_omni = mkCfgPackageRefresh {
+    name = "refresh_sglang_omni";
+    description = "generate and publish SGLang-Omni's uv lock, then update and evaluate the package";
+    target = "pkgs/uv/sglang-omni.nix";
+    flags = [
+      {
+        name = "ref";
+        short = "";
+        default = "main";
+        description = "SGLang-Omni branch, tag, or commit to update to";
+      }
+    ] ++ r2ArtifactFlags;
+    script = ''
+      ${publishImmutableR2}
+
+      lock_file="$temp_dir/sglang-omni.lock"
+      metadata=$(
+        ${lib.getExe final.generate_sglang_omni_lock} \
+          --repo "$repo" \
+          --ref "$ref" \
+          --output "$lock_file" \
+          --public_url "$public_url"
+      )
+      version=$(printf '%s\n' "$metadata" | ${final.gnused}/bin/sed -n 's/^version=//p')
+      rev=$(printf '%s\n' "$metadata" | ${final.gnused}/bin/sed -n 's/^rev=//p')
+      lock_hash=$(${final._nix}/bin/nix hash file --type sha256 --sri "$lock_file")
+      if ! printf '%s\n' "$version" | ${final.gnugrep}/bin/grep -Eq '^[0-9A-Za-z][0-9A-Za-z._+-]*$' \
+        || ! printf '%s\n' "$rev" | ${final.gnugrep}/bin/grep -Eq '^[0-9a-f]{40}$'; then
+        echo "invalid SGLang-Omni version or revision from lock generator" >&2
+        exit 1
+      fi
+
+      current_version=$(${final._nix}/bin/nix eval --raw "path:$repo#sglang-omni.version")
+      current_rev=$(${final._nix}/bin/nix eval --raw "path:$repo#sglang-omni.rev")
+      if [ "$current_version" = "$version" ] && [ "$current_rev" = "$rev" ]; then
+        echo "sglang-omni is already current at $version ($rev)"
+        exit 0
+      fi
+
+      object_key="lock/uv/sglang-omni/$version.lock"
+      publish_immutable_r2 "$lock_file" "$object_key" application/toml
+
+      VERSION="$version" REV="$rev" LOCK_HASH="$lock_hash" ${final.perl}/bin/perl -0pe '
+        (s/(, version \? ")[^"]+("\n)/$1 . $ENV{VERSION} . $2/e) == 1
+          or die "expected one version default\n";
+        (s/(, rev \? ")[^"]+("\n)/$1 . $ENV{REV} . $2/e) == 1
+          or die "expected one rev default\n";
+        (s/(, lockHash \? ")[^"]+("\n)/$1 . $ENV{LOCK_HASH} . $2/e) == 1
+          or die "expected one lockHash default\n";
+      ' "$target_file" > "$temp_dir/sglang-omni.nix"
+      ${final.coreutils}/bin/install -m 0644 "$temp_dir/sglang-omni.nix" "$target_file"
+
+      format_target
+      evaluated_version=$(${final._nix}/bin/nix eval --raw "path:$repo#sglang-omni.version")
+      evaluated_rev=$(${final._nix}/bin/nix eval --raw "path:$repo#sglang-omni.rev")
+      evaluated_lock_hash=$(${final._nix}/bin/nix eval --raw "path:$repo#sglang-omni.lockHash")
+      if [ "$evaluated_version" != "$version" ] \
+        || [ "$evaluated_rev" != "$rev" ] \
+        || [ "$evaluated_lock_hash" != "$lock_hash" ]; then
+        echo "evaluated SGLang-Omni pins do not match the generated lock" >&2
+        exit 1
+      fi
+      drv_path=$(${final._nix}/bin/nix eval --raw "path:$repo#sglang-omni.drvPath")
+      if ! printf '%s\n' "$drv_path" | ${final.gnugrep}/bin/grep -Eq '^/nix/store/[0-9a-z]{32}-.*\.drv$'; then
+        echo "unexpected evaluated SGLang-Omni derivation path: $drv_path" >&2
+        exit 1
+      fi
+
+      printf 'version=%s\nrev=%s\nlock_hash=%s\nlock_url=%s\ndrv_path=%s\n' \
+        "$version" "$rev" "$lock_hash" "$artifact_url" "$drv_path"
+    '';
+  };
+
   refresh_zaddy = mkCfgPackageRefresh {
     name = "refresh_zaddy";
     description = "refresh zaddy's vendor hash, build it, and verify every configured plugin in the vendored tree and binary";

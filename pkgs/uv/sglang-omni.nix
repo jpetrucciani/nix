@@ -8,9 +8,10 @@
 , ninja
 , sox
 , python312
-, version ? "unstable-2026-08-15-2d2ff50"
-, rev ? "2d2ff5056f8c321f1dbc2ff6584baf05996ce150"
-, lockHash ? "sha256-615SIRLYRxCxoNROMyXD2ee0yTxuvFZrUKJrF+2vf7o="
+, refresh_sglang_omni
+, version ? "0.1.6"
+, rev ? "7b49bc4b80ef3ae12d7308ba28becb398e322223"
+, lockHash ? "sha256-kB6W5dLN1150TcrS5QSl1xti+NzD6pcnT95e3rtmFJ0="
 , isWSL ? false
 , includePin ? false
 }:
@@ -22,7 +23,7 @@ uv-nix.buildUvPackage rec {
   pname = "sglang-omni";
   bins = [
     "sgl-omni"
-    "sgl-omni-router"
+    "sgl-omni-router-py"
   ];
   python = python312;
 
@@ -77,7 +78,7 @@ uv-nix.buildUvPackage rec {
     for libdir in "$sitePackages"/nvidia/*/lib; do
       wheelCudaLibs="$wheelCudaLibs:$libdir"
     done
-    for program in sgl-omni sgl-omni-router; do
+    for program in ${lib.escapeShellArgs bins}; do
       wrapProgram "$out/bin/$program" \
         --set LD_LIBRARY_PATH "$wheelCudaLibs:${ldPath}" \
         --set CUDA_HOME "${cudatoolkit}" \
@@ -100,7 +101,9 @@ uv-nix.buildUvPackage rec {
   '';
 
   passthru = {
-    inherit rev;
+    inherit rev lockHash lockUrl;
+    refreshScript = refresh_sglang_omni;
+    updateScript = lib.getExe refresh_sglang_omni;
     wsl = sglang-omni.override {
       inherit version rev lockHash includePin;
       isWSL = true;

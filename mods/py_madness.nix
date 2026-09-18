@@ -620,7 +620,7 @@ let
                 hacks = _pkgs.callPackage _pkgs.pyproject-nix.build.hacks { };
               in
               hacks.nixpkgsPrebuilt { from = outlinesCore; };
-            sglang = _prev.sglang.overrideAttrs (old: {
+            sglang = (addBuildAndSearchInputs [ _final.torch ] _prev.sglang).overrideAttrs (old: {
               buildInputs = (old.buildInputs or [ ]) ++ (with _final; [
                 setuptools
                 wheel
@@ -665,6 +665,40 @@ let
                 "libcuda.so.1"
               ];
             });
+            sgl-deep-ep =
+              (addBuildAndSearchInputs
+                ([ _final.torch ] ++ packagesIfPresent [
+                  "nvidia-cuda-runtime-cu12"
+                  "nvidia-cuda-runtime"
+                  "nvidia-nvshmem-cu12"
+                  "nvidia-nvshmem-cu13"
+                  "nvidia-nccl-cu12"
+                  "nvidia-nccl-cu13"
+                ])
+                _prev.sgl-deep-ep).overrideAttrs (old: {
+                autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [ "libcuda.so.1" ];
+              });
+            onnxruntime-gpu =
+              (addBuildAndSearchInputs
+                (packagesIfPresent [
+                  "nvidia-cublas-cu12"
+                  "nvidia-cublas"
+                  "nvidia-cuda-runtime-cu12"
+                  "nvidia-cuda-runtime"
+                  "nvidia-curand-cu12"
+                  "nvidia-curand"
+                  "nvidia-cudnn-cu12"
+                  "nvidia-cudnn-cu13"
+                ])
+                _prev.onnxruntime-gpu).overrideAttrs (old: {
+                autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
+                  # Supplied by the host driver.
+                  "libcuda.so.1"
+                  # Optional TensorRT provider; CUDA execution does not require TensorRT.
+                  "libnvinfer.so.10"
+                  "libnvonnxparser.so.10"
+                ];
+              });
             "sgl-deep-gemm" = addBuildAndSearchInputs
               (with _final; [
                 apache-tvm-ffi
@@ -745,7 +779,37 @@ let
             gitignoreRecursiveSource workspaceRoot
           else
             workspaceRoot;
-        workspaceLockTOML = if uvLock == null then final.lib.importTOML (workspaceRoot' + "/uv.lock") else uvLock;
+        rawWorkspaceLock = if uvLock == null then final.lib.importTOML (workspaceRoot' + "/uv.lock") else uvLock;
+        # PyPI only carries a wheel-stub downloader for this release. Supply the
+        # real NVIDIA wheels before uv2nix selects sources and build hooks.
+        cudaTileWheels = final.lib.mapAttrsToList
+          (filename: hash: {
+            url = "https://pypi.nvidia.com/cuda-tile/${filename}";
+            hash = "sha256:${hash}";
+          })
+          {
+            "cuda_tile-1.6.0rc5-cp310-cp310-manylinux2014_aarch64.whl" = "bd7de75253f91129fa019694644c579eed743c38fa7db46a37bc9aac55794635";
+            "cuda_tile-1.6.0rc5-cp310-cp310-manylinux2014_x86_64.whl" = "64a5c0f00a3716d61d0470b6660c1e59f2008568052ec3ef4c8246a2073cca4a";
+            "cuda_tile-1.6.0rc5-cp311-cp311-manylinux2014_aarch64.whl" = "77d19f6162f1654584f39a14aa9ac0357f62ab66962d0354095356e4e891edcd";
+            "cuda_tile-1.6.0rc5-cp311-cp311-manylinux2014_x86_64.whl" = "a14ff257522a017430e98f16aabdfd514bbcf38ecb64a0fba1d3f86cd02a21bb";
+            "cuda_tile-1.6.0rc5-cp312-cp312-manylinux2014_aarch64.whl" = "2e2e5ff86992a0f4f481e17c820c1c13543817390900d5041c495eb599580f21";
+            "cuda_tile-1.6.0rc5-cp312-cp312-manylinux2014_x86_64.whl" = "b74c20348210d2182cd998a0ecb60c518989a79b28592d72eb8294b38ddb93d7";
+            "cuda_tile-1.6.0rc5-cp313-cp313-manylinux2014_aarch64.whl" = "ccb1edfeb82ae366c75846db9cda7ca7d04d95c4107efca813df9f7e0708f6eb";
+            "cuda_tile-1.6.0rc5-cp313-cp313-manylinux2014_x86_64.whl" = "1f8802f7837d9ffffeff77e5e4abc8b8eb4990ddf77e73008ba13d58003aa08a";
+            "cuda_tile-1.6.0rc5-cp314-cp314-manylinux2014_aarch64.whl" = "6095ee027141dd0c8124e00796b8cf2fedd28b5e1ee1b20f5b4bdccecc71eef5";
+            "cuda_tile-1.6.0rc5-cp314-cp314-manylinux2014_x86_64.whl" = "c150d7e08cbea8c6a595393f3f731c64b7d5c1f19095fd42af6a135252dfb348";
+            "cuda_tile-1.6.0rc5-cp314-cp314t-manylinux2014_aarch64.whl" = "9ea319ae02c0ca0eab488a0d600c859589ddede064a7678090d482a53d53d813";
+            "cuda_tile-1.6.0rc5-cp314-cp314t-manylinux2014_x86_64.whl" = "5424fd6b7c15aadb80fceb38a23b44481af1f3f51d0c2ef920d973ea6d2d411b";
+          };
+        workspaceLockTOML = rawWorkspaceLock // {
+          package = map
+            (pkg:
+              if pkg.name == "cuda-tile" && pkg.version == "1.6.0rc5" then
+                pkg // { wheels = (pkg.wheels or [ ]) ++ cudaTileWheels; }
+              else
+                pkg)
+            rawWorkspaceLock.package;
+        };
         workspaceLock = final.uv2nix.lib.lock1.parseLock workspaceLockTOML;
         workspaceLocalProjects = final.uv2nix.lib.lock1.getLocalProjects {
           lock = workspaceLock;
