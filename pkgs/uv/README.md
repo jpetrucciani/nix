@@ -42,6 +42,10 @@ Compatibility patches applied to uv2nix-managed Python dependencies
 
 [vllm](https://github.com/vllm-project/vllm) is a high-throughput and memory-efficient inference and serving engine for LLMs (nightly builds)
 
+### [vllm-omni.nix](./vllm-omni.nix)
+
+[vLLM-Omni](https://github.com/vllm-project/vllm-omni) serves omni-modality and diffusion models with vLLM
+
 ### [vllm.nix](./vllm.nix)
 
 [vllm](https://github.com/vllm-project/vllm) is a high-throughput and memory-efficient inference and serving engine for LLMs

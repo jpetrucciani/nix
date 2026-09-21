@@ -443,6 +443,12 @@ let
               dontAutoPatchelf = true;
               dontPatchELF = true;
             });
+            "fa3-fwd" = addBuildAndSearchInputs
+              (with _final; [
+                torch
+                nvidia-cuda-runtime
+              ])
+              _prev."fa3-fwd";
             "humming-kernels" =
               (addBuildAndSearchInputs [ _final.torch ] _prev."humming-kernels").overrideAttrs (old: {
                 autoPatchelfIgnoreMissingDeps = (old.autoPatchelfIgnoreMissingDeps or [ ]) ++ [
