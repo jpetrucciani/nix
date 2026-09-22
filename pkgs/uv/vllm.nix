@@ -6,8 +6,8 @@
 , clang
 , ninja
 , mkVllmRefresh
-, version ? "0.29.0"
-, lockHash ? "sha256-sIW8ybWY9ZIJupE9TGsDjcIYp0K0+cjAXutQR0M/91E="
+, version ? "0.30.0"
+, lockHash ? "sha256-atf0UTpVa4/5JbIuDprstL+Vy5hRkkozkDgCmPVhdu8="
 , isWSL ? false
 , includePin ? false
 }:
