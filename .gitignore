@@ -17,3 +17,5 @@ tmp
 .env
 nixcache.log
 __pycache__
+*.png
+*.jpg

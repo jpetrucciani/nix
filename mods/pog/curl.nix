@@ -2,6 +2,78 @@
 final: prev:
 let
   inherit (final) _ pog curl;
+  coreutils = "${final.coreutils}/bin";
+  qwenImageFlags = [
+    {
+      name = "prompt";
+      short = "p";
+      description = "the image prompt";
+      envVar = "QWEN_IMAGE_PROMPT";
+      required = true;
+    }
+    {
+      name = "host";
+      short = "H";
+      description = "the vLLM API host, including the URL scheme";
+      envVar = "QWEN_IMAGE_HOST";
+      default = "http://localhost";
+    }
+    {
+      name = "port";
+      short = "P";
+      description = "the vLLM API port";
+      envVar = "QWEN_IMAGE_PORT";
+      default = "8091";
+    }
+    {
+      name = "model";
+      short = "m";
+      description = "the model served by vLLM Omni";
+      envVar = "QWEN_IMAGE_MODEL";
+      default = "Qwen/Qwen-Image-2.1";
+    }
+    {
+      name = "size";
+      short = "s";
+      description = "the output image size";
+      envVar = "QWEN_IMAGE_SIZE";
+      default = "1024x1024";
+    }
+    {
+      name = "inference-steps";
+      short = "n";
+      description = "the number of diffusion inference steps";
+      envVar = "QWEN_IMAGE_INFERENCE_STEPS";
+      default = "40";
+      flagPadding = 24;
+    }
+    {
+      name = "cfg";
+      short = "c";
+      description = "the true CFG scale";
+      envVar = "QWEN_IMAGE_CFG";
+      default = "1.0";
+    }
+    {
+      name = "seed";
+      short = "S";
+      description = "the random seed";
+      envVar = "QWEN_IMAGE_SEED";
+      default = "42";
+    }
+    {
+      name = "output";
+      short = "o";
+      description = "the output PNG path [default: a hash of the request]";
+      envVar = "QWEN_IMAGE_OUTPUT";
+      completion = pog.completions.files { extensions = [ ".png" ]; };
+    }
+  ];
+  qwenImageCleanup = ''
+    if [ -n "''${qwen_image_tmp:-}" ] && [ -d "$qwen_image_tmp" ]; then
+      ${coreutils}/rm -rf -- "$qwen_image_tmp"
+    fi
+  '';
 in
 rec {
   jiracurl = pog {
@@ -183,6 +255,179 @@ rec {
     '';
   };
 
+  qwen_image = pog {
+    name = "qwen_image";
+    description = "generate an image with Qwen Image through a vLLM Omni API";
+    flags = qwenImageFlags;
+    flagPadding = 24;
+    strict = true;
+    showDefaultFlags = true;
+    beforeExit = qwenImageCleanup;
+    script = ''
+      qwen_image_tmp=""
+      qwen_image_tmp="$(${coreutils}/mktemp -d)"
+      response="$qwen_image_tmp/response.json"
+      decoded="$qwen_image_tmp/image.png"
+      base_url="''${host%/}:$port"
+
+      request="$(${_.jq} -cn \
+        --arg model "$model" \
+        --arg prompt "$prompt" \
+        --arg size "$size" \
+        --argjson num_inference_steps "$inference_steps" \
+        --argjson true_cfg_scale "$cfg" \
+        --argjson seed "$seed" \
+        '{
+          model: $model,
+          prompt: $prompt,
+          size: $size,
+          num_inference_steps: $num_inference_steps,
+          true_cfg_scale: $true_cfg_scale,
+          seed: $seed
+        }')"
+
+      request_hash_line="$(printf '%s' "$request" | ${coreutils}/sha256sum)"
+      request_hash="''${request_hash_line%% *}"
+      if [ -z "$output" ]; then
+        output="qwen-image-''${request_hash:0:16}.png"
+      fi
+
+      print_sanitized_response() {
+        ${_.jq} 'del(.data[]?.b64_json)' "$response" 2>/dev/null || ${coreutils}/cat -- "$response"
+      }
+
+      if ! ${_.curl} \
+        --fail-with-body \
+        --silent \
+        --show-error \
+        --request POST \
+        --header 'Content-Type: application/json' \
+        --data-binary "$request" \
+        --output "$response" \
+        "$base_url/v1/images/generations"; then
+        [ ! -s "$response" ] || print_sanitized_response >&2
+        die "Qwen Image generation request failed" 1
+      fi
+
+      if ! ${_.jq} -er '.data[0].b64_json | select(type == "string" and length > 0)' "$response" |
+        ${coreutils}/base64 --decode > "$decoded"; then
+        print_sanitized_response >&2
+        die "Qwen Image response did not contain a valid base64 image" 1
+      fi
+
+      ${coreutils}/install -Dm0644 -- "$decoded" "$output"
+      if [ -n "$VERBOSE" ]; then
+        print_sanitized_response >&2
+      fi
+      printf '%s\n' "$output"
+    '';
+  };
+
+  qwen_image_edit = pog {
+    name = "qwen_image_edit";
+    description = "edit up to four images with Qwen Image through a vLLM Omni API";
+    flags = [
+      {
+        name = "image";
+        short = "i";
+        description = "a required input image path, repeatable up to four times";
+        envVar = "QWEN_IMAGE_INPUT";
+        repeatable = true;
+        completion = pog.completions.files {
+          extensions = [ ".jpeg" ".jpg" ".png" ".webp" ];
+        };
+      }
+    ] ++ qwenImageFlags;
+    flagPadding = 24;
+    strict = true;
+    showDefaultFlags = true;
+    beforeExit = qwenImageCleanup;
+    script = ''
+      qwen_image_tmp=""
+      if (( ''${#image[@]} == 0 )); then
+        die "you must specify at least one --image value" 3
+      fi
+      if (( ''${#image[@]} > 4 )); then
+        die "Qwen Image editing accepts at most four --image values" 2
+      fi
+
+      qwen_image_tmp="$(${coreutils}/mktemp -d)"
+      response="$qwen_image_tmp/response.json"
+      decoded="$qwen_image_tmp/image.png"
+      base_url="''${host%/}:$port"
+
+      image_hashes=()
+      curl_args=()
+      for image_path in "''${image[@]}"; do
+        if [ ! -f "$image_path" ]; then
+          die "input image does not exist: $image_path" 2
+        fi
+        image_hash_line="$(${coreutils}/sha256sum -- "$image_path")"
+        image_hashes+=( "''${image_hash_line%% *}" )
+        curl_args+=( --form "image=@$image_path" )
+      done
+
+      image_hashes_json="$(printf '%s\n' "''${image_hashes[@]}" | ${_.jq} -Rsc 'split("\n") | map(select(length > 0))')"
+      hash_material="$(${_.jq} -cn \
+        --arg model "$model" \
+        --arg prompt "$prompt" \
+        --arg size "$size" \
+        --argjson num_inference_steps "$inference_steps" \
+        --argjson true_cfg_scale "$cfg" \
+        --argjson seed "$seed" \
+        --argjson image_sha256 "$image_hashes_json" \
+        '{
+          model: $model,
+          prompt: $prompt,
+          size: $size,
+          num_inference_steps: $num_inference_steps,
+          true_cfg_scale: $true_cfg_scale,
+          seed: $seed,
+          image_sha256: $image_sha256
+        }')"
+
+      request_hash_line="$(printf '%s' "$hash_material" | ${coreutils}/sha256sum)"
+      request_hash="''${request_hash_line%% *}"
+      if [ -z "$output" ]; then
+        output="qwen-image-edit-''${request_hash:0:16}.png"
+      fi
+
+      print_sanitized_response() {
+        ${_.jq} 'del(.data[]?.b64_json)' "$response" 2>/dev/null || ${coreutils}/cat -- "$response"
+      }
+
+      if ! ${_.curl} \
+        --fail-with-body \
+        --silent \
+        --show-error \
+        --request POST \
+        "''${curl_args[@]}" \
+        --form-string "prompt=$prompt" \
+        --form-string "model=$model" \
+        --form-string "size=$size" \
+        --form-string "num_inference_steps=$inference_steps" \
+        --form-string "true_cfg_scale=$cfg" \
+        --form-string "seed=$seed" \
+        --output "$response" \
+        "$base_url/v1/images/edits"; then
+        [ ! -s "$response" ] || print_sanitized_response >&2
+        die "Qwen Image editing request failed" 1
+      fi
+
+      if ! ${_.jq} -er '.data[0].b64_json | select(type == "string" and length > 0)' "$response" |
+        ${coreutils}/base64 --decode > "$decoded"; then
+        print_sanitized_response >&2
+        die "Qwen Image response did not contain a valid base64 image" 1
+      fi
+
+      ${coreutils}/install -Dm0644 -- "$decoded" "$output"
+      if [ -n "$VERBOSE" ]; then
+        print_sanitized_response >&2
+      fi
+      printf '%s\n' "$output"
+    '';
+  };
+
   curl_pog_scripts = [
     baymaxcurl
     githubcurl
@@ -190,5 +435,7 @@ rec {
     gitlabcurl
     jiracurl
     ntfy_publish
+    qwen_image
+    qwen_image_edit
   ];
 }
