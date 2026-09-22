@@ -64,6 +64,7 @@ uv-nix.buildUvPackage {
     for program in ${lib.escapeShellArgs bins}; do
       wrapProgram "$out/bin/$program" \
         --set PYTHONNOUSERSITE 1 \
+        --prefix PYTHONPATH : "$sitePackages" \
         --set LD_LIBRARY_PATH "$wheelCudaLibs:${ldPath}" \
         --set CUDA_HOME "${cudatoolkit}" \
         --set CUDA_PATH "${cudatoolkit}" \
