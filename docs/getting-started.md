@@ -1,80 +1,35 @@
 # Getting Started
 
-This site is for people who want to understand how this repo uses Nix, steal ideas from it, or safely poke around without reverse-engineering the tree first.
+This page gets you from a clone to an understanding of the outputs this repo exposes. You can inspect the repo without building a machine or switching your system.
 
-If words like `flake`, `overlay`, `module`, or `derivation` are still fuzzy, start with [Learn Nix](/learn-nix) before you start tracing source files.
-
-## Read This First
-
-If you only read four pages, make it these:
-
-1. [Learn Nix](/learn-nix), for the repo-shaped learning path.
-2. [Architecture](/architecture), for the pinned-base plus overlay model.
-3. [Home Manager](/home-manager), for the daily user-environment entry point.
-4. [Tooling](/tooling/index), for `pog`, `hex`, `snowball`, and the repo-local helpers.
+If `flake`, `overlay`, or `module` is unfamiliar, read [Learn Nix](/learn-nix) for a short example before tracing the source.
 
 ## Prerequisites
 
-- Nix installed. This repo uses flakes for most build and discovery commands.
-- Git available locally.
-- Access to this repository.
+- Nix with flakes enabled.
+- Git.
+- A supported system for local builds: `x86_64-linux`, `aarch64-linux`, or `aarch64-darwin`.
 
-## Clone and Enter
+## Clone and Inspect
 
 ```bash
 git clone https://github.com/jpetrucciani/nix.git ~/cfg
 cd ~/cfg
+nix eval --raw --impure --expr builtins.currentSystem
+nix flake show --no-write-lock-file
+```
+
+Find your system in the flake output, then pick one package or host name to trace. Package recipes live under `pkgs/` or `mods/pkgs/`, while host outputs come from the lists in `hosts/constants.nix`. A host build is a separate, usually much larger step.
+
+Enter the development shell when you want the repo's formatters and helper tools:
+
+```bash
 nix develop
 ```
 
-If you only want to read the tree and skim the outputs, you can skip `nix develop`.
+## Choose a Next Task
 
-## First Commands
-
-```bash
-nix flake show
-```
-
-This is the fastest way to see the flake outputs the repo exposes.
-
-Then run a few safe checks and builds:
-
-```bash
-# formatting and docs checks used by this repo
-nix run .#jfmt -- --ci
-nix run .#scripts.check_doc_links
-nix run .#scripts.check_readme_index
-
-# linux host example
-nix build .#nixosConfigurations.voyager.config.system.build.toplevel
-
-# darwin host example
-nix build .#darwinConfigurations.pluto.system
-
-# package example
-nix build .#zaddy
-```
-
-## If You Want To Explore By Topic
-
-- Machine configs: [Hosts](/hosts/index) and [Modules](/modules/index)
-- User environment: [Home Manager](/home-manager)
-- Package-focused setup: [mica](/tooling/mica)
-- Image and container builders: [foundry](/tooling/foundry)
-- Package layer: [Packages](/packages/index)
-- Repo-specific tools: [Tooling](/tooling/index)
-- Operational commands: [Daily Workflows](/daily-workflows)
-
-## What To Ignore On A First Pass
-
-- The generated [Reference](/reference/index) section, unless you need an exact path.
-- CI workflow details, unless you want to understand how the repo is checked or published.
-- Secrets management, unless you are studying host deployment or operations.
-
-## Next Pages
-
-- [Learn Nix](/learn-nix)
-- [Case Study: `poglets`](/case-study-poglets)
-- [Architecture](/architecture)
-- [Home Manager](/home-manager)
-- [Tooling](/tooling/index)
+- To understand how the files fit together, read [Architecture](/architecture) and the [`poglets` case study](/case-study-poglets).
+- To build a package or preview a host change, use [Daily Workflows](/daily-workflows).
+- To explore the user environment, read [Home Manager](/home-manager).
+- To find an exact source path, use the [generated reference](/reference/index).

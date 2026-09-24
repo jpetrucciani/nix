@@ -1,8 +1,8 @@
 # Architecture
 
-This repo starts from one pinned `nixpkgs` input, imports it once, then layers flake inputs and local overlays on top. Everything else, packages, hosts, Home Manager, and tooling, is built from that shared package set.
+This repo starts from one pinned `nixpkgs` revision. For each supported system, it imports that revision and applies the same overlay stack. Packages, hosts, Home Manager, and tooling use those package sets.
 
-For a Nix newcomer, the central idea is simple: build one package universe once, then reuse it everywhere.
+For a Nix newcomer, the central idea is simple: build a consistent package universe for each platform, then reuse it across the repo.
 
 ## Big Picture
 
@@ -25,7 +25,7 @@ flake.lock
 - [`flake.nix`](https://github.com/jpetrucciani/nix/blob/main/flake.nix) defines the public outputs for packages, hosts, dev shells, and generators.
 - [`default.nix`](https://github.com/jpetrucciani/nix/blob/main/default.nix) imports `flake.inputs.nixpkgs`, injects shared inputs like `pog`, `hex`, `uv2nix`, and `poetry2nix`, then applies local overlays.
 
-This is the central idea of the repo. Instead of importing unrelated package sets in different places, the repo builds one opinionated package universe and reuses it everywhere.
+The flake creates one package set per supported system from the same pin and overlay stack, then reuses each set across its outputs.
 
 ## Why Both `flake.nix` And `default.nix` Exist
 
@@ -79,14 +79,3 @@ manifest lives at `lib.overlayDelta.<system>` and can be inspected with `overlay
 - New packages can be added under `pkgs/*` without inventing a second packaging path.
 - High-level tools like `pog` and `hex` can be part of the same package universe as the systems they support.
 - Readers can choose the right level: curated guide pages first, generated reference indexes second.
-
-## If You Are Reading For The First Time
-
-Start with [`default.nix`](https://github.com/jpetrucciani/nix/blob/main/default.nix), then [`overlays.nix`](https://github.com/jpetrucciani/nix/blob/main/overlays.nix), then one consumer such as [`home.nix`](https://github.com/jpetrucciani/nix/blob/main/home.nix) or a host config under [`hosts/`](https://github.com/jpetrucciani/nix/tree/main/hosts). That path shows the shared package set being built and then used.
-
-## Docs Guardrails
-
-- `nix run .#scripts.check_doc_links`
-- `nix run .#scripts.check_readme_index`
-- `bun run docs:gen`
-- `bun run docs:build`

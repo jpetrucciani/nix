@@ -1,6 +1,6 @@
 # Reference
 
-This section is the generated index layer for large or fast-moving parts of the repo. The guide pages elsewhere in the site are curated and explanatory. These pages are the exact inventories.
+This section indexes source files and selected flake outputs in large or fast-moving parts of the repo. The guide pages elsewhere in the site explain how to use them. Entries include a description when the generator has one it can state reliably.
 
 If you are new to the repo or to Nix, you can safely skip this section at first. It is a map, not a tutorial.
 

@@ -8,23 +8,27 @@ this directory contains encrypted secrets that use [agenix](https://github.com/r
 
 ### edit an existing secret
 
+From the repository root:
+
 ```bash
-agenix -e secrets/miniflux.age
+(cd secrets && agenix -e miniflux.age)
 ```
 
 ### add a new secret
 
-1. Create/edit the encrypted file with agenix:
+1. Add the new filename and recipient keys to [`secrets.nix`](./secrets.nix).
+2. From the repository root, create the encrypted file with agenix:
 
 ```bash
-agenix -e secrets/<service>.age
+(cd secrets && agenix -e service-name.age)
 ```
 
-2. Add recipient mapping in [`secrets.nix`](./secrets.nix).
-3. Reference the secret from a host/module config:
+Replace `service-name` with the real name. Agenix reads `secrets.nix` from its working directory.
+
+3. Reference the secret from a host or module. For example, in `hosts/<name>/configuration.nix`:
 
 ```nix
-age.secrets.<service>.file = ../../secrets/<service>.age;
+age.secrets.miniflux.file = ../../secrets/miniflux.age;
 ```
 
 ## file naming rules

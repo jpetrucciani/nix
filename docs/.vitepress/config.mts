@@ -25,7 +25,7 @@ export default defineConfig({
     ['meta', { name: 'theme-color', content: '#2f6fed' }],
   ],
   themeConfig: {
-    logo: iconHref,
+    logo: '/nixos.svg',
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Getting Started', link: '/getting-started' },
@@ -41,7 +41,7 @@ export default defineConfig({
           { text: 'Home', link: '/' },
           { text: 'Getting Started', link: '/getting-started' },
           { text: 'Learn Nix', link: '/learn-nix' },
-          { text: 'Case Study', link: '/case-study-poglets' },
+          { text: 'Poglets Case Study', link: '/case-study-poglets' },
           { text: 'Architecture', link: '/architecture' }
         ]
       },

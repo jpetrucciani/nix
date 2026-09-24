@@ -25,7 +25,9 @@ features:
 
   - icon: 🧰
     title: Daily Entry Point
-    details: '<code>home.nix</code> is the main <a href="/home-manager">Home Manager guide in this site</a>, and it builds on <a href="https://github.com/nix-community/home-manager" target="_blank" rel="noreferrer">Home Manager itself</a> to power shell tools, wrappers, and per-machine user environments.'
+    details: '<code>home.nix</code> configures the daily user environment with Home Manager, including shell tools, wrappers, and editor setup.'
+    link: /home-manager
+    linkText: Explore Home Manager
 
   - icon: 📦
     title: More Than Packages
@@ -35,7 +37,9 @@ features:
 
   - icon: 🖥️
     title: Repo-Specific Tooling
-    details: '<a href="/tooling/pog"><code>pog</code></a>, <a href="/tooling/hex"><code>hex</code></a>, <a href="/tooling/snowball"><code>snowball</code></a>, <a href="/tooling/foundry"><code>foundry</code></a>, <a href="/tooling/hms-and-hmx"><code>hms</code></a>, and <a href="/tooling/scripts">checked script outputs</a> are part of the story, not side quests. Start with the <a href="/tooling/index">tooling overview</a>.'
+    details: '<code>pog</code>, <code>hex</code>, <code>snowball</code>, <code>foundry</code>, and rebuild helpers turn the package set into daily workflows.'
+    link: /tooling/index
+    linkText: Browse tooling
 
   - icon: 🔐
     title: Multi-Host Layering

@@ -17,6 +17,16 @@
 - `mods/pog/general.nix`
 - `mods/pog/nix.nix`
 
+## One Repo Command
+
+[`mods/pog/nix.nix`](https://github.com/jpetrucciani/nix/blob/main/mods/pog/nix.nix) defines `overlay-diff` with `pog`. From the repo root, run:
+
+```bash
+nix run .#overlay-diff -- --custom
+```
+
+It prints the local overlay attributes discovered under `pkgs/` and where they were declared. This is a generated CLI from a Nix definition, with its flags and help kept beside the command body. [Daily Workflows](/daily-workflows) has more overlay commands.
+
 ## Why It Fits Here
 
 - The generated CLIs share flags, completion behavior, and help output.

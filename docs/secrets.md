@@ -9,19 +9,21 @@ Secrets are managed with `agenix` under `secrets/`. That means the repo can keep
 
 ## Standard Flow
 
+From the repository root, edit an existing secret with the rules file in scope:
+
 ```bash
-# edit existing encrypted secret
-agenix -e secrets/<service>.age
+(cd secrets && agenix -e miniflux.age)
 ```
 
 ## Add a New Secret
 
-1. Create encrypted file with `agenix`.
-2. Add recipients in `secrets/secrets.nix`.
-3. Reference the secret from host config:
+1. Add the new filename and its recipient keys to `secrets/secrets.nix`.
+2. From the repository root, create the encrypted file with `(cd secrets && agenix -e service-name.age)`, replacing
+   `service-name` with the real name. Agenix reads `secrets.nix` from its working directory.
+3. Reference the secret from the affected host or module. For example, in `hosts/<name>/configuration.nix`:
 
 ```nix
-age.secrets.<service>.file = ../../secrets/<service>.age;
+age.secrets.miniflux.file = ../../secrets/miniflux.age;
 ```
 
 ## Safety Rules

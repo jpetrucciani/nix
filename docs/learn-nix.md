@@ -1,93 +1,38 @@
 # Learn Nix (Using This Repo)
 
-Nix is both a package manager and a language for describing builds, environments, and system configuration. This repo is useful for learning it because it is not just a machine config repo. It shows how one pinned package set can become user environments, host configs, reusable modules, package overlays, and custom tools.
+Nix is a package manager and a language for describing builds, environments, and systems. This repo shows how a pinned package set can serve all three.
 
 ## Quick Vocabulary
 
-- `nixpkgs`: the large upstream collection of packages and helper functions that most Nix projects build on.
-- `pin`: an exact revision of an upstream input, used so builds stay reproducible.
-- `overlay`: a function that extends or changes the package set.
-- `package` or `derivation`: a build recipe and its resulting output.
-- `module`: a reusable configuration fragment for a system or user environment.
-- `flake`: a standard way to declare inputs and expose outputs such as packages, dev shells, and machine configs.
+- `nixpkgs`: the upstream collection of packages and helper functions.
+- `pin`: an exact revision of an input, recorded here in `flake.lock`.
+- `derivation`: a recipe for a build output, often a package.
+- `overlay`: a function that adds to or changes a package set.
+- `module`: a reusable configuration fragment with options and implementation.
+- `flake`: a way to declare inputs and expose outputs such as packages and hosts.
 
-## Three Useful Distinctions
+## Follow One Feature
 
-- A package answers, "how do I build or install this software?"
-- A module answers, "how should this software or subsystem be configured?"
-- A host answers, "what does this specific machine get?"
+`poglets` shows the difference between a package, a module, and a host:
 
-## Docs-First Reading Path
+1. [`pkgs/server/poglets.nix`](https://github.com/jpetrucciani/nix/blob/main/pkgs/server/poglets.nix) describes how to build the binary.
+2. [`mods/_pkgs.nix`](https://github.com/jpetrucciani/nix/blob/main/mods/_pkgs.nix) exposes that recipe as `pkgs.poglets`.
+3. [`hosts/modules/servers/poglets.nix`](https://github.com/jpetrucciani/nix/blob/main/hosts/modules/servers/poglets.nix) defines `services.poglets` and how systemd runs the package.
+4. [`hosts/neptune/configuration.nix`](https://github.com/jpetrucciani/nix/blob/main/hosts/neptune/configuration.nix) enables the service and chooses its ports.
+5. `flake.nix` exposes `neptune` as `nixosConfigurations.neptune` and the package as a buildable output.
 
-If you want the concepts before the code, read these first:
+The package answers “what gets built?”, the module answers “how does it run?”, and the host answers “which machine uses it?”. The [full case study](/case-study-poglets) walks through the source and commands.
 
-1. [Architecture](/architecture), for the shared package-set model.
-2. [Home Manager](/home-manager), for the user-environment layer.
-3. [Packages](/packages/index), for build recipes and package exposure.
-4. [Case Study: `poglets`](/case-study-poglets), for one complete package -> module -> host walkthrough.
-5. [Tooling](/tooling/index), for the repo-specific abstractions.
-6. [Hosts](/hosts/index) and [Modules](/modules/index), for machine-level composition.
+## Place That Example In The Repo
 
-## What This Repo Teaches Well
+[`flake.nix`](https://github.com/jpetrucciani/nix/blob/main/flake.nix) declares inputs and creates outputs for each supported system; `flake.lock` pins their revisions. [`default.nix`](https://github.com/jpetrucciani/nix/blob/main/default.nix) constructs the package set for a system, and [`overlays.nix`](https://github.com/jpetrucciani/nix/blob/main/overlays.nix) adds local packages and tools. Hosts and Home Manager consume that package set. See [Architecture](/architecture) for the full source map.
 
-- Importing a pinned `nixpkgs` once, then extending it with overlays.
-- Exposing multiple flake outputs from one shared package set.
-- Separating user config, machine config, reusable modules, and package recipes.
-- Turning Nix code into higher-level tooling like `pog`, `hex`, and `snowball`.
+## Try It Yourself
 
-## Read In This Order
-
-Once the docs-level mental model is clear, trace the source like this:
-
-1. **Pinned base**
-   - `flake.nix`
-   - `flake.lock`
-   - `default.nix`
-2. **Overlay assembly**
-   - `overlays.nix`
-   - `mods/_pkgs.nix`
-   - `mods/final.nix`
-3. **Daily user entry point**
-   - `home.nix`
-   - `mods/hms.nix`
-4. **Machine layer**
-   - `hosts/common.nix`
-   - `hosts/common_darwin.nix`
-   - `hosts/<name>/configuration.nix`
-5. **Reusable system pieces**
-   - `hosts/modules/*`
-6. **Repo-specific tooling**
-   - `mods/pog/*`
-   - `examples/hex/README.md`
-   - `mods/snowball.nix`
-
-## Mental Model
-
-Think of the repo in five layers:
-
-1. `flake.nix` defines outputs.
-2. `default.nix` imports the pinned nixpkgs input and injects shared inputs like `pog`, `hex`, and `uv2nix`.
-3. `overlays.nix` composes local overlays from `mods/*`.
-4. `pkgs/*`, `hosts/*`, and `home.nix` consume that overlayed package set for different jobs.
-5. `mods/pog/*`, `mods/hms.nix`, `scripts.nix`, and `mods/snowball.nix` turn the package set into daily tooling.
-
-## What To Skip At First
-
-- Generated reference indexes, until you want an exact filename or path.
-- CI and automation details, unless you are studying how the repo is validated.
-- Secrets management, unless you are following host deployment and operations.
-
-## Suggested Exercises
-
-1. Run `nix flake show` and identify one host output, one package output, and one script output.
-2. Read [Architecture](/architecture), then trace one attribute from `default.nix` to a concrete use site.
-3. Build one host and one package from [Daily Workflows](/daily-workflows).
-4. Read [Case Study: `poglets`](/case-study-poglets), then compare that pattern to another service or package.
-5. Read [Tooling](/tooling/index), then trace either `pog`, `hex`, or `snowball` end to end.
+From the repository root, run `nix flake show --no-write-lock-file` and find both `poglets` and `neptune`. Then open the five files above and identify the build recipe, the service options, and the machine-specific values. Use [Daily Workflows](/daily-workflows) when you are ready to build either output.
 
 ## External Resources
 
 - [nix.dev](https://nix.dev/)
 - [Nix Reference Manual](https://nix.dev/manual/nix/stable/)
-- [NixOS Wiki: Flakes](https://nixos.wiki/wiki/Flakes)
 - [awesome-nix](https://github.com/nix-community/awesome-nix)

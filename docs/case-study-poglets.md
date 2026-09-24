@@ -37,7 +37,7 @@ This file does the package-level job:
 
 - fetch the source from GitHub
 - declare the package name and version
-- build the Go binary with `buildGo124Module`
+- build the Go binary with `buildGoLatestModule`
 - install shell completions
 - attach metadata like description and homepage
 

@@ -13,8 +13,9 @@ Hosts are intentionally thin. Shared behavior belongs in modules and overlays, w
 
 ## Host Families
 
-- **NixOS hosts** have a `hardware-configuration.nix` and build through `.#nixosConfigurations.<host>.config.system.build.toplevel`.
-- **nix-darwin hosts** build through `.#darwinConfigurations.<host>.system`.
+- **NixOS hosts** are named in `machines.nixos` in [`hosts/constants.nix`](https://github.com/jpetrucciani/nix/blob/main/hosts/constants.nix) and build through `.#nixosConfigurations.<host>.config.system.build.toplevel`. WSL hosts such as `voyager` do not need a local `hardware-configuration.nix`.
+- **nix-darwin hosts** are named in `machines.darwin` and build through `.#darwinConfigurations.<host>.system`.
+- **Other configuration directories** are marked separately in the [Generated Host Index](/reference/generated-hosts). `foundry` supplies `osImages` outputs; `proteus` has a configuration directory but no host output.
 
 ## Representative Examples
 

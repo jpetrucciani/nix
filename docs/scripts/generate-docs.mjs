@@ -17,7 +17,8 @@ const sections = {
   hosts: {
     file: 'reference/generated-hosts.md',
     title: 'Generated Host Index',
-    description: 'Host directories under `hosts/` with a `configuration.nix` file are listed here.',
+    description:
+      'Flake hosts from `hosts/constants.nix` are listed by platform. Image profiles and configuration directories without host outputs are marked separately.',
     guide: { text: 'Hosts', link: '/hosts/index' },
   },
   modules: {
@@ -73,6 +74,7 @@ const modulePurposeOverrides = {
 
 const packagePurposeOverrides = {
   'pkgs/ai/chatbot-ui.nix': 'Builds `chatbot-ui` as a runnable Next.js application for OpenAI-compatible backends.',
+  'pkgs/ai/codex-latest.nix': 'Overrides Codex with a pinned release and Nix daemon integration.',
   'pkgs/ai/genai-toolbox.nix': 'Builds `genai-toolbox`, an MCP server focused on database integrations.',
   'pkgs/cli/mica.nix': 'Builds the `mica` terminal UI for managing Nix environments.',
   'pkgs/cli/slack-notifier.nix': 'Builds a CLI that posts messages and attachments to Slack incoming webhooks.',
@@ -169,20 +171,6 @@ function pickFirstMatch(text, patterns) {
     }
   }
   return null;
-}
-
-function extractLocalNixReferences(text) {
-  return Array.from(new Set(text.match(/\.\/[A-Za-z0-9._/-]+\.nix/g) || []));
-}
-
-function extractNixMetadata(text) {
-  return {
-    description: pickFirstMatch(text, [/meta\.description\s*=\s*"([^"]+)"/, /description\s*=\s*"([^"]+)"/]),
-    pname: pickFirstMatch(text, [/\bpname\s*=\s*"([^"]+)"/, /\bname\s*=\s*"([^"]+)"/]),
-    version: pickFirstMatch(text, [/\bversion\s*=\s*"([^"]+)"/]),
-    mainProgram: pickFirstMatch(text, [/\bmainProgram\s*=\s*"([^"]+)"/]),
-    localNixRefs: extractLocalNixReferences(text),
-  };
 }
 
 function getIndentedBlockLines(text, key) {
@@ -299,7 +287,7 @@ function toTreeUrl(repoPath) {
   return `${repoTreeBaseUrl}/${repoPath}`;
 }
 
-function formatSource(repoPath, url) {
+function formatSource(url) {
   return `[source](${url})`;
 }
 
@@ -334,13 +322,7 @@ function friendlyWorkflowLabel(repoPath) {
 }
 
 function summarizeModule(repoPath) {
-  if (modulePurposeOverrides[repoPath]) {
-    return modulePurposeOverrides[repoPath];
-  }
-
-  const area = repoPath.split('/')[2] || 'general';
-  const name = path.basename(repoPath, '.nix');
-  return `Provides reusable \`${area}\` module logic in \`${name}\`.`;
+  return modulePurposeOverrides[repoPath] || null;
 }
 
 function summarizePackage(repoPath) {
@@ -349,16 +331,7 @@ function summarizePackage(repoPath) {
   }
 
   const text = readRepoText(repoPath);
-  const metadata = extractNixMetadata(text);
-  const fallbackName = repoPath.endsWith('/default.nix')
-    ? path.basename(path.dirname(repoPath))
-    : path.basename(repoPath, '.nix');
-  const name = metadata.pname || fallbackName;
-  if (metadata.description) {
-    return `Builds \`${name}\`: ${metadata.description}`;
-  }
-
-  return `Builds and exposes package \`${name}\` from this repo's custom package set.`;
+  return pickFirstMatch(text, [/meta\.description\s*=\s*"([^"$]+)"/, /description\s*=\s*"([^"$]+)"/]);
 }
 
 function summarizeWrapper(repoPath) {
@@ -389,19 +362,50 @@ function summarizeWorkflow(repoPath) {
   return `Runs ${jobsText}${triggersText} in GitHub Actions.`;
 }
 
+function machineNames(source, platform) {
+  const machines = source.match(/^\s*machines\s*=\s*\{([\s\S]*?)^\s*\};/m)?.[1];
+  const namesText = machines?.match(new RegExp(`^\\s*${platform}\\s*=\\s*\\[([^\\]]*)\\];`, 'm'))?.[1];
+  if (!namesText) {
+    throw new Error(`Cannot read machines.${platform} from hosts/constants.nix`);
+  }
+
+  const uncommented = namesText.replace(/#[^\n]*/g, '');
+  const names = Array.from(uncommented.matchAll(/"([^"]+)"/g), (match) => match[1]);
+  if (uncommented.replace(/"[^"]+"/g, '').trim() || names.length === 0 || new Set(names).size !== names.length) {
+    throw new Error(`Unsupported machines.${platform} list in hosts/constants.nix`);
+  }
+  return new Set(names);
+}
+
 function collectHosts() {
   const hostsRoot = path.join(repoRoot, 'hosts');
   if (!fs.existsSync(hostsRoot)) {
     return [];
   }
 
-  return fs
+  const constants = readRepoText('hosts/constants.nix');
+  const nixosHosts = machineNames(constants, 'nixos');
+  const darwinHosts = machineNames(constants, 'darwin');
+  for (const name of nixosHosts) {
+    if (darwinHosts.has(name)) {
+      throw new Error(`Host ${name} is listed as both NixOS and nix-darwin`);
+    }
+  }
+
+  const imageProfiles = new Set(['foundry']);
+  const hostDirectories = fs
     .readdirSync(hostsRoot, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
+    .filter((entry) => entry.isDirectory() && entry.name !== 'modules' && !entry.name.startsWith('.'))
     .map((entry) => entry.name)
-    .filter((name) => !name.startsWith('.'))
-    .filter((name) => name !== 'modules')
-    .filter((name) => fs.existsSync(path.join(hostsRoot, name, 'configuration.nix')))
+    .filter((name) => fs.existsSync(path.join(hostsRoot, name, 'configuration.nix')));
+
+  for (const name of [...nixosHosts, ...darwinHosts]) {
+    if (!hostDirectories.includes(name)) {
+      throw new Error(`Exported host ${name} has no hosts/${name}/configuration.nix`);
+    }
+  }
+
+  return hostDirectories
     .sort((a, b) => a.localeCompare(b))
     .map((name) => {
       const repoPath = `hosts/${name}`;
@@ -410,6 +414,21 @@ function collectHosts() {
       const readmeRepoPath = `${repoPath}/README.md`;
       const hasHardwareConfig = repoPathExists(hardwareRepoPath);
       const hasReadme = repoPathExists(readmeRepoPath);
+      let group;
+      let summary;
+      if (nixosHosts.has(name)) {
+        group = 'NixOS hosts';
+        summary = 'Exported as a NixOS host.';
+      } else if (darwinHosts.has(name)) {
+        group = 'nix-darwin hosts';
+        summary = 'Exported as a nix-darwin host.';
+      } else if (imageProfiles.has(name)) {
+        group = 'Image profiles';
+        summary = 'Used by `osImages`, without a host output.';
+      } else {
+        group = 'Other configuration directories';
+        summary = 'Not exported as a flake host.';
+      }
       return {
         name,
         repoPath,
@@ -418,7 +437,8 @@ function collectHosts() {
         readmeRepoPath,
         hasHardwareConfig,
         hasReadme,
-        group: hasHardwareConfig ? 'NixOS-style hosts' : 'nix-darwin and custom-style hosts',
+        group,
+        summary,
       };
     });
 }
@@ -559,19 +579,22 @@ function renderGeneratedHeader(kind, total) {
 
 function renderHostsPage(entries) {
   const lines = renderGeneratedHeader('hosts', entries.length);
-  for (const group of groupEntries(entries)) {
-    lines.push(`## ${group.name} (${group.entries.length})`, '');
-    for (const entry of group.entries) {
+  for (const groupName of ['NixOS hosts', 'nix-darwin hosts', 'Image profiles', 'Other configuration directories']) {
+    const groupEntries = entries.filter((entry) => entry.group === groupName);
+    if (groupEntries.length === 0) {
+      continue;
+    }
+    lines.push(`## ${groupName} (${groupEntries.length})`, '');
+    for (const entry of groupEntries) {
       const links = [
         `[config](${toBlobUrl(entry.configRepoPath)})`,
         entry.hasHardwareConfig ? `[hardware](${toBlobUrl(entry.hardwareRepoPath)})` : null,
         entry.hasReadme ? `[README](${toBlobUrl(entry.readmeRepoPath)})` : null,
-        formatSource(entry.repoPath, toTreeUrl(entry.repoPath)),
+        formatSource(toTreeUrl(entry.repoPath)),
       ]
         .filter(Boolean)
         .join(', ');
-      const summary = entry.hasHardwareConfig ? 'NixOS host.' : 'nix-darwin or custom-style host.';
-      lines.push(`- \`${entry.name}\`, ${summary} ${links}`);
+      lines.push(`- \`${entry.name}\`, ${entry.summary} ${links}`);
     }
     lines.push('');
   }
@@ -584,7 +607,8 @@ function renderGroupedPage(kind, entries) {
     lines.push(`## ${group.name} (${group.entries.length})`, '');
     for (const entry of group.entries) {
       const label = entry.label || entry.attr;
-      lines.push(`- \`${label}\`, ${entry.summary} ${formatSource(entry.repoPath, entry.repoUrl)}`);
+      const details = [entry.summary, formatSource(entry.repoUrl)].filter(Boolean).join(' ');
+      lines.push(`- \`${label}\`: ${details}`);
     }
     lines.push('');
   }

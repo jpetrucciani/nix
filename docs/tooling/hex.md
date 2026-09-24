@@ -16,9 +16,13 @@
 
 ## Local Starting Points
 
-- `examples/hex/README.md`
-- `examples/hex/charts.nix`
-- `examples/hex/default.nix`
+From the repo root, render the checked-in chart example without applying it to a cluster:
+
+```bash
+nix run .#hex -- --render -t examples/hex/charts.nix
+```
+
+[`examples/hex/charts.nix`](https://github.com/jpetrucciani/nix/blob/main/examples/hex/charts.nix) defines two Kubernetes chart resources in Nix. `--render` prints the resulting manifests without contacting the cluster. Running `hex -t charts.nix` from `examples/hex/` can diff and apply against the live cluster. See the [example README](https://github.com/jpetrucciani/nix/blob/main/examples/hex/README.md) before running that cluster-facing command.
 
 ## Read Next
 
