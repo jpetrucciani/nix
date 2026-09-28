@@ -245,35 +245,7 @@ in
     '';
   };
 
-  colmena-latest =
-    let
-      pname = "colmena";
-      version = "0.5.0";
-      src = final.fetchFromGitHub {
-        owner = "zhaofengli";
-        repo = pname;
-        # rev = "v${version}";
-        rev = "349b035a5027f23d88eeb3bc41085d7ee29f18ed";
-        sha256 = "sha256-QVey3iP3UEoiFVXgypyjTvCrsIlA4ecx6Acaz5C8/PQ=";
-      };
-    in
-    prev.colmena.overrideAttrs (_: {
-      inherit src version;
-      cargoDeps = final.rustPlatform.fetchCargoVendor {
-        inherit pname version src;
-        hash = "sha256-v5vv66x+QiDhSa3iJ3Kf7PC8ZmK1GG8QdVD2a1L0r6M=";
-      };
-      patches = [ ];
-      postInstall = final.lib.optionalString (final.stdenv.buildPlatform.canExecute final.stdenv.hostPlatform) ''
-        installShellCompletion --cmd colmena \
-          --bash <($out/bin/colmena gen-completions bash) \
-          --zsh <($out/bin/colmena gen-completions zsh) \
-          --fish <($out/bin/colmena gen-completions fish)
-
-        wrapProgram $out/bin/colmena \
-          --prefix PATH ":" "${final.lib.makeBinPath [ final._nix ]}"
-      '';
-    });
+  colmena-latest = final.colmena;
 
   inherit (final.python314Packages) ty;
 
