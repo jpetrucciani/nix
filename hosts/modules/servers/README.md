@@ -32,6 +32,16 @@ configurable:
 }
 ```
 
+### [buzz-agents.nix](./buzz-agents.nix)
+
+Run a shared fleet of Buzz ACP agents in Podman containers. Each host runs the enabled agents whose `host` matches its
+`networking.hostName`, with separate UIDs, persistent homes, GitHub identities, runtime packages, and agenix secrets.
+
+Import this module alongside agenix and configure `services.buzz-agents` with a relay URL, secrets directory, and agents.
+The default package is `pkgs.buzz`, which builds upstream's `sprig` multicall binary and exposes the Buzz commands.
+The host Nix store is mounted read-only; `nix.enable` controls access to the host Nix daemon. Shared MCP servers require
+a `mcpBridge` command that reads the rendered `BUZZ_MCP_CONFIG` file.
+
 ### [goto.nix](./goto.nix)
 
 a service to run + watch a local executable
