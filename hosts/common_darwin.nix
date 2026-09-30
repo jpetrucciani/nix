@@ -114,6 +114,7 @@ in
             "quicklook-video"
             "raycast"
             "rectangle"
+            "syntax-highlight"
             "utm"
             "vlc"
           ];
@@ -127,8 +128,8 @@ in
         taps = [ ];
         brews = [
           "openconnect"
-          "readline"
           "qemu"
+          "readline"
           "unixodbc"
         ];
         onActivation = {
