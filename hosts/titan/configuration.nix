@@ -146,6 +146,15 @@ in
             # Shared KV-token cap, rather than filling the available budget.
             "--tts_engine.engine.max_total_tokens"
             "8192"
+            # Vocoder graph pools have their own batch and worker limits.
+            "--vocoder.factory.max_batch_size"
+            "2"
+            "--vocoder.factory.initial_max_batch_size"
+            "2"
+            "--vocoder.factory.followup_max_batch_size"
+            "2"
+            "--vocoder.factory.followup_worker_count"
+            "1"
           ];
           extraEnvironment.CUDA_VISIBLE_DEVICES = "1";
         };
