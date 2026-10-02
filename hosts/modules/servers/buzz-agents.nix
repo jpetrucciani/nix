@@ -46,12 +46,6 @@ let
       touch "$NPM_CONFIG_PREFIX/.stamp-${stampOf args}"
     fi
   '';
-  uvTool = args: ''
-    if [ ! -e "$UV_TOOL_DIR/.stamp-${stampOf args}" ]; then
-      uv tool install --upgrade ${toString args}
-      touch "$UV_TOOL_DIR/.stamp-${stampOf args}"
-    fi
-  '';
 
   # Runtime presets, mirroring Buzz Desktop's harness catalog.
   runtimes = {
