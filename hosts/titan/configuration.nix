@@ -133,7 +133,20 @@ in
             "cas-bridge.xethub.hf.co"
           ];
           port = 8011;
-          memFractionStatic = 0.5;
+          # Trial settings. Keep GPU 1 until warmup, long TTS output, and
+          # simultaneous audio workloads show a TTS peak around 7 GiB or less.
+          memFractionStatic = 0.25;
+          extraArgs = [
+            "--tts_engine.engine.max_running_requests"
+            "2"
+            "--tts_engine.engine.max_queued_requests"
+            "8"
+            "--tts_engine.engine.cuda_graph_max_bs"
+            "2"
+            # Shared KV-token cap, rather than filling the available budget.
+            "--tts_engine.engine.max_total_tokens"
+            "8192"
+          ];
           extraEnvironment.CUDA_VISIBLE_DEVICES = "1";
         };
         # stt = {
