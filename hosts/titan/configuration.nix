@@ -81,7 +81,8 @@ in
   services = {
     xserver.videoDrivers = [ "nvidia" ];
     ace-step = {
-      enable = true;
+      # Temporarily disabled so GPU 0 can serve TTS alongside Whisper.
+      enable = false;
       address = "0.0.0.0";
       port = 8012;
       gpuDevice = "0";
@@ -133,8 +134,6 @@ in
             "cas-bridge.xethub.hf.co"
           ];
           port = 8011;
-          # Trial settings. Keep GPU 1 until warmup, long TTS output, and
-          # simultaneous audio workloads show a TTS peak around 7 GiB or less.
           memFractionStatic = 0.25;
           extraArgs = [
             "--tts_engine.engine.max_running_requests"
@@ -156,7 +155,7 @@ in
             "--vocoder.factory.followup_worker_count"
             "1"
           ];
-          extraEnvironment.CUDA_VISIBLE_DEVICES = "1";
+          extraEnvironment.CUDA_VISIBLE_DEVICES = "0";
         };
         # stt = {
         #   modelPath = "Qwen/Qwen3-ASR-1.7B";
