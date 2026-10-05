@@ -7,7 +7,7 @@
 , stdenv
 }:
 let
-  version = "10969";
+  version = "11430";
 in
 (llama-cpp.override {
   inherit cudaSupport;
@@ -19,7 +19,7 @@ in
     owner = "ggml-org";
     repo = "llama.cpp";
     tag = "b${version}";
-    hash = "sha256-9w3dbaylNMlWkiV6KLmTUO4mXnQcUUcTjrCoRxwq7UQ=";
+    hash = "sha256-p2pShof7VpGZSHhezWvIL44Ou9CTK8e1OT3iBNdwU+I=";
     leaveDotGit = true;
     postFetch = ''
       git -C "$out" rev-parse --short HEAD > $out/COMMIT
@@ -28,7 +28,7 @@ in
   };
 
   npmRoot = "tools/ui";
-  npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
+  npmDepsHash = "sha256-a17M+L3nLdRnN6WMB6imPFmwqG2g8uv+gwN0XTAUrf8=";
 
   cmakeFlags = if stdenv.hostPlatform.isDarwin then old.cmakeFlags ++ [ "-DLLAMA_BUILD_NUMBER=1" ] else old.cmakeFlags;
 
