@@ -12,7 +12,29 @@
 , isWSL ? false
 , pythonVersion ? "3.13"
 }:
-callPackage (serverSource + "/nix/package.nix") {
+let
+  releaseUvNix = uv-nix // {
+    # Read manifests from the fetched release during read-only evaluation.
+    # Apply upstream's fileset filter only to the package's build source.
+    mkEnv = args: uv-nix.mkEnv (args // {
+      workspaceRoot = serverSource;
+      pyprojectOverrides = final: prev:
+        let
+          overrides = args.pyprojectOverrides final prev;
+        in
+        overrides // {
+          clef-flash-server = overrides.clef-flash-server.overrideAttrs (_: {
+            src = args.workspaceRoot;
+          });
+        };
+    });
+  };
+  callReleasePackage = path: args: callPackage path ({
+    callPackage = callReleasePackage;
+    uv-nix = releaseUvNix;
+  } // args);
+in
+callReleasePackage (serverSource + "/nix/package.nix") {
   workspaceRoot = serverSource;
   inherit isWSL pythonVersion;
 }
