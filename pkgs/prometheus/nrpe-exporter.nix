@@ -3,7 +3,7 @@
 , buildGoModule
 , fetchFromGitHub
 , pkg-config
-, openssl_3
+, openssl
 }:
 
 buildGoModule {
@@ -24,7 +24,7 @@ buildGoModule {
   ];
 
   buildInputs = [
-    openssl_3
+    openssl
   ];
 
   vendorHash = null;
