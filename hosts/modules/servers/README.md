@@ -42,6 +42,20 @@ The default package is `pkgs.buzz`, which builds upstream's `sprig` multicall bi
 The host Nix store is mounted read-only; `nix.enable` controls access to the host Nix daemon. Shared MCP servers require
 a `mcpBridge` command that reads the rendered `BUZZ_MCP_CONFIG` file.
 
+### [clef-flash.nix](./clef-flash.nix)
+
+Serve Cloudflare Clef-Flash's native `/v1/systemone` decision API on an explicitly selected GPU.
+The default is NF4, one active GPU batch of up to four records, four queued requests, a 5 ms collection window,
+and a 16,384-token input and padded batch limit. Full-length inputs run alone under that batch budget.
+Tune `maxBatchSize`, `maxBatchTokens`, `batchWaitMs`, and `maxQueuedRequests` through `services.clef-flash`.
+The batch token budget must cover `maxInputTokens`; set `maxBatchSize = 1` and `batchWaitMs = 0` to disable batching.
+Provision the model at `services.clef-flash.modelPath` before starting the service, with files readable by `clef-flash`.
+The service runs offline and keeps state in `/var/lib/clef-flash` and caches in `/var/cache/clef-flash`.
+
+Titan listens on port 8015 with Clef on GPU 1. After deployment, check `curl -fsS http://titan:8015/health`.
+The response reports fast-kernel availability, batch limits, completed batches and requests, and the largest completed batch.
+See the [server guide](https://github.com/jpetrucciani/clef-flash-server#readme) for download and request examples.
+
 ### [goto.nix](./goto.nix)
 
 a service to run + watch a local executable

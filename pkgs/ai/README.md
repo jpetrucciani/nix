@@ -17,6 +17,14 @@ This directory contains packages that are related to the new wave of AI/LLM popu
 The default build uses CPU inference on Linux and Metal on macOS. CUDA and ROCm builds are available as
 `audio-cpp.cuda` and `audio-cpp.rocm`, respectively.
 
+### [clef-flash-server.nix](./clef-flash-server.nix)
+
+An NF4 CUDA server for Cloudflare Clef-Flash's native typed decision API. The implementation and build setup
+live in [clef-flash-server](https://github.com/jpetrucciani/clef-flash-server); this package fetches
+[v0.1.0](https://github.com/jpetrucciani/clef-flash-server/releases/tag/v0.1.0) with Python 3.13 by default.
+The release includes fast CUDA kernels and automatic batching. Build with
+`nix build -f default.nix clef-flash-server`; WSL driver support is available as `clef-flash-server.wsl`.
+
 ### [codex-latest.nix](./codex-latest.nix)
 
 Latest packaged Codex release with its matching Rusty V8 archive and generated binding. Run `nix run .#codex-latest.updateScript` to refresh and validate it.

@@ -10,6 +10,7 @@ in
     "${common.home-manager}/nixos"
     ./hardware-configuration.nix
     ../modules/servers/ace-step.nix
+    ../modules/servers/clef-flash.nix
     ../modules/servers/sglang-omni.nix
     ../modules/servers/whisper-cpp.nix
   ] ++ (with nixos-hardware.nixosModules; [
@@ -80,6 +81,18 @@ in
 
   services = {
     xserver.videoDrivers = [ "nvidia" ];
+    clef-flash = {
+      enable = true;
+      address = "0.0.0.0";
+      port = 8015;
+      gpuDevice = "1";
+      quantization = "nf4";
+      maxInputTokens = 16384;
+      maxQueuedRequests = 4;
+      maxBatchSize = 4;
+      maxBatchTokens = 16384;
+      batchWaitMs = 5;
+    };
     ace-step = {
       # Temporarily disabled so GPU 0 can serve TTS alongside Whisper.
       enable = false;
