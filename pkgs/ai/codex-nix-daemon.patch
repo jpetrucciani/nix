@@ -57,11 +57,3 @@
      let source = InstallContext::current().package_layout.as_ref();
      // Keep package replacement state out of the CLI dispatcher's async stack frame.
      Box::pin(prepare_from_package(
---- a/chatgpt/src/lib.rs
-+++ b/chatgpt/src/lib.rs
-@@ -1,3 +1,5 @@
-+#![recursion_limit = "256"]
-+
- pub mod apply_command;
- mod chatgpt_client;
- pub mod connectors;
