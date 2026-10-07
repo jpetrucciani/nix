@@ -52,13 +52,40 @@ The batch token budget must cover `maxInputTokens`; set `maxBatchSize = 1` and `
 Provision the model at `services.clef-flash.modelPath` before starting the service, with files readable by `clef-flash`.
 The service runs offline and keeps state in `/var/lib/clef-flash` and caches in `/var/cache/clef-flash`.
 
-Titan listens on port 8015 with Clef on GPU 1. After deployment, check `curl -fsS http://titan:8015/health`.
+Check the deployed service with `curl -fsS http://HOST:PORT/health`.
 The response reports fast-kernel availability, batch limits, completed batches and requests, and the largest completed batch.
 See the [server guide](https://github.com/jpetrucciani/clef-flash-server#readme) for download and request examples.
 
 ### [goto.nix](./goto.nix)
 
 a service to run + watch a local executable
+
+### [h2o-lightning-4b.nix](./h2o-lightning-4b.nix)
+
+Serve the [H2O-Lightning-4B](https://huggingface.co/h2oai/h2o-lightning-4b) `/v1/systemone` decision API through the
+packaged shim and a private vLLM backend. The backend listens on loopback, with a separately configurable `vllmPort`.
+
+```nix
+{
+  imports = [ ../modules/servers/h2o-lightning-4b.nix ];
+
+  services.h2o-lightning-4b = {
+    enable = true;
+    address = "0.0.0.0";
+    port = 8015;
+    gpuDevice = "1";
+    gpuMemoryUtilization = 0.6;
+  };
+}
+```
+
+Titan uses these settings in place of Clef-Flash. After deployment, check `curl -fsS http://titan:8015/health`.
+The service downloads the package's pinned model revision on first start and keeps Hugging Face models under
+`/var/lib/h2o-lightning-4b/huggingface`, with runtime caches in `/var/cache/h2o-lightning-4b`.
+The dedicated service user does not reuse models downloaded into your home directory. Set `model` to a provisioned
+local directory readable by `h2o-lightning-4b` to reuse weights. `maxModelLen` controls the context limit, `extraArgs`
+passes additional vLLM flags, and `environmentFiles` accepts runtime credentials such as `HF_TOKEN`.
+`openFirewall` opens only the decision API port.
 
 ### [hermes-agent.nix](./hermes-agent.nix)
 
