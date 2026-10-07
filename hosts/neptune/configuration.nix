@@ -74,6 +74,7 @@ in
       root.hashedPassword = "!";
       jacobi = {
         inherit (common) extraGroups;
+        linger = true;
         isNormalUser = true;
         hashedPasswordFile = "/etc/passwordFile-jacobi";
         openssh.authorizedKeys.keys = with common.pubkeys; [

@@ -1,8 +1,8 @@
 # [Clef-Flash server](https://github.com/jpetrucciani/clef-flash-server) serves Cloudflare's native decision API on CUDA.
 { callPackage
 , uv-nix
-, releaseVersion ? "0.1.0"
-, releaseHash ? "0fpphcvdj2zyvjawxm9qpcabndzdybrppn43x3m0q65a98h150f3"
+, releaseVersion ? "0.1.1"
+, releaseHash ? "06f2pkvrgyhhxwhcnlf25zddd80nxbpjk3dnwb95h421zjf884b0"
 , serverSource ? uv-nix.fetchGitHubWorkspace {
     owner = "jpetrucciani";
     repo = "clef-flash-server";
