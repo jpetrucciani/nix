@@ -55,6 +55,13 @@ def main() -> None:
         raise SystemExit("Upstream prefix accounting changed; review context preflight")
     text_path = text_path.replace(old, "shared = common_prefix_len(tokens)")
     source = source[:text_start] + text_path + source[text_end:]
+    old = '"max_state_tokens": c.max_state_tokens,'
+    new = '"max_state_tokens": c.max_state_tokens or (self.max_model_len - 1 if self.max_model_len else None),'
+    if source.count(old) != 1:
+        raise SystemExit(
+            "Upstream health reporting changed; review effective state limit"
+        )
+    source = source.replace(old, new)
     compile(source, "h2o_lightning_shim.py", "exec")
     Path(sys.argv[2]).write_text(source)
 

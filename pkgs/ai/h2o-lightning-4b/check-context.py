@@ -59,6 +59,7 @@ def main() -> None:
         shim.check_backend()
         maximum = shim.max_model_len
         assert isinstance(maximum, int) and maximum > 32001
+        assert shim.health()["max_state_tokens"] == maximum - 1
         request("short", "Checkout is down.", {"outage": question}, 200)
         state = "A routine status check completed successfully. " * 5600
         state += "\nCheckout is now down. Customers cannot place orders."
@@ -106,6 +107,7 @@ def main() -> None:
             200,
         )
         contract.max_state_tokens = 100
+        assert shim.health()["max_state_tokens"] == 100
         result = request("explicit-state-cap", " ok" * 101, {"outage": question}, 422)
         assert "maximum is 100" in result["detail"]
         print(

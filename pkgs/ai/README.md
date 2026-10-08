@@ -52,6 +52,10 @@ Run `nix run .#geode.refreshScript -- VERSION` to refresh every platform artifac
 
 Pinned release version and platform hashes consumed by the package.
 
+### [h2o-lightning-4b](./h2o-lightning-4b/)
+
+Helpers that patch the decision shim to reject oversized input and verify context limits against a running vLLM backend.
+
 ### [h2o-lightning-4b.nix](./h2o-lightning-4b.nix)
 
 [`H2O-Lightning-4B`](https://huggingface.co/h2oai/h2o-lightning-4b) is a decision model exposed through a

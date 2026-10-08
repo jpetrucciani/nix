@@ -9,7 +9,7 @@
 , isWSL ? false
 }:
 let
-  version = "1.2.2";
+  version = "1.2.3";
   modelId = "h2oai/h2o-lightning-4b";
   modelRev = "542e9eff5ce7e5d69eb457fbe54abb535992ab20";
   sourceUrl = "https://huggingface.co/${modelId}/resolve/${modelRev}";
