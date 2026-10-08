@@ -23,9 +23,9 @@ def main() -> None:
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     contract = module.Contract(json.loads(args.config.read_text()))
-    assert contract.max_state_tokens == 0, (
-        "Packaged config must not impose a state-only cap"
-    )
+    assert (
+        contract.max_state_tokens == 0
+    ), "Packaged config must not impose a state-only cap"
     shim = module.Shim(contract, module.VLLM(args.vllm, contract.model))
     server = module.Server(("127.0.0.1", 0), module.make_handler(shim))
     thread = threading.Thread(target=server.serve_forever, daemon=True)
@@ -67,9 +67,9 @@ def main() -> None:
         )
         assert 32000 < count < maximum
         result = request("above-32k", state, {"outage": question}, 200)
-        assert result["usage"]["input_tokens"] == count, (
-            "State was changed before inference"
-        )
+        assert (
+            result["usage"]["input_tokens"] == count
+        ), "State was changed before inference"
         words = maximum - 100
         for _ in range(4):
             state = " ok" * words
