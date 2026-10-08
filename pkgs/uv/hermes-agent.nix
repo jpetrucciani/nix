@@ -1,7 +1,7 @@
 # [hermes-agent](https://github.com/NousResearch/hermes-agent) is a self-improving AI agent CLI
 { stdenv
 , lib
-, python311
+, python314
 , rsync
 , makeWrapper
 , ffmpeg
@@ -13,74 +13,58 @@
 }:
 let
   name = "hermes-agent";
-  version = "2026.8.31";
+  version = "0.21.6";
 
   src = uv-nix.fetchGitHubWorkspace {
     owner = "NousResearch";
     repo = name;
     rev = "refs/tags/v${version}";
-    hash = "0mvjvlbvq3cmwbsr2lgnhbw9jw43fh9bp685fg19nlnacwzp2br2";
+    hash = "12pcg3zis64mpq90jd28gk8pil74bdj86pgqqmw2chd5yvwghi4w";
   };
 
   uvEnv = uv-nix.mkEnv {
     inherit name;
     gitignore = false;
-    python = python311;
+    python = python314;
     workspaceRoot = src;
-    pyprojectOverrides =
-      final: prev:
-      let
-        addBuildInputs = buildInputs: pkg: pkg.overrideAttrs (old: {
-          buildInputs = (old.buildInputs or [ ]) ++ buildInputs;
-        });
-        hatchBuildInputs = with final; [
-          hatchling
-          packaging
-          pathspec
-          pluggy
-          trove-classifiers
-        ];
-      in
-      {
-        atroposlib = addBuildInputs hatchBuildInputs prev.atroposlib;
-        "hermes-agent" = prev."hermes-agent".overrideAttrs (_: {
-          HERMES_NIX_BUILD = "1";
-        });
-        "sherpa-onnx" =
-          if stdenv.hostPlatform.isLinux then
-            prev."sherpa-onnx".overrideAttrs
-              (old: {
-                buildInputs = (old.buildInputs or [ ]) ++ [ final.onnxruntime ];
-                preFixup = (old.preFixup or "") + ''
-                  mkdir -p "$out/lib"
-                  ln -s \
-                    ${final.onnxruntime}/${python311.sitePackages}/onnxruntime/capi/libonnxruntime.so.${final.onnxruntime.version} \
-                    "$out/lib/libonnxruntime.so"
-                  addAutoPatchelfSearchPath "$out/lib"
-                '';
-              })
-          else
-            prev."sherpa-onnx";
-        tinker = addBuildInputs
-          (hatchBuildInputs ++ [
-            final."hatch-fancy-pypi-readme"
-          ])
-          prev.tinker;
-        "yc-bench" = addBuildInputs hatchBuildInputs prev."yc-bench";
-      };
+    # Match upstream's runtime extras; workspace.deps.all also pulls opt-in stacks and dev tools.
+    _deps = { hermes-agent = [ "all" ]; };
+    pyprojectOverrides = _: prev: {
+      hermes-agent = prev.hermes-agent.overrideAttrs (_: {
+        HERMES_NIX_BUILD = "1";
+      });
+    };
   };
 
   hermesDataDirs = [
     "skills"
     "optional-skills"
+    "locales"
+    "optional-mcps"
   ];
 
   hermesSupportFiles = [
     ".env.example"
     "cli-config.yaml.example"
+    "pyproject.toml"
+    "uv.lock"
   ];
 
-  site = python311.sitePackages;
+  installStamp = builtins.toJSON {
+    schemaVersion = 2;
+    commit = "818c13be1dc4fd28987e1e881a9408224afd4535";
+    baseVersion = version;
+    displayVersion = version;
+    distance = 0;
+    source = "nix";
+    distribution = "nix";
+    updateMechanism = "external";
+    payload = "bootstrap";
+    tag = "v${version}";
+    dirty = false;
+  };
+
+  site = python314.sitePackages;
   opusLibPath = "${lib.getLib libopus}/lib/libopus${stdenv.hostPlatform.extensions.sharedLibrary}.0";
 
   runtimePath = lib.makeBinPath [
@@ -141,19 +125,12 @@ stdenv.mkDerivation {
     done
 
     chmod u+w $out/${site}/tools/terminal_tool.py
-    if [ -f "$out/${site}/gateway/platforms/discord.py" ]; then
-      chmod u+w "$out/${site}/gateway/platforms/discord.py"
-      substituteInPlace "$out/${site}/gateway/platforms/discord.py" \
-        --replace-fail \
-        '            opus_path = ctypes.util.find_library("opus")' \
-        '            opus_path = os.environ.get("HERMES_OPUS_LIBRARY") or ctypes.util.find_library("opus")'
-    elif [ -f "$out/${site}/plugins/platforms/discord/adapter.py" ]; then
-      chmod u+w "$out/${site}/plugins/platforms/discord/adapter.py"
-      substituteInPlace "$out/${site}/plugins/platforms/discord/adapter.py" \
-        --replace-fail \
-        '            opus_path = ctypes.util.find_library("opus")' \
-        '            opus_path = os.environ.get("HERMES_OPUS_LIBRARY") or ctypes.util.find_library("opus")'
-    fi
+    chmod u+w "$out/${site}/plugins/platforms/discord/adapter.py"
+    substituteInPlace "$out/${site}/plugins/platforms/discord/adapter.py" \
+      --replace-fail \
+      '    opus_path = ctypes.util.find_library("opus")' \
+      '    opus_path = os.environ.get("HERMES_OPUS_LIBRARY") or ctypes.util.find_library("opus")'
+    printf '%s\n' ${lib.escapeShellArg installStamp} > "$out/${site}/install-stamp.json"
     cp ${uvEnv}/bin/hermes $out/bin/hermes
     cp ${uvEnv}/bin/hermes-agent $out/bin/hermes-agent
     wrapProgram $out/bin/hermes \
