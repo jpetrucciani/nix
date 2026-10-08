@@ -4,24 +4,38 @@
 , fetchurl
 , pog
 , python313
+, runCommand
 , vllm
 , isWSL ? false
 }:
 let
-  version = "1.2.1";
+  version = "1.2.2";
   modelId = "h2oai/h2o-lightning-4b";
   modelRev = "542e9eff5ce7e5d69eb457fbe54abb535992ab20";
   sourceUrl = "https://huggingface.co/${modelId}/resolve/${modelRev}";
-  shimSource = fetchurl {
+  upstreamShim = fetchurl {
     name = "h2o_lightning_shim.py";
     url = "${sourceUrl}/h2o_lightning_shim.py";
     hash = "sha256-0X83mJp5uKEPG48VAFbQ9iJvA4YK1hjHD2iGOkdHJTk=";
   };
-  serveConfig = fetchurl {
+  shimSource = runCommand "h2o_lightning_shim.py" { } ''
+    ${python313}/bin/python3 ${./h2o-lightning-4b/reject-oversized-state.py} ${upstreamShim} "$out"
+  '';
+  upstreamConfig = fetchurl {
     name = "serve_config.json";
     url = "${sourceUrl}/serve_config.json";
     hash = "sha256-pCP9a5czNL1OyR0MGu6LG9lN8dfsSezADDxPxO6Oqig=";
   };
+  serveConfig = runCommand "serve_config.json" { } ''
+    ${python313}/bin/python3 - ${upstreamConfig} "$out" <<'PY'
+    import json
+    import sys
+    from pathlib import Path
+    config = json.loads(Path(sys.argv[1]).read_text())
+    config["prompt"]["max_state_tokens"] = 0
+    Path(sys.argv[2]).write_text(json.dumps(config, indent=2) + "\n")
+    PY
+  '';
   licenseSource = fetchurl {
     name = "h2o-lightning-4b-LICENSE";
     url = "${sourceUrl}/LICENSE";
