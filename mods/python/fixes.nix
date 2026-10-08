@@ -11,6 +11,13 @@ rec {
       substituteInPlace tests/streams/test_tls.py \
         --replace-fail $'server_side=True,\n            hostname="localhost",' \
         'server_side=True,'
+
+      # Check the portal threads themselves; unrelated worker threads can exit mid-test.
+      # https://github.com/agronholm/anyio/issues/823
+      substituteInPlace tests/test_to_thread.py \
+        --replace-fail $'        active_threads_before = threading.active_count()\n' "" \
+        --replace-fail 'assert threading.active_count() == active_threads_before' \
+        'assert all(not thread.is_alive() for thread in threads)'
     '';
   });
 
