@@ -4,6 +4,16 @@ let
   inherit (final.stdenv.hostPlatform) isDarwin;
 in
 rec {
+  anyio = prev.anyio.overridePythonAttrs (old: {
+    # Python 3.12.15+ rejects server-side hostnames. Backport the upstream test fix:
+    # https://github.com/agronholm/anyio/commit/818e4ac441fa27e9fac893496fc5a4fbe0a58689
+    postPatch = (old.postPatch or "") + ''
+      substituteInPlace tests/streams/test_tls.py \
+        --replace-fail $'server_side=True,\n            hostname="localhost",' \
+        'server_side=True,'
+    '';
+  });
+
   tkinter =
     if pythonOlder "3.12" then
       let
