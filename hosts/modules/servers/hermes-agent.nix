@@ -4,32 +4,8 @@
 , ...
 }:
 let
-  inherit (lib)
-    concatStringsSep
-    filterAttrs
-    flatten
-    literalExpression
-    mapAttrs'
-    mapAttrsToList
-    mkEnableOption
-    mkIf
-    mkOption
-    nameValuePair
-    optional
-    optionalAttrs
-    unique
-    ;
-  inherit (lib.types)
-    attrsOf
-    bool
-    int
-    listOf
-    nullOr
-    package
-    path
-    str
-    submodule
-    ;
+  inherit (lib) concatStringsSep filterAttrs flatten literalExpression mapAttrs' mapAttrsToList mkEnableOption mkIf mkOption nameValuePair optional optionalAttrs optionals unique;
+  inherit (lib.types) attrsOf bool int listOf nullOr package path str submodule;
 
   cfg = config.services.hermes-agent;
   yamlFormat = pkgs.formats.yaml { };
@@ -59,6 +35,11 @@ let
           default = true;
           description = "Whether to run this Hermes agent instance.";
         };
+
+        enableNix = mkEnableOption ''
+          host Nix daemon access, including the host Nix client, read-only store
+          and socket mounts, Nix environment, flake registry, and service ordering
+        '';
 
         package = mkOption {
           type = package;
@@ -279,6 +260,17 @@ let
 
   enabledInstances = filterAttrs (_: instance: instance.enable) cfg.instances;
 
+  flakeRegistry = pkgs.writeText "hermes-agent-registry.json" (builtins.toJSON {
+    version = 2;
+    flakes = [
+      {
+        exact = true;
+        from = { type = "indirect"; id = "nixpkgs"; };
+        to = { type = "path"; path = toString pkgs.path; };
+      }
+    ] ++ mapAttrsToList (_: registry: { inherit (registry) from to exact; }) config.nix.registry;
+  });
+
   instancePaths = instance: {
     hermes = "${instance.stateDir}/hermes";
     home = "${instance.stateDir}/hermes/home";
@@ -293,7 +285,7 @@ let
     gawk
     gnugrep
     gnused
-  ] ++ instance.packages;
+  ] ++ optional instance.enableNix config.nix.package ++ instance.packages;
 
   mkImage = name: instance:
     let
@@ -414,7 +406,16 @@ let
       workdir = "/var/lib/hermes/home";
       hostname = containerName;
       podman.user = instance.user;
-      environment = instance.environment // {
+      environment = optionalAttrs instance.enableNix
+        {
+          NIX_REMOTE = "daemon";
+          NIX_PATH = "nixpkgs=${pkgs.path}";
+          NIX_CONFIG = ''
+            experimental-features = nix-command flakes
+            flake-registry = ${flakeRegistry}
+          '';
+          NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+        } // instance.environment // {
         HERMES_HOME = "/var/lib/hermes";
         HERMES_MANAGED_DIR = "/etc/hermes";
         HOME = "/var/lib/hermes/home";
@@ -426,6 +427,10 @@ let
         "${paths.hermes}:/var/lib/hermes:rw"
       ]
       ++ optional (instance.settings != { }) "${mkManagedConfig name instance}:/etc/hermes/config.yaml:ro"
+      ++ optionals instance.enableNix [
+        "/nix/store:/nix/store:ro"
+        "/nix/var/nix/daemon-socket:/nix/var/nix/daemon-socket:ro"
+      ]
       ++ mapAttrsToList mountToVolume instance.mounts;
       capabilities.ALL = false;
       networks = optional (instance.network != null) instance.network;
@@ -442,10 +447,13 @@ let
       ++ instance.extraOptions;
     };
 
-  reservedMountTargets = [
+  reservedMountTargets = instance: [
     "/etc/hermes/config.yaml"
     "/var/lib/hermes"
     "/var/lib/hermes/home"
+  ] ++ optionals instance.enableNix [
+    "/nix/store"
+    "/nix/var/nix/daemon-socket"
   ];
 
   instanceAssertions = name: instance:
@@ -485,7 +493,7 @@ let
         message = "services.hermes-agent.instances.${name}.mounts sources must be absolute.";
       }
       {
-        assertion = builtins.all (target: !(builtins.elem target reservedMountTargets)) mountTargets;
+        assertion = builtins.all (target: !(builtins.elem target (reservedMountTargets instance))) mountTargets;
         message = "services.hermes-agent.instances.${name}.mounts overrides a module-managed path.";
       }
     ];
@@ -569,6 +577,14 @@ in
     );
 
     environment.systemPackages = [ hermesPodman ];
+
+    systemd.services = mapAttrs'
+      (name: _: nameValuePair "podman-hermes-agent-${name}" {
+        wants = [ "nix-daemon.socket" ];
+        after = [ "nix-daemon.socket" ];
+        unitConfig.RequiresMountsFor = [ "/nix/store" ];
+      })
+      (filterAttrs (_: instance: instance.enableNix) enabledInstances);
 
     virtualisation.oci-containers = {
       backend = "podman";

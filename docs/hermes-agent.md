@@ -113,37 +113,30 @@ new store paths are immediately visible through the store mount. Mount the
 socket directory so daemon restarts can replace the socket without leaving a
 stale bind mount.
 
-For another instance, add the same configuration to its host:
+For another instance, set `enableNix = true` (it defaults to `false`):
 
 ```nix
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
   services.hermes-agent.instances.coder = {
+    enableNix = true;
     packages = with pkgs; [
-      config.nix.package
       git
       glab
       openssh
       uv
     ];
-    environment = {
-      NIX_REMOTE = "daemon";
-      NIX_PATH = "nixpkgs=${pkgs.path}";
-      NIX_CONFIG = "experimental-features = nix-command flakes";
-      NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-    };
-    mounts = {
-      "/nix/store".source = "/nix/store";
-      "/nix/var/nix/daemon-socket".source = "/nix/var/nix/daemon-socket";
-    };
-  };
-  systemd.services.podman-hermes-agent-coder = {
-    wants = [ "nix-daemon.socket" ];
-    after = [ "nix-daemon.socket" ];
-    unitConfig.RequiresMountsFor = [ "/nix/store" ];
   };
 }
 ```
+
+The flag includes `config.nix.package`, sets `NIX_REMOTE`, `NIX_PATH`,
+`NIX_CONFIG`, and `NIX_SSL_CERT_FILE`, and adds the read-only store and socket
+directory mounts. Its flake registry pins `nixpkgs` to `pkgs.path` and includes
+the host's `nix.registry` entries. The container service wants and starts after
+`nix-daemon.socket`, with `/nix/store` in `RequiresMountsFor`. Instance
+`environment` values can override the Nix environment defaults; the Nix mount
+targets are managed by the module when the flag is enabled.
 
 The module's mounts default to read-only. The container does not need the host
 Nix database or writable access to the store. The daemon sees the instance's

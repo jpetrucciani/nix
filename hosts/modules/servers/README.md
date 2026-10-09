@@ -100,6 +100,10 @@ plain-state credentials, and running commands inside a container.
 The module installs `hermes_podman`; use `hermes_podman coder shell` for an
 interactive login shell in the coder container.
 
+Set `instances.<name>.enableNix = true` to include the host's Nix client,
+read-only store and daemon socket mounts, Nix environment, flake registry, and
+`nix-daemon.socket` service dependencies. It defaults to `false`.
+
 ```nix
 { config, pkgs, ... }:
 {
