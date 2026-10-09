@@ -9,6 +9,7 @@ in
     "${common.home-manager}/nixos"
     ./hardware-configuration.nix
     ../modules/conf/blackedge.nix
+    ../modules/servers/hermes-agent.nix
     ../modules/servers/titanite.nix
   ];
 
@@ -87,6 +88,26 @@ in
 
   services = {
     cron.enable = true;
+    hermes-agent = {
+      enable = true;
+      instances.goblin = {
+        uid = 32001;
+        settings = {
+          terminal = {
+            backend = "local";
+            cwd = "/var/lib/hermes/home";
+          };
+          agent.disabled_toolsets = [ "tts" ];
+          stt.enabled = false;
+          voice.auto_tts = false;
+          platforms.slack.extra = {
+            unauthorized_dm_behavior = "ignore";
+            require_mention = true;
+            allow_bots = "none";
+          };
+        };
+      };
+    };
     logind.settings.Login = {
       RuntimeDirectorySize = "24G";
     };
