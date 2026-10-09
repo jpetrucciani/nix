@@ -92,6 +92,23 @@ in
       enable = true;
       instances.goblin = {
         uid = 32001;
+        packages = with pkgs; [
+          config.nix.package
+          git
+          glab
+          openssh
+          uv
+        ];
+        environment = {
+          NIX_REMOTE = "daemon";
+          NIX_PATH = "nixpkgs=${pkgs.path}";
+          NIX_CONFIG = "experimental-features = nix-command flakes";
+          NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+        };
+        mounts = {
+          "/nix/store".source = "/nix/store";
+          "/nix/var/nix/daemon-socket".source = "/nix/var/nix/daemon-socket";
+        };
         settings = {
           terminal = {
             backend = "local";
@@ -206,6 +223,11 @@ in
   };
 
   virtualisation.docker.enable = true;
+  systemd.services.podman-hermes-agent-goblin = {
+    wants = [ "nix-daemon.socket" ];
+    after = [ "nix-daemon.socket" ];
+    unitConfig.RequiresMountsFor = [ "/nix/store" ];
+  };
   system.stateVersion = "26.05";
   security.sudo = common.security.sudo;
   programs = {

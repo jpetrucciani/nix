@@ -104,6 +104,68 @@ Hermes recognizes credential-shaped keys and saves them to `.env`; other values
 go to `config.yaml`. MCP configuration can refer to those values as
 `${env:OPENROUTER_API_KEY}`.
 
+## Use the host Nix daemon
+
+Goblin on `cy1-nix-01` includes `git`, `glab`, `openssh`, `uv`, and the same Nix
+client as the host. It mounts `/nix/store` and `/nix/var/nix/daemon-socket`
+read-only. `NIX_REMOTE=daemon` sends builds and downloads to the host daemon;
+new store paths are immediately visible through the store mount. Mount the
+socket directory so daemon restarts can replace the socket without leaving a
+stale bind mount.
+
+For another instance, add the same configuration to its host:
+
+```nix
+{ config, pkgs, ... }:
+{
+  services.hermes-agent.instances.coder = {
+    packages = with pkgs; [
+      config.nix.package
+      git
+      glab
+      openssh
+      uv
+    ];
+    environment = {
+      NIX_REMOTE = "daemon";
+      NIX_PATH = "nixpkgs=${pkgs.path}";
+      NIX_CONFIG = "experimental-features = nix-command flakes";
+      NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+    };
+    mounts = {
+      "/nix/store".source = "/nix/store";
+      "/nix/var/nix/daemon-socket".source = "/nix/var/nix/daemon-socket";
+    };
+  };
+  systemd.services.podman-hermes-agent-coder = {
+    wants = [ "nix-daemon.socket" ];
+    after = [ "nix-daemon.socket" ];
+    unitConfig.RequiresMountsFor = [ "/nix/store" ];
+  };
+}
+```
+
+The module's mounts default to read-only. The container does not need the host
+Nix database or writable access to the store. The daemon sees the instance's
+host user, such as `hermes-goblin`, because Podman runs rootless. Ordinary builds
+need an allowed daemon user; adding that user to `trusted-users` is unnecessary.
+See the Nix manual for the [daemon store](https://nix.dev/manual/nix/2.32/store/types/local-daemon-store)
+and [daemon access settings](https://nix.dev/manual/nix/2.32/command-ref/conf-file.html#conf-allowed-users).
+
+After rebuilding `cy1-nix-01`, enter Goblin's shell to create its key, sign in to
+GitLab, and check the daemon connection:
+
+```bash
+hermes_podman goblin shell
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519
+glab auth login
+nix store ping --store daemon
+nix-shell -p jq --run 'jq --version'
+```
+
+The SSH key and CLI credentials persist in Goblin's private home on the host at
+`/var/lib/hermes-agent/goblin/hermes/home`.
+
 ## Know where state lives
 
 | Purpose                 | Inside the container          | On the host                                      |
