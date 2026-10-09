@@ -117,7 +117,9 @@ in
           git
           glab
           jq
+          mcp-grafana
           nano
+          netbox-mcp-server
           openssh
           ripgrep
           uv
@@ -146,10 +148,13 @@ in
           voice.auto_tts = false;
           mcp_servers = {
             grafana = {
-              command = "${pkgs.uv}/bin/uvx";
-              args = [ "mcp-grafana" "--disable-write" ];
+              command = "${pkgs.mcp-grafana}/bin/mcp-grafana";
+              args = [ "--disable-write" ];
             };
-            netbox.command = "${pkgs.uv}/bin/uvx";
+            netbox = {
+              command = "${pkgs.netbox-mcp-server}/bin/netbox-mcp-server";
+              args = [ ];
+            };
           };
           platforms.slack.extra = {
             unauthorized_dm_behavior = "ignore";
