@@ -27,8 +27,8 @@ let
     gitignore = false;
     python = python314;
     workspaceRoot = src;
-    # Match upstream's runtime extras; workspace.deps.all also pulls opt-in stacks and dev tools.
-    _deps = { hermes-agent = [ "all" ]; };
+    # Add common backends to upstream's runtime extras without pulling every opt-in stack and dev tools.
+    _deps = { hermes-agent = [ "all" "messaging" "ddgs" "edge-tts" ]; };
     pyprojectOverrides = _: prev: {
       hermes-agent = prev.hermes-agent.overrideAttrs (_: {
         HERMES_NIX_BUILD = "1";
