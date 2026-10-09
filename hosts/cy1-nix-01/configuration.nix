@@ -112,7 +112,7 @@ in
           config.nix.package
           aq
           curl
-          fg
+          fd
           gh
           git
           glab
