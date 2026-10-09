@@ -3,6 +3,22 @@ let
   hostname = "cy1-nix-01";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
   ts_ip = common.hostRecords.tailnet.${hostname};
+  hermesRegistry = pkgs.writeText "hermes-agent-registry.json" (builtins.toJSON {
+    version = 2;
+    flakes = [
+      {
+        exact = true;
+        from = { type = "indirect"; id = "nixpkgs"; };
+        to = { type = "path"; path = toString pkgs.path; };
+      }
+    ] ++ pkgs.lib.mapAttrsToList
+      (id: registry: {
+        exact = true;
+        from = { type = "indirect"; inherit id; };
+        inherit (registry) to;
+      })
+      common.nix-be.registry;
+  });
 in
 {
   imports = [
@@ -94,15 +110,26 @@ in
         uid = 32001;
         packages = with pkgs; [
           config.nix.package
+          aq
+          curl
+          fg
+          gh
           git
           glab
+          jq
+          nano
           openssh
+          ripgrep
           uv
+          yq-go
         ];
         environment = {
           NIX_REMOTE = "daemon";
           NIX_PATH = "nixpkgs=${pkgs.path}";
-          NIX_CONFIG = "experimental-features = nix-command flakes";
+          NIX_CONFIG = ''
+            experimental-features = nix-command flakes
+            flake-registry = ${hermesRegistry}
+          '';
           NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
         };
         mounts = {
@@ -117,6 +144,13 @@ in
           agent.disabled_toolsets = [ "tts" ];
           stt.enabled = false;
           voice.auto_tts = false;
+          mcp_servers = {
+            grafana = {
+              command = "${pkgs.uv}/bin/uvx";
+              args = [ "mcp-grafana" "--disable-write" ];
+            };
+            netbox.command = "${pkgs.uv}/bin/uvx";
+          };
           platforms.slack.extra = {
             unauthorized_dm_behavior = "ignore";
             require_mention = true;
