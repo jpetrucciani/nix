@@ -36,6 +36,22 @@ let
     };
   };
 
+  # PM workers must use their own locked dependencies, independently of the app environment.
+  pmRuntime = (uv-nix.mkEnv {
+    name = "hermes-pm-runtime";
+    gitignore = false;
+    python = python314;
+    workspaceRoot = "${src}/pm";
+    _deps = { hermes-pm-runtime = [ ]; };
+  }).overrideAttrs (old: {
+    postInstall = (old.postInstall or "") + ''
+      printf '%s\n' ${lib.escapeShellArg (builtins.toJSON {
+        python = "${python314}/bin/python3";
+        sitePackages = site;
+      })} > "$out/pm-runtime.json"
+    '';
+  });
+
   hermesDataDirs = [
     "skills"
     "optional-skills"
@@ -58,6 +74,7 @@ let
     distance = 0;
     source = "nix";
     distribution = "nix";
+    pmRuntime = toString pmRuntime;
     updateMechanism = "external";
     payload = "bootstrap";
     tag = "v${version}";
@@ -144,6 +161,16 @@ stdenv.mkDerivation {
       --set-default HERMES_OPUS_LIBRARY ${opusLibPath} \
       --prefix PYTHONPATH : $out/${site}
     runHook postInstall
+  '';
+
+  doInstallCheck = stdenv.buildPlatform.canExecute stdenv.hostPlatform;
+  installCheckPhase = ''
+    runHook preInstallCheck
+    export HOME="$TMPDIR/hermes-install-check"
+    export HERMES_HOME="$HOME/.hermes"
+    mkdir -p "$HOME"
+    $out/bin/hermes pm status
+    runHook postInstallCheck
   '';
 
   meta = {
