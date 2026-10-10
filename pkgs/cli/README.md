@@ -28,6 +28,8 @@ For the complete list, browse [`pkgs/cli`](./).
 ### Data and Visualization
 
 - [arrow-tools.nix](./arrow-tools.nix): convert CSV/JSON into Arrow/Parquet data formats.
+- [loupe.nix](./loupe.nix): semantic text filters backed by a decision API, with MCP, terminal review, and Parquet support.
+  Includes shell completions and a man page. Try `nix shell .#loupe --command loupe --help`.
 - [mermaid-rs-renderer.nix](./mermaid-rs-renderer.nix): fast native mermaid rendering.
 - [terramaid.nix](./terramaid.nix): render terraform into mermaid diagrams.
 
