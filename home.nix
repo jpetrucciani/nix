@@ -269,6 +269,10 @@ in
       space = "du -Sh | sort -rh | head -10";
       now = "date +%s";
       uneek = "awk '!a[$0]++'";
+
+      # nix profile
+      npug = "nix profile upgrade --refresh";
+      nlist = "nix profile list";
     } // docker_aliases // kubernetes_aliases;
     bashrcExtra =
       if isDarwin then ''
