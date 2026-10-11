@@ -21,6 +21,18 @@ rec {
     '';
   });
 
+  watchfiles = prev.watchfiles.overridePythonAttrs (old: {
+    # These tests expect native notifications; WSL otherwise defaults to polling.
+    postPatch = (old.postPatch or "") + ''
+      substituteInPlace tests/test_force_polling.py \
+        --replace-fail $'watch(\'.\'):\n        pass\n\n    m.assert_called_once_with([\'.\'], False, False,' \
+        $'watch(\'.\', force_polling=False):\n        pass\n\n    m.assert_called_once_with([\'.\'], False, False,'
+
+      substituteInPlace tests/test_watch.py \
+        --replace-fail 'watch_filter=None' 'watch_filter=None, force_polling=False'
+    '';
+  });
+
   tkinter =
     if pythonOlder "3.12" then
       let
