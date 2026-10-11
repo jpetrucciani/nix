@@ -6,6 +6,7 @@ in
 {
   imports = [
     "${common.home-manager}/nixos"
+    (common.tailnetSocks { ip = common.hostRecords.tailnet.${hostname}; })
     "${common.mms}/nixos/modules/services/games/minecraft-servers"
     ./hardware-configuration.nix
     ../modules/games/palworld.nix
@@ -156,13 +157,6 @@ in
             };
         };
       };
-    };
-    _3proxy = {
-      enable = true;
-      services = [{
-        type = "socks";
-        auth = [ "none" ];
-      }];
     };
     step-ca =
       let

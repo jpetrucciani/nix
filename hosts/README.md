@@ -60,10 +60,6 @@ This is my personal M2 Max MacBook, managed with nix-darwin and Home Manager.
 
 This is a _large_ bare-metal nixos server with dual rtx a6000s!
 
-### [proteus/](./proteus)
-
-This is a small nixos laptop!
-
 ### [styx/](./styx)
 
 This is an M2 Ultra Mac Studio server managed with nix-darwin.

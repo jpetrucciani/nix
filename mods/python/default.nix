@@ -12,13 +12,11 @@
           ./ai/bindings.nix
           ./ai/prompts.nix
           ./ai/apps.nix
-          ./ai/auto.nix
           ./ai/kagi.nix
           ./experimental.nix
           ./fastapi.nix
           ./finance.nix
           ./hax.nix
-          ./loaders.nix
           ./misc.nix
           ./notebooks.nix
           ./pr.nix

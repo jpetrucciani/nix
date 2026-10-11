@@ -1,7 +1,7 @@
 final: prev:
 let
   inherit (final) buildPythonPackage fetchPypi;
-  inherit (final) poetry-core pytestCheckHook;
+  inherit (final) pytestCheckHook;
   inherit (final.lib) licenses maintainers;
   inherit (final.pkgs) fetchFromGitHub texlive;
 in
@@ -62,35 +62,6 @@ rec {
         maintainers = with maintainers; [ jpetrucciani ];
       };
     };
-
-  html2image = buildPythonPackage rec {
-    pname = "html2image";
-    version = "2.0.3";
-    pyproject = true;
-
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-/WxrhnwbHrzasls4R/HdInHhHBzduLWxGwmyXgmx8dA=";
-    };
-
-    nativeBuildInputs = [
-      poetry-core
-    ];
-
-    postPatch = ''
-      sed -i -E 's#(poetry)>=0.12#\1-core#g' ./pyproject.toml
-      substituteInPlace ./pyproject.toml --replace "poetry.masonry" "poetry.core.masonry"
-    '';
-
-    pythonImportsCheck = [ "html2image" ];
-
-    meta = {
-      description = "Generate images from URLs and from HTML+CSS strings or files";
-      homepage = "https://github.com/vgalin/html2image";
-      license = licenses.mit;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
 
   ipyaggrid = buildPythonPackage rec {
     pname = "ipyaggrid";
@@ -159,43 +130,6 @@ rec {
     };
   };
 
-  jupyterlab-execute-time =
-    let
-      pname = "jupyterlab-execute-time";
-      version = "2.3.1";
-      format = "wheel";
-      src = fetchPypi {
-        inherit version;
-        pname = "jupyterlab_execute_time";
-        format = "wheel";
-        python = "py3";
-        dist = "py3";
-        platform = "any";
-        hash = "sha256-l10U+f6VyBaJrXTj84XaDBqDqdHm4J6dwC9ms60Fml4=";
-      };
-    in
-    buildPythonPackage {
-      inherit pname src version format;
-
-      nativeBuildInputs = with final; [
-        jupyter-packaging
-        jupyterlab
-      ];
-
-      propagatedBuildInputs = with final; [
-        jupyter-server
-      ];
-
-      pythonImportsCheck = [ "jupyterlab_execute_time" ];
-
-      meta = {
-        description = "Display cell timings in Jupyter Lab";
-        homepage = "https://github.com/deshaw/jupyterlab-execute-time";
-        license = licenses.bsd3;
-        maintainers = with maintainers; [ jpetrucciani ];
-      };
-    };
-
   jupyterlab-templates =
     let
       pname = "jupyterlab-templates";
@@ -261,7 +195,7 @@ rec {
         jupyter-client
         jupyter-core
         jupyter-server
-        jupyterlab_server
+        jupyterlab-server
         nbclient
         nbconvert
         traitlets

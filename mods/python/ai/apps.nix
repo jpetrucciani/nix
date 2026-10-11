@@ -143,7 +143,9 @@ let
 in
 {
   io-paint = _io-paint;
-  io-paint-cuda = _io-paint.override { torch = final.torchWithCuda; };
+  io-paint-cuda = _io-paint.overridePythonAttrs (old: {
+    propagatedBuildInputs = map (p: if p == final.torch then final.torchWithCuda else p) old.propagatedBuildInputs;
+  });
   chainforge = buildPythonPackage rec {
     pname = "chainforge";
     version = "0.2.5.3";
@@ -214,7 +216,7 @@ in
       numpy
       scipy
       tokenizers
-      torch-bin
+      torch
       tqdm
       transformers
     ];

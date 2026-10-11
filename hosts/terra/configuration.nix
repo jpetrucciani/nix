@@ -329,7 +329,7 @@ in
         SENDS_ALLOWED = true;
         SIGNUPS_ALLOWED = false;
         WEBSOCKET_ENABLED = true;
-        ROCKET_ADDRESS = "0.0.0.0";
+        ROCKET_ADDRESS = "127.0.0.1";
         ROCKET_PORT = 8222;
       };
     };

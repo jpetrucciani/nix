@@ -7,6 +7,7 @@ in
 {
   imports = [
     "${common.home-manager}/nixos"
+    (common.tailnetSocks { ip = ts_ip; })
     ./hardware-configuration.nix
     ../modules/servers/poglets.nix
   ];
@@ -48,12 +49,7 @@ in
     firewall = {
       enable = true;
       trustedInterfaces = [ "tailscale0" ];
-      allowedTCPPorts = with common.ports; [
-        80
-        443
-        # k3s?
-        6443
-      ] ++ usual;
+      allowedTCPPorts = with common.ports; usual;
       allowedUDPPorts = [ ];
       checkReversePath = "loose";
     };
@@ -88,14 +84,6 @@ in
   environment.systemPackages = [ pkgs.k3s ];
 
   services = {
-    _3proxy = {
-      enable = true;
-      services = [{
-        type = "socks";
-        bindAddress = ts_ip;
-        auth = [ "none" ];
-      }];
-    };
     nats =
       let
         megs = x: 1024 * 1024 * x;

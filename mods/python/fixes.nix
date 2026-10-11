@@ -67,13 +67,6 @@ rec {
       ];
     });
 
-  python-binance = prev.python-binance.overridePythonAttrs (old: {
-    postPatch = ''
-      sed -i -E 's#raise.*#version = "${old.version}"#g' ./setup.py
-    '';
-    propagatedBuildInputs = old.propagatedBuildInputs ++ [ final.pycryptodome ];
-  });
-
   prometheus-fastapi-instrumentator =
     if isDarwin then
       prev.prometheus-fastapi-instrumentator.overridePythonAttrs

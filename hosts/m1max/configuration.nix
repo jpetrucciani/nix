@@ -61,6 +61,8 @@ in
           socks = {
             enable = true;
             type = "socks";
+            # unauthenticated, so keep it off whatever network the laptop is on
+            bindAddress = "127.0.0.1";
             auth = [ "none" ];
           };
         };

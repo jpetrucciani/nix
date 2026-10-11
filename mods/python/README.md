@@ -34,10 +34,6 @@ This overlay contains fixes for current broken python packages in nixpkgs
 
 This overlay contains interesting hax related to python packages
 
-### [loaders.nix](./loaders.nix)
-
-This overlay contains libraries that help in loading/parsing various file types
-
 ### [misc.nix](./misc.nix)
 
 This overlay is for random python libraries I want in nixpkgs

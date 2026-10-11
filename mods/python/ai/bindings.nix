@@ -1,100 +1,11 @@
 final: prev:
 let
   inherit (prev) buildPythonPackage;
-  inherit (prev.stdenv.hostPlatform) isAarch64 isDarwin;
+  inherit (prev.stdenv.hostPlatform) isDarwin;
   inherit (prev.pkgs) fetchFromGitHub writeTextFile;
   inherit (prev.lib) licenses maintainers;
-  isM1 = isDarwin && isAarch64;
-  llama-cpp-pin = fetchFromGitHub {
-    owner = "ggerganov";
-    repo = "llama.cpp";
-    rev = "ce8784bdb153ff7794dde5a50b0ebfa51baa6171";
-    hash = "sha256-jhr/KHVwqFMIY7tkn531VXdzPyDtphhAOkS+RphGwZ8=";
-  };
 in
 rec {
-  gguf = buildPythonPackage {
-    pname = "gguf";
-    version = "0.0.1";
-    pyproject = true;
-    src = llama-cpp-pin;
-    postPatch = ''
-      cd ./gguf-py
-    '';
-
-    propagatedBuildInputs = with prev; [ numpy ];
-
-    nativeBuildInputs = with prev; [
-      poetry-core
-    ];
-
-    pythonImportsCheck = [ "gguf" ];
-
-    meta = {
-      description = "package for writing binary files in the GGUF (GGML Universal File) format";
-      homepage = "https://github.com/ggerganov/llama.cpp/tree/master/gguf-py";
-      license = licenses.mit;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-
-  };
-
-  ggml-python =
-    buildPythonPackage rec {
-      pname = "ggml-python";
-      version = "0.0.1";
-      pyproject = true;
-
-      src = fetchFromGitHub {
-        owner = "abetlen";
-        repo = pname;
-        rev = "c4cb698cd2068addafe0b2b4fd3c63b49061f5c8";
-        # rev = "refs/tags/v${version}";
-        hash = "sha256-jMjkJYXUGA0PL0FoZOXpeHScVS0s2i0izhQbPk4iJsA=";
-        fetchSubmodules = true;
-      };
-
-      CMAKE_ARGS = if isM1 then "-DLLAMA_METAL=on" else null;
-      FORCE_CMAKE = if isM1 then "1" else null;
-
-      # let's remove this - we propagate it below
-      postPatch = ''
-        sed -i -E '/typing_extensions/d' ./pyproject.toml
-      '';
-      preBuild = ''
-        cd ..
-      '';
-
-      nativeBuildInputs = with prev; [
-        pkgs.cmake
-        pkgs.ninja
-        pathspec
-        poetry-core
-        pyproject-metadata
-        scikit-build
-        scikit-build-core
-        setuptools
-      ];
-      propagatedBuildInputs = with prev; [
-        numpy
-        typing-extensions
-
-        # server mode
-        fastapi
-        sse-starlette
-        uvicorn
-      ];
-
-      pythonImportsCheck = [ "ggml" ];
-
-      meta = {
-        description = "Python bindings for ggml";
-        homepage = "https://github.com/abetlen/ggml-python";
-        license = licenses.mit;
-        maintainers = with maintainers; [ jpetrucciani ];
-      };
-    };
-
   pyllamacpp =
     buildPythonPackage rec {
       pname = "pyllamacpp";
@@ -379,7 +290,10 @@ rec {
       nativeCheckInputs = with prev; [ pytestCheckHook ];
       pythonImportsCheck = [ "ctransformers" ];
       disabledTestPaths = [ "tests/test_model.py" ];
-      pytestFlagsArray = [ "--lib basic" ];
+      pytestFlags = [
+        "--lib"
+        "basic"
+      ];
       meta = {
         description = "Python bindings for the Transformer models implemented in C/C++ using GGML library";
         homepage = "https://github.com/marella/ctransformers";
@@ -524,40 +438,6 @@ rec {
     meta = {
       description = "Vertex AI API client library";
       homepage = "https://github.com/googleapis/python-aiplatform";
-      license = licenses.asl20;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  groq = buildPythonPackage rec {
-    pname = "groq";
-    version = "0.4.1";
-    pyproject = true;
-
-    src = final.fetchPypi {
-      inherit pname version;
-      hash = "sha256-8ihcCn1kq+/N7D1h6LwaYf8E2IftMLmRrH/lOuHhAlE=";
-    };
-
-    nativeBuildInputs = with final; [
-      hatchling
-    ];
-
-    propagatedBuildInputs = with final; [
-      anyio
-      cached-property
-      distro
-      httpx
-      pydantic
-      sniffio
-      typing-extensions
-    ];
-
-    pythonImportsCheck = [ "groq" ];
-
-    meta = {
-      description = "The official Python library for the groq API";
-      homepage = "https://pypi.org/project/groq/";
       license = licenses.asl20;
       maintainers = with maintainers; [ jpetrucciani ];
     };

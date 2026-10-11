@@ -39,31 +39,6 @@ rec {
     };
   };
 
-  systemdunitparser = buildPythonPackage rec {
-    pname = "systemdunitparser";
-    version = "0.2";
-    pyproject = true;
-
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-GgcqTlX8VXOCPgqRBJcWTbltnhZkiw9UDVRs1Vkd6Q4=";
-    };
-
-    nativeBuildInputs = with final; [
-      setuptools
-      wheel
-    ];
-
-    pythonImportsCheck = [ "SystemdUnitParser" ];
-
-    meta = {
-      description = "Parser to read and create unit files for systemd";
-      homepage = "https://pypi.org/project/systemdunitparser/";
-      license = licenses.gpl3Only;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
   systemdlint = buildPythonPackage rec {
     pname = "systemdlint";
     version = "1.3.0";
@@ -150,6 +125,8 @@ rec {
   falconn = buildPythonPackage rec {
     pname = "falconn";
     version = "1.3.1";
+    pyproject = true;
+    build-system = with final; [ setuptools ];
 
     src = fetchFromGitHub {
       owner = "falconn-lib";
@@ -193,7 +170,7 @@ rec {
     propagatedBuildInputs = with final; [
       aiohttp
       click
-      github3_py
+      github3-py
       gql
       poetry-core
       requests
@@ -258,39 +235,6 @@ rec {
     };
   };
 
-  speechrecognition = buildPythonPackage rec {
-    pname = "speech_recognition";
-    version = "3.9.0";
-
-    format = "setuptools";
-    src = fetchFromGitHub {
-      owner = "Uberi";
-      repo = pname;
-      rev = version;
-      hash = "sha256-FsiAa+cQbomFkRvoFscceVBJUW3mW6EyiizfFfqB/u8=";
-    };
-
-    doCheck = false;
-    propagatedBuildInputs = with final; [
-      requests
-      soundfile
-      google-cloud-speech
-      openai-whisper
-      pkgs.flac
-    ];
-
-    pythonCheckImports = [
-      "speech_recognition"
-    ];
-
-    meta = {
-      description = "Speech recognition module for Python, supporting several engines and APIs, online and offline";
-      homepage = "https://github.com/Uberi/speech_recognition";
-      license = licenses.bsd3;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
   roadmapper = buildPythonPackage rec {
     pname = "roadmapper";
     version = "1.2.0";
@@ -349,26 +293,6 @@ rec {
       description = "A library to help you make the most out of your Pixoo 64 (and hopefully soon other Wi-Fi enabled Pixoos";
       homepage = "https://github.com/SomethingWithComputers/pixoo";
       license = with licenses; [ ];
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  coolname = buildPythonPackage rec {
-    pname = "coolname";
-    version = "2.2.0";
-    format = "setuptools";
-
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-bF1XMXWRBEeefKGVqbZPeQCsW+rUAYPAkyPH0L6edcc=";
-    };
-
-    pythonImportsCheck = [ "coolname" ];
-
-    meta = {
-      description = "Random name and slug generator";
-      homepage = "https://github.com/alexanderlukanin13/coolname";
-      license = licenses.bsd2;
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
@@ -457,6 +381,8 @@ rec {
   yagmail = buildPythonPackage rec {
     pname = "yagmail";
     version = "0.15.293";
+    pyproject = true;
+    build-system = with final; [ setuptools ];
 
     src = fetchPypi {
       inherit pname version;
@@ -502,6 +428,7 @@ rec {
       homepage = "https://github.com/kamranahmedse/itomate";
       license = licenses.mit;
       maintainers = with maintainers; [ jpetrucciani ];
+      platforms = final.lib.platforms.darwin;
     };
   };
 
@@ -531,37 +458,6 @@ rec {
     meta = {
       description = "Natural language parsing of dates and recurring events";
       homepage = "https://github.com/kvh/recurrent";
-      license = licenses.mit;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  python-logging-loki = buildPythonPackage rec {
-    pname = "python-logging-loki";
-    version = "0.3.1";
-    pyproject = true;
-
-    src = fetchFromGitHub {
-      owner = "GreyZmeem";
-      repo = "python-logging-loki";
-      rev = "v${version}";
-      hash = "sha256-1qHuv+xzATo11au+QAhD1lHcLJtnVKZDdQDGohHUhiI=";
-    };
-
-    nativeBuildInputs = with final; [
-      setuptools
-      wheel
-    ];
-    propagatedBuildInputs = with final; [
-      requests
-      rfc3339
-    ];
-
-    pythonImportsCheck = [ "logging_loki" ];
-
-    meta = {
-      description = "Python logging handler for Loki";
-      homepage = "https://github.com/GreyZmeem/python-logging-loki";
       license = licenses.mit;
       maintainers = with maintainers; [ jpetrucciani ];
     };
@@ -853,73 +749,6 @@ rec {
     };
   };
 
-  textual-fastdatatable = buildPythonPackage rec {
-    pname = "textual-fastdatatable";
-    version = "0.7.1";
-    pyproject = true;
-
-    src = fetchPypi {
-      pname = "textual_fastdatatable";
-      inherit version;
-      hash = "sha256-Atkp3ddV59I5NuqAkMVJCQgW6eymPMFKBqwqgqVWt2M=";
-    };
-
-    nativeBuildInputs = [
-      poetry-core
-    ];
-
-    propagatedBuildInputs = with final; [
-      pyarrow
-      pytz
-      textual
-      tzdata
-    ];
-
-    pythonImportsCheck = [ "textual_fastdatatable" ];
-
-    meta = {
-      description = "A performance-focused reimplementation of Textual's DataTable widget, with a pluggable data storage backend";
-      homepage = "https://pypi.org/project/textual-fastdatatable/";
-      license = licenses.mit;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  textual-textarea = buildPythonPackage rec {
-    pname = "textual-textarea";
-    version = "0.13.0";
-    pyproject = true;
-
-    src = fetchPypi {
-      pname = "textual_textarea";
-      inherit version;
-      hash = "sha256-xCzwGMZ0AHirZDwXok2DqKlBXPssntpqs7hDk6Qim9c=";
-    };
-
-    nativeBuildInputs = with final; [
-      poetry-core
-      pythonRelaxDepsHook
-    ];
-
-    pythonRelaxDeps = [
-      "textual"
-    ];
-
-    propagatedBuildInputs = with final; [
-      pyperclip
-      textual
-    ];
-
-    pythonImportsCheck = [ "textual_textarea" ];
-
-    meta = {
-      description = "A text area (multi-line input) with syntax highlighting for Textual";
-      homepage = "https://pypi.org/project/textual-textarea/";
-      license = licenses.mit;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
   harlequin-mysql = buildPythonPackage rec {
     pname = "harlequin-mysql";
     version = "0.2.0";
@@ -950,38 +779,6 @@ rec {
     meta = {
       description = "A Harlequin adapter for MySQL";
       homepage = "https://pypi.org/project/harlequin-mysql/";
-      license = licenses.mit;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  harlequin-postgres = buildPythonPackage rec {
-    pname = "harlequin-postgres";
-    version = "0.2.2";
-    pyproject = true;
-
-    src = fetchPypi {
-      pname = "harlequin_postgres";
-      inherit version;
-      hash = "sha256-IF8ueqYjwaG9I1S4+h04sz4pYpIxgxaFhspGiPsay4E=";
-    };
-
-    nativeBuildInputs = [
-      poetry-core
-    ];
-
-    dontCheckRuntimeDeps = true;
-
-    propagatedBuildInputs = with final; [
-      harlequin
-      psycopg2
-    ];
-
-    pythonImportsCheck = [ "harlequin_postgres" ];
-
-    meta = {
-      description = "A Harlequin adapter for Postgres";
-      homepage = "https://pypi.org/project/harlequin-postgres/";
       license = licenses.mit;
       maintainers = with maintainers; [ jpetrucciani ];
     };
@@ -1034,6 +831,8 @@ rec {
 
     pythonRelaxDeps = [
       "textual"
+      "textual-fastdatatable"
+      "textual-textarea"
     ];
     propagatedBuildInputs = with final; [
       click

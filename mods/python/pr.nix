@@ -9,6 +9,8 @@ rec {
   boddle = buildPythonPackage rec {
     pname = "boddle";
     version = "0.2.9";
+    pyproject = true;
+    build-system = with prev; [ setuptools ];
 
     src = fetchPypi {
       inherit pname version;
@@ -61,104 +63,11 @@ rec {
     };
   };
 
-  # requirements for other packages
-  radon = buildPythonPackage rec {
-    pname = "radon";
-    version = "5.1.0";
-
-    src = fetchPypi {
-      inherit pname version;
-      sha256 = "1vmf56zsf3paa1jadjcjghiv2kxwiismyayq42ggnqpqwm98f7fb";
-    };
-
-    propagatedBuildInputs = with prev; [ mando colorama future ];
-
-    doCheck = false;
-
-    meta = {
-      description = "Code Metrics in Python";
-      homepage = "https://radon.readthedocs.org/";
-      license = licenses.mit;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  mando = buildPythonPackage rec {
-    pname = "mando";
-    version = "0.6.4";
-
-    src = fetchPypi {
-      inherit pname version;
-      sha256 = "0q6rl085q1hw1wic52pqfndr0x3nirbxnhqj9akdm5zhq2fv3zkr";
-    };
-
-    propagatedBuildInputs = with prev; [ six ];
-
-    doCheck = false;
-
-    meta = {
-      description = "Create Python CLI apps with little to no effort at all";
-      homepage = "https://mando.readthedocs.org/";
-      license = licenses.mit;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  lox = buildPythonPackage rec {
-    pname = "lox";
-    version = "0.11.0";
-    disabled = pythonOlder "3.7";
-
-    src = fetchFromGitHub {
-      owner = "BrianPugh";
-      repo = pname;
-      rev = "v${version}";
-      hash = "sha256-kXfFRIFI1OcbDc1LujbFo/Iqg7pgwtXLkIcIFA9nehs=";
-    };
-
-    # patch out pytest-runner, and invalid pytest args
-    preBuild = ''
-      sed -i '/pytest-runner/d' ./setup.py
-      sed -i '/collect_ignore/d' ./setup.cfg
-    '';
-
-    outputs = [
-      "out"
-      "doc"
-    ];
-
-    nativeBuildInputs = with prev; [
-      sphinxHook
-      sphinx-rtd-theme
-    ];
-
-    checkInputs = with prev; [
-      pytestCheckHook
-      pytest-benchmark
-      pytest-mock
-    ];
-
-    propagatedBuildInputs = with prev; [
-      pathos
-      tqdm
-    ];
-
-    pythonImportsCheck = [
-      "lox"
-    ];
-
-    meta = {
-      description = "Threading and Multiprocessing made easy";
-      homepage = "https://github.com/BrianPugh/lox";
-      changelog = "https://github.com/BrianPugh/lox/releases/tag/v${version}";
-      license = licenses.asl20;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
   looker-sdk = buildPythonPackage rec {
     pname = "looker-sdk";
     version = "24.4.0";
+    pyproject = true;
+    build-system = with prev; [ setuptools ];
     disabled = pythonOlder "3.7";
 
     src = fetchFromGitHub {

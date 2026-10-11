@@ -7,6 +7,7 @@ in
 {
   imports = [
     "${common.home-manager}/nixos"
+    (common.tailnetSocks { ip = ts_ip; maxConnections = 200; })
     ./hardware-configuration.nix
     ../modules/conf/blackedge.nix
     ../modules/servers/hermes-agent.nix
@@ -151,14 +152,6 @@ in
       };
     };
     rpcbind.enable = true;
-    _3proxy = {
-      enable = true;
-      services = [{
-        type = "socks";
-        auth = [ "none" ];
-        maxConnections = 200;
-      }];
-    };
     titanite = {
       enable = true;
       settings = {

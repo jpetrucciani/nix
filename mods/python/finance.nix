@@ -156,75 +156,6 @@ rec {
     };
   };
 
-  swifter = buildPythonPackage rec {
-    pname = "swifter";
-    version = "1.3.4";
-    format = "setuptools";
-
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-Ysh6IMTfr805Q82EVeYU66EdA82k/6IEZbMur6Vx9L0=";
-    };
-
-    propagatedBuildInputs = with final; [
-      bleach
-      cloudpickle
-      dask
-      ipywidgets
-      parso
-      ray
-      tqdm
-    ];
-
-    doCheck = false;
-
-    pythonImportsCheck = [ "swifter" ];
-
-    meta = {
-      description = "A package which efficiently applies any function to a pandas dataframe or series in the fastest available manner";
-      homepage = "https://github.com/jmcarpenter2/swifter";
-      license = licenses.mit;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  empyrical = buildPythonPackage rec {
-    pname = "empyrical";
-    version = "0.5.5";
-    format = "setuptools";
-
-    src = fetchFromGitHub {
-      owner = "quantopian";
-      repo = pname;
-      rev = "refs/tags/${version}";
-      hash = "sha256-SrrJZXg8kVOc71whjcyWvZyiAwwpC0LDVhPjeeCjV7I=";
-    };
-
-    propagatedBuildInputs = with final; [
-      numpy
-      pandas
-      pandas-datareader
-      scipy
-    ];
-
-    nativeCheckInputs = with final; [
-      pytestCheckHook
-      parameterized
-      flake8
-    ];
-
-    pythonImportsCheck = [ "empyrical" ];
-
-    doCheck = false;
-
-    meta = {
-      description = "Empyrical is a Python library with performance and risk statistics commonly used in quantitative finance";
-      homepage = "https://github.com/quantopian/empyrical";
-      license = licenses.asl20;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
   runipy = buildPythonPackage rec {
     pname = "runipy";
     version = "0.1.5";
@@ -252,48 +183,6 @@ rec {
       description = "Run IPython notebooks from the command line";
       homepage = "https://github.com/paulgb/runipy";
       license = licenses.bsd2;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  pyfolio = buildPythonPackage rec {
-    pname = "pyfolio";
-    version = "0.9.2";
-    format = "setuptools";
-
-    src = fetchFromGitHub {
-      owner = "quantopian";
-      repo = pname;
-      rev = "refs/tags/${version}";
-      hash = "sha256-Zeonx3W4Te3uv0sZ8yHxYbf5ImLozeyniG+LLxsHLhY=";
-    };
-
-    propagatedBuildInputs = with final; [
-      empyrical
-      ipython
-      matplotlib
-      pandas
-      pytz
-      scikit-learn
-      scipy
-      seaborn
-    ];
-
-    pythonImportsCheck = [ "pyfolio" ];
-
-    nativeCheckInputs = with final; [
-      pytestCheckHook
-      nose
-      parameterized
-      runipy
-    ];
-
-    doCheck = false;
-
-    meta = {
-      description = "Pyfolio is a Python library for performance and risk analysis of financial portfolios";
-      homepage = "https://github.com/quantopian/pyfolio";
-      license = licenses.asl20;
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
@@ -365,7 +254,7 @@ rec {
     };
 
     preBuild = ''
-      export C_INCLUDE_PATH="./libindicators:${final.pkgs.numpy}/${final.python.sitePackages}/numpy/core/include"
+      export C_INCLUDE_PATH="./libindicators:${final.numpy}/${final.python.sitePackages}/numpy/_core/include"
       cythonize --inplace tulipy/lib/__init__.pyx
     '';
 
@@ -502,154 +391,6 @@ rec {
       description = "Time series forecasting suite using statistical models";
       homepage = "https://pypi.org/project/statsforecast/";
       license = licenses.asl20;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  pandera = buildPythonPackage rec {
-    pname = "pandera";
-    version = "0.17.2";
-    pyproject = true;
-
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-Z1FZhPhVuhTRJEP4k7X/kK5nlvYT1fPfQ6utQGpIw3M=";
-    };
-
-    nativeBuildInputs = with final; [
-      setuptools
-      wheel
-    ];
-
-    propagatedBuildInputs = with final; [
-      multimethod
-      numpy
-      packaging
-      pandas
-      pydantic
-      typeguard
-      typing-extensions
-      typing-inspect
-      wrapt
-    ];
-
-    passthru.optional-dependencies = with final; {
-      all = [
-        black
-        dask
-        fastapi
-        frictionless
-        geopandas
-        hypothesis
-        modin
-        pandas-stubs
-        pyspark
-        pyyaml
-        ray
-        scipy
-        shapely
-      ];
-      dask = [
-        dask
-      ];
-      fastapi = [
-        fastapi
-      ];
-      geopandas = [
-        geopandas
-        shapely
-      ];
-      hypotheses = [
-        scipy
-      ];
-      io = [
-        black
-        frictionless
-        pyyaml
-      ];
-      modin = [
-        dask
-        modin
-        ray
-      ];
-      modin-dask = [
-        dask
-        modin
-      ];
-      modin-ray = [
-        modin
-        ray
-      ];
-      mypy = [
-        pandas-stubs
-      ];
-      pyspark = [
-        pyspark
-      ];
-      strategies = [
-        hypothesis
-      ];
-    };
-
-    pythonImportsCheck = [ "pandera" ];
-
-    meta = {
-      description = "A light-weight and flexible data validation and testing tool for statistical data objects";
-      homepage = "https://pypi.org/project/pandera/";
-      license = licenses.mit;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  ffn = buildPythonPackage rec {
-    pname = "ffn";
-    version = "1.0.1";
-    pyproject = true;
-
-    src = fetchFromGitHub {
-      owner = "pmorissette";
-      repo = "ffn";
-      rev = "v${version}";
-      hash = "sha256-ynl3y5ZeuZxTybEJ9P/z3VDlqwmhQUIMUcYe+eihl+o=";
-    };
-
-    nativeBuildInputs = with final; [
-      setuptools
-      wheel
-    ];
-
-    propagatedBuildInputs = with final; [
-      decorator
-      matplotlib
-      numpy
-      pandas
-      pandas-datareader
-      scikit-learn
-      scipy
-      tabulate
-      yfinance
-    ];
-
-    passthru.optional-dependencies = with final; {
-      dev = [
-        build
-        pytest
-        pytest-cov
-        ruff
-        wheel
-      ];
-      test = [
-        pytest
-        pytest-cov
-      ];
-    };
-
-    pythonImportsCheck = [ "ffn" ];
-
-    meta = {
-      description = "Ffn - a financial function library for Python";
-      homepage = "https://github.com/pmorissette/ffn";
-      license = licenses.mit;
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };

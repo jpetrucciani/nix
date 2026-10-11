@@ -6,6 +6,7 @@ rec {
   hnswlib = buildPythonPackage rec {
     pname = "hnswlib";
     version = "0.12.0";
+    pyproject = true;
 
     src = fetchFromGitHub {
       owner = "nmslib";
@@ -13,6 +14,9 @@ rec {
       rev = "v${version}";
       hash = "sha256-XXz0NIQ5dCGwcX2HtbK5NFTalP0TjLO6ll6TmH3oflI=";
     };
+    build-system = [
+      setuptools
+    ];
     nativeBuildInputs = [
       pybind11
     ];
@@ -136,6 +140,8 @@ rec {
   analytics-python = buildPythonPackage rec {
     pname = "analytics-python";
     version = "1.4.0";
+    pyproject = true;
+    build-system = [ setuptools ];
 
     disabled = pythonOlder "3.6";
 
@@ -176,34 +182,6 @@ rec {
     };
   };
 
-  ffmpy = buildPythonPackage rec {
-    pname = "ffmpy";
-    version = "0.3.0";
-
-    disabled = pythonOlder "3.6";
-
-    # The github repo has no release tags, the pypi distribution has no tests.
-    # This package is quite trivial anyway, and the tests mainly play around with the ffmpeg cli interface.
-    # https://github.com/Ch00k/ffmpy/issues/60
-    src = fetchPypi {
-      inherit pname version;
-      sha256 = "dXWRWB7uJbSlCsn/ubWANaJ5RTPbR+BRL1P7LXtvmtw=";
-    };
-
-    propagatedBuildInputs = [
-      pkgs.ffmpeg
-    ];
-
-    pythonImportsCheck = [ "ffmpy" ];
-
-    meta = with lib; {
-      description = "A simple python interface for FFmpeg/FFprobe";
-      homepage = "https://github.com/Ch00k/ffmpy";
-      license = licenses.mit;
-      maintainers = with maintainers; [ pbsds ];
-    };
-  };
-
   flaskwebgui = buildPythonPackage {
     pname = "flaskwebgui";
     version = "1.0.6";
@@ -225,35 +203,6 @@ rec {
     meta = with lib; {
       description = "Create desktop applications with Flask/Django/FastAPI";
       homepage = "https://github.com/ClimenteA/flaskwebgui";
-      license = licenses.mit;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  simple-websocket = buildPythonPackage rec {
-    pname = "simple-websocket";
-    version = "0.10.0";
-    pyproject = true;
-
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-gsCwsQBtVJDwn/ZjkjlNkN11goVjXtrSQeCT6air0+s=";
-    };
-
-    nativeBuildInputs = [
-      setuptools
-      wheel
-    ];
-
-    propagatedBuildInputs = [
-      wsproto
-    ];
-
-    pythonImportsCheck = [ "simple_websocket" ];
-
-    meta = with lib; {
-      description = "Simple WebSocket server and client for Python";
-      homepage = "https://github.com/miguelgrinberg/simple-websocket";
       license = licenses.mit;
       maintainers = with maintainers; [ jpetrucciani ];
     };
@@ -301,84 +250,11 @@ rec {
     };
   };
 
-  pulsar-client =
-    let
-      pname = "pulsar-client";
-      version = "3.2.0";
-      format = "wheel";
-      dists = {
-        aarch64-darwin = {
-          platform = "macosx_10_15_universal2";
-          hash = "sha256-WE9EsDR0ppkGvnEaWXpNUWJjpVvjHkn8B75QPchAaCE=";
-        };
-        aarch64-linux = {
-          platform = "manylinux_2_17_aarch64.manylinux2014_aarch64";
-          hash = "sha256-pje5o7MIYMYeaKe46mUOCYfYnoL3O2o98atmKmQ4/do=";
-        };
-        x86_64-linux = {
-          platform = "manylinux_2_17_x86_64.manylinux2014_x86_64";
-          hash = "sha256-tKGH/cX+vPFvclF53PLEdvMe7r2DU3lNkXVKMgLdUHI=";
-        };
-      };
-      d = dists.${final.stdenv.hostPlatform.system} or (throw "Unsupported system: ${final.stdenv.hostPlatform.system}");
-      src = fetchPypi {
-        inherit version format;
-        inherit (d) hash platform;
-        pname = "pulsar_client";
-        abi = "cp311";
-        python = "cp311";
-        dist = "cp311";
-      };
-    in
-    buildPythonPackage {
-      inherit pname src version format;
-      nativeBuildInputs = [ pkgs.autoPatchelfHook ];
-      propagatedBuildInputs = [
-        certifi
-      ];
-      pythonImportsCheck = [ "pulsar" ];
-
-      meta = with lib; {
-        description = "Apache Pulsar Python client library";
-        homepage = "https://pulsar.apache.org";
-        license = licenses.asl20;
-        maintainers = with maintainers; [ jpetrucciani ];
-      };
-    };
-
-  graphlib-backport = buildPythonPackage rec {
-    pname = "graphlib-backport";
-    version = "1.0.3";
-    pyproject = true;
-
-    src = fetchPypi {
-      pname = "graphlib_backport";
-      inherit version;
-      hash = "sha256-e7j8d1e4rk5tgACibNSekjKqqaOqV+20eEdLhCS/quI=";
-    };
-
-    postPatch = ''
-      sed -i -E 's#(poetry)>=1.0#\1-core#g' ./pyproject.toml
-      substituteInPlace ./pyproject.toml --replace "poetry.masonry.api" "poetry.core.masonry.api"
-    '';
-
-    nativeBuildInputs = [
-      poetry-core
-    ];
-
-    pythonImportsCheck = [ "graphlib" ];
-
-    meta = with lib; {
-      description = "Backport of the Python 3.9 graphlib module for Python 3.6";
-      homepage = "https://github.com/mariushelf/graphlib_backport";
-      license = with licenses; [ ];
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
   sqlalchemy2-stubs = buildPythonPackage rec {
     pname = "sqlalchemy2-stubs";
     version = "0.0.2a32";
+    pyproject = true;
+    build-system = [ setuptools ];
 
     disabled = pythonOlder "3.7";
     src = fetchPypi {
@@ -571,39 +447,6 @@ rec {
     };
   };
 
-  gluonts = buildPythonPackage rec {
-    pname = "gluonts";
-    version = "0.13.4";
-    pyproject = true;
-
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-50+tRpzajpTZYL0KGj+hoxPZZajQiGwsTGglEIb/AuA=";
-    };
-
-    nativeBuildInputs = [
-      setuptools
-    ];
-
-    propagatedBuildInputs = [
-      numpy
-      pandas
-      pydantic
-      toolz
-      tqdm
-      typing-extensions
-    ];
-
-    pythonImportsCheck = [ "gluonts" ];
-
-    meta = with lib; {
-      description = "Probabilistic time series modeling in Python";
-      homepage = "https://pypi.org/project/gluonts/";
-      license = licenses.asl20;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
   triad = buildPythonPackage rec {
     pname = "triad";
     version = "0.9.1";
@@ -777,55 +620,6 @@ rec {
     };
   };
 
-  statsforecast = buildPythonPackage rec {
-    pname = "statsforecast";
-    version = "1.6.0";
-    format = "setuptools";
-
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-23PsIbyB8k1eItNQiwoghKRRFxmyQKkigj2yg9uhLFI=";
-    };
-
-    propagatedBuildInputs = [
-      fugue
-      matplotlib
-      numba
-      numpy
-      pandas
-      polars
-      prophet
-      scipy
-      statsmodels
-      tqdm
-    ];
-
-    nativeCheckInputs = [
-      pytestCheckHook
-      ray
-      dask
-      pyspark
-    ];
-
-    pythonImportsCheck = [ "statsforecast" ];
-
-    disabledTests = [
-      "test_dask_flow"
-      "test_dask_flow_with_level"
-      "test_ray_flow"
-      "test_ray_flow_with_level"
-      "test_spark_flow"
-      "test_spark_flow_with_level"
-    ];
-
-    meta = with lib; {
-      description = "Time series forecasting suite using statistical models";
-      homepage = "https://pypi.org/project/statsforecast/";
-      license = licenses.asl20;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
   window-ops = buildPythonPackage rec {
     pname = "window-ops";
     version = "0.0.14";
@@ -885,92 +679,6 @@ rec {
       description = "Scalable machine learning based time series forecasting";
       homepage = "https://pypi.org/project/mlforecast/";
       license = licenses.asl20;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  dirtyjson = buildPythonPackage rec {
-    pname = "dirtyjson";
-    version = "1.0.8";
-    pyproject = true;
-
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-kMpKGPP/MM6EnRANz0oAOVPHnTojSO8Fbx2cIiMaJf0=";
-    };
-
-    nativeBuildInputs = with final; [
-      setuptools
-      wheel
-    ];
-
-    pythonImportsCheck = [ "dirtyjson" ];
-
-    meta = with lib; {
-      description = "JSON decoder for Python that can extract data from the muck";
-      homepage = "https://pypi.org/project/dirtyjson/";
-      license = licenses.afl21;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  mistralai = buildPythonPackage rec {
-    pname = "mistralai";
-    version = "0.0.12";
-    pyproject = true;
-
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-/mUoNhRqFb3OdpGpWAOjLFPGQcVAAJNEf/qTvy7SlrI=";
-    };
-
-    nativeBuildInputs = [
-      poetry-core
-    ];
-
-    propagatedBuildInputs = [
-      httpx
-      orjson
-      pydantic
-    ];
-
-    pythonImportsCheck = [ "mistralai" ];
-
-    meta = with lib; {
-      description = "";
-      homepage = "https://pypi.org/project/mistralai/";
-      license = licenses.asl20;
-      maintainers = with maintainers; [ jpetrucciani ];
-    };
-  };
-
-  typer-config = buildPythonPackage rec {
-    pname = "typer-config";
-    version = "1.4.0";
-    pyproject = true;
-
-    src = fetchFromGitHub {
-      owner = "maxb2";
-      repo = "typer-config";
-      rev = version;
-      hash = "sha256-58dlMpEGRyWqtUIPsq0xVFTJVbOkV8CmI+yRFIi+N2c=";
-    };
-
-    nativeBuildInputs = [
-      poetry-core
-    ];
-
-    propagatedBuildInputs = [
-      typer
-    ];
-
-    pythonImportsCheck = [ "typer_config" ];
-
-    meta = with lib; {
-      description = "Utilities for working with configuration files in typer CLIs";
-      homepage = "https://github.com/maxb2/typer-config";
-      changelog = "https://github.com/maxb2/typer-config/blob/${src.rev}/CHANGELOG.md";
-      license = licenses.mit;
       maintainers = with maintainers; [ jpetrucciani ];
     };
   };
@@ -1154,96 +862,6 @@ rec {
     meta = {
       description = "Build and query dynamic, temporally-aware Knowledge Graphs";
       homepage = "https://github.com/getzep/graphiti";
-      license = lib.licenses.asl20;
-      maintainers = with lib.maintainers; [ jpetrucciani ];
-    };
-  };
-
-  smolagents = buildPythonPackage rec {
-    pname = "smolagents";
-    version = "1.6.0";
-    pyproject = true;
-
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-FcG0e66RyPYnfkU1+7wXNoR62XAlTa7Yw0O5iCxZx18=";
-    };
-
-    build-system = [
-      pythonRelaxDepsHook
-      setuptools
-    ];
-
-    pythonRelaxDeps = [ "duckduckgo-search" ];
-
-    dependencies = [
-      duckduckgo-search
-      huggingface-hub
-      jinja2
-      markdownify
-      pandas
-      pillow
-      requests
-      rich
-    ];
-
-    optional-dependencies = {
-      all = [
-        smolagents
-      ];
-      audio = [
-        smolagents
-        soundfile
-      ];
-      dev = [
-        smolagents
-        sqlalchemy
-      ];
-      e2b = [
-        e2b-code-interpreter
-        python-dotenv
-      ];
-      gradio = [
-        gradio
-      ];
-      litellm = [
-        litellm
-      ];
-      mcp = [
-        mcp
-        mcpadapt
-      ];
-      openai = [
-        openai
-      ];
-      quality = [
-        ruff
-      ];
-      test = [
-        ipython
-        pytest
-        python-dotenv
-        rank-bm25
-        smolagents
-      ];
-      torch = [
-        torch
-        torchvision
-      ];
-      transformers = [
-        accelerate
-        smolagents
-        transformers
-      ];
-    };
-
-    pythonImportsCheck = [
-      "smolagents"
-    ];
-
-    meta = {
-      description = "Smolagents: a barebones library for agents. Agents write python code to call tools or orchestrate other agents";
-      homepage = "https://pypi.org/project/smolagents/";
       license = lib.licenses.asl20;
       maintainers = with lib.maintainers; [ jpetrucciani ];
     };

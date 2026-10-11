@@ -10,10 +10,6 @@ this directory exists to help organize my ai related python package overlays!
 
 this overlay contains full AI-related applications like [lama-cleaner](https://github.com/Sanster/lama-cleaner)
 
-### [auto.nix](./auto.nix)
-
-this overlay contains [autogluon packages](https://github.com/autogluon/autogluon)
-
 ### [bindings.nix](./bindings.nix)
 
 this overlay contains native and api bindings for AI/LLM tooling

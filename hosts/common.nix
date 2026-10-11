@@ -26,6 +26,25 @@ in
 
   swapDevices = [{ device = "/swapfile"; size = 1024; }];
 
+  # unauthenticated socks proxy bound to this host's tailnet ip. keeps retrying until tailscale has the ip up
+  tailnetSocks = { ip, maxConnections ? 100 }: {
+    services._3proxy = {
+      enable = true;
+      services = [{
+        type = "socks";
+        bindAddress = ip;
+        auth = [ "none" ];
+        inherit maxConnections;
+      }];
+    };
+    systemd.services."3proxy" = {
+      after = [ "tailscaled.service" ];
+      wants = [ "tailscaled.service" ];
+      serviceConfig.RestartSec = 5;
+      unitConfig.StartLimitIntervalSec = 0;
+    };
+  };
+
   security.sudo = {
     extraRules = [
       {
