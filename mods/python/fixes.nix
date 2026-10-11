@@ -25,6 +25,18 @@ rec {
     '';
   });
 
+  httplib2 =
+    if isDarwin then
+      prev.httplib2.overridePythonAttrs
+        (old: {
+          # The SOCKS5 auth fixture listens on IPv4; a later IPv6 attempt masks its auth error.
+          postPatch = (old.postPatch or "") + ''
+            substituteInPlace tests/test_proxy.py \
+              --replace-fail '    with tests.server_socket(proxy_conn) as uri:' \
+              $'    with tests.server_socket(proxy_conn) as uri:\n        uri = tests.rebuild_uri(uri, host="127.0.0.1")'
+          '';
+        }) else prev.httplib2;
+
   watchfiles = prev.watchfiles.overridePythonAttrs (old: {
     # These tests expect native notifications; WSL otherwise defaults to polling.
     postPatch = (old.postPatch or "") + ''
