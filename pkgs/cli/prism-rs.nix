@@ -6,16 +6,16 @@
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "prism";
-  version = "0.0.4";
+  version = "0.0.5";
 
   src = fetchFromGitHub {
     owner = "jpetrucciani";
     repo = "prism";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-anEZ/hDEDz499n1bl2RhymKmAIF3Pq3lMV/ZXkeeROw=";
+    hash = "sha256-GOgszh0qKYcqlqKMWwSgVjQmcOAW+MzpsqZVEGQOZwY=";
   };
 
-  cargoHash = "sha256-1z1SQ8s7NeC/0ZbqJJDeGz15PuaGhYSwFGa/uipdg4Q=";
+  cargoHash = "sha256-NvUJUmQuDLjwpMvH+9dWpPDbv9glm32OxrZ50U/JQwg=";
 
   passthru.updateScript = nix-update-script { };
 
