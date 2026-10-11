@@ -80,16 +80,17 @@ in
     systemd.services.poglets = {
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
+      script = ''
+        : "''${POGLETS_TOKEN:?POGLETS_TOKEN must be set in ${cfg.secretFile}}"
+        exec ${cfg.package}/bin/poglets server \
+          --port ${toString cfg.port} \
+          --data-addr ${cfg.address} \
+          --control-addr ${cfg.controlAddress} \
+          --control-port ${toString cfg.controlPort} \
+          --token "$POGLETS_TOKEN"
+      '';
       serviceConfig = {
-        EnvironmentFile = "-${cfg.secretFile}";
-        ExecStart = ''
-          ${cfg.package}/bin/poglets server \
-            --port ${toString cfg.port} \
-            --data-addr ${cfg.address} \
-            --control-addr ${cfg.controlAddress} \
-            --control-port ${toString cfg.controlPort} \
-            --token "$POGLETS_TOKEN" 
-        '';
+        EnvironmentFile = cfg.secretFile;
         Restart = "on-failure";
         StateDirectory = "poglets";
         User = cfg.user;

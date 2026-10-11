@@ -48,7 +48,7 @@ in
     nameservers = [ "1.1.1.1" "8.8.8.8" ];
     firewall = {
       enable = true;
-      trustedInterfaces = [ "tailscale0" ];
+      trustedInterfaces = [ "tailscale0" "cni+" ];
       allowedTCPPorts = with common.ports; usual;
       allowedUDPPorts = [ ];
       checkReversePath = "loose";
@@ -270,7 +270,6 @@ in
   } // common.services;
 
   # https://github.com/NixOS/nixpkgs/issues/103158
-  systemd.services.k3s.after = [ "network-online.service" "firewall.service" ];
   systemd.services.k3s.serviceConfig.KillMode = pkgs.lib.mkForce "control-group";
 
   # iolite
@@ -301,10 +300,7 @@ in
   };
 
   # https://github.com/NixOS/nixpkgs/issues/98766
-  boot.kernelModules = [ "br_netfilter" "ip_conntrack" "ip_vs" "ip_vs_rr" "ip_vs_wrr" "ip_vs_sh" "overlay" ];
-  networking.firewall.extraCommands = ''
-    iptables -A INPUT -i cni+ -j ACCEPT
-  '';
+  boot.kernelModules = [ "br_netfilter" "nf_conntrack" "ip_vs" "ip_vs_rr" "ip_vs_wrr" "ip_vs_sh" "overlay" ];
 
   virtualisation.docker.enable = true;
 

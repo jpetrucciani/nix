@@ -1,6 +1,8 @@
 final: prev:
 let
   inherit (final.hax) writeBashBinChecked;
+  # pin GNU tools so these behave the same on macOS and NixOS
+  gnuPath = ''export PATH="${final.lib.makeBinPath (with final; [ coreutils findutils gnugrep gnused git ])}:$PATH"'';
 in
 {
   scripts = {
@@ -9,6 +11,7 @@ in
     '';
     check_doc_links = writeBashBinChecked "check-doc-links" ''
       set -euo pipefail
+      ${gnuPath}
 
       broken_links=0
 
@@ -138,6 +141,7 @@ in
     '';
     check_readme_index = writeBashBinChecked "check-readme-index" ''
       set -euo pipefail
+      ${gnuPath}
 
       exhaustive_limit="''${README_INDEX_EXHAUSTIVE_LIMIT:-0}"
       issues=0

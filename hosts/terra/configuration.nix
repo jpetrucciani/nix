@@ -408,14 +408,10 @@ in
 
 
   # https://github.com/NixOS/nixpkgs/issues/98766
-  boot.kernelModules = [ "br_netfilter" "ip_conntrack" "ip_vs" "ip_vs_rr" "ip_vs_wrr" "ip_vs_sh" "overlay" ];
+  boot.kernelModules = [ "br_netfilter" "nf_conntrack" "ip_vs" "ip_vs_rr" "ip_vs_wrr" "ip_vs_sh" "overlay" ];
 
   systemd.services = {
-    # https://github.com/NixOS/nixpkgs/issues/103158
-    k3s = {
-      after = [ "network-online.service" "firewall.service" ];
-      serviceConfig.KillMode = pkgs.lib.mkForce "control-group";
-    };
+    k3s.serviceConfig.KillMode = pkgs.lib.mkForce "control-group";
     ntfy-sh.serviceConfig.EnvironmentFile = config.age.secrets.ntfy.path;
     lemmy.serviceConfig = {
       EnvironmentFile = "/etc/default/lemmy";

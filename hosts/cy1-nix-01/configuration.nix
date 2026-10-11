@@ -94,6 +94,7 @@ in
       instances.goblin = {
         uid = 32001;
         enableNix = true;
+        pidsLimit = 2048;
         packages = with pkgs; [
           aq
           chrome-devtools-mcp-headless

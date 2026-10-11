@@ -18,11 +18,13 @@
 - `nix run .#jfmt -- --ci`: run the repo formatter in CI mode.
 - `nix run .#scripts.check_doc_links`: validate local markdown links.
 - `nix run .#scripts.check_readme_index`: validate `README.md` directory indexes.
+- `nix run .#scripts.check_vale`: run Vale prose linting over tracked Markdown files.
 - `nix build .#nixosConfigurations.voyager.config.system.build.toplevel`: build a specific Linux host.
 - `nix build .#darwinConfigurations.pluto.system`: build a macOS host config.
 - `cd docs && bun run docs:gen`: regenerate generated docs reference pages.
 - `cd docs && bun run docs:build`: build the docs site.
-- `nix flake check`: run flake evaluation checks (use before PRs when possible).
+- `nix flake check`: evaluate all outputs and build the `checks` (CI runs it with `--no-build`, so the checks themselves are only built locally).
+- `nix build .#checks.x86_64-linux.<name>`: build a single check, e.g. `check-pog-scripts` or `snowball-script`.
 
 ## Coding Style & Naming Conventions
 
@@ -33,9 +35,10 @@
 
 ## Testing Guidelines
 
-- There is no dedicated test suite yet; rely on docs checks, targeted `nix build`, and `nix flake check` for the affected host/module.
+- The flake `checks` output is the test suite: `check-pog-scripts` (shellcheck over pog scripts), `module-options-nixos`/`module-options-darwin` (module option evaluation), and the `snowball-*` packaging tests. Build the ones relevant to your change, plus a targeted `nix build` of the affected host/module.
+- CI (`.github/workflows/check.yml`) only evaluates the flake, so it will not catch a check or host that fails to build.
 - When adding packages, prefer a local build of that derivation to validate dependencies.
-- When touching docs or READMEs, run `nix run .#scripts.check_doc_links`, `nix run .#scripts.check_readme_index`, and regenerate/build the docs site when needed.
+- When touching docs or READMEs, run `nix run .#scripts.check_doc_links`, `nix run .#scripts.check_readme_index`, `nix run .#scripts.check_vale`, and regenerate/build the docs site when needed.
 
 ## Commit & Pull Request Guidelines
 

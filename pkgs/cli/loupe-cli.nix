@@ -9,26 +9,16 @@
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "loupe";
-  version = "0.0.1";
+  version = "0.0.2";
 
   src = fetchFromGitHub {
     owner = "jpetrucciani";
     repo = "loupe";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-yf2TBE0Ismb2KvKMxGJeuIfc+MhZcpqt7YoHu7aYE5w=";
+    hash = "sha256-bH/2LGI3JlJ8e8VD8cqPIu7hHaTnrTeKYMP3OABKNfQ=";
   };
 
-  cargoHash = "sha256-NFlkcE6bctxVZDEILDu7KBMMP3dv8CsdzpUsVIzx6NA=";
-
-  # Serial libtest prints the test name before subprocess readiness markers.
-  postPatch = ''
-    substituteInPlace crates/loupe-core/src/cache.rs \
-      --replace-fail 'println!("CACHE_CRASH_READY");' 'println!("\nCACHE_CRASH_READY");'
-    substituteInPlace crates/loupe-core/src/route_store.rs \
-      --replace-fail 'println!("route boundary {stage}");' 'println!("\nroute boundary {stage}");'
-    substituteInPlace crates/loupe-core/src/trigger_state.rs \
-      --replace-fail 'println!("ready");' 'println!("\nready");'
-  '';
+  cargoHash = "sha256-2YcdytfCo3WnPeYCdHmdFfxSPbPfA14nLrsY0SC0Fqc=";
 
   buildFeatures = [ "mcp" "parquet" ];
 

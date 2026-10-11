@@ -156,7 +156,7 @@ rec {
         TEMP_FILE="$(${mktemp})"
         TEMP_FILE_ORIG="$(${mktemp})"
         ERROR_FILE="$(${mktemp})"
-        trap 'rm -f "$TEMP_FILE" "$TEMP_FILE_ORIG" "$ERROR_FILE"' EXIT
+        trap 'rm -f "$TEMP_FILE" "$TEMP_FILE.tmp" "$TEMP_FILE_ORIG" "$ERROR_FILE"' EXIT
 
         debug "fetching latest secret version for '$secret'"
         if ! ${gcloud} secrets versions access latest --secret="$secret" >"$TEMP_FILE" 2>/dev/null; then
@@ -200,9 +200,7 @@ rec {
           ${grep} -v '^#' "$TEMP_FILE" > "$TEMP_FILE.tmp"
           mv "$TEMP_FILE.tmp" "$TEMP_FILE"
 
-          ${grep} -v '^#' "$TEMP_FILE_ORIG" > "$TEMP_FILE_ORIG.tmp"
-
-          JSON_ERROR=$(jq . "$TEMP_FILE" 2>&1 >/dev/null)
+          JSON_ERROR=$(${jq} . "$TEMP_FILE" 2>&1 >/dev/null)
           # shellcheck disable=SC2181
           if [ $? -ne 0 ]; then
               red "invalid JSON formatting!"

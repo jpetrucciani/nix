@@ -1,54 +1,46 @@
-#!/bin/bash
-# shellcheck disable=SC2181
-all=.git-trim-all
-keep=.git-trim-keep
+#!/usr/bin/env bash
+# interactively delete local branches, or remote branches when given a remote name
+set -euo pipefail
 
-cleanup() {
-  rm $all $keep
-}
+all=$(mktemp)
+keep=$(mktemp)
+trap 'rm -f "$all" "$keep"' EXIT
 
 if [ $# -eq 0 ]; then
-  branches=$(git branch)
+  current=$(git symbolic-ref --quiet --short HEAD || true)
+  git for-each-ref --format='%(refname:short)' refs/heads | { grep -vxF -- "$current" || true; } >"$all"
 else
-  branches=$(git ls-remote --heads "$1" | awk '{print $2}' | awk 'BEGIN { FS = "/" } ; {print $3}')
+  git ls-remote --heads "$1" | awk '{print $2}' | sed 's|^refs/heads/||' >"$all"
 fi
 
-if [ $? != 0 ]; then
-  exit 1
-fi
-
-# shellcheck disable=SC2063
-echo "$branches" | grep -v '^*' | sed 's/^  //' | tee $all $keep >/dev/null
-
-if [ "$(wc -l <$all)" == 0 ]; then
+if [ ! -s "$all" ]; then
   echo "No branches found to delete (cannot delete current branch)."
-  cleanup
   exit 0
 fi
 
-cat >>$keep <<EOF
+cp "$all" "$keep"
+cat >>"$keep" <<EOF
 
 #  Remove the branches you would like to delete.
 
 EOF
 
-eval "$EDITOR" "$keep"
-
-if [ $? != 0 ]; then
-  echo "Unable to open editor '$EDITOR'. Check value of \$EDITOR and try again."
-  cleanup
+editor=${EDITOR:-vi}
+if ! eval "$editor" '"$keep"'; then
+  echo "Unable to open editor '$editor'. Check value of \$EDITOR and try again."
   exit 1
 fi
 
-delete=$(diff --suppress-common-lines $all $keep | grep '^< ' | awk '{print $2}')
-
-if [ $# -eq 0 ]; then
-  # shellcheck disable=SC2086
-  echo $delete | xargs git branch -D
-else
-  for branch in $delete; do
-    git push "$1" ":$branch"
-  done
+mapfile -t delete < <(grep -vxF -f "$keep" "$all" || true)
+if [ ${#delete[@]} -eq 0 ]; then
+  echo "Nothing to delete."
+  exit 0
 fi
 
-cleanup
+if [ $# -eq 0 ]; then
+  git branch -D -- "${delete[@]}"
+else
+  for branch in "${delete[@]}"; do
+    git push "$1" ":refs/heads/$branch"
+  done
+fi
