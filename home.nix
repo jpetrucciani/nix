@@ -689,7 +689,7 @@ in
         "AGENTS.md"
         "SPEC.md"
         "TODO.md"
-        "result*"
+        "/result*"
       ];
     };
 

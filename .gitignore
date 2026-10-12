@@ -1,7 +1,7 @@
 .history/
 .vscode/
 # secrets
-result*
+/result*
 .old/
 node_modules/
 /pkgs/cli/e2b-cli/package-lock.json

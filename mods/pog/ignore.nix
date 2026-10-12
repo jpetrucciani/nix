@@ -24,7 +24,7 @@
   nix = ''
     .db
     .direnv
-    result*
+    /result*
   '';
   node = ''
     node_modules/
