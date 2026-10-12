@@ -6,16 +6,16 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "ferry";
-  version = "0.0.1";
+  version = "0.0.2";
 
   src = fetchFromGitHub {
     owner = "jpetrucciani";
     repo = "ferry";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-SuuXTdbgBCZ+Wvyu+EzGdA+nOKZBis/Jf1+hm/JhfjM=";
+    hash = "sha256-1YpuMJNVF4/zxgupZnN/kVchjBv0lGzsB1NgYyJvJ7U=";
   };
 
-  cargoHash = "sha256-Hj7z0MFDhEFzA4aEOOTi41VYsUcRNvae69mYwXgIgKs=";
+  cargoHash = "sha256-SkkYGa7d+EvyjpN/9YkYK+MFshPwdXPjdZFhs/cRl20=";
 
   meta = {
     description = "a stdio/sse/streamable http transport to ferry your mcp access across the network/proxies";
