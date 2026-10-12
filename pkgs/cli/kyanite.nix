@@ -6,16 +6,16 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "kyanite";
-  version = "0.1.2";
+  version = "0.2.0";
 
   src = fetchFromGitHub {
     owner = "gemologic";
     repo = "kyanite";
     rev = "v${version}";
-    hash = "sha256-1wkF5JH9VFiwvhcpijMEia3m4SfK23E7tIobaa3D3/8=";
+    hash = "sha256-V07ph6p6LIyGSD3u7952S+q9MEnUfkyOsBFCnRyCrX8=";
   };
 
-  cargoHash = "sha256-BA4y8ATYuBK5Koey6+TCn9ygNlFQmS0AY1DKs61FMTc=";
+  cargoHash = "sha256-xCekY3ID5BixBsgXSZJ7/OSqZ71iaK4YJU98TXvRzZI=";
 
   meta = {
     description = "high-performance parallel command execution tool for Rust, inspired by GNU parallel and xargs";
