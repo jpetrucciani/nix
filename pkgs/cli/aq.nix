@@ -4,16 +4,16 @@
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "aq";
-  version = "0.2.0";
+  version = "0.2.1";
 
   src = fetchFromGitHub {
     owner = "jpetrucciani";
     repo = "aq";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-N54wR+Bgf72FCJepvb6spiDG3+i/JMLxUyAuE3rySeM=";
+    hash = "sha256-eRrF2kvZUMPtMfXgNThFER7gGLNEylB8p/mB0d3fWhs=";
   };
 
-  cargoHash = "sha256-ZamSDgRH9Rp+2/e7rN73yv5tUq1UbLdJkpBPJaruXII=";
+  cargoHash = "sha256-YCXxvIUQ5ehZGtmFX4npW8iLtHHiQ4okiD5WLObRuig=";
 
   meta = {
     description = "Multi-format data processing tool";
