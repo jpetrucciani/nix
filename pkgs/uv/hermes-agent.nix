@@ -13,13 +13,13 @@
 }:
 let
   name = "hermes-agent";
-  version = "0.21.6";
+  version = "0.22.0";
 
   src = uv-nix.fetchGitHubWorkspace {
     owner = "NousResearch";
     repo = name;
     rev = "refs/tags/v${version}";
-    hash = "12pcg3zis64mpq90jd28gk8pil74bdj86pgqqmw2chd5yvwghi4w";
+    hash = "0hmggxfwi7yin7jmq7mv0fym7vbs6m5gw671n8j8rzjxs9jmh20g";
   };
 
   uvEnv = uv-nix.mkEnv {
@@ -68,7 +68,7 @@ let
 
   installStamp = builtins.toJSON {
     schemaVersion = 2;
-    commit = "818c13be1dc4fd28987e1e881a9408224afd4535";
+    commit = "e06df9c2eae6901f4c88f464e0ae6e753c0428b8";
     baseVersion = version;
     displayVersion = version;
     distance = 0;
