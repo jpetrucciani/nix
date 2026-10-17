@@ -82,7 +82,10 @@
         (system: lib.mapAttrs (_: package: package.drvPath) packageSets.${system}.__j_eval_packages);
       autoUpdatePackages = forAllSystems
         (system: builtins.attrNames (lib.filterAttrs
-          (_: package: package ? passthru && package.passthru ? updateScript)
+          (_: package:
+            package ? passthru
+            && package.passthru ? updateScript
+            && !(package.passthru.skipUpdate or false))
           packageSets.${system}.__j_packages));
       packages = forAllSystems
         (system: packageSets.${system}.__j_packages);

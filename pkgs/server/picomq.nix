@@ -79,6 +79,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   # TODO: 2026-10-05 @jpetrucciani Remove this guard after confirming the updater succeeds with nixpkgs Rust 1.98.
   passthru = lib.optionalAttrs (lib.versionAtLeast rustPlatform.rust.rustc.version "1.98") {
+    skipUpdate = true;
     updateScript = nix-update-script {
       extraArgs = [
         "--version=branch=main"

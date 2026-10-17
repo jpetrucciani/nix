@@ -45,6 +45,9 @@ Packages opt into `update_pkgs.yml` by exposing `passthru.updateScript`. The wor
 list from `lib.autoUpdatePackages.x86_64-linux`, excludes packages marked with `meta.skipBuild`, and opens one update
 pull request per package.
 
+Set `passthru.skipUpdate = true` to exclude a package from automatic updates while keeping its `passthru.updateScript`
+available for manual use. Packages without this flag remain eligible for automatic updates.
+
 Third-party GitHub Actions are pinned to commit SHAs. Dependabot continues to track their version updates.
 
 ## Why This Matters
