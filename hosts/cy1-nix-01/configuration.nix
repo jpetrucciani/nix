@@ -3,6 +3,11 @@ let
   hostname = "cy1-nix-01";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
   ts_ip = common.hostRecords.tailnet.${hostname};
+  # goblin's tumbler secrets, as secrets/goblin/<name>.age. The worker stays off until all exist.
+  goblinSecrets = [ "token" "ssh" "gitlab.com" ];
+  goblinFile = name: ../../secrets/goblin/${name}.age;
+  goblinReady = builtins.all (name: builtins.pathExists (goblinFile name)) goblinSecrets;
+  goblinSecret = name: config.age.secrets."tumbler-goblin-${name}".path;
 in
 {
   imports = [
@@ -10,11 +15,24 @@ in
     (common.tailnetSocks { ip = ts_ip; maxConnections = 200; })
     ./hardware-configuration.nix
     ../modules/conf/blackedge.nix
+    ../modules/servers/bezel-tumbler.nix
     ../modules/servers/hermes-agent.nix
     ../modules/servers/titanite.nix
   ];
 
   inherit (common) zramSwap swapDevices;
+
+  age = {
+    identityPaths = [ "/home/jacobi/.ssh/id_ed25519" ];
+    secrets = pkgs.lib.optionalAttrs goblinReady (pkgs.lib.genAttrs' goblinSecrets (name: pkgs.lib.nameValuePair "tumbler-goblin-${name}" {
+      file = goblinFile name;
+      owner = "tumbler-goblin";
+      group = "tumbler-goblin";
+      mode = "0400";
+    }));
+  };
+
+  warnings = pkgs.lib.optional (!goblinReady) "tumbler goblin is off until secrets/goblin/{${pkgs.lib.concatStringsSep "," goblinSecrets}}.age exist.";
 
   nix = common.nix-be // {
     package = pkgs._nix;
@@ -89,6 +107,26 @@ in
 
   services = {
     cron.enable = true;
+    bezel-tumbler = {
+      enable = goblinReady;
+      bezelUrl = "wss://bz.cobi.dev/v1/worker";
+      packages = with pkgs; [ glab jq ripgrep ];
+      instances.goblin = {
+        uid = 32103;
+        maxConcurrent = 2;
+        tokenFile = goblinSecret "token";
+        git = {
+          email = "pog+goblin@cobi.dev";
+          sshKeyFile = goblinSecret "ssh";
+        };
+        harnesses = [ "codex" "claude" ];
+        forges."gitlab.com" = {
+          kind = "gitlab";
+          tokenFile = goblinSecret "gitlab.com";
+          repos = [ "blackedge/**" ];
+        };
+      };
+    };
     hermes-agent = {
       enable = true;
       instances.goblin = {
@@ -98,6 +136,8 @@ in
         packages = with pkgs; [
           aq
           chrome-devtools-mcp-headless
+          claude-code
+          codex-latest
           curl
           duckdb
           fd

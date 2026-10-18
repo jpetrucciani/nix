@@ -32,6 +32,41 @@ configurable:
 }
 ```
 
+### [bezel-tumbler.nix](./bezel-tumbler.nix)
+
+Run tumbler workers for a bezel control plane. Each instance is a worker identity in its own rootless Podman container
+(own host user and UID, read-only root, the host Nix daemon for repo dev environments) that dials out to bezel over a
+websocket, claims tasks, runs a coding agent harness (codex and claude are predefined), and opens PRs/MRs as its own
+forge identity. The default package is `pkgs.tumbler`, a static binary release.
+
+```nix
+{
+  imports = [ ../modules/servers/bezel-tumbler.nix ];
+  virtualisation.oci-containers.backend = "podman";
+
+  services.bezel-tumbler = {
+    enable = true;
+    bezelUrl = "ws://100.95.106.112:7700/v1/worker";
+    # On PATH in every instance; `instances.<name>.packages` and `harnesses.<name>.packages` add more.
+    packages = with pkgs; [ gh jq ripgrep ];
+    instances.example = {
+      uid = 32102;
+      tokenFile = "/run/agenix/tumbler-example-token";
+      git = {
+        email = "tumbler+example@example.dev";
+        sshKeyFile = "/run/agenix/tumbler-example-ssh";
+      };
+      harnesses = [ "codex" ];
+      forges."github.com" = {
+        kind = "github";
+        tokenFile = "/run/agenix/tumbler-example-github";
+        repos = [ "jpetrucciani/*" ];
+      };
+    };
+  };
+}
+```
+
 ### [buzz-agents.nix](./buzz-agents.nix)
 
 Run a shared fleet of Buzz ACP agents in Podman containers. Each host runs the enabled agents whose `host` matches its

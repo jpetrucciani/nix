@@ -80,6 +80,14 @@ Run `nix run .#titanite.refreshScript -- VERSION` to refresh every platform arti
 
 Pinned release version and platform hashes consumed by the package.
 
+### [tumbler.nix](./tumbler.nix)
+
+tumbler runs coding agent workers for a bezel control plane.
+
+### [tumbler.json](./tumbler.json)
+
+Pinned release version and platform hashes consumed by the package.
+
 ### [viz.nix](./viz.nix)
 
 viz is an experimental markdown+mermaid scratch pad server

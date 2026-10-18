@@ -11,6 +11,10 @@
     };
     hex.url = "github:jpetrucciani/hex";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    iets = {
+      url = "github:numtide/iets";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-darwin.flake = true;
     nix2container.url = "github:nlewo/nix2container?ref=d6d89f6dd7ed98b56f7dd783047983ef941bf4f9";
     nixos-hardware.flake = true;

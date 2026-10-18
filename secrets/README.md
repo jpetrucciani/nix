@@ -53,6 +53,14 @@ nix build .#nixosConfigurations.terra.config.system.build.toplevel
 
 agenix-encrypted secret material for authelia.
 
+### [bella/](./bella/)
+
+Encrypted worker token, SSH key, and forge API tokens for Bella's tumbler on Titan.
+
+### [goblin/](./goblin/)
+
+Encrypted worker token, SSH key, and GitLab API token for Goblin's tumbler on cy1-nix-01.
+
 ### [miniflux.age](./miniflux.age)
 
 agenix-encrypted secret material for miniflux.

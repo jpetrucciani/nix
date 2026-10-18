@@ -94,6 +94,7 @@ in
         hgrep
         html-to-markdown
         htmlq
+        iets
         ivy
         jq
         just
@@ -270,7 +271,8 @@ in
       now = "date +%s";
       uneek = "awk '!a[$0]++'";
 
-      # nix profile
+      # nix
+      n = "iets";
       npug = "nix profile upgrade --refresh";
       nlist = "nix profile list";
     } // docker_aliases // kubernetes_aliases;
@@ -326,6 +328,12 @@ in
       # bash completions
       source "${pkgs.kubectl}/share/bash-completion/completions/kubectl.bash"
       source "${pkgs.gitFull}/share/bash-completion/completions/git"
+      source "${pkgs.iets}/share/bash-completion/completions/iets.bash"
+      _iets_n() {
+        local -a COMP_WORDS=("${pkgs.iets}/bin/iets" "''${COMP_WORDS[@]:1}")
+        _iets "$@"
+      }
+      complete -F _iets_n n
       complete -o bashdefault -o default -o nospace -F __git_wrap__git_main g
       complete -F __start_kubectl k
       complete -F _kube_contexts kubectx kx

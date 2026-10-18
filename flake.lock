@@ -20,6 +20,21 @@
         "type": "github"
       }
     },
+    "crane": {
+      "locked": {
+        "lastModified": 1790899423,
+        "narHash": "sha256-THGtz65UGJU+sonZidRboyCMk+9DclpMF7pwL4uDV4M=",
+        "owner": "ipetkov",
+        "repo": "crane",
+        "rev": "47b6b27ed9a3a9181415e4367d0c30ab2a0e0250",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ipetkov",
+        "repo": "crane",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -228,6 +243,27 @@
       "original": {
         "id": "home-manager",
         "type": "indirect"
+      }
+    },
+    "iets": {
+      "inputs": {
+        "crane": "crane",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792248139,
+        "narHash": "sha256-fxYDHRZt3FEHUut/SkdR5hVtXrwFv3C1gXcbP8N3vp4=",
+        "owner": "numtide",
+        "repo": "iets",
+        "rev": "e1c664492b0ba8c4c4f5b76d34fa0e35142ddf40",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "iets",
+        "type": "github"
       }
     },
     "nix-darwin": {
@@ -636,6 +672,7 @@
         "flake-compat": "flake-compat",
         "hex": "hex",
         "home-manager": "home-manager",
+        "iets": "iets",
         "nix-darwin": "nix-darwin",
         "nix-std": "nix-std",
         "nix2container": "nix2container",

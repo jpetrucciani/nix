@@ -4,12 +4,18 @@ let
   hostname = "titan";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
   whisperModelPath = "/var/lib/whisper-cpp/models/ggml-large-v3-turbo-q8_0.bin";
+  # bella's tumbler secrets, as secrets/bella/<name>.age. The worker stays off until all exist.
+  bellaSecrets = [ "token" "ssh" "github.com" "git.cobi.dev" ];
+  bellaFile = name: ../../secrets/bella/${name}.age;
+  bellaReady = builtins.all (name: builtins.pathExists (bellaFile name)) bellaSecrets;
+  bellaSecret = name: config.age.secrets."tumbler-bella-${name}".path;
 in
 {
   imports = [
     "${common.home-manager}/nixos"
     ./hardware-configuration.nix
     ../modules/servers/ace-step.nix
+    ../modules/servers/bezel-tumbler.nix
     ../modules/servers/h2o-lightning-4b.nix
     ../modules/servers/sglang-omni.nix
     ../modules/servers/whisper-cpp.nix
@@ -21,6 +27,18 @@ in
   ]);
 
   inherit (common) zramSwap swapDevices;
+
+  age = {
+    identityPaths = [ "/home/jacobi/.ssh/id_ed25519" ];
+    secrets = pkgs.lib.optionalAttrs bellaReady (pkgs.lib.genAttrs' bellaSecrets (name: pkgs.lib.nameValuePair "tumbler-bella-${name}" {
+      file = bellaFile name;
+      owner = "tumbler-bella";
+      group = "tumbler-bella";
+      mode = "0400";
+    }));
+  };
+
+  warnings = pkgs.lib.optional (!bellaReady) "tumbler bella is off until secrets/bella/{${pkgs.lib.concatStringsSep "," bellaSecrets}}.age exist.";
 
   nix = common.nix-cuda // {
     nixPath = [
@@ -81,6 +99,33 @@ in
 
   services = {
     xserver.videoDrivers = [ "nvidia" ];
+    bezel-tumbler = {
+      enable = bellaReady;
+      bezelUrl = "wss://bz.cobi.dev/v1/worker";
+      packages = with pkgs; [ gh jq ripgrep ];
+      instances.bella = {
+        uid = 32102;
+        maxConcurrent = 2;
+        tokenFile = bellaSecret "token";
+        git = {
+          email = "pog+bella@cobi.dev";
+          sshKeyFile = bellaSecret "ssh";
+        };
+        harnesses = [ "codex" "claude" ];
+        forges = {
+          "github.com" = {
+            kind = "github";
+            tokenFile = bellaSecret "github.com";
+            repos = [ "gemologic/*" "jpetrucciani/*" ];
+          };
+          "git.cobi.dev" = {
+            kind = "forgejo";
+            tokenFile = bellaSecret "git.cobi.dev";
+            repos = [ "gemologic/*" ];
+          };
+        };
+      };
+    };
     h2o-lightning-4b = {
       enable = true;
       address = "0.0.0.0";
