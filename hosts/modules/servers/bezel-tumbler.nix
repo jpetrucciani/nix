@@ -320,6 +320,7 @@ let
       i.settings);
 
   imagePackages = i: with pkgs; [
+    aq
     i.package
     bashInteractive
     cacert
@@ -526,7 +527,7 @@ in
       };
       codex = {
         command = mkDefault [ "codex-acp" ];
-        packages = mkDefault (with pkgs; [ codex-acp codex ]);
+        packages = mkDefault (with pkgs; [ codex-acp codex-latest ]);
         # The container is the sandbox and tumbler approves every permission request, so
         # codex's own sandbox and approval reviews only slow runs down. Everything else (model,
         # reasoning effort, ...) lives in ~/.codex/config.toml in the persistent home, where
