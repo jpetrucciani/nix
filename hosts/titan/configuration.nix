@@ -116,7 +116,7 @@ in
           "github.com" = {
             kind = "github";
             tokenFile = bellaSecret "github.com";
-            repos = [ "gemologic/*" "jpetrucciani/*" ];
+            repos = [ "gemologic/*" "jpetrucciani/*" "alcazarix/*" ];
           };
           "git.cobi.dev" = {
             kind = "forgejo";
