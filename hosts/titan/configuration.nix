@@ -4,6 +4,7 @@ let
   hostname = "titan";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
   whisperModelPath = "/var/lib/whisper-cpp/models/ggml-large-v3-turbo-q8_0.bin";
+  ts_ip = common.hostRecords.tailnet.${hostname};
   # bella's tumbler secrets, as secrets/bella/<name>.age. The worker stays off until all exist.
   bellaSecrets = [ "token" "ssh" "github.com" "git.cobi.dev" ];
   bellaFile = name: ../../secrets/bella/${name}.age;
@@ -99,6 +100,28 @@ in
 
   services = {
     xserver.videoDrivers = [ "nvidia" ];
+    # Qwen3-Embedding-4B for semantic search (bezel, via litellm as `qwen3-embedding-4b`), on the
+    # tailnet only. The GGUF downloads into /var/cache/llama-cpp on first start. Inputs are short
+    # (bezel sends at most 2000 characters), so eight 2048-token slots keep the KV cache near 2 GB
+    # next to the ~4.5 GB of weights.
+    llama-cpp = {
+      enable = true;
+      package = pkgs.llama-cpp-cuda-latest;
+      settings = {
+        host = ts_ip;
+        port = 8016;
+        hf-repo = "Qwen/Qwen3-Embedding-4B-GGUF:Q8_0";
+        alias = "qwen3-embedding-4b";
+        embedding = true;
+        pooling = "last";
+        n-gpu-layers = 99;
+        flash-attn = "on";
+        ctx-size = 8192;
+        parallel = 8;
+        batch-size = 2048;
+        ubatch-size = 2048;
+      };
+    };
     bezel-tumbler = {
       enable = bellaReady;
       bezelUrl = "wss://bz.cobi.dev/v1/worker";
@@ -266,7 +289,12 @@ in
     };
   } // common.services;
 
-  systemd.services.llama-cpp.environment.CUDA_VISIBLE_DEVICES = "0";
+  systemd.services.llama-cpp = {
+    environment.CUDA_VISIBLE_DEVICES = "0";
+    # It binds the tailnet address, which only exists once tailscale is up.
+    after = [ "tailscaled.service" ];
+    wants = [ "tailscaled.service" ];
+  };
 
   system.stateVersion = "23.11";
   security.sudo = common.security.sudo;
