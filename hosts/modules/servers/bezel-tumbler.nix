@@ -12,6 +12,10 @@ let
 
   # Paths inside the container.
   home = "/var/lib/tumbler/home";
+  # The unprivileged user everything in the container runs as. `--userns=keep-id` maps the host
+  # instance user to it, so the state, secrets and Nix daemon access stay that user's.
+  containerUid = 1000;
+  idPair = "${toString containerUid}:${toString containerUid}";
   secrets = "/secrets";
 
   forgeType = submodule {
@@ -374,8 +378,8 @@ let
         chmod 1777 tmp var/tmp
         cp ${gitConfig i} etc/gitconfig
         ${lib.optionalString (i.git.sshKeyFile != null) "cp ${sshConfig} etc/ssh/ssh_config"}
-        printf '%s\n' 'root:x:0:0:tumbler:${home}:/bin/bash' > etc/passwd
-        printf '%s\n' 'root:x:0:' > etc/group
+        printf '%s\n' 'root:x:0:0:root:/var/empty:/bin/false' 'tumbler:x:${toString containerUid}:${toString containerUid}:tumbler:${home}:/bin/bash' > etc/passwd
+        printf '%s\n' 'root:x:0:' 'tumbler:x:${toString containerUid}:' > etc/group
         ln -s ${pkgs.coreutils}/bin/env usr/bin/env
       '';
       config = {
@@ -388,7 +392,7 @@ let
           "GIT_CONFIG_SYSTEM=/etc/gitconfig"
           "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
         ];
-        User = "0:0";
+        User = idPair;
         WorkingDir = home;
       };
     };
@@ -404,7 +408,7 @@ let
     image = "localhost/tumbler-${name}:nixos";
     imageStream = mkImage name i;
     pull = "never";
-    user = "0:0";
+    user = idPair;
     workdir = home;
     hostname = "tumbler-${name}";
     podman.user = i.user;
@@ -428,13 +432,14 @@ let
     capabilities.ALL = false;
     networks = optional (i.network != null) i.network;
     extraOptions = [
+      "--userns=keep-id:uid=${toString containerUid},gid=${toString containerUid}"
       "--security-opt=no-new-privileges"
       "--read-only"
       "--pids-limit=${toString i.pidsLimit}"
       "--stop-timeout=${toString i.stopTimeout}"
       "--tmpfs=/run:rw,nosuid,nodev,size=64m"
-      "--tmpfs=/tmp:rw,nosuid,nodev,size=${i.tmpSize}"
-      "--tmpfs=/var/tmp:rw,nosuid,nodev,size=1g"
+      "--tmpfs=/tmp:rw,nosuid,nodev,mode=1777,size=${i.tmpSize}"
+      "--tmpfs=/var/tmp:rw,nosuid,nodev,mode=1777,size=1g"
     ]
     ++ optional (i.cpus != null) "--cpus=${i.cpus}"
     ++ optional (i.memory != null) "--memory=${i.memory}"
