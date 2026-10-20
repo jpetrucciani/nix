@@ -17,6 +17,9 @@ let
   containerUid = 1000;
   idPair = "${toString containerUid}:${toString containerUid}";
   secrets = "/secrets";
+  fontsConf = pkgs.makeFontsConf {
+    fontDirectories = with pkgs; [ dejavu_fonts liberation_ttf noto-fonts-color-emoji ];
+  };
 
   forgeType = submodule {
     options = {
@@ -300,7 +303,7 @@ let
 
   configFile = name: i:
     tomlFormat.generate "tumbler-${name}.toml" (recursiveUpdate
-      {
+      ({
         inherit (i) profile capabilities;
         harness = map (n: harnessToml n cfg.harnesses.${n}) i.harnesses;
         host = config.networking.hostName;
@@ -320,7 +323,11 @@ let
             token_file = "${secrets}/forge-${host}";
           } // optionalAttrs (f.apiUrl != null) { api_url = f.apiUrl; })
           i.forges;
-      }
+      } // optionalAttrs (cfg.browserMcp != null) {
+        # Podman's /dev/shm is 64m, too small for Chrome's shared memory.
+        # It writes files (screenshots) only under the run's worktree, which tumbler fills in.
+        browser_mcp = [ (lib.getExe cfg.browserMcp) "--chrome-arg=--disable-dev-shm-usage" "--filesystem-root={worktree}" ];
+      })
       i.settings);
 
   imagePackages = i: with pkgs; [
@@ -420,6 +427,9 @@ let
       NIX_PATH = "nixpkgs=${pkgs.path}";
       NIX_CONFIG = "experimental-features = nix-command flakes";
       NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+      # The image has no /etc/fonts; without this, headless Chrome (previews, screenshots, the
+      # agent's browser) renders pages with no text.
+      FONTCONFIG_FILE = "${fontsConf}";
     };
     volumes = [
       "${i.stateDir}/data:/var/lib/tumbler:rw"
@@ -506,6 +516,16 @@ in
       default = [ ];
       example = literalExpression "with pkgs; [ gh jq ripgrep ]";
       description = "Tools on PATH in every instance on this box.";
+    };
+
+    browserMcp = mkOption {
+      type = nullOr package;
+      default = pkgs.chrome-devtools-mcp-headless or null;
+      defaultText = literalExpression "pkgs.chrome-devtools-mcp-headless or null";
+      description = ''
+        stdio MCP server giving agents a headless browser, run as `bin/<mainProgram>`. Runs in
+        repos with `[preview]` get it as `chrome`, to check their UI changes. Null turns it off.
+      '';
     };
 
     bezelUrl = mkOption {
