@@ -8,7 +8,14 @@ This directory contains Model Context Protocol (MCP) servers
 
 ### [chrome-devtools-mcp-headless.nix](./chrome-devtools-mcp-headless.nix)
 
-[`chrome-devtools-mcp`](https://www.npmjs.com/package/chrome-devtools-mcp) runs the Chrome DevTools MCP server with the bundled Chromium in headless mode.
+[`chrome-devtools-mcp`](https://www.npmjs.com/package/chrome-devtools-mcp) runs the Chrome DevTools MCP server with a bundled browser in headless mode.
+Linux uses Chromium; Apple Silicon macOS (`aarch64-darwin`) uses nixpkgs' Google Chrome package, which has an unfree license.
+Nix pins upstream's bundled JavaScript release by version and hash, with Bun and the browser in the runtime closure.
+Startup needs no `bunx`, npm registry access, or browser downloads; update checks, usage statistics, and CrUX requests are disabled.
+For airgapped use, transfer the complete runtime closure to the target machine with `nix copy` or `nix-store --export` / `--import`.
+Browser profiles and caches still need writable runtime storage.
+Update the MCP bundle with `nix run .#nupdate -- chrome-devtools-mcp-headless`; the scheduled package updater also includes it.
+The browser and Bun follow the repository's nixpkgs pin and update with the flake lock.
 
 ### [ferry.nix](./ferry.nix)
 
