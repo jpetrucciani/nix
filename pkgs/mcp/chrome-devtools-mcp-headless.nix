@@ -5,10 +5,19 @@
 , nix-update-script
 , bun
 , chromium
+, dejavu_fonts
+, liberation_ttf
+, makeFontsConf
+, noto-fonts-color-emoji
 , google-chrome
 }:
 let
   browser = if stdenvNoCC.hostPlatform.isDarwin then google-chrome else chromium;
+  # MCP clients (codex) often start servers with a scrubbed env, and Chromium with no fonts
+  # renders blank text, then aborts in font fallback on most real pages.
+  fontsConf = makeFontsConf {
+    fontDirectories = [ dejavu_fonts liberation_ttf noto-fonts-color-emoji ];
+  };
 
   # Upstream's npm release bundles its runtime JavaScript dependencies.
   server = stdenvNoCC.mkDerivation (finalAttrs: {
@@ -41,6 +50,7 @@ writeShellApplication {
     export PUPPETEER_EXECUTABLE_PATH="$CHROME_BIN"
     export XDG_CACHE_HOME="''${XDG_CACHE_HOME:-$HOME/.cache}"
     export CHROME_DEVTOOLS_MCP_NO_UPDATE_CHECKS=1
+    ${lib.optionalString stdenvNoCC.hostPlatform.isLinux ''export FONTCONFIG_FILE="''${FONTCONFIG_FILE:-${fontsConf}}"''}
 
     exec ${lib.getExe bun} ${server}/build/src/bin/chrome-devtools-mcp.js \
       --headless \
@@ -55,6 +65,7 @@ writeShellApplication {
   '';
   derivationArgs.version = server.version;
   passthru = {
+    inherit browser;
     inherit (server) src;
     updateScript = nix-update-script { };
   };

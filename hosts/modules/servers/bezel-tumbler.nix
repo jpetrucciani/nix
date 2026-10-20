@@ -327,6 +327,8 @@ let
         # Podman's /dev/shm is 64m, too small for Chrome's shared memory.
         # It writes files (screenshots) only under the run's worktree, which tumbler fills in.
         browser_mcp = [ (lib.getExe cfg.browserMcp) "--chrome-arg=--disable-dev-shm-usage" "--filesystem-root={worktree}" ];
+        # Tumbler's own `[preview]` screenshots, with the same Chromium the agent's browser uses.
+        browser = lib.getExe (cfg.browserMcp.browser or pkgs.chromium);
       })
       i.settings);
 
