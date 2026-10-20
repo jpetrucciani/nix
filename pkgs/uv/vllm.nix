@@ -3,7 +3,6 @@
 , lib
 , uv-nix
 , cudatoolkit
-, cudaPackages
 , clang
 , ninja
 , mkVllmRefresh
@@ -14,15 +13,6 @@
 }:
 let
   ldPath = if isWSL then "/usr/lib/wsl/lib" else "/run/opengl-driver/lib";
-  # JIT compilation uses the toolchain and libraries. Omit debugging tools,
-  # whose executables fail during patchelf's driver-runpath fixup.
-  cudaToolkit = cudatoolkit.overrideAttrs (old: {
-    paths = lib.subtractLists
-      (lib.concatMap
-        (pkg: map (output: toString pkg.${output}) pkg.outputs)
-        (with cudaPackages; [ cuda_gdb cuda_sanitizer_api ]))
-      old.paths;
-  });
   extraDependencies = [
     "flashinfer-python>=0.6.12"
     "openai>=2.25.0"
@@ -47,16 +37,16 @@ uv-nix.buildUvPackage rec {
     done
     wrapProgram $out/bin/vllm \
       --set LD_LIBRARY_PATH "$wheelCudaLibs:${ldPath}" \
-      --set CUDA_HOME "${cudaToolkit}" \
-      --set CUDA_PATH "${cudaToolkit}" \
-      --prefix CPATH : "${cudaToolkit}/include" \
-      --prefix CPLUS_INCLUDE_PATH : "${cudaToolkit}/include" \
-      --prefix LIBRARY_PATH : "${cudaToolkit}/lib" \
+      --set CUDA_HOME "${cudatoolkit}" \
+      --set CUDA_PATH "${cudatoolkit}" \
+      --prefix CPATH : "${cudatoolkit}/include" \
+      --prefix CPLUS_INCLUDE_PATH : "${cudatoolkit}/include" \
+      --prefix LIBRARY_PATH : "${cudatoolkit}/lib" \
       --set TRITON_LIBCUDA_PATH "${ldPath}" \
-      --set TRITON_PTXAS_PATH "${cudaToolkit}/bin/ptxas" \
+      --set TRITON_PTXAS_PATH "${cudatoolkit}/bin/ptxas" \
       --prefix PATH : ${
         lib.makeBinPath [
-          cudaToolkit
+          cudatoolkit
           clang
           ninja
         ]

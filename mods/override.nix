@@ -2,6 +2,12 @@
 final: prev:
 let
   inherit (final.stdenv.hostPlatform) isDarwin;
+  cudaDriverRunpath = pkg: pkg.overrideAttrs (old: {
+    # Header sorting corrupts these executables; a second RPATH rewrite aborts.
+    patchelfFlags = (old.patchelfFlags or [ ]) ++ [ "--no-sort" ];
+    dontUseAutoAddDriverRunpath = true;
+    appendRunpaths = (old.appendRunpaths or [ ]) ++ [ "${final.addDriverRunpath.driverLink}/lib" ];
+  });
 in
 {
   # fix for getting yank working on darwin
@@ -42,13 +48,8 @@ in
       };
     });
 
-  # issue with cuda_gdb https://github.com/NixOS/nixpkgs/issues/398249
   cudaPackages = prev.cudaPackages.overrideScope (_final: _prev: {
-    cuda_gdb = _prev.cuda_gdb.overrideAttrs (old: {
-      installPhase = ''
-        ${old.installPhase}
-        find $bin -name '*python3.9*' -delete
-      '';
-    });
+    cuda_gdb = cudaDriverRunpath _prev.cuda_gdb;
+    cuda_sanitizer_api = cudaDriverRunpath _prev.cuda_sanitizer_api;
   });
 }

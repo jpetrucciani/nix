@@ -638,6 +638,14 @@ let
                 buildInputs = (old.buildInputs or [ ]) ++ cudaRuntimeInputs ++ (with _pkgs.cudaPackages; [
                   cuda_cudart
                 ]);
+                # The 0.0.10+ loader selects a CUDA-major-specific binary.
+                # Drop the CUDA 12 copies when the lock only supplies CUDA 13.
+                postInstall = (old.postInstall or "") + final.lib.optionalString
+                  (final.lib.versionAtLeast old.version "0.0.10"
+                    && builtins.hasAttr "nvidia-cuda-runtime" _prev
+                    && !(builtins.hasAttr "nvidia-cuda-runtime-cu12" _prev)) ''
+                  rm -f "$out/${python.sitePackages}"/torch_memory_saver_hook_mode_{preload,torch}{,_cu12}.*.so
+                '';
                 preFixup = (old.preFixup or "") + ''
                   ${addAutoPatchelfSearchInputs cudaRuntimeInputs}
                 '';
