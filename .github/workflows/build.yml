@@ -30,10 +30,7 @@ jobs:
             extra-substituters = https://cache.g7c.us https://nix-community.cachix.org
             extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
       - run: nix eval --json --no-write-lock-file .#lib.customPackageDrvPaths.${{ matrix.system }} >/dev/null
-      - run: nix --show-trace build .#__j_custom .#zaddy .#llama-cpp-latest .#whisper-cpp-latest
-        if: ${{ matrix.system == 'aarch64-darwin' }}
-      - run: nix --show-trace build .#__j_custom .#zaddy .#llama-cpp-latest .#llama-cpp-cuda-latest .#whisper-cpp-latest .#whisper-cpp-cuda-latest .#zertbot.withAll
-        if: ${{ matrix.system == 'x86_64-linux' }}
+      - run: nix --show-trace build -L .#__j_custom
       - if: ${{ github.event_name != 'pull_request' }}
         env:
           POG_URI: ${{ secrets.POG_URI }}

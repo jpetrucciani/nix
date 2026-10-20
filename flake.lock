@@ -20,6 +20,23 @@
         "type": "github"
       }
     },
+    "chart-scanners": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1792427447,
+        "narHash": "sha256-MlG1qekFSddgQW6+hYce7tzLn1hkTBZAmaUGpdI8LJk=",
+        "owner": "jpetrucciani",
+        "repo": "nix",
+        "rev": "345a263bb1d9db8f119584842415c07910ea2358",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jpetrucciani",
+        "repo": "nix",
+        "rev": "345a263bb1d9db8f119584842415c07910ea2358",
+        "type": "github"
+      }
+    },
     "crane": {
       "locked": {
         "lastModified": 1791754810,
@@ -207,17 +224,18 @@
     },
     "hex": {
       "inputs": {
+        "chart-scanners": "chart-scanners",
         "flake-compat": "flake-compat_2",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
         "pog": "pog"
       },
       "locked": {
-        "lastModified": 1792454783,
-        "narHash": "sha256-8MXOr3/3UofHKGc/kKiopM/LOOBxps/MdYkNfFw/lSc=",
+        "lastModified": 1792507090,
+        "narHash": "sha256-c2Wnw/IwTmGlO/v1X24iwtZ8F8D43GCG6OKkXWBFmNI=",
         "owner": "jpetrucciani",
         "repo": "hex",
-        "rev": "bc5134514ae2e5917ceb454a1265d6c69dd49f4c",
+        "rev": "566b0309fb5eedc1fcc65bcd19743fba7fc4ea0a",
         "type": "github"
       },
       "original": {
