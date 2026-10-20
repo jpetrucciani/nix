@@ -210,7 +210,7 @@ in
             "cas-bridge.xethub.hf.co"
           ];
           port = 8011;
-          memFractionStatic = 0.25;
+          memFractionStatic = 0.3;
           extraArgs = [
             "--tts_engine.engine.max_running_requests"
             "2"
@@ -340,7 +340,16 @@ in
   hardware = {
     nvidia = {
       open = false;
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      package = config.boot.kernelPackages.nvidiaPackages.stable.overrideAttrs {
+        postInstall = ''
+          # patchelf 0.19.2 overlaps nvidia-smi's writable and read-only LOAD segments.
+          # Repatch the vendor binary with enough padding to keep them separate.
+          install -m755 "$bin/origBin/nvidia-smi" "$bin/bin/nvidia-smi"
+          patchelf --page-size 65536 \
+            --set-interpreter "$(cat "$NIX_CC/nix-support/dynamic-linker")" \
+            --set-rpath "$out/lib:$libPath" "$bin/bin/nvidia-smi"
+        '';
+      };
       modesetting.enable = true;
       nvidiaPersistenced = true;
     };
