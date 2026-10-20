@@ -42,10 +42,6 @@ This overlay is for random python libraries I want in nixpkgs
 
 This overlay is for jupyter notebook specific packages
 
-### [patches/](./patches/)
-
-Local patches used by the Python package overlays.
-
 ### [pr.nix](./pr.nix)
 
 This overlay is specifically for python packages [I used to have active PRs out for in nixpkgs proper](https://github.com/NixOS/nixpkgs/pulls?q=is%3Apr+is%3Aopen+sort%3Aupdated-desc+author%3Ajpetrucciani)
