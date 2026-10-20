@@ -4,32 +4,6 @@ let
   inherit (final.stdenv.hostPlatform) isDarwin;
 in
 rec {
-  anyio = prev.anyio.overridePythonAttrs (old: {
-    # Handle event-loop shutdown racing with worker result delivery (upstream #1279).
-    # https://github.com/agronholm/anyio/commit/02d7fbe2ae1e3701a3be3f764dcda89e066c009a
-    patches = (old.patches or [ ]) ++ [ ./patches/anyio-worker-loop-close-race.patch ];
-
-    # This cancellation test can race worker startup under Python 3.12's eager task factory.
-    disabledTestPaths = (old.disabledTestPaths or [ ]) ++ final.lib.optionals (final.python.pythonVersion == "3.12") [
-      "tests/test_to_thread.py::test_cancel_wait_on_thread[asyncio+eager]"
-    ];
-
-    # Python 3.12.15+ rejects server-side hostnames. Backport the upstream test fix:
-    # https://github.com/agronholm/anyio/commit/818e4ac441fa27e9fac893496fc5a4fbe0a58689
-    postPatch = (old.postPatch or "") + ''
-      substituteInPlace tests/streams/test_tls.py \
-        --replace-fail $'server_side=True,\n            hostname="localhost",' \
-        'server_side=True,'
-
-      # Check the portal threads themselves; unrelated worker threads can exit mid-test.
-      # https://github.com/agronholm/anyio/issues/823
-      substituteInPlace tests/test_to_thread.py \
-        --replace-fail $'        active_threads_before = threading.active_count()\n' "" \
-        --replace-fail 'assert threading.active_count() == active_threads_before' \
-        'assert all(not thread.is_alive() for thread in threads)'
-    '';
-  });
-
   httplib2 =
     if isDarwin then
       prev.httplib2.overridePythonAttrs
