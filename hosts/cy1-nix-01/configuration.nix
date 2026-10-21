@@ -123,7 +123,7 @@ in
         forges."gitlab.com" = {
           kind = "gitlab";
           tokenFile = goblinSecret "gitlab.com";
-          repos = [ "blackedge/**" ];
+          repos = [ "blackedge/*" ];
         };
       };
     };
