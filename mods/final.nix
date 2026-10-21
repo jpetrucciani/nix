@@ -249,27 +249,6 @@ in
 
   inherit (final.python314Packages) ty;
 
-  # allow 3proxy on darwin?
-  _3proxy = prev._3proxy.overrideAttrs (old: {
-    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ (if final.stdenv.hostPlatform.isDarwin then [ final.pam ] else [ ]);
-    makeFlags =
-      if final.stdenv.hostPlatform.isDarwin then [
-        "-f Makefile.FreeBSD"
-        "INSTALL=install"
-        "DESTDIR=${placeholder "out"}"
-        "all"
-        # "CC:=$(CC)"
-      ] else old.makeFlags;
-    installPhase =
-      if final.stdenv.hostPlatform.isDarwin then ''
-        mkdir -p $out
-        mv ./bin $out/.
-      '' else (old.installPhase or "");
-    meta = old.meta // {
-      platforms = final.lib.platforms.all;
-    };
-  });
-
   time =
     if final.stdenv.hostPlatform.isDarwin then
       prev.time.overrideAttrs
