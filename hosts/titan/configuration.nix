@@ -126,6 +126,9 @@ in
       enable = bellaReady;
       bezelUrl = "wss://bz.cobi.dev/v1/worker";
       packages = with pkgs; [ gh jq ripgrep ];
+      # One login each, so one run each: bella runs a claude and a codex side by side.
+      harnesses.claude.maxConcurrent = 1;
+      harnesses.codex.maxConcurrent = 1;
       instances.bella = {
         uid = 32102;
         maxConcurrent = 2;

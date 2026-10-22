@@ -5,7 +5,7 @@
 { config, lib, pkgs, ... }:
 let
   inherit (lib) attrNames concatMap concatStringsSep filterAttrs flatten literalExpression mapAttrs mapAttrs' mapAttrsToList mkDefault mkEnableOption mkIf mkOption nameValuePair optional optionalAttrs recursiveUpdate subtractLists unique;
-  inherit (lib.types) attrsOf bool enum int listOf nullOr package path str submodule;
+  inherit (lib.types) attrsOf bool enum int ints listOf nullOr package path str submodule;
 
   cfg = config.services.bezel-tumbler;
   tomlFormat = pkgs.formats.toml { };
@@ -69,6 +69,12 @@ let
         type = listOf str;
         default = [ ];
         description = "Models tasks may ask for.";
+      };
+      maxConcurrent = mkOption {
+        type = nullOr ints.positive;
+        default = null;
+        example = 1;
+        description = "At most this many of this harness's runs at once per instance (one login that can't be shared). The instance's `maxConcurrent` still caps the total.";
       };
       modelArgs = mkOption {
         type = nullOr (listOf str);
@@ -298,6 +304,7 @@ let
   }
   // optionalAttrs (h.modelArgs != null) { model_args = h.modelArgs; }
   // optionalAttrs (h.modelEnv != null) { model_env = h.modelEnv; }
+  // optionalAttrs (h.maxConcurrent != null) { max_concurrent = h.maxConcurrent; }
   // optionalAttrs (h.env != { }) { inherit (h) env; }
   // optionalAttrs (h.envFiles != { }) { env_files = h.envFiles; };
 
