@@ -2,14 +2,13 @@
 { lib, buildGoLatestModule, fetchFromGitHub }:
 buildGoLatestModule rec {
   pname = "gofakes3";
-  version = "1.0.0";
+  version = "1.2.0";
 
   src = fetchFromGitHub {
     owner = "johannesboyne";
     repo = pname;
-    rev = "4c385a1f6a730dfb271fc0530400ed8c4d6a1eb8"; # this contains our patch! but is not yet released
-    # rev = "refs/tags/${version}";
-    hash = "sha256-JaFQBgQlJoo9PZvelPxIF3yeBfRTvC1uVo3Y7HPmBJI=";
+    rev = "refs/tags/v${version}";
+    hash = "sha256-DMsLi28x3Mki5PJEsFU6S9hJ6Z+kL/okjM0GgK/QIUI=";
   };
 
   ldflags = [
@@ -17,7 +16,10 @@ buildGoLatestModule rec {
     "-w"
   ];
 
-  vendorHash = "sha256-N3ikr8vXYwgm5Q8POM+JV7hxerTqqvPqInE+A3pJDSw=";
+  vendorHash = "sha256-EoTucmFsvNH2rFsqAzjrwH9PJ2JonC3kwASvaUZ7yuI=";
+
+  patches = [ ./gofakes3-bolt-owned-reads.patch ];
+  doCheck = true;
 
   meta = with lib; {
     description = "A simple fake AWS S3 object storage (used for local test-runs against AWS S3 APIs)";

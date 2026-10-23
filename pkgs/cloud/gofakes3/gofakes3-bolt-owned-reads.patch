@@ -1,0 +1,65 @@
+--- a/backend/s3bolt/backend.go
++++ b/backend/s3bolt/backend.go
+@@ -366,6 +366,8 @@
+ 			return gofakes3.KeyNotFound(objectName)
+ 		}
+ 
++		// BSON binary fields alias their input; the response outlives this transaction.
++		v = bytes.Clone(v)
+ 		if err := bson.Unmarshal(v, &t); err != nil {
+ 			return fmt.Errorf("gofakes3: could not unmarshal object at %q/%q: %v", bucketName, objectName, err)
+ 		}
+--- /dev/null
++++ b/backend/s3bolt/owned_reads_test.go
+@@ -0,0 +1,51 @@
++package s3bolt
++
++import (
++	"bytes"
++	"io"
++	"path/filepath"
++	"testing"
++)
++
++func TestGetObjectRetainsBytesAfterConcurrentTransactions(t *testing.T) {
++	db, err := NewFile(filepath.Join(t.TempDir(), "objects.db"))
++	if err != nil {
++		t.Fatal(err)
++	}
++	t.Cleanup(func() {
++		if err := db.bolt.Close(); err != nil {
++			t.Error(err)
++		}
++	})
++	if err := db.CreateBucket("objects"); err != nil {
++		t.Fatal(err)
++	}
++	initial := bytes.Repeat([]byte{0xa5}, 65536)
++	if _, err := db.PutObject("objects", "head", nil, bytes.NewReader(initial), int64(len(initial)), nil); err != nil {
++		t.Fatal(err)
++	}
++	object, err := db.GetObject("objects", "head", nil)
++	if err != nil {
++		t.Fatal(err)
++	}
++	defer object.Contents.Close()
++	expectedHash := bytes.Clone(object.Hash)
++	// HTTP may still be streaming this object while newer transactions reuse
++	// database pages. The response must own its bytes after View returns.
++	for update := 0; update < 64; update++ {
++		next := bytes.Repeat([]byte{byte(update)}, len(initial))
++		if _, err := db.PutObject("objects", "head", nil, bytes.NewReader(next), int64(len(next)), nil); err != nil {
++			t.Fatal(err)
++		}
++	}
++	actual, err := io.ReadAll(object.Contents)
++	if err != nil {
++		t.Fatal(err)
++	}
++	if !bytes.Equal(actual, initial) {
++		t.Fatal("GET response changed after its read transaction closed")
++	}
++	if !bytes.Equal(object.Hash, expectedHash) {
++		t.Fatal("GET hash changed after its read transaction closed")
++	}
++}
