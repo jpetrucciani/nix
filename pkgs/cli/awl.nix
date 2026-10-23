@@ -10,17 +10,17 @@
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "awl";
-  version = "0.0.6";
+  version = "0.0.7";
   __structuredAttrs = true;
 
   src = fetchFromGitHub {
     owner = "jpetrucciani";
     repo = "awl";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-N7mcriVmBhzppQuD+2DLJhMWOgqjQrIfb0gqJoyZDvw=";
+    hash = "sha256-UX4/kj79VKfWfjsx3GKuoxRavAk/njTmasxOuEKZA4M=";
   };
 
-  cargoHash = "sha256-aJ0+ITLZDRrQ7z/ZpvQ55PONgbuykzOiJrAnzdKWlYw=";
+  cargoHash = "sha256-9AgyWa1QQF6bi4E6k6pik0hU63JoNUPpATBgVOwUzaM=";
 
   passthru.updateScript = nix-update-script { };
 
