@@ -133,6 +133,10 @@ in
         uid = 32001;
         enableNix = true;
         pidsLimit = 2048;
+        mounts."/srv/private/be-meetings" = {
+          source = "/srv/private/be-meetings";
+          readOnly = true;
+        };
         packages = with pkgs; [
           aq
           chrome-devtools-mcp-headless
