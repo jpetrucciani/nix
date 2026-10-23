@@ -31,13 +31,13 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "kimi-code";
-  version = "2.0.1";
+  version = "2.3.1";
 
   src = fetchFromGitHub {
     owner = "MoonshotAI";
     repo = "kimi-code";
     tag = "@moonshot-ai/kimi-code@${finalAttrs.version}";
-    hash = "sha256-yVRrpyU6kzgUbAL7TA0mVMq6uZ3TZMic1bk/2EZ/SHY=";
+    hash = "sha256-/2fHOH4Asps3qnMvrj6emc8vplhFqEm4sKv3Y9qmWHM=";
   };
 
   pnpmWorkspaces = [
@@ -45,7 +45,6 @@ stdenv.mkDerivation (finalAttrs: {
     "@moonshot-ai/acp-server"
     "@moonshot-ai/agent-core-v2"
     "@moonshot-ai/kap-server"
-    "@moonshot-ai/kaos"
     "@moonshot-ai/kosong"
     "@moonshot-ai/migration-legacy"
     "@moonshot-ai/minidb"
@@ -53,6 +52,7 @@ stdenv.mkDerivation (finalAttrs: {
     "@moonshot-ai/kimi-code-oauth"
     "@moonshot-ai/klient"
     "@moonshot-ai/pi-tui"
+    "@moonshot-ai/kimi-code-product"
     "@moonshot-ai/remote-control"
     "@moonshot-ai/kimi-telemetry"
     "@moonshot-ai/transcript"
@@ -69,7 +69,7 @@ stdenv.mkDerivation (finalAttrs: {
   pnpmDeps = (fetchPnpmDeps.override { inherit pnpm; }) {
     inherit (finalAttrs) pname version src pnpmWorkspaces;
     fetcherVersion = 3;
-    hash = "sha256-xrn34bQ76s+ouOZPHZ4TBkpTHxG7gZejmx8RqSii2uA=";
+    hash = "sha256-XLjspHl3+xErXYH5fMW8J8fDB5m1ZF8MkATKh11odo0=";
   };
 
   nativeBuildInputs = [
