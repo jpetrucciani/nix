@@ -779,6 +779,25 @@ in
   imports =
     if isLinux then [
       "${flake.inputs.vscode-server}/modules/vscode-server/home.nix"
+      ({ config, ... }:
+        let
+          cfg = config.services.vscode-server;
+          # patchelf 0.19.2 corrupts VS Code's bundled Node.js executable.
+          patchelf = pkgs.patchelf.overrideAttrs (_: {
+            version = "0.15.2";
+            src = pkgs.fetchurl {
+              url = "https://github.com/NixOS/patchelf/releases/download/0.15.2/patchelf-0.15.2.tar.bz2";
+              hash = "sha256-F3RfVkFZyOIo/EEtplogSLhGxLa0Igt3y/IkFuAvLXw=";
+            };
+          });
+          vscodeServer = pkgs.callPackage "${flake.inputs.vscode-server}/pkgs/auto-fix-vscode-server.nix"
+            ((builtins.removeAttrs cfg [ "enable" ]) // { inherit patchelf; });
+        in
+        {
+          systemd.user.services.auto-fix-vscode-server = pkgs.lib.mkIf cfg.enable {
+            Service.ExecStart = mkForce "${vscodeServer}/bin/auto-fix-vscode-server";
+          };
+        })
     ] else [ ];
 
   ${attrIf isLinux "services"}.vscode-server.enable = true;
