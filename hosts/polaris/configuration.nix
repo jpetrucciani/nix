@@ -12,6 +12,7 @@ in
   imports = [
     "${common.home-manager}/nixos"
     ./hardware-configuration.nix
+    ../modules/conf/nvidia-smi-workaround.nix
     ../modules/servers/hermes-agent.nix
   ] ++ (with nixos-hardware.nixosModules; [
     common-pc
@@ -156,7 +157,6 @@ in
   hardware = {
     nvidia = {
       open = false;
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
       modesetting.enable = true;
       nvidiaPersistenced = true;
     };

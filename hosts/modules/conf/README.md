@@ -25,6 +25,10 @@ Adds Blackedge-focused auth and access config, including SSSD, Kerberos, LDAP, a
 
 Adds shared NVIDIA driver, CUDA toolkit, and container runtime config for GPU-capable NixOS hosts or image builds.
 
+### [nvidia-smi-workaround.nix](./nvidia-smi-workaround.nix)
+
+Selects the stable NVIDIA driver with the `nvidia-smi` ELF mapping workaround used by Titan and Polaris.
+
 ### [ssh-remote-bind.nix](./ssh-remote-bind.nix)
 
 Provides a persistent reverse-ssh systemd service via `services.ssh-remote-bind.*` options.
