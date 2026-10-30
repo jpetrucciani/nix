@@ -3,10 +3,10 @@
 , pog
 }:
 let
-  version = "1.36.0";
+  version = "1.42.0-momus.1";
   jar = builtins.fetchurl {
-    url = "https://cobi.dev/static/jar/sbe/sbe-all-${version}-SNAPSHOT.jar";
-    sha256 = "0y3alrh0b4j213n9g9kq9dva5gbk09qwid0ib1gybfhxjfrs41nm";
+    url = "https://static.g7c.us/jar/sbe/sbe-all-${version}.jar";
+    sha256 = "1wjzqpd45zwq04yqys11wsvk9mqzbia3bn4ghihq8n2k0xahgg3m";
   };
 in
 pog {
