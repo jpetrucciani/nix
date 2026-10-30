@@ -13,6 +13,7 @@
 
 ## Build, Test, and Development Commands
 
+- Agent sessions use noninteractive shells, which do not run direnv's prompt hook. From the repository root, run repo tools through `direnv exec .`, for example `direnv exec . jfmt --ci <paths>`, to load the dev shell's PATH.
 - `nix develop`: enter the dev shell (includes `jfmt` and `nixup`).
 - `nix flake show`: inspect available outputs and package names.
 - `nix run .#jfmt -- --ci`: run the repo formatter in CI mode.

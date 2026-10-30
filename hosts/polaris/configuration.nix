@@ -12,6 +12,7 @@ in
   imports = [
     "${common.home-manager}/nixos"
     ./hardware-configuration.nix
+    ../modules/servers/hermes-agent.nix
   ] ++ (with nixos-hardware.nixosModules; [
     common-pc
     common-pc-ssd
@@ -51,6 +52,27 @@ in
     "L+ /sbin/ldconfig 0755 root root - ${ldconfigShim}"
   ];
 
+  systemd.services = builtins.mapAttrs
+    (name: command: {
+      description = "Polaris ${name}";
+      wantedBy = [ "multi-user.target" ];
+      wants = [ "network-online.target" ];
+      after = [ "network-online.target" ];
+      path = [ config.nix.package pkgs.bash ];
+      environment.HOME = "/home/jacobi";
+      serviceConfig = {
+        User = "jacobi";
+        WorkingDirectory = "/home/jacobi/svc/prod";
+        ExecStart = "${pkgs.direnv}/bin/direnv exec . ${command}";
+        Restart = "always";
+        RestartSec = 10;
+      };
+    })
+    {
+      qwen-image = "run_qwen-image";
+      qwen38-0 = "run_qwen38_0";
+    };
+
   environment = {
     variables = {
       NIX_HOST = hostname;
@@ -88,6 +110,33 @@ in
 
   services = {
     xserver.videoDrivers = [ "nvidia" ];
+    hermes-agent = {
+      enable = true;
+      instances.ava = {
+        uid = 32001;
+        enableNix = true;
+        packages = with pkgs; [
+          aq
+          chrome-devtools-mcp-headless
+          claude-code
+          codex-latest
+          curl
+          duckdb
+          fd
+          gh
+          git
+          glab
+          jq
+          mcp-grafana
+          nano
+          openssh
+          ripgrep
+          swi-prolog
+          uv
+          yq-go
+        ];
+      };
+    };
     k3s = {
       enable = true;
       role = "server";
