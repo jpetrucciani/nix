@@ -133,8 +133,10 @@ in
           openssh
           ripgrep
           swi-prolog
+          unzip
           uv
           yq-go
+          zip
         ];
       };
     };
