@@ -5,7 +5,7 @@
 }:
 let
   inherit (lib) concatStringsSep filterAttrs flatten literalExpression mapAttrs' mapAttrsToList mkEnableOption mkIf mkOption nameValuePair optional optionalAttrs optionals unique;
-  inherit (lib.types) attrsOf bool int listOf nullOr package path str submodule;
+  inherit (lib.types) attrsOf bool int lines listOf nullOr package path str submodule;
 
   cfg = config.services.hermes-agent;
   yamlFormat = pkgs.formats.yaml { };
@@ -29,6 +29,14 @@ let
   instanceType = submodule (
     { name, ... }:
     {
+      config.shellAliases = lib.mapAttrs (_: lib.mkDefault) {
+        l = "ls -CF";
+        la = "ls -A";
+        ll = "ls -alh";
+        ".." = "cd ..";
+        "..." = "cd ../..";
+      };
+
       options = {
         enable = mkOption {
           type = bool;
@@ -121,6 +129,25 @@ let
               gh
               jq
             ]
+          '';
+        };
+
+        shellAliases = mkOption {
+          type = attrsOf str;
+          default = { };
+          description = ''
+            Bash aliases available in interactive shells and Hermes terminal
+            commands. Individual aliases can be overridden per instance.
+          '';
+          example = { nlist = "nix profile list"; };
+        };
+
+        shellInit = mkOption {
+          type = lines;
+          default = "";
+          description = ''
+            Additional Bash initialization for interactive shells and Hermes
+            terminal commands. Keep this silent and store no secrets here.
           '';
         };
 
@@ -287,6 +314,24 @@ let
     gnused
   ] ++ optional instance.enableNix config.nix.package ++ instance.packages;
 
+  containerPath = instance:
+    "/var/lib/hermes/home/.local/bin:/var/lib/hermes/home/.nix-profile/bin:/var/lib/hermes/home/.local/state/nix/profile/bin:${lib.makeBinPath (basePackages instance)}";
+
+  mkBashrc = instance: pkgs.writeTextDir "etc/bashrc" ''
+    for hermes_bin_dir in "''${XDG_STATE_HOME:-$HOME/.local/state}/nix/profile/bin" "$HOME/.nix-profile/bin" "$HOME/.local/bin"; do
+      case ":$PATH:" in
+        *":$hermes_bin_dir:"*) ;;
+        *) PATH="$hermes_bin_dir:$PATH" ;;
+      esac
+    done
+    unset hermes_bin_dir
+    export PATH
+
+    shopt -s expand_aliases
+    ${concatStringsSep "\n" (mapAttrsToList (alias: command: "alias ${lib.escapeShellArg "${alias}=${command}"}") instance.shellAliases)}
+    ${instance.shellInit}
+  '';
+
   mkImage = name: instance:
     let
       packages = basePackages instance;
@@ -300,20 +345,24 @@ let
     pkgs.dockerTools.streamLayeredImage {
       name = "localhost/hermes-agent-${name}";
       tag = "nixos";
-      contents = root;
+      contents = [ root (mkBashrc instance) ];
       fakeRootCommands = ''
         mkdir -p etc tmp usr/bin var/lib/hermes/home var/tmp
         chmod 1777 tmp var/tmp
         printf '%s\n' 'root:x:0:0:Hermes Agent:/var/lib/hermes/home:/bin/bash' > etc/passwd
         printf '%s\n' 'root:x:0:' > etc/group
         ln -s ${pkgs.coreutils}/bin/env usr/bin/env
+        # Non-interactive Bash reads BASH_ENV; login shells need /etc/profile.
+        printf '%s\n' 'case $- in *i*) . /etc/bashrc ;; esac' > etc/profile
       '';
       config = {
         Entrypoint = [ "${instance.package}/bin/hermes" ];
         Env = [
           "LANG=C.UTF-8"
           "LC_ALL=C.UTF-8"
-          "PATH=${lib.makeBinPath packages}"
+          "PATH=${containerPath instance}"
+          "BASH_ENV=/etc/bashrc"
+          "SHELL=/bin/bash"
           "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
         ];
         User = "0:0";

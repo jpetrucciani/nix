@@ -92,6 +92,31 @@ ssh-keygen -t ed25519
 gh auth login
 ```
 
+Every instance includes the Bash aliases `l` (`ls -CF`), `la` (`ls -A`),
+`ll` (`ls -alh`), `..` (`cd ..`), and `...` (`cd ../..`). They work in
+interactive shells and the agent's terminal commands. Add or override aliases
+and initialization per instance:
+
+```nix
+services.hermes-agent.instances.coder = {
+  shellAliases = {
+    ll = "ls -ahlFG";
+    nlist = "nix profile list";
+  };
+  shellInit = ''
+    export PAGER=cat
+  '';
+};
+```
+
+`~/.local/bin`, `~/.nix-profile/bin`, and `~/.local/state/nix/profile/bin` are
+on the container's `PATH`, including for commands launched without a shell.
+Bash also respects `XDG_STATE_HOME` when locating the Nix profile. These paths
+remain on `PATH` before the directories exist, so newly installed commands
+become available in the current session. Keep `shellInit` silent because it
+also runs for non-interactive Bash commands. The files under the instance's
+home remain writable and persist across container replacements.
+
 To add a secret without putting its value in shell history:
 
 ```bash
@@ -154,6 +179,8 @@ ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519
 glab auth login
 nix store ping --store daemon
 nix-shell -p jq --run 'jq --version'
+nix profile add nixpkgs#hello
+hello
 ```
 
 The SSH key and CLI credentials persist in Goblin's private home on the host at
