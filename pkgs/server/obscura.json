@@ -2,16 +2,16 @@
   "artifacts": {
     "aarch64-darwin": {
       "name": "obscura-aarch64-macos.tar.gz",
-      "sha256": "sha256-/Mox66QoDNZ6LiJu9LAV5DLVwIn3jO/QdK0Su8jiM0U="
+      "sha256": "sha256-GfqiSKx2L0Zt24ItuwPtTwlzEtENGk1bIUPmBAqb69A="
     },
     "aarch64-linux": {
       "name": "obscura-aarch64-linux.tar.gz",
-      "sha256": "sha256-JMVJo0ix1GToCqP2Q7wMh0sKKUL7eDbGg1KAKND7sZA="
+      "sha256": "sha256-4Sr/i75AMmOGpHEGAIPpzsUlW2cEiZa4T2Se/vEMrDk="
     },
     "x86_64-linux": {
       "name": "obscura-x86_64-linux.tar.gz",
-      "sha256": "sha256-IRZ2S5m8CE+uNmi2iqU1tM9FbkSYhFtHSTrUEj6DyjY="
+      "sha256": "sha256-7tmG5HjF7FQ59THy1/trDjajVvHfemxEqOj9TySGvXY="
     }
   },
-  "version": "0.2.5"
+  "version": "0.2.6"
 }
