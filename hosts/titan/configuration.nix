@@ -127,12 +127,13 @@ in
       enable = bellaReady;
       bezelUrl = "wss://bz.cobi.dev/v1/worker";
       packages = with pkgs; [ gh jq ripgrep ];
-      # One login each, so one run each: bella runs a claude and a codex side by side.
-      harnesses.claude.maxConcurrent = 1;
-      harnesses.codex.maxConcurrent = 1;
+      harnesses.claude.maxConcurrent = 2;
+      # `claude setup-token` in `tumbler-podman bella shell`, saved here (persisted, hidden from agents).
+      harnesses.claude.envFiles.CLAUDE_CODE_OAUTH_TOKEN = "/var/lib/tumbler/state/claude-token";
+      harnesses.codex.maxConcurrent = 4;
       instances.bella = {
         uid = 32102;
-        maxConcurrent = 2;
+        maxConcurrent = 6;
         tokenFile = bellaSecret "token";
         git = {
           email = "pog+bella@cobi.dev";

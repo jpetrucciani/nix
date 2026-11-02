@@ -111,9 +111,13 @@ in
       enable = goblinReady;
       bezelUrl = "wss://bz.cobi.dev/v1/worker";
       packages = with pkgs; [ glab jq ripgrep ];
+      harnesses.claude.maxConcurrent = 2;
+      harnesses.codex.maxConcurrent = 4;
+      # `claude setup-token` in `tumbler-podman goblin shell`, saved here (persisted, hidden from agents).
+      harnesses.claude.envFiles.CLAUDE_CODE_OAUTH_TOKEN = "/var/lib/tumbler/state/claude-token";
       instances.goblin = {
         uid = 32103;
-        maxConcurrent = 2;
+        maxConcurrent = 6;
         tokenFile = goblinSecret "token";
         git = {
           email = "pog+goblin@cobi.dev";
