@@ -172,7 +172,7 @@ in
           mcp_servers = {
             grafana = {
               command = "${pkgs.mcp-grafana}/bin/mcp-grafana";
-              args = [ "--disable-write" ];
+              args = [ ];
               env.SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
             };
             netbox = {
