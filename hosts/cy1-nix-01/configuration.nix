@@ -173,10 +173,12 @@ in
             grafana = {
               command = "${pkgs.mcp-grafana}/bin/mcp-grafana";
               args = [ "--disable-write" ];
+              env.SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
             };
             netbox = {
               command = "${pkgs.netbox-mcp-server}/bin/netbox-mcp-server";
               args = [ ];
+              env.SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
             };
           };
           platforms.slack.extra = {
