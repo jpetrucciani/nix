@@ -3,8 +3,8 @@
 , fetchFromGitHub
 , fetchurl
 , cacert
-, cmake
 , aws-lc
+, cmake
 , installShellFiles
 , pkg-config
 , python3
@@ -29,6 +29,14 @@ rustPlatform.buildRustPackage (finalAttrs: {
   nativeCheckInputs = [ python3 ];
   dontUseCmakeConfigure = true;
   dontUseCargoParallelTests = true;
+
+  postPatch = ''
+    # Seed all three journal records before replaying the retained answers.
+    substituteInPlace crates/loupe-cli/tests/fallback_contracts.rs \
+      --replace-fail \
+        $'"drop",\n        QUESTION,\n        "-I",' \
+        $'"drop",\n        "--keep-going",\n        QUESTION,\n        "-I",'
+  '';
 
   # Avoid repeating cross-crate LTO for every test executable, as upstream does.
   env = {

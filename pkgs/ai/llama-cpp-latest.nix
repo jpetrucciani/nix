@@ -7,7 +7,7 @@
 , stdenv
 }:
 let
-  version = "11430";
+  version = "12233";
 in
 (llama-cpp.override {
   inherit cudaSupport;
@@ -30,7 +30,19 @@ in
   npmRoot = "tools/ui";
   npmDepsHash = "sha256-a17M+L3nLdRnN6WMB6imPFmwqG2g8uv+gwN0XTAUrf8=";
 
+  postPatch = (old.postPatch or "") + ''
+    # The dummy-model generator bypasses the common argument parser that loads backends.
+    substituteInPlace tests/test-llama-archs.cpp \
+      --replace-fail '    common_init();' '    common_init();
+        ggml_backend_load_all();'
+  '';
+
   cmakeFlags = if stdenv.hostPlatform.isDarwin then old.cmakeFlags ++ [ "-DLLAMA_BUILD_NUMBER=1" ] else old.cmakeFlags;
+
+  disabledTests = (old.disabledTests or [ ]) ++ [
+    # Otherwise CTest re-adds the excluded download fixture for this test.
+    "test-state-restore-fragmented"
+  ];
 
   passthru = (old.passthru or { }) // {
     updateScript = refresh_llama-cpp_latest;
