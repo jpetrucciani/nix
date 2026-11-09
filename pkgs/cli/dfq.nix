@@ -23,6 +23,9 @@ rustPlatform.buildRustPackage rec {
     installShellFiles
   ];
 
+  # Timestamp-based fixture names can collide between parallel CLI tests on Darwin.
+  dontUseCargoParallelTests = true;
+
   postInstall = ''
     installShellCompletion --cmd dfq \
       --bash <($out/bin/dfq completion bash) \

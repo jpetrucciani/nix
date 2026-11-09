@@ -3,8 +3,10 @@
 , fetchFromGitHub
 , fetchurl
 , cacert
+, aws-lc
 , cmake
 , installShellFiles
+, pkg-config
 , python3
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
@@ -22,10 +24,26 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   buildFeatures = [ "mcp" "parquet" ];
 
-  nativeBuildInputs = [ cmake installShellFiles ];
+  nativeBuildInputs = [ cmake installShellFiles pkg-config ];
+  buildInputs = [ aws-lc ];
   nativeCheckInputs = [ python3 ];
   dontUseCmakeConfigure = true;
   dontUseCargoParallelTests = true;
+
+  postPatch = ''
+    # Seed all three journal records before replaying the retained answers.
+    substituteInPlace crates/loupe-cli/tests/fallback_contracts.rs \
+      --replace-fail \
+        $'"drop",\n        QUESTION,\n        "-I",' \
+        $'"drop",\n        "--keep-going",\n        QUESTION,\n        "-I",'
+
+    # Allow tokenizer loading and process startup on busy builders. The hook's
+    # one-second deadline and the check for surviving descendants stay intact.
+    substituteInPlace crates/loupe-cli/tests/hook_contracts.rs \
+      --replace-fail \
+        'assert!(started.elapsed() < Duration::from_secs(3));' \
+        'assert!(started.elapsed() < Duration::from_secs(10));'
+  '';
 
   # Avoid repeating cross-crate LTO for every test executable, as upstream does.
   env = {

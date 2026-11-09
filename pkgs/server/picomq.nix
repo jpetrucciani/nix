@@ -1,4 +1,5 @@
-{ fetchFromGitHub
+{ aws-lc
+, fetchFromGitHub
 , fetchNpmDeps
 , lib
 , nix-update-script
@@ -8,6 +9,7 @@
 , rdkafka
 , rustPlatform
 , sqlite
+, zstd
 }:
 
 rustPlatform.buildRustPackage (finalAttrs: {
@@ -40,8 +42,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
   ];
 
   buildInputs = [
+    aws-lc
     rdkafka
     sqlite
+    zstd
   ];
 
   CARGO_FEATURE_DYNAMIC_LINKING = 1;
