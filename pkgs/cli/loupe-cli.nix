@@ -4,7 +4,9 @@
 , fetchurl
 , cacert
 , cmake
+, aws-lc
 , installShellFiles
+, pkg-config
 , python3
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
@@ -22,7 +24,8 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   buildFeatures = [ "mcp" "parquet" ];
 
-  nativeBuildInputs = [ cmake installShellFiles ];
+  nativeBuildInputs = [ cmake installShellFiles pkg-config ];
+  buildInputs = [ aws-lc ];
   nativeCheckInputs = [ python3 ];
   dontUseCmakeConfigure = true;
   dontUseCargoParallelTests = true;

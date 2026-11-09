@@ -2,7 +2,9 @@
 , fetchgit
 , makeWrapper
 , openssh
+, pkg-config
 , rustPlatform
+, zstd
 }:
 
 rustPlatform.buildRustPackage {
@@ -17,7 +19,8 @@ rustPlatform.buildRustPackage {
 
   cargoHash = "sha256-eFtE/llDyMdo20og2SfAwlqY78o3ABfqEzM9dJS+Jcg=";
 
-  nativeBuildInputs = [ makeWrapper ];
+  nativeBuildInputs = [ makeWrapper pkg-config ];
+  buildInputs = [ zstd ];
 
   postInstall = ''
     wrapProgram "$out/bin/scpcap" \

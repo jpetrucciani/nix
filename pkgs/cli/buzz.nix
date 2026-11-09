@@ -4,6 +4,7 @@
 , fetchFromGitHub
 , pkg-config
 , openssl
+, aws-lc
 , protobuf
 , cmake
 , perl
@@ -24,7 +25,7 @@ rustPlatform.buildRustPackage {
   cargoBuildFlags = [ "-p" "sprig" ];
 
   nativeBuildInputs = [ pkg-config protobuf cmake perl git ];
-  buildInputs = [ openssl ];
+  buildInputs = [ openssl aws-lc ];
   env = {
     OPENSSL_NO_VENDOR = "1";
     CMAKE_POLICY_VERSION_MINIMUM = "3.5";
