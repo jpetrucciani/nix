@@ -6,14 +6,14 @@ in
 rec {
   ty = buildPythonPackage rec {
     pname = "ty";
-    version = "0.0.99";
+    version = "0.0.100";
     pyproject = true;
 
     src = fetchFromGitHub {
       owner = "astral-sh";
       repo = "ty";
       rev = "refs/tags/${version}";
-      hash = "sha256-Xfs82DP1AyAldmmwp5VMrwSXRMQwSfU6ZeWo12A5NEM=";
+      hash = "sha256-yluvKdY42utNPpF0is+t2CbR027i7DwiYc3uRnTzFF4=";
       fetchSubmodules = true;
     };
 
@@ -21,6 +21,12 @@ rec {
       rustPlatform.maturinBuildHook
       rustPlatform.cargoSetupHook
     ];
+    nativeBuildInputs = [ final.pkgs.pkg-config ];
+    buildInputs = [
+      final.pkgs.rust-jemalloc-sys
+      final.pkgs.zstd
+    ];
+
     cargoRoot = "ruff";
     cargoDeps = rustPlatform.importCargoLock {
       lockFile = "${src}/ruff/Cargo.lock";
