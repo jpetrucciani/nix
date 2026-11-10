@@ -43,7 +43,7 @@ jobs:
             extra-substituters = https://cache.g7c.us
             extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
       - run: nix run .#nupdate -- "${{ matrix.attr }}"
-      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
         id: pr
         with:
           delete-branch: true
