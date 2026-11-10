@@ -76,30 +76,23 @@ rec {
           go get ${name}@${version}
         '')
         allPlugins;
-      zaddy = prev.caddy.override {
-        buildGoModule = args:
-          # Follow Caddy's nixpkgs toolchain instead of moving its test suite to a newer Go release.
-          final.buildGoModule (finalAttrs:
-            let _args = args finalAttrs; in _args // {
-              inherit src vendorHash;
-              overrideModAttrs = _: {
-                preBuild = ''
-                  ${caddyPatchGoGet}
-                  go mod tidy
-                '';
-                postInstall = "cp go.mod go.sum $out/";
-              };
-              postInstall = ''
-                ${_args.postInstall}
-                sed -i -E '/Group=caddy/aEnvironmentFile=-/etc/default/caddy\nTimeoutSec=180' $out/lib/systemd/system/caddy.service
-              '';
-              postPatch = caddyPatchMain;
-              preBuild = "cp vendor/go.mod vendor/go.sum .";
-            });
-      };
     in
-    zaddy.overrideAttrs (old: {
+    prev.caddy.overrideAttrs (old: {
+      inherit src vendorHash;
+      postInstall = ''
+        ${old.postInstall}
+        sed -i -E '/Group=caddy/aEnvironmentFile=-/etc/default/caddy\nTimeoutSec=180' $out/lib/systemd/system/caddy.service
+      '';
+      postPatch = caddyPatchMain;
+      preBuild = "cp vendor/go.mod vendor/go.sum .";
       passthru = (old.passthru or { }) // {
+        overrideModAttrs = _: {
+          preBuild = ''
+            ${caddyPatchGoGet}
+            go mod tidy
+          '';
+          postInstall = "cp go.mod go.sum $out/";
+        };
         zaddyPlugins = allPlugins;
       };
     });
