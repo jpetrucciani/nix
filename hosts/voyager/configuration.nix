@@ -21,7 +21,7 @@ in
     flake.inputs.nixos-wsl.nixosModules.wsl
   ];
 
-  boot.tmp.useTmpfs = true;
+  boot.tmp.useTmpfs = false;
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
   environment = {
