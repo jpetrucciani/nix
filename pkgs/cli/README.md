@@ -43,4 +43,5 @@ For the complete list, browse [`pkgs/cli`](./).
 
 - [comcast.nix](./comcast.nix): simulate degraded network conditions locally.
 - [rare-go.nix](./rare-go.nix): realtime regex extraction and aggregation.
+- [ssacli.nix](./ssacli.nix): HPE Smart Storage Administrator CLI for managing Smart Array RAID and HBA controllers on x86_64 Linux.
 - [todo-reminder.nix](./todo-reminder.nix): scan code for TODO deadlines and formatting issues.
