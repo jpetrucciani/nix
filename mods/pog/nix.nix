@@ -763,6 +763,8 @@ rec {
         --no_dependencies 'qwen-tts==0.1.1' \
         --public_url "$public_url" \
         "sglang-omni @ $source_url" \
+        'descript-audiotools==0.7.2' \
+        'descript-audio-codec==1.0.0' \
         'qwen-tts==0.1.1' \
         sox \
         einops \

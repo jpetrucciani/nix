@@ -158,6 +158,40 @@ Latest llama.cpp release with the web UI dependency set. Run `nix run .#llama-cp
 
 [`maestro`](https://github.com/pluja/maestro) converts natural language instructions into cli commands with LLMs
 
+### [strata.nix](./strata.nix)
+
+[`Strata`](https://github.com/Niko1221/Strata) serves Qwen Flash-Next through OpenAI- and Anthropic-compatible APIs.
+The CUDA 13.0 build targets `sm_86`, covering Polaris's RTX A6000 and Titan's RTX 3090s. It includes the native engine,
+Python server and model preparation tools. Model weights and writable state stay outside the Nix store.
+
+| Package                    | Native CUDA target | Hardware               |
+| -------------------------- | ------------------ | ---------------------- |
+| `strata` / `strata.ampere` | `sm_86`            | RTX A6000, RTX 3090    |
+| `strata.ada`               | `sm_89`            | RTX 4090, RTX 6000 Ada |
+| `strata.blackwell`         | `sm_120`           | RTX 5090               |
+
+Each variant has a `.wsl` passthrough that selects WSL's driver libraries and `nvidia-smi`, for example
+`nix build .#strata.blackwell.wsl`. WSL and native Linux variants share the compiled engine for their architecture.
+Custom targets remain available through `strata.override { cudaArchitectures = [ "86" "89" "120" ]; }`.
+
+```bash
+nix build .#strata
+
+# Explicitly download and prepare a text-only Flash-Next IQ2_XS model. This can download tens of GB.
+mkdir -p "$HOME/strata"
+STRATA_INSTALL_DIR="$HOME/strata" ./result/bin/strata-prepare \
+  --family qwen --model IQ2_XS --gpu 0 --context 32768 --data-dir "$HOME/strata/data"
+
+./result/bin/strata serve --config "$HOME/strata/strata-iq2_xs.json" --host 127.0.0.1 --port 8080
+```
+
+`strata-prepare` prepares models without starting a server or installing another engine. Its default configuration
+directory is the current directory; `STRATA_INSTALL_DIR` selects another writable directory. Preparation writes the
+packaged engine's absolute path and driver library directory into the run config. Verification markers for imported
+model files live under `STRATA_INSTALL_DIR/marks`. `strata-engine` exposes the native engine directly.
+The guided `strata launch` and upstream component updater are not the Nix installation path. GPU inference and memory
+requirements still need validation on the target host; a successful local build does not establish model fit.
+
 ### [whisper-cpp-latest.nix](./whisper-cpp-latest.nix)
 
 Latest semver whisper.cpp release. Run `nix run .#whisper-cpp-latest.updateScript` to refresh and validate it.

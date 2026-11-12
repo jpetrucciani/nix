@@ -351,7 +351,7 @@ let
                 "libcuda.so.1"
                 "libnvidia-ml.so.1"
 
-                # Optional NIXL plugins whose vendor SDKs are not in nixpkgs.
+                # Optional NIXL plugins whose vendor SDKs are not packaged here.
                 "libaws-cpp-sdk-core.so"
                 "libaws-cpp-sdk-s3-crt.so"
                 "libaws-cpp-sdk-s3.so"
@@ -359,6 +359,7 @@ let
                 "libazure-core.so.1.17.0-beta.1"
                 "libazure-identity.so.1.14.0-beta.1"
                 "libazure-storage-blobs.so.12.15.0"
+                "libcuobjclient.so.1"
                 "libdoca_common.so.2"
                 "libdoca_gpunetio.so.2"
                 "libdoca_telemetry_exporter.so.2"
@@ -432,10 +433,18 @@ let
                 ${addTorchLibs}
               '';
             });
-            flashinfer-python = _prev.flashinfer-python.overrideAttrs (_: {
+            flashinfer-python = _prev.flashinfer-python.overrideAttrs (old: {
               buildInputs = (with _final; [ torch setuptools ]) ++ (with _pkgs.cudaPackages; [
                 cuda_nvcc
               ]);
+              # 0.7.1 dispatches every CTA tile, but its FA2 JIT templates omit
+              # tiles incompatible with the head dimensions. Avoid references
+              # to those absent instantiations in the compiled binding.
+              postInstall = (old.postInstall or "") + final.lib.optionalString (old.version == "0.7.1") ''
+                patch --fuzz=0 -p1 \
+                  -d "$out/${python.sitePackages}/flashinfer/data" \
+                  < ${../pkgs/uv/patches/flashinfer-fa2-tile-dispatch.patch}
+              '';
             });
             flashinfer-cubin = _prev.flashinfer-cubin.overrideAttrs (_: {
               # This wheel contains static CUDA cubins, not host ELF objects.

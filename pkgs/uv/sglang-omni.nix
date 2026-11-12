@@ -9,9 +9,9 @@
 , sox
 , python312
 , refresh_sglang_omni
-, version ? "0.1.6"
-, rev ? "7b49bc4b80ef3ae12d7308ba28becb398e322223"
-, lockHash ? "sha256-kB6W5dLN1150TcrS5QSl1xti+NzD6pcnT95e3rtmFJ0="
+, version ? "0.2.0"
+, rev ? "e8c635ecb9c68bcf2fbc32ceb3c40f85f3590657"
+, lockHash ? "sha256-5vd3VVjz/mKfJ3hZDBrusSluvGCstIfDpNAQn9t6n+M="
 , isWSL ? false
 , includePin ? false
 }:
@@ -21,34 +21,20 @@ in
 uv-nix.buildUvPackage rec {
   inherit version includePin;
   pname = "sglang-omni";
-  bins = [
-    "sgl-omni"
-    "sgl-omni-router-py"
-  ];
+  bins = [ "sgl-omni" ];
   python = python312;
 
   lockUrl = "https://static.g7c.us/lock/uv/sglang-omni/${version}.lock";
   inherit lockHash;
   extraDependencies = [
+    "descript-audiotools==0.7.2"
+    "descript-audio-codec==1.0.0"
     "qwen-tts==0.1.1"
     "sox"
     "einops"
     "onnxruntime"
   ];
   pyprojectOverrides = _final: _prev: {
-    "sglang-omni" = _prev."sglang-omni".overrideAttrs (old: {
-      # Music3 stores its acoustic checkpoint as FP32. Loading it directly on
-      # the GPU defeats the BF16 runtime override and adds a 9 GiB startup
-      # spike, so stage it in host RAM and transfer tensors at their final
-      # inference dtype.
-      postInstall = (old.postInstall or "") + ''
-        patch \
-          --fuzz=0 \
-          -d "$out/${python312.sitePackages}" \
-          -p1 \
-          < ${./patches/sglang-omni-minimax-music3-bf16-load.patch}
-      '';
-    });
     "nixl-cu13" = _prev."nixl-cu13".overrideAttrs (old: {
       # The CUDA-specific wheel omits the `nixl` meta-package namespace that
       # SGLang-Omni imports. This package is CUDA 13-only, so expose its backend
@@ -58,7 +44,7 @@ uv-nix.buildUvPackage rec {
       '';
     });
     "qwen-tts" = _prev."qwen-tts".overrideAttrs (old: {
-      # SGLang-Omni deliberately keeps Transformers 5.12 while installing
+      # SGLang-Omni deliberately keeps Transformers 5.19 while installing
       # qwen-tts without its Transformers 4.57 dependency. Patch the wheel
       # after installation because uv2nix cannot patch wheel sources earlier.
       postInstall = (old.postInstall or "") + ''
