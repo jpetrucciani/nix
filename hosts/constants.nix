@@ -14,7 +14,6 @@ let
     ];
     darwin = [
       "m1max"
-      "nyx0"
       "pluto"
       "styx"
     ];
@@ -57,7 +56,6 @@ let
     luna = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINOoY9vE2hPcBtoI/sE9pmk4ocO+QWZv2lvtxcPs9oha jacobi@luna";
     milkyway = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII2VPpmvMVt+5LHJfgmsTSdWy5SIM2gBvgpyuT3iMt1a jacobi@milkyway";
     terra = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFWWDYzXHtB3hd/5sWeg+kz+COGxCEWalspwCNnZNOZz jacobi@terra";
-    nyx0 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIg9CfLq9fHbwfg16W2k8A9rXw7AUGQWDk4qwikDrikj jacobi@nyx0";
     styx = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3gO1YSpzqJ5aheyC/gx53lK9Wu21dA88+VrvPqMoRD jacobi@styx";
     mercury = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKLAJdW+XxljUGrFMXJdc1ULVYOYR+/aeEddl+7mjOCG jacobi@mercury";
     voyager = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIIejYkuLdJ3OslVRfKfr9w+MUfhAvRhoM2agNdxlTn/ jacobi@voyager";

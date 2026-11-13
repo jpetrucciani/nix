@@ -48,7 +48,6 @@ in
   # };
   services =
     {
-      # infinity.enable = true;
       koboldcpp.servers = {
         # minicpm = {
         #   enable = true;

@@ -44,7 +44,6 @@ in
       modelPath = name: "/opt/box/models/${name}";
     in
     {
-      infinity.enable = false;
       koboldcpp.servers = {
         minicpm = {
           enable = false;

@@ -44,17 +44,13 @@ Additional modules for use in the various NixOS and nix-darwin host configuratio
 
 This is a bare-metal nixos server.
 
-### [nyx0/](./nyx0)
-
-This is an M4 Mac mini managed with nix-darwin.
-
 ### [phobos/](./phobos)
 
 This is an experimental nixos install inside a VM.
 
 ### [pluto/](./pluto)
 
-This is my personal M2 Max MacBook, managed with nix-darwin and Home Manager.
+This is my personal M5 Max MacBook, managed with nix-darwin and Home Manager.
 
 ### [polaris/](./polaris)
 

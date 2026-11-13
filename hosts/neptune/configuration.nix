@@ -117,7 +117,6 @@ in
       port = 8420;
       controlPort = 8421;
     };
-    infinity.enable = false;
     ombi = {
       enable = true;
       port = 5999;

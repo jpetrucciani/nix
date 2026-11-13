@@ -97,6 +97,7 @@
         pkgs = packageSets.x86_64-linux;
         specialArgs = { flake = self; machine-name = "foundry"; };
         modules = [
+          ./hosts/global.nix
           ./hosts/foundry/configuration.nix
           ./hosts/foundry/images.nix
         ];
@@ -229,7 +230,7 @@
                 pkgs = packageSets.x86_64-linux;
                 specialArgs = { flake = self; machine-name = name; };
                 modules = [
-                  ./hosts/modules/servers/infinity.nix
+                  ./hosts/global.nix
                   ./hosts/${name}/configuration.nix
                   self.inputs.agenix.nixosModules.default
                   { programs.ssh.setXAuthLocation = lib.mkForce true; }
@@ -247,6 +248,7 @@
               pkgs = packageSets.aarch64-darwin;
               specialArgs = { flake = self; machine-name = name; };
               modules = [
+                ./hosts/global_darwin.nix
                 ./hosts/common_darwin.nix
                 ./hosts/${name}/configuration.nix
               ] ++ import ./hosts/modules/darwin;

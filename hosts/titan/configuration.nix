@@ -284,7 +284,6 @@ in
         host all all 100.64.0.0/10 scram-sha-256
       '';
     };
-    infinity.enable = false;
     paperless = {
       enable = false;
       address = "0.0.0.0";
