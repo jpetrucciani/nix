@@ -83,3 +83,11 @@ Shared defaults for nix-darwin machines.
 ### [constants.nix](./constants.nix)
 
 Shared host names, ports, machine groups, and key material.
+
+### [global.nix](./global.nix)
+
+Shared base packages, Nix settings, and activation diffs for NixOS hosts.
+
+### [global_darwin.nix](./global_darwin.nix)
+
+Shared base packages, Nix settings, and activation diffs for nix-darwin hosts.
