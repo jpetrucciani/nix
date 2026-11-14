@@ -101,10 +101,11 @@ in
 
   services = {
     xserver.videoDrivers = [ "nvidia" ];
-    # Qwen3-Embedding-4B for semantic search (bezel, via litellm as `qwen3-embedding-4b`), on the
-    # tailnet only. The GGUF downloads into /var/cache/llama-cpp on first start. Inputs are short
-    # (bezel sends at most 2000 characters), so eight 2048-token slots keep the KV cache near 2 GB
-    # next to the ~4.5 GB of weights.
+    # Qwen3-Embedding-4B for semantic search (bezel, via litellm as `qwen3-embedding-4b`).
+    # Tailnet only, sharing GPU 1 with H2O-Lightning. The GGUF downloads into
+    # /var/cache/llama-cpp on first start. Inputs are short (bezel sends at most 2000
+    # characters), so eight 2048-token slots keep the KV cache near 2 GB next to
+    # the ~4.5 GB of weights.
     llama-cpp = {
       enable = true;
       package = pkgs.llama-cpp-cuda-latest;
@@ -159,7 +160,8 @@ in
       address = "0.0.0.0";
       port = 8015;
       gpuDevice = "1";
-      gpuMemoryUtilization = 0.7;
+      # Leave room for the embedding model and its KV cache on this GPU.
+      gpuMemoryUtilization = 0.6;
     };
     ace-step = {
       # Temporarily disabled so GPU 0 can serve TTS alongside Whisper.
@@ -207,15 +209,15 @@ in
       extraPackages = [ config.hardware.nvidia.package.bin ];
       instances = {
         tts = {
-          modelPath = "Qwen/Qwen3-TTS-12Hz-1.7B-Base";
+          modelPath = "fishaudio/s2-pro";
           address = "0.0.0.0";
-          pipelineConfigClass = "Qwen3TTSPipelineConfig";
+          pipelineConfigClass = "S2ProPipelineConfig";
           allowedMediaDomains = [
             "huggingface.co"
             "cas-bridge.xethub.hf.co"
           ];
           port = 8011;
-          memFractionStatic = 0.3;
+          memFractionStatic = 0.8;
           extraArgs = [
             "--tts_engine.engine.max_running_requests"
             "2"
@@ -225,16 +227,12 @@ in
             "2"
             # Shared KV-token cap, rather than filling the available budget.
             "--tts_engine.engine.max_total_tokens"
-            "8192"
-            # Vocoder graph pools have their own batch and worker limits.
+            "4096"
+            # FlashInfer Fast-AR uses CUDA graphs without torch.compile on SM86.
+            "--tts_engine.engine.enable_torch_compile"
+            "false"
             "--vocoder.factory.max_batch_size"
             "2"
-            "--vocoder.factory.initial_max_batch_size"
-            "2"
-            "--vocoder.factory.followup_max_batch_size"
-            "2"
-            "--vocoder.factory.followup_worker_count"
-            "1"
           ];
           extraEnvironment.CUDA_VISIBLE_DEVICES = "0";
         };
@@ -294,7 +292,7 @@ in
   } // common.services;
 
   systemd.services.llama-cpp = {
-    environment.CUDA_VISIBLE_DEVICES = "0";
+    environment.CUDA_VISIBLE_DEVICES = "1";
     # It binds the tailnet address, which only exists once tailscale is up.
     after = [ "tailscaled.service" ];
     wants = [ "tailscaled.service" ];

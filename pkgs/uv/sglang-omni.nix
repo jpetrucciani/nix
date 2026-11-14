@@ -35,6 +35,9 @@ uv-nix.buildUvPackage rec {
     "onnxruntime"
   ];
   pyprojectOverrides = _final: _prev: {
+    "sglang-omni" = _prev."sglang-omni".overrideAttrs (old: {
+      patches = (old.patches or [ ]) ++ [ ./patches/sglang-omni-fish-sm86.patch ];
+    });
     "nixl-cu13" = _prev."nixl-cu13".overrideAttrs (old: {
       # The CUDA-specific wheel omits the `nixl` meta-package namespace that
       # SGLang-Omni imports. This package is CUDA 13-only, so expose its backend

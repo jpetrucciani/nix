@@ -1,0 +1,39 @@
+diff --git a/sglang_omni/models/fishaudio_s2_pro/engine_builder.py b/sglang_omni/models/fishaudio_s2_pro/engine_builder.py
+--- a/sglang_omni/models/fishaudio_s2_pro/engine_builder.py
++++ b/sglang_omni/models/fishaudio_s2_pro/engine_builder.py
+@@ -37,6 +37,7 @@
+     pass
+ 
+ _VALIDATED_AUTO_ATTENTION_BACKENDS = {
++    86: "flashinfer",
+     89: "flashinfer",
+     90: "fa3",
+     100: "flashinfer",
+@@ -64,7 +65,7 @@
+     if backend is None:
+         raise RuntimeError(
+             f"FishAudio S2-Pro Fast-AR does not support SM{sm_version}; "
+-            "supported architectures are SM89, SM90, SM100, and SM120. "
++            "supported architectures are SM86, SM89, SM90, SM100, and SM120. "
+             "A Slow-AR attention_backend override cannot bypass this requirement."
+         )
+     else:
+diff --git a/sglang_omni/models/fishaudio_s2_pro/fish_speech/models/text2semantic/audio_decoder.py b/sglang_omni/models/fishaudio_s2_pro/fish_speech/models/text2semantic/audio_decoder.py
+--- a/sglang_omni/models/fishaudio_s2_pro/fish_speech/models/text2semantic/audio_decoder.py
++++ b/sglang_omni/models/fishaudio_s2_pro/fish_speech/models/text2semantic/audio_decoder.py
+@@ -37,13 +37,13 @@
+         return True
+     else:
+         pass
+-    if sm_version in (89, 100, 120):
++    if sm_version in (86, 89, 100, 120):
+         return False
+     else:
+         pass
+     raise RuntimeError(
+         f"FishAudio S2-Pro Fast-AR does not support SM{sm_version}; "
+-        "supported architectures: SM89, SM90, SM100, SM120."
++        "supported architectures: SM86, SM89, SM90, SM100, SM120."
+     )
+ 
+ 
