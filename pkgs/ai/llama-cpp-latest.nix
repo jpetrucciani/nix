@@ -19,7 +19,7 @@ in
     owner = "ggml-org";
     repo = "llama.cpp";
     tag = "b${version}";
-    hash = "sha256-p2pShof7VpGZSHhezWvIL44Ou9CTK8e1OT3iBNdwU+I=";
+    hash = "sha256-lJRMrWE9jiKszH/flQY764ZYV+k0y8bLHNqT/qOHCQM=";
     leaveDotGit = true;
     postFetch = ''
       git -C "$out" rev-parse --short HEAD > $out/COMMIT
@@ -28,7 +28,7 @@ in
   };
 
   npmRoot = "tools/ui";
-  npmDepsHash = "sha256-a17M+L3nLdRnN6WMB6imPFmwqG2g8uv+gwN0XTAUrf8=";
+  npmDepsHash = "sha256-XLtEZsSFdk+2SyfXzBp8HQ2e27PQPpDCn1YjePU1/9w=";
 
   postPatch = (old.postPatch or "") + ''
     # The dummy-model generator bypasses the common argument parser that loads backends.
