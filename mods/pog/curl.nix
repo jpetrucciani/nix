@@ -76,6 +76,53 @@ let
   '';
 in
 rec {
+  bezel_intake = pog {
+    name = "bezel_intake";
+    description = "send a report to an existing bezel intake";
+    strict = true;
+    showDefaultFlags = true;
+    flags = [
+      { name = "url"; short = "u"; envVar = "BEZEL_INTAKE_URL"; description = "the intake URL"; required = true; }
+      { name = "secret"; short = "s"; envVar = "BEZEL_INTAKE_SECRET"; description = "the intake's bearer secret"; required = true; }
+      { name = "title"; short = "t"; envVar = "BEZEL_INTAKE_TITLE"; description = "report title; keep stable to group repeats"; required = true; }
+      { name = "body"; short = "b"; envVar = "BEZEL_INTAKE_BODY"; description = "report details"; }
+      { name = "body-file"; short = "f"; envVar = "BEZEL_INTAKE_BODY_FILE"; description = "read details from a file, or - for stdin; exclusive with --body"; }
+      { name = "link"; short = "l"; envVar = "BEZEL_INTAKE_LINK"; description = "source URL; map the intake's url field to /url"; }
+    ];
+    script = ''
+      if [ "$#" -ne 0 ]; then
+        die "unexpected arguments; use --title and --body or --body-file" 2
+      fi
+      if [ -n "$body" ] && [ -n "$body_file" ]; then
+        die "--body and --body-file are mutually exclusive" 2
+      fi
+
+      body_args=( --arg body "$body" )
+      if [ -n "$body_file" ]; then
+        if [ "$body_file" = "-" ]; then
+          body_file=/dev/stdin
+        fi
+        body_args=( --rawfile body "$body_file" )
+      fi
+
+      request="$(${_.jq} -cn \
+        --arg title "$title" \
+        "''${body_args[@]}" \
+        --arg link "$link" \
+        '{title: $title, body: $body} +
+          (if $link == "" then {} else {url: $link} end)')"
+
+      printf '%s' "$request" | ${_.curl} \
+        --fail-with-body \
+        --silent \
+        --show-error \
+        --header "Authorization: Bearer $secret" \
+        --header 'Content-Type: application/json' \
+        --data-binary @- \
+        --url "$url"
+    '';
+  };
+
   jiracurl = pog {
     name = "jiracurl";
     description = "a wrapper for curl to allow access tokens with bearer auth!";
@@ -430,6 +477,7 @@ rec {
 
   curl_pog_scripts = [
     baymaxcurl
+    bezel_intake
     githubcurl
     github_create_release
     gitlabcurl

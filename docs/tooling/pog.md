@@ -27,6 +27,18 @@ nix run .#overlay-diff -- --custom
 
 It prints the local overlay attributes discovered under `pkgs/` and where they were declared. This is a generated CLI from a Nix definition, with its flags and help kept beside the command body. [Daily Workflows](/daily-workflows) has more overlay commands.
 
+## Send Reports to bezel
+
+`bezel_intake` sends a JSON report to an existing bezel intake. Set `BEZEL_INTAKE_URL` and `BEZEL_INTAKE_SECRET` from that intake, then send a title and details:
+
+```bash
+bezel_intake --title "nightly backup failed" --body "exit 2: disk full"
+bezel_intake --title "nightly backup failed" --body-file backup.log
+bezel_intake --title "nightly backup failed" --body-file - < backup.log
+```
+
+Use either `--body` or `--body-file`; `-` reads stdin. Keep the title stable to group repeat reports, and put changing details in the body. Optional `--link URL` adds a source link; map the intake's `url` field to `/url` to use it. HTTP errors exit nonzero and preserve the response body. The intake's settings control whether bezel files a proposal or starts an investigation or fix.
+
 ## Why It Fits Here
 
 - The generated CLIs share flags, completion behavior, and help output.
