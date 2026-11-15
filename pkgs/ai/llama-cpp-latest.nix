@@ -7,7 +7,7 @@
 , stdenv
 }:
 let
-  version = "12233";
+  version = "12387";
 in
 (llama-cpp.override {
   inherit cudaSupport;
@@ -19,7 +19,7 @@ in
     owner = "ggml-org";
     repo = "llama.cpp";
     tag = "b${version}";
-    hash = "sha256-lJRMrWE9jiKszH/flQY764ZYV+k0y8bLHNqT/qOHCQM=";
+    hash = "sha256-BVytGkkdk2W084JoVpR6imrgJEZD9EyN2H8Nj8Tae2E=";
     leaveDotGit = true;
     postFetch = ''
       git -C "$out" rev-parse --short HEAD > $out/COMMIT
@@ -28,7 +28,7 @@ in
   };
 
   npmRoot = "tools/ui";
-  npmDepsHash = "sha256-XLtEZsSFdk+2SyfXzBp8HQ2e27PQPpDCn1YjePU1/9w=";
+  npmDepsHash = "sha256-0OJIueUN5oD/V2NtVcXTiRW59u2tJIG3OxW8aJ8JDBY=";
 
   postPatch = (old.postPatch or "") + ''
     # The dummy-model generator bypasses the common argument parser that loads backends.
