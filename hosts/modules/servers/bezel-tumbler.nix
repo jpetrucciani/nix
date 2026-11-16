@@ -451,6 +451,8 @@ let
     capabilities.ALL = false;
     networks = optional (i.network != null) i.network;
     extraOptions = [
+      # tumbler would otherwise be PID 1 and never reap what its harnesses leave behind.
+      "--init"
       "--userns=keep-id:uid=${toString containerUid},gid=${toString containerUid}"
       "--security-opt=no-new-privileges"
       "--read-only"
