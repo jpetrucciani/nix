@@ -304,7 +304,9 @@ in
   bash_funcs = {
     wezterm_title = ''
       __wezterm_title() {
-        local last_rc="$1"
+        # called with no arguments: starship saved the status first, and
+        # without starship $? is still the last command's here
+        local last_rc="''${1:-''${STARSHIP_CMD_STATUS:-$?}}"
         local user_host="''${USER}@''${HOSTNAME%%.*}"
         local cwd="''${PWD/#$HOME/\~}"
         local git_branch=""
@@ -340,6 +342,17 @@ in
 
         # set terminal title via OSC 0
         echo -ne "\033]0;''${title}\007"
+
+        # say where we are (OSC 7), for new tabs/splits and plumbing in jet;
+        # inside tmux, wrapped so it passes through (allow-passthrough on)
+        local url_path="''${PWD//%/%25}"
+        url_path="''${url_path// /%20}"
+        local osc7
+        osc7=$(printf '\033]7;file://%s%s\033\\' "''${HOSTNAME}" "$url_path")
+        if [ -n "''${TMUX:-}" ]; then
+          osc7=$(printf '\033Ptmux;%s\033\\' "''${osc7//$'\033'/$'\033\033'}")
+        fi
+        printf '%s' "$osc7"
       }
 
       # starship owns PROMPT_COMMAND outright, so hook its documented precmd slot

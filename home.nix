@@ -749,7 +749,15 @@ in
       set-option -g set-titles on
       #256 colors
       set -g default-terminal "xterm-256color"
-      set -ga terminal-overrides ",xterm-256color:Tc"
+      # what the outer terminal (jet, TERM=xterm-256color) can do: true color,
+      # OSC 8 links, OSC 52 clipboard, extended keys, synchronized output
+      set -as terminal-features ',xterm-256color:RGB:hyperlinks:clipboard:extkeys:sync'
+      # let OSC 7/3008/99/1337 and kitty graphics from the visible pane
+      # reach the outer terminal
+      set -g allow-passthrough on
+      set -g set-clipboard on
+      set -g focus-events on
+      set -g extended-keys on
       #Don't auto remane windows
       set-option -g allow-rename off
       # Source config
