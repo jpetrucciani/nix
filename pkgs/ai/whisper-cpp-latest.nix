@@ -6,7 +6,7 @@
 , whisper-cpp
 }:
 let
-  version = "1.9.3";
+  version = "1.9.5";
 in
 (whisper-cpp.override { inherit cudaSupport; }).overrideAttrs (old: {
   inherit version;
@@ -15,7 +15,7 @@ in
     owner = "ggml-org";
     repo = "whisper.cpp";
     tag = "v${version}";
-    hash = "sha256-vro0I3t6IZ0lDJJjAveTkupLHKdVSaX4KhhWvwpya/g=";
+    hash = "sha256-Qqqpt+pvCQwSbyaBr1bdb7q+3LbELTcloHdiSikGPc4=";
   };
 
   postPatch = (old.postPatch or "") + ''
