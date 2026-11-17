@@ -10,6 +10,16 @@ let
   });
 in
 {
+  nix-update = prev.nix-update.overrideAttrs (old: {
+    # Flake metadata can report a source path without copying it to the store.
+    postPatch = (old.postPatch or "") + ''
+      substituteInPlace nix_update/options.py \
+        --replace-fail 'nix flake metadata' 'nix flake prefetch' \
+        --replace-fail '["nix", "flake", "metadata", "--json"]' '["nix", "flake", "prefetch", "--json", "."]' \
+        --replace-fail 'path = metadata.get("path")' 'path = metadata.get("storePath")'
+    '';
+  });
+
   # fix for getting yank working on darwin
   yank = prev.yank.overrideAttrs (attrs: {
     makeFlags = if isDarwin then [ "YANKCMD=/usr/bin/pbcopy" ] else attrs.makeFlags;
