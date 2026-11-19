@@ -68,19 +68,22 @@ let
           exit 1
         fi
 
-        jq -er --argjson expected ${escapeShellArg (builtins.toJSON assets)} '
+        # asset names may contain {version}, for releases that name
+        # their archives after it
+        jq -er --arg version "$version" --argjson expected ${escapeShellArg (builtins.toJSON assets)} '
           . as $release |
           $expected | to_entries[] |
-          . as $expectedAsset |
-          [$release.assets[] | select(.name == $expectedAsset.value)] as $matches |
+          .key as $system |
+          (.value | gsub("\\{version\\}"; $version)) as $name |
+          [$release.assets[] | select(.name == $name)] as $matches |
           if ($matches | length) != 1 then
-            error("expected exactly one release asset named \($expectedAsset.value), found \($matches | length)")
+            error("expected exactly one release asset named \($name), found \($matches | length)")
           elif ($matches[0].digest | type) != "string" then
-            error("release asset \($expectedAsset.value) has no digest")
+            error("release asset \($name) has no digest")
           elif ($matches[0].digest | test("^sha256:[0-9a-f]{64}$") | not) then
-            error("release asset \($expectedAsset.value) has an invalid SHA-256 digest")
+            error("release asset \($name) has an invalid SHA-256 digest")
           else
-            [$expectedAsset.key, $expectedAsset.value, $matches[0].digest] | @tsv
+            [$system, $name, $matches[0].digest] | @tsv
           end
         ' "$release_file" > "$assets_file"
 

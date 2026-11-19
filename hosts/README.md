@@ -84,6 +84,10 @@ Shared defaults for nix-darwin machines.
 
 Shared host names, ports, machine groups, and key material.
 
+### [jet-status.bash](./jet-status.bash)
+
+The bash prompt hook that sends git, k8s, nix, venv, timing and exit status to jet's status bar, sourced by `home.nix`.
+
 ### [global.nix](./global.nix)
 
 Shared base packages, Nix settings, and activation diffs for NixOS hosts.

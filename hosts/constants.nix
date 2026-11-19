@@ -304,65 +304,28 @@ in
   bash_funcs = {
     wezterm_title = ''
       __wezterm_title() {
-        # called with no arguments: starship saved the status first, and
-        # without starship $? is still the last command's here
-        local last_rc="''${1:-''${STARSHIP_CMD_STATUS:-$?}}"
-        local user_host="''${USER}@''${HOSTNAME%%.*}"
-        local cwd="''${PWD/#$HOME/\~}"
-        local git_branch=""
-        local venv=""
-        local k8s=""
+        # from __jet_status (hosts/jet-status.bash), which runs first
+        local title="''${USER}@''${HOSTNAME%%.*}: ''${PWD/#$HOME/\~}"
+        [ -n "''${JET_STATUS[git]}" ] && title+="|git:''${JET_STATUS[git]}"
+        [ -n "''${JET_STATUS[venv]}" ] && title+="|venv:''${JET_STATUS[venv]}"
+        [ -n "''${JET_STATUS[k8s]}" ] && title+="|k8s:''${JET_STATUS[k8s]}"
+        [ -n "''${JET_STATUS[rc]}" ] && title+="|rc:''${JET_STATUS[rc]}"
+        printf '\e]0;%s\a' "$title"
+      }
 
-        # git branch (reads .git/HEAD directly — no subprocess)
-        if [ -f .git/HEAD ]; then
-          git_branch=$(sed 's|ref: refs/heads/||' .git/HEAD 2>/dev/null)
-        elif [ -d .git ]; then
-          # detached HEAD
-          git_branch=$(git rev-parse --short HEAD 2>/dev/null)
-        fi
-
-        # python venv
-        if [ -n "$VIRTUAL_ENV" ]; then
-          venv=$(basename "$VIRTUAL_ENV")
-        fi
-
-        # k8s context (only if KUBECONFIG is set — avoids slow kubectl calls)
-        if [ -n "$KUBECONFIG" ] && command -v kubectl &>/dev/null; then
-          k8s=$(kubectl config current-context 2>/dev/null)
-        fi
-
-        # build title: base part
-        local title="''${user_host}: ''${cwd}"
-
-        # append optional tags
-        [ -n "$git_branch" ]          && title="''${title}|git:''${git_branch}"
-        [ -n "$venv" ]                && title="''${title}|venv:''${venv}"
-        [ -n "$k8s" ]                 && title="''${title}|k8s:''${k8s}"
-        [ "$last_rc" != "0" ]         && title="''${title}|rc:''${last_rc}"
-
-        # set terminal title via OSC 0
-        echo -ne "\033]0;''${title}\007"
-
-        # say where we are (OSC 7), for new tabs/splits and plumbing in jet;
-        # inside tmux, wrapped so it passes through (allow-passthrough on)
-        local url_path="''${PWD//%/%25}"
-        url_path="''${url_path// /%20}"
-        local osc7
-        osc7=$(printf '\033]7;file://%s%s\033\\' "''${HOSTNAME}" "$url_path")
-        if [ -n "''${TMUX:-}" ]; then
-          osc7=$(printf '\033Ptmux;%s\033\\' "''${osc7//$'\033'/$'\033\033'}")
-        fi
-        printf '%s' "$osc7"
+      __prompt_status() {
+        __jet_status
+        __wezterm_title
       }
 
       # starship owns PROMPT_COMMAND outright, so hook its documented precmd slot
       # instead of fighting it. Without starship, prepend so $? is still intact.
       if [ -n "''${STARSHIP_SHELL:-}" ] || command -v starship >/dev/null 2>&1; then
-        starship_precmd_user_func="__wezterm_title"
+        starship_precmd_user_func="__prompt_status"
       else
         case "$PROMPT_COMMAND" in
-          *__wezterm_title*) ;;
-          *) PROMPT_COMMAND="__wezterm_title''${PROMPT_COMMAND:+;$PROMPT_COMMAND}" ;;
+          *__prompt_status*) ;;
+          *) PROMPT_COMMAND="__prompt_status''${PROMPT_COMMAND:+;$PROMPT_COMMAND}" ;;
         esac
       fi
     '';

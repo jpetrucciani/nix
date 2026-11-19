@@ -308,6 +308,8 @@ in
         [[ -e $HOME/.asdf/completions/asdf.bash ]] && source $HOME/.asdf/completions/asdf.bash
       ''
     ) + ''
+      # jet status variables; __prompt_status below runs it
+      source ${./hosts/jet-status.bash}
       ${constants.bash_funcs.wezterm_title}
 
       _kube_contexts() {
