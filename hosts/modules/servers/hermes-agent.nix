@@ -607,6 +607,17 @@ in
       )
       enabledInstances;
 
+    # crun exec reapplies the container's rlimits. Let the sudo session reach the
+    # container's hard nofile limit even when PAM has a lower wildcard default.
+    security.pam.loginLimits = lib.mkBefore (mapAttrsToList
+      (_: instance: {
+        domain = instance.user;
+        type = "hard";
+        item = "nofile";
+        value = "unlimited";
+      })
+      enabledInstances);
+
     systemd.tmpfiles.rules = flatten (
       mapAttrsToList
         (
