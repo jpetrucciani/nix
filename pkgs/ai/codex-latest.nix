@@ -7,7 +7,7 @@
 , stdenv
 }:
 let
-  version = "0.170.0";
+  version = "0.171.0";
   v8Version = "152.2.0";
   v8ReleaseBase = "https://github.com/openai/codex/releases/download/rusty-v8-v${v8Version}";
   v8ArchiveHashes = {
@@ -30,7 +30,7 @@ let
     owner = "openai";
     repo = "codex";
     tag = "rust-v${version}";
-    hash = "sha256-iJkH0tknBE/+bAWWKDiG9rLfuj0KDcSHDa91Offd7R8=";
+    hash = "sha256-Q0fxlAU4oJZOHJtsVVaJJ28XuupzpCYGO4IKn9TAwl0=";
   };
   librustyV8 = fetchurl {
     name = "librusty_v8-${v8Version}";
@@ -63,7 +63,7 @@ codex.overrideAttrs (old: {
   cargoDeps = rustPlatform.fetchCargoVendor {
     inherit src;
     sourceRoot = "${src.name}/codex-rs";
-    hash = "sha256-dovquz74E13RYwAGuXRcyhvVAeSDXiqserw9inujf+c=";
+    hash = "sha256-57GGsc4vgmQnnOXOPf2QaqrW8+02cpc/zotb8Y+rRio=";
   };
 
   env = builtins.removeAttrs (old.env or { }) [ "LK_CUSTOM_WEBRTC" ] // {

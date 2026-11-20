@@ -17,8 +17,7 @@
 #   rc     the last command's exit status when it failed, with the signal
 #
 # Every variable goes out on every prompt, empty ones too: jet keeps a
-# pane's variables until they're set again, so this is what clears the
-# ones a remote shell set once ssh exits. The values also stay in the
+# pane's variables until they're set again. The values also stay in the
 # JET_STATUS array for the rest of your prompt to use.
 
 if ((BASH_VERSINFO[0] < 4 || (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] < 4))); then
