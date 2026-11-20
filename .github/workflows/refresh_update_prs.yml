@@ -1,0 +1,39 @@
+name: refresh automatic update PRs
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  workflow_run:
+    workflows: [check for flake updates, check for package updates]
+    types: [completed]
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: refresh-automatic-update-prs
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Rebase update PRs onto main
+        env:
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          prs=$(gh pr list --repo "$GITHUB_REPOSITORY" --base main --limit 100 \
+            --json number,autoMergeRequest,headRefName,isCrossRepository,isDraft \
+            --jq '.[] | select(
+              .autoMergeRequest != null and .isCrossRepository == false and .isDraft == false and
+              (.headRefName == "automatic-update" or (.headRefName | startswith("automatic-update-")))
+            ) | .number')
+
+          failed=0
+          while IFS= read -r pr; do
+            [[ -n "$pr" ]] || continue
+            echo "Checking automatic update PR #$pr"
+            gh pr update-branch --repo "$GITHUB_REPOSITORY" --rebase "$pr" || failed=1
+          done <<< "$prs"
+          exit "$failed"

@@ -1,5 +1,5 @@
 name: check for package updates
-on: { workflow_dispatch, schedule: [cron: '0 0 * * *'] }
+on: { workflow_dispatch, schedule: [cron: '30 0 * * *'] }
 
 permissions:
   contents: read
