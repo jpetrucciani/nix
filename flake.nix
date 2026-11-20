@@ -67,9 +67,9 @@
         "aarch64-linux"
         "x86_64-linux"
       ];
-      nix2containerPkgs = self.inputs.nix2container.packages.x86_64-linux;
       packageSets = forAllSystems
         (system: import ./. { flake = self; inherit system; });
+      nix2containerPkgs = packageSets.x86_64-linux.nix2container;
       upstreamPackageSets = forAllSystems
         (system: import self.inputs.nixpkgs {
           inherit system;
