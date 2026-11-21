@@ -231,11 +231,11 @@
         "pog": "pog"
       },
       "locked": {
-        "lastModified": 1795133096,
-        "narHash": "sha256-YvsbO710d5oWyzAXDJVuAsVn29So9yLVQBdQn+mUwcA=",
+        "lastModified": 1795219512,
+        "narHash": "sha256-H5XTmQcvUM0NlsOPJxPfl0OH3iPGJgOjMoRkZHvSZBQ=",
         "owner": "jpetrucciani",
         "repo": "hex",
-        "rev": "f3090983b35e4e2531a6d285a68b155c425a0e4b",
+        "rev": "f92649453d2065d307f4134a4c198d535cc1b586",
         "type": "github"
       },
       "original": {
@@ -271,11 +271,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794385027,
-        "narHash": "sha256-YFfGtsQEw5MQECnyIQqfMC1Wp51Tz/8oPD062mptAbE=",
+        "lastModified": 1795214825,
+        "narHash": "sha256-fcF3p8WPqk/6mehk/3QQz+lKpBfbtcqrAcm6wj7r9xM=",
         "owner": "numtide",
         "repo": "iets",
-        "rev": "9157ca1a2a50c085bcd7fd0004d9ba71e2b7c1e0",
+        "rev": "1daf93d4982c33a2f2103232f7d2170851ff9188",
         "type": "github"
       },
       "original": {
@@ -472,11 +472,11 @@
     },
     "nixpkgs_6": {
       "locked": {
-        "lastModified": 1795098731,
-        "narHash": "sha256-iJQmGZrFFhTyw/U6GdAoTYhUw1ih9R71LMqMAARMP+o=",
-        "rev": "b8a59ac94c4c495610130c08e5b4c99c2758b571",
+        "lastModified": 1795188322,
+        "narHash": "sha256-QAxQIrcnLEYIA7QTg5H/fPADrMV2MYb9j/oE6OkxSK0=",
+        "rev": "bd5b7d01ccc48cbc8241bda0c3554a4cbbcbc375",
         "type": "tarball",
-        "url": "https://releases.nixos.org/nixos/unstable-small/nixos-26.11pre1124578.b8a59ac94c4c/nixexprs.tar.zst"
+        "url": "https://releases.nixos.org/nixos/unstable-small/nixos-26.11pre1125403.bd5b7d01ccc4/nixexprs.tar.zst"
       },
       "original": {
         "id": "nixpkgs",
