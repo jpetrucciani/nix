@@ -5,6 +5,7 @@
 , fetchurl
 , autoPatchelfHook
 , unzip
+, alsa-lib
 , libGL
 , libx11
 , libxcb
@@ -36,6 +37,7 @@ stdenv.mkDerivation {
   # jet links only libc; it dlopens the rest. On its RUNPATH rather than
   # LD_LIBRARY_PATH, which every shell it starts would inherit.
   runtimeDependencies = lib.optionals (!isDarwin) [
+    alsa-lib # bell and notification sounds
     libGL
     libx11
     libxcb

@@ -19,6 +19,9 @@ For the complete list, browse [`pkgs/cli`](./).
   Native iets commands require full flake attribute paths.
   Package discovery includes it in `__j_custom`, so the existing CI build and cache steps cover it on Linux and macOS.
   Iets currently requires local locked flakes and does not support import from derivation.
+- [kittybrowser.nix](./kittybrowser.nix) provides `kb`, a browser for terminals that support the kitty graphics protocol.
+  Linux uses packaged Chromium by default. On macOS, install Google Chrome in `/Applications` or set `KB_CHROME`.
+  On either platform, `KB_CHROME=/path/to/browser` selects a different browser.
 - [t-rs.nix](./t-rs.nix): concise text transformation language.
 
 ### Cloud and Infrastructure
