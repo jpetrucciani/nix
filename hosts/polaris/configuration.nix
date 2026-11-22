@@ -3,7 +3,6 @@ let
   inherit (flake.inputs) nixos-hardware;
   hostname = "polaris";
   common = import ../common.nix { inherit config flake machine-name pkgs; };
-  strata = pkgs.strata.ampere;
   # NixOS has no ld.so.cache; stub for tools that shell out to /sbin/ldconfig -p
   ldconfigShim = pkgs.writeShellScript "ldconfig-shim" ''
     exit 0
@@ -15,6 +14,7 @@ in
     ./hardware-configuration.nix
     ../modules/conf/nvidia-smi-workaround.nix
     ../modules/servers/hermes-agent.nix
+    ../modules/servers/strata.nix
   ] ++ (with nixos-hardware.nixosModules; [
     common-pc
     common-pc-ssd
@@ -70,39 +70,6 @@ in
         RestartSec = 10;
       };
     };
-    strata = {
-      description = "Polaris Qwen3.8-Flash-Next IQ3_S (Strata)";
-      wantedBy = [ "multi-user.target" ];
-      wants = [ "network-online.target" ];
-      after = [ "network-online.target" ];
-      path = [ config.hardware.nvidia.package ];
-      environment = {
-        HOME = "/var/lib/strata";
-        STRATA_INSTALL_DIR = "/var/lib/strata";
-        CUDA_VISIBLE_DEVICES = "0";
-        PYTHONUNBUFFERED = "1";
-      };
-      # Keep the experts and long-context KV in system RAM; GPU 1 serves Qwen-Image.
-      preStart = ''
-        ${strata}/bin/strata-prepare \
-          --yes --family qwen --model IQ3_S \
-          --gpu 0 --context 262144 --kv int8 --kv-streaming on \
-          --low-ram off --vram-reserve-mib 2048 --mtp on \
-          --host 0.0.0.0 --port 8021 --no-browser \
-          --data-dir /var/lib/strata/data
-      '';
-      serviceConfig = {
-        User = "jacobi";
-        StateDirectory = "strata";
-        WorkingDirectory = "/var/lib/strata";
-        ExecStart = "${strata}/bin/strata serve --config /var/lib/strata/strata-iq3_s.json --host 0.0.0.0 --port 8021";
-        Restart = "on-failure";
-        RestartSec = 10;
-        # The first start downloads and prepares the model outside the Nix store.
-        TimeoutStartSec = "infinity";
-        LimitMEMLOCK = "infinity";
-      };
-    };
   };
 
   environment = {
@@ -142,6 +109,35 @@ in
 
   services = {
     xserver.videoDrivers = [ "nvidia" ];
+    # strata = {
+    #   enable = true;
+    #   user = "jacobi";
+    #   cudaArchitectures = [ "86" ];
+    #   # GPU 1 serves Qwen-Image. Keep the experts and long-context KV in system RAM.
+    #   gpuDevices = [ 0 ];
+    #   family = "qwen";
+    #   model = "IQ3_S";
+    #   contextSize = 262144;
+    #   kvCacheType = "int8";
+    #   kvStreaming = "on";
+    #   lowRam = "off";
+    #   vramReserveMiB = 2048;
+    #   mtp = true;
+    #   address = "0.0.0.0";
+    #   port = 8021;
+    # };
+    strata = {
+      enable = true;
+      user = "jacobi";
+      cudaArchitectures = [ "86" ];
+      # GPU 1 serves Qwen-Image.
+      gpuDevices = [ 0 ];
+      family = "inkling-2-mini";
+      model = "SQ-20";
+      contextSize = 524288;
+      address = "0.0.0.0";
+      port = 8021;
+    };
     hermes-agent = {
       enable = true;
       instances.ava = {

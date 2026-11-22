@@ -1,4 +1,4 @@
-# [Strata](https://github.com/Niko1221/Strata) runs Qwen Flash-Next with CPU and CUDA expert caching.
+# [Strata](https://github.com/Niko1221/Strata) runs Qwen Flash-Next and Inkling 2 Mini with CUDA.
 { strata
 , lib
 , stdenvNoCC
@@ -13,12 +13,13 @@
 , isWSL ? false
 }:
 let
-  version = "0.1.59.1";
+  version = "0.2.19";
+  engineVersion = "0.1.65";
   src = fetchFromGitHub {
     owner = "Niko1221";
     repo = "Strata";
-    rev = "13eedf552417a6a791a7d13c6597e24300ee3a09";
-    hash = "sha256-50Z0ks2k6f+UsSJwOq528l4eIUnh+12/PH/KU+5sR0Y=";
+    rev = "c6f6427d9de9016fd92d13e29740f65625261df7";
+    hash = "sha256-hoqWE28i0b1R1+//WJMqk1wYmvfh2uNHd4yiL9U66RA=";
   };
   cudaPackages = cudaPackages_13_0;
   driverPath = if isWSL then "/usr/lib/wsl/lib" else "/run/opengl-driver/lib";
@@ -33,7 +34,7 @@ let
     "/usr/lib/wsl/lib"
   ]);
   meta = {
-    description = "Qwen Flash-Next inference with CPU and CUDA expert caching";
+    description = "CUDA inference for Qwen Flash-Next and Inkling 2 Mini";
     homepage = "https://github.com/Niko1221/Strata";
     license = lib.licenses.mit;
     maintainers = with lib.maintainers; [ jpetrucciani ];
@@ -52,35 +53,30 @@ let
     tqdm
     truststore
   ]);
-  llamaSource = fetchFromGitHub {
-    owner = "ggml-org";
-    repo = "llama.cpp";
-    rev = "3cf03257f219afbe7334045ff7c6a06ac68c627d";
-    hash = "sha256-SRGoXa+4ACBCB3eaG9XFYhMN1i0FyPEy9Rrer+dFGYI=";
-  };
   # Driver selection only changes the wrappers, so native Linux and WSL share this build.
   engine = cudaPackages.backendStdenv.mkDerivation {
     pname = "strata-engine";
-    inherit version src;
+    version = engineVersion;
+    inherit src;
 
     strictDeps = true;
     nativeBuildInputs = [ cmake ninja autoAddDriverRunpath cudaPackages.cuda_nvcc ];
     buildInputs = with cudaPackages; [ cuda_cudart cccl libcublas ];
 
+    cmakeDir = "../engine";
     cmakeFlags = [
       (lib.cmakeBool "STRATA_ENABLE_CUDA" true)
       (lib.cmakeBool "STRATA_PORTABLE" true)
       (lib.cmakeBool "STRATA_BUILD_TESTS" false)
       (lib.cmakeFeature "CMAKE_CUDA_ARCHITECTURES" (lib.concatStringsSep ";" cudaArchitectures))
     ];
-    ninjaFlags = [ "strata" "strata_kq" ];
+    ninjaFlags = [ "strata" "strata-inkling" ];
 
     installPhase = ''
       runHook preInstall
 
-      # K-quant kernels are loaded relative to /proc/self/exe, so keep them beside the real binary.
       install -Dm755 strata "$out/libexec/strata/strata"
-      install -Dm755 libstrata_kq.so "$out/libexec/strata/libstrata_kq.so"
+      install -Dm755 src/inkling2/strata-inkling "$out/libexec/strata/strata-inkling"
       mkdir -p "$out/bin"
       ln -s ../libexec/strata/strata "$out/bin/strata-engine"
 
@@ -91,14 +87,17 @@ let
     installCheckPhase = ''
       runHook preInstallCheck
 
-      # Help does no GPU work; the build sandbox has no host NVIDIA driver.
-      LD_LIBRARY_PATH="${cudaPackages.cuda_cudart}/lib/stubs" "$out/libexec/strata/strata" --help >/dev/null 2>&1
+      # These commands do no GPU work. The sandbox has no host NVIDIA driver.
+      export LD_LIBRARY_PATH="${cudaPackages.cuda_cudart}/lib/stubs"
+      "$out/libexec/strata/strata" --help >/dev/null 2>&1
+      test "$("$out/libexec/strata/strata-inkling" --version)" = "strata-inkling ${engineVersion}"
 
       runHook postInstallCheck
     '';
 
     meta = meta // { mainProgram = "strata-engine"; };
   };
+  engineDir = "${engine}/libexec/strata";
 in
 stdenvNoCC.mkDerivation {
   pname = "strata";
@@ -109,35 +108,40 @@ stdenvNoCC.mkDerivation {
   dontBuild = true;
 
   postPatch = ''
-    # Model preparation uses the Nix engine and gguf-py, without acquiring another toolchain or engine.
-    substituteInPlace setup.py \
-      --replace-fail 'llama = home() / "third_party" / "llama.cpp"' 'llama = Path("${llamaSource}")' \
+    # Model preparation uses the packaged engines and keeps verification state outside the store.
+    substituteInPlace terminal/setup.py \
       --replace-fail 'return ROOT / "marks" /' 'return home() / "marks" /' \
       --replace-fail 'return "component:strata-engine" if CONTROL else str(eng / EXE)' \
-        'return "${engine}/libexec/strata/strata" if CONTROL else str(eng / EXE)' \
+        'return "${engineDir}/strata" if CONTROL else str(eng / EXE)' \
+      --replace-fail 'return shape_engine.reference(SHAPE_ENGINE["shape"])' \
+        'return str(eng / inkling_family.EXE) if CONTROL and SHAPE_ENGINE["shape"] == inkling_family.SHAPE else shape_engine.reference(SHAPE_ENGINE["shape"])' \
+      --replace-fail 'return shape_engine_step(a, gpu, vision)' \
+        'if CONTROL and SHAPE_ENGINE["shape"] == inkling_family.SHAPE:
+                return llama_cpp_if_here(), Path("${engineDir}"), {"version": "${engineVersion}", "source": "local"}, ["${driverPath}"], gpu, "none"
+            return shape_engine_step(a, gpu, vision)' \
       --replace-fail 'return control_engine_step(gpu, vision)' \
-        'return llama_cpp_if_here(), Path("${engine}/libexec/strata"), {"version": "${version}", "source": "local"}, ["${driverPath}"], gpu, "none"'
+        'return llama_cpp_if_here(), Path("${engineDir}"), {"version": "${engineVersion}", "source": "local"}, ["${driverPath}"], gpu, "none"'
   '';
 
   installPhase = ''
     runHook preInstall
 
-    mkdir -p "$out/share/strata"
-    cp -r strata.py strata_cli strata_control serve tools ref data bench docs setup.py "$out/share/strata/"
+    mkdir -p "$out/share/strata/third_party"
+    cp -r terminal/{strata.py,strata_cli,strata_control,serve,tools,ref,data,bench,setup.py} docs "$out/share/strata/"
+    cp -r engine/third_party/strata-gguf-py "$out/share/strata/third_party/"
     printf '%s\n' '${version}' > "$out/share/strata/VERSION"
 
     makeWrapper ${lib.getExe python} "$out/bin/strata" \
       ${driverWrapperArgs} \
       --add-flags "-B $out/share/strata/strata.py" \
-      --set STRATA_NO_HANDOVER 1 \
-      --set STRATA_GGUF_PY "${llamaSource}/gguf-py"
-    makeWrapper "${engine}/libexec/strata/strata" "$out/bin/strata-engine" ${driverWrapperArgs}
+      --set STRATA_NO_HANDOVER 1
+    makeWrapper "${engineDir}/strata" "$out/bin/strata-engine" ${driverWrapperArgs}
+    makeWrapper "${engineDir}/strata-inkling" "$out/bin/strata-inkling" ${driverWrapperArgs}
     makeWrapper ${lib.getExe python} "$out/bin/strata-prepare" \
       ${driverWrapperArgs} \
       --add-flags "-B $out/share/strata/setup.py --no-start --vision no" \
       --set STRATA_CONTROL_INSTALL 1 \
-      --set-default STRATA_INSTALL_DIR . \
-      --set STRATA_GGUF_PY "${llamaSource}/gguf-py"
+      --set-default STRATA_INSTALL_DIR .
 
     runHook postInstall
   '';
@@ -160,6 +164,12 @@ stdenvNoCC.mkDerivation {
 
     sys.path.insert(0, sys.argv[1])
     import setup
+
+    setup.SHAPE_ENGINE["shape"] = setup.inkling_family.SHAPE
+    _, engine, _, driver_dirs, _, _ = setup.engine_step(None, {}, False, None, None, "none")
+    exe = Path(setup.engine_exe(engine))
+    assert exe == Path("${engineDir}/strata-inkling") and exe.is_file()
+    assert driver_dirs == ["${driverPath}"]
 
     with tempfile.TemporaryDirectory() as directory:
         model = Path(directory) / "model.gguf"

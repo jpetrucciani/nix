@@ -269,6 +269,30 @@ Multi-instance SGLang-Omni servers. Each entry produces a namespaced systemd uni
 }
 ```
 
+### [strata.nix](./strata.nix)
+
+Runs the Strata CUDA API server as `strata.service`. For Inkling 2 Mini on an RTX 5090, import the
+module and select the CUDA target and model.
+
+```nix
+{
+  imports = [ ../modules/servers/strata.nix ];
+
+  services.strata = {
+    enable = true;
+    cudaArchitectures = [ "120" ];
+    gpuDevices = [ 0 ];
+    family = "inkling-2-mini";
+    model = "SQ-20";
+    contextSize = 32768;
+  };
+}
+```
+
+The API defaults to `127.0.0.1:8080`. The first start downloads and prepares the weights under
+`/var/lib/strata/data` by default. To use a prepared run config, set `prepare = false` and
+point `configFile` at it.
+
 ### [titanite.nix](./titanite.nix)
 
 NixOS module for the Titanite DNS resolver
