@@ -158,6 +158,21 @@ Latest llama.cpp release with the web UI dependency set. Run `nix run .#llama-cp
 
 [`maestro`](https://github.com/pluja/maestro) converts natural language instructions into cli commands with LLMs
 
+### [maya-inkling-mini.nix](./maya-inkling-mini.nix)
+
+[Maya Inkling Mini](https://github.com/alesha-pro/maya-inkling-mini) serves the Unsloth `UD-Q4_K_XL` GGUF
+with CUDA. The package provides `maya-ik2`, `maya-serve`, and `maya-prepare`. The default and
+`.ampere` target `sm_86`. The `.ada`, `.blackwell`, and `.wsl` variants follow the Strata package conventions.
+
+`maya-prepare --gguf PATH --out DIR` writes the tokenizer under `DIR/tokenizer` using Maya's Inkling chat
+template. Set the engine and tokenizer paths in a [Maya run config](https://github.com/alesha-pro/maya-inkling-mini/blob/cc41ab12af88e8c57b0f36250997f28f8763a3cf/docs/inkling2-mini/ik2-mini-text.json)
+and pass it to `maya-serve --config CONFIG.json`, or use the
+[NixOS module](../../hosts/modules/servers/maya-inkling-mini.nix).
+
+`maya-inkling-mini.vision` provides the CPU `maya-vision` encoder. For a standalone server, set
+`vision.exe`, `vision.model`, and `vision.mmproj` in the run config to the encoder, model GGUF, and
+`mmproj-BF16.gguf` paths.
+
 ### [strata.nix](./strata.nix)
 
 [`Strata`](https://github.com/Niko1221/Strata) serves Qwen Flash-Next through OpenAI- and Anthropic-compatible APIs.

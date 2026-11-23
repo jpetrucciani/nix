@@ -233,6 +233,12 @@ in
             "false"
             "--vocoder.factory.max_batch_size"
             "2"
+            # First audio after 10 codec frames, not the default 40 (over a second on this card).
+            # Follow-up chunks stay small enough to arrive before the previous one finishes playing.
+            "--vocoder.factory.stream_stride"
+            "10"
+            "--vocoder.factory.stream_followup_stride"
+            "12"
           ];
           extraEnvironment.CUDA_VISIBLE_DEVICES = "0";
         };

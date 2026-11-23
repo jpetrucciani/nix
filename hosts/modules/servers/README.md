@@ -224,6 +224,37 @@ directories owned by the instance user/group, or grant access through
 
 [infinity](https://github.com/michaelfeil/infinity) embeddings server
 
+### [maya-inkling-mini.nix](./maya-inkling-mini.nix)
+
+Runs Maya's API for Inkling 2 Mini. Place the
+[Unsloth UD-Q4_K_XL GGUF](https://huggingface.co/unsloth/Inkling-2-Mini-GGUF) and optional
+[Thinking Machines DSpark weights](https://huggingface.co/thinkingmachines/Inkling-2-Mini) somewhere
+the service user can read. At startup the service extracts the tokenizer into its runtime directory.
+It uses a dedicated system user and listens on `127.0.0.1:18000` by default.
+
+```nix
+{
+  imports = [ ../modules/servers/maya-inkling-mini.nix ];
+
+  services.maya-inkling-mini = {
+    enable = true;
+    cudaArchitectures = [ "86" ];
+    gpuDevice = "0";
+    modelPath = "/srv/models/Inkling-2-Mini-UD-Q4_K_XL.gguf";
+    vision.mmprojPath = "/srv/models/mmproj-BF16.gguf";
+    drafterPath = "/srv/models/mtp.safetensors";
+    contextSize = 262144;
+  };
+}
+```
+
+To load an existing Maya tokenizer, set `tokenizerDir` to its directory. For an authenticated
+endpoint, provide `MAYA_API_KEY` in a runtime file referenced by `environmentFiles`.
+
+Set `vision.mmprojPath` to the local `mmproj-BF16.gguf` from the Unsloth model repository to enable
+image input. The module uses the packaged CPU encoder when this path is set. Both `vision.mmprojPath`
+and `drafterPath` are optional.
+
 ### [minifluxng.nix](./minifluxng.nix)
 
 miniflux
