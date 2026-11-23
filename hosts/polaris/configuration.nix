@@ -14,6 +14,7 @@ in
     ./hardware-configuration.nix
     ../modules/conf/nvidia-smi-workaround.nix
     ../modules/servers/hermes-agent.nix
+    ../modules/servers/hyperinkling.nix
     ../modules/servers/strata.nix
   ] ++ (with nixos-hardware.nixosModules; [
     common-pc
@@ -126,15 +127,15 @@ in
     #   address = "0.0.0.0";
     #   port = 8021;
     # };
-    strata = {
+    hyperinkling = {
       enable = true;
-      user = "jacobi";
-      cudaArchitectures = [ "86" ];
       # GPU 1 serves Qwen-Image.
-      gpuDevices = [ 0 ];
-      family = "inkling-2-mini";
-      model = "SQ-20";
-      contextSize = 524288;
+      gpuDevice = "0";
+      modelPath = "/srv/models/inkling2-hyperinkling-92de097";
+      parallel = 8;
+      cpuCacheGiB = 12;
+      sharedMemoryGiB = 24;
+      memoryLimitGiB = 64;
       address = "0.0.0.0";
       port = 8021;
     };

@@ -142,6 +142,12 @@ This mode leaves backend lifecycle management to the caller and rejects addition
 The launcher defaults `VLLM_USE_FLASHINFER_SAMPLER=0`, matching upstream: decisions read label log-probabilities
 without sampling. Set that variable explicitly to override it.
 
+### [hyperinkling.nix](./hyperinkling.nix)
+
+Launch [HyperInkling](https://github.com/Pento95/HyperInkling) on one NVIDIA sm_86 GPU with `hyperinkling`.
+The package pins the upstream Docker image by digest. Docker fetches the image on first use, and the GPTQ
+checkpoint lives outside the Nix store. Run `nix run path:.#hyperinkling -- --image` to print the pinned reference.
+
 ### [jeeves.nix](./jeeves.nix)
 
 [`jeeves`](https://github.com/robinovitch61/jeeves) is an AI agent conversation history browser
@@ -169,9 +175,10 @@ template. Set the engine and tokenizer paths in a [Maya run config](https://gith
 and pass it to `maya-serve --config CONFIG.json`, or use the
 [NixOS module](../../hosts/modules/servers/maya-inkling-mini.nix).
 
-`maya-inkling-mini.vision` provides the CPU `maya-vision` encoder. For a standalone server, set
-`vision.exe`, `vision.model`, and `vision.mmproj` in the run config to the encoder, model GGUF, and
-`mmproj-BF16.gguf` paths.
+`maya-inkling-mini.vision` provides the CPU `maya-vision` encoder. `maya-inkling-mini.visionCuda`
+builds it for the package's CUDA architectures. For a standalone server, set `vision.exe`,
+`vision.model`, and `vision.mmproj` in the run config to the encoder, model GGUF, and
+`mmproj-BF16.gguf` paths. Set `vision.gpu` and `vision.resident` to `true` for the CUDA encoder.
 
 ### [strata.nix](./strata.nix)
 

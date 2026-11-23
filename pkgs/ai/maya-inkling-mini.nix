@@ -89,12 +89,13 @@ let
 
     meta = meta // { mainProgram = "maya-ik2"; };
   };
-  vision = stdenv.mkDerivation {
-    pname = "maya-vision";
+  visionEncoder = cudaSupport: (if cudaSupport then cudaPackages.backendStdenv else stdenv).mkDerivation {
+    pname = if cudaSupport then "maya-vision-cuda" else "maya-vision";
     inherit src version;
 
     strictDeps = true;
-    nativeBuildInputs = [ cmake ninja ];
+    nativeBuildInputs = [ cmake ninja ] ++ lib.optionals cudaSupport [ autoAddDriverRunpath cudaPackages.cuda_nvcc ];
+    buildInputs = lib.optionals cudaSupport (with cudaPackages; [ cuda_cudart cuda_nvml_dev cccl libcublas ]);
     cmakeDir = "../tools/vision";
     cmakeFlags = [
       (lib.cmakeBool "STRATA_PORTABLE" true)
@@ -106,6 +107,9 @@ let
         rev = "34ff2e047ce520b1d83bd274bf3ff0bfbc72a69b";
         hash = "sha256-NEhdB5Ziy2K6PWaG7pch2U55f2sMPb10x360+zhZ4qo=";
       })))
+    ] ++ lib.optionals cudaSupport [
+      (lib.cmakeBool "STRATA_VISION_CUDA" true)
+      (lib.cmakeFeature "CMAKE_CUDA_ARCHITECTURES" (lib.concatStringsSep ";" cudaArchitectures))
     ];
     ninjaFlags = [ "maya-vision" ];
 
@@ -118,6 +122,7 @@ let
     doInstallCheck = true;
     installCheckPhase = ''
       runHook preInstallCheck
+      ${lib.optionalString cudaSupport ''export LD_LIBRARY_PATH="${cudaPackages.cuda_cudart}/lib/stubs"''}
       if "$out/bin/maya-vision" >usage.txt 2>&1; then
         exit 1
       fi
@@ -126,7 +131,7 @@ let
     '';
 
     meta = meta // {
-      description = "CPU image encoder for Maya Inkling 2 Mini";
+      description = "${if cudaSupport then "CUDA" else "CPU"} image encoder for Maya Inkling 2 Mini";
       mainProgram = "maya-vision";
     };
   };
@@ -167,7 +172,9 @@ stdenvNoCC.mkDerivation {
   '';
 
   passthru = {
-    inherit engine vision cudaArchitectures;
+    inherit engine cudaArchitectures;
+    vision = visionEncoder false;
+    visionCuda = visionEncoder true;
     wsl = maya-inkling-mini.override { inherit cudaArchitectures; isWSL = true; };
     ampere = maya-inkling-mini.override { inherit isWSL; cudaArchitectures = [ "86" ]; };
     ada = maya-inkling-mini.override { inherit isWSL; cudaArchitectures = [ "89" ]; };

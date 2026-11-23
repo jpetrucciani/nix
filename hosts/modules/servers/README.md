@@ -220,6 +220,18 @@ Host filesystem permissions still apply to bind mounts. Make writable workspace
 directories owned by the instance user/group, or grant access through
 `supplementaryGroups`; the module deliberately does not chown arbitrary mounts.
 
+### [hyperinkling.nix](./hyperinkling.nix)
+
+Serve Inkling 2 Mini on one NVIDIA sm_86 GPU with the pinned HyperInkling Docker image. Enable Docker and
+`hardware.nvidia-container-toolkit`, then provision the [GPTQ checkpoint](https://huggingface.co/Pentium95/Inkling-2-Mini-W4A16-g128-gptq)
+at `services.hyperinkling.modelPath`. The module mounts the checkpoint read-only and persists compilation caches
+under `/var/lib/hyperinkling`.
+
+The API defaults to `127.0.0.1:8021` and serves `inkling-2-mini` with vision and DSpark enabled. Set `gpuDevice`
+to select the GPU, `contextSize` to bound the automatically sized context, and `parallel` to set the sequence limit.
+To enable CPU prefix caching, set `cpuCacheGiB` and increase `sharedMemoryGiB` to cover it and the vision processor
+cache. For API authentication, set `environmentFile` to a runtime file containing `VLLM_API_KEY`.
+
 ### [infinity.nix](./infinity.nix)
 
 [infinity](https://github.com/michaelfeil/infinity) embeddings server
@@ -252,8 +264,8 @@ To load an existing Maya tokenizer, set `tokenizerDir` to its directory. For an 
 endpoint, provide `MAYA_API_KEY` in a runtime file referenced by `environmentFiles`.
 
 Set `vision.mmprojPath` to the local `mmproj-BF16.gguf` from the Unsloth model repository to enable
-image input. The module uses the packaged CPU encoder when this path is set. Both `vision.mmprojPath`
-and `drafterPath` are optional.
+image input. The module uses the CPU encoder by default. Set `vision.cudaSupport = true` to run the
+encoder on the model's CUDA GPU. Both `vision.mmprojPath` and `drafterPath` are optional.
 
 ### [minifluxng.nix](./minifluxng.nix)
 

@@ -34,8 +34,8 @@ let
       exe = getExe' cfg.vision.package "maya-vision";
       model = cfg.modelPath;
       mmproj = cfg.vision.mmprojPath;
-      gpu = false;
-    };
+      gpu = cfg.vision.cudaSupport;
+    } // optionalAttrs cfg.vision.cudaSupport { resident = true; };
   }));
 in
 {
@@ -105,13 +105,17 @@ in
         type = nullOr runtimePath;
         default = null;
         example = "/srv/models/mmproj-BF16.gguf";
-        description = "Path to Inkling 2 Mini's image projector GGUF. Setting this enables image input with a CPU encoder.";
+        description = "Path to Inkling 2 Mini's image projector GGUF. Setting this enables image input.";
       };
+      cudaSupport = mkEnableOption "CUDA acceleration for the image encoder on the same GPU as the text model";
       package = mkOption {
         type = package;
-        default = cfg.package.vision;
-        defaultText = literalExpression "config.services.maya-inkling-mini.package.vision";
-        description = "Package providing the CPU encoder at bin/maya-vision.";
+        default = if cfg.vision.cudaSupport then cfg.package.visionCuda else cfg.package.vision;
+        defaultText = literalExpression ''
+          let cfg = config.services.maya-inkling-mini;
+          in if cfg.vision.cudaSupport then cfg.package.visionCuda else cfg.package.vision
+        '';
+        description = "Package providing the image encoder at bin/maya-vision.";
       };
     };
     gpuDevice = mkOption {
@@ -190,6 +194,7 @@ in
       path = [ config.hardware.nvidia.package ];
       environment = {
         HOME = stateDir;
+        MAYA_SAVINGS_PATH = "${stateDir}/token-savings.json";
         CUDA_DEVICE_ORDER = "PCI_BUS_ID";
         CUDA_VISIBLE_DEVICES = cfg.gpuDevice;
         PYTHONUNBUFFERED = "1";
