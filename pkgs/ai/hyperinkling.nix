@@ -1,8 +1,8 @@
 { docker, lib, writeShellApplication }:
 let
-  version = "0.1.2";
+  version = "0.1.3";
   # The upstream binary includes the patched vLLM and CUDA kernels for sm_86.
-  image = "ghcr.io/pento95/hyperinkling@sha256:acddfcc2de87a989f23984fb0b8aaeacbea3024e786e6f5d737c788807b04ca8";
+  image = "ghcr.io/pento95/hyperinkling@sha256:e6db7291d84c32821789d0e56c38fdd935fbe6375f6057dcf7f64302455c7878";
 in
 writeShellApplication {
   name = "hyperinkling";
