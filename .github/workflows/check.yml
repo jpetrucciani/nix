@@ -25,11 +25,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: cachix/install-nix-action@bb0495a1086c46893eee56f32fd192dfe4a15bb9 # v32.0.0
-        with:
-          extra_nix_config: |
-            extra-substituters = https://cache.g7c.us
-            extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
+      - uses: jpetrucciani/actions/nix/setup@7235e5692c8aa8906e6c1827313a0a72d3b190e3
       - run: nix run .#jfmt -- --ci
   docs:
     runs-on: ubuntu-24.04
