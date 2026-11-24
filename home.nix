@@ -705,15 +705,17 @@ in
 
   programs.tmux = {
     enable = true;
-    historyLimit = 500000;
+    historyLimit = 100000;
     shortcut = "a";
+    # long enough that a loaded machine doesn't split mouse reports
+    escapeTime = 50;
+    baseIndex = 1;
+    keyMode = "vi";
+    mouse = true;
+    focusEvents = true;
+    terminal = "tmux-256color";
     extraConfig = ''
-      set -g base-index 1
-      set -g pane-base-index 1
-
-      set -g status-keys vi
-      setw -g mode-keys vi
-      setw -g mouse on
+      set -g renumber-windows on
 
       # Moving between windows.
       unbind [
@@ -728,10 +730,12 @@ in
       bind -r L resize-pane -R 5
 
       # Maximize and restore a pane.
-      unbind Up
-      bind Up new-window -d -n tmp \; swap-pane -s tmp.1 \; select-window -t tmp
-      unbind Down
-      bind Down last-window \; swap-pane -s tmp.1 \; kill-window -t tmp
+      bind Up resize-pane -Z
+
+      # Copy mode ([ is taken above).
+      bind v copy-mode
+      bind -T copy-mode-vi v send -X begin-selection
+      bind -T copy-mode-vi y send -X copy-selection-and-cancel
 
       # Log output to a text file on demand.
       bind P pipe-pane -o "cat >>~/#W.log" \; display "Toggled logging to ~/#W.log"
@@ -747,10 +751,8 @@ in
       set -g status-fg colour1
       set -g status-bg colour0
       set -g status-left ' '
-      set -g status-right '#(date +"%_I:%M")'
+      set -g status-right '%l:%M'
       set-option -g set-titles on
-      #256 colors
-      set -g default-terminal "xterm-256color"
       # what the outer terminal (jet, TERM=xterm-256color) can do: true color,
       # OSC 8 links, OSC 52 clipboard, extended keys, synchronized output
       set -as terminal-features ',xterm-256color:RGB:hyperlinks:clipboard:extkeys:sync'
@@ -758,13 +760,12 @@ in
       # reach the outer terminal
       set -g allow-passthrough on
       set -g set-clipboard on
-      set -g focus-events on
       set -g extended-keys on
       #Don't auto remane windows
       set-option -g allow-rename off
       # Source config
       unbind r
-      bind r source-file ~/.tmux.conf \; display "Finished sourcing ~/.tmux.conf ."
+      bind r source-file ~/.config/tmux/tmux.conf \; display "Reloaded tmux.conf"
 
       # Use Alt-arrow keys without prefix key to switch panes
       bind -n M-Left select-pane -L
@@ -775,10 +776,6 @@ in
       # Shift arrow to switch windows
       bind -n S-Left  previous-window
       bind -n S-Right next-window
-
-      # allow fn+left/right
-      bind-key -n Home send Escape "OH"
-      bind-key -n End send Escape "OF"
 
       setw -g monitor-activity on
       set-option -g bell-action none
