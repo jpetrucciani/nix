@@ -1,0 +1,49 @@
+[project]
+name = "stable-audio-3-service"
+version = "0.1.0"
+description = "A CUDA inference service for Stable Audio 3"
+requires-python = "==3.12.*"
+dependencies = [
+    "fastapi>=0.135,<1",
+    "flash-attn",
+    "huggingface-hub>=1.7.1,<2",
+    "numpy>=2.2.6,<3",
+    "prometheus-client>=0.22,<1",
+    "pydantic>=2.12,<3",
+    "python-multipart>=0.0.22,<1",
+    "scipy>=1.15,<2",
+    "soundfile>=0.13.1,<1",
+    "stable-audio-3==0.1.0",
+    "torch==2.7.1+cu128",
+    "torchaudio==2.7.1+cu128",
+    "uvicorn>=0.40,<1",
+]
+
+[project.scripts]
+stable-audio-3 = "stable_audio_service.api:main"
+stable-audio-3-benchmark = "stable_audio_service.benchmark:main"
+
+[build-system]
+requires = ["hatchling==1.30.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["stable_audio_service"]
+
+[tool.uv]
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+required-environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+
+[tool.uv.extra-build-dependencies]
+stable-audio-3 = ["hatchling==1.30.0"]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu128" }
+torchaudio = { index = "pytorch-cu128" }
+stable-audio-3 = { url = "https://github.com/Stability-AI/stable-audio-3/archive/4007b6f2987bcb760626c2b4ae3e3541753984e9.tar.gz" }
+flash-attn = { url = "https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3.post2/flash_attn-2.8.3.post2%2Bcu12torch2.7cxx11abiTRUE-cp312-cp312-linux_x86_64.whl" }
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true

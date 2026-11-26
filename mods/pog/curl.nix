@@ -475,6 +475,90 @@ rec {
     '';
   };
 
+  stable_audio = pog {
+    name = "stable_audio";
+    description = "generate or edit audio through a Stable Audio 3 server";
+    arguments = [{ name = "PROMPT"; }];
+    flags = [
+      { name = "url"; short = "u"; envVar = "STABLE_AUDIO_URL"; default = "http://127.0.0.1:8766"; description = "the Stable Audio server URL"; }
+      { name = "model"; short = "m"; default = "small-sfx"; description = "small-sfx, small-music, or medium"; }
+      { name = "duration"; short = "d"; default = "2"; description = "clip length in seconds"; }
+      { name = "steps"; short = "s"; default = "8"; description = "diffusion sampling steps"; }
+      { name = "variations"; short = "n"; default = "1"; description = "number of clips to generate in one batch"; }
+      { name = "seed"; short = "S"; description = "random seed for the batch"; }
+      { name = "format"; short = "f"; default = "wav"; description = "wav, flac, or ogg"; }
+      { name = "output-dir"; short = "o"; default = "."; description = "directory for downloaded clips"; }
+      { name = "reference"; short = "r"; description = "reference audio file for editing"; }
+      { name = "noise"; short = ""; default = "0.7"; description = "initial noise level for reference edits"; }
+    ];
+    strict = true;
+    showDefaultFlags = true;
+    beforeExit = ''
+      if [ -n "''${stable_audio_tmp:-}" ]; then
+        ${coreutils}/rm -rf -- "$stable_audio_tmp"
+      fi
+    '';
+    script = ''
+      if [ "$#" -ne 1 ] || [ -z "$1" ]; then
+        die "provide one quoted prompt" 2
+      fi
+      case "$format" in
+        wav|flac|ogg) ;;
+        *) die "--format must be wav, flac, or ogg" 2 ;;
+      esac
+      if [ -n "$reference" ] && [ ! -f "$reference" ]; then
+        die "reference audio file does not exist: $reference" 2
+      fi
+
+      request="$(${_.jq} -cn \
+        --arg prompt "$1" \
+        --arg model "$model" \
+        --arg format "$format" \
+        --arg reference "$reference" \
+        --argjson duration "$duration" \
+        --argjson steps "$steps" \
+        --argjson variations "$variations" \
+        --argjson seed "''${seed:-null}" \
+        --argjson noise "$noise" \
+        '{prompt: $prompt, model: $model, duration: $duration, steps: $steps,
+          variations: $variations, seed: $seed, processing: {format: $format}}
+         + (if $reference == "" then {} else {init_noise_level: $noise} end)')"
+
+      curl_args=(--disable --silent --show-error --fail-with-body --proto '=http,https')
+      if [ -n "''${STABLE_AUDIO_TOKEN:-}" ]; then
+        curl_args+=(--header "Authorization: Bearer $STABLE_AUDIO_TOKEN")
+      fi
+      base_url="''${url%/}/v1/audio"
+      if [ -n "$reference" ]; then
+        endpoint=edits
+        payload=(--form 'reference=@-;filename=reference' --form-string "options=$request")
+      else
+        endpoint=generations
+        payload=(--json "$request")
+      fi
+
+      stable_audio_tmp="$(${coreutils}/mktemp -d)"
+      response="$stable_audio_tmp/response.json"
+      if ! ${_.curl} "''${curl_args[@]}" "''${payload[@]}" --output "$response" "$base_url/$endpoint" < "''${reference:-/dev/null}"; then
+        [ ! -s "$response" ] || ${coreutils}/cat -- "$response" >&2
+        die "Stable Audio request failed" 1
+      fi
+      if ! ids="$(${_.jq} -er --argjson count "$variations" '
+        .artifacts | select(length == $count and all(.[].id; test("^[0-9a-f]{32}\\.[0-9]{1,2}$"))) | .[].id
+      ' "$response")"; then
+        die "Stable Audio returned an invalid artifact manifest" 1
+      fi
+
+      ${coreutils}/mkdir -p -- "$output_dir"
+      while IFS= read -r id; do
+        filename="$id.$format"
+        ${_.curl} "''${curl_args[@]}" --output "$stable_audio_tmp/$filename" "$base_url/artifacts/$id"
+        ${coreutils}/install -m0644 -- "$stable_audio_tmp/$filename" "$output_dir/$filename"
+        printf '%s\n' "$output_dir/$filename"
+      done <<< "$ids"
+    '';
+  };
+
   curl_pog_scripts = [
     baymaxcurl
     bezel_intake
@@ -485,5 +569,6 @@ rec {
     ntfy_publish
     qwen_image
     qwen_image_edit
+    stable_audio
   ];
 }
