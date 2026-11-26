@@ -15,7 +15,27 @@ final: prev:
     isNixOS = builtins.pathExists "/etc/NIXOS";
     isNixOSWSL = isWSL && isNixOS;
 
-    nvidiaLdPath = if isWSL then "/usr/lib/wsl/lib" else if isNixOS then "/run/opengl-driver/lib" else "";
+    cudaDriverPath = { isWSL }: if isWSL then "/usr/lib/wsl/lib" else "/run/opengl-driver/lib";
+    nvidiaLdPath = if isWSL || isNixOS then cudaDriverPath { inherit isWSL; } else "";
+
+    wslCudaWrapperArgs = { includeDriverTools ? false }:
+      let driverPath = cudaDriverPath { isWSL = true; };
+      in [ "--prefix" "LD_LIBRARY_PATH" ":" driverPath ]
+      ++ optionals includeDriverTools [ "--prefix" "PATH" ":" driverPath ];
+
+    wrapWslCuda = { package, programs }:
+      final.symlinkJoin {
+        name = "${package.name}-wsl";
+        paths = [ package ];
+        nativeBuildInputs = [ final.makeWrapper ];
+        postBuild = ''
+          for program in ${escapeShellArgs programs}; do
+            wrapProgram "$out/bin/$program" ${escapeShellArgs (wslCudaWrapperArgs { })}
+          done
+        '';
+        inherit (package) meta;
+        passthru = removeAttrs (package.passthru or { }) [ "wsl" ];
+      };
 
     attrIf = check: name: if check then name else null;
     attrHash = attrs: builtins.hashString "sha256" (builtins.toJSON attrs);

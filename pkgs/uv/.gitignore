@@ -1,2 +1,3 @@
 *.lock
+!stable-audio-3/uv.lock
 

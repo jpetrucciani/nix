@@ -1,6 +1,7 @@
 # [vllm](https://github.com/vllm-project/vllm) is a high-throughput and memory-efficient inference and serving engine for LLMs
 { vllm
 , lib
+, hax
 , uv-nix
 , cudatoolkit
 , clang
@@ -10,9 +11,9 @@
 , lockHash ? "sha256-qmHs43npFRb2qDz9tOCQzui5lNPVmTpxRCLnYie1FQM="
 , isWSL ? false
 , includePin ? false
-}:
+}@args:
 let
-  ldPath = if isWSL then "/usr/lib/wsl/lib" else "/run/opengl-driver/lib";
+  ldPath = hax.cudaDriverPath { inherit isWSL; };
   extraDependencies = [
     "flashinfer-python>=0.6.12"
     "openai>=2.25.0"
@@ -56,7 +57,7 @@ uv-nix.buildUvPackage rec {
   passthru = {
     inherit lockHash lockUrl refreshScript;
     updateScript = lib.getExe refreshScript;
-    wsl = vllm.override { isWSL = true; };
+    wsl = vllm.override (args // { isWSL = true; });
   };
 
   meta = {

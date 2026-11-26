@@ -33,6 +33,7 @@ jobs:
       - run: nix --show-trace build -L .#__j_custom
       - if: ${{ github.event_name != 'pull_request' }}
         env:
+          CI_ARCHIVE_FLAKE: ${{ matrix.system == 'x86_64-linux' && 'true' || 'false' }}
           POG_URI: ${{ secrets.POG_URI }}
           PRIVKEY: ${{ secrets.G7C_CACHE_PRIVATE_KEY }}
           S3_CREDS: ${{ secrets.S3_CREDS }}

@@ -34,6 +34,10 @@ Compatibility patches applied to uv2nix-managed Python dependencies
 
 [SGLang-Omni](https://github.com/sgl-project/sglang-omni) is a multi-stage serving runtime for omni, speech, and TTS models.
 
+### [stable-audio-3/](./stable-audio-3/)
+
+Stable Audio 3 serves sound effects, music, and audio edits on NVIDIA GPUs.
+
 ### [vllm-omni.nix](./vllm-omni.nix)
 
 [vLLM-Omni](https://github.com/vllm-project/vllm-omni) serves omni-modality and diffusion models with vLLM

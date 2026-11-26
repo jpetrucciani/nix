@@ -106,6 +106,13 @@
     in
     {
       inherit packages;
+      apps = forAllSystems (system: {
+        jfmt = {
+          type = "app";
+          program = "${packageSets.${system}.jfmt}/bin/jfmt";
+          meta.description = "Run the repository formatter and linters.";
+        };
+      });
       legacyPackages = packageSets;
       lib = lib // { inherit autoUpdatePackages customPackageDrvPaths overlayDelta; };
       inherit (nix2containerPkgs) nix2container;

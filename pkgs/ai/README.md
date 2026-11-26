@@ -148,6 +148,23 @@ Launch [HyperInkling](https://github.com/Pento95/HyperInkling) on one NVIDIA sm_
 The package pins the upstream Docker image by digest. Docker fetches the image on first use, and the GPTQ
 checkpoint lives outside the Nix store. Run `nix run path:.#hyperinkling -- --image` to print the pinned reference.
 
+### [ingine.nix](./ingine.nix)
+
+Ingine serves Inkling 2 Mini on an RTX 5090 with CUDA 13.4, DSpark speculative decoding, and image input.
+Download the checkpoint listed in the installed `share/ingine/runtime-manifest.json` to a local model directory.
+[Pinned checkpoint](https://huggingface.co/satellitedown/Inkling-2-Mini-abliterated-ingine/tree/cea73d67cd0e424c14c8b5cd276a9a2c2a5d7cbd)
+
+Start with 128K context on WSL.
+
+```bash
+model=/path/to/Inkling-2-Mini
+nix run path:.#legacyPackages.x86_64-linux.ingine.wsl -- \
+  --engine --model-dir "$model" --ablation "$model/inkling-2-mini-abliterated.safetensors" \
+  --dense-fp8 --kv-fp8 --spec --max-ctx 131072 --park-mb 0
+```
+
+The API listens on `http://127.0.0.1:8003/v1` by default.
+
 ### [jeeves.nix](./jeeves.nix)
 
 [`jeeves`](https://github.com/robinovitch61/jeeves) is an AI agent conversation history browser

@@ -1,6 +1,7 @@
 # [Maya Inkling Mini](https://github.com/alesha-pro/maya-inkling-mini) serves Inkling 2 Mini from GGUF with CUDA.
 { maya-inkling-mini
 , lib
+, hax
 , stdenv
 , stdenvNoCC
 , fetchFromGitHub
@@ -22,16 +23,7 @@ let
     hash = "sha256-VB8KpyPiPewAQLhmR1fvYWHXMZgPGxRLqscS7M3K1pI=";
   };
   cudaPackages = cudaPackages_13_0;
-  driverWrapperArgs = lib.escapeShellArgs (lib.optionals isWSL [
-    "--prefix"
-    "LD_LIBRARY_PATH"
-    ":"
-    "/usr/lib/wsl/lib"
-    "--prefix"
-    "PATH"
-    ":"
-    "/usr/lib/wsl/lib"
-  ]);
+  driverWrapperArgs = lib.escapeShellArgs (lib.optionals isWSL (hax.wslCudaWrapperArgs { includeDriverTools = true; }));
   python = python312.withPackages (ps: with ps; [
     jinja2
     jsonschema
@@ -89,7 +81,7 @@ let
 
     meta = meta // { mainProgram = "maya-ik2"; };
   };
-  visionEncoder = cudaSupport: (if cudaSupport then cudaPackages.backendStdenv else stdenv).mkDerivation {
+  visionEncoder = cudaSupport: (if cudaSupport then cudaPackages.backendStdenv else stdenv).mkDerivation (finalAttrs: {
     pname = if cudaSupport then "maya-vision-cuda" else "maya-vision";
     inherit src version;
 
@@ -130,11 +122,19 @@ let
       runHook postInstallCheck
     '';
 
+    passthru = lib.optionalAttrs cudaSupport {
+      wsl = hax.wrapWslCuda {
+        package = finalAttrs.finalPackage;
+        programs = [ "maya-vision" ];
+      };
+    };
+
     meta = meta // {
       description = "${if cudaSupport then "CUDA" else "CPU"} image encoder for Maya Inkling 2 Mini";
       mainProgram = "maya-vision";
     };
-  };
+  });
+  visionCuda = visionEncoder true;
 in
 stdenvNoCC.mkDerivation {
   pname = "maya-inkling-mini";
@@ -174,7 +174,7 @@ stdenvNoCC.mkDerivation {
   passthru = {
     inherit engine cudaArchitectures;
     vision = visionEncoder false;
-    visionCuda = visionEncoder true;
+    visionCuda = if isWSL then visionCuda.wsl else visionCuda;
     wsl = maya-inkling-mini.override { inherit cudaArchitectures; isWSL = true; };
     ampere = maya-inkling-mini.override { inherit isWSL; cudaArchitectures = [ "86" ]; };
     ada = maya-inkling-mini.override { inherit isWSL; cudaArchitectures = [ "89" ]; };

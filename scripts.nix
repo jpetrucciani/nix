@@ -267,7 +267,10 @@ in
       export POG_URI
 
       nix run .#nixcache ./result*
-      nix flake archive --to "$POG_URI"
+      if [[ "''${CI_ARCHIVE_FLAKE:-true}" == true ]]; then
+        TIMEFORMAT='Flake archive took %3R seconds'
+        time nix flake archive --to "$POG_URI"
+      fi
     '';
   };
 }

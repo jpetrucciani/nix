@@ -1,6 +1,7 @@
 # [Strata](https://github.com/Niko1221/Strata) runs Qwen Flash-Next and Inkling 2 Mini with CUDA.
 { strata
 , lib
+, hax
 , stdenvNoCC
 , fetchFromGitHub
 , cmake
@@ -22,17 +23,8 @@ let
     hash = "sha256-hoqWE28i0b1R1+//WJMqk1wYmvfh2uNHd4yiL9U66RA=";
   };
   cudaPackages = cudaPackages_13_0;
-  driverPath = if isWSL then "/usr/lib/wsl/lib" else "/run/opengl-driver/lib";
-  driverWrapperArgs = lib.escapeShellArgs (lib.optionals isWSL [
-    "--prefix"
-    "LD_LIBRARY_PATH"
-    ":"
-    driverPath
-    "--prefix"
-    "PATH"
-    ":"
-    "/usr/lib/wsl/lib"
-  ]);
+  driverPath = hax.cudaDriverPath { inherit isWSL; };
+  driverWrapperArgs = lib.escapeShellArgs (lib.optionals isWSL (hax.wslCudaWrapperArgs { includeDriverTools = true; }));
   meta = {
     description = "CUDA inference for Qwen Flash-Next and Inkling 2 Mini";
     homepage = "https://github.com/Niko1221/Strata";
