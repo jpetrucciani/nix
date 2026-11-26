@@ -125,7 +125,7 @@ pkgs.snowball.pack {
 
 That bundle will render the relevant service and timer units, stage the extra file, derive a runtime manifest, and expose several installation backends.
 
-This repo already exports a few real examples. For one of those, you can build the various outputs like this:
+The `earlyoom` example exports a manifest, a shell installer, two RPM variants, and a Nix installer. Run the command for the output you want to build.
 
 ```bash
 nix build .#snowball.earlyoom.manifest

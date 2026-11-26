@@ -12,7 +12,7 @@
 
 Home Manager is the larger tool. It manages packages, program configuration, dotfiles, and user services through a module system.
 
-`mica` is narrower. It focuses on package selection, presets, and managed environment files. If you mostly want "search packages, pick a few, save a reproducible environment", it is a lighter place to start.
+Use `mica` to search for packages, apply presets, and save a reproducible package environment.
 
 That makes it a useful complement to this repo:
 

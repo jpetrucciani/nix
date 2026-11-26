@@ -1,6 +1,6 @@
 # cloud
 
-This directory contains tooling related to various cloud providers
+Tools for S3-compatible storage, Google Cloud Storage, GKE authentication, and Tencent Cloud.
 
 ---
 

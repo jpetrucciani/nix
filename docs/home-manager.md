@@ -36,7 +36,7 @@ It is useful when you want your user environment to be reproducible across machi
 
 Home Manager is broad. It is great when you want package installs, program config, dotfiles, and user services to live in one declarative layer.
 
-If your goal is narrower, mostly "give me a light way to manage reproducible packages", [`mica`](/tooling/mica) is a much smaller starting point. It focuses on package selection and managed `default.nix` files, not the full Home Manager module surface.
+Use [`mica`](/tooling/mica) to pick packages, apply presets, and save a reproducible environment in a managed `default.nix` file.
 
 ## What To Read In `home.nix`
 

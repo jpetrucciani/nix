@@ -72,11 +72,11 @@ This overlay provides more packages and scripts for use in my setup. This is als
 
 ### [java.nix](./java.nix)
 
-this overlay injects gross java hackery
+Provides `stinkyJdk`, which adds certificates to a JDK trust store.
 
 ### [js.nix](./js.nix)
 
-this overlay injects various javascript helpers into scope
+Exposes `pnpm2nix` for the current system.
 
 ### [lang.nix](./lang.nix)
 

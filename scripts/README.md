@@ -1,6 +1,6 @@
 # scripts
 
-This directory contains various random scripts that I use in this repo, or in packages created by this repo.
+Git branch cleanup and Nix bootstrap scripts.
 
 Docs validation helpers are defined in [`../scripts.nix`](../scripts.nix) as `writeBashBinChecked` derivations and exposed as `.#scripts.*` flake outputs.
 

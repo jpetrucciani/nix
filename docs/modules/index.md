@@ -1,8 +1,6 @@
 # Modules
 
-Reusable system modules live under `hosts/modules`. A module is a reusable configuration fragment. It usually defines options, service wiring, and defaults that several machines can share.
-
-This is where behavior that should apply to more than one machine belongs.
+System modules under `hosts/modules` let hosts share options, service wiring, and defaults.
 
 ## Module Areas
 
@@ -21,7 +19,7 @@ This is where behavior that should apply to more than one machine belongs.
 
 - A host should import a module because the behavior is reusable, not because the host file is getting crowded.
 - Modules are where service defaults, option wiring, and systemd or launchd integration should live.
-- The interesting read is usually one module plus one host that imports it.
+- Start with one module and a host that imports it.
 
 ## Module Vs Package
 
