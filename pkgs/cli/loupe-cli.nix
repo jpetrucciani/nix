@@ -11,16 +11,16 @@
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "loupe";
-  version = "0.0.3";
+  version = "0.0.4";
 
   src = fetchFromGitHub {
     owner = "jpetrucciani";
     repo = "loupe";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-OOEcPl9DUyd9esVXxaIU5ITr3LsWDR3ACeSSeVpET7E=";
+    hash = "sha256-1YgqIxfZGSt5TmM07JF7qD/XnTLucHRFUPjto6SCDeE=";
   };
 
-  cargoHash = "sha256-Y/Mbo7cFfZ4FOFrLOB6FjG7a8GiLT3l4W9vNX3sStYY=";
+  cargoHash = "sha256-YKxJfQdBuJ2wQimECC+sH+Pq9c0N/TxShBm6iN40/JA=";
 
   buildFeatures = [ "mcp" "parquet" ];
 
