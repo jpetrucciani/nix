@@ -1,6 +1,8 @@
 { config
+, cudaPackages
 , cudaSupport ? config.cudaSupport
 , fetchFromGitHub
+, lib
 , llama-cpp
 , nodejs_24
 , refresh_llama-cpp_latest
@@ -9,7 +11,7 @@ let
   version = "12815";
 in
 (llama-cpp.override {
-  inherit cudaSupport;
+  inherit cudaPackages cudaSupport;
   nodejs_latest = nodejs_24;
 }).overrideAttrs (old: {
   inherit version;
@@ -28,6 +30,9 @@ in
 
   npmRoot = "ui/apps/chat";
   npmDepsHash = "sha256-ogXf1Ay3TnCLbkMcXVHdZhxL3PzJdlMT+RyXpcy/Qrw=";
+
+  # GGML loads NVML from the NVIDIA driver at runtime.
+  buildInputs = old.buildInputs ++ lib.optional cudaSupport cudaPackages.cuda_nvml_dev.include;
 
   postPatch = (old.postPatch or "") + ''
     # The dummy-model generator bypasses the common argument parser that loads backends.
