@@ -34,7 +34,7 @@ check-doc-links | check-readme-index | check-vale)
   target="lib.ciTools.$system.$attribute"
   ;;
 nupdate)
-  recipe+=(mods/ci-tools.nix mods/final.nix mods/override.nix mods/pog/nix.nix)
+  recipe+=(mods/ci-tools.nix mods/final.nix mods/pog/nix.nix)
   target="lib.ciTools.$system.nupdate"
   name_pattern='nupdate-[0-9][a-zA-Z0-9._+-]*'
   ;;

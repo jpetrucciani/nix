@@ -8,7 +8,6 @@ let
   updatePkgs = pkgs // {
     inherit flake;
     inherit (finalOverlay) _nix;
-    inherit (import ./override.nix pkgs pkgs) nix-update;
     inherit (import inputs.pog { inherit pkgs system; }) pog;
   };
 in

@@ -12,7 +12,6 @@ on:
       - mods/final.nix
       - mods/hax.nix
       - mods/jfmt.nix
-      - mods/override.nix
       - mods/pog/nix.nix
       - pkgs/cli/iets.nix
       - .github/styles/config/**
