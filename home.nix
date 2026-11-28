@@ -62,7 +62,6 @@ in
         _nix
         aq
         bat
-        bubblewrap
         bzip2
         cacert
         cachix
@@ -202,6 +201,7 @@ in
           # linux specific
           (
             optList isLinux [
+              bubblewrap
               gnutar # this breaks vscode server?
               nixos-generators
               binutils
