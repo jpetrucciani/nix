@@ -144,6 +144,13 @@ in
       instances.ava = {
         uid = 32001;
         enableNix = true;
+        # SLATE_TOKEN comes from the instance's .env; hermes expands it when it loads this.
+        settings = {
+          mcp_servers.slate = {
+            url = "https://slate.cobi.dev/mcp";
+            headers.Authorization = "Bearer \${SLATE_TOKEN}";
+          };
+        };
         packages = with pkgs; [
           aq
           chrome-devtools-mcp-headless

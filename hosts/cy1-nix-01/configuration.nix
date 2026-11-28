@@ -180,6 +180,11 @@ in
               args = [ ];
               env.SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
             };
+            # SLATE_TOKEN comes from the instance's .env; hermes expands it when it loads this.
+            slate = {
+              url = "https://slate.cobi.dev/mcp";
+              headers.Authorization = "Bearer \${SLATE_TOKEN}";
+            };
           };
           platforms.slack.extra = {
             unauthorized_dm_behavior = "ignore";
