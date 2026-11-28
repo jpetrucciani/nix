@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.."
+
+system=x86_64-linux
+cache=${JFMT_BINARY_CACHE:-https://cache.g7c.us}
+static_url=${STATIC_G7C_PUBLIC_URL:-https://static.g7c.us}
+
+# flake.nix supplies the formatter's pinned nixpkgs and treefmt inputs.
+checksum=$(
+  {
+    printf '%s\n' "$system"
+    sha256sum flake.nix flake.lock mods/jfmt.nix
+  } | sha256sum
+)
+key=${checksum%% *}
+object_key="tools/jfmt/$system/$key.json"
+manifest_url="${static_url%/}/$object_key"
+
+read_pin() {
+  curl --fail --silent --connect-timeout 3 --max-time 8 "$manifest_url" |
+    jq -er --arg key "$key" --arg system "$system" '
+      select(.key == $key and .system == $system)
+      | .storePath
+      | select(test("^/nix/store/[0-9abcdfghijklmnpqrsvwxyz]{32}-jfmt$"))
+    '
+}
+
+verify_closure() {
+  nix store verify --refresh --store "$cache" --recursive --no-contents --sigs-needed 1 "$1"
+}
+
+case ${1:-} in
+key)
+  printf '%s\n' "$key"
+  ;;
+check)
+  if store_path=$(read_pin) && nix copy --from "$cache" "$store_path" && [[ -x "$store_path/bin/jfmt" ]]; then
+    echo "Using cached jfmt for $key"
+    exec "$store_path/bin/jfmt" --ci
+  fi
+  echo "Using the checkout's jfmt for $key"
+  exec nix run --no-write-lock-file .#jfmt -- --ci
+  ;;
+publish)
+  pin=$(read_pin || true)
+  if [[ -n $pin ]] && verify_closure "$pin"; then
+    echo "jfmt is already published at $manifest_url"
+    exit 0
+  fi
+  if [[ -z $pin ]]; then
+    : "${JFMT_ENDPOINT_URL:?Set the R2 endpoint for static.g7c.us}"
+    : "${JFMT_ACCESS_KEY_ID:?Set the R2 access key for static.g7c.us}"
+    : "${JFMT_SECRET_ACCESS_KEY:?Set the R2 secret key for static.g7c.us}"
+  fi
+
+  work_dir=$(mktemp -d)
+  trap 'rm -rf -- "$work_dir"' EXIT
+  store_path=$(nix build --no-write-lock-file --out-link "$work_dir/result" --print-out-paths ".#formatter.$system")
+  if [[ -n $pin && $pin != "$store_path" ]]; then
+    echo "The published jfmt path differs for recipe key $key" >&2
+    exit 1
+  fi
+  CI_ARCHIVE_FLAKE=false nix run --no-write-lock-file .#scripts.ci_cache -- "$store_path"
+  verify_closure "$store_path"
+  if [[ -n $pin ]]; then
+    echo "Restored the cached closure for $manifest_url"
+    exit 0
+  fi
+
+  manifest="$work_dir/manifest.json"
+  jq -n --arg key "$key" --arg system "$system" --arg path "$store_path" --arg rev "$(git rev-parse HEAD)" \
+    '{ key: $key, system: $system, storePath: $path, sourceRev: $rev }' >"$manifest"
+  AWS_ACCESS_KEY_ID="$JFMT_ACCESS_KEY_ID" \
+    AWS_SECRET_ACCESS_KEY="$JFMT_SECRET_ACCESS_KEY" \
+    AWS_REGION=auto AWS_REQUEST_CHECKSUM_CALCULATION=when_required AWS_RESPONSE_CHECKSUM_VALIDATION=when_required \
+    aws --endpoint-url "$JFMT_ENDPOINT_URL" s3api put-object \
+    --bucket "${JFMT_S3_BUCKET:-gemologic-static}" --key "$object_key" \
+    --if-none-match '*' --body "$manifest" --content-type application/json \
+    --cache-control 'public, max-age=31536000, immutable' >/dev/null
+  echo "Published $manifest_url"
+  ;;
+*)
+  echo "Usage: bash $0 {key|check|publish}" >&2
+  exit 2
+  ;;
+esac

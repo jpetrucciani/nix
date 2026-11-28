@@ -266,7 +266,10 @@ in
       fi
       export POG_URI
 
-      nix run .#nixcache ./result*
+      if (( $# == 0 )); then
+        set -- ./result*
+      fi
+      nix run .#nixcache -- "$@"
       if [[ "''${CI_ARCHIVE_FLAKE:-true}" == true ]]; then
         TIMEFORMAT='Flake archive took %3R seconds'
         time nix flake archive --to "$POG_URI"

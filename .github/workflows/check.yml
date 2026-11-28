@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: jpetrucciani/actions/nix/setup@7235e5692c8aa8906e6c1827313a0a72d3b190e3
-      - run: nix run .#jfmt -- --ci
+      - run: bash .github/scripts/jfmt-cache.sh check
   docs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30

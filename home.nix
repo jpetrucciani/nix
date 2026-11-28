@@ -62,6 +62,7 @@ in
         _nix
         aq
         bat
+        bubblewrap
         bzip2
         cacert
         cachix

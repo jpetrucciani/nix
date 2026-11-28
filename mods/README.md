@@ -74,6 +74,10 @@ This overlay provides more packages and scripts for use in my setup. This is als
 
 Provides `stinkyJdk`, which adds certificates to a JDK trust store.
 
+### [jfmt.nix](./jfmt.nix)
+
+Shared formatter settings and wrapper for cfg's `jfmt` package and the CI formatter.
+
 ### [js.nix](./js.nix)
 
 Exposes `pnpm2nix` for the current system.

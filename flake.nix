@@ -69,6 +69,10 @@
       ];
       packageSets = forAllSystems
         (system: import ./. { flake = self; inherit system; });
+      formatter = forAllSystems (system: (import ./mods/jfmt.nix {
+        pkgs = self.inputs.nixpkgs.legacyPackages.${system};
+        treefmtLib = self.inputs.treefmt-nix.lib;
+      }).jfmt);
       nix2containerPkgs = packageSets.x86_64-linux.nix2container;
       upstreamPackageSets = forAllSystems
         (system: import self.inputs.nixpkgs {
@@ -105,11 +109,11 @@
       foundryImageVariants = foundryConfiguration.config.system.build.images;
     in
     {
-      inherit packages;
+      inherit formatter packages;
       apps = forAllSystems (system: {
         jfmt = {
           type = "app";
-          program = "${packageSets.${system}.jfmt}/bin/jfmt";
+          program = "${formatter.${system}}/bin/jfmt";
           meta.description = "Run the repository formatter and linters.";
         };
       });

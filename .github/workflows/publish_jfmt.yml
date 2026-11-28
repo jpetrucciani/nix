@@ -1,0 +1,39 @@
+name: publish jfmt
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - flake.nix
+      - flake.lock
+      - mods/jfmt.nix
+      - .github/scripts/jfmt-cache.sh
+      - .github/workflows/publish_jfmt.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-jfmt
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: jpetrucciani/actions/nix/setup@7235e5692c8aa8906e6c1827313a0a72d3b190e3
+      - run: bash .github/scripts/jfmt-cache.sh publish
+        env:
+          POG_URI: ${{ secrets.POG_URI }}
+          PRIVKEY: ${{ secrets.G7C_CACHE_PRIVATE_KEY }}
+          S3_CREDS: ${{ secrets.S3_CREDS }}
+          JFMT_ENDPOINT_URL: ${{ secrets.JFMT_ENDPOINT_URL }}
+          JFMT_ACCESS_KEY_ID: ${{ secrets.JFMT_ACCESS_KEY_ID }}
+          JFMT_SECRET_ACCESS_KEY: ${{ secrets.JFMT_SECRET_ACCESS_KEY }}
+          JFMT_S3_BUCKET: ${{ vars.JFMT_S3_BUCKET }}

@@ -1,7 +1,7 @@
 # This overlay acts as the last overlay, allowing me to add attributes after every other overlay in this repo
 final: prev:
 let
-  inherit (final.lib) elem all id isDerivation recursiveUpdate;
+  inherit (final.lib) elem all id isDerivation;
   inherit (final.lib.attrsets) filterAttrs;
   evaluated_packages = filterAttrs
     (_: pkg: all id [
@@ -37,119 +37,10 @@ let
       meta.mainProgram = "vale";
     };
 
-  _oxfmt = {
-    printWidth = 120;
-    arrowParens = "always";
-    singleQuote = true;
-    tabWidth = 2;
-    useTabs = false;
-    semi = true;
-    bracketSpacing = true;
-    bracketSameLine = false;
-    proseWrap = "preserve";
-    trailingComma = "all";
-    ignorePatterns = [ "flake.lock" ];
+  formatter = import ./jfmt.nix {
+    pkgs = prev;
+    inherit (final) writeShellScriptBin;
   };
-
-  _treefmt =
-    let
-      defaults = {
-        binName = "jfmt";
-        defaultPrograms = {
-          # python
-          black.enable = true;
-          # ruff-check.enable = true;
-
-          # nix
-          nixpkgs-fmt.enable = true;
-          deadnix = {
-            enable = true;
-            no-lambda-arg = true;
-            no-underscore = true;
-          };
-          statix.enable = true;
-
-          # js/md/yaml/etc.
-          oxfmt = {
-            enable = true;
-            settings = _oxfmt;
-          };
-
-          # bash
-          shellcheck.enable = true;
-          shfmt.enable = true;
-        };
-        extraPrograms = { };
-        defaultGlobalExcludes = [
-          ".dockerignore"
-          ".env"
-          ".envrc"
-          ".prettierignore"
-          ".terraformignore"
-          "*.age"
-          "*.conf"
-          "*.csv"
-          "*.ico"
-          "*.ini"
-          "*.jpeg"
-          "*.jpg"
-          "*.kube"
-          "*.pem"
-          "*.plist"
-          "*.png"
-          "*.repo"
-          "*.rst"
-          "*.service"
-          "*.svg"
-          "*.timer"
-          "*.toml"
-          "*.txt"
-          "*.vsix"
-          "*.xml"
-          "*/.dockerignore"
-          "*/.env"
-          "*/.envrc"
-          "*/.gitignore"
-          "*/.prettierignore"
-          "*/.terraformignore"
-          "*/LICENSE"
-          "flake.lock"
-          "ignore"
-          "LICENSE"
-        ];
-        extraGlobalExcludes = [ ];
-        extraFormatter = { };
-      };
-      fn =
-        { binName
-        , defaultPrograms
-        , extraPrograms
-        , defaultGlobalExcludes
-        , extraGlobalExcludes
-        , extraFormatter
-        , extraTreefmt ? { }
-        , projectRootFile ? ".git/config"
-        }:
-        let
-          _t = prev.treefmt-nix.mkWrapper prev (recursiveUpdate
-            {
-              inherit projectRootFile;
-              programs = recursiveUpdate defaultPrograms extraPrograms;
-              settings.global.excludes = defaultGlobalExcludes ++ extraGlobalExcludes;
-              settings.formatter = { shellcheck.options = [ "-x" ]; } // extraFormatter;
-            }
-            extraTreefmt);
-        in
-        final.writeShellScriptBin binName ''${_t}/bin/treefmt "$@"'';
-      result = fn defaults;
-      treefmt = result // {
-        override = newArgs: fn (defaults // newArgs);
-        overrideWithDefaults = newArgs: fn (recursiveUpdate defaults newArgs);
-      };
-    in
-    treefmt // {
-      __functor = _: treefmt.override;
-    };
 
   stable-diffusion-cpp-latest =
     let
@@ -179,8 +70,9 @@ in
     ignoreCollisions = true;
   };
 
-  inherit _treefmt _oxfmt;
-  jfmt = _treefmt;
+  inherit (formatter) jfmt;
+  _treefmt = formatter.jfmt;
+  _oxfmt = formatter.oxfmt;
 
   _nix = final.nixVersions.nix_2_34;
 
