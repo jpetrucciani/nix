@@ -42,7 +42,9 @@ jobs:
           extra_nix_config: |
             extra-substituters = https://cache.g7c.us
             extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY=
-      - run: nix run .#nupdate -- "${{ matrix.attr }}"
+      - env:
+          PACKAGE_ATTR: ${{ matrix.attr }}
+        run: bash .github/scripts/tool-cache.sh run nupdate "$PACKAGE_ATTR"
       - uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         id: pr
         with:

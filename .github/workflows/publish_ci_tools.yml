@@ -1,4 +1,4 @@
-name: publish jfmt
+name: publish CI tools
 
 on:
   workflow_dispatch:
@@ -7,15 +7,23 @@ on:
     paths:
       - flake.nix
       - flake.lock
+      - scripts.nix
+      - mods/ci-tools.nix
+      - mods/final.nix
+      - mods/hax.nix
       - mods/jfmt.nix
-      - .github/scripts/jfmt-cache.sh
-      - .github/workflows/publish_jfmt.yml
+      - mods/override.nix
+      - mods/pog/nix.nix
+      - pkgs/cli/iets.nix
+      - .github/styles/config/**
+      - .github/scripts/tool-cache.sh
+      - .github/workflows/publish_ci_tools.yml
 
 permissions:
   contents: read
 
 concurrency:
-  group: publish-jfmt
+  group: publish-ci-tools
   cancel-in-progress: false
 
 jobs:
@@ -28,7 +36,13 @@ jobs:
         with:
           persist-credentials: false
       - uses: jpetrucciani/actions/nix/setup@7235e5692c8aa8906e6c1827313a0a72d3b190e3
-      - run: bash .github/scripts/jfmt-cache.sh publish
+      - name: Publish signed closures and manifests
+        run: |
+          failed=0
+          for tool in jfmt check-vale check-doc-links check-readme-index nupdate iets; do
+            bash .github/scripts/tool-cache.sh publish "$tool" || failed=1
+          done
+          exit "$failed"
         env:
           POG_URI: ${{ secrets.POG_URI }}
           PRIVKEY: ${{ secrets.G7C_CACHE_PRIVATE_KEY }}

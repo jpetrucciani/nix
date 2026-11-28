@@ -42,6 +42,10 @@ This overlay allows me to load the custom packages I've built in my [pkgs/](../p
 
 This overlay contains the bashbible implemented entirely in nix attr sets.
 
+### [ci-tools.nix](./ci-tools.nix)
+
+Evaluates the packages for the CI tool cache from pinned nixpkgs and their specific overlays.
+
 ### [containers.nix](./containers.nix)
 
 this overlay injects [nix2container](https://github.com/nlewo/nix2container) into scope

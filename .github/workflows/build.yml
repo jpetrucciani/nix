@@ -29,7 +29,19 @@ jobs:
             accept-flake-config = true
             extra-substituters = https://cache.g7c.us https://nix-community.cachix.org
             extra-trusted-public-keys = cache.g7c.us:dSWpE2B5zK/Fahd7npIQWM4izRnVL+a4LiCAnrjdoFY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
-      - run: nix eval --json --no-write-lock-file .#lib.customPackageDrvPaths.${{ matrix.system }} >/dev/null
+      - name: Evaluate custom package derivations
+        env:
+          SYSTEM: ${{ matrix.system }}
+        run: |
+          attribute="lib.customPackageDrvPaths.$SYSTEM"
+          if [[ $SYSTEM == x86_64-linux ]] && evaluator=$(bash .github/scripts/tool-cache.sh restore iets); then
+            echo "Using cached iets for the package preflight"
+            if IETS_NIX_FALLBACK=never "$evaluator" eval --json --timings --no-cache "git+file://$PWD#$attribute" >/dev/null; then
+              exit 0
+            fi
+            echo "iets failed, retrying the package preflight with Nix"
+          fi
+          nix eval --json --no-write-lock-file ".#$attribute" >/dev/null
       - run: nix --show-trace build -L .#__j_custom
       - if: ${{ github.event_name != 'pull_request' }}
         env:

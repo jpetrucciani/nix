@@ -118,7 +118,13 @@
         };
       });
       legacyPackages = packageSets;
-      lib = lib // { inherit autoUpdatePackages customPackageDrvPaths overlayDelta; };
+      lib = lib // {
+        inherit autoUpdatePackages customPackageDrvPaths overlayDelta;
+        ciTools = forAllSystems (system: import ./mods/ci-tools.nix {
+          inherit (self) inputs;
+          inherit system;
+        });
+      };
       inherit (nix2containerPkgs) nix2container;
       pins = self.inputs;
       devShells = forAllSystems (
